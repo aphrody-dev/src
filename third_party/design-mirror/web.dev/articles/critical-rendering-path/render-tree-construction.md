@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)
 
 Published: March 31, 2014
@@ -38,6 +39,7 @@ To construct the render tree, the browser roughly does the following:
 
    - Some nodes are not visible (for example, script tags, meta tags, and so on), and are omitted since they are not reflected in the rendered output.
    - Some nodes are hidden using CSS and are also omitted from the render tree; for example, the span node---in the example above---is missing from the render tree because we have an explicit rule that sets the "display: none" property on it.
+
 2. For each visible node, find the appropriate matching CSSOM rules and apply them.
 
 3. Emit visible nodes with content and their computed styles.
@@ -93,4 +95,4 @@ Here's a quick recap of the browser's steps:
 
 The demo page may seem basic, but it requires quite a bit of work on the browser's part. If either the DOM or CSSOM were modified, you would have to repeat the process in order to figure out which pixels would need to be re-rendered on the screen.
 
-***Optimizing the critical rendering path* is the process of minimizing the total amount of time spent performing steps 1 through 5 in the above sequence.** Doing so renders content to the screen as quickly as possible and also reduces the amount of time between screen updates after the initial render; that is, achieve higher refresh rates for interactive content.
+**_Optimizing the critical rendering path_ is the process of minimizing the total amount of time spent performing steps 1 through 5 in the above sequence.** Doing so renders content to the screen as quickly as possible and also reduces the amount of time between screen updates after the initial render; that is, achieve higher refresh rates for interactive content.

@@ -6,7 +6,12 @@ import { forkPins } from "./forks.ts";
 import { NativeError } from "./native.ts";
 import { run } from "./proton.ts";
 import { syncSkills } from "./skills.ts";
-import { compatTools, findSteamRoot, listApps, type CompatTool } from "./steam.ts";
+import {
+  compatTools,
+  findSteamRoot,
+  listApps,
+  type CompatTool,
+} from "./steam.ts";
 import {
   appUpdateArgs,
   hostPlatform,
@@ -79,7 +84,9 @@ async function status(argv: string[], json: boolean): Promise<number> {
     compat_tools: tools.map((t) => t.display_name ?? t.name),
     vulkan: {
       icds: layers.filter((l) => l.kind === "icd").length,
-      implicit_layers: layers.filter((l) => l.kind === "implicit_layer").map((l) => l.name),
+      implicit_layers: layers
+        .filter((l) => l.kind === "implicit_layer")
+        .map((l) => l.name),
       explicit_layers: layers.filter((l) => l.kind === "explicit_layer").length,
     },
     dx: process.platform === "win32" ? windowsDx() : protonDx(tools),
@@ -119,7 +126,9 @@ async function steamcmd(argv: string[], json: boolean): Promise<number> {
       user: flag(rest, "--user"),
     });
     if (rest.includes("--dry-run")) {
-      out({ exe: steamcmdExe(), args }, json, () => [steamcmdExe(), ...args].join(" "));
+      out({ exe: steamcmdExe(), args }, json, () =>
+        [steamcmdExe(), ...args].join(" "),
+      );
       return 0;
     }
     return await runSteamcmd(args);
@@ -128,7 +137,9 @@ async function steamcmd(argv: string[], json: boolean): Promise<number> {
     const i = rest.indexOf("--");
     return await runSteamcmd(i >= 0 ? rest.slice(i + 1) : rest);
   }
-  console.error("ay gaming steamcmd: install | app-update <name|appid> --dir <d> | run -- <args>");
+  console.error(
+    "ay gaming steamcmd: install | app-update <name|appid> --dir <d> | run -- <args>",
+  );
   return 2;
 }
 
@@ -148,17 +159,33 @@ export async function main(argv: string[]): Promise<number> {
       return await status(rest, json);
     case "apps": {
       const r = tryRoot(rest);
-      if (!r) throw new Error("no Steam installation found (--root or STEAM_PATH)");
+      if (!r)
+        throw new Error("no Steam installation found (--root or STEAM_PATH)");
       const apps = await listApps(r, flag(rest, "--filter"));
-      out(apps, json, () => apps.map((a) => `${a.appid}\t${a.name}\t${a.state.join(",")}\t${a.install_path}`).join("\n"));
+      out(apps, json, () =>
+        apps
+          .map(
+            (a) =>
+              `${a.appid}\t${a.name}\t${a.state.join(",")}\t${a.install_path}`,
+          )
+          .join("\n"),
+      );
       return 0;
     }
     case "proton": {
       const r = tryRoot(rest);
       const tools = r ? compatTools(r) : [];
       const dx = protonDx(tools);
-      out({ tools, dx }, json, () =>
-        tools.map((t) => `${t.kind}\t${t.display_name ?? t.name}\t${t.version ?? ""}\t${t.path}`).join("\n") || "(no compat tools)",
+      out(
+        { tools, dx },
+        json,
+        () =>
+          tools
+            .map(
+              (t) =>
+                `${t.kind}\t${t.display_name ?? t.name}\t${t.version ?? ""}\t${t.path}`,
+            )
+            .join("\n") || "(no compat tools)",
       );
       return 0;
     }
@@ -166,22 +193,44 @@ export async function main(argv: string[]): Promise<number> {
       const m = vulkanManifests();
       const info = rest.includes("--info") ? vulkanInfoSummary() : undefined;
       out({ manifests: m, vulkaninfo: info ?? null }, json, () =>
-        [...m.map((l) => `${l.kind}\t${l.name ?? "?"}\t${l.api_version ?? ""}\t${l.file}`), ...(info ? ["", info] : [])].join("\n"),
+        [
+          ...m.map(
+            (l) =>
+              `${l.kind}\t${l.name ?? "?"}\t${l.api_version ?? ""}\t${l.file}`,
+          ),
+          ...(info ? ["", info] : []),
+        ].join("\n"),
       );
       return 0;
     }
     case "dx": {
       const r = tryRoot(rest);
       const apps = r ? await listApps(r) : [];
-      const agility = apps.map((a) => ({ appid: a.appid, name: a.name, agility_sdk: agilitySdk(a.install_path) })).filter((a) => a.agility_sdk);
+      const agility = apps
+        .map((a) => ({
+          appid: a.appid,
+          name: a.name,
+          agility_sdk: agilitySdk(a.install_path),
+        }))
+        .filter((a) => a.agility_sdk);
       const host = process.platform === "win32" ? windowsDx() : null;
-      const proton = r && process.platform !== "win32" ? protonDx(compatTools(r)) : [];
-      out({ host, proton, agility }, json, () => JSON.stringify({ host, proton, agility }, null, 2));
+      const proton =
+        r && process.platform !== "win32" ? protonDx(compatTools(r)) : [];
+      out({ host, proton, agility }, json, () =>
+        JSON.stringify({ host, proton, agility }, null, 2),
+      );
       return 0;
     }
     case "forks": {
       const pins = forkPins(root);
-      out(pins, json, () => pins.map((p) => `${p.name}\t${p.commit?.slice(0, 12) ?? "(not pinned)"}\t${p.branch ?? ""}\t${p.variants.join(",")}`).join("\n"));
+      out(pins, json, () =>
+        pins
+          .map(
+            (p) =>
+              `${p.name}\t${p.commit?.slice(0, 12) ?? "(not pinned)"}\t${p.branch ?? ""}\t${p.variants.join(",")}`,
+          )
+          .join("\n"),
+      );
       return 0;
     }
     case "steamcmd":
@@ -189,7 +238,10 @@ export async function main(argv: string[]): Promise<number> {
     case "run": {
       const exe = rest[0];
       const prefix = flag(rest, "--prefix");
-      if (!exe || !prefix) throw new Error("usage: ay gaming run <exe> --prefix <dir> [--tool <name>] [-- args]");
+      if (!exe || !prefix)
+        throw new Error(
+          "usage: ay gaming run <exe> --prefix <dir> [--tool <name>] [-- args]",
+        );
       const i = rest.indexOf("--");
       return await run({
         exe,
@@ -209,7 +261,13 @@ export async function main(argv: string[]): Promise<number> {
         return 2;
       }
       const drift = syncSkills(root, write);
-      out(drift, json, () => drift.map((d) => `${d.kind}\t${d.skill}/${d.file}`).join("\n") || "skills in sync");
+      out(
+        drift,
+        json,
+        () =>
+          drift.map((d) => `${d.kind}\t${d.skill}/${d.file}`).join("\n") ||
+          "skills in sync",
+      );
       return write || drift.length === 0 ? 0 : 1;
     }
     default:
@@ -222,8 +280,9 @@ if (import.meta.main) {
   try {
     process.exitCode = await main(process.argv.slice(2));
   } catch (e) {
-    console.error(`ay gaming: ${e instanceof NativeError ? e.message : (e as Error).message}`);
+    console.error(
+      `ay gaming: ${e instanceof NativeError ? e.message : (e as Error).message}`,
+    );
     process.exitCode = 1;
   }
 }
-

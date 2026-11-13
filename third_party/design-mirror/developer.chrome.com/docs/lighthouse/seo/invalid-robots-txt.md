@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The `robots.txt` file tells search engines which of your site's pages they can
 crawl. An invalid `robots.txt` configuration can cause two types of problems:
 
@@ -103,7 +104,7 @@ A general user agent and a `magicsearchbot` user agent are defined.
 
 User-agent names define the sections of your `robots.txt` file. Search engine
 crawlers use those sections to determine which directives to follow. Placing a
-directive *before* the first user-agent name means that no crawlers will follow
+directive _before_ the first user-agent name means that no crawlers will follow
 it.
 Don't
 
@@ -145,6 +146,7 @@ Don't
 ```text
 sitemap: /sitemap-file.xml
 ```
+
 Do
 
 ```text

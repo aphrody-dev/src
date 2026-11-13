@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Want to make your Angular site accessible for everyone? This is the right place!
 
- Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/)  Zama Khan Mohammed [X](https://twitter.com/mohamedzamakhan) [GitHub](https://github.com/mohammedzamakhan) [Homepage](https://blog.mgechev.com/)
+Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/) Zama Khan Mohammed [X](https://twitter.com/mohamedzamakhan) [GitHub](https://github.com/mohammedzamakhan) [Homepage](https://blog.mgechev.com/)
 
 Making your app accessible means that all users, including those with special needs, can use it and understand the content. According to the [World Health Report](https://www.who.int/disabilities/world_report/2011/report.pdf), more than a billion people---about 15% of the world's population---have some form of disability. So [accessibility](https://web.dev/explore/accessible) is a priority for any development project.
 
@@ -45,7 +46,7 @@ Currently, all the accessibility rules are experimental and disabled by default.
 TSLint works with all popular text editors and IDEs. To use it with VSCode, install the [TSLint plugin](https://marketplace.visualstudio.com/items?itemName=eg2.tslint). In WebStorm, TSLint is enabled by default. For other editors, check the TSLint [README](https://github.com/palantir/tslint#tslint).
 
 With codelyzer's accessibility checks set up, you get a popup showing accessibility errors in TypeScript files or inline templates as you code:
- A codelyzer popup showing a form element labeling error.
+A codelyzer popup showing a form element labeling error.
 
 To perform linting over the entire project (including external templates), use the `ng lint` command:
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 This course breaks down HTML forms into easy to understand pieces.
 Over the next few modules, you'll learn how an HTML form works and how to use them effectively in your projects.
 Use the menu pane by the **Learn Forms** logo to navigate the modules.
@@ -141,5 +142,5 @@ Further resources to help you take your next steps.
 So, are you ready to learn about forms? [Let's get started](https://web.dev/learn/forms/form-element.md.txt).
 
 > [!NOTE]
-> **Note:**   
+> **Note:**  
 > This course is written and edited by forms community experts: [Michael Scharnagl](https://twitter.com/justmarkup), [Sam Dutton](https://twitter.com/sw12), and [Rachel Andrew](https://twitter.com/rachelandrew). [Rob Dodson](https://twitter.com/rob_dodson) and [Jiwoong Lee](https://twitter.com/jiwoong) shepherded the UX and production build, along with help from [Ewa Gasperowicz](https://twitter.com/devnook) and [Sam Thorogood](https://twitter.com/samthor).

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Congratulations! You've made it to the end! We hope that you have enjoyed this overview of responsive design. For more, you can check out the following additional resources:
 
 ## Additional resources
@@ -20,12 +21,12 @@ Congratulations! You've made it to the end! We hope that you have enjoyed this o
 
 ## Brought to you by
 
- Jeremy Keith [X](https://twitter.com/adactio) [GitHub](https://github.com/adactio) [Homepage](https://adactio.com/)
+Jeremy Keith [X](https://twitter.com/adactio) [GitHub](https://github.com/adactio) [Homepage](https://adactio.com/)
 
- Adam Argyle [X](https://twitter.com/argyleink) [GitHub](https://github.com/argyleink) [Homepage](https://nerdy.dev)
+Adam Argyle [X](https://twitter.com/argyleink) [GitHub](https://github.com/argyleink) [Homepage](https://nerdy.dev)
 
- Camden Bickel [X](https://twitter.com/camdenbickel) [GitHub](https://github.com/camden) [Homepage](https://cambickel.com)
+Camden Bickel [X](https://twitter.com/camdenbickel) [GitHub](https://github.com/camden) [Homepage](https://cambickel.com)
 
- Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
+Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
 
- Una Kravets [X](https://twitter.com/una) [GitHub](https://github.com/una) [Bluesky](https://bsky.app/profile/una.im) [Homepage](https://una.im/)
+Una Kravets [X](https://twitter.com/una) [GitHub](https://github.com/una) [Bluesky](https://bsky.app/profile/una.im) [Homepage](https://una.im/)

@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learnings for adopting the standardized loading attribute
 
- Felix Arntz [X](https://twitter.com/felixarntz) [Homepage](https://felix-arntz.me)
+Felix Arntz [X](https://twitter.com/felixarntz) [Homepage](https://felix-arntz.me)
 
 My goal with this post is to persuade CMS platform developers and contributors
 (i.e. the people who develop CMS cores) that
@@ -130,7 +131,7 @@ sizes and aspect ratios have to be considered. Still, it is strongly recommended
 While JavaScript can be used to
 [provide lazy loading to browsers which do not (yet) support the `loading` attribute](https://web.dev/articles/browser-level-image-lazy-loading.md.txt#how_do_i_handle_browsers_that_dont_support_lazy_loading),
 such mechanisms always rely on initially removing the `src` attribute of an
-image or iframe, which causes a delay for the browsers that *do* support the
+image or iframe, which causes a delay for the browsers that _do_ support the
 attribute. In addition, rolling out such a JavaScript-based solution in the
 frontends of a large-scale CMS increases the surface area for potential issues,
 which is part of why no major CMS had adopted lazy loading in its core prior to

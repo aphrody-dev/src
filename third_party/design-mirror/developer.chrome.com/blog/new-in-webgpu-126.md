@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 > [!NOTE]
@@ -26,7 +27,7 @@ if (adapter.limits.maxTextureArrayLayers < 30) {
 
 // Request highest limit of max texture array layers attributes.
 const device = await adapter.requestDevice({
-  requiredLimits: { maxTextureArrayLayers: 2048 }
+  requiredLimits: { maxTextureArrayLayers: 2048 },
 });
 ```
 
@@ -39,7 +40,7 @@ The fast path optimization requires the buffer's memory to be host visible and w
 ## Shader compilation time improvements
 
 The Chrome team is enhancing the efficiency of [Tint](https://dawn.googlesource.com/tint), the compiler of WebGPU shader language. Tint currently modifies the shader code's abstract syntax tree (AST) multiple times before generating machine code, a process that has been resource-intensive on some platforms. To optimize this, a new intermediate representation (IR) is being introduced, along with redesigned backends that use it. This change aims to accelerate shader compilation.
- Render pipeline creation in ChromeOS.
+Render pipeline creation in ChromeOS.
 
 These improvements, already accessible on Android, are being progressively expanded to ChromeOS devices that support WebGPU with the Vulkan backend. See [issue 42250751](https://issues.chromium.org/issues/42250751).
 

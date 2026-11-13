@@ -18,30 +18,38 @@ import type { IssueAnalysis } from "./types.js";
 import { jules } from "@google/jules-sdk";
 import { getGitRepoInfo, getCurrentBranch } from "./github/git.js";
 
-const date = new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" })
+const date = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+})
   .format(new Date())
   .replaceAll("-", "_");
 
 const root = path.dirname(findUpSync(".git")!);
 const fleetDir = path.join(root, ".fleet", date);
 const tasksPath = path.join(fleetDir, "issue_tasks.json");
-const analysis = await Bun.file(tasksPath).json() as IssueAnalysis;
+const analysis = (await Bun.file(tasksPath).json()) as IssueAnalysis;
 const { tasks } = analysis;
 
 // Resolve repo info dynamically from git remote
 const repoInfo = await getGitRepoInfo();
-const baseBranch = process.env.FLEET_BASE_BRANCH ?? await getCurrentBranch();
+const baseBranch = process.env.FLEET_BASE_BRANCH ?? (await getCurrentBranch());
 
 // Pre-dispatch ownership validation
 function validateOwnership(analysis: IssueAnalysis): void {
   const claimed = new Map<string, string>();
   for (const task of analysis.tasks) {
-    const allFiles = [...task.files, ...task.new_files, ...(task.test_files ?? [])];
+    const allFiles = [
+      ...task.files,
+      ...task.new_files,
+      ...(task.test_files ?? []),
+    ];
     for (const file of allFiles) {
       const existing = claimed.get(file);
       if (existing) {
         throw new Error(
-          `Ownership conflict: "${file}" claimed by both "${existing}" and "${task.id}". These tasks must be merged.`
+          `Ownership conflict: "${file}" claimed by both "${existing}" and "${task.id}". These tasks must be merged.`,
         );
       }
       claimed.set(file, task.id);
@@ -50,15 +58,17 @@ function validateOwnership(analysis: IssueAnalysis): void {
 }
 
 validateOwnership(analysis);
-console.log(`✅ Ownership validated: ${analysis.tasks.length} tasks, no conflicts.`);
+console.log(
+  `✅ Ownership validated: ${analysis.tasks.length} tasks, no conflicts.`,
+);
 
-const sessions = await jules.all(tasks, task => ({
+const sessions = await jules.all(tasks, (task) => ({
   prompt: task.prompt,
   source: {
     github: repoInfo.fullName,
     baseBranch,
-  }
-}))
+  },
+}));
 
 const sessionResults: Array<{ taskId: string; sessionId: string }> = [];
 for await (const session of sessions) {

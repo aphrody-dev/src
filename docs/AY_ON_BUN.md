@@ -30,8 +30,8 @@ only and do not link anything.
      `Error::Transpiler` variant (`src/install/error.rs:231`).
   2. `bun_resolver > bun_resolve_builtins`: a table of Node builtin aliases
      (`src/resolver/resolver.rs:55`, `:1439`).
-  Through `bun_resolver` these edges also reach `bun_bunfig`, `bun_router` and
-  `bun_standalone_graph`.
+     Through `bun_resolver` these edges also reach `bun_bunfig`, `bun_router` and
+     `bun_standalone_graph`.
 - **Build prerequisites**: the fork pins `nightly-2026-09-15` (`rust-toolchain.toml`) and needs its
   vendored C deps checked out (`cargo check` fails with `no matching package named lol_html`
   until `vendor/lolhtml` exists; fetched by `scripts/vendor-checkout.ts` /
@@ -45,23 +45,23 @@ only and do not link anything.
   `bun_resolver` + `bun_dotenv::Loader` directly. `bun_resolver` gets feature `node-builtins`
   (default on) gating `bun_resolve_builtins`; with it off the alias table is empty. Bun itself
   builds unchanged; ay builds with both off. Proof required: `cargo tree -p bun_install
-  --no-default-features -e normal` shows no `bun_transpiler`, `bun_js_parser`, `bun_jsc`.
+--no-default-features -e normal` shows no `bun_transpiler`, `bun_js_parser`, `bun_jsc`.
 - **Linking**: `crates/ay` depends on the fork crates by path (`../../third_party/bun/src/<crate>`)
   behind an `ay` feature `bun`, so the root workspace stays buildable without the fork checked
   out. The root toolchain must match the fork's nightly or be newer (root is nightly 1.101).
 - **Commands** (names follow docs/NAMING.md; each is a thin route to a fork crate):
 
-  | ay command | Fork crate | Replaces |
-  |---|---|---|
-  | `ay install`, `ay add`, `ay remove`, `ay update`, `ay pm` | `bun_install` (scripts-runtime off) | `bun install` for repos, no JS needed to resolve or link |
-  | `ay sh <script>` | `bun_shell_parser` + `bun_spawn` | Bun Shell; cross-platform scripts with no bash or pwsh |
-  | `ay x <bin>` | `bun_spawn`, `bun_which` | `bunx` for native binaries |
-  | `ay fetch`, `ay serve` | `bun_http`, `bun_uws` | curl, static file server |
-  | `ay s3`, `ay sql`, `ay kv` | `bun_s3_signing`, `bun_sql`, `bun_valkey` | aws cli for R2, psql, redis-cli |
-  | `ay tar`, `ay zstd`, `ay brotli` | `bun_archive`, `bun_tar`, `bun_zstd`, `bun_brotli`, `bun_zlib` | tar, zstd |
-  | `ay glob`, `ay semver`, `ay patch`, `ay watch` | `bun_glob`, `bun_semver`, `bun_patch`, `bun_watcher` | fd globs, semver tools, `bun patch`, watchexec |
-  | `ay css`, `ay md` | `bun_css`, `bun_md` | CSS minify/transform, Markdown render |
-  | `ay env` | `bun_dotenv` | dotenv loading for env-kit flows |
+  | ay command                                                | Fork crate                                                     | Replaces                                                 |
+  | --------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------- |
+  | `ay install`, `ay add`, `ay remove`, `ay update`, `ay pm` | `bun_install` (scripts-runtime off)                            | `bun install` for repos, no JS needed to resolve or link |
+  | `ay sh <script>`                                          | `bun_shell_parser` + `bun_spawn`                               | Bun Shell; cross-platform scripts with no bash or pwsh   |
+  | `ay x <bin>`                                              | `bun_spawn`, `bun_which`                                       | `bunx` for native binaries                               |
+  | `ay fetch`, `ay serve`                                    | `bun_http`, `bun_uws`                                          | curl, static file server                                 |
+  | `ay s3`, `ay sql`, `ay kv`                                | `bun_s3_signing`, `bun_sql`, `bun_valkey`                      | aws cli for R2, psql, redis-cli                          |
+  | `ay tar`, `ay zstd`, `ay brotli`                          | `bun_archive`, `bun_tar`, `bun_zstd`, `bun_brotli`, `bun_zlib` | tar, zstd                                                |
+  | `ay glob`, `ay semver`, `ay patch`, `ay watch`            | `bun_glob`, `bun_semver`, `bun_patch`, `bun_watcher`           | fd globs, semver tools, `bun patch`, watchexec           |
+  | `ay css`, `ay md`                                         | `bun_css`, `bun_md`                                            | CSS minify/transform, Markdown render                    |
+  | `ay env`                                                  | `bun_dotenv`                                                   | dotenv loading for env-kit flows                         |
 
   Existing ay commands (arch, build, doctor, lock, git, ingest, graph, deploy, bench, sys, ssh, up,
   self-update) stay as they are.

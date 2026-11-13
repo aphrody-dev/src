@@ -155,7 +155,12 @@ function claude(env: Env): Identity[] {
         }
       : oauth?.loggedIn && oauth.authMethod === "oauth_token"
         ? // Jeton longue durée de `claude setup-token` (CLAUDE_CODE_OAUTH_TOKEN, coffre) : même abonnement, sans session.
-          { provider: "claude.ai", status: "ok", identity: "CLAUDE_CODE_OAUTH_TOKEN", detail: "claude setup-token (1 an)" }
+          {
+            provider: "claude.ai",
+            status: "ok",
+            identity: "CLAUDE_CODE_OAUTH_TOKEN",
+            detail: "claude setup-token (1 an)",
+          }
         : { provider: "claude.ai", status: "invalid" },
   ];
   if (ANTHROPIC_API_KEY) {
@@ -179,13 +184,25 @@ async function cratesIo(env: Env): Promise<Identity> {
   const t = env.CARGO_REGISTRY_TOKEN;
   if (!t) return { provider: "crates.io", status: "unset" };
   const r = await json("https://crates.io/api/v1/me", {
-    headers: { Authorization: t, "User-Agent": "aphrody-env-kit (contact@aphrody.com)" },
+    headers: {
+      Authorization: t,
+      "User-Agent": "aphrody-env-kit (contact@aphrody.com)",
+    },
   });
   const detail = String(r.body?.errors?.[0]?.detail ?? "");
   if (r.ok)
-    return { provider: "crates.io", status: "ok", identity: r.body?.user?.login };
+    return {
+      provider: "crates.io",
+      status: "ok",
+      identity: r.body?.user?.login,
+    };
   return /only be performed on the crates.io website/.test(detail)
-    ? { provider: "crates.io", status: "ok", identity: "API token accepted", detail: "/me is website-only" }
+    ? {
+        provider: "crates.io",
+        status: "ok",
+        identity: "API token accepted",
+        detail: "/me is website-only",
+      }
     : { provider: "crates.io", status: "invalid" };
 }
 

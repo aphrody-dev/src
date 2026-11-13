@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Use the Angular service worker to make your app faster and more reliable on networks with poor connectivity.
 
- Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/)
+Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/)
 
 ## Dealing with limited connectivity
 
@@ -18,7 +19,7 @@ When users have limited network access---or none at all---web app functionality 
 This post walks through how to set up precaching in an Angular app. It assumes you're already familiar with precaching and service workers in general. If you need a refresher, check out the [Service workers and the Cache Storage API](https://web.dev/articles/service-workers-cache-storage.md.txt) post.
 
 > [!NOTE]
-> **Note:** *You can find the code for the current example [on GitHub](https://github.com/mgechev/service-worker-web-dev).*
+> **Note:** _You can find the code for the current example [on GitHub](https://github.com/mgechev/service-worker-web-dev)._
 
 ## Introducing the Angular service worker
 

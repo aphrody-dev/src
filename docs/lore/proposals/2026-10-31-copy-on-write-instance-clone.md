@@ -167,16 +167,16 @@ for virtual ones. This proposal gives the provider two responsibilities for a cl
 
 - **Answer what a clone would do, before anything is written.** Given a source instance and a destination,
   the provider answers one of:
-  - *shares blocks*: the clone costs metadata, not content;
-  - *copies bytes*: the clone writes N bytes in M files, with the free space at the destination;
-  - *unsupported*: no clone is possible, with a reason naming the filesystem or provider.
+  - _shares blocks_: the clone costs metadata, not content;
+  - _copies bytes_: the clone writes N bytes in M files, with the free space at the destination;
+  - _unsupported_: no clone is possible, with a reason naming the filesystem or provider.
 - **Perform the clone** it described, and report what it did: how many entries it cloned and how many it
   copied.
 
 [Sync prefetch](2026-11-04-sync-prefetch.md) reuses this interface and its clone backends to place
 individual files from its cache, and adds the questions it needs; this proposal does not depend on it.
 
-A provider that does not implement these answers *unsupported*, so a provider that predates this proposal,
+A provider that does not implement these answers _unsupported_, so a provider that predates this proposal,
 or one that cannot yet clone, makes the clone refuse rather than guess.
 
 #### Clone backends
@@ -196,7 +196,7 @@ The OS provider does its part through clone backends, one per filesystem rather 
   it block-clones only on Windows 11 24H2 and Windows Server 2025, falls back to a byte copy silently
   elsewhere, and does not say which it did.
 - **Copy**: a plain byte copy, for every other filesystem (NTFS, ext4, network shares) and for a destination
-  on another volume. It answers *copies bytes*, and an instance clone runs it only with `--allow-copy`.
+  on another volume. It answers _copies bytes_, and an instance clone runs it only with `--allow-copy`.
 
 A backend knows filesystems, not Lore: it clones and copies paths and reports what it did, and holds no
 instance IDs, anchors or locks. The provider owns identity, exclusions and locking. Adding a filesystem or an
@@ -208,12 +208,12 @@ candidate backend, and removes both. Only volumes of two different filesystems g
 a probe. Volume identifiers (`st_dev` on Unix, the volume serial number on Windows) decide nothing: Btrfs
 gives each subvolume its own `st_dev` although `FICLONE` works between them, and two copies of one virtual
 disk can carry the same serial number. The first backend whose probe shares blocks
-is the answer; if none does, the answer is *copies bytes*. A probe that fails for another reason, such as no
+is the answer; if none does, the answer is _copies bytes_. A probe that fails for another reason, such as no
 permission to write in the Lore directory, fails the clone. The probe, not the OS or the filesystem's name,
 decides, so a Windows machine with an NTFS system drive and a Dev Drive gets the right answer for each, and a
-filesystem mounted without reflink support gets *copies bytes*.
+filesystem mounted without reflink support gets _copies bytes_.
 
-**A promise of sharing holds for the whole clone.** If the backend chosen for *shares blocks* fails to clone
+**A promise of sharing holds for the whole clone.** If the backend chosen for _shares blocks_ fails to clone
 an entry partway through, the clone stops and fails, rather than copying that entry, unless `--allow-copy`
 was given. The prototype behind the measurements picks its implementation by OS at build time, finds out
 one entry at a time whether it cloned, and falls back to a copy silently; this design moves the decision to
@@ -231,10 +231,10 @@ presents the revision's tree from the store plus that overlay. SWFS would clone 
 Lore directory and write overlay, under the new instance ID, using the OS provider's clone backend for the
 volume that holds it, and then mount the new instance at the destination path. The tree itself is not
 copied, since it comes from the store, so the cost is proportional to the overlay, not to the tree. SWFS
-answers *shares blocks* or *copies bytes* by the backend for its external directory's volume, with the
+answers _shares blocks_ or _copies bytes_ by the backend for its external directory's volume, with the
 overlay's size.
 
-Until SWFS implements this, its provider answers *unsupported* ("this virtual filesystem provider cannot
+Until SWFS implements this, its provider answers _unsupported_ ("this virtual filesystem provider cannot
 clone instances yet") and the clone refuses. (Goal 3, Goal 5.)
 
 ### Copy is opt-in
@@ -242,16 +242,16 @@ clone instances yet") and the clone refuses. (Goal 3, Goal 5.)
 A full copy of a 1 TB tree takes hours and holds the store's locks throughout, so the clone never makes one
 unasked (Goal 4).
 
-- **Without `--allow-copy`**, a clone whose answer is *copies bytes* or *unsupported* refuses before writing
+- **Without `--allow-copy`**, a clone whose answer is _copies bytes_ or _unsupported_ refuses before writing
   anything. The message names the source's and destination's filesystems and volumes and the remedy: put
   the instances on a filesystem that clones (Dev Drive or ReFS on Windows, APFS on macOS, Btrfs, XFS or
-  bcachefs on Linux) and the destination on the same volume as the source. For *copies bytes*, it also says what
+  bcachefs on Linux) and the destination on the same volume as the source. For _copies bytes_, it also says what
   `--allow-copy` would cost.
 - **With `--allow-copy`**, the clone states before it starts that it will copy N GB in M files and hold the
   store's locks throughout, so Lore commands wait for it as Lock hold describes. It
   refuses when the destination's free space is below the bytes it would copy.
 - When the backend shares blocks, `--allow-copy` only lets the clone copy the entries that turn out not to
-  clone. It does nothing for *unsupported*, which always refuses.
+  clone. It does nothing for _unsupported_, which always refuses.
 
 ### Lock hold
 
@@ -273,12 +273,12 @@ figure is an **estimate**. The ~1 TB tree is assumed to hold about 11 million en
 of them files and 8.6 million directories, scaling the measured tree's entries and files by 2.2, the ratio
 of its content.
 
-| Backend | Measured tree (5.0M entries, 456 GB) | Estimate at ~1 TB, ~11M entries | Basis of the estimate |
-| --- | --- | --- | --- |
-| APFS | 86 to 107 s, 1.2 to 1.6 GB (measured) | about 3 to 4 min, 2.6 to 3.5 GB | measured 17 to 21 µs and 240 to 320 B per entry, scaled by entries |
-| Reflink (Btrfs, XFS, bcachefs) | not measured | not estimated | no measurement on Linux |
-| ReFS / Dev Drive | not measured | tens of minutes (about 25 to 55 min) | assumed 0.3 to 1 ms per file to open, duplicate extents and close, plus about 8.6M directory creations |
-| Copy (`--allow-copy`) | not measured | hours (about 1 to 3 h), 1 TB of free space | writing ~1 TB at a disk's sustained write rate, plus per-file creation and Defender reading each new file on Windows |
+| Backend                        | Measured tree (5.0M entries, 456 GB)  | Estimate at ~1 TB, ~11M entries            | Basis of the estimate                                                                                                |
+| ------------------------------ | ------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| APFS                           | 86 to 107 s, 1.2 to 1.6 GB (measured) | about 3 to 4 min, 2.6 to 3.5 GB            | measured 17 to 21 µs and 240 to 320 B per entry, scaled by entries                                                   |
+| Reflink (Btrfs, XFS, bcachefs) | not measured                          | not estimated                              | no measurement on Linux                                                                                              |
+| ReFS / Dev Drive               | not measured                          | tens of minutes (about 25 to 55 min)       | assumed 0.3 to 1 ms per file to open, duplicate extents and close, plus about 8.6M directory creations               |
+| Copy (`--allow-copy`)          | not measured                          | hours (about 1 to 3 h), 1 TB of free space | writing ~1 TB at a disk's sustained write rate, plus per-file creation and Defender reading each new file on Windows |
 
 The block-cloning backends hold the locks for minutes; a copy holds them for hours, during which the store is
 unusable to every other instance on the machine. That is why a copy is opt-in and states its cost first.
@@ -327,10 +327,10 @@ command next opens it.
   commands do; `--dry-run` prints the provider's answer; `lore_repository_instance_clone` and its `_async`
   form, with an arguments struct holding the destination and the allow-copy flag; and the
   `RepositoryInstanceClone` events. An interrupted clone can leave `<destination name>.cloning-<new
-  instance ID>` beside the destination, a name users see and may delete. Existing commands and structs are
+instance ID>` beside the destination, a name users see and may delete. Existing commands and structs are
   unchanged.
 - **Filesystem provider interface** — `FilesystemProvider` gains the clone answer and the clone itself, both
-  defaulting to *unsupported*, so existing providers compile and refuse clones until they implement them.
+  defaulting to _unsupported_, so existing providers compile and refuse clones until they implement them.
 
 ## Non-Functional Considerations
 
@@ -389,38 +389,38 @@ No new data leaves the machine. A clone registers its path in the shared store, 
 **Assumptions**
 
 - **Assumption:** the trees cloned are like a typical full sync of the large game project: about 1 TB in
-  about 11 million entries, on Mac and Windows, Windows the majority — *invalidated if:* trees are much
+  about 11 million entries, on Mac and Windows, Windows the majority — _invalidated if:_ trees are much
   smaller, in which case even a copy is cheap and the refusal matters less; the design does not depend on it.
 - **Assumption:** the users who need many working trees keep them on a filesystem that clones: APFS, the
-  macOS default, Dev Drive or ReFS on Windows, or Btrfs or XFS on Linux — *invalidated if:* most such users
+  macOS default, Dev Drive or ReFS on Windows, or Btrfs or XFS on Linux — _invalidated if:_ most such users
   keep trees on NTFS or ext4, where the clone refuses and a copy holds the store's locks for hours.
 - **Assumption:** a Dev Drive clone holds the locks for tens of minutes at ~1 TB, as Lock hold estimates —
-  *invalidated if:* a measurement on Windows 11 24H2 with Dev Drive shows hours, in which case even the
+  _invalidated if:_ a measurement on Windows 11 24H2 with Dev Drive shows hours, in which case even the
   block-cloning path needs a shorter lock hold.
 
 **Risks**
 
 - **Risk:** a build or editor writes in the source during the clone, so the clone captures a mix of before
-  and after — *mitigation:* a tracked file that changed has a modification time its record does not match, so
+  and after — _mitigation:_ a tracked file that changed has a modification time its record does not match, so
   the clone's first scan hashes it and reports it. An untracked build output caught mid-write is not checked
   by Lore; accepted, and a clone made while the source builds may need that build output rebuilt.
 - **Risk:** Microsoft Defender's real-time protection scans each file the clone creates on Windows, which can
-  dominate a copy's time and adds to a Dev Drive clone's — *mitigation:* Lock hold's Windows estimates include
+  dominate a copy's time and adds to a Dev Drive clone's — _mitigation:_ Lock hold's Windows estimates include
   it as an assumption to measure; Dev Drive's
   [performance mode](https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-endpoint-antivirus-performance-mode)
   scans asynchronously, and the refusal message points copy users to Dev Drive.
-- **Risk:** an interrupted clone leaves its in-progress directory on disk — *mitigation:* it carries its own ID
+- **Risk:** an interrupted clone leaves its in-progress directory on disk — _mitigation:_ it carries its own ID
   and no registration, so it is not an instance; a later clone to the same destination removes it. A clone that
   fails, rather than crashes, names the directory in its error, removes it and deletes its anchor keys where
-  the store allows. *Accepted:* after a crash, the clone's three small anchor keys stay in the store, and
+  the store allows. _Accepted:_ after a crash, the clone's three small anchor keys stay in the store, and
   nothing removes them.
 - **Risk:** the probe says a pair of volumes shares blocks, but some entries cannot be cloned (for example a
-  nested subvolume or a mount point inside the tree) — *mitigation:* the clone stops and fails rather than
+  nested subvolume or a mount point inside the tree) — _mitigation:_ the clone stops and fails rather than
   copying those entries silently, unless `--allow-copy` was given.
 - **Risk:** binaries a build made in the source point their debug information at the source's object
-  files until relinked — *mitigation:* accepted; it affects build tools, not Lore.
+  files until relinked — _mitigation:_ accepted; it affects build tools, not Lore.
 - **Risk:** the clone waits for as long as other commands in its process, such as the service's, keep sharing
-  the source's lock — *mitigation:* accepted; making new commands queue behind a waiting clone would deadlock
+  the source's lock — _mitigation:_ accepted; making new commands queue behind a waiting clone would deadlock
   a command that opens the same instance twice, and each such command finishes on its own.
 
 ## Drawbacks
@@ -436,7 +436,7 @@ No new data leaves the machine. A clone registers its path in the shared store, 
 
 ### Status quo: a second instance over the shared store
 
-*Rejected because:* it writes every file its view selects, 456 GB to 1 TB per instance for a view a build
+_Rejected because:_ it writes every file its view selects, 456 GB to 1 TB per instance for a view a build
 needs. This proposal does not give its time: the machine above had 30 GB free and could not hold a second
 full copy.
 
@@ -444,7 +444,7 @@ full copy.
 
 An earlier draft of this proposal copied whenever the filesystem could not clone.
 
-*Rejected because:* on NTFS or across volumes that turns a minutes-long command into one that writes up to
+_Rejected because:_ on NTFS or across volumes that turns a minutes-long command into one that writes up to
 1 TB and holds every instance's store locks for hours, without warning. Refusing, with an opt-in that states
 the cost, keeps that choice with the user.
 
@@ -452,13 +452,13 @@ the cost, keeps that choice with the user.
 
 Pick block cloning per target OS at build time and find out per file whether it cloned, as the prototype does.
 
-*Rejected because:* the filesystem decides, not the OS. A Windows machine can hold NTFS and Dev Drive
+_Rejected because:_ the filesystem decides, not the OS. A Windows machine can hold NTFS and Dev Drive
 volumes side by side, Linux has both ext4 and reflink filesystems, and no filesystem clones across volumes.
 Knowing only per file, after writing, rules out refusing before the clone starts.
 
 ### Copy outside the store's locks, holding them only to register
 
-*Rejected because:* a sync started in the source mid-clone would leave the copy holding files of two
+_Rejected because:_ a sync started in the source mid-clone would leave the copy holding files of two
 revisions while its anchors name one, and its copied records would vouch for files they do not match. Holding
 the locks throughout is the safe choice: the hold is minutes on APFS, and an estimated tens of minutes on Dev
 Drive.
@@ -468,14 +468,14 @@ Drive.
 A command that gives a directory the user copied with `cp -c` or `cp --reflink` a new identity, registers
 it and copies the source's anchors.
 
-*Rejected because:* Lore cannot hold the source's repository lock across a copy it does not run. A copy
+_Rejected because:_ Lore cannot hold the source's repository lock across a copy it does not run. A copy
 taken during a sync holds files of revision A while the anchors it adopts name revision B. Its copied
 records vouch for the revision-A files' times, so the first scan skips them and status reports the tree as
 clean at revision B while it is not.
 
 ### Copy the source's records into the store for the clone
 
-*Rejected because:* that is 1.1 million store writes under the exclusive store lock per clone of the measured
+_Rejected because:_ that is 1.1 million store writes under the exclusive store lock per clone of the measured
 tree. [Instance-local modified-time records](2026-11-03-instance-local-modified-time-records.md) carry them
 with the directory instead.
 

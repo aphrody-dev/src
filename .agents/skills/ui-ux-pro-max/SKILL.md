@@ -25,15 +25,15 @@ Domains: `ux` (UX/a11y rules, default), `web` (app and native interface: safe ar
 
 ## Mapping to the stack
 
-| Upstream result | src translation |
-|---|---|
-| Palette, hex color, "Primary" | M3 role `--md-sys-color-*`; brand hue = `assets/brand/brand.toml` |
-| Font pair, Tailwind config | Google Sans Flex (brand); `google-fonts --ofl` only for a secondary family, shipped as woff2 from an OFL fork |
-| Icons (Lucide, Heroicons, Phosphor) | Material Symbols Rounded (`<md-icon>`) |
-| React/Next/shadcn/Tailwind code | Material Web (`<md-*>`) served by bun, GPUI or WebUI; keep the rule, rewrite the example |
-| GSAP, Framer Motion | `--md-sys-motion-*`, View Transitions, `prefers-reduced-motion` |
-| `--stack threejs` | complements the skill `threejs-webgpu` |
-| `--stack winui` | Windows desktop only if the surface belongs to nt (WinUI 3) |
+| Upstream result                     | src translation                                                                                               |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Palette, hex color, "Primary"       | M3 role `--md-sys-color-*`; brand hue = `assets/brand/brand.toml`                                             |
+| Font pair, Tailwind config          | Google Sans Flex (brand); `google-fonts --ofl` only for a secondary family, shipped as woff2 from an OFL fork |
+| Icons (Lucide, Heroicons, Phosphor) | Material Symbols Rounded (`<md-icon>`)                                                                        |
+| React/Next/shadcn/Tailwind code     | Material Web (`<md-*>`) served by bun, GPUI or WebUI; keep the rule, rewrite the example                      |
+| GSAP, Framer Motion                 | `--md-sys-motion-*`, View Transitions, `prefers-reduced-motion`                                               |
+| `--stack threejs`                   | complements the skill `threejs-webgpu`                                                                        |
+| `--stack winui`                     | Windows desktop only if the surface belongs to nt (WinUI 3)                                                   |
 
 ## Priorities (verification order)
 
@@ -41,14 +41,7 @@ Domains: `ux` (UX/a11y rules, default), `web` (app and native interface: safe ar
 2. Interaction: 44x44 px minimum targets (48 dp in M3), loading feedback, no hover-only state.
 3. Performance: src internal targets CLS 0, LCP < 1.2 s, INP < 50 ms ("good" Core Web Vitals thresholds: LCP 2.5 s, INP 200 ms, CLS 0.1); space reserved for media.
 
-BM25 scores are not comparable across domains: `--brief` juxtaposes, it does not rank.
-4. Style: one visual language per surface, consistent with the product type (`--domain product`).
-5. Layout: mobile first, no horizontal scrolling, zoom never blocked.
-6. Typography and color: 16 px base, 1.5 line height, semantic tokens only.
-7. Motion: the animation carries meaning, exit faster than entry, reduced motion respected.
-8. Forms: visible label, error at the field, inline help.
-9. Navigation: predictable back, deep links, 5 entries maximum in the bottom bar.
-10. Charts: legend, tooltips, meaning never carried by color alone (skill `dataviz` for rendering).
+BM25 scores are not comparable across domains: `--brief` juxtaposes, it does not rank. 4. Style: one visual language per surface, consistent with the product type (`--domain product`). 5. Layout: mobile first, no horizontal scrolling, zoom never blocked. 6. Typography and color: 16 px base, 1.5 line height, semantic tokens only. 7. Motion: the animation carries meaning, exit faster than entry, reduced motion respected. 8. Forms: visible label, error at the field, inline help. 9. Navigation: predictable back, deep links, 5 entries maximum in the bottom bar. 10. Charts: legend, tooltips, meaning never carried by color alone (skill `dataviz` for rendering).
 
 Full text of the rules: `references/quick-reference.md`; app rules and pre-delivery checklist: `references/pro-rules.md` (upstream, English).
 

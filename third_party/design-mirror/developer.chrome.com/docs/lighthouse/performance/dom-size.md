@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** This audit has moved into the [Optimize DOM size](https://developer.chrome.com/docs/performance/insights/dom-size.md.txt) insight as of Lighthouse 13. For more information see [What's new in Lighthouse 13](https://developer.chrome.com/blog/lighthouse-13-0.md.txt).
 
@@ -17,12 +18,14 @@ A large DOM tree can slow down your page performance in multiple ways:
   A large DOM tree often includes many nodes that aren't visible when the user
   first loads the page, which unnecessarily increases data costs for your users
   and slows down load time.
+
 - **Runtime performance**
 
   As users and scripts interact with your page,
   the browser must constantly
   [recompute the position and styling of nodes](https://web.dev/articles/reduce-the-scope-and-complexity-of-style-calculations).
   A large DOM tree in combination with complicated style rules can severely slow down rendering and [interactivity](https://web.dev/articles/dom-size-and-interactivity).
+
 - **Memory performance**
 
   If your JavaScript uses general query selectors such as `document.querySelectorAll('li')`,
@@ -34,7 +37,7 @@ A large DOM tree can slow down your page performance in multiple ways:
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt)
 reports the total DOM elements for a page, the page's maximum DOM depth,
 and its maximum child elements:
- Lighthouse highlights excessive DOM size details
+Lighthouse highlights excessive DOM size details
 
 Lighthouse flags pages with DOM trees that:
 

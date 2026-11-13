@@ -95,26 +95,26 @@ exclude = ["FileInfo", "FilterState", "FilterStates", "FlushOptions"]
 # `CompressionMode` names the values `lore_set_compression_mode` takes, whose
 # parameter is a `uint32_t` for the same reason.
 include = [
-    "LoreStore",
-    "LoreRevisionTree",
-    "LoreNodeStagedAction",
-    "CompressionMode",
-    "LoreRevisionTreeLoadArgs",
-    "LoreRevisionTreeCloseArgs",
-    "LoreRevisionTreeResolvePathArgs",
-    "LoreRevisionTreeListChildrenArgs",
-    "LoreRevisionTreeNodeInfoArgs",
-    "LoreRevisionTreeInfoArgs",
-    "LoreRevisionTreeNodePathArgs",
-    "LoreRevisionTreeAddArgs",
-    "LoreRevisionTreeDeleteArgs",
-    "LoreRevisionTreeModifyArgs",
-    "LoreRevisionTreeMoveArgs",
-    "LoreRevisionTreeMetadataSetArgs",
-    "LoreRevisionTreeMetadataGetArgs",
-    "LoreRevisionTreeMetadataClearArgs",
-    "LoreRevisionTreeCommitArgs",
-    "LoreRevisionTreeCommitOptions",
+  "LoreStore",
+  "LoreRevisionTree",
+  "LoreNodeStagedAction",
+  "CompressionMode",
+  "LoreRevisionTreeLoadArgs",
+  "LoreRevisionTreeCloseArgs",
+  "LoreRevisionTreeResolvePathArgs",
+  "LoreRevisionTreeListChildrenArgs",
+  "LoreRevisionTreeNodeInfoArgs",
+  "LoreRevisionTreeInfoArgs",
+  "LoreRevisionTreeNodePathArgs",
+  "LoreRevisionTreeAddArgs",
+  "LoreRevisionTreeDeleteArgs",
+  "LoreRevisionTreeModifyArgs",
+  "LoreRevisionTreeMoveArgs",
+  "LoreRevisionTreeMetadataSetArgs",
+  "LoreRevisionTreeMetadataGetArgs",
+  "LoreRevisionTreeMetadataClearArgs",
+  "LoreRevisionTreeCommitArgs",
+  "LoreRevisionTreeCommitOptions",
 ]
 
 [export.rename]
@@ -654,4 +654,10 @@ parse_deps = true
 
 # A white list of crate names that are allowed to be parsed. If this is defined,
 # only crates found in this list will ever be parsed.
-include = ["aphrody-lore-base", "aphrody-lore-transport", "aphrody-lore-storage", "aphrody-lore-revision", "aphrody-lore-notification"]
+include = [
+  "aphrody-lore-base",
+  "aphrody-lore-transport",
+  "aphrody-lore-storage",
+  "aphrody-lore-revision",
+  "aphrody-lore-notification",
+]

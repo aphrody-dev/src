@@ -22,21 +22,41 @@ function lagProbe() {
   return () => (clearInterval(t), +max.toFixed(2));
 }
 
-async function bench(op: string, n: number, conc: number, fn: (i: number) => Promise<unknown>) {
+async function bench(
+  op: string,
+  n: number,
+  conc: number,
+  fn: (i: number) => Promise<unknown>,
+) {
   const times: number[] = [];
   const stop = lagProbe();
   const t0 = performance.now();
   for (let i = 0; i < n; i += conc) {
-    await Promise.all(Array.from({ length: Math.min(conc, n - i) }, async (_, j) => {
-      const s = performance.now();
-      await fn(i + j);
-      times.push(performance.now() - s);
-    }));
+    await Promise.all(
+      Array.from({ length: Math.min(conc, n - i) }, async (_, j) => {
+        const s = performance.now();
+        await fn(i + j);
+        times.push(performance.now() - s);
+      }),
+    );
   }
   const total = performance.now() - t0;
   times.sort((a, b) => a - b);
-  const p = (q: number) => +times[Math.min(times.length - 1, Math.floor(q * times.length))]!.toFixed(3);
-  console.log(JSON.stringify({ op, n, conc, p50: p(0.5), p99: p(0.99), opsPerSec: Math.round((n / total) * 1000), maxLoopLagMs: stop() }));
+  const p = (q: number) =>
+    +times[Math.min(times.length - 1, Math.floor(q * times.length))]!.toFixed(
+      3,
+    );
+  console.log(
+    JSON.stringify({
+      op,
+      n,
+      conc,
+      p50: p(0.5),
+      p99: p(0.99),
+      opsPerSec: Math.round((n / total) * 1000),
+      maxLoopLagMs: stop(),
+    }),
+  );
 }
 
 const small = crypto.getRandomValues(new Uint8Array(64));
@@ -52,7 +72,9 @@ await bench("doc json write+read", 100, 8, async (i) => {
   await V.writeDocument(`d${i}`, "json", { i, v: "x".repeat(256) });
   await V.readDocument(`d${i}`, "json");
 });
-const t = new V.EncryptedTable(join(root, "kv.sqlite"), "kv", { blindKeys: true });
+const t = new V.EncryptedTable(join(root, "kv.sqlite"), "kv", {
+  blindKeys: true,
+});
 await bench("sqlite put+get blinded", 500, 16, async (i) => {
   await t.put(`k${i}`, small);
   await t.getBytes(`k${i}`);
@@ -60,6 +82,8 @@ await bench("sqlite put+get blinded", 500, 16, async (i) => {
 t.close();
 if (Bun.which("age")) {
   const k = await V.ageKeygen();
-  await bench("age encrypt 64B (spawn)", 30, 6, () => V.ageEncrypt(small, [k.recipient]));
+  await bench("age encrypt 64B (spawn)", 30, 6, () =>
+    V.ageEncrypt(small, [k.recipient]),
+  );
 }
 rmSync(root, { recursive: true, force: true });

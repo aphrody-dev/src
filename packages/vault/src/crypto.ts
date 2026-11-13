@@ -16,13 +16,27 @@ import { helloStatus, helloUnwrap, helloWrap } from "./win/pool.ts";
 
 export const MASTER = "VAULT_MASTER_KEY";
 /** Internal names: never synced, never exported. */
-export const RESERVED = new Set([MASTER, "VAULT_AGE_IDENTITY", "aphrody-vault-age"]);
+export const RESERVED = new Set([
+  MASTER,
+  "VAULT_AGE_IDENTITY",
+  "aphrody-vault-age",
+]);
 /** Passport KSP key name "<SID>//<domain>//<subdomain>//<name>" (format used by Hello clients; not on Learn). */
 let helloName: Promise<string> | undefined;
 export function HELLO_KEY(): Promise<string> {
-  if (process.env.VAULT_HELLO_KEY) return Promise.resolve(process.env.VAULT_HELLO_KEY);
+  if (process.env.VAULT_HELLO_KEY)
+    return Promise.resolve(process.env.VAULT_HELLO_KEY);
   helloName ??= (async () => {
-    const p = Bun.spawn([`${process.env.SystemRoot ?? "C:\\Windows"}\\System32\\whoami.exe`, "/user", "/fo", "csv", "/nh"], { stdout: "pipe", stderr: "ignore" });
+    const p = Bun.spawn(
+      [
+        `${process.env.SystemRoot ?? "C:\\Windows"}\\System32\\whoami.exe`,
+        "/user",
+        "/fo",
+        "csv",
+        "/nh",
+      ],
+      { stdout: "pipe", stderr: "ignore" },
+    );
     const sid = /S-1-[0-9-]+/.exec(await new Response(p.stdout).text())?.[0];
     if (!sid) throw new Error("vault: user SID unavailable");
     return `${sid}//aphrody//vault//aphrody-vault`;
@@ -41,7 +55,8 @@ export function masterKey(create = true): Promise<Uint8Array> {
   masterCache ??= (async () => {
     const k = await getSecretBytes(MASTER);
     if (k?.byteLength === 32) return k;
-    if (!create) throw new Error("vault: master key absent (env-kit vault init)");
+    if (!create)
+      throw new Error("vault: master key absent (env-kit vault init)");
     // Exclusive creation: two processes starting on an empty vault must not create two keys.
     const { mkdir, open: fopen, rm } = await import("node:fs/promises");
     const { vaultRoot } = await import("./paths.ts");
@@ -77,19 +92,35 @@ export function forgetMasterKey(): void {
 const bs = (u: Uint8Array) => u as Uint8Array<ArrayBuffer>;
 
 async function hmac(key: Uint8Array, data: Uint8Array): Promise<Uint8Array> {
-  const k = await subtle.importKey("raw", bs(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const k = await subtle.importKey(
+    "raw",
+    bs(key),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
   return new Uint8Array(await subtle.sign("HMAC", k, bs(data)));
 }
 
 /** Keyed fingerprint (hex) for idempotence indexes: never an unkeyed hash of a secret on disk. */
-export async function keyedFingerprint(label: string, value: Uint8Array): Promise<string> {
+export async function keyedFingerprint(
+  label: string,
+  value: Uint8Array,
+): Promise<string> {
   // Domain separation: the fingerprint key is derived, the AES key of AYV1 is the master itself.
-  const k = await hmac(await masterKey(), enc.encode("aphrody/vault/fp-key/v1"));
-  const d = await hmac(k, new Uint8Array([...enc.encode(`fp|${label}|`), ...value]));
+  const k = await hmac(
+    await masterKey(),
+    enc.encode("aphrody/vault/fp-key/v1"),
+  );
+  const d = await hmac(
+    k,
+    new Uint8Array([...enc.encode(`fp|${label}|`), ...value]),
+  );
   return Buffer.from(d).toString("hex");
 }
 
-const aesKey = (raw: Uint8Array) => subtle.importKey("raw", bs(raw), "AES-GCM", false, ["encrypt", "decrypt"]);
+const aesKey = (raw: Uint8Array) =>
+  subtle.importKey("raw", bs(raw), "AES-GCM", false, ["encrypt", "decrypt"]);
 
 export async function helloAvailable(): Promise<boolean> {
   if (!WIN || process.env.VAULT_HELLO === "0") return false;
@@ -97,7 +128,11 @@ export async function helloAvailable(): Promise<boolean> {
   return s.key;
 }
 
-export async function seal(aad: string, plain: Uint8Array, opts: { hello?: boolean } = {}): Promise<Uint8Array> {
+export async function seal(
+  aad: string,
+  plain: Uint8Array,
+  opts: { hello?: boolean } = {},
+): Promise<Uint8Array> {
   const master = await masterKey();
   let wrap: Uint8Array = new Uint8Array();
   let raw = master;
@@ -109,7 +144,11 @@ export async function seal(aad: string, plain: Uint8Array, opts: { hello?: boole
   }
   const nonce = crypto.getRandomValues(new Uint8Array(12));
   const ct = new Uint8Array(
-    await subtle.encrypt({ name: "AES-GCM", iv: nonce, additionalData: enc.encode(aad) }, await aesKey(raw), bs(plain)),
+    await subtle.encrypt(
+      { name: "AES-GCM", iv: nonce, additionalData: enc.encode(aad) },
+      await aesKey(raw),
+      bs(plain),
+    ),
   );
   const out = new Uint8Array(4 + 1 + 2 + wrap.byteLength + 12 + ct.byteLength);
   out.set(MAGIC, 0);
@@ -129,7 +168,11 @@ export function sealedWithHello(b: Uint8Array): boolean {
   return isSealed(b) && (b[4]! & FLAG_HELLO) !== 0;
 }
 
-export async function open(aad: string, env: Uint8Array, context = "Ouvrir le coffre aphrody"): Promise<Uint8Array> {
+export async function open(
+  aad: string,
+  env: Uint8Array,
+  context = "Ouvrir le coffre aphrody",
+): Promise<Uint8Array> {
   if (!isSealed(env)) throw new Error("vault: not an AYV1 envelope");
   const flags = env[4]!;
   const wrapLen = new DataView(env.buffer, env.byteOffset).getUint16(5);
@@ -144,14 +187,25 @@ export async function open(aad: string, env: Uint8Array, context = "Ouvrir le co
     dek.fill(0);
   }
   return new Uint8Array(
-    await subtle.decrypt({ name: "AES-GCM", iv: bs(nonce), additionalData: enc.encode(aad) }, await aesKey(raw), bs(ct)),
+    await subtle.decrypt(
+      { name: "AES-GCM", iv: bs(nonce), additionalData: enc.encode(aad) },
+      await aesKey(raw),
+      bs(ct),
+    ),
   );
 }
 
 /** BLAKE3 of bytes through the native b3sum (stdin), hex. Used for fingerprints and proofs. */
 export async function b3(data: Uint8Array | Blob): Promise<string> {
-  const p = Bun.spawn(["b3sum", "--no-names"], { stdin: data as never, stdout: "pipe", stderr: "pipe" });
-  const [out, code] = await Promise.all([new Response(p.stdout).text(), p.exited]);
+  const p = Bun.spawn(["b3sum", "--no-names"], {
+    stdin: data as never,
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  const [out, code] = await Promise.all([
+    new Response(p.stdout).text(),
+    p.exited,
+  ]);
   if (code !== 0) throw new Error("b3sum failed");
   return out.trim();
 }
@@ -161,10 +215,19 @@ export async function b3Files(files: string[]): Promise<Map<string, string>> {
   const m = new Map<string, string>();
   if (!files.length) return m;
   // --no-names keeps input order and avoids the escaping b3sum applies to names with backslashes.
-  const p = Bun.spawn(["b3sum", "--no-names", ...files], { stdout: "pipe", stderr: "pipe" });
-  const [out, code] = await Promise.all([new Response(p.stdout).text(), p.exited]);
+  const p = Bun.spawn(["b3sum", "--no-names", ...files], {
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  const [out, code] = await Promise.all([
+    new Response(p.stdout).text(),
+    p.exited,
+  ]);
   if (code !== 0) throw new Error("b3sum failed");
-  const sums = out.split("\n").map((l) => l.trim()).filter(Boolean);
+  const sums = out
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
   if (sums.length !== files.length) throw new Error("b3sum: unexpected output");
   files.forEach((f, i) => m.set(f, sums[i]!));
   return m;

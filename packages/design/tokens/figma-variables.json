@@ -2220,9 +2220,7 @@
     },
     {
       "name": "M3 Palettes",
-      "modes": [
-        "Value"
-      ],
+      "modes": ["Value"],
       "variables": [
         {
           "name": "Palettes/Primary/0",
@@ -3956,9 +3954,7 @@
     },
     {
       "name": "M3 Shape",
-      "modes": [
-        "Value"
-      ],
+      "modes": ["Value"],
       "variables": [
         {
           "name": "Corner/Extra Large",

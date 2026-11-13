@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 008: Sizing Units](https://thecsspodcast.libsyn.com/tcp-css-podcast-episode-008)
 
 The web is a responsive medium,
@@ -38,6 +39,7 @@ p {
   line-height: 1.5;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/yLgYZRK?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen yLgYZRK by web-dot-dev on Codepen"></iframe>
 
 In this example, `1.5` is equal to **150%** of the `p` element's **computed pixel font size** .
@@ -69,6 +71,7 @@ div p {
   width: 50%;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VYLqKKg?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VYLqKKg by web-dot-dev on Codepen"></iframe>
 
 In the preceding example, the width of `div p` is `150px`, assuming that the layout uses the default `box-sizing: content-box`.
@@ -88,6 +91,7 @@ div p {
   padding-left: 50%; /* calculated: 150px */
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/bNdOwBE?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen bNdOwBE by web-dot-dev on Codepen"></iframe>
 
 In the preceding example, both the `margin-top` and `padding-left` will compute to `150px`.
@@ -103,6 +107,7 @@ div p {
   transform: translateX(10%); /* calculated: 15px */
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/xxgwBxv?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen xxgwBxv by web-dot-dev on Codepen"></iframe>
 
 If you set a `transform` value as a percentage,
@@ -143,15 +148,15 @@ If you printed this page, the `div` would print as a 10x5cm black rectangle.
 Keep in mind, CSS is used not only for digital content, but also to style print content.
 Absolute lengths can really come in handy when designing for print.
 
-| Unit | Name | Equivalent to |
-|---|---|---|
-| [cm](https://www.w3.org/TR/css-values-4/#cm) | Centimeters | 1cm = 96px/2.54 |
-| [mm](https://www.w3.org/TR/css-values-4/#mm) | Millimeters | 1mm = 1/10th of 1cm |
-| [Q](https://www.w3.org/TR/css-values-4/#q) | Quarter-millimeters | 1Q = 1/40th of 1cm |
-| [in](https://www.w3.org/TR/css-values-4/#in) | Inches | 1in = 2.54cm = 96px |
-| [pc](https://www.w3.org/TR/css-values-4/#pc) | Picas | 1pc = 1/6th of 1in |
-| [pt](https://www.w3.org/TR/css-values-4/#pt) | Points | 1pt = 1/72th of 1in |
-| [px](https://www.w3.org/TR/css-values-4/#px) | Pixels | 1px = 1/96th of 1in |
+| Unit                                         | Name                | Equivalent to       |
+| -------------------------------------------- | ------------------- | ------------------- |
+| [cm](https://www.w3.org/TR/css-values-4/#cm) | Centimeters         | 1cm = 96px/2.54     |
+| [mm](https://www.w3.org/TR/css-values-4/#mm) | Millimeters         | 1mm = 1/10th of 1cm |
+| [Q](https://www.w3.org/TR/css-values-4/#q)   | Quarter-millimeters | 1Q = 1/40th of 1cm  |
+| [in](https://www.w3.org/TR/css-values-4/#in) | Inches              | 1in = 2.54cm = 96px |
+| [pc](https://www.w3.org/TR/css-values-4/#pc) | Picas               | 1pc = 1/6th of 1in  |
+| [pt](https://www.w3.org/TR/css-values-4/#pt) | Points              | 1pt = 1/72th of 1in |
+| [px](https://www.w3.org/TR/css-values-4/#px) | Pixels              | 1px = 1/96th of 1in |
 
 ### Relative lengths
 
@@ -168,34 +173,34 @@ responsive nature.
 CSS provides helpful units that are relative to the size of elements of rendered typography,
 such as the size of the text itself (`em` units) or width of the typefaces characters (`ch` units).
 
-| unit | relative to: |
-|---|---|
-| [`em`](https://www.w3.org/TR/css-values-4/#em) | Relative to the font size, that is, `1.5em` will be 50% larger than the base computed font size of its parent. (Historically, the height of the capital letter "M"). |
-| [`rem`](https://www.w3.org/TR/css-values-4/#rem) | Font size of the root element (default is `16px`). |
-| [`ex`](https://www.w3.org/TR/css-values-4/#ex) | Heuristic to determine whether to use the x-height, a letter "x", or `.5em` in the current computed font size of the element. |
-| [`rex`](https://www.w3.org/TR/css-values-4/#rex) | The `ex` value of the root element. |
-| [`cap`](https://www.w3.org/TR/css-values-4/#cap) | Height of the capital letters in the current computed font size of the element. |
-| [`rcap`](https://www.w3.org/TR/css-values-4/#rcap) | The `cap` value of the root element. |
-| [`ch`](https://www.w3.org/TR/css-values-4/#ch) | Average [character advance](https://www.w3.org/TR/css-values-4/#length-advance-measure) of a narrow glyph in the element's font (represented by the "0" glyph). |
-| [`rch`](https://www.w3.org/TR/css-values-4/#rch) | The `ch` value of the root element. |
-| [`ic`](https://www.w3.org/TR/css-values-4/#ic) | Average [character advance](https://www.w3.org/TR/css-values-4/#length-advance-measure) of a full width glyph in the element's font, as represented by the "水" (CJK water ideograph, U+6C34) glyph. |
-| [`ric`](https://www.w3.org/TR/css-values-4/#ric) | The `ic` value of the root element. |
-| [`lh`](https://www.w3.org/TR/css-values-4/#lh) | Line height of the element. |
-| [`rlh`](https://www.w3.org/TR/css-values-4/#rlh) | Line `lh` value of the root element. |
+| unit                                               | relative to:                                                                                                                                                                                         |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`em`](https://www.w3.org/TR/css-values-4/#em)     | Relative to the font size, that is, `1.5em` will be 50% larger than the base computed font size of its parent. (Historically, the height of the capital letter "M").                                 |
+| [`rem`](https://www.w3.org/TR/css-values-4/#rem)   | Font size of the root element (default is `16px`).                                                                                                                                                   |
+| [`ex`](https://www.w3.org/TR/css-values-4/#ex)     | Heuristic to determine whether to use the x-height, a letter "x", or `.5em` in the current computed font size of the element.                                                                        |
+| [`rex`](https://www.w3.org/TR/css-values-4/#rex)   | The `ex` value of the root element.                                                                                                                                                                  |
+| [`cap`](https://www.w3.org/TR/css-values-4/#cap)   | Height of the capital letters in the current computed font size of the element.                                                                                                                      |
+| [`rcap`](https://www.w3.org/TR/css-values-4/#rcap) | The `cap` value of the root element.                                                                                                                                                                 |
+| [`ch`](https://www.w3.org/TR/css-values-4/#ch)     | Average [character advance](https://www.w3.org/TR/css-values-4/#length-advance-measure) of a narrow glyph in the element's font (represented by the "0" glyph).                                      |
+| [`rch`](https://www.w3.org/TR/css-values-4/#rch)   | The `ch` value of the root element.                                                                                                                                                                  |
+| [`ic`](https://www.w3.org/TR/css-values-4/#ic)     | Average [character advance](https://www.w3.org/TR/css-values-4/#length-advance-measure) of a full width glyph in the element's font, as represented by the "水" (CJK water ideograph, U+6C34) glyph. |
+| [`ric`](https://www.w3.org/TR/css-values-4/#ric)   | The `ic` value of the root element.                                                                                                                                                                  |
+| [`lh`](https://www.w3.org/TR/css-values-4/#lh)     | Line height of the element.                                                                                                                                                                          |
+| [`rlh`](https://www.w3.org/TR/css-values-4/#rlh)   | Line `lh` value of the root element.                                                                                                                                                                 |
 
 #### Viewport-relative units
 
 You can use the dimensions of the viewport (browser window) as a relative basis.
 These units portion up the available viewport space.
 
-| unit | relative to |
-|---|---|
-| [vw](https://www.w3.org/TR/css-values-4/#vw) | 1% of viewport's width. People use this unit to do cool font tricks, like resizing a header font based on the width of the page so as the user resizes, the font will also resize. |
-| [vh](https://www.w3.org/TR/css-values-4/#vh) | 1% of viewport's height. You can use this to arrange items in a UI, if you have a footer toolbar for example. |
-| [vi](https://www.w3.org/TR/css-values-4/#vi) | 1% of viewport's size in the root element's [inline axis](https://www.w3.org/TR/css-writing-modes-4/#inline-axis). Axis refers to writing modes. In horizontal writing modes like English, the inline axis is horizontal. In vertical writing modes like some Japanese typefaces, the inline axis runs top to bottom. |
-| [vb](https://www.w3.org/TR/css-values-4/#vb) | 1% of viewport's size in the root element's [block axis](https://www.w3.org/TR/css-writing-modes-4/#block-axis). For the block axis, this would be the directionality of the language. Languages like English have a vertical block axis, since English language readers parse the page from top to bottom. A vertical writing mode has a horizontal block axis. |
-| [vmin](https://www.w3.org/TR/css-values-4/#vmin) | 1% of the viewport's smaller dimension. |
-| [vmax](https://www.w3.org/TR/css-values-4/#vmax) | 1% of the viewport's larger dimension. |
+| unit                                             | relative to                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [vw](https://www.w3.org/TR/css-values-4/#vw)     | 1% of viewport's width. People use this unit to do cool font tricks, like resizing a header font based on the width of the page so as the user resizes, the font will also resize.                                                                                                                                                                               |
+| [vh](https://www.w3.org/TR/css-values-4/#vh)     | 1% of viewport's height. You can use this to arrange items in a UI, if you have a footer toolbar for example.                                                                                                                                                                                                                                                    |
+| [vi](https://www.w3.org/TR/css-values-4/#vi)     | 1% of viewport's size in the root element's [inline axis](https://www.w3.org/TR/css-writing-modes-4/#inline-axis). Axis refers to writing modes. In horizontal writing modes like English, the inline axis is horizontal. In vertical writing modes like some Japanese typefaces, the inline axis runs top to bottom.                                            |
+| [vb](https://www.w3.org/TR/css-values-4/#vb)     | 1% of viewport's size in the root element's [block axis](https://www.w3.org/TR/css-writing-modes-4/#block-axis). For the block axis, this would be the directionality of the language. Languages like English have a vertical block axis, since English language readers parse the page from top to bottom. A vertical writing mode has a horizontal block axis. |
+| [vmin](https://www.w3.org/TR/css-values-4/#vmin) | 1% of the viewport's smaller dimension.                                                                                                                                                                                                                                                                                                                          |
+| [vmax](https://www.w3.org/TR/css-values-4/#vmax) | 1% of the viewport's larger dimension.                                                                                                                                                                                                                                                                                                                           |
 
 ```css
 div {
@@ -206,6 +211,7 @@ p {
   max-width: 60ch;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JjEYqXa?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JjEYqXa by web-dot-dev on Codepen"></iframe>
 
 In this example, the `div` will be 10% of the viewport's width because `1vw` is **1% of the viewport width** .
@@ -216,24 +222,24 @@ which means it can't exceed the width of 60 "0" characters in the calculated fon
 
 The value of viewport-relative units remains the same as long as the viewport size does not change. However, mobile browsers commonly show or hide UI elements to show the most content possible on small screens, without changing the calculated size of the viewport. You can use alternatives to the viewport-relative units to account for these changes to the visible area.
 
-| units | equivalent to |
-|---|---|
+| units                                                                                                 | equivalent to                                                                                                                                                                                                                |
+| ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`lvw`, `lvh`, `lvi`, `lvb`, `lvmin`, `lvmax`](https://www.w3.org/TR/css-values-4/#viewport-variants) | Large viewport units, relative to the viewport's visible space with all optional browser UI elements hidden. Equal to the non-variant viewport-relative units. Does not change as long as the viewport size does not change. |
-| [`svw`, `svh`, `svi`, `svb`, `svmin`, `svmax`](https://www.w3.org/TR/css-values-4/#viewport-variants) | Small viewport units, relative to the viewport's visible space with all optional browser UI elements visible. Does not change as long as the viewport size does not change. |
-| [`dvw`, `dvh`, `dvi`, `dvb`, `dvmin`, `dvmax`](https://www.w3.org/TR/css-values-4/#viewport-variants) | Dynamic viewport units, relative to the current visible space of the viewport. Changes as browser UI elements are shown or hidden. |
+| [`svw`, `svh`, `svi`, `svb`, `svmin`, `svmax`](https://www.w3.org/TR/css-values-4/#viewport-variants) | Small viewport units, relative to the viewport's visible space with all optional browser UI elements visible. Does not change as long as the viewport size does not change.                                                  |
+| [`dvw`, `dvh`, `dvi`, `dvb`, `dvmin`, `dvmax`](https://www.w3.org/TR/css-values-4/#viewport-variants) | Dynamic viewport units, relative to the current visible space of the viewport. Changes as browser UI elements are shown or hidden.                                                                                           |
 
 #### Container-relative units
 
 You can use the dimensions of an element's [container](https://developer.mozilla.org/docs/Web/CSS/CSS_containment/Container_queries) as a relative basis. These units portion up the available container space. These are useful inside of container queries to set font sizes based on the space available.
 
-| units | relative to |
-|---|---|
-| `cqw` | 1% of the container's width. |
-| `cqh` | 1% of the container's height. |
-| `cqi` | 1% of the container's inline size. |
-| `cqb` | 1% of the container's block size. |
+| units   | relative to                              |
+| ------- | ---------------------------------------- |
+| `cqw`   | 1% of the container's width.             |
+| `cqh`   | 1% of the container's height.            |
+| `cqi`   | 1% of the container's inline size.       |
+| `cqb`   | 1% of the container's block size.        |
 | `cqmin` | 1% of the container's smaller dimension. |
-| `cqmax` | 1% of the container's larger dimension. |
+| `cqmax` | 1% of the container's larger dimension.  |
 
 > [!NOTE]
 > **Objective:** By sizing text with relative units like `em` or `rem`, rather than an absolute unit, like `px`, the size of your text can respond to user preferences. This can include the system font size or parent element's font size, such as the `<body>`. The base size of the `em` is the element's parent and the base size of the `rem` is the base font size of the document. If you don't define a `font-size` on your `html` element, this user-preferred system font size will be honoured if you use relative lengths, such as `em` and `rem`. If you use `px` units for sizing text, this preference will be ignored.
@@ -257,18 +263,19 @@ div {
   transform: rotate(60deg);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VwPvRbK?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VwPvRbK by web-dot-dev on Codepen"></iframe>
 
 Using the `deg` angle unit, you can rotate a `div` 90° on its center axis.
 
 ```css
 div {
-  background-image: url('a-low-resolution-image.jpg');
+  background-image: url("a-low-resolution-image.jpg");
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   div {
-    background-image: url('a-high-resolution-image.jpg');
+    background-image: url("a-high-resolution-image.jpg");
   }
 }
 ```

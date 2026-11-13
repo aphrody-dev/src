@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 To make a form interactive, you need to add form elements.
 There are controls to enter and select data, elements that describe controls,
 elements that group fields, and buttons to submit a form.
@@ -37,7 +38,7 @@ To describe form controls, use a `<label>` for each form control.
 
 ```html
 <label for="color">What is your favorite color?</label>
-<input type="text" id="color" name="color">
+<input type="text" id="color" name="color" />
 ```
 
 The `for` attribute on the label element matches the `id` attribute on the input.
@@ -51,7 +52,7 @@ As the name suggests, the `<input>` element is used to gather input from users.
 
 ```html
 <label for="color">What is your favorite color</label>
-<input type="text" id="color" name="color">
+<input type="text" id="color" name="color" />
 ```
 
 As mentioned before, the `id` attribute connects the `<input>` to the `<label>`.
@@ -148,13 +149,13 @@ to do that.
 
 ```html
 <fieldset>
-    <legend>What is your favorite web technology</legend>
+  <legend>What is your favorite web technology</legend>
 
-    <label for="html">HTML</label>
-    <input type="radio" name="webfeature" value="html" id="html">
+  <label for="html">HTML</label>
+  <input type="radio" name="webfeature" value="html" id="html" />
 
-    <label for="css">CSS</label>
-    <input type="radio" name="webfeature" value="css" id="css">
+  <label for="css">CSS</label>
+  <input type="radio" name="webfeature" value="css" id="css" />
 </fieldset>
 ```
 
@@ -193,7 +194,7 @@ Instead of using a `<label>` element to describe the `<input>`, use the
 `value` attribute instead.
 
 ```html
-<input type="submit" value="Submit">
+<input type="submit" value="Submit" />
 ```
 
 In addition, a form can also be submitted by using the `Enter` key when a form

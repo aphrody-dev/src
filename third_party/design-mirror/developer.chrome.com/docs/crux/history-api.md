@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Published: Feb 7, 2023, Last updated: Apr 11, 2025
 
 The CrUX History API gives low-latency access to six months of historical real-user experience data at page and origin granularity.
@@ -99,7 +100,7 @@ A three bin histogram for an example metric looks like this:
     {
       "start": 0,
       "end": 2500,
-      "densities": [0.9190, 0.9203, 0.9194, 0.9195, 0.9183, 0.9187]
+      "densities": [0.919, 0.9203, 0.9194, 0.9195, 0.9183, 0.9187]
     },
     {
       "start": 2500,
@@ -108,9 +109,9 @@ A three bin histogram for an example metric looks like this:
     },
     {
       "start": 4000,
-      "densities": [0.0288, 0.0282, 0.0286, 0.0285, 0.0290, 0.0285]
+      "densities": [0.0288, 0.0282, 0.0286, 0.0285, 0.029, 0.0285]
     }
-  ],
+  ]
 }
 ```
 
@@ -128,7 +129,7 @@ The data points are presented in the order of the [collection period](https://de
 {
   "percentilesTimeseries": {
     "p75s": [1362, 1352, 1344, 1356, 1366, 1377]
-  },
+  }
 }
 ```
 
@@ -145,11 +146,11 @@ way. The data points are presented in the order of the [collection period](https
 Example:
 
 ```json
-{    
+{
   "fractionTimeseries": {
-    "desktop": {"fractions": [0.3195, 0.2115, 0.1421]},
-    "phone": {"fractions": [0.6295, 0.7544, 0.8288]},
-    "tablet": {"fractions": [0.051, 0.0341, 0.029]}
+    "desktop": { "fractions": [0.3195, 0.2115, 0.1421] },
+    "phone": { "fractions": [0.6295, 0.7544, 0.8288] },
+    "tablet": { "fractions": [0.051, 0.0341, 0.029] }
   }
 }
 ```
@@ -172,7 +173,7 @@ For example, if the second period did not have any eligible data, this would sho
     {
       "start": 0,
       "end": 2500,
-      "densities": [0.9190, "NaN", 0.9194, 0.9195, 0.9183, 0.9187]
+      "densities": [0.919, "NaN", 0.9194, 0.9195, 0.9183, 0.9187]
     },
     {
       "start": 2500,
@@ -181,12 +182,12 @@ For example, if the second period did not have any eligible data, this would sho
     },
     {
       "start": 4000,
-      "densities": [0.0288, "NaN", 0.0286, 0.0285, 0.0290, 0.0285]
+      "densities": [0.0288, "NaN", 0.0286, 0.0285, 0.029, 0.0285]
     }
   ],
   "percentilesTimeseries": {
     "p75s": [1362, null, 1344, 1356, 1366, 1377]
-  },
+  }
 }
 ```
 
@@ -237,10 +238,7 @@ An example body is:
 {
   "origin": "https://example.com",
   "formFactor": "PHONE",
-  "metrics": [
-    "largest_contentful_paint",
-    "experimental_time_to_first_byte"
-  ]
+  "metrics": ["largest_contentful_paint", "experimental_time_to_first_byte"]
 }
 ```
 
@@ -262,10 +260,7 @@ Page-level data is available through the API by passing a `url` property in the 
 {
   "url": "https://example.com/page",
   "formFactor": "PHONE",
-  "metrics": [
-    "largest_contentful_paint",
-    "experimental_time_to_first_byte"
-  ]
+  "metrics": ["largest_contentful_paint", "experimental_time_to_first_byte"]
 }
 ```
 
@@ -344,15 +339,15 @@ The CrUX History API uses similar request bodies as [the daily CrUX API](https:/
 }
 ```
 
-| Fields ||
-|---|---|
-| `formFactor` | **`enum` ([`FormFactor`](https://developer.chrome.com/docs/crux/history-api.md.txt#form_factor))** The form factor is a query dimension that specifies the device class that the record's data should belong to. This field uses the values `DESKTOP`, `PHONE`, or `TABLET`. Note: If no form factor is specified, then a special record with aggregated data over all form factors will be returned. |
-| `metrics[]` | **`string`** The metrics that should be included in the response. If none are specified then any metrics found will be returned. Allowed values: `["cumulative_layout_shift", "first_contentful_paint", "interaction_to_next_paint", "largest_contentful_paint", "experimental_time_to_first_byte", "largest_contentful_paint_resource_type", "largest_contentful_paint_image_time_to_first_byte", "largest_contentful_paint_image_resource_load_delay", "largest_contentful_paint_image_resource_load_duration", "largest_contentful_paint_image_element_render_delay", "navigation_types", "round_trip_time", "experimental_ad_count", "experimental_ad_density", "experimental_ad_cpu", "experimental_ad_kilobytes"]` |
-| Union field `url_pattern`. The `url_pattern` is the main identifier for a record lookup. It can be only one of the following: ||
-| `origin` | **`string`** The `url_pattern` "origin" refers to a URL pattern that is the origin of a website. Examples: `"https://example.com"`, `"https://cloud.google.com"` |
-| `url` | **`string`** The `url_pattern` `url` refers to a URL pattern that is any arbitrary URL. Examples: `"https://example.com/`, `https://cloud.google.com/why-google-cloud/"` |
-| End of Union field `url_pattern`. ||
-| `collectionPeriodCount` | **`int32` *(optional)*** The number of collection periods to return between 1 and 40. The default is 25. Note if no `collectionPeriodCount` is specified the default of 25 is returned. |
+| Fields                                                                                                                        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `formFactor`                                                                                                                  | **`enum` ([`FormFactor`](https://developer.chrome.com/docs/crux/history-api.md.txt#form_factor))** The form factor is a query dimension that specifies the device class that the record's data should belong to. This field uses the values `DESKTOP`, `PHONE`, or `TABLET`. Note: If no form factor is specified, then a special record with aggregated data over all form factors will be returned.                                                                                                                                                                                                                                                                                                                    |
+| `metrics[]`                                                                                                                   | **`string`** The metrics that should be included in the response. If none are specified then any metrics found will be returned. Allowed values: `["cumulative_layout_shift", "first_contentful_paint", "interaction_to_next_paint", "largest_contentful_paint", "experimental_time_to_first_byte", "largest_contentful_paint_resource_type", "largest_contentful_paint_image_time_to_first_byte", "largest_contentful_paint_image_resource_load_delay", "largest_contentful_paint_image_resource_load_duration", "largest_contentful_paint_image_element_render_delay", "navigation_types", "round_trip_time", "experimental_ad_count", "experimental_ad_density", "experimental_ad_cpu", "experimental_ad_kilobytes"]` |
+| Union field `url_pattern`. The `url_pattern` is the main identifier for a record lookup. It can be only one of the following: |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `origin`                                                                                                                      | **`string`** The `url_pattern` "origin" refers to a URL pattern that is the origin of a website. Examples: `"https://example.com"`, `"https://cloud.google.com"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `url`                                                                                                                         | **`string`** The `url_pattern` `url` refers to a URL pattern that is any arbitrary URL. Examples: `"https://example.com/`, `https://cloud.google.com/why-google-cloud/"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| End of Union field `url_pattern`.                                                                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `collectionPeriodCount`                                                                                                       | **`int32` _(optional)_** The number of collection periods to return between 1 and 40. The default is 25. Note if no `collectionPeriodCount` is specified the default of 25 is returned.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 For example, to request the desktop Largest Contentful Paint values for the web.dev homepage:
 
@@ -360,9 +355,7 @@ For example, to request the desktop Largest Contentful Paint values for the web.
 {
   "url": "https://web.dev/",
   "formFactor": "DESKTOP",
-  "metrics": [
-    "largest_contentful_paint"
-  ]
+  "metrics": ["largest_contentful_paint"]
 }
 ```
 
@@ -372,9 +365,7 @@ This similar request includes the optional `collectionPeriodCount` field and wou
 {
   "url": "https://web.dev/",
   "formFactor": "DESKTOP",
-  "metrics": [
-    "largest_contentful_paint"
-  ],
+  "metrics": ["largest_contentful_paint"],
   "collectionPeriodCount": 40
 }
 ```
@@ -473,12 +464,12 @@ For example, the response to the request body in the previous request could be:
 }
 ```
 
-| Fields ||
-|---|---|
-| `formFactor` | **`enum (FormFactor)`** The form factor is the device class that all users used to access the site for this record. If the form factor is unspecified, then aggregated data over all form factors will be returned. |
-| Union field `url_pattern`. The URL pattern is the URL that the record applies to. `url_pattern` can be only one of the following: ||
-| `origin` | **`string`** Origin specifies the origin that this record is for. Note: When specifying an origin, data for loads under this origin over all pages are aggregated into origin level user experience data. |
-| `url` | **`string`** `url` specifies a specific URL that this record is for. Note: When specifying a `url` only data for that specific URL will be aggregated. |
+| Fields                                                                                                                            |                                                                                                                                                                                                                     |
+| --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `formFactor`                                                                                                                      | **`enum (FormFactor)`** The form factor is the device class that all users used to access the site for this record. If the form factor is unspecified, then aggregated data over all form factors will be returned. |
+| Union field `url_pattern`. The URL pattern is the URL that the record applies to. `url_pattern` can be only one of the following: |                                                                                                                                                                                                                     |
+| `origin`                                                                                                                          | **`string`** Origin specifies the origin that this record is for. Note: When specifying an origin, data for loads under this origin over all pages are aggregated into origin level user experience data.           |
+| `url`                                                                                                                             | **`string`** `url` specifies a specific URL that this record is for. Note: When specifying a `url` only data for that specific URL will be aggregated.                                                              |
 
 #### Metrics
 
@@ -505,11 +496,11 @@ or
 }
 ```
 
-| Fields ||
-|---|---|
+| Fields                  |                                                                                                                                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `histogramTimeseries[]` | **`object (Bin)`** The timeseries histogram of user experiences for a metric. The timeseries histogram will have at least one bin and the densities of all bins will add up to \~1. Missing values for that particular Collection Period will be marked as `"NaN"`. |
-| `percentilesTimeseries` | **`object (Percentiles)`** Common useful percentiles of the Metric. The value type for the percentiles will be the same as the value types given for the Histogram bins. Missing values for that particular Collection Period will be marked as `null`. |
-| `fractionTimeseries` | **`object (Fractions)`** This object contains timeseries of labeled fractions, which add up to \~1 per entry. Fractions are rounded to 4 decimal places. Missing entries are expressed as \`"NaN"\` across all fractions. |
+| `percentilesTimeseries` | **`object (Percentiles)`** Common useful percentiles of the Metric. The value type for the percentiles will be the same as the value types given for the Histogram bins. Missing values for that particular Collection Period will be marked as `null`.             |
+| `fractionTimeseries`    | **`object (Fractions)`** This object contains timeseries of labeled fractions, which add up to \~1 per entry. Fractions are rounded to 4 decimal places. Missing entries are expressed as \`"NaN"\` across all fractions.                                           |
 
 #### Bin
 
@@ -525,10 +516,10 @@ A bin's start and end values are given in the value type of the metric it repres
 }
 ```
 
-| Fields ||
-|---|---|
-| `start` | **`(integer | string)`** Start is the beginning of the data bin. |
-| `end` | **`(integer | string)`** End is the end of the data bin. If end is not populated, then the bin has no end and is valid from start to +inf. |
+| Fields      |                                                                                                                                                                |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `start`     | **`(integer                                                                                                                                                    | string)`** Start is the beginning of the data bin.                                                                           |
+| `end`       | **`(integer                                                                                                                                                    | string)`** End is the end of the data bin. If end is not populated, then the bin has no end and is valid from start to +inf. |
 | `densities` | **`array[number]`** A timeseries of the proportion of users that experienced this bin's value for the given metric. Densities are rounded to 4 decimal places. |
 
 #### Percentiles
@@ -541,8 +532,8 @@ A bin's start and end values are given in the value type of the metric it repres
 }
 ```
 
-| Fields ||
-|---|---|
+| Fields |                   |
+| ------ | ----------------- |
 | `p75s` | **`array[(integer | string)]`** Timeseries of the values that 75% of page loads experienced the given metric at or less than this value. |
 
 #### Fractions
@@ -566,8 +557,8 @@ Much like the density values in histogram bins, each `fraction` is a number
 for a particular collection period, then the corresponding entry will be
 "NaN" in all arrays of fractions.
 
-| Fields ||
-|---|---|
+| Fields |                   |
+| ------ | ----------------- |
 | `p75s` | **`array[(integer | string)]`** Timeseries of the values that 75% of page loads experienced the given metric at or lower than this value. |
 
 #### UrlNormalization
@@ -581,9 +572,9 @@ Object representing the normalization actions taken to normalize a URL to achiev
 }
 ```
 
-| Fields ||
-|---|---|
-| `originalUrl` | **`string`** The original requested URL prior to any normalization actions. |
+| Fields          |                                                                                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `originalUrl`   | **`string`** The original requested URL prior to any normalization actions.                                                   |
 | `normalizedUrl` | **`string`** The URL after any normalization actions. This is a valid user experience URL that could reasonably be looked up. |
 
 ## Rate limits

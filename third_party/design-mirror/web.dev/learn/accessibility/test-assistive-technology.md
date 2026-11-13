@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!TIP]
 > **Tip:** This module is a continuation of the previous two testing modules, [automated accessibility testing](https://web.dev/learn/accessibility/test-automated.md.txt) and [manual accessibility testing](https://web.dev/learn/accessibility/test-manual.md.txt). If you have not gone through the exercises in those modules yet, we encourage you to do so, as this module starts where they left off.
 
@@ -48,16 +49,16 @@ reader with a browser it was not calibrated for, you may encounter more "bugs"
 or unexpected behavior. Screen readers work best when used in the following
 combinations.
 
-| Screen reader | OS | Browser compatibility |
-|---|---|---|
-| [Job Access With Speech (JAWS)](https://www.freedomscientific.com/products/software/jaws) | Windows | Chrome, Firefox, Edge |
-| [Non-Visual Desktop Access (NVDA)](https://www.nvaccess.org) | Windows | Chrome and Firefox |
-| [Narrator](https://support.microsoft.com/en-us/windows/complete-guide-to-narrator-e4397a0d-ef4f-b386-d8ae-c172f109bdb1) | Windows | Edge |
-| [VoiceOver](https://support.apple.com/guide/voiceover-guide/welcome/web) | macOS | Safari |
-| [Orca](https://help.gnome.org/users/orca/stable/index.html.en) | Linux | Firefox |
-| [TalkBack](https://support.google.com/accessibility/android/answer/6283677) | Android | Chrome and Firefox |
-| [VoiceOver (for mobile)](https://support.apple.com/guide/iphone/turn-on-and-practice-voiceover-iph3e2e415f/ios) | iOS | Safari |
-| [ChromeVox](https://support.google.com/chromebook/answer/7031755) | ChromeOS | Chrome |
+| Screen reader                                                                                                           | OS       | Browser compatibility |
+| ----------------------------------------------------------------------------------------------------------------------- | -------- | --------------------- |
+| [Job Access With Speech (JAWS)](https://www.freedomscientific.com/products/software/jaws)                               | Windows  | Chrome, Firefox, Edge |
+| [Non-Visual Desktop Access (NVDA)](https://www.nvaccess.org)                                                            | Windows  | Chrome and Firefox    |
+| [Narrator](https://support.microsoft.com/en-us/windows/complete-guide-to-narrator-e4397a0d-ef4f-b386-d8ae-c172f109bdb1) | Windows  | Edge                  |
+| [VoiceOver](https://support.apple.com/guide/voiceover-guide/welcome/web)                                                | macOS    | Safari                |
+| [Orca](https://help.gnome.org/users/orca/stable/index.html.en)                                                          | Linux    | Firefox               |
+| [TalkBack](https://support.google.com/accessibility/android/answer/6283677)                                             | Android  | Chrome and Firefox    |
+| [VoiceOver (for mobile)](https://support.apple.com/guide/iphone/turn-on-and-practice-voiceover-iph3e2e415f/ios)         | iOS      | Safari                |
+| [ChromeVox](https://support.google.com/chromebook/answer/7031755)                                                       | ChromeOS | Chrome                |
 
 ### Screen reader commands
 
@@ -82,29 +83,29 @@ Both are important aspects to create fully inclusive products.
 
 #### Key commands for desktop screen readers
 
-| Element | NVDA (Windows) | VoiceOver (macOS) |
-|---|---|---|
-| General command keys | <kbd>Insert</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd> |
-| Stop audio | <kbd>Control</kbd> | <kbd>Control</kbd> |
-| Read next/prev | <kbd>↓</kbd> or <kbd>↑</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>→</kbd> or <kbd>←</kbd> |
-| Start reading | <kbd>Insert</kbd><kbd>↓</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>A</kbd> |
-| Element List/Rotor | NVDA + <kbd>F7</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>U</kbd> |
-| Landmarks | <kbd>D</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>U</kbd> |
-| Headings | <kbd>H</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>Command</kbd>+<kbd>H</kbd> |
-| Links | <kbd>K</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>Command</kbd>+<kbd>L</kbd> |
-| Form controls | <kbd>F</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>Command</kbd>+<kbd>J</kbd> |
-| Tables | <kbd>T</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd><kbd>Command</kbd>+<kbd>T</kbd> |
-| Within Tables | <kbd>Insert</kbd><kbd>Alt</kbd> + <kbd>↓</kbd> <kbd>↑</kbd> <kbd>←</kbd> <kbd>→</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>↓</kbd> <kbd>↑</kbd> <kbd>←</kbd> <kbd>→</kbd> |
+| Element              | NVDA (Windows)                                                                        | VoiceOver (macOS)                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| General command keys | <kbd>Insert</kbd>                                                                     | <kbd>Control</kbd>+<kbd>Option</kbd>                                                     |
+| Stop audio           | <kbd>Control</kbd>                                                                    | <kbd>Control</kbd>                                                                       |
+| Read next/prev       | <kbd>↓</kbd> or <kbd>↑</kbd>                                                          | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>→</kbd> or <kbd>←</kbd>                        |
+| Start reading        | <kbd>Insert</kbd><kbd>↓</kbd>                                                         | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>A</kbd>                                        |
+| Element List/Rotor   | NVDA + <kbd>F7</kbd>                                                                  | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>U</kbd>                                        |
+| Landmarks            | <kbd>D</kbd>                                                                          | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>U</kbd>                                        |
+| Headings             | <kbd>H</kbd>                                                                          | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>Command</kbd>+<kbd>H</kbd>                     |
+| Links                | <kbd>K</kbd>                                                                          | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>Command</kbd>+<kbd>L</kbd>                     |
+| Form controls        | <kbd>F</kbd>                                                                          | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>Command</kbd>+<kbd>J</kbd>                     |
+| Tables               | <kbd>T</kbd>                                                                          | <kbd>Control</kbd>+<kbd>Option</kbd><kbd>Command</kbd>+<kbd>T</kbd>                      |
+| Within Tables        | <kbd>Insert</kbd><kbd>Alt</kbd> + <kbd>↓</kbd> <kbd>↑</kbd> <kbd>←</kbd> <kbd>→</kbd> | <kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>↓</kbd> <kbd>↑</kbd> <kbd>←</kbd> <kbd>→</kbd> |
 
 #### Key commands for mobile screen readers
 
-| Element | TalkBack (Android) | VoiceOver (iOS) |
-|---|---|---|
-| Explore | Drag one finger around the screen | Drag one finger around the screen |
-| Select or activate | Double tap | Double tap |
-| Move up or down | Swipe up or down with two fingers | Swipe up or down with three fingers |
-| Change pages | Swipe left or right with two fingers | Swipe left or right with three fingers |
-| Next/previous | Swipe left or right with one finger | Swipe left or right with one finger |
+| Element            | TalkBack (Android)                   | VoiceOver (iOS)                        |
+| ------------------ | ------------------------------------ | -------------------------------------- |
+| Explore            | Drag one finger around the screen    | Drag one finger around the screen      |
+| Select or activate | Double tap                           | Double tap                             |
+| Move up or down    | Swipe up or down with two fingers    | Swipe up or down with three fingers    |
+| Change pages       | Swipe left or right with two fingers | Swipe left or right with three fingers |
+| Next/previous      | Swipe left or right with one finger  | Swipe left or right with one finger    |
 
 ## Screen reader testing demo
 
@@ -147,7 +148,7 @@ that they don't exist.
 
 If you have updated everything correctly, there shouldn't be any visual
 changes, but your screen reader experience will have dramatically improved.
-[Video](https://www.youtube.com/watch?v=o8gWVi97cMg) Listen to the screen reader navigate through this issue.  **Let's fix it.**
+[Video](https://www.youtube.com/watch?v=o8gWVi97cMg) Listen to the screen reader navigate through this issue. **Let's fix it.**
 
 Some inaccessible elements can't be observed by just looking at the site. You
 may remember the importance of heading levels and semantic HTML from the
@@ -181,7 +182,8 @@ redirect to a new location.
   Maple syrup urine disease (MSUD)
 </a>
 ```
-[Video](https://www.youtube.com/watch?v=kk7LNdtfYMM) Listen to the screen reader navigate through this issue.  **Let's fix it.**
+
+[Video](https://www.youtube.com/watch?v=kk7LNdtfYMM) Listen to the screen reader navigate through this issue. **Let's fix it.**
 
 To fix this issue for screen reader users, we update the code to add more
 information, without affecting the visuals element. Or, to help even more people
@@ -195,11 +197,14 @@ that the ARIA label overrides the original link text, so make sure to include
 that information in your update.
 
 ```html
-<a href="https://rarediseases.org/rare-diseases/maple-syrup-urine-disease"
-  aria-label="Learn more about Maple syrup urine disease on the Rare Diseases website.">
+<a
+  href="https://rarediseases.org/rare-diseases/maple-syrup-urine-disease"
+  aria-label="Learn more about Maple syrup urine disease on the Rare Diseases website."
+>
   Maple syrup urine disease (MSUD)
 </a>
 ```
+
 [Video](https://www.youtube.com/watch?v=Ezr7cMdCQlE) Now that we've fixed the link context, listen to the screen reader navigate through the demo again.
 
 ## Issue 3: Decorative image
@@ -215,7 +220,8 @@ the SVG.
   <svg>...</svg>
 </div>
 ```
-[Video](https://www.youtube.com/watch?v=TKHHTGghrHs) Listen to the screen reader navigate through this issue.  **Let's fix it.**
+
+[Video](https://www.youtube.com/watch?v=TKHHTGghrHs) Listen to the screen reader navigate through this issue. **Let's fix it.**
 
 To fix this issue, we first need to decide if the image is
 [informative](https://web.dev/learn/accessibility/images.md.txt#informative_images) or
@@ -234,6 +240,7 @@ and not list it in the images group.
   <svg role="presentation">...</svg>
 </div>
 ```
+
 [Video](https://www.youtube.com/watch?v=KqTf8Pl2lMU) Now that we've fixed the decorative image, listen to the screen reader navigate through the demo.
 
 ### Issue 4: Bullet decoration
@@ -247,7 +254,8 @@ confuse a screen reader user.
 ```html
 <p class="bullet">...</p>
 ```
-[Video](https://www.youtube.com/watch?v=sDR2w-HGHOo) Listen to the screen reader navigate through this issue.  **Let's fix it.**
+
+[Video](https://www.youtube.com/watch?v=sDR2w-HGHOo) Listen to the screen reader navigate through this issue. **Let's fix it.**
 
 Much like the decorative image example discussed earlier, you can add a
 `role="presentation"` to the HTML with the bullet class to hide it from the
@@ -273,12 +281,13 @@ compatible with all screen readers.
 ```html
 <form>
   <div class="form-group">
-    <input type="email" placeholder="Enter your e-mail address" required>
+    <input type="email" placeholder="Enter your e-mail address" required />
     <button type="submit">Subscribe</button>
   </div>
 </form>
 ```
-[Video](https://www.youtube.com/watch?v=7hncAhi4UUk) Listen to the screen reader navigate through this issue.  **Let's fix it.**
+
+[Video](https://www.youtube.com/watch?v=7hncAhi4UUk) Listen to the screen reader navigate through this issue. **Let's fix it.**
 
 To fix this issue, replace the text placeholder with a look-alike label element.
 That label element is programmatically connected to the form field and movement
@@ -288,12 +297,15 @@ to the field.
 ```html
 <form>
   <div class="form-group">
-    <input type="email" required id="youremail" name="youremail" type="text">
+    <input type="email" required id="youremail" name="youremail" type="text" />
     <label for="youremail">Enter your e-mail address</label>
-    <button type="submit" aria-label="Subscribe to our newsletter">Subscribe</button>
+    <button type="submit" aria-label="Subscribe to our newsletter">
+      Subscribe
+    </button>
   </div>
 </form>
 ```
+
 [Video](https://www.youtube.com/watch?v=hNbDfcmdi_A) Now that we've fixed the form, listen to the screen reader navigate through the demo.
 
 ## Wrap up

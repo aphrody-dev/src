@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 While not terribly useful on the modern web, GIF (Graphics Interchange Format) provides a solid introduction to the core
 concepts of image encoding.
 
@@ -24,13 +25,13 @@ Granted, the [algorithm isn't quite as simple](https://giflib.sourceforge.net/wh
 again through the generated table of color codes to find repeated sequences of pixel colors and creates a second table of referencable codes. At no
 point is any image data lost, however---just sorted and reorganized in a way that can be read without fundamentally changing it.
 
-While GIF technically uses lossless *compression*, it does have a major limitation that severely impacts the quality of the images:
+While GIF technically uses lossless _compression_, it does have a major limitation that severely impacts the quality of the images:
 saving an image as a GIF will always result in reduced fidelity, unless the image already uses 256 colors or less.
 
 Each frame drawn to the GIF's logical screen can only contain a maximum of 256 colors. GIF also supports "index transparency," where a
 transparent pixel will reference the index of a transparent "color" in the color table.
 
-The practice of reducing a range of values to a smaller, approximated set of output values is called *quantization*, a term you'll be seeing a lot
+The practice of reducing a range of values to a smaller, approximated set of output values is called _quantization_, a term you'll be seeing a lot
 when learning about image encodings. The results of this palette quantization are usually obvious:
 
 To better understand this process, think back to the raster image grid you were able to recreate from my description.
@@ -38,9 +39,11 @@ To better understand this process, think back to the raster image grid you were 
 This time around, add a little more detail to that original image: a few more pixels, one of which is a slightly darker shade of blue:
 
 Absent any compression---so to speak---you could describe this grid as:
+
 > Row one, column one is #0000FF. Row one, column two is #0000FF. Row one, column three is #0000FF. Row one, column four is #FF0000. Row two, column one is #0000FF. Row two, column two is #000085. Row two, column three is #0000FF. Row two, column four is #FF0000.
 
 Using something akin to GIF's lossless data compression and color indexing, you might describe it as:
+
 > A: #0000FF, B: #FF0000, C: #000085. Row one, columns one through three are A. Row one, column four is B. Row two, column one is A. Row two, column two is C. Row two, column three is A. Row two, column four is B.
 
 This manages to condense the pixel-by-pixel description in a few places ("columns one through three are..."), and saves a
@@ -49,6 +52,7 @@ The information has been compressed without any loss.
 
 As you can see, however, the single dark blue pixel is having an outsized impact on the size of our encoding. If I were to
 limit myself to a quantized color palette, it could be reduced much further:
+
 > A: #0000FF, B: #FF0000. Row one, columns one through three are A. Row one, column four is B. Row two, columns one through three are A. Row two, column four is B.
 
 The unfortunate end result of those saved bytes is that you've lost pixel-perfection.

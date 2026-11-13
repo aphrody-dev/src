@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Users are mistrustful of or confused by pages
 that automatically request their location on page load.
 
@@ -14,7 +15,7 @@ that automatically request their location on page load.
 
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt) flags pages that request geolocation
 permission on load:
- Lighthouse audit showing geolocation request on page load.
+Lighthouse audit showing geolocation request on page load.
 
 Lighthouse checks all JavaScript executed on page load. If the script calls
 `geolocation.getCurrentPosition()` or `geolocation.watchPosition()`,

@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Try out a new Lighthouse API to measure performance and best practices throughout a user flow.
 
- Brendan Kenny [GitHub](https://github.com/brendankenny) [Bluesky](https://bsky.app/profile/brendankenny.bsky.social)
+Brendan Kenny [GitHub](https://github.com/brendankenny) [Bluesky](https://bsky.app/profile/brendankenny.bsky.social)
 
 Lighthouse is a fantastic tool for testing performance and best practices during initial page load. However, it's traditionally been difficult to use Lighthouse to analyze other aspects of the life of a page, such as:
 
@@ -17,9 +18,9 @@ Lighthouse is a fantastic tool for testing performance and best practices during
 - Pages with an activated Service Worker
 - Accounting for potential user interactions
 
-This means that Lighthouse can miss vital information. The [Core Web Vitals](https://web.dev/articles/vitals.md.txt#core_web_vitals) are based on *all* page loads, not just those with an empty cache. Additionally, metrics like [Cumulative Layout Shift (CLS)](https://web.dev/articles/cls.md.txt) are measurable for the entire time a page is open.
+This means that Lighthouse can miss vital information. The [Core Web Vitals](https://web.dev/articles/vitals.md.txt#core_web_vitals) are based on _all_ page loads, not just those with an empty cache. Additionally, metrics like [Cumulative Layout Shift (CLS)](https://web.dev/articles/cls.md.txt) are measurable for the entire time a page is open.
 
-Lighthouse has a new user flow API that allows lab testing at any point within a page's lifespan. [Puppeteer](https://github.com/puppeteer/puppeteer) is used to script page loads and trigger synthetic user interactions, and Lighthouse can be invoked in multiple ways to capture key insights during those interactions. This means that performance can be measured during page load *and* during interactions with the page. Accessibility checks can be run in CI, not just on the initial view but deep within your checkout flow to make sure nothing regresses.
+Lighthouse has a new user flow API that allows lab testing at any point within a page's lifespan. [Puppeteer](https://github.com/puppeteer/puppeteer) is used to script page loads and trigger synthetic user interactions, and Lighthouse can be invoked in multiple ways to capture key insights during those interactions. This means that performance can be measured during page load _and_ during interactions with the page. Accessibility checks can be run in CI, not just on the initial view but deep within your checkout flow to make sure nothing regresses.
 
 Almost any Puppeteer script written to ensure a working user flow can now have Lighthouse inserted at any point to measure performance and best practices throughout. This tutorial will walk through the new Lighthouse modes that can measure different parts of user flows: navigations, snapshots, and timespans.
 
@@ -52,23 +53,23 @@ To script Lighthouse capturing a page load:
 3. Navigate to the target URL.
 
 ```javascript
-import fs from 'fs';
-import open from 'open';
-import puppeteer from 'puppeteer';
-import {startFlow} from 'lighthouse/lighthouse-core/fraggle-rock/api.js';
+import fs from "fs";
+import open from "open";
+import puppeteer from "puppeteer";
+import { startFlow } from "lighthouse/lighthouse-core/fraggle-rock/api.js";
 
 async function captureReport() {
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  const flow = await startFlow(page, {name: 'Single Navigation'});
-  await flow.navigate('https://web.dev/performance-scoring/');
+  const flow = await startFlow(page, { name: "Single Navigation" });
+  await flow.navigate("https://web.dev/performance-scoring/");
 
   await browser.close();
 
   const report = await flow.generateReport();
-  fs.writeFileSync('flow.report.html', report);
-  open('flow.report.html', {wait: false});
+  fs.writeFileSync("flow.report.html", report);
+  open("flow.report.html", { wait: false });
 }
 
 captureReport();
@@ -84,26 +85,26 @@ You can also add a second navigation to this script, this time disabling the cle
 
 ```javascript
 async function captureReport() {
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  const testUrl = 'https://web.dev/performance-scoring/';
-  const flow = await startFlow(page, {name: 'Cold and warm navigations'});
+  const testUrl = "https://web.dev/performance-scoring/";
+  const flow = await startFlow(page, { name: "Cold and warm navigations" });
   await flow.navigate(testUrl, {
-    stepName: 'Cold navigation'
+    stepName: "Cold navigation",
   });
   await flow.navigate(testUrl, {
-    stepName: 'Warm navigation',
+    stepName: "Warm navigation",
     configContext: {
-      settingsOverrides: {disableStorageReset: true},
+      settingsOverrides: { disableStorageReset: true },
     },
   });
 
   await browser.close();
 
   const report = await flow.generateReport();
-  fs.writeFileSync('flow.report.html', report);
-  open('flow.report.html', {wait: false});
+  fs.writeFileSync("flow.report.html", report);
+  open("flow.report.html", { wait: false });
 }
 
 captureReport();
@@ -121,38 +122,38 @@ Snapshots are a new mode that runs Lighthouse audits at a single point in time. 
 > **Note:** Not all Lighthouse audits can be run in this mode. Many of the performance metrics are currently defined as beginning with a page load and so are not applicable in a snapshot, but the accessibility audits and many of the performance best practices can still yield important checks.
 
 For this example, suppose you want to check that some new UI for Advanced Settings within [Squoosh](https://squoosh.app/) passes the automated Lighthouse checks. These settings are only visible if an image has been loaded and the options menu is expanded to show the advanced settings.
- The Squoosh advanced settings menu
+The Squoosh advanced settings menu
 
 This process is scriptable with Puppeteer and you can actually take a Lighthouse snapshot at each step:
 
 ```javascript
 async function captureReport() {
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  const flow = await startFlow(page, {name: 'Squoosh snapshots'});
+  const flow = await startFlow(page, { name: "Squoosh snapshots" });
 
-  await page.goto('https://squoosh.app/', {waitUntil: 'networkidle0'});
+  await page.goto("https://squoosh.app/", { waitUntil: "networkidle0" });
 
   // Wait for first demo-image button, then open it.
   const demoImageSelector = 'ul[class*="demos"] button';
   await page.waitForSelector(demoImageSelector);
-  await flow.snapshot({stepName: 'Page loaded'});
+  await flow.snapshot({ stepName: "Page loaded" });
   await page.click(demoImageSelector);
 
   // Wait for advanced settings button in UI, then open them.
   const advancedSettingsSelector = 'form label[class*="option-reveal"]';
   await page.waitForSelector(advancedSettingsSelector);
-  await flow.snapshot({stepName: 'Demo loaded'});
+  await flow.snapshot({ stepName: "Demo loaded" });
   await page.click(advancedSettingsSelector);
 
-  await flow.snapshot({stepName: 'Advanced settings opened'});
+  await flow.snapshot({ stepName: "Advanced settings opened" });
 
   browser.close();
 
   const report = await flow.generateReport();
-  fs.writeFileSync('flow.report.html', report);
-  open('flow.report.html', {wait: false});
+  fs.writeFileSync("flow.report.html", report);
+  open("flow.report.html", { wait: false });
 }
 
 captureReport();
@@ -172,23 +173,25 @@ The following script will produce a user flow report with both actions, to show 
 
 ```javascript
 async function captureReport() {
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   // Get a session handle to be able to send protocol commands to the page.
   const session = await page.target().createCDPSession();
 
-  const testUrl = 'https://pie-charmed-treatment.example.com/';
-  const flow = await startFlow(page, {name: 'CLS during navigation and on scroll'});
+  const testUrl = "https://pie-charmed-treatment.example.com/";
+  const flow = await startFlow(page, {
+    name: "CLS during navigation and on scroll",
+  });
 
   // Regular Lighthouse navigation.
-  await flow.navigate(testUrl, {stepName: 'Navigate only'});
+  await flow.navigate(testUrl, { stepName: "Navigate only" });
 
   // Navigate and scroll timespan.
-  await flow.startTimespan({stepName: 'Navigate and scroll'});
-  await page.goto(testUrl, {waitUntil: 'networkidle0'});
+  await flow.startTimespan({ stepName: "Navigate and scroll" });
+  await page.goto(testUrl, { waitUntil: "networkidle0" });
   // We need the ability to scroll like a user. There's not a direct puppeteer function for this, but we can use the DevTools Protocol and issue a Input.synthesizeScrollGesture event, which has convenient parameters like repetitions and delay to somewhat simulate a more natural scrolling gesture.
   // https://chromedevtools.github.io/devtools-protocol/tot/Input/#method-synthesizeScrollGesture
-  await session.send('Input.synthesizeScrollGesture', {
+  await session.send("Input.synthesizeScrollGesture", {
     x: 100,
     y: 600,
     yDistance: -2500,
@@ -201,8 +204,8 @@ async function captureReport() {
   await browser.close();
 
   const report = await flow.generateReport();
-  fs.writeFileSync('flow.report.html', report);
-  open('flow.report.html', {wait: false});
+  fs.writeFileSync("flow.report.html", report);
+  open("flow.report.html", { wait: false });
 }
 
 captureReport();

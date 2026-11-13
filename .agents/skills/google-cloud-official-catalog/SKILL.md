@@ -9,9 +9,11 @@ This progressive-disclosure umbrella skill routes to **194** official skills in 
 Use the unified `ai-os` MCP tool `skills_search` (or `agy collections inspect google-cloud`) to load any sub-skill on demand without bloating idle context.
 
 ## Unlocked Unified MCP Domains
+
 - `google_cloud`
 
 ## Indexed Official Sub-Skills (45 of 194 shown)
+
 - **`agent-platform-access-audit`**: >- (`third_party/google-skills/skills/cloud/agent-platform-access-audit/SKILL.md`)
 - **`agent-platform-alert-configuration`**: >- (`third_party/google-skills/skills/cloud/agent-platform-alert-configuration/SKILL.md`)
 - **`agent-platform-architecture`**: >- (`third_party/google-skills/skills/cloud/agent-platform-architecture/SKILL.md`)

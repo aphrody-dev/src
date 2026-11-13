@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## [Support WebGPU on Android](https://developer.chrome.com/blog/new-in-webgpu-121.md.txt#support_webgpu_on_android)
@@ -14,7 +15,7 @@ François Beaufort [GitHub](https://github.com/beaufortfrancois)
 The Chrome team is excited to announce that WebGPU is now enabled by default in Chrome 121 on devices running Android 12 and greater powered by Qualcomm and ARM GPUs.
 
 Support will gradually expand to encompass a wider range of Android devices, including those running on Android 11 in a near future. This expansion will be dependent on further testing and optimization to ensure a seamless experience across a broader range of hardware configurations. See [issue chromium:1497815](https://bugs.chromium.org/p/chromium/issues/detail?id=1497815).
- WebGPU sample running on Chrome for Android.
+WebGPU sample running on Chrome for Android.
 
 ## Use DXC instead of FXC for shader compilation on Windows
 
@@ -88,7 +89,7 @@ resultBuffer.unmap();
 Due to [timing attack](https://gpuweb.github.io/gpuweb/#security-timing-device) concerns, timestamp queries are quantized with a resolution of 100 microseconds, which provides a good compromise between precision and security. In Chrome browser, you can disable timestamp quantization by enabling the "WebGPU Developer Features" [flag](https://developer.chrome.com/docs/web-platform/chrome-flags.md.txt#chromeflags) at `chrome://flags/#enable-webgpu-developer-features` during the development of your app. See [Timestamp queries quantization](https://developer.chrome.com/blog/new-in-webgpu-120.md.txt#timestamp_queries_quantization) to learn more.
 
 As GPUs may reset the timestamp counter occasionally, which can result in unexpected values such as negative deltas between timestamps, I recommend you check out the [git diff changes](https://github.com/webgpu/webgpu-samples/compare/d67ae2acb40bebfa7c7705cd28175b44fbb03b59..e59b76695212208600f5bbb5423895e6d440fd90#diff-fe64f06098aed64ad6bbd885ad77dc50f7fa856829bf22545d3aa1baaad1c0b8) that adds timestamp query support to the following [Compute Boids](https://webgpu.github.io/webgpu-samples/samples/computeBoids) sample.
- Compute Boids sample featuring timestamp query.
+Compute Boids sample featuring timestamp query.
 
 ## Default entry points to shader modules
 
@@ -138,14 +139,25 @@ const adapterInfo = await adapter.requestAdapterInfo();
 
 for (const { size, properties } of adapterInfo.memoryHeaps) {
   console.log(size); // memory heap size in bytes
-  if (properties & GPUHeapProperty.DEVICE_LOCAL)  { /* ... */ }
-  if (properties & GPUHeapProperty.HOST_VISIBLE)  { /* ... */ }
-  if (properties & GPUHeapProperty.HOST_COHERENT) { /* ... */ }
-  if (properties & GPUHeapProperty.HOST_UNCACHED) { /* ... */ }
-  if (properties & GPUHeapProperty.HOST_CACHED)   { /* ... */ }
+  if (properties & GPUHeapProperty.DEVICE_LOCAL) {
+    /* ... */
+  }
+  if (properties & GPUHeapProperty.HOST_VISIBLE) {
+    /* ... */
+  }
+  if (properties & GPUHeapProperty.HOST_COHERENT) {
+    /* ... */
+  }
+  if (properties & GPUHeapProperty.HOST_UNCACHED) {
+    /* ... */
+  }
+  if (properties & GPUHeapProperty.HOST_CACHED) {
+    /* ... */
+  }
 }
 ```
- Adapter info memory heaps shown on <https://webgpureport.org>.
+
+Adapter info memory heaps shown on <https://webgpureport.org>.
 
 ## Dawn updates
 

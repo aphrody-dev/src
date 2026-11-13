@@ -16,7 +16,8 @@ import { scanStackDomain } from "./stack.ts";
 export async function runFullParityScan(
   options: ScanOptions = {},
 ): Promise<ParityMatrix> {
-  const chromiumPath = options.chromiumPath ?? "C:/src/third_party/chromium/src";
+  const chromiumPath =
+    options.chromiumPath ?? "C:/src/third_party/chromium/src";
   const bunPath = options.bunPath ?? "C:/src/third_party/bun";
 
   const [html, css, js, api, texte, dataAssets, dns, tls, stack] =

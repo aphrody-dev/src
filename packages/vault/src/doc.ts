@@ -5,7 +5,14 @@
  * format does not open. Parsing: JSON.parse, Bun.TOML.parse, csv.ts; xml stays text.
  */
 
-import { mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  readdir,
+  readFile,
+  rename,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { join } from "node:path";
 import { isSealed, open, seal, sealedWithHello } from "./crypto.ts";
 import { parseCsv, stringifyCsv } from "./csv.ts";
@@ -18,14 +25,17 @@ export const FORMATS: DocFormat[] = ["json", "toml", "csv", "xml", "bin"];
 const enc = new TextEncoder();
 const dec = new TextDecoder();
 export const docsDir = (): string => join(vaultRoot(), "docs");
-const docFile = (name: string, format: DocFormat): string => join(docsDir(), `${name}.${format}.ayv`);
-const aad = (name: string, format: DocFormat): string => `doc|${format}|${name}`;
+const docFile = (name: string, format: DocFormat): string =>
+  join(docsDir(), `${name}.${format}.ayv`);
+const aad = (name: string, format: DocFormat): string =>
+  `doc|${format}|${name}`;
 
 export function encodeDoc(format: DocFormat, content: unknown): Uint8Array {
   if (content instanceof Uint8Array) return content;
   if (typeof content === "string") return enc.encode(content);
   if (format === "json") return enc.encode(JSON.stringify(content, null, 2));
-  if (format === "csv" && Array.isArray(content)) return enc.encode(stringifyCsv(content as string[][]));
+  if (format === "csv" && Array.isArray(content))
+    return enc.encode(stringifyCsv(content as string[][]));
   throw new Error(`vault doc: ${format} takes a string or bytes`);
 }
 
@@ -39,12 +49,25 @@ export function decodeDoc(format: DocFormat, bytes: Uint8Array): unknown {
 }
 
 /** Seals in memory: for callers that keep the envelope themselves (state files, DB rows). */
-export async function sealDoc(name: string, format: DocFormat, content: unknown, opts: { hello?: boolean } = {}) {
+export async function sealDoc(
+  name: string,
+  format: DocFormat,
+  content: unknown,
+  opts: { hello?: boolean } = {},
+) {
   return seal(aad(name, format), encodeDoc(format, content), opts);
 }
 
-export async function openDoc<T = unknown>(name: string, format: DocFormat, envelope: Uint8Array): Promise<T> {
-  const bytes = await open(aad(name, format), envelope, `Ouvrir ${name}.${format}`);
+export async function openDoc<T = unknown>(
+  name: string,
+  format: DocFormat,
+  envelope: Uint8Array,
+): Promise<T> {
+  const bytes = await open(
+    aad(name, format),
+    envelope,
+    `Ouvrir ${name}.${format}`,
+  );
   try {
     return decodeDoc(format, bytes) as T;
   } finally {
@@ -52,16 +75,26 @@ export async function openDoc<T = unknown>(name: string, format: DocFormat, enve
   }
 }
 
-export async function writeDocument(name: string, format: DocFormat, content: unknown, opts: { hello?: boolean } = {}) {
+export async function writeDocument(
+  name: string,
+  format: DocFormat,
+  content: unknown,
+  opts: { hello?: boolean } = {},
+) {
   assertName(name);
   await mkdir(docsDir(), { recursive: true, mode: 0o700 });
   const f = docFile(name, format);
   const tmp = `${f}.${process.pid}.tmp`;
-  await writeFile(tmp, await sealDoc(name, format, content, opts), { mode: 0o600 });
+  await writeFile(tmp, await sealDoc(name, format, content, opts), {
+    mode: 0o600,
+  });
   await rename(tmp, f);
 }
 
-export async function readDocument<T = unknown>(name: string, format: DocFormat): Promise<T | undefined> {
+export async function readDocument<T = unknown>(
+  name: string,
+  format: DocFormat,
+): Promise<T | undefined> {
   assertName(name);
   let env: Uint8Array;
   try {
@@ -75,13 +108,20 @@ export async function readDocument<T = unknown>(name: string, format: DocFormat)
 export async function documentInfo(name: string, format: DocFormat) {
   try {
     const env = new Uint8Array(await readFile(docFile(name, format)));
-    return { exists: true, bytes: env.byteLength, sealed: isSealed(env), hello: sealedWithHello(env) };
+    return {
+      exists: true,
+      bytes: env.byteLength,
+      sealed: isSealed(env),
+      hello: sealedWithHello(env),
+    };
   } catch {
     return { exists: false, bytes: 0, sealed: false, hello: false };
   }
 }
 
-export async function listDocuments(): Promise<{ name: string; format: DocFormat }[]> {
+export async function listDocuments(): Promise<
+  { name: string; format: DocFormat }[]
+> {
   let files: string[] = [];
   try {
     files = await readdir(docsDir());
@@ -94,6 +134,9 @@ export async function listDocuments(): Promise<{ name: string; format: DocFormat
     .map((m) => ({ name: m[1]!, format: m[2] as DocFormat }));
 }
 
-export async function deleteDocument(name: string, format: DocFormat): Promise<void> {
+export async function deleteDocument(
+  name: string,
+  format: DocFormat,
+): Promise<void> {
   await rm(docFile(name, format), { force: true });
 }

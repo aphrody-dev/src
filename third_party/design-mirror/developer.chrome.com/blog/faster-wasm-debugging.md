@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Philip Pfaffe [GitHub](https://github.com/pfaffe)  Kim-Anh Tran [X](https://twitter.com/kianhuu) [GitHub](https://github.com/ktran)  Eric Leese [GitHub](https://github.com/ericsl) Sam Clegg [GitHub](https://github.com/sbc100)
+
+Philip Pfaffe [GitHub](https://github.com/pfaffe) Kim-Anh Tran [X](https://twitter.com/kianhuu) [GitHub](https://github.com/ktran) Eric Leese [GitHub](https://github.com/ericsl) Sam Clegg [GitHub](https://github.com/sbc100)
 
 > [!NOTE]
 > **Note:** Interested in helping improve DevTools? Sign up to participate in [Google User Research here](https://google.qualtrics.com/jfe/form/SV_9YbKj35IGoGsDBj?reserved=1&utm_source=Website+feature&Q_Language=en&utm_medium=own_web&utm_campaign=Q4&productTag=chrm&campaignDate=November2020&referral_code=UXFm430458).
@@ -73,7 +74,7 @@ int main() {
 
 It's still a fairly small example and you would likely not see any of the real issues you would see in a really big application, but we can still show you what the new features are. It's quick and easy to set up and to try for yourself!
 
-In the last post, we discussed how to compile and debug this example. Let's do that again, but let's also take a peek at the *//performance//*:
+In the last post, we discussed how to compile and debug this example. Let's do that again, but let's also take a peek at the _//performance//_:
 
 ```bash
 $ emcc -sUSE_SDL=2 -g -O0 -o mandelbrot.html mandelbrot.cc -sALLOW_MEMORY_GROWTH
@@ -167,7 +168,7 @@ Building the DWARF package out of the individual objects has the advantage that 
 
 You might have noticed, we snuck another flag into the `emcc` command above, `-gdwarf-5`. Enabling version 5 of the DWARF symbols, which is currently not the default, is another trick to help us start debugging faster. With it, certain information is stored in the main binary that the default version 4 left out. Specifically, we can determine the full set of source files just from the main binary. This allows the debugger to do basic actions like showing the full source tree and setting breakpoints without loading and parsing the full symbol data. This makes debugging with split symbols a lot faster, so we're always using the `-gsplit-dwarf` and `-gdwarf-5` command line flags together!
 
-With the DWARF5 debug format we also get access to another useful feature. It introduces a *name index* in the debug data that will be generated when passing the `-gpubnames` flag:
+With the DWARF5 debug format we also get access to another useful feature. It introduces a _name index_ in the debug data that will be generated when passing the `-gpubnames` flag:
 
 ```bash
 $ emcc -sUSE_SDL=2 -g -gdwarf-5 -gsplit-dwarf -gpubnames -O0 -o mandelbrot.html mandelbrot.cc -sALLOW_MEMORY_GROWTH -sWASM_BIGINT -sERROR_ON_WASM_CHANGES_AFTER_LINK
@@ -183,7 +184,7 @@ You can use `llvm-dwarfdump` in order to have a peek into the DWARF data. Let's 
 llvm-dwarfdump mandelbrot.wasm
 ```
 
-This gives us an overview on the "Compile units" (roughly speaking, the source files) for which we have debug information. In this example, we only have the debug info for `mandelbrot.cc`. The general info will let us know that we have a *skeleton unit* , which just means that we have incomplete data on this file, and that there's a separate `.dwo` file which contains the remaining debug info:
+This gives us an overview on the "Compile units" (roughly speaking, the source files) for which we have debug information. In this example, we only have the debug info for `mandelbrot.cc`. The general info will let us know that we have a _skeleton unit_ , which just means that we have incomplete data on this file, and that there's a separate `.dwo` file which contains the remaining debug info:
 
 You can have a look also at other tables within this file, e.g. at the line table which shows the mapping of wasm bytecode to C++ lines (try using `llvm-dwarfdump -debug-line`).
 

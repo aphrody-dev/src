@@ -41,7 +41,7 @@ question differently.
 ### The stores disagree
 
 **AWS** resolves the same address two ways: `exist` reads the association table alone, `query` reads
-it *and* the fragment state table and refuses obliterated content. Only one knows what obliteration
+it _and_ the fragment state table and refuses obliterated content. Only one knows what obliteration
 is. They also disagree about what the returned level means — `exist` echoes back the level it was
 handed, `query` reports the level found, and the trait says the latter. The divergence is known and
 worked around: the replication handler routes single-address requests through `exist` and
@@ -67,7 +67,7 @@ whole, so one store's report about local residency can be served as if it were a
 
 ### The parameter is not shaped like the question
 
-`StoreMatch` has four levels, and as a *request* only two are ever used: almost every call site
+`StoreMatch` has four levels, and as a _request_ only two are ever used: almost every call site
 passes `MatchFull`, a handful pass `MatchHash`, and no caller anywhere passes `MatchPartition` — the
 level AWS spends a distinct code path on and the wire reserves a status byte for.
 
@@ -91,7 +91,7 @@ and never asks the remote what it holds — it could not use the answer, because
 depends on which store backs the server and arrives a level below what was sent.
 
 The level alone would not be enough. A copy names a source partition, and the answer says only
-*that* a better match exists, not where, so a client whose cache holds the content under some other
+_that_ a better match exists, not where, so a client whose cache holds the content under some other
 partition it also has access to cannot name the source — even when it holds a token proving it may
 read from there.
 
@@ -285,7 +285,7 @@ instruction to `copy` rather than a promise to serve, so a store may report one 
 refuse to read. A single-tenant store has no boundary to cross and both scopes fall to `MatchHash`.
 
 Describing a payload is strictly less than handing it over, so a store describes anything it would
-serve. Resolving the level *before* applying either scope matters: a lookup caps at the level it is
+serve. Resolving the level _before_ applying either scope matters: a lookup caps at the level it is
 asked for, so searching at the scope would report every full match as a partition match and lose the
 one thing the level is for.
 
@@ -338,7 +338,7 @@ against a server configured as a real one is.
 
 Every store that runs it passes every clause, and none declares a violation. The mechanism stays
 because it is what made the defects visible: a store registers the checks it fails, the battery then
-*requires* those to fail, and a fix that is not delisted breaks the build as loudly as a regression.
+_requires_ those to fail, and a fix that is not delisted breaks the build as loudly as a regression.
 An empty list is the state to hold, not the absence of one.
 
 Six of the seven implementations run it — the local, durable and composite stores, the client store
@@ -350,12 +350,12 @@ a way to say that a store does not answer and to assert the refusal is uniform.
 
 Each level names an action the caller can take, which is what makes it worth reporting:
 
-| level | what the caller may do |
-|---|---|
-| `MatchFull` | nothing — the association already exists |
+| level            | what the caller may do                                             |
+| ---------------- | ------------------------------------------------------------------ |
+| `MatchFull`      | nothing — the association already exists                           |
 | `MatchPartition` | duplicate the association with a **copy**, transferring no payload |
-| `MatchHash` | reuse the local payload without recompressing |
-| `MatchNone` | store the payload |
+| `MatchHash`      | reuse the local payload without recompressing                      |
+| `MatchNone`      | store the payload                                                  |
 
 `MatchPartition` earns its place on the strength of the copy path: the payload is already in the
 partition under another context, so the caller needs an association, not a transfer. The operation
@@ -440,8 +440,8 @@ re-enabling a branch.
 The stopping rule stops being a comparison against a requested level and becomes: keep fanning out
 while any address is below `MatchFull`; then per address take the highest level any store reported
 and **or** `stored_durable` across responders. `stored_local` is not merged: it stays as the local
-store left it, because a replica reporting the payload on *its* disk says nothing about ours. The partition travels with the level that won rather
-than being merged on its own — it names where *that* store found the content, and pairing one
+store left it, because a replica reporting the payload on _its_ disk says nothing about ours. The partition travels with the level that won rather
+than being merged on its own — it names where _that_ store found the content, and pairing one
 store's partition with another's level would point a copy at somewhere the content was never seen.
 
 Taking the maximum, rather than the winning store's answer whole, is what lets a composite answer
@@ -458,7 +458,7 @@ to come from elsewhere is cached locally without its payload.
 
 Each child fills a scratch buffer which the composite merges into the caller's slice, which halves
 what a child costs: the batched fan-out it replaces collected the pending addresses into a `Vec` of
-its own *and* returned its answers in another, where now the addresses are shared behind one
+its own _and_ returned its answers in another, where now the addresses are shared behind one
 reference and only the answers are allocated. The buffer itself stays per child, since they are
 spawned and a shared one sliced between them would have to outlive tasks that own their futures.
 Above them the caller's slice means the call allocates nothing to return.
@@ -531,7 +531,7 @@ The read path's full-then-fallback pair collapses to a single call, and the two 
 re-assert isolation stop doing so — a server's store isolates already, so they were asking for what
 they had.
 
-Where a handler needs "this address belongs to this repository" as an *authorization* check rather
+Where a handler needs "this address belongs to this repository" as an _authorization_ check rather
 than a read-scope hint, that is `query` requiring `MatchFull` before serving: one cheap call that
 states the check instead of hiding it in a read flag.
 
@@ -562,7 +562,7 @@ The trait is internal, so most of the churn is confined to the tree.
 - **CLI and public API** — No surface change: `lore-capi/lore.h` has no diff on this branch, and no
   `lore` subcommand, exit code or output format changes. `LOCAL_ISOLATION` was `pub` from
   `lore-storage` but set only inside the server, so deleting it moves nothing a script or
-  integration could reach. One printed *value* does change, following clause 3: `lore file dump` of
+  integration could reach. One printed _value_ does change, following clause 3: `lore file dump` of
   an obliterated address reports no match and zeroed sizes where it used to print the tombstone's
   flags. Describing obliterated content is what clause 3 forbids, so the dump reporting absence is
   the point rather than a casualty; a script keying on the obliterated flag in that output has to
@@ -577,7 +577,7 @@ rather than a per-call level and a process flag leaves both where they were.
 The C API keeps its shape and answers from the local store more often. `lore_storage_get_metadata`
 routed any non-full local match to the remote, which was necessary while a partial match meant the
 representation could not be trusted; it now takes any match the store made. This operation answers
-what a payload *is*, and a weaker level names the same bytes under the same hash, so the description
+what a payload _is_, and a weaker level names the same bytes under the same hash, so the description
 is the same one the round trip would have fetched. What the level would have distinguished — whose
 association it is — is not what this call asks about.
 
@@ -684,30 +684,30 @@ store, where today it is refused only where state happens to be consulted.
 **Assumptions**
 
 - **Assumption:** No caller reads a weak answer as proof of absence; clause 2 rests on this, and
-  every present caller either redoes the work or falls back to a stronger path — *invalidated if:* a
+  every present caller either redoes the work or falls back to a stronger path — _invalidated if:_ a
   caller is added that skips a write, a repair or a durability guarantee on the strength of a
   non-full match.
 - **Assumption:** The AWS write orders hold — a put publishes the association last, an obliteration
   deletes it first — so a visible association implies retrievable content and existence needs one
-  read — *invalidated if:* a path writes an association before the payload and state are in place,
+  read — _invalidated if:_ a path writes an association before the payload and state are in place,
   or marks a hash before deleting its references.
 - **Assumption:** The AWS store sits under a composite with at least one local store in front of it
   on the ingress path, which is what recovers the `MatchPartition` it declines to establish —
-  *invalidated if:* a deployment puts the durable store alone on that path and expects the copy
+  _invalidated if:_ a deployment puts the durable store alone on that path and expects the copy
   optimization to fire.
 - **Assumption:** A configured legacy fragment metadata table is a faithful signal that legacy-era
-  fragments may still be referenced — *invalidated if:* the configuration is removed while such
+  fragments may still be referenced — _invalidated if:_ the configuration is removed while such
   fragments remain, at which point they resolve to absence and a push asks a client to re-upload
   content it no longer holds.
 
 **Risks**
 
 - **Risk:** An obliteration dies after deleting the association and before the mark lands, leaving
-  the payload unreclaimed with no mark to find it by — *mitigation:* the hash is still `Stored`, so
+  the payload unreclaimed with no mark to find it by — _mitigation:_ the hash is still `Stored`, so
   a re-run proceeds normally, and until a sweeper exists the requester drives it to completion.
   Accepted as the safe side of the trade: the previous order left the reference intact instead.
 - **Risk:** A store over-reports, and a caller skips an upload or names a partition that cannot
-  serve the copy — *mitigation:* clause 1 is the first case in the battery, every implementation
+  serve the copy — _mitigation:_ clause 1 is the first case in the battery, every implementation
   runs it, and the client store runs it over a wire; a copy naming an unusable partition is refused
   by the server, costing a retry rather than a breach. A caller needing the bytes rather than the
   level reads `stored_local` and `stored_durable`, which the write path already gates on, so a
@@ -715,18 +715,18 @@ store, where today it is refused only where state happens to be consulted.
 - **Risk:** A store resolves a tombstone through a path that does not consult flags. `lookup`
   searches addresses alone, so an obliterated entry still resolves at the level its address matches,
   and every operation answering a caller has to refuse it for itself — which is how `get_metadata`
-  came to describe obliterated content while `query` beside it reported nothing — *mitigation:* the
+  came to describe obliterated content while `query` beside it reported nothing — _mitigation:_ the
   battery asserts absence through all three operations rather than through the one under change, so
   a path that forgets the check fails rather than passing on its neighbour's behalf.
 - **Risk:** While the legacy metadata table is configured, existence costs three batched reads
-  rather than one — *mitigation:* all three are batched and none is per address, and the extra two
+  rather than one — _mitigation:_ all three are batched and none is per address, and the extra two
   retire with the table.
 - **Risk:** Clause 3 does not hold for legacy-era content in the AWS store. `obliterate` returns
   early when a hash has no state row, reporting success without deleting the association, while the
   legacy fallback added here goes on resolving that association to a full match — so obliterating a
   fragment written before the state table existed does nothing and says it worked. The early return
   predates this proposal; what is new is the fallback that keeps such content matchable —
-  *mitigation:* accepted as a calculated risk, because it reaches only deployments still holding
+  _mitigation:_ accepted as a calculated risk, because it reaches only deployments still holding
   content written before the state table existed. The recommended path for those is migrating to the
   new representation under [LEP 2026-08-03](2026-08-03-fragment-metadata-on-the-s3-object.md), which
   ends the exposure by ending the legacy era rather than by teaching this store a second lifecycle
@@ -750,7 +750,7 @@ store, where today it is refused only where state happens to be consulted.
 Collapse `exist`, `exist_batch` and `query` into one batched method that still takes a requested
 level, leaving callers to ask for what they need.
 
-*Rejected because:* a lookup caps at the level it is asked for, which is precisely how a partition
+_Rejected because:_ a lookup caps at the level it is asked for, which is precisely how a partition
 match reaches the writer as a miss today. It also leaves read scope a per-call value, so
 `LOCAL_ISOLATION` and its duplicate policy survive, and it keeps the level a thing eighteen
 implementations each interpret.
@@ -760,7 +760,7 @@ implementations each interpret.
 Give the enum the wire's values, with not-found at 0, so one set of numbers spans store and
 protocol.
 
-*Rejected because:* both orderings are already public, and in opposite directions.
+_Rejected because:_ both orderings are already public, and in opposite directions.
 `lore_repository_store_immutable_query_event_data_t.status` is documented in `lore.h` value by value
 (0 exact, 1 hash in this repository, 2 hash in another, 3 absent), and every one of the four is
 reachable, since the local arm maps `MatchHash` to 2 for an in-process store that reads across
@@ -776,7 +776,7 @@ changing a published surface.
 Make the partition part of the primary key so a partition match falls out of the same batched read
 that establishes a full match.
 
-*Rejected because:* it is a table migration to buy a level the composite already recovers in the
+_Rejected because:_ it is a table migration to buy a level the composite already recovers in the
 usual deployment, and obliteration and reclamation key on the hash alone, so the hash-wide access
 pattern does not go away.
 
@@ -785,6 +785,6 @@ pattern does not go away.
 Keep the second batched read on the existence path permanently, rather than making the put and
 obliterate orderings load-bearing.
 
-*Rejected because:* it spends a read per fragment on ingress to avoid one extra delete on
+_Rejected because:_ it spends a read per fragment on ingress to avoid one extra delete on
 obliteration, which is rare. The orderings it replaces are ones the store wants for its own
 correctness in any case.

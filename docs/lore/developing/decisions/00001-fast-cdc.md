@@ -5,6 +5,7 @@ deciders: Mattias Jansson, Manuel Lang, Joshua Cohen
 consulted: Yuriy O'Donnell, Stefan Boberg
 informed:
 ---
+
 # ADR-00001: Use FastCDC, a well-documented content-defined chunking strategy
 
 ## Context and Problem Statement
@@ -13,14 +14,14 @@ Lore currently has an inefficient chunking strategy which utilizes xxHash, stepp
 
 ## Decision Drivers
 
-* Performance
-* Deduplication ratio
-* Ease of adoption in greater ecosystem
+- Performance
+- Deduplication ratio
+- Ease of adoption in greater ecosystem
 
 ## Considered Options
 
-* Current algorithm (xxHash with modulo)
-* FastCDC
+- Current algorithm (xxHash with modulo)
+- FastCDC
 
 ## Decision Outcome
 
@@ -28,7 +29,7 @@ FastCDC, due to increased performance while maintaining deduplication ratio in t
 
 ### Consequences
 
-* Good, because performance of chunking is increased
+- Good, because performance of chunking is increased
 
 ### Confirmation
 
@@ -68,15 +69,15 @@ Deduplicated bytes 12298549446/237621986814: 5.18%
 
 [FastCDC paper (USENIX ATC '16)](https://www.usenix.org/system/files/conference/atc16/atc16-paper-xia.pdf)
 
-* Good, because the hash is a rolling hash with shift, add and array lookup `(fp << 1) + G[b]`
-* Good, because reasonably easy to configure to use case with bitmasks for hash pattern matching
-* Good, because it's a well-documented algorithm that can be widely adopted
-* Bad, because algorithm depends on inherent magic numbers specific to each implementation
+- Good, because the hash is a rolling hash with shift, add and array lookup `(fp << 1) + G[b]`
+- Good, because reasonably easy to configure to use case with bitmasks for hash pattern matching
+- Good, because it's a well-documented algorithm that can be widely adopted
+- Bad, because algorithm depends on inherent magic numbers specific to each implementation
 
 ### Current algorithm
 
 xxHash of 64 bytes, step one byte at a time, modulo hash with magic number to find pattern
 
-* Good, because it can be tweaked to the exact use case
-* Bad, because it's slow to calculate hash and step one byte at a time
-* Bad, because it's Lore-specific and hard for the greater ecosystem to adopt
+- Good, because it can be tweaked to the exact use case
+- Bad, because it's slow to calculate hash and step one byte at a time
+- Bad, because it's Lore-specific and hard for the greater ecosystem to adopt

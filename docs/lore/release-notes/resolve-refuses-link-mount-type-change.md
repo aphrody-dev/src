@@ -11,4 +11,4 @@ type: fix
   It now passes over a link without conflicts, and fails with `NotSupported` at a link that holds conflicts, which are
   resolved by naming the paths inside it.
 - `lore-client`: Fixed a bare `lore branch merge resolve`, `lore revision cherry-pick resolve` or `lore revision revert
-  resolve` printing "No conflicts resolved" before the error when the resolve is refused.
+resolve` printing "No conflicts resolved" before the error when the resolve is refused.

@@ -10,7 +10,8 @@ import type { DomainReport, ParityItem, ScanOptions } from "../types.ts";
 export async function scanHtmlDomain(
   options: ScanOptions,
 ): Promise<DomainReport> {
-  const chromiumPath = options.chromiumPath ?? "C:/src/third_party/chromium/src";
+  const chromiumPath =
+    options.chromiumPath ?? "C:/src/third_party/chromium/src";
   const tagNamesFile = join(
     chromiumPath,
     "third_party/blink/renderer/core/html/html_tag_names.json5",

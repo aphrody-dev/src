@@ -54,9 +54,17 @@ export function writable(p: string): boolean {
 export function vaultRoot(): string {
   if (process.env.APHRODY_VAULT_DIR) return process.env.APHRODY_VAULT_DIR;
   if (WIN) return join(srcRoot(), "var", "secrets");
-  const data = join(process.env.XDG_DATA_HOME ?? join(homedir(), ".local", "share"), "aphrody", "vault");
+  const data = join(
+    process.env.XDG_DATA_HOME ?? join(homedir(), ".local", "share"),
+    "aphrody",
+    "vault",
+  );
   if (writable(data)) return data;
-  const state = join(process.env.XDG_STATE_HOME ?? join(homedir(), ".local", "state"), "aphrody", "vault");
+  const state = join(
+    process.env.XDG_STATE_HOME ?? join(homedir(), ".local", "state"),
+    "aphrody",
+    "vault",
+  );
   return writable(state) ? state : data;
 }
 
@@ -90,13 +98,22 @@ export function localStore(): LocalStoreInfo {
       // (ProtectSystem=strict: /etc read-only) writes under the vault root instead, still with the host
       // key of systemd-creds (no --user, so no user manager or D-Bus needed), and still reads /etc.
       const etc = "/etc/credstore.encrypted";
-      if (override) return { backend: "systemd-creds", dir: override, legacy: [] };
+      if (override)
+        return { backend: "systemd-creds", dir: override, legacy: [] };
       return writable(etc)
         ? { backend: "systemd-creds", dir: etc, legacy: [] }
-        : { backend: "systemd-creds", dir: join(vaultRoot(), "local"), legacy: [etc] };
+        : {
+            backend: "systemd-creds",
+            dir: join(vaultRoot(), "local"),
+            legacy: [etc],
+          };
     }
     const base = process.env.XDG_CONFIG_HOME ?? join(homedir(), ".config");
-    return { backend: "systemd-creds-user", dir: override ?? join(base, "credstore.encrypted"), legacy: [] };
+    return {
+      backend: "systemd-creds-user",
+      dir: override ?? join(base, "credstore.encrypted"),
+      legacy: [],
+    };
   }
   throw new Error(`vault: unsupported platform ${process.platform}`);
 }

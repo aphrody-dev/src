@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Use optimized image policies to ensure your site is using the best performing images.
 
- Luna Lu [GitHub](https://github.com/loonybear)
+Luna Lu [GitHub](https://github.com/loonybear)
 
 Images often take up a significant amount of visual space and make up the
 majority of the downloaded bytes on a website. Optimizing images can improve
@@ -57,15 +58,15 @@ for information on optimizing your images.
 #### Examples
 
 A few examples illustrate this. The following shows the default behavior when cutting an image's display size in half.
- The default resizing behavior.
+The default resizing behavior.
 
 If I apply the following permissions policy, I get a placeholder image instead.
 
 `Permissions-Policy: oversized-images *(2);`
- When the image is too large for the container.
+When the image is too large for the container.
 
 I get similar results if I lower only the width or the height.
-  Resize width and height.
+Resize width and height.
 
 #### How to use
 
@@ -95,9 +96,9 @@ The policy is enforced on all origins with a threshold value of 2.0. Any
 `Permissions-Policy: oversized-images *(inf) 'self'(1.5)`
 
 The policy is enforced on the site's origin with a threshold value of 1.5.
-`` elements in top-level browsing contexts and same origin nested
+`elements in top-level browsing contexts and same origin nested
 browsing contexts will only render normally if the downscaling ratio is less
-than or equal to 1.5. `` elements everywhere else will render normally.
+than or equal to 1.5.` elements everywhere else will render normally.
 
 ### unoptimized-{lossy,lossless}-images
 
@@ -106,13 +107,13 @@ The `unoptimized-lossy-images`, `unoptimized-lossless-images`,
 size of an image in relation to its intrinsic resolution:
 
 `unoptimized-lossy-images`
-:   Lossy formats should not exceed a byte-per-pixel ratio of X, with a fixed **1KB** overhead allowance. For a W x H image, the file size threshold is calculated as W x H x X + 1024.
+: Lossy formats should not exceed a byte-per-pixel ratio of X, with a fixed **1KB** overhead allowance. For a W x H image, the file size threshold is calculated as W x H x X + 1024.
 
 `unoptimized-lossless-images`
-:   Lossless formats should not exceed a byte-per-pixel ratio of X, with a fixed **10KB** overhead allowance. For a W x H image, the file size threshold is calculated as W x H x X + 10240.
+: Lossless formats should not exceed a byte-per-pixel ratio of X, with a fixed **10KB** overhead allowance. For a W x H image, the file size threshold is calculated as W x H x X + 10240.
 
 `unoptimized-lossless-images-strict`
-:   Lossless formats should not exceed a byte-per-pixel ratio of X, with a fixed **1KB** overhead allowance. For a W x H image, the file size threshold is calculated as W x H x X + 1024.
+: Lossless formats should not exceed a byte-per-pixel ratio of X, with a fixed **1KB** overhead allowance. For a W x H image, the file size threshold is calculated as W x H x X + 1024.
 
 When a document uses any of these policies, any `` element violating
 the constraint will be replaced with a placeholder image.
@@ -129,12 +130,12 @@ optimizing your images.
 #### Example
 
 The following shows the default browser behavior. Without the permissions policy an unoptimized lossy image can be displayed just the same as an optimized image.
- Comparing an optimized image with an unoptimized image.
+Comparing an optimized image with an unoptimized image.
 
 If I apply the following permissions policy, I get a placeholder image instead.
 
 `Permissions-Policy: unoptimized-lossy-images *(0.5);`
- When the image is not optimized.
+When the image is not optimized.
 
 #### How to use
 
@@ -189,9 +190,9 @@ Feature-Policy: unoptimized-lossy-images *(inf) 'self'(0.3);
 ```
 
 This policy is enforced on the site's origin with a threshold value of 0.3 (for
-lossy formats) and 0.8 (for lossless formats). The `` elements in top-level
+lossy formats) and 0.8 (for lossless formats). The `elements in top-level
 browsing contexts and same origin nested browsing contexts will only render
-normally if the byte-per-pixel ratio meets these constraints. The `` elements
+normally if the byte-per-pixel ratio meets these constraints. The` elements
 everywhere else will render normally.
 
 ### Report-only mode in the wild

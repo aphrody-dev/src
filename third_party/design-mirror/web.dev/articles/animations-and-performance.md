@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Animations must perform well, otherwise they will negatively impact the user experience.
 
-Paul Lewis [X](https://twitter.com/aerotwist) [Homepage](https://aerotwist.com/)  Sam Thorogood [X](https://twitter.com/samthor) [GitHub](https://github.com/samthor) [Homepage](https://whistlr.info/)
+Paul Lewis [X](https://twitter.com/aerotwist) [Homepage](https://aerotwist.com/) Sam Thorogood [X](https://twitter.com/samthor) [GitHub](https://github.com/samthor) [Homepage](https://whistlr.info/)
 
 Maintain 60fps whenever you are animating, because any less results in stutters or stalls that will be noticeable to your users and negatively impact their experiences.
 
@@ -18,7 +19,7 @@ Maintain 60fps whenever you are animating, because any less results in stutters 
 - Where you can, stick to changing transforms and opacity.
 - Use `will-change` to ensure that the browser knows what you plan to animate.
 
-Animating properties is not free, and some properties are cheaper to animate than others. For example, animating the `width` and `height` of an element changes its geometry and may cause other elements on the page to move or change size. This process is called *layout* (or *reflow* in Gecko-based browsers like Firefox), and can be expensive if your page has a lot of elements. Whenever layout is triggered, the page or part of it will normally need to be painted, which is typically even more expensive than the layout operation itself.
+Animating properties is not free, and some properties are cheaper to animate than others. For example, animating the `width` and `height` of an element changes its geometry and may cause other elements on the page to move or change size. This process is called _layout_ (or _reflow_ in Gecko-based browsers like Firefox), and can be expensive if your page has a lot of elements. Whenever layout is triggered, the page or part of it will normally need to be painted, which is typically even more expensive than the layout operation itself.
 
 Where you can, you should avoid animating properties that trigger layout or paint. For most modern browsers, this means limiting animations to `opacity` or `transform`, both of which the browser can highly optimize; it doesn't matter if the animation is handled by JavaScript or CSS.
 

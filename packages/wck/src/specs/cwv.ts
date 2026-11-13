@@ -305,7 +305,10 @@ export function linkedStylesheets<T extends { relPath: string }>(
   }
   return cssFiles.filter((f) =>
     hrefs.some(
-      (h) => f.relPath === h || f.relPath.endsWith("/" + h) || h.endsWith("/" + f.relPath),
+      (h) =>
+        f.relPath === h ||
+        f.relPath.endsWith("/" + h) ||
+        h.endsWith("/" + f.relPath),
     ),
   );
 }

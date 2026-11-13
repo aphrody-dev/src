@@ -1,0 +1,586 @@
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded chacha20 v0.10.2
+  Downloaded fluent-langneg v0.13.1
+  Downloaded bytecount v0.6.9
+  Downloaded constant_time_eq v0.4.2
+  Downloaded crossbeam-utils v0.8.23
+  Downloaded filedescriptor v0.8.3
+  Downloaded fixed_decimal v0.7.3
+  Downloaded walkdir v2.5.0
+  Downloaded write16 v1.0.0
+  Downloaded crypto-common v0.1.7
+  Downloaded deranged v0.5.8
+  Downloaded utf8parse v0.2.2
+  Downloaded vsimd v0.8.0
+  Downloaded yoke-derive v0.8.4
+  Downloaded aho-corasick v1.1.5
+  Downloaded bitflags v2.13.2
+  Downloaded crossbeam-deque v0.8.8
+  Downloaded data-encoding v2.11.1
+  Downloaded num_threads v0.1.7
+  Downloaded radium v0.7.0
+  Downloaded cfg_aliases v0.2.2
+  Downloaded clap_lex v1.1.1
+  Downloaded filetime v0.2.29
+  Downloaded funty v2.0.0
+  Downloaded autocfg v1.5.1
+  Downloaded bit-set v0.8.0
+  Downloaded core_maths v0.1.1
+  Downloaded crypto-common v0.2.2
+  Downloaded ctrlc v3.5.2
+  Downloaded data-encoding-macro-internal v0.1.19
+  Downloaded document-features v0.2.12
+  Downloaded equivalent v1.0.2
+  Downloaded lru v0.16.4
+  Downloaded outref v0.5.2
+  Downloaded phf_generator v0.14.0
+  Downloaded powerfmt v0.2.0
+  Downloaded rand_chacha v0.3.1
+  Downloaded rand_core v0.10.1
+  Downloaded regex v1.13.1
+  Downloaded rlimit v0.11.0
+  Downloaded self_cell v1.3.0
+  Downloaded wyz v0.5.1
+  Downloaded zerocopy v0.8.57
+  Downloaded zerofrom-derive v0.1.8
+  Downloaded blake3 v1.8.7
+  Downloaded cfg-if v1.0.5
+  Downloaded data-encoding-macro v0.1.21
+  Downloaded digest v0.10.7
+  Downloaded displaydoc v0.2.7
+  Downloaded either v1.19.0
+  Downloaded fluent v0.17.0
+  Downloaded glob v0.3.4
+  Downloaded hybrid-array v0.4.15
+  Downloaded litrs v1.0.0
+  Downloaded nix v0.31.3
+  Downloaded num-bigint v0.4.8
+  Downloaded num-modular v0.6.5
+  Downloaded parse_datetime v0.17.0
+  Downloaded procfs v0.18.0
+  Downloaded colorchoice v1.0.5
+  Downloaded getrandom v0.4.3
+  Downloaded hex v0.4.3
+  Downloaded memchr v2.8.3
+  Downloaded portable-atomic v1.15.0
+  Downloaded writeable v0.6.4
+  Downloaded signal-hook v0.3.18
+  Downloaded generic-array v0.14.7
+  Downloaded inotify-sys v0.1.8
+  Downloaded cpufeatures v0.3.1
+  Downloaded dns-lookup v4.0.2
+  Downloaded dunce v1.0.5
+  Downloaded find-msvc-tools v0.1.13
+  Downloaded foldhash v0.2.0
+  Downloaded anstyle-query v1.1.5
+  Downloaded zerotrie v0.2.5
+  Downloaded digest v0.11.3
+  Downloaded errno v0.3.14
+  Downloaded quote v1.0.47
+  Downloaded fastrand v2.5.0
+  Downloaded fluent-syntax v0.12.0
+  Downloaded hostname v0.4.2
+  Downloaded icu_calendar_data v2.4.0
+  Downloaded zerovec-derive v0.11.7
+  Downloaded anstream v1.0.0
+  Downloaded memmap2 v0.9.12
+  Downloaded ppv-lite86 v0.2.21
+  Downloaded uutils_term_grid v0.8.1
+  Downloaded fluent-bundle v0.16.0
+  Downloaded thiserror v2.0.21
+  Downloaded utf8_iter v1.0.4
+  Downloaded bigdecimal v0.4.11
+  Downloaded parking_lot v0.12.5
+  Downloaded rand v0.8.8
+  Downloaded scopeguard v1.2.0
+  Downloaded z85 v3.0.7
+  Downloaded potential_utf v0.1.6
+  Downloaded num-conv v0.2.2
+  Downloaded platform-info v2.2.1
+  Downloaded once_cell v1.21.4
+  Downloaded sponge-cursor v0.1.0
+  Downloaded crossbeam-epoch v0.9.21
+  Downloaded getrandom v0.2.17
+  Downloaded anstyle v1.0.14
+  Downloaded half v2.7.1
+  Downloaded type-map v0.5.1
+  Downloaded unicode-width v0.2.3
+  Downloaded calendrical_calculations v0.2.4
+  Downloaded clap v4.6.7
+  Downloaded clap_builder v4.6.7
+  Downloaded sm3 v0.5.0
+  Downloaded version_check v0.9.5
+  Downloaded md-5 v0.11.0
+  Downloaded os_display v0.1.4
+  Downloaded anstyle-parse v1.0.0
+  Downloaded icu_plurals_data v2.4.0
+  Downloaded ansi-width v0.1.1
+  Downloaded num-integer v0.1.47
+  Downloaded yoke v0.8.4
+  Downloaded icu_time v2.4.0
+  Downloaded is_terminal_polyfill v1.70.2
+  Downloaded jiff-icu v0.2.4
+  Downloaded jiff-static v0.2.43
+  Downloaded keccak v0.2.2
+  Downloaded lscolors v0.21.0
+  Downloaded notify v8.2.2
+  Downloaded proc-macro2 v1.0.107
+  Downloaded procfs-core v0.18.0
+  Downloaded signal-hook-mio v0.2.5
+  Downloaded smallvec v1.16.1
+  Downloaded unic-langid-impl v0.9.6
+  Downloaded blake2b_simd v1.0.5
+  Downloaded icu_decimal v2.4.0
+  Downloaded rand v0.10.3
+  Downloaded thiserror v1.0.69
+  Downloaded time-core v0.1.9
+  Downloaded smawk v0.3.3
+  Downloaded itoa v1.0.19
+  Downloaded thiserror-impl v1.0.69
+  Downloaded inotify v0.11.5
+  Downloaded sha1 v0.11.0
+  Downloaded thiserror-impl v2.0.21
+  Downloaded icu_locale v2.4.0
+  Downloaded sha2 v0.11.1
+  Downloaded icu_normalizer_data v2.4.0
+  Downloaded intl_pluralrules v7.0.2
+  Downloaded cc v1.4.7
+  Downloaded console v0.16.6
+  Downloaded icu_locale_core v2.4.0
+  Downloaded icu_locale_fallback_data v2.4.0
+  Downloaded intl-memoizer v0.5.3
+  Downloaded hashbrown v0.17.1
+  Downloaded strsim v0.11.1
+  Downloaded tap v1.0.1
+  Downloaded socket2 v0.6.5
+  Downloaded tempfile v3.27.0
+  Downloaded crossterm v0.29.0
+  Downloaded icu_decimal_data v2.4.0
+  Downloaded icu_locale_fallback v2.4.0
+  Downloaded rustc-hash v2.1.3
+  Downloaded zerovec v0.11.9
+  Downloaded arrayvec v0.7.8
+  Downloaded hashbrown v0.16.1
+  Downloaded icu_provider v2.4.0
+  Downloaded spin v0.10.1
+  Downloaded icu_pattern v0.5.1
+  Downloaded icu_plurals v2.4.0
+  Downloaded indicatif v0.18.6
+  Downloaded jiff-core v0.1.5
+  Downloaded serde_derive v1.0.229
+  Downloaded terminal_size v0.4.4
+  Downloaded icu_time_data v2.4.0
+  Downloaded icu_collections v2.4.0
+  Downloaded synstructure v0.14.0
+  Downloaded icu_properties v2.4.0
+  Downloaded libm v0.2.16
+  Downloaded unic-langid v0.9.6
+  Downloaded utf16_iter v1.0.5
+  Downloaded zerofrom v0.1.8
+  Downloaded same-file v1.0.6
+  Downloaded siphasher v1.0.3
+  Downloaded xattr v1.7.0
+  Downloaded fancy-regex v0.20.2
+  Downloaded unit-prefix v0.5.2
+  Downloaded base64-simd v0.8.0
+  Downloaded icu_properties_data v2.4.0
+  Downloaded log v0.4.34
+  Downloaded phf_codegen v0.14.0
+  Downloaded rand_core v0.6.4
+  Downloaded sha3 v0.12.0
+  Downloaded shlex v2.0.1
+  Downloaded signal-hook-registry v1.4.8
+  Downloaded textwrap v0.16.4
+  Downloaded tinystr v0.8.5
+  Downloaded bit-vec v0.8.0
+  Downloaded block-buffer v0.12.1
+  Downloaded itertools v0.15.0
+  Downloaded nu-ansi-term v0.50.3
+  Downloaded parking_lot_core v0.9.12
+  Downloaded phf v0.14.0
+  Downloaded rand_chacha v0.10.0
+  Downloaded time-macros v0.2.32
+  Downloaded unicode-ident v1.0.26
+  Downloaded icu_collator_data v2.4.0
+  Downloaded litemap v0.8.3
+  Downloaded lock_api v0.4.14
+  Downloaded mio v1.2.4
+  Downloaded num-traits v0.2.19
+  Downloaded phf_shared v0.14.0
+  Downloaded serde_core v1.0.229
+  Downloaded stable_deref_trait v1.2.1
+  Downloaded allocator-api2 v0.2.21
+  Downloaded rayon-core v1.13.0
+  Downloaded serde v1.0.229
+  Downloaded typenum v1.20.1
+  Downloaded winnow v1.0.4
+  Downloaded zerocopy-derive v0.8.57
+  Downloaded bstr v1.13.1
+  Downloaded nom v8.0.0
+  Downloaded num-prime v0.7.0
+  Downloaded rayon v1.12.0
+  Downloaded bitvec v1.1.1
+  Downloaded crc-fast v1.10.0
+  Downloaded icu_datetime v2.4.0
+  Downloaded shake v0.1.0
+  Downloaded regex-syntax v0.8.11
+  Downloaded rustix v1.1.6
+  Downloaded syn v2.0.119
+  Downloaded syn v3.0.10
+  Downloaded regex-automata v0.4.18
+  Downloaded icu_normalizer v2.4.0
+  Downloaded jiff v0.2.43
+  Downloaded linux-raw-sys v0.12.1
+  Downloaded libc v0.2.191
+  Downloaded icu_calendar v2.4.0
+  Downloaded icu_collator v2.4.0
+  Downloaded icu_locale_data v2.4.0
+  Downloaded icu_datetime_data v2.4.0
+  Downloaded icu_segmenter_data v2.4.0
+  Downloaded icu_segmenter v2.4.0
+  Downloaded notify-types v2.1.0
+  Downloaded time v0.3.55
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.26
+   Compiling libc v0.2.191
+   Compiling stable_deref_trait v1.2.1
+   Compiling cfg-if v1.0.5
+   Compiling either v1.19.0
+   Compiling litemap v0.8.3
+   Compiling writeable v0.6.4
+   Compiling bitflags v2.13.2
+   Compiling typenum v1.20.1
+   Compiling syn v3.0.10
+   Compiling icu_locale_fallback_data v2.4.0
+   Compiling smallvec v1.16.1
+   Compiling syn v2.0.119
+   Compiling zerocopy v0.8.57
+   Compiling autocfg v1.5.1
+   Compiling memchr v2.8.3
+   Compiling rustix v1.1.6
+   Compiling hybrid-array v0.4.15
+   Compiling synstructure v0.14.0
+   Compiling libm v0.2.16
+   Compiling linux-raw-sys v0.12.1
+   Compiling num-traits v0.2.19
+   Compiling cfg_aliases v0.2.2
+   Compiling zerofrom-derive v0.1.8
+   Compiling zerofrom v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling displaydoc v0.2.7
+   Compiling zerovec-derive v0.11.7
+   Compiling yoke v0.8.4
+   Compiling zerocopy-derive v0.8.57
+   Compiling zerotrie v0.2.5
+   Compiling zerovec v0.11.9
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling tinystr v0.8.5
+   Compiling icu_locale_core v2.4.0
+   Compiling potential_utf v0.1.6
+   Compiling getrandom v0.2.17
+   Compiling icu_provider v2.4.0
+   Compiling icu_locale_fallback v2.4.0
+   Compiling utf8_iter v1.0.4
+   Compiling icu_collections v2.4.0
+   Compiling rand_core v0.6.4
+   Compiling digest v0.11.3
+   Compiling unic-langid-impl v0.9.6
+   Compiling unicode-width v0.2.3
+   Compiling icu_calendar_data v2.4.0
+   Compiling version_check v0.9.5
+   Compiling unic-langid v0.9.6
+   Compiling core_maths v0.1.1
+   Compiling cpufeatures v0.3.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling generic-array v0.14.7
+   Compiling icu_time_data v2.4.0
+   Compiling thiserror v2.0.21
+   Compiling calendrical_calculations v0.2.4
+   Compiling rand_chacha v0.3.1
+   Compiling num-integer v0.1.47
+   Compiling thiserror-impl v2.0.21
+   Compiling rand v0.8.8
+   Compiling shlex v2.0.1
+   Compiling utf8parse v0.2.2
+   Compiling icu_plurals_data v2.4.0
+   Compiling icu_decimal_data v2.4.0
+   Compiling rustc-hash v2.1.3
+   Compiling find-msvc-tools v0.1.13
+   Compiling icu_normalizer_data v2.4.0
+   Compiling cc v1.4.7
+   Compiling type-map v0.5.1
+   Compiling num-bigint v0.4.8
+   Compiling anstyle-parse v1.0.0
+   Compiling icu_calendar v2.4.0
+   Compiling terminal_size v0.4.4
+   Compiling fixed_decimal v0.7.3
+   Compiling nix v0.31.3
+   Compiling icu_locale_data v2.4.0
+   Compiling jiff-core v0.1.5
+   Compiling icu_collator_data v2.4.0
+   Compiling colorchoice v1.0.5
+   Compiling anstyle v1.0.14
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling icu_datetime_data v2.4.0
+   Compiling anstyle-query v1.1.5
+   Compiling anstream v1.0.0
+   Compiling icu_time v2.4.0
+   Compiling jiff v0.2.43
+   Compiling blake3 v1.8.7
+   Compiling crypto-common v0.1.7
+   Compiling fluent-syntax v0.12.0
+   Compiling intl-memoizer v0.5.3
+   Compiling intl_pluralrules v7.0.2
+   Compiling fluent-langneg v0.13.1
+   Compiling bigdecimal v0.4.11
+   Compiling keccak v0.2.2
+   Compiling sponge-cursor v0.1.0
+   Compiling constant_time_eq v0.4.2
+   Compiling arrayvec v0.7.8
+   Compiling time-core v0.1.9
+   Compiling same-file v1.0.6
+   Compiling self_cell v1.3.0
+   Compiling strsim v0.11.1
+   Compiling write16 v1.0.0
+   Compiling procfs v0.18.0
+   Compiling hex v0.4.3
+   Compiling clap_lex v1.1.1
+   Compiling num-conv v0.2.2
+   Compiling data-encoding v2.11.1
+   Compiling utf16_iter v1.0.5
+   Compiling icu_normalizer v2.4.0
+   Compiling time-macros v0.2.32
+   Compiling data-encoding-macro-internal v0.1.19
+   Compiling procfs-core v0.18.0
+   Compiling clap_builder v4.6.7
+   Compiling fluent-bundle v0.16.0
+   Compiling walkdir v2.5.0
+   Compiling icu_decimal v2.4.0
+   Compiling icu_plurals v2.4.0
+   Compiling digest v0.10.7
+   Compiling icu_properties v2.4.0
+   Compiling icu_pattern v0.5.1
+   Compiling uucore v0.13.0 (/work/src/uutils/src/uucore)
+   Compiling socket2 v0.6.5
+   Compiling spin v0.10.1
+   Compiling powerfmt v0.2.0
+   Compiling outref v0.5.2
+   Compiling num_threads v0.1.7
+   Compiling deranged v0.5.8
+   Compiling vsimd v0.8.0
+   Compiling unit-prefix v0.5.2
+   Compiling base64-simd v0.8.0
+   Compiling time v0.3.55
+   Compiling data-encoding-macro v0.1.21
+   Compiling dns-lookup v4.0.2
+   Compiling crc-fast v1.10.0
+   Compiling icu_collator v2.4.0
+   Compiling icu_datetime v2.4.0
+   Compiling icu_locale v2.4.0
+   Compiling clap v4.6.7
+   Compiling fluent v0.17.0
+   Compiling jiff-icu v0.2.4
+   Compiling blake2b_simd v1.0.5
+   Compiling sha3 v0.12.0
+   Compiling shake v0.1.0
+   Compiling sha2 v0.11.1
+   Compiling sha1 v0.11.0
+   Compiling os_display v0.1.4
+   Compiling md-5 v0.11.0
+   Compiling sm3 v0.5.0
+   Compiling xattr v1.7.0
+   Compiling bstr v1.13.1
+   Compiling uucore_procs v0.13.0 (/work/src/uutils/src/uucore_procs)
+   Compiling itertools v0.15.0
+   Compiling z85 v3.0.7
+   Compiling glob v0.3.4
+   Compiling dunce v1.0.5
+   Compiling aho-corasick v1.1.5
+   Compiling rand_core v0.10.1
+   Compiling getrandom v0.4.3
+   Compiling regex-syntax v0.8.11
+   Compiling crossbeam-utils v0.8.23
+   Compiling foldhash v0.2.0
+   Compiling regex-automata v0.4.18
+   Compiling allocator-api2 v0.2.21
+   Compiling uu_checksum_common v0.13.0 (/work/src/uutils/src/uu/checksum_common)
+   Compiling portable-atomic v1.15.0
+   Compiling log v0.4.34
+   Compiling crossbeam-epoch v0.9.21
+   Compiling equivalent v1.0.2
+   Compiling regex v1.13.1
+   Compiling mio v1.2.4
+   Compiling chacha20 v0.10.2
+   Compiling errno v0.3.14
+   Compiling crossbeam-deque v0.8.8
+   Compiling once_cell v1.21.4
+   Compiling parking_lot_core v0.9.12
+   Compiling siphasher v1.0.3
+   Compiling radium v0.7.0
+   Compiling signal-hook v0.3.18
+   Compiling inotify-sys v0.1.8
+   Compiling fastrand v2.5.0
+   Compiling phf_shared v0.14.0
+   Compiling tempfile v3.27.0
+   Compiling signal-hook-registry v1.4.8
+   Compiling rand v0.10.3
+   Compiling ansi-width v0.1.1
+   Compiling console v0.16.6
+   Compiling hostname v0.4.2
+   Compiling icu_segmenter_data v2.4.0
+   Compiling nu-ansi-term v0.50.3
+   Compiling tap v1.0.1
+   Compiling rlimit v0.11.0
+   Compiling rayon-core v1.13.0
+   Compiling scopeguard v1.2.0
+   Compiling lock_api v0.4.14
+   Compiling phf_generator v0.14.0
+   Compiling wyz v0.5.1
+   Compiling lscolors v0.21.0
+   Compiling indicatif v0.18.6
+   Compiling uutils_term_grid v0.8.1
+   Compiling hashbrown v0.16.1
+   Compiling litrs v1.0.0
+   Compiling winnow v1.0.4
+   Compiling bit-vec v0.8.0
+   Compiling funty v2.0.0
+   Compiling bit-set v0.8.0
+   Compiling lru v0.16.4
+   Compiling document-features v0.2.12
+   Compiling parse_datetime v0.17.0
+   Compiling bitvec v1.1.1
+   Compiling inotify v0.11.5
+   Compiling parking_lot v0.12.5
+   Compiling signal-hook-mio v0.2.5
+   Compiling uu_ls v0.13.0 (/work/src/uutils/src/uu/ls)
+   Compiling phf_codegen v0.14.0
+   Compiling uu_base32 v0.13.0 (/work/src/uutils/src/uu/base32)
+   Compiling num-modular v0.6.5
+   Compiling uu_stty v0.13.0 (/work/src/uutils/src/uu/stty)
+   Compiling filetime v0.2.29
+   Compiling platform-info v2.2.1
+   Compiling notify-types v2.1.0
+   Compiling bytecount v0.6.9
+   Compiling itoa v1.0.19
+   Compiling notify v8.2.2
+   Compiling num-prime v0.7.0
+   Compiling coreutils v0.13.0 (/work/src/uutils)
+   Compiling icu_segmenter v2.4.0
+   Compiling crossterm v0.29.0
+   Compiling rayon v1.12.0
+   Compiling fancy-regex v0.20.2
+   Compiling hashbrown v0.17.1
+   Compiling rand_chacha v0.10.0
+   Compiling ctrlc v3.5.2
+   Compiling half v2.7.1
+   Compiling nom v8.0.0
+   Compiling memmap2 v0.9.12
+   Compiling smawk v0.3.3
+   Compiling uu_tac v0.13.0 (/work/src/uutils/src/uu/tac)
+   Compiling textwrap v0.16.4
+   Compiling uu_sort v0.13.0 (/work/src/uutils/src/uu/sort)
+   Compiling uu_expr v0.13.0 (/work/src/uutils/src/uu/expr)
+   Compiling uu_tr v0.13.0 (/work/src/uutils/src/uu/tr)
+   Compiling uu_od v0.13.0 (/work/src/uutils/src/uu/od)
+   Compiling uu_shuf v0.13.0 (/work/src/uutils/src/uu/shuf)
+   Compiling uu_tsort v0.13.0 (/work/src/uutils/src/uu/tsort)
+   Compiling uu_more v0.13.0 (/work/src/uutils/src/uu/more)
+   Compiling uu_factor v0.13.0 (/work/src/uutils/src/uu/factor)
+   Compiling uu_tail v0.13.0 (/work/src/uutils/src/uu/tail)
+   Compiling phf v0.14.0
+   Compiling uu_nl v0.13.0 (/work/src/uutils/src/uu/nl)
+   Compiling uu_wc v0.13.0 (/work/src/uutils/src/uu/wc)
+   Compiling uu_uname v0.13.0 (/work/src/uutils/src/uu/uname)
+   Compiling uu_arch v0.13.0 (/work/src/uutils/src/uu/arch)
+   Compiling uu_cp v0.13.0 (/work/src/uutils/src/uu/cp)
+   Compiling uu_touch v0.13.0 (/work/src/uutils/src/uu/touch)
+   Compiling uu_vdir v0.13.0 (/work/src/uutils/src/uu/vdir)
+   Compiling uu_dir v0.13.0 (/work/src/uutils/src/uu/dir)
+   Compiling uu_base64 v0.13.0 (/work/src/uutils/src/uu/base64)
+   Compiling uu_basenc v0.13.0 (/work/src/uutils/src/uu/basenc)
+   Compiling uu_timeout v0.13.0 (/work/src/uutils/src/uu/timeout)
+   Compiling uu_date v0.13.0 (/work/src/uutils/src/uu/date)
+   Compiling uu_mv v0.13.0 (/work/src/uutils/src/uu/mv)
+   Compiling uu_rm v0.13.0 (/work/src/uutils/src/uu/rm)
+   Compiling uu_hostname v0.13.0 (/work/src/uutils/src/uu/hostname)
+   Compiling uu_shred v0.13.0 (/work/src/uutils/src/uu/shred)
+   Compiling uu_mktemp v0.13.0 (/work/src/uutils/src/uu/mktemp)
+   Compiling uu_split v0.13.0 (/work/src/uutils/src/uu/split)
+   Compiling uu_csplit v0.13.0 (/work/src/uutils/src/uu/csplit)
+   Compiling uu_pr v0.13.0 (/work/src/uutils/src/uu/pr)
+   Compiling uu_ptx v0.13.0 (/work/src/uutils/src/uu/ptx)
+   Compiling uu_cksum v0.13.0 (/work/src/uutils/src/uu/cksum)
+   Compiling uu_sha256sum v0.13.0 (/work/src/uutils/src/uu/sha256sum)
+   Compiling uu_md5sum v0.13.0 (/work/src/uutils/src/uu/md5sum)
+   Compiling uu_b2sum v0.13.0 (/work/src/uutils/src/uu/b2sum)
+   Compiling uu_sha1sum v0.13.0 (/work/src/uutils/src/uu/sha1sum)
+   Compiling uu_sha384sum v0.13.0 (/work/src/uutils/src/uu/sha384sum)
+   Compiling uu_sha512sum v0.13.0 (/work/src/uutils/src/uu/sha512sum)
+   Compiling uu_sha224sum v0.13.0 (/work/src/uutils/src/uu/sha224sum)
+   Compiling uu_chmod v0.13.0 (/work/src/uutils/src/uu/chmod)
+   Compiling uu_cut v0.13.0 (/work/src/uutils/src/uu/cut)
+   Compiling uu_seq v0.13.0 (/work/src/uutils/src/uu/seq)
+   Compiling uu_groups v0.13.0 (/work/src/uutils/src/uu/groups)
+   Compiling uu_expand v0.13.0 (/work/src/uutils/src/uu/expand)
+   Compiling uu_false v0.13.0 (/work/src/uutils/src/uu/false)
+   Compiling uu_hostid v0.13.0 (/work/src/uutils/src/uu/hostid)
+   Compiling uu_sleep v0.13.0 (/work/src/uutils/src/uu/sleep)
+   Compiling uu_join v0.13.0 (/work/src/uutils/src/uu/join)
+   Compiling uu_tee v0.13.0 (/work/src/uutils/src/uu/tee)
+   Compiling uu_unlink v0.13.0 (/work/src/uutils/src/uu/unlink)
+   Compiling uu_link v0.13.0 (/work/src/uutils/src/uu/link)
+   Compiling uu_logname v0.13.0 (/work/src/uutils/src/uu/logname)
+   Compiling uu_mkdir v0.13.0 (/work/src/uutils/src/uu/mkdir)
+   Compiling uu_test v0.13.0 (/work/src/uutils/src/uu/test)
+   Compiling uu_tty v0.13.0 (/work/src/uutils/src/uu/tty)
+   Compiling uu_kill v0.13.0 (/work/src/uutils/src/uu/kill)
+   Compiling uu_uniq v0.13.0 (/work/src/uutils/src/uu/uniq)
+   Compiling uu_unexpand v0.13.0 (/work/src/uutils/src/uu/unexpand)
+   Compiling uu_realpath v0.13.0 (/work/src/uutils/src/uu/realpath)
+   Compiling uu_whoami v0.13.0 (/work/src/uutils/src/uu/whoami)
+   Compiling uu_readlink v0.13.0 (/work/src/uutils/src/uu/readlink)
+   Compiling uu_printf v0.13.0 (/work/src/uutils/src/uu/printf)
+   Compiling uu_pwd v0.13.0 (/work/src/uutils/src/uu/pwd)
+   Compiling uu_numfmt v0.13.0 (/work/src/uutils/src/uu/numfmt)
+   Compiling uu_cat v0.13.0 (/work/src/uutils/src/uu/cat)
+   Compiling uu_env v0.13.0 (/work/src/uutils/src/uu/env)
+   Compiling uu_nice v0.13.0 (/work/src/uutils/src/uu/nice)
+   Compiling uu_fmt v0.13.0 (/work/src/uutils/src/uu/fmt)
+   Compiling uu_printenv v0.13.0 (/work/src/uutils/src/uu/printenv)
+   Compiling uu_install v0.13.0 (/work/src/uutils/src/uu/install)
+   Compiling uu_dd v0.13.0 (/work/src/uutils/src/uu/dd)
+   Compiling uu_sum v0.13.0 (/work/src/uutils/src/uu/sum)
+   Compiling uu_stat v0.13.0 (/work/src/uutils/src/uu/stat)
+   Compiling uu_mkfifo v0.13.0 (/work/src/uutils/src/uu/mkfifo)
+   Compiling uu_df v0.13.0 (/work/src/uutils/src/uu/df)
+   Compiling uu_rmdir v0.13.0 (/work/src/uutils/src/uu/rmdir)
+   Compiling uu_nproc v0.13.0 (/work/src/uutils/src/uu/nproc)
+   Compiling uu_paste v0.13.0 (/work/src/uutils/src/uu/paste)
+   Compiling uu_dirname v0.13.0 (/work/src/uutils/src/uu/dirname)
+   Compiling uu_echo v0.13.0 (/work/src/uutils/src/uu/echo)
+   Compiling uu_chroot v0.13.0 (/work/src/uutils/src/uu/chroot)
+   Compiling uu_dircolors v0.13.0 (/work/src/uutils/src/uu/dircolors)
+   Compiling uu_chgrp v0.13.0 (/work/src/uutils/src/uu/chgrp)
+   Compiling uu_sync v0.13.0 (/work/src/uutils/src/uu/sync)
+   Compiling uu_du v0.13.0 (/work/src/uutils/src/uu/du)
+   Compiling uu_fold v0.13.0 (/work/src/uutils/src/uu/fold)
+   Compiling uu_id v0.13.0 (/work/src/uutils/src/uu/id)
+   Compiling uu_head v0.13.0 (/work/src/uutils/src/uu/head)
+   Compiling uu_users v0.13.0 (/work/src/uutils/src/uu/users)
+   Compiling uu_comm v0.13.0 (/work/src/uutils/src/uu/comm)
+   Compiling uu_truncate v0.13.0 (/work/src/uutils/src/uu/truncate)
+   Compiling uu_uptime v0.13.0 (/work/src/uutils/src/uu/uptime)
+   Compiling uu_mknod v0.13.0 (/work/src/uutils/src/uu/mknod)
+   Compiling uu_ln v0.13.0 (/work/src/uutils/src/uu/ln)
+   Compiling uu_true v0.13.0 (/work/src/uutils/src/uu/true)
+   Compiling uu_who v0.13.0 (/work/src/uutils/src/uu/who)
+   Compiling uu_yes v0.13.0 (/work/src/uutils/src/uu/yes)
+   Compiling uu_nohup v0.13.0 (/work/src/uutils/src/uu/nohup)
+   Compiling uu_pinky v0.13.0 (/work/src/uutils/src/uu/pinky)
+   Compiling uu_pathchk v0.13.0 (/work/src/uutils/src/uu/pathchk)
+   Compiling uu_basename v0.13.0 (/work/src/uutils/src/uu/basename)
+   Compiling uu_chown v0.13.0 (/work/src/uutils/src/uu/chown)
+    Finished `release` profile [optimized] target(s) in 3m 59s

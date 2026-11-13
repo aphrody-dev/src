@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 015: Pseudo-classes](https://thecsspodcast.libsyn.com/015-pseudo-selectors)
 
 Say you've got an email sign up form,
@@ -24,7 +25,7 @@ and this module will take you through them in more detail.
 
 Unlike pseudo-elements,
 which you can learn more about in the [previous module](https://web.dev/learn/css/pseudo-elements.md.txt),
-pseudo-*classes* hook onto specific *states* that an element might be in,
+pseudo-_classes_ hook onto specific _states_ that an element might be in,
 rather than generally style parts of that element.
 
 ## Interactive states
@@ -96,7 +97,7 @@ In this sort of situation, a developer will apply the following CSS:
 
 ```css
 button:focus {
-    outline: none;
+  outline: none;
 }
 ```
 
@@ -110,13 +111,14 @@ while also using the `outline: none` rule to prevent it when a pointer device in
 
 ```css
 button:focus {
-    outline: none;
+  outline: none;
 }
 
 button:focus-visible {
-    outline: 1px solid black;
+  outline: 1px solid black;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/qBRXRdW?height=350&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen qBRXRdW by web-dot-dev on Codepen">
 </iframe>
 
@@ -137,7 +139,7 @@ Say you have the following HTML:
 
 ```html
 <article id="content">
-    <!-- ... -->
+  <!-- ... -->
 </article>
 ```
 
@@ -145,7 +147,7 @@ You can attach styles to that element when the URL contains `#content`.
 
 ```css
 #content:target {
-    background: yellow;
+  background: yellow;
 }
 ```
 
@@ -190,10 +192,14 @@ it's recommended that you use the LVHA rule for styling links with pseudo-classe
 `:link`, `:visited`, `:hover`, `:active`.
 
 ```css
-a:link {}
-a:visited {}
-a:hover {}
-a:active {}
+a:link {
+}
+a:visited {
+}
+a:hover {
+}
+a:active {
+}
 ```
 
 > [!NOTE]
@@ -300,7 +306,7 @@ helping them understand they can safely move to the next field.
 </iframe>
 
 The `:in-range` pseudo-class is available if an input has a `min` and `max`,
-such as a numeric input *and* the value is within those bounds.
+such as a numeric input _and_ the value is within those bounds.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/qBRXrpP?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen qBRXrpP by web-dot-dev on Codepen">
 </iframe>
 
@@ -372,9 +378,9 @@ look like they do the same thing as `:first-child` and `:last-child`, but consid
 
 ```html
 <div class="my-parent">
-    <p>A paragraph</p>
-    <div>A div</div>
-    <div>Another div</div>
+  <p>A paragraph</p>
+  <div>A div</div>
+  <div>Another div</div>
 </div>
 ```
 
@@ -382,7 +388,7 @@ And this CSS:
 
 ```css
 .my-parent div:first-child {
-    color: red;
+  color: red;
 }
 ```
 
@@ -391,7 +397,7 @@ The `:first-of-type` pseudo-class is useful in this context.
 
 ```css
 .my-parent div:first-of-type {
-    color: red;
+  color: red;
 }
 ```
 
@@ -431,8 +437,8 @@ You can also create more complex selectors that find items at regularly spaced i
 using [the An+B microsyntax](https://www.w3.org/TR/css-syntax-3/#anb-microsyntax).
 
 ```css
-li:nth-child(3n+3) {
-    background: yellow;
+li:nth-child(3n + 3) {
+  background: yellow;
 }
 ```
 
@@ -454,10 +460,11 @@ This expression works for both `:nth-child()` and `:nth-of-type()`.
 If you have a table, you may want to add stripes to every other row. While you can target every other row with`tr:nth-child(even)`, this doesn't work if you are filtering some rows out. If you implement filtering by applying the `hidden` attribute, you can add `of :not([hidden])` to the selector to pre-filter the hidden items out before selecting the even rows.
 
 ```css
-tr:nth-child(even of :not([hidden])){
+tr:nth-child(even of :not([hidden])) {
   background: lightgrey;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/KKBLGbd?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen KKBLGbd by web-dot-dev on Codepen">
 </iframe>
 
@@ -505,8 +512,7 @@ Children aren't just HTML elements or text nodes though: they can also be whites
 which can be confusing when you're debugging the following HTML and wondering why it isn't working with `:empty`:
 
 ```html
-<div>
-</div>
+<div></div>
 ```
 
 The reason is that there's some whitespace between the opening and closing `<div>`,
@@ -518,9 +524,9 @@ Here, an editor has added a stray, empty paragraph.
 
 ```html
 <article class="post">
- <p>Donec ullamcorper nulla non metus auctor fringilla.</p>
- <p></p>
- <p>Curabitur blandit tempus porttitor.</p>
+  <p>Donec ullamcorper nulla non metus auctor fringilla.</p>
+  <p></p>
+  <p>Curabitur blandit tempus porttitor.</p>
 </article>
 ```
 
@@ -528,9 +534,10 @@ With `:empty`, you can find that and hide it.
 
 ```css
 .post :empty {
-    display: none;
+  display: none;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VwPzbKg?height=250&amp;theme-id=light&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VwPzbKg by web-dot-dev on Codepen">
 </iframe>
 
@@ -565,7 +572,7 @@ pseudo-class, you can write a more compact version:
 
 ```css
 .post :is(h2, li, img) {
-    /* ... */
+  /* ... */
 }
 ```
 
@@ -593,7 +600,7 @@ For example, you can use it to style all links that don't have a `class` attribu
 
 ```css
 a:not([class]) {
-    color: blue;
+  color: blue;
 }
 ```
 
@@ -603,9 +610,10 @@ so you could write a CSS rule that adds a thick red outline to invalid images:
 
 ```css
 img:not([alt]) {
-    outline: 10px red;
+  outline: 10px red;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/RNWMvwG?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen RNWMvwG by web-dot-dev on Codepen">
 </iframe>
 
@@ -616,7 +624,7 @@ img:not([alt]) {
 What if you want to style elements based on what is contained inside of them? You can use the `:has()` pseudo-class to do that. For example, you might want to apply styles to buttons that include icons.
 
 ```css
- button:has(svg) {
+button:has(svg) {
   /* ... */
 }
 ```
@@ -632,6 +640,7 @@ form:has(input:valid) label::after {
   content: "✅";
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/MYaVZMq?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen MYaVZMq by web-dot-dev on Codepen">
 </iframe>
 
@@ -641,9 +650,10 @@ The `:has()` pseudo-class cannot be nested inside of another `:has()`, but it ca
 
 ```css
 :is(h1, h2, h3):has(a) {
-   /* ... */
+  /* ... */
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/GgpxPVN?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen GgpxPVN by web-dot-dev on Codepen">
 </iframe>
 
@@ -659,7 +669,7 @@ The selector list is unforgiving, so if any selectors in the list are invalid, a
 
 Test your knowledge of pseudo classes
 Pseudo-classes act as if a class has been dynamically applied to an element, while pseudo-elements act on an element itself.
-True Watch for the use of a single or double `:` as a key distinguishing character in the selector False Pseudo-elements are for parts, Pseudo-classes are for state. Which of the following are a *functional* pseudo-class?
+True Watch for the use of a single or double `:` as a key distinguishing character in the selector False Pseudo-elements are for parts, Pseudo-classes are for state. Which of the following are a _functional_ pseudo-class?
 `:is()` 🎉 `:target` Functional pseudo-classes have `()` after them, to indicate they accept parameters. `:empty` Functional pseudo-classes have `()` after them, to indicate they accept parameters. `:not()` 🎉 Which of the following pseudo-classes are due to a user-interaction?
 `:hover` 🎉 `:press` Try again! `:squeeze` Try again! `:target` 🎉 `:focus-within` 🎉 Which of the following are `<form>` state pseudo classes?
 `:enabled` 🎉 `:fresh` Try again! `:indeterminate` 🎉 `:checked` 🎉 `:in-range` 🎉 `:loading` Try again! `:valid` 🎉

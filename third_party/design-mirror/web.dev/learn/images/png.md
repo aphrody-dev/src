@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 There are a few things that set PNG (Portable Network Graphics) apart from other formats, though as it was intended to be a replacement for
 GIF (due to patent disputes long, long ago) it is similar to GIF in several ways. PNG also uses lossless compression,
-meaning that the image data will be *compressed* without any loss of visual fidelity. An image's color palette may be quantized---an
+meaning that the image data will be _compressed_ without any loss of visual fidelity. An image's color palette may be quantized---an
 "indexed color", with PNG making use of a palette limited to 256 colors, just like GIF. A far more common "truecolor" PNG can
 contain many, many more colors---up to 16 million.
 

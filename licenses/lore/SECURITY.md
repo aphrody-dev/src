@@ -40,12 +40,12 @@ Include as much of the following as you can:
 
 ## Response timeline
 
-| Milestone | Target |
-| --- | --- |
-| Initial acknowledgement | Within 7 business days of receipt |
-| Vulnerability assessment and severity determination | Within 30 business days |
-| Patch development, testing, and release | 30–90 business days |
-| Public disclosure | 90 business days (sooner for low-severity issues or active exploitation) |
+| Milestone                                           | Target                                                                   |
+| --------------------------------------------------- | ------------------------------------------------------------------------ |
+| Initial acknowledgement                             | Within 7 business days of receipt                                        |
+| Vulnerability assessment and severity determination | Within 30 business days                                                  |
+| Patch development, testing, and release             | 30–90 business days                                                      |
+| Public disclosure                                   | 90 business days (sooner for low-severity issues or active exploitation) |
 
 If you do not receive an acknowledgement within 7 business days, follow up at [security@epicgames.com](mailto:security@epicgames.com) with "Lore security" in the subject line.
 

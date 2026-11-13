@@ -20,12 +20,12 @@ Date: 2026-11-13. Source of truth: `infra/agents/toolchain.toml`. Applier: `pack
 
 ## Targets per agent
 
-| Agent | Mechanism | Verification |
-|---|---|---|
-| Claude Code | marketplace `aphrody` + plugins `[[claude.plugin]]`, MCP `[[claude.mcp]]`, pinned skills `[[claude.skill]]` | `claude plugin list`, `claude mcp list`, `claude -p --output-format stream-json --verbose` (init event, `skills` field) |
-| Codex | `codex plugin marketplace add <src>` + `codex plugin add aphrody-skills@aphrody` (only local sources are listed by Codex) | `codex plugin list` |
-| agy | `agy plugin install <plugin folder>` (local source, or Claude cache for a GitHub plugin); vercel-agent-skills refused (no manifest) | `agy plugin list --json` |
-| Gemini CLI | `gemini extensions link <src>/.agents` | CLI absent from the PC and the fleet on 2026-11-13 |
+| Agent       | Mechanism                                                                                                                           | Verification                                                                                                            |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Claude Code | marketplace `aphrody` + plugins `[[claude.plugin]]`, MCP `[[claude.mcp]]`, pinned skills `[[claude.skill]]`                         | `claude plugin list`, `claude mcp list`, `claude -p --output-format stream-json --verbose` (init event, `skills` field) |
+| Codex       | `codex plugin marketplace add <src>` + `codex plugin add aphrody-skills@aphrody` (only local sources are listed by Codex)           | `codex plugin list`                                                                                                     |
+| agy         | `agy plugin install <plugin folder>` (local source, or Claude cache for a GitHub plugin); vercel-agent-skills refused (no manifest) | `agy plugin list --json`                                                                                                |
+| Gemini CLI  | `gemini extensions link <src>/.agents`                                                                                              | CLI absent from the PC and the fleet on 2026-11-13                                                                      |
 
 The `hosts` field is pc, prd, fr1 or fr2 (absent: all). On Linux, the host is read from `HOST=` in `/etc/fleet/resilience.conf` and the root is that of the checkout running the applier.
 
@@ -44,15 +44,15 @@ The `hosts` field is pc, prd, fr1 or fr2 (absent: all). On Linux, the host is re
 
 ## Measurements of 2026-11-13 (`check`: 0 gap everywhere)
 
-| Host | User | Claude (active plugins, MCP) | Codex | agy |
-|---|---|---|---|---|
-| pc | aphro | 21 plugins, 14 MCP; neutral `claude -p`: 207 skills including 69 aphrody-skills | aphrody-skills | aphrody-skills 69, web-quality-skills 6 |
-| prd | root | 17, 7 | aphrody-skills | aphrody-skills 69, web-quality-skills 6 |
-| prd | agent | 17, 7; `claude -p` in /tmp: 197 skills including 69 aphrody-skills | aphrody-skills | absent |
-| fr1 | root | 17, 7 (Claude moved from 2.1.96 to 2.1.323, agy to 1.5.8) | absent | aphrody-skills 69, web-quality-skills 6 |
-| fr1 | agent | 20, 7 | aphrody-skills | absent |
-| fr2 | agent | 17, 8 | aphrody-skills | absent |
-| fr2 | root | no agent installed | | |
+| Host | User  | Claude (active plugins, MCP)                                                    | Codex          | agy                                     |
+| ---- | ----- | ------------------------------------------------------------------------------- | -------------- | --------------------------------------- |
+| pc   | aphro | 21 plugins, 14 MCP; neutral `claude -p`: 207 skills including 69 aphrody-skills | aphrody-skills | aphrody-skills 69, web-quality-skills 6 |
+| prd  | root  | 17, 7                                                                           | aphrody-skills | aphrody-skills 69, web-quality-skills 6 |
+| prd  | agent | 17, 7; `claude -p` in /tmp: 197 skills including 69 aphrody-skills              | aphrody-skills | absent                                  |
+| fr1  | root  | 17, 7 (Claude moved from 2.1.96 to 2.1.323, agy to 1.5.8)                       | absent         | aphrody-skills 69, web-quality-skills 6 |
+| fr1  | agent | 20, 7                                                                           | aphrody-skills | absent                                  |
+| fr2  | agent | 17, 8                                                                           | aphrody-skills | absent                                  |
+| fr2  | root  | no agent installed                                                              |                |                                         |
 
 Before: 12 user skills on the PC, none on the fleet; plugins and MCPs set up by hand on the PC only.
 

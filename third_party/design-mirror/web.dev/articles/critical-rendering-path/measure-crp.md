@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)
 
 Published: March 31, 2014
@@ -32,14 +33,14 @@ can run Lighthouse as a Chrome Extension or NPM module, which is
 useful for integrating Lighthouse with continuous integration systems.
 
 Read [Auditing Web Apps With Lighthouse](https://developer.chrome.com/docs/lighthouse) to get started.
- When you run Lighthouse as a Chrome Extension, your page's CRP results should be similar, listing the [chain durations](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) and order of files loaded by the browser.
+When you run Lighthouse as a Chrome Extension, your page's CRP results should be similar, listing the [chain durations](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) and order of files loaded by the browser.
 
 ## Instrument your code with the Navigation Timing API
 
 The combination of the [Navigation Timing API](https://developer.mozilla.org/docs/Web/API/Performance_API/Navigation_timing) and other browser events emitted
 as the page loads lets you capture and record the real-world CRP
 performance of any page.
- Each of the labels in the diagram corresponds to a high resolution timestamp that the browser tracks for each and every page it loads. This diagram skips all network related timestamps.
+Each of the labels in the diagram corresponds to a high resolution timestamp that the browser tracks for each and every page it loads. This diagram skips all network related timestamps.
 
 So, what do these timestamps mean?
 
@@ -72,16 +73,16 @@ For our purposes, we focus on a few key milestones for CRP:
           interactive = t.domInteractive - t.domLoading,
           dcl = t.domContentLoadedEventStart - t.domLoading,
           complete = t.domComplete - t.domLoading;
-        var stats = document.createElement('p');
+        var stats = document.createElement("p");
         stats.textContent =
-          'interactive: ' +
+          "interactive: " +
           interactive +
-          'ms, ' +
-          'dcl: ' +
+          "ms, " +
+          "dcl: " +
           dcl +
-          'ms, complete: ' +
+          "ms, complete: " +
           complete +
-          'ms';
+          "ms";
         document.body.appendChild(stats);
       }
     </script>

@@ -7,16 +7,17 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to optimize your website's Interaction to Next Paint.
 
- Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)  Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/) Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: May 19, 2023, Last updated: September 2, 2025
 
 [Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt) is a [stable](https://web.dev/articles/vitals.md.txt#stable) Core Web Vital metric that assesses a page's overall responsiveness to user interactions by observing the latency of all [qualifying interactions](https://web.dev/articles/inp.md.txt#whats_in_an_interaction) that occur throughout the lifespan of a user's visit to a page. The final INP value is the longest interaction observed (sometimes ignoring outliers).
 
 To provide a good user experience, websites should strive to have an Interaction to Next Paint of **200 milliseconds or less** . To hit this target for most of your users, a good threshold to measure is the **75th percentile of page loads**, segmented across mobile and desktop devices.
- INP thresholds
+INP thresholds
 
 Depending on the website, there may be few to no interactions---such as pages of mostly text and images with few to no interactive elements. Or, in the case of websites such as text editors or games, there could be hundreds---even thousands---of interactions. In either case, where there's a high INP, the user experience is at risk.
 
@@ -55,7 +56,7 @@ Interactions can be broken down into three subparts:
 2. The **processing duration**, which consists of the time it takes for event callbacks to run to completion.
 3. The **presentation delay**, which is the time it takes for the browser to present the next frame which contains the visual result of the interaction.
 
- The life of an interaction. An input delay occurs until event handlers start running, possibly caused by factors such as long tasks on the main thread. The interaction's event handler callbacks then run, and a delay occurs before the next frame is presented.
+The life of an interaction. An input delay occurs until event handlers start running, possibly caused by factors such as long tasks on the main thread. The interaction's event handler callbacks then run, and a delay occurs before the next frame is presented.
 
 > [!NOTE]
 > **Note:** Subparts can be measured for each individual `event` entry emitted, but it is recommended to measure these across all `event` entries emitted within the same frame (for example, `pointerup`, `mouseup`, and `click` entries in the previous diagram), as shown in the previuous diagram. This will correctly identify where the delay is (delays before the interaction is started to process, as part of processing the interaction event handlers, or after the event handlers have completed). This is how the subparts are calculated in the [`web-vitals` JavaScript library](https://github.com/GoogleChrome/web-vitals).
@@ -67,7 +68,7 @@ The sum of these three subparts is the total interaction latency. Every single s
 
 ### Identify and reduce input delay
 
-When a user interacts with a page, the first part of that interaction is the *input delay*. Depending on other activity on the page, input delays can be considerable in length. This could be due to activity occurring on the main thread (perhaps due to scripts loading, parsing and compiling), fetch handling, timer functions, or even from other interactions that occur in quick succession and overlap with one another.
+When a user interacts with a page, the first part of that interaction is the _input delay_. Depending on other activity on the page, input delays can be considerable in length. This could be due to activity occurring on the main thread (perhaps due to scripts loading, parsing and compiling), fetch handling, timer functions, or even from other interactions that occur in quick succession and overlap with one another.
 
 Whatever the source of an interaction's input delay, you'll want to reduce input delay to a minimum so that interactions can begin running event callbacks as soon as possible.
 
@@ -76,7 +77,7 @@ Whatever the source of an interaction's input delay, you'll want to reduce input
 
 #### The relationship between script evaluation and long tasks during startup
 
-A critical aspect of interactivity in the page lifecycle is during startup. As a page loads, it will initially render, but it's important to remember that just because a page has *rendered* , doesn't mean that the page is finished *loading*. Depending on how many resources a page requires to become fully functional, it's possible that users may attempt to interact with the page while it's still loading.
+A critical aspect of interactivity in the page lifecycle is during startup. As a page loads, it will initially render, but it's important to remember that just because a page has _rendered_ , doesn't mean that the page is finished _loading_. Depending on how many resources a page requires to become fully functional, it's possible that users may attempt to interact with the page while it's still loading.
 
 One thing that can extend an interaction's input delay while a page loads is script evaluation. After a JavaScript file has been fetched from the network, the browser still has work to do before that JavaScript can run; that work includes parsing a script to check its syntax is valid, compiling it into bytecode, and then finally executing it.
 
@@ -118,7 +119,7 @@ In this example, the following four things need to happen in response to charact
 The code to do this might look something like the following:
 
 ```javascript
-textBox.addEventListener('input', (inputEvent) => {
+textBox.addEventListener("input", (inputEvent) => {
   // Update the UI immediately, so the changes the user made
   // are visible as soon as the next frame is presented.
   updateTextBox(inputEvent);
@@ -144,7 +145,7 @@ While the use of `setTimeout()` inside a `requestAnimationFrame()` call in the p
 #### Avoid layout thrashing
 
 Layout thrashing---sometimes called forced synchronous layout---is a rendering performance problem where layout occurs synchronously. It occurs when you update styles in JavaScript, and then read them in the same task---and [there are many properties in JavaScript that can cause layout thrashing](https://gist.github.com/paulirish/5d52fb081b3570c81e3a).
- An example of layout thrashing, as shown in the performance panel of Chrome DevTools. Rendering tasks that involve layout thrashing will be noted with a red triangle at the upper right corner of the portion of the call stack, often labeled **Recalculate Style** or **Layout**.
+An example of layout thrashing, as shown in the performance panel of Chrome DevTools. Rendering tasks that involve layout thrashing will be noted with a red triangle at the upper right corner of the portion of the call stack, often labeled **Recalculate Style** or **Layout**.
 
 Layout thrashing is a performance bottleneck because by updating styles and then immediately requesting the values of those styles in JavaScript, the browser is forced to do synchronous layout work it otherwise could have waited to perform asynchronously later on after event callbacks have finished running.
 
@@ -153,7 +154,7 @@ Layout thrashing is a performance bottleneck because by updating styles and then
 
 ### Minimize presentation delay
 
-The *presentation delay* of an interaction marks spans from when an interaction's event callbacks have finished running, up to the point at which the browser is able to paint the next frame that shows the resulting visual changes.
+The _presentation delay_ of an interaction marks spans from when an interaction's event callbacks have finished running, up to the point at which the browser is able to paint the next frame that shows the resulting visual changes.
 
 #### Minimize DOM size
 
@@ -176,13 +177,13 @@ One way you can limit the amount of both rendering work during page load and ren
 
 #### Be aware of performance costs when rendering HTML using JavaScript
 
-Where there's HTML, there's HTML parsing, and after the browser has finished parsing HTML into a DOM, it must apply styles to it, perform layout calculations, and subsequently render that layout. This is an unavoidable cost, but *how* you go about rendering HTML matters.
+Where there's HTML, there's HTML parsing, and after the browser has finished parsing HTML into a DOM, it must apply styles to it, perform layout calculations, and subsequently render that layout. This is an unavoidable cost, but _how_ you go about rendering HTML matters.
 
 When the server sends HTML, it arrives in the browser as a stream. Streaming means that the HTML response from the server is arriving in chunks. The browser optimizes how it handles a stream by incrementally parsing chunks of that stream as they arrive, and rendering them bit by bit. This is a performance optimization in that the browser implicitly yields periodically and automatically during page load, and you get that for free.
 
-While the first visit to any website will always involve *some* amount of HTML, a common approach starts with a minimal initial bit of HTML, and then JavaScript is used to populate the content area. Subsequent updates to that content area also occur as the result of user interactions. This is usually called the [single-page application (SPA) model](https://en.wikipedia.org/wiki/Single-page_application). One drawback of this pattern is that, by rendering HTML with JavaScript on the client, you not only get the cost of the JavaScript processing to create that HTML, but also the browser will *not* yield until it has finished parsing that HTML, and rendering it.
+While the first visit to any website will always involve _some_ amount of HTML, a common approach starts with a minimal initial bit of HTML, and then JavaScript is used to populate the content area. Subsequent updates to that content area also occur as the result of user interactions. This is usually called the [single-page application (SPA) model](https://en.wikipedia.org/wiki/Single-page_application). One drawback of this pattern is that, by rendering HTML with JavaScript on the client, you not only get the cost of the JavaScript processing to create that HTML, but also the browser will _not_ yield until it has finished parsing that HTML, and rendering it.
 
-It's vital to remember though, that even websites that *aren't* SPAs will probably involve some amount of HTML rendering through JavaScript as the result of interactions. This is generally fine, so long as you're not rendering large amounts of HTML on the client, which can delay presentation of the next frame. However, it's important to understand the performance implications of this approach to rendering HTML in the browser, and how it can impact the responsiveness of your website to user input if you are rendering a lot of HTML using JavaScript.
+It's vital to remember though, that even websites that _aren't_ SPAs will probably involve some amount of HTML rendering through JavaScript as the result of interactions. This is generally fine, so long as you're not rendering large amounts of HTML on the client, which can delay presentation of the next frame. However, it's important to understand the performance implications of this approach to rendering HTML in the browser, and how it can impact the responsiveness of your website to user input if you are rendering a lot of HTML using JavaScript.
 
 > [!NOTE]
 > **Read to learn more:** [Client-side rendering of HTML and interactivity](https://web.dev/articles/client-side-rendering-of-html-and-interactivity.md.txt).

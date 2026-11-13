@@ -116,6 +116,7 @@ directory carries records that already describe its files.
   moved to `.lore/` and finds the rest in the store as before. It does not misread a file, since an
   upgraded client zeroes every store record it makes stale, apart from the crash case under Durability
   and the downgrade under Risks.
+
 - **`.lore/` contents** — Backup and copy tools see the new directory, about 24 bytes per file of the
   working tree. Copying it with the working tree, keeping modification times, is what lets a copy skip
   hashing.
@@ -161,11 +162,11 @@ directory carries records that already describe its files.
 No migration step: records move to `.lore/` as an upgraded client reads or changes their paths. What each
 client reads and writes depends on which client created the instance:
 
-| Instance created by | Client running | Reads | Writes |
-| --- | --- | --- | --- |
-| An older client | Upgraded | `.lore/records/`, then the store for a path with no record | `.lore/records/`, and zeroes the path's store record |
-| An upgraded client (marked) | Upgraded | `.lore/records/` | `.lore/records/` |
-| Either | Older, after a downgrade | The store | The store |
+| Instance created by         | Client running           | Reads                                                      | Writes                                               |
+| --------------------------- | ------------------------ | ---------------------------------------------------------- | ---------------------------------------------------- |
+| An older client             | Upgraded                 | `.lore/records/`, then the store for a path with no record | `.lore/records/`, and zeroes the path's store record |
+| An upgraded client (marked) | Upgraded                 | `.lore/records/`                                           | `.lore/records/`                                     |
+| Either                      | Older, after a downgrade | The store                                                  | The store                                            |
 
 Records an older client wrote stay readable in the store as the fallback, and stop answering as the paths
 they describe change. Their 84-byte entries stay in the buckets, as zeroed keys do today: the store keeps
@@ -195,30 +196,30 @@ they do today: deleting an instance removes only its registration and anchor key
 
 **Assumptions**
 
-- **Assumption:** no other instance needs another instance's modified-time records — *invalidated if:* a
+- **Assumption:** no other instance needs another instance's modified-time records — _invalidated if:_ a
   feature reads them across instances.
 
 **Risks**
 
 - **Risk:** an older client runs on an instance an upgraded client created, after a downgrade, and writes
   store records under its instance ID, which the upgraded client neither reads nor zeroes once upgraded
-  again — *mitigation:* the upgraded client never trusts those records. Only a second downgrade reads
+  again — _mitigation:_ the upgraded client never trusts those records. Only a second downgrade reads
   them. Such a record answers wrongly only for a path whose file keeps the recorded time while the content
   the current revision holds for it changes under the upgraded client, as when it clears a record.
 
 - **Risk:** a copy that does not keep modification times inherits records that never match —
-  *mitigation:* a record that does not match costs a hash, so the copy scans as a fresh instance does today.
+  _mitigation:_ a record that does not match costs a hash, so the copy scans as a fresh instance does today.
 - **Risk:** an older and an upgraded client alternate on one instance. The older client records and
   clears times only in the store, and its clear, when a sync deletes a file, cannot reach
   `.lore/records/`, so after upgrading again the instance's own record for a path can describe content the
-  older client replaced or deleted — *mitigation:* the own record still wins safely. It answers only while
+  older client replaced or deleted — _mitigation:_ the own record still wins safely. It answers only while
   the file keeps the recorded time, and the older client changes a path's content only by writing or
   deleting its file, which leaves the path with no file or one of a new time, a recreated file
   included. The stale record then costs a hash. It answers wrongly only if a tool sets the file's time
   back to the recorded one, as a store record would today. For a path with no record of its own, on an
   instance an older client created, the store record describes what the older client saw, the guarantee
   records have today.
-- **Risk:** records for paths the tree no longer holds accumulate in `.lore/records/` — *mitigation:*
+- **Risk:** records for paths the tree no longer holds accumulate in `.lore/records/` — _mitigation:_
   clearing a path removes its record; what remains is bounded by the paths the instance has held.
 
 ## Drawbacks
@@ -232,14 +233,14 @@ they do today: deleting an instance removes only its registration and anchor key
 
 ### Keep the records in the store and copy them for a new instance
 
-*Rejected because:* a copy of the 1.1-million-file instance measured here would write 1.1 million records
+_Rejected because:_ a copy of the 1.1-million-file instance measured here would write 1.1 million records
 under the exclusive store lock, and the store would still grow by about 92 MB per instance.
 
 ### Move every record out of the store on upgrade
 
 The first upgraded command moves the instance's records into `.lore/` and zeroes them in the store.
 
-*Rejected because:* for the instance measured here that is 1.1 million store reads and writes under the store
+_Rejected because:_ for the instance measured here that is 1.1 million store reads and writes under the store
 lock in one command, whatever that command was meant to do. Moving each record as its path is read
 or changed spreads the same work across the commands that touch it.
 
@@ -247,7 +248,7 @@ or changed spreads the same work across the commands that touch it.
 
 Give each instance its own mutable store in `.lore/` for its records.
 
-*Rejected because:* the mutable store's entry costs 84 bytes per record against 24, and it carries buckets
+_Rejected because:_ the mutable store's entry costs 84 bytes per record against 24, and it carries buckets
 and a partition the records do not need.
 
 ## Prior Art

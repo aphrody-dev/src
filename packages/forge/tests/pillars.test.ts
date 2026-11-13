@@ -36,10 +36,15 @@ describe("4-Pillar VCS Governance (Git + Chromium + Kernel + AOSP)", () => {
       "https://chromium.googlesource.com/chromium/src.git@",
     );
 
-    const aospXml = readFileSync(srcPath(".repo", "manifests", "default.xml"), "utf-8");
+    const aospXml = readFileSync(
+      srcPath(".repo", "manifests", "default.xml"),
+      "utf-8",
+    );
     const projs = parseAospRepoManifestProjects(aospXml);
     expect(projs.length).toBeGreaterThanOrEqual(100);
-    expect(projs.some((p) => p.path === "third_party/aosp-manifest")).toBe(true);
+    expect(projs.some((p) => p.path === "third_party/aosp-manifest")).toBe(
+      true,
+    );
     expect(projs.some((p) => p.path === "third_party/kleaf")).toBe(true);
 
     const maint = readFileSync(srcPath("MAINTAINERS"), "utf-8");
@@ -53,11 +58,17 @@ describe("4-Pillar VCS Governance (Git + Chromium + Kernel + AOSP)", () => {
     expect(report.pillars.git.healthy).toBe(true);
     // The Chromium checkout lives on fr1 only (fleet roles); elsewhere the pillar must report absence, not health.
     expect(report.pillars.chromium.healthy).toBe(
-      existsSync(srcPath("third_party", "chromium", "src")) && existsSync(srcPath("third_party", "depot_tools")),
+      existsSync(srcPath("third_party", "chromium", "src")) &&
+        existsSync(srcPath("third_party", "depot_tools")),
     );
     // Heavy checkouts (third_party/linux, aosp) exist only on some hosts: health must track their presence.
-    if (existsSync(srcPath("third_party", "linux", ".git"))) expect(report.pillars.kernel.healthy).toBe(true);
-    expect(report.pillars.aosp.healthy).toBe(existsSync(srcPath("third_party", "aosp", "platform", "manifest")));
-    expect(report.allHealthy).toBe(Object.values(report.pillars).every((p) => p.healthy));
+    if (existsSync(srcPath("third_party", "linux", ".git")))
+      expect(report.pillars.kernel.healthy).toBe(true);
+    expect(report.pillars.aosp.healthy).toBe(
+      existsSync(srcPath("third_party", "aosp", "platform", "manifest")),
+    );
+    expect(report.allHealthy).toBe(
+      Object.values(report.pillars).every((p) => p.healthy),
+    );
   });
 });

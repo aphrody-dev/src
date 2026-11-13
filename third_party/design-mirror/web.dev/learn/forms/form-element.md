@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn the basics of using a form on the web with this introduction to the form
 element.
 
@@ -19,7 +20,7 @@ an `<input>` with a `<label>`, and a submit `<button>`.
 ```html
 <form>
   <label for="animal">What is your favorite animal?</label>
-  <input type="text" id="animal" name="animal">
+  <input type="text" id="animal" name="animal" />
   <button>Save</button>
 </form>
 ```
@@ -56,7 +57,7 @@ How would you do that?
 Toggle answer You can select the location of the script by using the `action` attribute.
 
 ```html
-      <form action="https://example.com/animals"></form>
+<form action="https://example.com/animals"></form>
 ```
 
 The preceding example makes a request to `https://example.com/animals`.
@@ -79,9 +80,7 @@ the data from the URL.
 If you want, you can instruct the form to use a `POST` request by changing the method attribute.
 
 ```html
-<form method="post">
-...
-</form>
+<form method="post">...</form>
 ```
 
 Using `POST`, the data is included in the

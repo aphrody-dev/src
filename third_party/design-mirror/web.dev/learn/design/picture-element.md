@@ -7,14 +7,13 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 [The previous module](https://web.dev/learn/design/responsive-images.md.txt) demonstrated how the `srcset` attribute lets you provide different-sized versions of the same image. The browser can then decide which is the right version to use. If you want to change the image completely, you'll need the [`picture`](https://developer.mozilla.org/docs/Web/HTML/Element/picture) element.
 
 In the same way that `srcset` builds upon the `src` attribute, the `picture` element builds upon the `img` element. The `picture` element wraps around an `img` element.
 
 ```html
-<picture>
-  
-</picture>
+<picture> </picture>
 ```
 
 If there is no `img` element nested inside the `picture` element, the `picture` element won't work.

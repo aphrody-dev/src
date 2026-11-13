@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)  Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+
+Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/) Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 The very first question you should ask yourself is whether an image is,
 in fact, required to achieve the effect you are after.
@@ -34,7 +35,7 @@ but it addresses all of these concerns and is always a better choice for display
 ## Choose the right image format
 
 If you are sure an image is the correct option, you should carefully select the right kind of image for the job.
- Zoomed-in vector image (L) raster image (R)
+Zoomed-in vector image (L) raster image (R)
 
 - [Vector graphics](https://en.wikipedia.org/wiki/Vector_graphics) use lines, points, and polygons to represent an image.
 - [Raster graphics](https://en.wikipedia.org/wiki/Raster_graphics) represent an image by encoding the individual values of each pixel within a rectangular grid.
@@ -60,7 +61,7 @@ to deliver the optimal experience to your users.
 There are two different kinds of pixels: CSS pixels and device pixels.
 A single CSS pixel may correspond directly to a single device pixel, or may be backed by multiple device pixels.
 What's the point? Well, the more device pixels there are, the finer the detail of the displayed content on the screen.
- The difference between CSS pixels and device pixels.
+The difference between CSS pixels and device pixels.
 
 High DPI (HiDPI) screens produce beautiful results, but there is one obvious tradeoff:
 image assets require more detail to take advantage of the higher device pixel counts.
@@ -73,11 +74,11 @@ On the other hand, raster images pose a much larger challenge because they encod
 Hence, the larger the number of pixels, the larger the file size of a raster image.
 Consider the difference between a photo asset displayed at 100x100 (CSS) pixels:
 
-| Screen resolution | Total pixels | Uncompressed file size (4 bytes per pixel) |
-|---|---|---|
-| 1x | 100 x 100 = 10,000 | 40,000 bytes |
-| 2x | 100 x 100 x 4 = 40,000 | 160,000 bytes |
-| 3x | 100 x 100 x 9 = 90,000 | 360,000 bytes |
+| Screen resolution | Total pixels           | Uncompressed file size (4 bytes per pixel) |
+| ----------------- | ---------------------- | ------------------------------------------ |
+| 1x                | 100 x 100 = 10,000     | 40,000 bytes                               |
+| 2x                | 100 x 100 x 4 = 40,000 | 160,000 bytes                              |
+| 3x                | 100 x 100 x 9 = 90,000 | 360,000 bytes                              |
 
 When we double the resolution of the physical screen,
 the total number of pixels increases by a factor of four:
@@ -97,12 +98,12 @@ In addition to different lossy and lossless compression algorithms,
 different image formats support different features such as animation and transparency (alpha) channels.
 As a result, the choice of the "right format" for a particular image is a combination of the appropriate visual results and functional requirements.
 
-| Format | Transparency | Animation | Browser |
-|---|---|---|---|
-| [PNG](http://en.wikipedia.org/wiki/Portable_Network_Graphics) | Yes | Yes ([APNG](https://en.wikipedia.org/wiki/APNG)) | All |
-| [JPEG](http://en.wikipedia.org/wiki/JPEG) | No | No | All |
-| [WebP](http://en.wikipedia.org/wiki/WebP) | Yes | Yes | All modern browsers. See [Can I use?](https://caniuse.com/webp) |
-| [AVIF](http://en.wikipedia.org/wiki/AVIF) | Yes | Yes | All modern browsers. See [Can I use?](https://caniuse.com/avif) |
+| Format                                                        | Transparency | Animation                                        | Browser                                                         |
+| ------------------------------------------------------------- | ------------ | ------------------------------------------------ | --------------------------------------------------------------- |
+| [PNG](http://en.wikipedia.org/wiki/Portable_Network_Graphics) | Yes          | Yes ([APNG](https://en.wikipedia.org/wiki/APNG)) | All                                                             |
+| [JPEG](http://en.wikipedia.org/wiki/JPEG)                     | No           | No                                               | All                                                             |
+| [WebP](http://en.wikipedia.org/wiki/WebP)                     | Yes          | Yes                                              | All modern browsers. See [Can I use?](https://caniuse.com/webp) |
+| [AVIF](http://en.wikipedia.org/wiki/AVIF)                     | Yes          | Yes                                              | All modern browsers. See [Can I use?](https://caniuse.com/avif) |
 
 There are two universally supported raster image formats: PNG and JPEG.
 In addition to these formats, modern browsers support the newer WebP and AVIF image formats. Both of the newer formats offer better overall compression and more features. So, which format should you use?

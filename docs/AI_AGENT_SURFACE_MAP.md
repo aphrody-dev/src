@@ -3,6 +3,7 @@
 ## 1. Executive Law: Single Ownership & Fused Triad
 
 In accordance with Late 2026 Sovereign Directives:
+
 1. **Single Public AI Product**: `@aphrody/ai-os` (`packages/ai-os` / `ai-os.exe`) is the sole public AI agent runtime and MCP owner across the entire `C:\src` monorepo.
 2. **Triad Orchestration**: `@aphrody/ai-triad` (`packages/ai-triad` / `triad.exe`) orchestrates multi-agent CLI workflows across OpenAI Codex, Google Antigravity (AGY/Gemini), and Anthropic Claude Code.
 3. **Domain Agent Plugins**: Domain-specific products (`apps/shenron`, `apps/rosegriffon`) define their own localized plugins (`plugin/` in Shenron) without fragmenting root monorepo toolchains.

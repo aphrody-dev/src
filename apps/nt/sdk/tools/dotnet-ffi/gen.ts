@@ -10,7 +10,16 @@ import { mkdir } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { exportsOf, parsePe } from "../host/pe.ts";
 import { readAssembly } from "./ecma335.ts";
-import { buildModel, type Export, type Ffi, type FnSig, type Model, type Param, type Struct, type Ty } from "./model.ts";
+import {
+  buildModel,
+  type Export,
+  type Ffi,
+  type FnSig,
+  type Model,
+  type Param,
+  type Struct,
+  type Ty,
+} from "./model.ts";
 
 const RESERVED = new Set(
   "arguments await break case catch class const continue debugger default delete do else enum eval export extends false finally for function if implements import in instanceof interface let new null package private protected public return static super switch this throw true try typeof var void while with yield".split(
@@ -32,13 +41,23 @@ const ffiOf = (t: Ty, p?: Param): Ffi => {
 };
 
 const tsNum = (f: Ffi, arg: boolean) =>
-  f === "bool" ? "boolean" : f === "void" ? "void" : f === "i64" || f === "u64" ? (arg ? "number | bigint" : "bigint") : "number";
+  f === "bool"
+    ? "boolean"
+    : f === "void"
+      ? "void"
+      : f === "i64" || f === "u64"
+        ? arg
+          ? "number | bigint"
+          : "bigint"
+        : "number";
 
 function tsArg(t: Ty, p?: Param): string {
   if (t.k === "prim") return tsNum(t.ffi, true);
   if (t.k === "enum") return `${t.name} | number`;
-  if (t.k === "fn") return `JSCallback | ((${t.sig.params.map((x, i) => `a${i}: ${tsRet(x)}`).join(", ")}) => ${tsArg(t.sig.ret)})`;
-  if (p?.marker === "Utf8") return "string | NodeJS.TypedArray | Pointer | null";
+  if (t.k === "fn")
+    return `JSCallback | ((${t.sig.params.map((x, i) => `a${i}: ${tsRet(x)}`).join(", ")}) => ${tsArg(t.sig.ret)})`;
+  if (p?.marker === "Utf8")
+    return "string | NodeJS.TypedArray | Pointer | null";
   if (p?.marker === "Utf16") return "string";
   if (t.k === "struct") return t.name;
   return `${t.to ? `${t.to} | ` : ""}NodeJS.TypedArray | Pointer | bigint | null`;
@@ -50,7 +69,8 @@ function tsRet(t: Ty): string {
   return "Pointer | bigint | null";
 }
 
-const defOf = (s: FnSig) => `{ args: [${s.params.map((x) => q(ffiOf(x))).join(", ")}], returns: ${q(ffiOf(s.ret))} }`;
+const defOf = (s: FnSig) =>
+  `{ args: [${s.params.map((x) => q(ffiOf(x))).join(", ")}], returns: ${q(ffiOf(s.ret))} }`;
 
 /** Paramètres visibles côté JS : un tampon [Utf*Buffer] et sa capacité deviennent la valeur de retour. */
 function visible(x: Export) {
@@ -58,10 +78,16 @@ function visible(x: Export) {
   x.params.forEach((p, i) => {
     if (p.marker?.endsWith("Buffer")) hidden.add(i).add(i + 1);
   });
-  return x.params.map((p, i) => ({ p, i, name: camel(p.name) })).filter(({ i }) => !hidden.has(i));
+  return x.params
+    .map((p, i) => ({ p, i, name: camel(p.name) }))
+    .filter(({ i }) => !hidden.has(i));
 }
 
-const needsWrapper = (x: Export) => x.params.some((p) => p.marker === "Utf16" || p.marker?.endsWith("Buffer") || p.ty.k === "fn");
+const needsWrapper = (x: Export) =>
+  x.params.some(
+    (p) =>
+      p.marker === "Utf16" || p.marker?.endsWith("Buffer") || p.ty.k === "fn",
+  );
 
 function wrapper(x: Export): string {
   const buf = x.params.findIndex((p) => p.marker?.endsWith("Buffer"));
@@ -76,7 +102,9 @@ function wrapper(x: Export): string {
   });
   const cbs = x.params.flatMap((p, i) =>
     p.ty.k === "fn"
-      ? [`const cb${i} = typeof ${camel(p.name)} === "function" ? new JSCallback(${camel(p.name)}, ${defOf(p.ty.sig)}) : null;`]
+      ? [
+          `const cb${i} = typeof ${camel(p.name)} === "function" ? new JSCallback(${camel(p.name)}, ${defOf(p.ty.sig)}) : null;`,
+        ]
       : [],
   );
   const call = `raw.${x.js}(${args.join(", ")})`;
@@ -95,7 +123,9 @@ function wrapper(x: Export): string {
     ].join("\n      ");
   } else body = `return ${call};`;
   if (cbs.length) {
-    const closes = x.params.flatMap((p, i) => (p.ty.k === "fn" ? [`cb${i}?.close();`] : [])).join(" ");
+    const closes = x.params
+      .flatMap((p, i) => (p.ty.k === "fn" ? [`cb${i}?.close();`] : []))
+      .join(" ");
     body = `${cbs.join("\n      ")}\n      try {\n        ${body.replaceAll("\n      ", "\n        ")}\n      } finally {\n        ${closes}\n      }`;
   }
   return `function ${x.js}(${vis.map((v) => v.name).join(", ")}) {\n      ${body}\n    }`;
@@ -137,7 +167,13 @@ function structJs(s: Struct): string {
     if (f.fixed) {
       const len =
         f.fixed.length *
-        (f.fixed.elem === "u16" || f.fixed.elem === "i16" ? 2 : /64/.test(f.fixed.elem) ? 8 : /32/.test(f.fixed.elem) ? 4 : 1);
+        (f.fixed.elem === "u16" || f.fixed.elem === "i16"
+          ? 2
+          : /64/.test(f.fixed.elem)
+            ? 8
+            : /32/.test(f.fixed.elem)
+              ? 4
+              : 1);
       if (f.marker === "Utf16" || f.marker === "Utf8") {
         const dec = f.marker === "Utf16" ? "u16" : "u8";
         lines.push(
@@ -147,12 +183,21 @@ function structJs(s: Struct): string {
           "    return z < 0 ? s : s.slice(0, z);",
           "  }",
         );
-      } else lines.push(`  get ${n}() {`, `    return this.bytes.subarray(${o}, ${o + len});`, "  }");
+      } else
+        lines.push(
+          `  get ${n}() {`,
+          `    return this.bytes.subarray(${o}, ${o + len});`,
+          "  }",
+        );
       continue;
     }
     const t = f.ty;
     if (t.k === "struct") {
-      lines.push(`  get ${n}() {`, `    return new ${t.name}(this.bytes.subarray(${o}, ${o} + ${t.name}.size));`, "  }");
+      lines.push(
+        `  get ${n}() {`,
+        `    return new ${t.name}(this.bytes.subarray(${o}, ${o} + ${t.name}.size));`,
+        "  }",
+      );
       continue;
     }
     if (t.k === "prim" || t.k === "enum") {
@@ -165,7 +210,11 @@ function structJs(s: Struct): string {
           `    return this.view.${g[0]}(${o}${g[1].startsWith(",") ? g[1] : ""})${g[1].startsWith(",") ? "" : g[1]};`,
           "  }",
         );
-        lines.push(`  set ${n}(v) {`, `    this.view.${set}(${o}, ${val}${g[1].startsWith(",") ? ", true" : ""});`, "  }");
+        lines.push(
+          `  set ${n}(v) {`,
+          `    this.view.${set}(${o}, ${val}${g[1].startsWith(",") ? ", true" : ""});`,
+          "  }",
+        );
         continue;
       }
     }
@@ -178,7 +227,12 @@ function structJs(s: Struct): string {
       "  }",
     );
   }
-  lines.push("  toJSON() {", `    return { ${names.map((n) => `${n}: this.${n}`).join(", ")} };`, "  }", "}");
+  lines.push(
+    "  toJSON() {",
+    `    return { ${names.map((n) => `${n}: this.${n}`).join(", ")} };`,
+    "  }",
+    "}",
+  );
   return lines.join("\n");
 }
 
@@ -211,7 +265,9 @@ function structDts(s: Struct): string {
     else if (f.ty.k === "enum") t = f.ty.name;
     else t = "Pointer | bigint | null";
     out.push(`  ${ro ? "readonly " : ""}${n}: ${t};`);
-    json.push(`${n}: ${f.ty.k === "struct" && !f.fixed ? `ReturnType<${t}["toJSON"]>` : t}`);
+    json.push(
+      `${n}: ${f.ty.k === "struct" && !f.fixed ? `ReturnType<${t}["toJSON"]>` : t}`,
+    );
   }
   out.push(`  toJSON(): { ${json.join("; ")} };`, "}");
   return out.join("\n");
@@ -268,7 +324,9 @@ export function emit(m: Model): { js: string; dts: string } {
     "  const api = {};",
   );
   for (const x of m.exports)
-    js.push(`  if (raw.${x.js}) api.${x.js} = ${needsWrapper(x) ? wrapper(x).replaceAll("\n    ", "\n  ") : `raw.${x.js}`};`);
+    js.push(
+      `  if (raw.${x.js}) api.${x.js} = ${needsWrapper(x) ? wrapper(x).replaceAll("\n    ", "\n  ") : `raw.${x.js}`};`,
+    );
   js.push(
     "  return Object.freeze(api);",
     "}",
@@ -353,11 +411,14 @@ if (import.meta.main) {
   const nativePath = opt("--native");
   const input = argv[0];
   if (!input) {
-    console.error("usage : bun sdk/tools/dotnet-ffi/gen.ts <assemblage-IL.dll> [--out <dossier>] [--native <binaire>]");
+    console.error(
+      "usage : bun sdk/tools/dotnet-ffi/gen.ts <assemblage-IL.dll> [--out <dossier>] [--native <binaire>]",
+    );
     process.exit(2);
   }
   const model = buildModel(readAssembly(await Bun.file(input).arrayBuffer()));
-  for (const r of model.rejected) console.warn(`ignorée : ${r.method} — ${r.reason}`);
+  for (const r of model.rejected)
+    console.warn(`ignorée : ${r.method} — ${r.reason}`);
   // --native : fichier, ou dossier de publication contenant <nom>.dll / lib<nom>.so / lib<nom>.dylib.
   let nativeFile = nativePath;
   if (nativePath && statSync(nativePath).isDirectory()) {
@@ -365,18 +426,31 @@ if (import.meta.main) {
     nativeFile = [`${n}.dll`, `lib${n}.so`, `lib${n}.dylib`]
       .map((f) => join(nativePath, f))
       .find((f) => statSync(f, { throwIfNoEntry: false }));
-    if (!nativeFile) throw new Error(`${nativePath} : binaire NativeAOT de ${n} absent`);
+    if (!nativeFile)
+      throw new Error(`${nativePath} : binaire NativeAOT de ${n} absent`);
   }
   if (nativeFile && !nativeFile.toLowerCase().endsWith(".dll"))
-    console.log(`${basename(nativeFile)} : exports vérifiés au dlopen (non-PE)`);
+    console.log(
+      `${basename(nativeFile)} : exports vérifiés au dlopen (non-PE)`,
+    );
   if (nativeFile && nativeFile.toLowerCase().endsWith(".dll")) {
     const pe = parsePe(await Bun.file(nativeFile).arrayBuffer());
     if (!pe) throw new Error(`${nativeFile} : pas un PE`);
-    if (pe.dir(14).rva) throw new Error(`${nativeFile} : assemblage IL, pas un binaire NativeAOT`);
+    if (pe.dir(14).rva)
+      throw new Error(
+        `${nativeFile} : assemblage IL, pas un binaire NativeAOT`,
+      );
     const have = new Set(exportsOf(pe));
-    const missing = model.exports.filter((x) => x.entryPoint && !have.has(x.entryPoint)).map((x) => x.entryPoint);
-    if (missing.length) throw new Error(`${basename(nativeFile)} n'exporte pas : ${missing.join(", ")}`);
-    console.log(`${basename(nativeFile)} : ${have.size} exports, ${model.exports.filter((x) => x.entryPoint).length} vérifiés`);
+    const missing = model.exports
+      .filter((x) => x.entryPoint && !have.has(x.entryPoint))
+      .map((x) => x.entryPoint);
+    if (missing.length)
+      throw new Error(
+        `${basename(nativeFile)} n'exporte pas : ${missing.join(", ")}`,
+      );
+    console.log(
+      `${basename(nativeFile)} : ${have.size} exports, ${model.exports.filter((x) => x.entryPoint).length} vérifiés`,
+    );
   }
   const { js, dts } = emit(model);
   await mkdir(out, { recursive: true });

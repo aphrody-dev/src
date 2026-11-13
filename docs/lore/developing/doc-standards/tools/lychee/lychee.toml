@@ -11,8 +11,8 @@ no_progress = true
 # --- Cache ------------------------------------------------------------------
 
 cache = true
-max_cache_age = "2d"               # balances freshness vs repeat-run cost
-cache_exclude_status = "500.."     # don't cache 5xx — likely transient
+max_cache_age = "2d" # balances freshness vs repeat-run cost
+cache_exclude_status = "500.." # don't cache 5xx — likely transient
 
 # --- Network ----------------------------------------------------------------
 
@@ -42,16 +42,16 @@ extensions = ["md", "markdown"]
 # auto-detected, so any noise outside `exclude_path` must be handled there.
 
 exclude_path = [
-    "target",
-    "vendor",
-    "\\.lore",
-    "\\.crowd",
-    "\\.victorinox",
-    "\\.nox",
-    "node_modules",
-    "\\.cargo",
-    "docs/release-notes\\.md",     # historical changelog; no external links
-    ".*-template\\.md",            # type templates use placeholder relative paths
+  "target",
+  "vendor",
+  "\\.lore",
+  "\\.crowd",
+  "\\.victorinox",
+  "\\.nox",
+  "node_modules",
+  "\\.cargo",
+  "docs/release-notes\\.md", # historical changelog; no external links
+  ".*-template\\.md", # type templates use placeholder relative paths
 ]
 
 # --- Filtering --------------------------------------------------------------
@@ -83,18 +83,18 @@ include_mail = false
 # Patterns are anchored with `^https?://` so substring matches can't
 # accidentally exempt a public host with the same suffix.
 exclude = [
-    "^https?://localhost(:[0-9]+)?(/|$)",
-    "^https?://127\\.0\\.0\\.1(:[0-9]+)?(/|$)",
-    "^https?://lorelocal(:[^/]*)?(/|$)",
-    "^https?://example\\.com(/|$)",
+  "^https?://localhost(:[0-9]+)?(/|$)",
+  "^https?://127\\.0\\.0\\.1(:[0-9]+)?(/|$)",
+  "^https?://lorelocal(:[^/]*)?(/|$)",
+  "^https?://example\\.com(/|$)",
 
-    # MkDocs strips em dashes when slugifying "Step N — …" headings; lychee's
-    # anchor-generation keeps them, so fragment links to those headings are
-    # reported as not found. The anchors are valid in the rendered site.
-    "quickstart\\.md#step-[0-9]+-",
+  # MkDocs strips em dashes when slugifying "Step N — …" headings; lychee's
+  # anchor-generation keeps them, so fragment links to those headings are
+  # reported as not found. The anchors are valid in the rendered site.
+  "quickstart\\.md#step-[0-9]+-",
 
-    # The Unreal Engine source repository is public but access-gated: GitHub
-    # returns 404 unless the reader has linked their Epic Games and GitHub
-    # accounts. Docs that link it also link the account-linking page.
-    "^https://github\\.com/EpicGames/UnrealEngine(/|$)",
+  # The Unreal Engine source repository is public but access-gated: GitHub
+  # returns 404 unless the reader has linked their Epic Games and GitHub
+  # accounts. Docs that link it also link the account-linking page.
+  "^https://github\\.com/EpicGames/UnrealEngine(/|$)",
 ]

@@ -14,11 +14,11 @@ description: Geist reference (Vercel's design system) and Vercel's front-end per
 
 ## Specs (source of truth in src)
 
-| Domain | Human-readable | Machine |
-|---|---|---|
-| Tokens: colors, type, materials, grid, spacing | `docs/design/specs/tokens/geist.md` | `tokens/geist.json` |
-| Components: 75 sheets (variants, sizes, states, a11y) | `docs/design/specs/components/geist.md` | `components/geist.json` |
-| Front-end perf: CWV, images, fonts, cache, rendering | `docs/design/specs/perf/vercel-frontend.md` | `perf/vercel-frontend.json` |
+| Domain                                                | Human-readable                              | Machine                     |
+| ----------------------------------------------------- | ------------------------------------------- | --------------------------- |
+| Tokens: colors, type, materials, grid, spacing        | `docs/design/specs/tokens/geist.md`         | `tokens/geist.json`         |
+| Components: 75 sheets (variants, sizes, states, a11y) | `docs/design/specs/components/geist.md`     | `components/geist.json`     |
+| Front-end perf: CWV, images, fonts, cache, rendering  | `docs/design/specs/perf/vercel-frontend.md` | `perf/vercel-frontend.json` |
 
 Schema: `docs/design/specs/spec.schema.json`. Index of pages read: `docs/design/index/vercel.com.json`.
 

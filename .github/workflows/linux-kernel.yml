@@ -5,7 +5,8 @@ name: linux-kernel
 on:
   workflow_dispatch:
     inputs:
-      flavor: { description: "flavor of infra/linux/kernels.toml", default: "prd" }
+      flavor:
+        { description: "flavor of infra/linux/kernels.toml", default: "prd" }
 permissions: { contents: read }
 jobs:
   kernel:

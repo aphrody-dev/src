@@ -6,13 +6,13 @@ Monorepo de Aphrody. El contrato para colaboradores y agentes está en [AGENTS.m
 
 ## Estructura
 
-| Directorio | Contenido |
-| :--- | :--- |
-| `apps/` | `aphrody`, `aphrody-app`, `auto`, `l2l`, `nt`, `r2-site`, `r2b`, `unixwin`, `yolo`, y los sitios comunitarios `rosegriffon` y `shenron`. `auto`, `r2b`, `rosegriffon` y `shenron` son submódulos git. |
-| `packages/` | Paquetes Bun `@aphrody/*`: `ai-os` (el único producto de IA), `core`, `design`, `forge`, `gaming`, `wck` y otros. |
-| `crates/` | Crates Rust 2024 en un workspace plano: `ay` (la CLI del repositorio), `archguard`, `xtask`, `depot-*`, `lore*`, `aphrody-ui`, `core`, `tv-*`, `gamescope-*` y otros. |
-| `infra/` | Configuración de flota y despliegue ensamblada con herramientas upstream. |
-| `third_party/` | Copias upstream y forks de aphrody-labs, fijados en `src.lock.json`; sin modificaciones locales. |
+| Directorio     | Contenido                                                                                                                                                                                             |
+| :------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/`        | `aphrody`, `aphrody-app`, `auto`, `l2l`, `nt`, `r2-site`, `r2b`, `unixwin`, `yolo`, y los sitios comunitarios `rosegriffon` y `shenron`. `auto`, `r2b`, `rosegriffon` y `shenron` son submódulos git. |
+| `packages/`    | Paquetes Bun `@aphrody/*`: `ai-os` (el único producto de IA), `core`, `design`, `forge`, `gaming`, `wck` y otros.                                                                                     |
+| `crates/`      | Crates Rust 2024 en un workspace plano: `ay` (la CLI del repositorio), `archguard`, `xtask`, `depot-*`, `lore*`, `aphrody-ui`, `core`, `tv-*`, `gamescope-*` y otros.                                 |
+| `infra/`       | Configuración de flota y despliegue ensamblada con herramientas upstream.                                                                                                                             |
+| `third_party/` | Copias upstream y forks de aphrody-labs, fijados en `src.lock.json`; sin modificaciones locales.                                                                                                      |
 
 ## Pines y licencias
 
@@ -35,13 +35,13 @@ just verify-all      # arquitectura, doctor, suites de Bun y ci.yml para Rust
 
 ## Dónde leer
 
-| Tema | Documento |
-| :--- | :--- |
-| Diseño e interfaz | [docs/DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) |
-| Medios (`crates/tv-*`) | [docs/tv](../../tv) |
-| Juegos y Steam | [docs/gaming/OWNERSHIP.md](../../gaming/OWNERSHIP.md) |
-| Juegos y suite creativa (plan, sin empezar) | [docs/games/PLAN.md](../../games/PLAN.md) |
-| Despliegue | [docs/infra/DEPLOY.md](../../infra/DEPLOY.md) |
+| Tema                                        | Documento                                             |
+| :------------------------------------------ | :---------------------------------------------------- |
+| Diseño e interfaz                           | [docs/DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)       |
+| Medios (`crates/tv-*`)                      | [docs/tv](../../tv)                                   |
+| Juegos y Steam                              | [docs/gaming/OWNERSHIP.md](../../gaming/OWNERSHIP.md) |
+| Juegos y suite creativa (plan, sin empezar) | [docs/games/PLAN.md](../../games/PLAN.md)             |
+| Despliegue                                  | [docs/infra/DEPLOY.md](../../infra/DEPLOY.md)         |
 
 ## Labs (fusionado el 2026-11-12)
 

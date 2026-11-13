@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)  Johannes Henkel [X](https://twitter.com/powdercloud) [GitHub](https://github.com/powdercloud) [Mastodon](https://mastodon.social/@powdercloud)
+
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com) Johannes Henkel [X](https://twitter.com/powdercloud) [GitHub](https://github.com/powdercloud) [Mastodon](https://mastodon.social/@powdercloud)
 
 Starting with the [March 2024 dataset](https://developer.chrome.com/docs/crux/release-notes.md.txt#202403), the Chrome User Experience Report (CrUX) includes a `navigation_types` metric. This provides aggregated statistics about the navigation types of page loads for the [dimension queried](https://developer.chrome.com/docs/crux/methodology/dimensions.md.txt).
 
@@ -22,14 +23,15 @@ The `navigation_types` metric is available in the [daily CrUX API](https://devel
 CrUX distinguishes the following navigation types in the following table:
 
 | Type | Description |
-| `navigate` | A page load, which does not fit into any of the other categories. |
-|---|---|
-| `navigate_cache` | A page load for which the main resource (the main HTML document) was served from the HTTP cache. Sites often make use of caching for sub-resources, but the main HTML document is often [cached considerably less](https://almanac.httparchive.org/en/2022/cdn#cdn-adoption). When it can be, it can result in noticeable performance improvements from being able to be cached locally and at a CDN. |
-| `reload` | The user reloaded the page, either by hitting the reload button, by hitting enter in the address bar, or by undoing a tab close. Page reloads often result in revalidation back to the server to check if the main page has changed. A high percentage of page reloads may indicate frustrated users. |
-| `restore` | The page was reloaded after a browser restart, or a tab that had been removed for memory reasons. For Chrome on Android, these are [reported as `reload` instead](https://issues.chromium.org/issues/40268039). |
-| `back_forward` | A history navigation, meaning that the page was seen and returned to recently. With correct caching, these should be reasonably fast experiences but still require the page to be processed and JavaScript to be executed---both of which the bfcache avoids. |
-| `back_forward_cache` | A history navigation which was served from the bfcache. [Optimizing your pages](https://web.dev/articles/bfcache#optimize_your_pages_for_bfcache) to take advantage of the bfcache should result in faster experiences. Sites should look to remove bfcache blockers to improve the percentage of navigations in this category. |
-| `prerender` | The page was [prerendered](https://developer.chrome.com/docs/web-platform/prerender-pages.md.txt), which---similar to bfcache---can result in near-instant page loads. |
+
+| `navigate`           | A page load, which does not fit into any of the other categories.                                                                                                                                                                                                                                                                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `navigate_cache`     | A page load for which the main resource (the main HTML document) was served from the HTTP cache. Sites often make use of caching for sub-resources, but the main HTML document is often [cached considerably less](https://almanac.httparchive.org/en/2022/cdn#cdn-adoption). When it can be, it can result in noticeable performance improvements from being able to be cached locally and at a CDN. |
+| `reload`             | The user reloaded the page, either by hitting the reload button, by hitting enter in the address bar, or by undoing a tab close. Page reloads often result in revalidation back to the server to check if the main page has changed. A high percentage of page reloads may indicate frustrated users.                                                                                                 |
+| `restore`            | The page was reloaded after a browser restart, or a tab that had been removed for memory reasons. For Chrome on Android, these are [reported as `reload` instead](https://issues.chromium.org/issues/40268039).                                                                                                                                                                                       |
+| `back_forward`       | A history navigation, meaning that the page was seen and returned to recently. With correct caching, these should be reasonably fast experiences but still require the page to be processed and JavaScript to be executed---both of which the bfcache avoids.                                                                                                                                         |
+| `back_forward_cache` | A history navigation which was served from the bfcache. [Optimizing your pages](https://web.dev/articles/bfcache#optimize_your_pages_for_bfcache) to take advantage of the bfcache should result in faster experiences. Sites should look to remove bfcache blockers to improve the percentage of navigations in this category.                                                                       |
+| `prerender`          | The page was [prerendered](https://developer.chrome.com/docs/web-platform/prerender-pages.md.txt), which---similar to bfcache---can result in near-instant page loads.                                                                                                                                                                                                                                |
 
 In some cases, a page load can be a combination of multiple navigation types. In that case, CrUX reports the first match in reverse order of the preceding table (from bottom to top).
 
@@ -62,7 +64,7 @@ The request format is described in more detail in the [API documentation](https:
 ```json
 {
   "record": {
-    "key": {  "origin": "https://example.com" },
+    "key": { "origin": "https://example.com" },
     "metrics": {
       "navigation_types": {
         "fractions": {
@@ -91,7 +93,7 @@ You can see from this response that for the collection period starting on March 
 ## Navigation types in the CrUX History API
 
 The [CrUX History API](https://developer.chrome.com/docs/crux/guides/history-api.md.txt) can provide a time-series for navigation types with up to 25 data points per fraction, which allows visualizing these fractions over time. To change your request from the CrUX API to CrUX History API, run it against the `queryHistoryRecord` endpoint instead of `queryRecord`. For example, our [CrUX History Colab](https://colab.sandbox.google.com/github/GoogleChrome/CrUX/blob/main/colab/crux-history-api.ipynb) plots the `navigation_types` metric as stacked bars:
- Navigation types over time
+Navigation types over time
 
 In the preceding screenshot, history is only available for 3 collection periods (28 days each, 7 days apart). Once fully populated, this will cover all 25 collection periods. Visualizing this history makes it possible to confirm that optimizations have taken effect or have regressed. This is especially true for HTTP cache configuration, optimizing a page for bfcache and prerendering.
 
@@ -104,7 +106,7 @@ The CrUX BigQuery tables now include a `navigation_type` record, made of each ty
 The [detailed table schema in CrUX BigQuery](https://developer.chrome.com/docs/crux/bigquery.md.txt#detailed_table_schema) provides detailed histograms for the web performance metrics, which allow us to show in this example analysis how particular navigation types may be correlated with instant or good loading performance.
 
 As an example, we looked at the `back_forward_cache` fraction and its correlation with how frequently pages loaded instantly (`instant_lcp_density` defined as LCP \<= 200ms) and how frequently good LCP was seen (`good_lcp_density` defined as LCP \<= 2500ms). We observed a strong statistical correlation between `back_forward_cache` and `instant_lcp_density` (ρ=0.87)---shown in the following plot---and a moderate correlation between `back_forward_cache` and `good_lcp_density` (ρ=0.29).
- Correlation of instant page loads to bfcache usage
+Correlation of instant page loads to bfcache usage
 
 The [Colab for this analysis](https://colab.research.google.com/github/GoogleChrome/CrUX/blob/main/colab/navigation-types-and-lcp.ipynb) is well commented; here, we only discuss the query which extracts the navigation_types fractions for the 10k most popular origins from the detailed tables in CrUX BigQuery:
 
@@ -112,43 +114,37 @@ The [Colab for this analysis](https://colab.research.google.com/github/GoogleChr
 - When querying the `navigation_types` metric in BigQuery, it's necessary to divide by the total of the `navigation_types` fractions, as they will only add up per origin, but not per (origin, form factor) combination.
 - Not all origins will have `navigation_types`, so it's good practice to use `SAVE_DIVIDE`.
 
-    WITH tmp AS (
-      SELECT
-        origin,
-        SUM(navigation_types.navigate.fraction) AS navigate,
-        SUM(navigation_types.navigate_cache.fraction) AS navigate_cache,
-        SUM(navigation_types.reload.fraction) AS reload,
-        SUM(navigation_types.restore AS restore,
-        SUM(navigation_types.back_forward.fraction) AS back_forward,
-        SUM(navigation_types.back_forward_cache.fraction) AS back_forward_cache,
-        SUM(navigation_types.prerender.fraction) AS prerender,
-        SUM(navigation_types.navigate.fraction
-          + navigation_types.navigate_cache.fraction
-          + navigation_types.reload.fraction
-          + navigation_types.restore.fraction
-          + navigation_types.back_forward.fraction
-          + navigation_types.back_forward_cache.fraction
-          + navigation_types.prerender.fraction) AS total
-      FROM
-        `chrome-ux-report.all.202403`
-      WHERE
-        experimental.popularity.rank <= 10000 AND
-        form_factor.name = 'phone'
-      GROUP BY
-        origin
-    )
+  WITH tmp AS (
+  SELECT
+  origin,
+  SUM(navigation_types.navigate.fraction) AS navigate,
+  SUM(navigation_types.navigate_cache.fraction) AS navigate_cache,
+  SUM(navigation_types.reload.fraction) AS reload,
+  SUM(navigation_types.restore AS restore,
+  SUM(navigation_types.back_forward.fraction) AS back_forward,
+  SUM(navigation_types.back_forward_cache.fraction) AS back_forward_cache,
+  SUM(navigation_types.prerender.fraction) AS prerender,
+  SUM(navigation_types.navigate.fraction + navigation_types.navigate_cache.fraction + navigation_types.reload.fraction + navigation_types.restore.fraction + navigation_types.back_forward.fraction + navigation_types.back_forward_cache.fraction + navigation_types.prerender.fraction) AS total
+  FROM
+  `chrome-ux-report.all.202403`
+  WHERE
+  experimental.popularity.rank <= 10000 AND
+  form_factor.name = 'phone'
+  GROUP BY
+  origin
+  )
 
-    SELECT
-      origin,
-      ROUND(SAFE_DIVIDE(navigate, total), 4) AS navigate,
-      ROUND(SAFE_DIVIDE(navigate_cache, total), 4) AS navigate_cache,
-      ROUND(SAFE_DIVIDE(reload, total), 4) AS reload,
-      ROUND(SAFE_DIVIDE(restore, total), 4) AS restore,
-      ROUND(SAFE_DIVIDE(back_forward, total), 4) AS back_forward,
-      ROUND(SAFE_DIVIDE(back_forward_cache, total), 4) AS back_forward_cache,
-      ROUND(SAFE_DIVIDE(prerender, total), 4) AS prerender
-    FROM
-      tmp
+  SELECT
+  origin,
+  ROUND(SAFE_DIVIDE(navigate, total), 4) AS navigate,
+  ROUND(SAFE_DIVIDE(navigate_cache, total), 4) AS navigate_cache,
+  ROUND(SAFE_DIVIDE(reload, total), 4) AS reload,
+  ROUND(SAFE_DIVIDE(restore, total), 4) AS restore,
+  ROUND(SAFE_DIVIDE(back_forward, total), 4) AS back_forward,
+  ROUND(SAFE_DIVIDE(back_forward_cache, total), 4) AS back_forward_cache,
+  ROUND(SAFE_DIVIDE(prerender, total), 4) AS prerender
+  FROM
+  tmp
 
 ### Materialized tables
 
@@ -190,11 +186,11 @@ WHERE
   yyyymm = 202403
 ```
 
-| `device` | `navigation_types_back_forward` |
-|---|---|
-| `phone` | `0.0663` |
-| `desktop` | `0.0179` |
-| `tablet` | `0.0009` |
+| `device`  | `navigation_types_back_forward` |
+| --------- | ------------------------------- |
+| `phone`   | `0.0663`                        |
+| `desktop` | `0.0179`                        |
+| `tablet`  | `0.0009`                        |
 
 In this query result, the fractions reflect the percentage of the page loads for the origin `https://www.google.com`: 6.63% of these page loads had the navigation type `back_forward` on phone, 1.79% desktop, and 0.09% tablet.
 
@@ -215,18 +211,18 @@ WHERE
   yyyymm = 202403
 ```
 
-| `device` | `back_forward_cache_hit_rate` |
-|---|---|
-| `phone` | `0.6239` |
-| `desktop` | `0.6805` |
-| `tablet` | `0.7353` |
+| `device`  | `back_forward_cache_hit_rate` |
+| --------- | ----------------------------- |
+| `phone`   | `0.6239`                      |
+| `desktop` | `0.6805`                      |
+| `tablet`  | `0.7353`                      |
 
 So it would appear the high `back_forward` rate on phones is not due to less bfcache usage, but more of a reflection of how users navigate back and forwards more on phones.
 
 ## Navigation types in the CrUX Dashboard
 
 The easiest way to see navigation types is in the CrUX Dashboard, which [can be accessed for an origin from this link](https://developer.chrome.com/docs/crux/dashboard.md.txt#accessing_the_crux_dashboard). As you can see from the following screenshot only one month's worth of data is initially available but over time the history will fill up letting you see changes in types month on month.
- Navigation types in the CrUX Dashboard
+Navigation types in the CrUX Dashboard
 
 As you can also see, we have highlighted the faster navigation types, that sights should seek to optimize, at the top of this page of the Dashboard.
 

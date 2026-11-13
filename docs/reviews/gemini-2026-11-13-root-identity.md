@@ -37,8 +37,8 @@ Suites (2b4e6d1, 04f9d6f, 783b12d) : cibles `workspace:` en ensemble fermé, glo
 
 ## Tour 3 : 18/20 (commits 2b4e6d1..783b12d)
 
-Aucun P0. Restes P1 : ABI C (crates/ffi) qui évalue tout en tiers et calcule les sélecteurs cosmétiques par requête au lieu de deux fonctions (check_request, cosmetic) ; identity.ts qui ne réécrit pas les clés Cargo `aphrody-x = {...}` / `aphrody-x.workspace` lors d'un changement de crate_prefix, ni les crates/aphrody-design-*, ni les imports TS `@scope/` ; infra/ffi-bridge hors packages/ et sens de nt-001 (L2 -> L5). P2 : channels (CRLF, nom de plateforme), exécution de nt-001 et dx12-001.
-Réfutations acceptées : non-distribution de tv-* ; gates de apps/nt dans nt.yml ; retrait des clés mortes. Réfutée : direction de nt-001 (corrigée).
+Aucun P0. Restes P1 : ABI C (crates/ffi) qui évalue tout en tiers et calcule les sélecteurs cosmétiques par requête au lieu de deux fonctions (check_request, cosmetic) ; identity.ts qui ne réécrit pas les clés Cargo `aphrody-x = {...}` / `aphrody-x.workspace` lors d'un changement de crate_prefix, ni les crates/aphrody-design-_, ni les imports TS `@scope/` ; infra/ffi-bridge hors packages/ et sens de nt-001 (L2 -> L5). P2 : channels (CRLF, nom de plateforme), exécution de nt-001 et dx12-001.
+Réfutations acceptées : non-distribution de tv-_ ; gates de apps/nt dans nt.yml ; retrait des clés mortes. Réfutée : direction de nt-001 (corrigée).
 
 Suites (addb9bc) : nt-001 réécrit en sens descendant (DLL partagée en L2, apps/nt et unix-distro.ts en dépendent ; ffi-bridge rejoint packages/) ; channels : plateforme validée, comparaison sans CRLF ; collisions de noms de workspace refusées ; dépôt déplacé chez aphrody-labs suivi par `[product].repo_org` (le gate identity a détecté la copie modifiée à la main).
 Reste ouvert : ABI C adblock en deux fonctions (crates/ffi, fichier tenu par un autre agent), renommage complet sur changement de crate_prefix (clés Cargo, design-*, imports TS), exécution de nt-001 / dx12-001, dérive gitlink apps/rosegriffon.

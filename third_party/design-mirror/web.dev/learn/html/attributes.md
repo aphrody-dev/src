@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Attributes were briefly discussed in
 [Overview of HTML](https://web.dev/learn/html/overview.md.txt#attributes). It's time for a deep dive.
 
@@ -30,12 +31,13 @@ as an [attribute selector](https://developer.mozilla.org/docs/Web/CSS/Attribute_
 
 ```html
 <!-- the type attribute is case insensitive: these are equivalent -->
-<input type="text">
-<input type="TeXt">
+<input type="text" />
+<input type="TeXt" />
 
 <!-- the ID attribute is case sensitive: they are not equivalent -->
 <div id="myId">
-<div id="MyID">
+  <div id="MyID"></div>
+</div>
 ```
 
 ## Boolean attributes
@@ -50,9 +52,9 @@ be set to the string `true`. All values, including `true`, `false`, and `😀`, 
 These three tags are equivalent:
 
 ```html
-<input required>
-<input required="">
-<input required="required">
+<input required />
+<input required="" />
+<input required="required" />
 ```
 
 If the attribute value is false, omit the attribute. If the attribute is true, include the attribute but don't provide a value.
@@ -202,9 +204,9 @@ their `id` attribute:
 ```html
 <script>
   /* Switch is a reserved word in JavaScript, so instead, we use onoff */
-  const onoff = document.getElementById('switch');
-  onoff.addEventListener('click', function(){
-    document.body.classList.toggle('black');
+  const onoff = document.getElementById("switch");
+  onoff.addEventListener("click", function () {
+    document.body.classList.toggle("black");
   });
 </script>
 ```
@@ -224,8 +226,9 @@ aren't required: this is called an "implicit" label. Labels let all users know w
 
 ```html
 <label>
-  Send me a reminder <input type="number" name="min"> before the workshop resumes
-</label>.
+  Send me a reminder <input type="number" name="min" /> before the workshop
+  resumes </label
+>.
 ```
 
 The association between `for` and `id` makes the information available to users of assistive technologies. In addition,
@@ -249,7 +252,8 @@ the accessible name:
 
 ```html
 <section id="about" aria-labelledby="about_heading">
-<h2 id="about_heading">What you'll learn</h2>
+  <h2 id="about_heading">What you'll learn</h2>
+</section>
 ```
 
 There are over 50 `aria-*` states and properties that can be used to ensure accessibility. [`aria-labelledby`](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Attributes/aria-labelledby), [`aria-describedby`](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Attributes/aria-describedby),
@@ -314,7 +318,15 @@ On this page, there is a share functionality using a `<share-action>` custom ele
 is included to add the custom element into the keyboard default tabbing order:
 
 ```html
-<share-action authors="@estellevw" data-action="click" data-category="web.dev" data-icon="share" data-label="share, twitter" role="button" tabindex="0">
+<share-action
+  authors="@estellevw"
+  data-action="click"
+  data-category="web.dev"
+  data-icon="share"
+  data-label="share, twitter"
+  role="button"
+  tabindex="0"
+>
   <svg aria-label="share" role="img" xmlns="http://www.w3.org/2000/svg">
     <use href="#shareIcon" />
   </svg>
@@ -381,7 +393,7 @@ To toggle between states, query the value of the [HTMLElement.isContentEditable]
 
 ```javascript
 const editor = document.getElementById("myElement");
-if(editor.contentEditable) {
+if (editor.contentEditable) {
   editor.setAttribute("contenteditable", "false");
 } else {
   editor.setAttribute("contenteditable", "");
@@ -428,10 +440,14 @@ in JavaScript. Add custom attributes to elements in the form of `data-name` and 
 on the element in question.
 
 ```html
-<blockquote data-machine-learning="workshop"
-  data-first-name="Blendan" data-last-name="Smooth"
-  data-formerly="Margarita Maker" data-aspiring="Load Balancer"
-  data-year-graduated="2022">
+<blockquote
+  data-machine-learning="workshop"
+  data-first-name="Blendan"
+  data-last-name="Smooth"
+  data-formerly="Margarita Maker"
+  data-aspiring="Load Balancer"
+  data-year-graduated="2022"
+>
   HAL and EVE could teach a fan to blow hot air.
 </blockquote>
 ```

@@ -7,8 +7,13 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 // infra/mesh-vn is git-ignored (local only): its mail DNS test runs only where the module exists.
-const MESH_VN = join(import.meta.dir, "../../../infra/mesh-vn/src/cloudflare-mail-dns.ts");
-const meshVn: any = require("node:fs").existsSync(MESH_VN) ? await import(MESH_VN) : null;
+const MESH_VN = join(
+  import.meta.dir,
+  "../../../infra/mesh-vn/src/cloudflare-mail-dns.ts",
+);
+const meshVn: any = require("node:fs").existsSync(MESH_VN)
+  ? await import(MESH_VN)
+  : null;
 import {
   APHRODY_GCP_PROJECT_ID,
   APHRODY_GCP_PROJECT_NUMBER,
@@ -42,9 +47,7 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
   test("resolves all 4 canonical principals by alias, config name, or email", () => {
     expect(resolvePrincipal("ai").email).toBe("ai@aphrody.test");
     expect(resolvePrincipal("ai-agent").alias).toBe("ai");
-    expect(resolvePrincipal("ai@aphrody.test").rcloneRemote).toBe(
-      "gdrive-ai",
-    );
+    expect(resolvePrincipal("ai@aphrody.test").rcloneRemote).toBe("gdrive-ai");
 
     expect(resolvePrincipal("owner").email).toBe("owner@aphrody.test");
     expect(resolvePrincipal("owner").gcloudConfig).toBe("owner");
@@ -103,9 +106,7 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
     expect(plan.enabledApis).toContain("drive.googleapis.com");
 
     const membersAndRoles = plan.bindings.map((b) => `${b.member}=>${b.role}`);
-    expect(membersAndRoles).toContain(
-      "user:owner@aphrody.test=>roles/owner",
-    );
+    expect(membersAndRoles).toContain("user:owner@aphrody.test=>roles/owner");
     expect(membersAndRoles).toContain(
       "user:ai@aphrody.test=>roles/aiplatform.user",
     );
@@ -302,54 +303,59 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
     expect(sw.loginHint).toContain("contact@aphrody.com");
   });
 
-  test.skipIf(!meshVn)("generates Cloudflare mail DNS records (MX, SPF, Dual DKIM, DMARC, MTA-STS, TLS-RPT, BIMI)", async () => {
-    await withTempDir(async (dir) => {
-      const records = meshVn.generateCloudflareMailDnsRecords({
-        ed25519PublicKeyBase64: "MCowBQYDK2VwAyEAMockEd25519Key",
-        rsaPublicKeyBase64: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMockRsaKey",
+  test.skipIf(!meshVn)(
+    "generates Cloudflare mail DNS records (MX, SPF, Dual DKIM, DMARC, MTA-STS, TLS-RPT, BIMI)",
+    async () => {
+      await withTempDir(async (dir) => {
+        const records = meshVn.generateCloudflareMailDnsRecords({
+          ed25519PublicKeyBase64: "MCowBQYDK2VwAyEAMockEd25519Key",
+          rsaPublicKeyBase64: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMockRsaKey",
+        });
+
+        expect(records.length).toBe(12);
+
+        const mxPrimary = records.find(
+          (r) => r.type === "MX" && r.priority === 10,
+        );
+        expect(mxPrimary?.content).toBe("mail.aphrody.com");
+
+        const mxWorkspace = records.find(
+          (r) => r.type === "MX" && r.priority === 20,
+        );
+        expect(mxWorkspace?.content).toBe("smtp.google.com");
+
+        const spf = records.find(
+          (r) => r.type === "TXT" && r.name === "aphrody.com",
+        );
+        expect(spf?.content).toContain("a:mail.aphrody.com");
+        expect(spf?.content).toContain("include:_spf.google.com");
+
+        const dmarc = records.find((r) => r.name === "_dmarc.aphrody.com");
+        expect(dmarc?.content).toBe(
+          "v=DMARC1; p=quarantine; rua=mailto:dmarc@aphrody.com; ruf=mailto:dmarc@aphrody.com; fo=1",
+        );
+
+        const bimi = records.find(
+          (r) => r.name === "default._bimi.aphrody.com",
+        );
+        expect(bimi?.content).toContain(
+          "https://aphrody.com/assets/brand/aphrody-monogram-bimi.svg",
+        );
+
+        const zoneText = meshVn.formatBindZoneFile(records);
+        expect(zoneText).toContain("s1-ed25519._domainkey.aphrody.com.");
+        expect(zoneText).toContain("s2-rsa._domainkey.aphrody.com.");
+        expect(zoneText).toContain("_mta-sts.aphrody.com.");
+        expect(zoneText).toContain("_smtp._tls.aphrody.com.");
+
+        const syncRes = await meshVn.syncCloudflareMailDns({
+          outDir: dir,
+          applyLive: false,
+        });
+        expect(syncRes.mode).toBe("dry-run");
+        const parsedJson = JSON.parse(readFileSync(syncRes.jsonPath, "utf8"));
+        expect(parsedJson.length).toBe(12);
       });
-
-      expect(records.length).toBe(12);
-
-      const mxPrimary = records.find(
-        (r) => r.type === "MX" && r.priority === 10,
-      );
-      expect(mxPrimary?.content).toBe("mail.aphrody.com");
-
-      const mxWorkspace = records.find(
-        (r) => r.type === "MX" && r.priority === 20,
-      );
-      expect(mxWorkspace?.content).toBe("smtp.google.com");
-
-      const spf = records.find(
-        (r) => r.type === "TXT" && r.name === "aphrody.com",
-      );
-      expect(spf?.content).toContain("a:mail.aphrody.com");
-      expect(spf?.content).toContain("include:_spf.google.com");
-
-      const dmarc = records.find((r) => r.name === "_dmarc.aphrody.com");
-      expect(dmarc?.content).toBe(
-        "v=DMARC1; p=quarantine; rua=mailto:dmarc@aphrody.com; ruf=mailto:dmarc@aphrody.com; fo=1",
-      );
-
-      const bimi = records.find((r) => r.name === "default._bimi.aphrody.com");
-      expect(bimi?.content).toContain(
-        "https://aphrody.com/assets/brand/aphrody-monogram-bimi.svg",
-      );
-
-      const zoneText = meshVn.formatBindZoneFile(records);
-      expect(zoneText).toContain("s1-ed25519._domainkey.aphrody.com.");
-      expect(zoneText).toContain("s2-rsa._domainkey.aphrody.com.");
-      expect(zoneText).toContain("_mta-sts.aphrody.com.");
-      expect(zoneText).toContain("_smtp._tls.aphrody.com.");
-
-      const syncRes = await meshVn.syncCloudflareMailDns({
-        outDir: dir,
-        applyLive: false,
-      });
-      expect(syncRes.mode).toBe("dry-run");
-      const parsedJson = JSON.parse(readFileSync(syncRes.jsonPath, "utf8"));
-      expect(parsedJson.length).toBe(12);
-    });
-  });
+    },
+  );
 });

@@ -1,7 +1,9 @@
 # AGY `transcript.jsonl` Schema & Incremental SQLite Index
 
 ## JSONL Step Record Fields
+
 Each line in `brain/<conversation-id>/.system_generated/logs/transcript.jsonl` contains:
+
 - `step_index`: Monotonic 0-based integer step index.
 - `source`: `"USER"` | `"MODEL"` | `"SYSTEM"`.
 - `type`: `"USER_INPUT"` | `"PLANNER_RESPONSE"` | `"SYSTEM_MESSAGE"` | `"GENERIC"`.
@@ -10,4 +12,5 @@ Each line in `brain/<conversation-id>/.system_generated/logs/transcript.jsonl` c
 - `input_tokens`, `output_tokens`, `cache_read_tokens`.
 
 ## Incremental Indexing (`agy_session_reviews`)
+
 Keyed by `session_id` storing `transcript_mtime_ms`, `transcript_size`, and `artifacts_sig`. Unchanged sessions bypass disk reads completely, keeping full 47+ session re-audits under `30 ms`.

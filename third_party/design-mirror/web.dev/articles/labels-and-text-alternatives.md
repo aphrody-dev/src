@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
 In order for a screen reader to present a spoken UI to the user, meaningful
@@ -30,7 +31,7 @@ You can check an element's accessible name in Chrome's DevTools:
 2. In the Elements panel, look for the **Accessibility** pane. It may be hidden behind a `>>` symbol.
 3. In the **Computed Properties** drop-down, look for the **Name** property.
 
- DevTools accessibility pane showing the computed name for a button.
+DevTools accessibility pane showing the computed name for a button.
 
 > [!TIP]
 > **Tip:** Read all of DevTools [Accessibility resources](https://developer.chrome.com/docs/devtools/accessibility/reference).
@@ -45,16 +46,16 @@ There are different ways to add an accessible name to an element,
 depending on its type. The following table lists the most common element types
 that need accessible names and links to explanations for how to add them.
 
-| Element type | How to add a name |
-|---|---|
-| HTML document | [Label documents and frames](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_documents_and_frames) |
-| `<frame>` or `<iframe>` elements | [Label documents and frames](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_documents_and_frames) |
-| Image elements | [Include text alternatives for images and objects](https://web.dev/articles/labels-and-text-alternatives.md.txt#include_text_alternatives_for_images_and_objects) |
-| `<input type="image">` elements | [Include text alternatives for images and objects](https://web.dev/articles/labels-and-text-alternatives.md.txt#include_text_alternatives_for_images_and_objects) |
-| `<object>` elements | [Include text alternatives for images and objects](https://web.dev/articles/labels-and-text-alternatives.md.txt#include_text_alternatives_for_images_and_objects) |
-| Buttons | [Label buttons and links](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_buttons_and_links) |
-| Links | [Label buttons and links](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_buttons_and_links) |
-| Form elements | [Label form elements](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_form_elements) |
+| Element type                     | How to add a name                                                                                                                                                 |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML document                    | [Label documents and frames](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_documents_and_frames)                                             |
+| `<frame>` or `<iframe>` elements | [Label documents and frames](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_documents_and_frames)                                             |
+| Image elements                   | [Include text alternatives for images and objects](https://web.dev/articles/labels-and-text-alternatives.md.txt#include_text_alternatives_for_images_and_objects) |
+| `<input type="image">` elements  | [Include text alternatives for images and objects](https://web.dev/articles/labels-and-text-alternatives.md.txt#include_text_alternatives_for_images_and_objects) |
+| `<object>` elements              | [Include text alternatives for images and objects](https://web.dev/articles/labels-and-text-alternatives.md.txt#include_text_alternatives_for_images_and_objects) |
+| Buttons                          | [Label buttons and links](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_buttons_and_links)                                                   |
+| Links                            | [Label buttons and links](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_buttons_and_links)                                                   |
+| Form elements                    | [Label form elements](https://web.dev/articles/labels-and-text-alternatives.md.txt#label_form_elements)                                                           |
 
 ## Label documents and frames
 
@@ -117,9 +118,7 @@ An image wrapped in a link should use the `img`'s `alt` attribute to describe
 where the user will navigate to if they click the link:
 
 ```html
-<a href="https://en.wikipedia.org/wiki/Google">
-  
-</a>
+<a href="https://en.wikipedia.org/wiki/Google"> </a>
 ```
 
 Similarly, if an `<input type="image">` element is used to create an image
@@ -142,9 +141,7 @@ displayed if the element fails to render. The alternative text goes inside the
 `object` element as regular text, like "Annual report" below:
 
 ```html
-<object type="application/pdf" data="/report.pdf">
-Annual report.
-</object>
+<object type="application/pdf" data="/report.pdf">Annual report.</object>
 ```
 
 ## Label buttons and links
@@ -188,6 +185,7 @@ Not descriptive enough
 ```html
 Check out our guide to web performance <a href="/guide">here</a>.
 ```
+
 Useful content!
 
 ```html
@@ -197,7 +195,7 @@ Check out <a href="/guide">our guide to web performance</a>.
 This is especially helpful for screen readers that offer shortcuts to list all
 of the links on the page. If links are full of repetitive filler text, these
 shortcuts become much less useful:
- Example of VoiceOver, a screen reader for macOS, showing the navigate by links menu.
+Example of VoiceOver, a screen reader for macOS, showing the navigate by links menu.
 
 ## Label form elements
 

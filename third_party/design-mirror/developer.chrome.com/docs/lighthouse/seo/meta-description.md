@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The `<meta name="description">` element provides a summary of a page's content
 that search engines include in search results. A high-quality, unique meta
 description makes your page appear more relevant and can increase your search
@@ -32,15 +33,18 @@ Lighthouse doesn't evaluate the quality of your description.
 Add a `<meta name=description>` element to the `<head>` of each of your pages:
 
 ```html
-<meta name="description" content="Put your description here.">
+<meta name="description" content="Put your description here." />
 ```
 
 If appropriate, include clearly tagged facts in the descriptions. For example:
 
 ```html
-<meta name="description" content="Author: A.N. Author,
+<meta
+  name="description"
+  content="Author: A.N. Author,
     Illustrator: P. Picture, Category: Books, Price: $17.99,
-    Length: 784 pages">
+    Length: 784 pages"
+/>
 ```
 
 ## Meta description best practices
@@ -54,8 +58,9 @@ Here are examples of good and bad descriptions:
 Don't
 
 ```html
-<meta name="description" content="A donut recipe.">
+<meta name="description" content="A donut recipe." />
 ```
+
 Too vague.
 Do
 
@@ -64,8 +69,10 @@ Do
   name="description"
   content="Mary's simple recipe for maple bacon donuts
            makes a sticky, sweet treat with just a hint
-           of salt that you'll keep coming back for.">
+           of salt that you'll keep coming back for."
+/>
 ```
+
 Descriptive yet concise.
 
 See Google's [Create good titles and snippets in Search Results](https://support.google.com/webmasters/answer/35624#1)

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The CrUX dataset on BigQuery is updated on the second Tuesday of every month. Each release is numbered according to the year and calendar month of the data collection period, for example 201912 corresponds to the UX data collected during December 2019 and would be released on the second Tuesday of January 2020 after the data collection period has ended.
 
 In the following list, we've curated some release notes for each monthly dataset. Subscribe to our [CrUX Announce](https://groups.google.com/a/chromium.org/forum/#!forum/chrome-ux-report-announce) mailing list or follow [@ChromeUXReport](https://twitter.com/ChromeUXReport) on Twitter for release Announcements.
@@ -34,6 +35,7 @@ In the following list, we've curated some release notes for each monthly dataset
 - 56.3% of origins (↑ 0.7%) had good [Core Web Vitals](https://web.dev/articles/vitals#core-web-vitals)
 
   With soft navigations included (as [we plan to include from May 2027](https://developer.chrome.com/blog/crux-experimental-soft-navs)) we'd see:
+
 - 73.6% of origins had good LCP (↑ 7.0% from when soft navs are not included)
 
 - 85.0% of origins had good CLS (↑ 4.2% from when soft navs are not included)
@@ -826,13 +828,14 @@ With soft navigations included we'd see:
 - September 12, 2023
 
 What's new
-:   We're seeing continual improvements across most of the metrics which seem to be driven by the following changes:
+: We're seeing continual improvements across most of the metrics which seem to be driven by the following changes:
 
     - Chrome [started rolling out a change to increase image priority from low to medium for the first 5 images](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_image_loading.md) which may have improved LCP and CLS (testing showed less impact on LCP, and more on CLS).
     - Chrome made a change for LCP for animated image formats (for example, GIFs) which now measure [the first frame rather than the full image load time as the LCP time](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md#animated-images). This is expected to improve the LCP for the small number of sites that have animated images as LCP elements.
     - Chrome made another change for LCP whereby [video elements are now considered as LCP element candidates](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md#videos). Previously they were only considered with a poster image. As videos are typically larger resources to download, this is expected to deteriorate the LCP for the small number of sites that have videos as LCP elements.
-:   Note that all of these changes are still rolling out so the full effect of all these changes has not been seen yet and hopefully we will see further improvements next month too.
-:   On a less positive note, INP pass rates remained static, showing it's a more tricky metric to optimize for.
+
+: Note that all of these changes are still rolling out so the full effect of all these changes has not been seen yet and hopefully we will see further improvements next month too.
+: On a less positive note, INP pass rates remained static, showing it's a more tricky metric to optimize for.
 
 **Notable stats**
 
@@ -1315,12 +1318,14 @@ What's new
 - 29.23% of origins have good [Core Web Vitals](https://web.dev/articles/vitals#core-web-vitals)
 
 Notable Changes
+
 - The BigQuery update 202105 includes the same CLS and LCP updates that we released on June 1 for the CrUX API (see below). The previous CLS metric will be available for a limited time as `experimental.uncapped_cumulative_layout_shift`.
 
 API Update
-:   June 1, 2021
+: June 1, 2021
 
 Notable Changes
+
 - The new [Cumulative Layout Shift definition](https://web.dev/articles/evolving-cls) is now the default metric surfaced as `cumulative_layout_shift`, the previous Cumulative Layout Shift metric will be available for a limited time as it is phased out as `experimental_uncapped_cumulative_layout_shift`.
 - [Largest Contentful Paint](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2020_11_lcp_2.md) has undergone adjustments in recent Chrome versions and has been updated similarly in CrUX.
 - First Contentful Paint tri-binning thresholds have been updated to be: \[0-1.8s\], (1.8s-3s), \[3s-∞\].

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In [the previous module](https://web.dev/learn/performance/image-performance.md.txt), you learned some performance techniques related to
 images, which are a widely used resource type on the web that can consume
 significant bandwidth if care is not taken to optimize them and take the user's
@@ -20,8 +21,8 @@ element works.
 ## Video source files
 
 When working with media files, the file you recognize on your operating system
-(`.mp4`, `.webm`, and others) is called a *container* . A container contains one
-or more *streams*. In most cases, this would be the video and audio stream.
+(`.mp4`, `.webm`, and others) is called a _container_ . A container contains one
+or more _streams_. In most cases, this would be the video and audio stream.
 
 You can compress each stream using a codec. For example, a `video.webm` could be
 a [WebM](https://www.webmproject.org) container containing a video stream compressed using [VP9](https://en.wikipedia.org/wiki/VP9), and an audio
@@ -71,8 +72,8 @@ for browsers that don't support all modern formats.
 
 ```html
 <video>
-  <source src="video.webm" type="video/webm">
-  <source src="video.mp4" type="video/mp4">
+  <source src="video.webm" type="video/webm" />
+  <source src="video.mp4" type="video/mp4" />
 </video>
 ```
 
@@ -92,8 +93,8 @@ initiated:
 
 ```html
 <video poster="poster.jpg">
-  <source src="video.webm" type="video/webm">
-  <source src="video.mp4" type="video/mp4">
+  <source src="video.webm" type="video/webm" />
+  <source src="video.mp4" type="video/mp4" />
 </video>
 ```
 
@@ -121,8 +122,8 @@ If autoplaying video is a requirement for your website, you can use the
 <!-- This will automatically play a video, but
      it will loop continuously and be muted: -->
 <video autoplay muted loop playsinline>
-  <source src="video.webm" type="video/webm">
-  <source src="video.mp4" type="video/mp4">
+  <source src="video.webm" type="video/webm" />
+  <source src="video.mp4" type="video/mp4" />
 </video>
 ```
 
@@ -158,7 +159,7 @@ Setting `preload="none"` is likely the most desirable case if you're loading
 videos that users need to initiate playback for.
 
 > [!NOTE]
-> **Note:** The `preload` attribute is a *hint*---the browser may opt not to obey it, and it may behave differently on different browsers or when comparing a mobile device to a desktop device.
+> **Note:** The `preload` attribute is a _hint_---the browser may opt not to obey it, and it may behave differently on different browsers or when comparing a mobile device to a desktop device.
 
 You can improve the user experience in this case by adding a `poster` image.
 This gives the user some context on what the video is about. Additionally, if
@@ -167,7 +168,7 @@ priority using the `<link rel="preload">` hint along with
 `fetchpriority="high"`:
 
 ```html
-<link rel="preload" as="image" href="poster.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="poster.jpg" fetchpriority="high" />
 ```
 
 > [!NOTE]
@@ -199,7 +200,7 @@ performance. According to the HTTP Archive, YouTube embeds block the main thread
 for more than [1.7 seconds](https://almanac.httparchive.org/en/2022/third-parties#fig-8) for the median website. Blocking the main thread for
 long periods of time is a serious user experience problem that can impact a
 page's [Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt). However, you can strike a compromise
-by *not* loading the embed immediately during the initial page load, and instead
+by _not_ loading the embed immediately during the initial page load, and instead
 create a placeholder for the embed that is replaced by the actual video embed
 when the user interacts with it.
 
@@ -215,7 +216,7 @@ when the user interacts with it.
 ## Test your knowledge
 
 The order of `<source>` elements inside of a
-parent `<video>` element does *not* determine
+parent `<video>` element does _not_ determine
 which video resource is ultimately downloaded.
 True. Try again. False. Correct!
 The `<video>` element's `poster` attribute

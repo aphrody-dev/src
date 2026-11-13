@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Servers and browsers communicate with each other by sending bytes of data over the internet. If the server doesn't specify which [character encoding format](https://en.wikipedia.org/wiki/Character_encoding) it's using when it sends an HTML file, the browser won't know what character each byte represents. The [character encoding declaration](https://html.spec.whatwg.org/multipage/semantics.html#charset) specification solves this problem.
 
 A late `<meta charset>` element (one that is not fully contained in the first 1024 bytes of the document) can significantly affect load performance as the browser will assume one character encoding, and if it discovers later that it made a wrong assumption, it will need to start parsing the HTML again from the beginning.
@@ -28,8 +29,10 @@ Add a `<meta charset>` element within the first 1024 bytes of your HTML document
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     ...
+  </head>
+</html>
 ```
 
 ### Add a `Content-Type` HTTP response header

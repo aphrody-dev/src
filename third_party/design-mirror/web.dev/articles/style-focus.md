@@ -7,14 +7,15 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!TIP]
 > **Tip:** Take the [Learn Accessibility keyboard focus module](https://web.dev/learn/accessibility/focus.md.txt) to learn more about supporting disabled users.
 
- Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
+Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
 The focus indicator, often signified by a "focus ring," identifies the
 element in focus on your page. For users who can't or don't want to use a mouse,
-this indicator is *extremely important*, because it acts as a stand-in for a
+this indicator is _extremely important_, because it acts as a stand-in for a
 mouse-pointer.
 
 If the browser's default focus indicator clashes with your design, you can use
@@ -76,7 +77,7 @@ beneficial to the user. In particular, if the most recent user interaction
 was with a keyboard and the key press did not include a meta, <kbd>ALT</kbd>,
 <kbd>OPTION</kbd>, or <kbd>CONTROL</kbd> key, then `:focus-visible` will match.
 
-The button in the following example *selectively* shows a focus indicator. If
+The button in the following example _selectively_ shows a focus indicator. If
 you use a mouse to click, the results are different than if you first use
 a keyboard to tab to it.
 
@@ -85,6 +86,7 @@ button:focus-visible {
   outline: 4px dashed orange;
 }
 ```
+
 <iframe height="346" style="width: 100%;" scrolling="no" title="focus-visible-style" src="https://codepen.io/web-dot-dev/embed/WbvqXKE?default-tab=result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
 </iframe>
 
@@ -106,6 +108,7 @@ form:focus-within {
   background: #ffecb3;
 }
 ```
+
 <iframe height="346" style="width: 100%;" scrolling="no" title="focus-within-style" src="https://codepen.io/web-dot-dev/embed/azOgVjX?default-tab=result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
 </iframe>
 
@@ -114,7 +117,7 @@ form:focus-within {
 A good question is to ask yourself, "If you clicked on this control while
 using a mobile device, would you expect it to display a keyboard?"
 
-- **If yes** : The control should *always* show a focus indicator, regardless of the input device. For example, this is almost always true of the `<input type="text">` element. The user needs to send input to the element with the keyboard, regardless of how the input element becomes in focus.
+- **If yes** : The control should _always_ show a focus indicator, regardless of the input device. For example, this is almost always true of the `<input type="text">` element. The user needs to send input to the element with the keyboard, regardless of how the input element becomes in focus.
 - **If no** : The control may choose to selectively show a focus indicator. For example, when a user clicks a `<button>` with a mouse or on a touchscreen, the action is completed. A focus indicator may be unnecessary. However, if the user is navigating with a keyboard, it's useful to show a focus indicator so the user can decide whether or not they want to activate the control with <kbd>ENTER</kbd> or <kbd>SPACE</kbd>.
 
 ## Avoid `outline: none`
@@ -156,5 +159,6 @@ the polyfill to change the focus indicator on a button.
   ...
 }
 ```
+
 <iframe height="346" style="width: 100%;" scrolling="no" title="focus-visible" src="https://codepen.io/web-dot-dev/embed/OPVeOob?default-tab=result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
 </iframe>

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: January 29, 2025
@@ -74,7 +75,9 @@ Requesting a GPU adapter in the [experimental compatibility mode](https://github
 
 ```javascript
 // Request a GPU adapter in compatibility mode
-const adapter = await navigator.gpu.requestAdapter({ featureLevel: "compatibility" });
+const adapter = await navigator.gpu.requestAdapter({
+  featureLevel: "compatibility",
+});
 
 if (adapter?.featureLevel === "compatibility") {
   // Any devices created from this adapter will support only compatibility mode.

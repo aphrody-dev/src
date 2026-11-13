@@ -52,7 +52,7 @@
 
 image:
   repository: ghcr.io/epicgames/lore/loreserver
-  tag: ""  # empty = the chart's appVersion
+  tag: "" # empty = the chart's appVersion
 
 topology:
   mode: single

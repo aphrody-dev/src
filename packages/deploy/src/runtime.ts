@@ -57,7 +57,7 @@ export async function runtime(
         "x-content-type-options": "nosniff",
       },
     });
-  if (sub === "v") return beacon(req, env, project, ctx);
+  if (sub === "v") return beacon(req, env, project, sha, ctx);
   if (sub === "image") return image(req, env, project, sha, ctx);
   if (sub === "config" || sub.startsWith("config/"))
     return config(env, project, sub.slice(7));
@@ -68,6 +68,7 @@ async function beacon(
   req: Request,
   env: RuntimeEnv,
   project: string,
+  sha: string,
   ctx?: Ctx,
 ): Promise<Response> {
   if (req.method !== "POST")
@@ -100,6 +101,7 @@ async function beacon(
         headers: {
           "x-country": cf?.country ?? "XX",
           "x-device": /Mobi|Android/i.test(ua) ? "mobile" : "desktop",
+          "x-sha": sha.slice(0, 12),
         },
       }),
     )
@@ -113,13 +115,13 @@ async function beacon(
 export async function insightsSummary(
   env: RuntimeEnv,
   project: string,
-  days = 7,
+  o: { days?: number; by?: "route" | "deployment" } = {},
 ): Promise<Summary | null> {
   if (!env.INSIGHTS) return null;
   const stub = env.INSIGHTS.get(env.INSIGHTS.idFromName(project));
-  const r = await stub.fetch(
-    new Request(`https://insights/summary?days=${days}`),
-  );
+  const q = new URLSearchParams({ days: String(o.days ?? 7) });
+  if (o.by) q.set("by", o.by);
+  const r = await stub.fetch(new Request(`https://insights/summary?${q}`));
   return r.ok ? ((await r.json()) as Summary) : null;
 }
 
@@ -254,6 +256,13 @@ export interface Summary {
   countries: { key: string; n: number }[];
   devices: { key: string; n: number }[];
   vitals: Record<string, { p75: number; n: number }>;
+  /** With `by`: one row per route (path) or deployment (sha12), most viewed first. */
+  by?: "route" | "deployment";
+  groups?: {
+    key: string;
+    views: number;
+    vitals: Record<string, { p75: number; n: number }>;
+  }[];
 }
 
 interface SqlLike {
@@ -281,6 +290,13 @@ export class Insights {
       "CREATE TABLE IF NOT EXISTS vit(day TEXT, metric TEXT, path TEXT, v REAL)",
     );
     this.sql.exec("CREATE INDEX IF NOT EXISTS vit_dmv ON vit(day, metric, v)");
+    // v2: deployment of each sample and view (beacon x-sha); rows before v2 have sha ''.
+    for (const t of ["pv", "vit"])
+      try {
+        this.sql.exec(
+          `ALTER TABLE ${t} ADD COLUMN sha TEXT NOT NULL DEFAULT ''`,
+        );
+      } catch {} // duplicate column: already migrated
   }
 
   async fetch(req: Request): Promise<Response> {
@@ -294,6 +310,9 @@ export class Insights {
         return new Response(null, { status: 400 });
       }
       const path = typeof b?.p === "string" ? b.p.slice(0, 200) : "/";
+      const sha = (req.headers.get("x-sha") ?? "")
+        .replace(/[^0-9a-f]/g, "")
+        .slice(0, 12);
       if (b?.k === "pv") {
         let ref = "";
         try {
@@ -302,8 +321,9 @@ export class Insights {
         const country = (req.headers.get("x-country") ?? "XX").slice(0, 2);
         const device =
           req.headers.get("x-device") === "mobile" ? "mobile" : "desktop";
+        // pv keys on (day, path, ref, country, device): views per deployment come from vit samples.
         this.sql.exec(
-          "INSERT INTO pv VALUES (?, ?, ?, ?, ?, 1) ON CONFLICT(day, path, ref, country, device) DO UPDATE SET n = n + 1",
+          "INSERT INTO pv(day, path, ref, country, device, n) VALUES (?, ?, ?, ?, ?, 1) ON CONFLICT(day, path, ref, country, device) DO UPDATE SET n = n + 1",
           day,
           path,
           ref,
@@ -324,11 +344,12 @@ export class Insights {
             .toArray()[0]?.n;
           if (n >= CAP) continue;
           this.sql.exec(
-            "INSERT INTO vit VALUES (?, ?, ?, ?)",
+            "INSERT INTO vit(day, metric, path, v, sha) VALUES (?, ?, ?, ?, ?)",
             day,
             metric,
             path,
             v,
+            sha,
           );
         }
       }
@@ -384,6 +405,11 @@ export class Insights {
           .toArray()[0]?.v;
         vitals[m] = { p75, n };
       }
+      const by = url.searchParams.get("by");
+      const groups =
+        by === "route" || by === "deployment"
+          ? this.groups(from, by)
+          : undefined;
       const s: Summary = {
         days,
         views: byDay.reduce((a: number, r: any) => a + r.n, 0),
@@ -393,10 +419,49 @@ export class Insights {
         countries: top("country"),
         devices: top("device"),
         vitals,
+        ...(groups ? { by: by as "route" | "deployment", groups } : {}),
       };
       return Response.json(s);
     }
     return new Response("not found", { status: 404 });
+  }
+
+  /** p75 per metric for each route or deployment, in SQL: rank within (key, metric), keep the sample at
+   * the 0-based offset floor(0.75 n) (same rule as the global p75). Top 50 keys. */
+  groups(
+    from: string,
+    by: "route" | "deployment",
+  ): NonNullable<Summary["groups"]> {
+    const col = by === "route" ? "path" : "sha";
+    const rows = this.sql
+      .exec(
+        `WITH r AS (SELECT ${col} AS k, metric, v, ROW_NUMBER() OVER (PARTITION BY ${col}, metric ORDER BY v) AS rn, COUNT(*) OVER (PARTITION BY ${col}, metric) AS n FROM vit WHERE day >= ?) SELECT k, metric, n, v AS p75 FROM r WHERE rn = MIN(n, CAST(n * 0.75 AS INTEGER) + 1)`,
+        from,
+      )
+      .toArray() as { k: string; metric: string; n: number; p75: number }[];
+    const views = new Map<string, number>();
+    if (by === "route")
+      for (const r of this.sql
+        .exec(
+          "SELECT path AS k, SUM(n) AS n FROM pv WHERE day >= ? GROUP BY path",
+          from,
+        )
+        .toArray() as { k: string; n: number }[])
+        views.set(r.k, r.n);
+    const out = new Map<string, NonNullable<Summary["groups"]>[number]>();
+    const row = (k: string) => {
+      let g = out.get(k);
+      if (!g)
+        out.set(k, (g = { key: k, views: views.get(k) ?? 0, vitals: {} }));
+      return g;
+    };
+    for (const k of views.keys()) row(k);
+    for (const r of rows) row(r.k).vitals[r.metric] = { p75: r.p75, n: r.n };
+    const weight = (g: {
+      views: number;
+      vitals: Record<string, { n: number }>;
+    }) => g.views || Math.max(0, ...Object.values(g.vitals).map((x) => x.n));
+    return [...out.values()].sort((a, b) => weight(b) - weight(a)).slice(0, 50);
   }
 }
 

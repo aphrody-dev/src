@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 How Lighthouse calculates your overall Performance score
 
 In general, only [metrics](https://developer.chrome.com/docs/lighthouse/performance#metrics)
@@ -36,7 +37,7 @@ to understand why.
 
 ## How the Performance score is weighted
 
-The Performance score is a [weighted average](https://www.wikihow.com/Calculate-Weighted-Average#Weighted_Averages_without_Percentages_sub) of the *metric scores*. Naturally, more heavily weighted metrics have a bigger effect on your overall Performance score.
+The Performance score is a [weighted average](https://www.wikihow.com/Calculate-Weighted-Average#Weighted_Averages_without_Percentages_sub) of the _metric scores_. Naturally, more heavily weighted metrics have a bigger effect on your overall Performance score.
 The metric scores are not visible in the report, but are calculated under the hood.
 
 > [!NOTE]
@@ -46,24 +47,24 @@ The metric scores are not visible in the report, but are calculated under the ho
 
 ### Lighthouse 10
 
-| Audit | Weight |
-|---|---|
-| [First Contentful Paint](https://web.dev/articles/fcp) | 10% |
-| [Speed Index](https://developer.chrome.com/en/docs/lighthouse/performance/speed-index) | 10% |
-| [Largest Contentful Paint](https://web.dev/articles/lcp) | 25% |
-| [Total Blocking Time](https://web.dev/tbt/) | 30% |
-| [Cumulative Layout Shift](https://web.dev/articles/cls) | 25% |
+| Audit                                                                                  | Weight |
+| -------------------------------------------------------------------------------------- | ------ |
+| [First Contentful Paint](https://web.dev/articles/fcp)                                 | 10%    |
+| [Speed Index](https://developer.chrome.com/en/docs/lighthouse/performance/speed-index) | 10%    |
+| [Largest Contentful Paint](https://web.dev/articles/lcp)                               | 25%    |
+| [Total Blocking Time](https://web.dev/tbt/)                                            | 30%    |
+| [Cumulative Layout Shift](https://web.dev/articles/cls)                                | 25%    |
 
 ### Lighthouse 8
 
-| Audit | Weight |
-|---|---|
-| [First Contentful Paint](https://web.dev/articles/fcp) | 10% |
-| [Speed Index](https://developer.chrome.com/en/docs/lighthouse/performance/speed-index) | 10% |
-| [Largest Contentful Paint](https://web.dev/articles/lcp) | 25% |
-| [Time to Interactive](https://web.dev/tti/) | 10% |
-| [Total Blocking Time](https://web.dev/tbt/) | 30% |
-| [Cumulative Layout Shift](https://web.dev/articles/cls) | 15% |
+| Audit                                                                                  | Weight |
+| -------------------------------------------------------------------------------------- | ------ |
+| [First Contentful Paint](https://web.dev/articles/fcp)                                 | 10%    |
+| [Speed Index](https://developer.chrome.com/en/docs/lighthouse/performance/speed-index) | 10%    |
+| [Largest Contentful Paint](https://web.dev/articles/lcp)                               | 25%    |
+| [Time to Interactive](https://web.dev/tti/)                                            | 10%    |
+| [Total Blocking Time](https://web.dev/tbt/)                                            | 30%    |
+| [Cumulative Layout Shift](https://web.dev/articles/cls)                                | 15%    |
 
 ### How metric scores are determined
 
@@ -84,7 +85,7 @@ data becomes a score of 50 (the median control point), and the 8th percentile be
 While exploring the scoring curve plot, note that between 0.50 and 0.92, there's a near-linear relationship between metric value and score.
 Around a score of 0.96 is the "point of diminishing returns" as higher, the curve pulls away, requiring increasingly more metric improvement to
 improve an already high score.
- [Explore the scoring curve for TTI](https://www.desmos.com/calculator/o98tbeyt1t).
+[Explore the scoring curve for TTI](https://www.desmos.com/calculator/o98tbeyt1t).
 
 ### How desktop versus mobile is handled
 

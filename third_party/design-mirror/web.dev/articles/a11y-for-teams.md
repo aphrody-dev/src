@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 How to incorporate accessibility into your team's process.
 
- Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
+Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
 Making your site more accessible can be a daunting task. If you are approaching
 accessibility for the first time, the sheer breadth of the topic can leave you
@@ -216,7 +217,7 @@ Two options are:
 When you change the content of the page, it's important to direct the user's
 attention by moving focus. A classic example of when this technique is useful is
 when opening a modal dialog. If a user relying on a keyboard presses a button to
-open a dialog and their focus *is not* moved into the dialog element, then their
+open a dialog and their focus _is not_ moved into the dialog element, then their
 only course of action is to tab through the entire site until they eventually
 find the new control. By moving focus into the new content as soon as it
 appears, you can improve the efficiency of these users' experiences.
@@ -258,7 +259,7 @@ affordance, but it also gives the input an accessible name in the accessibility
 tree. This name is then picked up by assistive technology (like a screen reader)
 and announced to the user.
 
-Unfortunately `<label>` *does not* support giving an accessible name to custom
+Unfortunately `<label>` _does not_ support giving an accessible name to custom
 controls (like ones created using [Custom
 Elements](https://web.dev/articles/custom-elements-v1)
 or out of simple divs and spans). For these kinds of controls you'll need to use

@@ -116,9 +116,7 @@ export class SovereignGroundingVerifier {
       const snippetLower = (bestHit.snippet || "").toLowerCase();
       const titleLower = (bestHit.title || "").toLowerCase();
 
-      const keywords = claimLower
-        .split(/\W+/)
-        .filter((w) => w.length >= 4);
+      const keywords = claimLower.split(/\W+/).filter((w) => w.length >= 4);
       const matches = keywords.filter(
         (k) => snippetLower.includes(k) || titleLower.includes(k),
       );

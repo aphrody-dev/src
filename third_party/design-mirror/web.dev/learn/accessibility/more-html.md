@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Along with structure, there are many supporting HTML elements to consider when
 building and designing for digital accessibility. Throughout the Learn
 Accessibility course, we cover a lot of elements.
@@ -49,8 +50,9 @@ already heard.
 Don't
 
 ```html
-<title>The Food Channel | Outrageous Pumpkins | Season 3 </title>
+<title>The Food Channel | Outrageous Pumpkins | Season 3</title>
 ```
+
 Do
 
 ```html
@@ -79,12 +81,17 @@ digital product and a frustrated user.
 Don't
 
 ```html
-<html>...</html>
+<html>
+  ...
+</html>
 ```
+
 Do
 
 ```html
-<html lang="en">...</html>
+<html lang="en">
+  ...
+</html>
 ```
 
 The lang attribute can only have one language associated with it. This means
@@ -93,13 +100,19 @@ languages on the page. Set `lang` to the primary language of the page.
 Don't
 
 ```html
-<html lang="ar,en,fr,pt">...</html>
+<html lang="ar,en,fr,pt">
+  ...
+</html>
 ```
+
 Multiple languages are not supported. Do
 
 ```html
-<html lang="ar">...</html>
+<html lang="ar">
+  ...
+</html>
 ```
+
 Set only the page's primary language. In this case, the language is Arabic.
 
 ### Section language
@@ -117,23 +130,30 @@ Don't
 
 ```html
 <html lang="en">
-  <body>...
+  <body>
+    ...
     <div>
-      <p>While traveling in Estonia this summer, I often asked,
-        "Kas sa räägid inglise keelt?" when I met someone new.</p>
+      <p>
+        While traveling in Estonia this summer, I often asked, "Kas sa räägid
+        inglise keelt?" when I met someone new.
+      </p>
     </div>
   </body>
 </html>
 ```
+
 Do
 
 ```html
 <html lang="en">
-  <body>...
+  <body>
+    ...
     <div>
-      <p>While traveling in Estonia this summer, I often asked,
+      <p>
+        While traveling in Estonia this summer, I often asked,
         <span lang="et">"Kas sa räägid inglise keelt?"</span>
-        when I met someone new.</p>
+        when I met someone new.
+      </p>
     </div>
   </body>
 </html>
@@ -156,11 +176,14 @@ Don't
 ```html
 <iframe src="https://www.youtube.com/embed/3obixhGZ5ds"></iframe>
 ```
+
 Do
 
 ```html
-<iframe title="Google Pixel - Lizzo in Real Tone"
+<iframe
+  title="Google Pixel - Lizzo in Real Tone"
   src="https://www.youtube.com/embed/3obixhGZ5ds"
-  scrolling="auto">
+  scrolling="auto"
+>
 </iframe>
 ```

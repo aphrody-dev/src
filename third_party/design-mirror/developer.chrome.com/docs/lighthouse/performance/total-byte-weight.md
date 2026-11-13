@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Large network payloads are highly correlated with long load times.
 They also cost users money;
 for example, users may have to pay for more cellular data.
 So, reducing the total size of your page's network requests is good
-for your users' experience on your site *and* their wallets.
+for your users' experience on your site _and_ their wallets.
 
 > [!NOTE]
 > **Note:** To see what accessing your site costs around the world, check out WebPageTest's [What Does My Site Cost?](https://whatdoesmysitecost.com/) You can adjust the results to factor in purchasing power.

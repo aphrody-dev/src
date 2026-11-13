@@ -28,7 +28,8 @@ const ALIASES: Record<(typeof HEADER)[number], string[]> = {
   note: ["note", "notes", "comment", "comments"],
 };
 
-export const rowsFromCsv = (text: string): PasswordRow[] => rowsFromTable(parseCsv(text));
+export const rowsFromCsv = (text: string): PasswordRow[] =>
+  rowsFromTable(parseCsv(text));
 
 export function rowsFromTable(table: string[][]): PasswordRow[] {
   const [head, ...body] = table;
@@ -37,14 +38,23 @@ export function rowsFromTable(table: string[][]): PasswordRow[] {
   const idx = Object.fromEntries(
     HEADER.map((k) => [k, cols.findIndex((c) => ALIASES[k].includes(c))]),
   ) as Record<(typeof HEADER)[number], number>;
-  if (idx.url < 0 || idx.password < 0) throw new Error("chrome csv: url and password columns required");
+  if (idx.url < 0 || idx.password < 0)
+    throw new Error("chrome csv: url and password columns required");
   return body
     .filter((r) => r.some((c) => c !== ""))
-    .map((r) => Object.fromEntries(HEADER.map((k) => [k, idx[k] >= 0 ? (r[idx[k]] ?? "") : ""])) as PasswordRow);
+    .map(
+      (r) =>
+        Object.fromEntries(
+          HEADER.map((k) => [k, idx[k] >= 0 ? (r[idx[k]] ?? "") : ""]),
+        ) as PasswordRow,
+    );
 }
 
 export function rowsToCsv(rows: PasswordRow[]): string {
-  return stringifyCsv([[...HEADER], ...rows.map((r) => HEADER.map((k) => r[k]))]);
+  return stringifyCsv([
+    [...HEADER],
+    ...rows.map((r) => HEADER.map((k) => r[k])),
+  ]);
 }
 
 const key = (r: PasswordRow) => `${r.url}\u0000${r.username}`;
@@ -56,7 +66,10 @@ export async function loadPasswords(): Promise<PasswordRow[]> {
 }
 
 /** Import: merge by (url, username), last file wins; returns counts only. */
-export async function importChromeCsv(file: string, opts: { keep?: boolean } = {}) {
+export async function importChromeCsv(
+  file: string,
+  opts: { keep?: boolean } = {},
+) {
   const incoming = rowsFromCsv(await readFile(file, "utf8"));
   const merged = new Map((await loadPasswords()).map((r) => [key(r), r]));
   const before = merged.size;
@@ -65,9 +78,16 @@ export async function importChromeCsv(file: string, opts: { keep?: boolean } = {
   const hello = await helloAvailable();
   await writeDocument(CHROME_DOC, "csv", rowsToCsv(rows), { hello });
   const check = await loadPasswords();
-  if (check.length !== rows.length) throw new Error("chrome csv: verification failed, clear file kept");
+  if (check.length !== rows.length)
+    throw new Error("chrome csv: verification failed, clear file kept");
   const shredded = opts.keep ? 0 : await shred(file);
-  return { imported: incoming.length, total: rows.length, added: rows.length - before, hello, shreddedBytes: shredded };
+  return {
+    imported: incoming.length,
+    total: rows.length,
+    added: rows.length - before,
+    hello,
+    shreddedBytes: shredded,
+  };
 }
 
 /** Export in the writer format, for chrome://password-manager import in a Chromium (fork, CfT). */

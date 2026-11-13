@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Search engines use structured data to understand what kind of content is on
 your page. For example, you can tell search engines that your page is an
 article, a job posting, or an FAQ.

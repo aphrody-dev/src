@@ -6,43 +6,43 @@ Décision du propriétaire : toutes les licences sont acceptées pour l'usage in
 
 ## 1. Secrets
 
-| Dépôt | Findings | Taille | Résultat du tri |
-|---|---|---|---|
-| aphrody-dev/src | 6 (+2 avec les règles ajoutées) | – | fixtures uniquement |
-| aphrody-labs/shenron | 82 | 285 Mo | 1 clé Stripe de test au format réel, build `.next` commité, le reste en faux positifs |
-| aphrody-labs/r2b | 9 | 19 Mo | fixtures de test (JWT, marqueurs) |
-| aphrody-labs/auto | 7 | 49 Mo | fixtures `sk_test_` courtes, vecteurs de test xlsx |
-| aphrody-labs/yolo, aphrody-m3, antigravity-sdk-python | 0 | – | propre |
-| aphrody-labs/labs | 0 (dépôt vide) | 0 | – |
-| aphrody-labs/UnrealEngine | non scanné | 39,8 Go | ignoré (> 2 Go) |
-| C:\labs (arbre de travail, sans target/third_party/crates/.lore) | 17 | 45 Mo tgz | clés de test de CPython 2.7 dans `forks/oils`, toutes publiques |
+| Dépôt                                                            | Findings                        | Taille    | Résultat du tri                                                                       |
+| ---------------------------------------------------------------- | ------------------------------- | --------- | ------------------------------------------------------------------------------------- |
+| aphrody-dev/src                                                  | 6 (+2 avec les règles ajoutées) | –         | fixtures uniquement                                                                   |
+| aphrody-labs/shenron                                             | 82                              | 285 Mo    | 1 clé Stripe de test au format réel, build `.next` commité, le reste en faux positifs |
+| aphrody-labs/r2b                                                 | 9                               | 19 Mo     | fixtures de test (JWT, marqueurs)                                                     |
+| aphrody-labs/auto                                                | 7                               | 49 Mo     | fixtures `sk_test_` courtes, vecteurs de test xlsx                                    |
+| aphrody-labs/yolo, aphrody-m3, antigravity-sdk-python            | 0                               | –         | propre                                                                                |
+| aphrody-labs/labs                                                | 0 (dépôt vide)                  | 0         | –                                                                                     |
+| aphrody-labs/UnrealEngine                                        | non scanné                      | 39,8 Go   | ignoré (> 2 Go)                                                                       |
+| C:\labs (arbre de travail, sans target/third_party/crates/.lore) | 17                              | 45 Mo tgz | clés de test de CPython 2.7 dans `forks/oils`, toutes publiques                       |
 
 ### Secrets exposés connus dans cette session
 
-| Secret | Occurrences dans un historique git ou dans C:\labs |
-|---|---|
-| CARGO_REGISTRY_TOKEN (`cio…`) | 0 |
-| Clés Cloudflare R2 (access/secret) | 0 |
+| Secret                                 | Occurrences dans un historique git ou dans C:\labs                                                                                                                                                         |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CARGO_REGISTRY_TOKEN (`cio…`)          | 0                                                                                                                                                                                                          |
+| Clés Cloudflare R2 (access/secret)     | 0                                                                                                                                                                                                          |
 | Token gh (`gho_`/`ghp_`/`github_pat_`) | 0 réel. 3 fixtures marquées comme fausses : src `tools/archguard/tests/archguard_test.rs` @0b8cdd0c et `packages/env-kit/loaders/rust/src/lib.rs` @f5a14bf1, ainsi que `loaders/rust/src/lib.rs` @0d87b374 |
-| CTX7_API_KEY (`ctx7sk…`) | 0 réel. 1 fixture : src `packages/knowledge-engine/tests/knowledge-engine.test.ts` @f5a14bf1 |
+| CTX7_API_KEY (`ctx7sk…`)               | 0 réel. 1 fixture : src `packages/knowledge-engine/tests/knowledge-engine.test.ts` @f5a14bf1                                                                                                               |
 
 Ces quatre secrets restent compromis du fait de leur exposition dans la session. Il faut les révoquer quoi qu'il en soit, même si l'audit ne les trouve dans aucun dépôt.
 
 ### Findings à traiter
 
-| Dépôt | Fichier | Commit | Règle | Gravité |
-|---|---|---|---|---|
-| shenron | apps/site/src/lib/stripe.ts | a2671e1e | stripe-access-token (`sk_test_` et `pk_test_`, 107 caractères, format réel) | moyenne : à révoquer dans le dashboard Stripe (mode test) |
-| shenron | apps/site/.next-ui-preview/** (build commité, 2 commits) | 3ffae86d | private-key (vecteur de test de jose), generic-api-key | faible, mais c'est un artefact de build à purger de l'historique |
-| shenron | packages/db/migration-audit.snapshot.json | ×12 commits | generic-api-key | faible : hash de snapshot, à vérifier |
-| shenron | apps/site/tests/*, packages/api/test/* | divers | discord-client-id | faible : un client id est public |
-| shenron | data/catalogues/pages/*.html (14) | 239fe463 | generic-api-key | faux positif (pages HTML aspirées) |
-| src | packages/epic-games/src/auth.ts | bca544b2 | generic-api-key (client id/secret du launcher Epic) | faible : valeur connue publiquement, mais sa présence pose un problème de CGU Epic |
-| src | infra/internal/envvault/envvault_test.go | 5d7e8036 | env-named-known CLOUDFLARE_API_TOKEN | le token est un faux, mais `CLOUDFLARE_ACCOUNT_ID` (32 caractères) n'est pas marqué comme faux : vérifier qu'il ne s'agit pas du vrai |
-| src | packages/env-kit/tests, tests/env-kit.test.ts | f5a14bf1, 0d87b374 | generic-api-key | fixture |
-| auto | apps/api/src/encaissement.test.ts, apps/web/e2e/paiement-en-ligne.test.ts, apps/api/src/modules/courrier.test.ts | 144c4b3a | stripe-access-token / generic | fixtures courtes (19 et 22 caractères) |
-| auto | vendor/suite/crates/gridcraft-xlsx/src/{crypto,tests}/* | 4f3ad0b5 | generic-api-key | vecteurs de test |
-| r2b | src/rea/** (9) | 248976e0 | jwt, generic-api-key | fixtures de test |
+| Dépôt   | Fichier                                                                                                          | Commit             | Règle                                                                       | Gravité                                                                                                                               |
+| ------- | ---------------------------------------------------------------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| shenron | apps/site/src/lib/stripe.ts                                                                                      | a2671e1e           | stripe-access-token (`sk_test_` et `pk_test_`, 107 caractères, format réel) | moyenne : à révoquer dans le dashboard Stripe (mode test)                                                                             |
+| shenron | apps/site/.next-ui-preview/** (build commité, 2 commits)                                                         | 3ffae86d           | private-key (vecteur de test de jose), generic-api-key                      | faible, mais c'est un artefact de build à purger de l'historique                                                                      |
+| shenron | packages/db/migration-audit.snapshot.json                                                                        | ×12 commits        | generic-api-key                                                             | faible : hash de snapshot, à vérifier                                                                                                 |
+| shenron | apps/site/tests/_, packages/api/test/_                                                                           | divers             | discord-client-id                                                           | faible : un client id est public                                                                                                      |
+| shenron | data/catalogues/pages/*.html (14)                                                                                | 239fe463           | generic-api-key                                                             | faux positif (pages HTML aspirées)                                                                                                    |
+| src     | packages/epic-games/src/auth.ts                                                                                  | bca544b2           | generic-api-key (client id/secret du launcher Epic)                         | faible : valeur connue publiquement, mais sa présence pose un problème de CGU Epic                                                    |
+| src     | infra/internal/envvault/envvault_test.go                                                                         | 5d7e8036           | env-named-known CLOUDFLARE_API_TOKEN                                        | le token est un faux, mais `CLOUDFLARE_ACCOUNT_ID` (32 caractères) n'est pas marqué comme faux : vérifier qu'il ne s'agit pas du vrai |
+| src     | packages/env-kit/tests, tests/env-kit.test.ts                                                                    | f5a14bf1, 0d87b374 | generic-api-key                                                             | fixture                                                                                                                               |
+| auto    | apps/api/src/encaissement.test.ts, apps/web/e2e/paiement-en-ligne.test.ts, apps/api/src/modules/courrier.test.ts | 144c4b3a           | stripe-access-token / generic                                               | fixtures courtes (19 et 22 caractères)                                                                                                |
+| auto    | vendor/suite/crates/gridcraft-xlsx/src/{crypto,tests}/*                                                          | 4f3ad0b5           | generic-api-key                                                             | vecteurs de test                                                                                                                      |
+| r2b     | src/rea/** (9)                                                                                                   | 248976e0           | jwt, generic-api-key                                                        | fixtures de test                                                                                                                      |
 
 ## 2. Licences (publication publique uniquement)
 
@@ -66,11 +66,11 @@ Ces quatre secrets restent compromis du fait de leur exposition dans la session.
 
 ### Crates et packages
 
-| Workspace | Type | Nombre | Licence | publish=false / private |
-|---|---|---|---|---|
-| src | crates | 52 | 31 héritent du workspace, 19 explicites, 2 sans licence (`agy-desktop`, `xtk`) | 15 |
-| src | npm @aphrody/* | 18 | 1 MIT (`bun-parity`), 17 sans licence | 6 private |
-| labs | crates | 24 | 3 héritent du workspace (sans valeur), 21 lore sans licence | 21 |
+| Workspace | Type           | Nombre | Licence                                                                        | publish=false / private |
+| --------- | -------------- | ------ | ------------------------------------------------------------------------------ | ----------------------- |
+| src       | crates         | 52     | 31 héritent du workspace, 19 explicites, 2 sans licence (`agy-desktop`, `xtk`) | 15                      |
+| src       | npm @aphrody/* | 18     | 1 MIT (`bun-parity`), 17 sans licence                                          | 6 private               |
+| labs      | crates         | 24     | 3 héritent du workspace (sans valeur), 21 lore sans licence                    | 21                      |
 
 ## 3. Disponibilité des noms
 
@@ -81,17 +81,17 @@ Vérification faite le 2026-11-12 via l'API crates.io et le registre npm, avec l
 
 ## Verdicts
 
-| Cible | Verdict | Condition |
-|---|---|---|
-| aphrody-dev/src (dépôt public) | après correction | LICENSE à la racine, retrait de `epic-games` (secret du launcher), vérification de `native_nt_gpu.lib` et de `CLOUDFLARE_ACCOUNT_ID`, pas de `third_party/` commité |
-| crates src (MIT/Apache) | après correction | LICENSE à la racine et licences explicites (`agy-desktop`, `xtk`). Les 15 crates en publish=false restent internes |
-| npm @aphrody/* | après correction | confirmer la propriété du scope, ajouter `license` à 17 packages |
-| aphrody-labs/yolo, aphrody-m3, antigravity-sdk-python | publiables maintenant pour les secrets | LICENSE à vérifier dans chaque dépôt (non audité) |
-| aphrody-labs/r2b, auto | publiables maintenant pour les secrets | fixtures seulement. LICENSE à vérifier |
-| aphrody-labs/shenron | après correction | révoquer la clé Stripe de test, purger `.next-ui-preview` de l'historique (git filter-repo), droits sur le contenu Dragon Ball aspiré |
-| C:\labs / aphrody-labs/labs | après correction | LICENSE et `license` dans le workspace, renommer `lore` sur crates.io, conserver la notice MIT Epic de Lore |
-| aphrody-labs/UnrealEngine | jamais | EULA Epic |
-| third_party restrictif (Steam SDK, AGPL, sans licence) | jamais en redistribution publique | usage interne autorisé |
+| Cible                                                  | Verdict                                | Condition                                                                                                                                                           |
+| ------------------------------------------------------ | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| aphrody-dev/src (dépôt public)                         | après correction                       | LICENSE à la racine, retrait de `epic-games` (secret du launcher), vérification de `native_nt_gpu.lib` et de `CLOUDFLARE_ACCOUNT_ID`, pas de `third_party/` commité |
+| crates src (MIT/Apache)                                | après correction                       | LICENSE à la racine et licences explicites (`agy-desktop`, `xtk`). Les 15 crates en publish=false restent internes                                                  |
+| npm @aphrody/*                                         | après correction                       | confirmer la propriété du scope, ajouter `license` à 17 packages                                                                                                    |
+| aphrody-labs/yolo, aphrody-m3, antigravity-sdk-python  | publiables maintenant pour les secrets | LICENSE à vérifier dans chaque dépôt (non audité)                                                                                                                   |
+| aphrody-labs/r2b, auto                                 | publiables maintenant pour les secrets | fixtures seulement. LICENSE à vérifier                                                                                                                              |
+| aphrody-labs/shenron                                   | après correction                       | révoquer la clé Stripe de test, purger `.next-ui-preview` de l'historique (git filter-repo), droits sur le contenu Dragon Ball aspiré                               |
+| C:\labs / aphrody-labs/labs                            | après correction                       | LICENSE et `license` dans le workspace, renommer `lore` sur crates.io, conserver la notice MIT Epic de Lore                                                         |
+| aphrody-labs/UnrealEngine                              | jamais                                 | EULA Epic                                                                                                                                                           |
+| third_party restrictif (Steam SDK, AGPL, sans licence) | jamais en redistribution publique      | usage interne autorisé                                                                                                                                              |
 
 ## Actions, par ordre
 

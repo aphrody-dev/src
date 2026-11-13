@@ -7,17 +7,18 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Discover how CMSs such as WordPress, and other site generators can make it
 easier to use responsive images.
 
 While certainly an improvement over manually saving alternate cuts of each image and hand-optimizing them through a tool like
 [Squoosh.app](https://squoosh.app/), automating image compression as a step in the development process has some limitations. For one, you may not
-always have full control over the images used throughout a site---most user-facing images on the web are *content* concerns more
+always have full control over the images used throughout a site---most user-facing images on the web are _content_ concerns more
 than development concerns, uploaded by users or editors, rather than living in a repository alongside development assets like
 JavaScript and stylesheets.
 
 This will typically necessitate more than one process for image management: a development-level task for the image assets used in
-building and maintaining a site---backgrounds, icons, logos, and so on---and another concerned with image assets generated through *use*
+building and maintaining a site---backgrounds, icons, logos, and so on---and another concerned with image assets generated through _use_
 of the site, such as photographs embedded in a post by an editorial team, or an avatar uploaded by a user. While the context may
 differ, the end goals are the same: automated encoding and compression based on settings defined by the development team.
 
@@ -40,33 +41,31 @@ markup. For example, when [invoked as part of a shortcode for displaying images]
 to the configuration options passed along to Sharp.
 
 ```javascript
-
 const Image = require("@11ty/eleventy-img");
-module.exports = function(eleventyConfig) {
+module.exports = function (eleventyConfig) {
+  async function imageShortcode(src, alt, sizes = "100vw") {
+    let metadata = await Image(src, {
+      formats: ["avif", "webp", "jpeg"],
+      widths: [1000, 800, 400],
+      outputDir: "_dist/img/",
+      filenameFormat: function (id, src, width, format, options) {
+        const ext = path.extname(src),
+          name = path.basename(src, ext);
 
-async function imageShortcode(src, alt, sizes="100vw") {
-  let metadata = await Image(src, {
-  formats: ["avif", "webp", "jpeg"],
-  widths: [1000, 800, 400],
-  outputDir: "_dist/img/",
-  filenameFormat: function( id, src, width, format, options ) {
-      const ext = path.extname( src ),
-        name = path.basename( src, ext );
+        return `${name}-${width}.${format}`;
+      },
+    });
 
-      return `${name}-${width}.${format}`
+    let imageAttributes = {
+      alt,
+      sizes,
+      loading: "lazy",
+    };
+
+    return Image.generateHTML(metadata, imageAttributes);
   }
-  });
 
-  let imageAttributes = {
-  alt,
-  sizes,
-  loading: "lazy"
-  };
-
-  return Image.generateHTML(metadata, imageAttributes);
-}
-
-eleventyConfig.addAsyncShortcode("respimg", imageShortcode);
+  eleventyConfig.addAsyncShortcode("respimg", imageShortcode);
 };
 ```
 
@@ -81,10 +80,33 @@ corresponding `<source>` elements, `type` attributes, and `srcset` attributes al
 generated candidate sizes.
 
 ```html
-<picture><source type="image/avif" srcset="/img/butterfly-400.avif 400w, /img/butterfly-800.avif 800w, /img/butterfly-1000.avif 1000w" sizes="(min-width: 30em) 800px, 80vw"><source type="image/webp" srcset="/img/butterfly-400.webp 400w, /img/butterfly-800.webp 800w, /img/butterfly-1000.webp 1000w" sizes="(min-width: 30em) 800px, 80vw"><source type="image/jpeg" srcset="/img/butterfly-400.jpeg 400w, /img/butterfly-800.jpeg 800w, /img/butterfly-1000.jpeg 1000w" sizes="(min-width: 30em) 800px, 80vw"></picture>
+<picture
+  ><source
+    type="image/avif"
+    srcset="
+      /img/butterfly-400.avif   400w,
+      /img/butterfly-800.avif   800w,
+      /img/butterfly-1000.avif 1000w
+    "
+    sizes="(min-width: 30em) 800px, 80vw" /><source
+    type="image/webp"
+    srcset="
+      /img/butterfly-400.webp   400w,
+      /img/butterfly-800.webp   800w,
+      /img/butterfly-1000.webp 1000w
+    "
+    sizes="(min-width: 30em) 800px, 80vw" /><source
+    type="image/jpeg"
+    srcset="
+      /img/butterfly-400.jpeg   400w,
+      /img/butterfly-800.jpeg   800w,
+      /img/butterfly-1000.jpeg 1000w
+    "
+    sizes="(min-width: 30em) 800px, 80vw"
+/></picture>
 ```
 
-Of course, this plugin won't be able to *generate* a viable `sizes` attribute, as it can't know the ultimate size and position
+Of course, this plugin won't be able to _generate_ a viable `sizes` attribute, as it can't know the ultimate size and position
 of the image in the rendered layout, but it does accept one as input when generating your markup---another job for RespImageLint.
 
 ## Frameworks
@@ -94,9 +116,9 @@ themselves. [Responsive-loader](https://www.npmjs.com/package/responsive-loader)
 then `import` your images as objects:
 
 ```javascript
-  import imageAVIF from 'img/butterfly.jpg?sizes[]=400,sizes[]=800,sizes[]=1000&format=avif';
-  import imageWebP from 'img/butterfly.jpg?sizes[]=400,sizes[]=800,sizes[]=1000&format=webp';
-  import imageDefault from 'img/butterfly.jpg?sizes[]=400,sizes[]=800,sizes[]=1000';
+import imageAVIF from "img/butterfly.jpg?sizes[]=400,sizes[]=800,sizes[]=1000&format=avif";
+import imageWebP from "img/butterfly.jpg?sizes[]=400,sizes[]=800,sizes[]=1000&format=webp";
+import imageDefault from "img/butterfly.jpg?sizes[]=400,sizes[]=800,sizes[]=1000";
 ```
 
 These imported images can then be used through abstractions like [React's Image component](https://reactnative.dev/docs/image), or to populate your responsive
@@ -104,9 +126,9 @@ image markup directly:
 
 ```html
 <picture>
-  <source type='image/avif' srcSet={imageAVIF.srcSet} sizes='...' />
-  <source type='image/webp' srcSet={imageWebp.srcSet} sizes='...' />
-  
+  <source type="image/avif" srcset="{imageAVIF.srcSet}" sizes="..." />
+  <source type="image/webp" srcset="{imageWebp.srcSet}" sizes="..." />
+</picture>
 ```
 
 A framework that does client side rendering is a strong candidate for [Lazysizes](https://www.npmjs.com/package/lazysizes) and `sizes="auto"`---giving you almost fully
@@ -152,7 +174,7 @@ to set contextually-appropriate `sizes` attributes in your templates.
 
 Of course, there are countless WordPress plugins dedicated to making modern image workflows faster for development teams and users alike.
 Perhaps most excitingly, plugins like [Jetpack's Site Accelerator](https://jetpack.com/support/site-accelerator/) (formerly "Photon")
-can provide *server-side* negotiation for encodings, ensuring that users will receive the smallest, most efficient encoding that their
+can provide _server-side_ negotiation for encodings, ensuring that users will receive the smallest, most efficient encoding that their
 browser is able to support without the need for `<picture>` and `type` markup pattern. It does this through use of an image content
 delivery network---a technology you can make use of yourself, independent of your CMS.
 

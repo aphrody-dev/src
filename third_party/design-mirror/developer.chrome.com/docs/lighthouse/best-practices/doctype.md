@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Specifying a doctype prevents the browser from switching to
 [quirks mode](https://developer.mozilla.org/docs/Web/HTML/Quirks_Mode_and_Standards_Mode),
 which can cause your page to [render in unexpected ways](https://quirks.spec.whatwg.org/#css).
@@ -15,7 +16,7 @@ which can cause your page to [render in unexpected ways](https://quirks.spec.wha
 
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt) flags pages without the
 `<!DOCTYPE html>` declaration:
- Lighthouse audit showing missing doctype.
+Lighthouse audit showing missing doctype.
 
 > [!NOTE]
 > **Note:** Each Best Practices audit is weighted equally in the Lighthouse Best Practices Score. Learn more in [The Best Practices
@@ -28,7 +29,8 @@ Add the `<!DOCTYPE html>` declaration to the top of your HTML document:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-...
+  ...
+</html>
 ```
 
 Read about [Doctype on MDN](https://developer.mozilla.org/docs/Glossary/Doctype)

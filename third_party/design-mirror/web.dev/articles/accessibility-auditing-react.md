@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
 
 Your React site must be accessible to be progressive. Audit for accessibility
@@ -41,7 +42,7 @@ example, use the `htmlFor` attribute instead of `for` to add a label to a
 form element within a React component.
 
 ```html
-<input id="promo" type="checkbox">
+<input id="promo" type="checkbox" />
 <label htmlFor="promo">Receive promotional offers?</label>
 ```
 
@@ -96,16 +97,16 @@ conducts testing by adding a React wrapper around the
 [`axe-core`](https://github.com/dequelabs/axe-core) testing tool by Deque Labs.
 
 1. Install the library as a development dependency: `bash
-   npm install --save-dev react-axe`
+npm install --save-dev react-axe`
 2. Initialize the module in `index.js`: `js
-   if (process.env.NODE_ENV !== 'production') {
-   import('react-axe').then(axe => {
-   axe.default(React, ReactDOM, 1000);
-   ReactDOM.render(<App />, document.getElementById('root'));
-   });
-   } else {
-   ReactDOM.render(<App />, document.getElementById('root'));
-   }`
+if (process.env.NODE_ENV !== 'production') {
+import('react-axe').then(axe => {
+axe.default(React, ReactDOM, 1000);
+ReactDOM.render(<App />, document.getElementById('root'));
+});
+} else {
+ReactDOM.render(<App />, document.getElementById('root'));
+}`
 
 A [dynamic import](https://v8.dev/features/dynamic-import) loads the library,
 as long as it's not in production, before rendering and booting up the root

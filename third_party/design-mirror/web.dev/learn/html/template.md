@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The benefit of web components is their re-usability: you can create a UI widget once, and reuse it multiple times. While you
 do need JavaScript to create web components, you don't need a JavaScript library. HTML and the associated APIs provide everything you need.
 
@@ -33,7 +34,13 @@ The `<template>` element is used to declare fragments of HTML to be cloned and i
     <fieldset>
       <legend>Rate your experience:</legend>
       <rating>
-        <input type="radio" name="rating" value="1" aria-label="1 star" required />
+        <input
+          type="radio"
+          name="rating"
+          value="1"
+          aria-label="1 star"
+          required
+        />
         <input type="radio" name="rating" value="2" aria-label="2 stars" />
         <input type="radio" name="rating" value="3" aria-label="3 stars" />
         <input type="radio" name="rating" value="4" aria-label="4 stars" />
@@ -77,6 +84,9 @@ In our template, we change the `<legend>` to a `<slot>`:
       <slot name="star-rating-legend">
         <legend>Rate your experience:</legend>
       </slot>
+    </fieldset>
+  </form></template
+>
 ```
 
 The `name` attribute is used to assign slots to other elements if the element has a [slot](https://developer.mozilla.org/docs/Web/HTML/Global_attributes/slot) attribute whose value matches the
@@ -130,18 +140,23 @@ We [define the custom element](https://developer.mozilla.org/docs/Web/Web_Compon
 by extending the `HTMLElement`:
 
 ```javascript
-customElements.define('star-rating',
+customElements.define(
+  "star-rating",
   class extends HTMLElement {
     constructor() {
       super(); // Always call super first in constructor
-      const starRating = document.getElementById('star-rating-template').content;
+      const starRating = document.getElementById(
+        "star-rating-template",
+      ).content;
       const shadowRoot = this.attachShadow({
-        mode: 'open'
+        mode: "open",
       });
       shadowRoot.appendChild(starRating.cloneNode(true));
     }
-  });
+  },
+);
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/poOzjpj?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen poOzjpj by web-dot-dev on Codepen"></iframe>
 
 Now that the element is defined, every time the browser encounters a `<star-rating>` element, it will be rendered as defined
@@ -150,7 +165,7 @@ a [clone](https://developer.mozilla.org/docs/Web/API/Node/cloneNode) of the temp
 Note that the elements upon which you can [`attachShadow()` are limited](https://developer.mozilla.org/docs/Web/API/Element/attachShadow#elements_you_can_attach_a_shadow_to).
 
 ```javascript
-const shadowRoot = this.attachShadow({mode: 'open'});
+const shadowRoot = this.attachShadow({ mode: "open" });
 shadowRoot.appendChild(starRating.cloneNode(true));
 ```
 
@@ -182,7 +197,7 @@ substantially reduce the specificity of the selectors. For example, as the only 
 buttons, we can use `input` instead of `input[type="radio"]` as a selector.
 
 ```html
- <template id="star-rating-template">
+<template id="star-rating-template">
   <style>
     rating {
       display: inline-flex;
@@ -193,7 +208,7 @@ buttons, we can use `input` instead of `input[type="radio"]` as a selector.
       box-shadow: none;
     }
     input::after {
-      content: '\2605'; /* solid star */
+      content: "\2605"; /* solid star */
       font-size: 32px;
     }
     rating:hover input:invalid::after,
@@ -201,8 +216,8 @@ buttons, we can use `input` instead of `input[type="radio"]` as a selector.
       color: #888;
     }
     input:invalid::after,
-      rating:hover input:hover ~ input:invalid::after,
-      input:focus ~ input:invalid::after  {
+    rating:hover input:hover ~ input:invalid::after,
+    input:focus ~ input:invalid::after {
       color: #ddd;
     }
     input:valid {
@@ -210,7 +225,7 @@ buttons, we can use `input` instead of `input[type="radio"]` as a selector.
     }
     input:checked ~ input:not(:checked)::after {
       color: #ccc;
-      content: '\2606'; /* hollow star */
+      content: "\2606"; /* hollow star */
     }
   </style>
   <form>
@@ -219,11 +234,17 @@ buttons, we can use `input` instead of `input[type="radio"]` as a selector.
         <legend>Rate your experience:</legend>
       </slot>
       <rating>
-        <input type="radio" name="rating" value="1" aria-label="1 star" required/>
-        <input type="radio" name="rating" value="2" aria-label="2 stars"/>
-        <input type="radio" name="rating" value="3" aria-label="3 stars"/>
-        <input type="radio" name="rating" value="4" aria-label="4 stars"/>
-        <input type="radio" name="rating" value="5" aria-label="5 stars"/>
+        <input
+          type="radio"
+          name="rating"
+          value="1"
+          aria-label="1 star"
+          required
+        />
+        <input type="radio" name="rating" value="2" aria-label="2 stars" />
+        <input type="radio" name="rating" value="3" aria-label="3 stars" />
+        <input type="radio" name="rating" value="4" aria-label="4 stars" />
+        <input type="radio" name="rating" value="5" aria-label="5 stars" />
       </rating>
     </fieldset>
     <button type="reset">Reset</button>
@@ -242,10 +263,10 @@ It is possible, but not simple, to style the document from within a shadow DOM a
 the global styles. The shadow boundary, where the shadow DOM ends and the regular DOM begins, can be traversed, but only
 very intentionally.
 
-The *shadow tree* is the DOM tree inside the shadow DOM. The shadow root is the root node of the shadow tree.
+The _shadow tree_ is the DOM tree inside the shadow DOM. The shadow root is the root node of the shadow tree.
 
 The [`:host`](https://developer.mozilla.org/docs/Web/CSS/:host) pseudo-class selects the `<star-rating>`, the shadow host element.
-The *shadow host* is the DOM node that the shadow DOM is attached to. To target only specific versions of the host, use [`:host()`](https://developer.mozilla.org/docs/Web/CSS/:host_function).
+The _shadow host_ is the DOM node that the shadow DOM is attached to. To target only specific versions of the host, use [`:host()`](https://developer.mozilla.org/docs/Web/CSS/:host_function).
 This will select only the shadow host elements that match the parameter passed, like a class or attribute selector. To select
 all the custom elements, you can use `star-rating { /* styles */ }` in the global CSS, or `:host(:not(#nonExistantId))` in the template styles. In terms
 of [specificity](https://developer.mozilla.org/docs/Web/CSS/Specificity), the global CSS wins.
@@ -263,15 +284,21 @@ If our template markup began as such:
 ```html
 <template id="star-rating-template">
   <form part="formPart">
-    <fieldset part="fieldsetPart">
+    <fieldset part="fieldsetPart"></fieldset></form
+></template>
 ```
 
 We could target the `<form>` and `<fieldset>` with:
 
 ```css
-star-rating::part(formPart) { /* styles */ }
-star-rating::part(fieldsetPart) { /* styles */ }
+star-rating::part(formPart) {
+  /* styles */
+}
+star-rating::part(fieldsetPart) {
+  /* styles */
+}
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/abaovjL?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen abaovjL by web-dot-dev on Codepen"></iframe>
 
 Part names act similarly to classes: an element can have multiple space-separated part names, and multiple elements can

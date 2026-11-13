@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Accessible images may seem like a quick topic at first glance---you add
 some "alt text" to an image, and you are done. But, the topic is more nuanced
 than some people think. In this section, we'll review:
@@ -25,11 +26,11 @@ such as a screen reader.
 
 You may ask yourself:
 
-- *Is the image essential to understanding the context of the feature or page?*
-- *What type of information is the image trying to convey?*
-- *Is the image simple or complex?*
-- *Does the image elicit emotion or prompt the user to act?*
-- *Or is the image just visual "eye candy" with no real purpose?*
+- _Is the image essential to understanding the context of the feature or page?_
+- _What type of information is the image trying to convey?_
+- _Is the image simple or complex?_
+- _Does the image elicit emotion or prompt the user to act?_
+- _Or is the image just visual "eye candy" with no real purpose?_
 
 A visual flowchart, such as an
 [image decision tree](https://www.w3.org/WAI/tutorials/images/decision-tree/),
@@ -82,7 +83,6 @@ accessibility API.
 
 ```html
 <!-- All of these choices lead to the same result. -->
-
 ```
 
 Use `aria-hidden` with caution as it may hide elements that
@@ -116,6 +116,7 @@ JPG, PNG, or an SVG.
 ```html
 
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dev-codepen-external/embed/yLjoXrj?height=350&amp;theme-id=auto&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Codepen demonstrating alt text."></iframe>
 
 When you use `<svg>` elements inline, however, you need to pay additional
@@ -166,11 +167,10 @@ visual and the action conveyed in one image.
 
 ```html
 <div title="Navigate to the homepage">
-   <a href="/">
-      
-   </a>
+  <a href="/"> </a>
 </div>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dev-codepen-external/embed/qBYXXdW?height=350&amp;theme-id=auto&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Codepen for to demonstrate link titles."></iframe>
 
 ### Complex images
@@ -186,7 +186,6 @@ alternative descriptions to your complex images.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dev-codepen-external/embed/NWMvvqw?height=400&amp;theme-id=auto&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Codepen for complex images."></iframe>
 
 ```html
-
 <a href="ladybug-science.html">Learn more about the anatomy of a ladybug</a>
 ```
 

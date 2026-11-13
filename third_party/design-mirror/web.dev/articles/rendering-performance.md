@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Users notice if sites and apps don't run well, so optimizing rendering performance is crucial!
 
 Paul Lewis [X](https://twitter.com/aerotwist) [Homepage](https://aerotwist.com/)
@@ -23,7 +24,7 @@ While a major component of what makes a page feel snappy involves the amount of
 JavaScript you execute in response to user interactions, what users are
 anticipating are visual changes to the user interface. Visual changes to a user
 interface are the result of several types of work, often collectively referred
-to as *rendering*, and this work needs to happen as quickly as possible so that
+to as _rendering_, and this work needs to happen as quickly as possible so that
 the user experience feels fast and reliable.
 
 To write pages that respond quickly to user interactions, you need to understand
@@ -33,10 +34,10 @@ efficiently as possible.
 
 ## A note on device refresh rates
 
- The refresh rate of a display is an important consideration when it comes to building websites that feel responsive to user input.
+The refresh rate of a display is an important consideration when it comes to building websites that feel responsive to user input.
 
 Most devices today refresh their screens **60 times a second** . Each refresh
-produces the visual output you see, and is commonly known as a *frame*. In the
+produces the visual output you see, and is commonly known as a _frame_. In the
 following video, the concept of frames is demonstrated:
 Frames as shown in the performance panel of Chrome DevTools. As the cursor scrubs over the filmstrip near the top, an enlarged representation of each frame is shown within a tooltip as a mobile navigation menu animates to its "open" state.
 
@@ -51,14 +52,14 @@ would reveal that the browser has 16.66 milliseconds to produce each frame.
 In reality, though, the browser has its own overhead for each frame, so all of
 your work needs to be completed inside **10 milliseconds** . When you fail to
 meet this budget, the frame rate drops, and page contents judder on-screen. This
-phenomenon is often called *jank*.
+phenomenon is often called _jank_.
 
 However, your targets change based on the type of work you're trying to do.
-Meeting the 10 millisecond threshold is crucial for *animations* , where the
+Meeting the 10 millisecond threshold is crucial for _animations_ , where the
 of objects on the screen are interpolated across a series of frames between two
 points. When it comes to discrete changes in the user interface---that is,
 proceeding from one state to another without any motion in between---it's
-recommended that you achieve such changes in a timeframe that *feels* instant to
+recommended that you achieve such changes in a timeframe that _feels_ instant to
 the user. In cases such as these, 100 milliseconds is an oft-cited figure, but
 the INP metric's "good" threshold is 200 milliseconds or lower in order to
 accommodate a wider array of devices with varying capabilities.
@@ -73,7 +74,7 @@ pipeline works is essential to your work.
 There are five major areas that you need to know about and be mindful of in your
 work as a web developer. These five areas are those that you have the most
 control over, and each represents a key point in the pixels-to-screen pipeline:
- The full pixel pipeline, illustrated.
+The full pixel pipeline, illustrated.
 
 - **JavaScript:** JavaScript is typically used to handle work that will result in visual changes to the user interface. For example, this could be jQuery's `animate` function, sorting a dataset, or adding DOM elements to the page. JavaScript isn't strictly necessary to trigger visual changes, though: [CSS
   animations](https://web.dev/learn/css/animations), [CSS transitions](https://web.dev/learn/css/transitions.md.txt), and [the Web Animations API](https://developer.mozilla.org/docs/Web/API/Web_Animations_API) are capable of animating page contents.
@@ -101,7 +102,7 @@ architectures, creating the list of draw calls and rasterization are done on
 different threads, but that isn't under your control as a developer.
 
 You won't always necessarily touch every part of the pipeline on every frame.
-In fact, there are three ways the pipeline *normally* plays out for a given
+In fact, there are three ways the pipeline _normally_ plays out for a given
 frame when you make a visual change, either with JavaScript, CSS, or the Web
 Animations API.
 
@@ -123,7 +124,7 @@ otherwise contributed significant latency in producing the next frame.
 
 ### 3. JS / CSS \> Style \> Composite
 
-If you change a property that requires *neither* layout or paint, the browser
+If you change a property that requires _neither_ layout or paint, the browser
 can jump straight to the compositing step. This is the cheapest and most
 desirable pathway through the pixel pipeline for high pressure points in a
 page's lifecycle, such as animations or scrolling. Fun fact: Chromium optimizes
@@ -133,7 +134,7 @@ scroll the page and see parts of it that were previously drawn to the screen.
 **Note:** If you want the fast track to high-performance animations, read [Stick
 to compositor-only properties and manage layer count](https://web.dev/articles/stick-to-compositor-only-properties-and-manage-layer-count).
 
-Web performance is the art of *avoiding* work, while increasing the efficiency
+Web performance is the art of _avoiding_ work, while increasing the efficiency
 of any necessary work as much as possible. In many cases, it's about working
 with the browser, not against it. It's worth bearing in mind that the work
 previously shown in the pipeline differs in terms of computational cost; some

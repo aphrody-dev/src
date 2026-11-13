@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Responsive design wouldn't be possible without media queries. Before media queries there was no way of knowing what kind of device people were using to visit your website. Designers had to make assumptions. Those assumptions were encoded into fixed-width designs or liquid layouts.
 
 That all changed with the introduction of [media queries](https://web.dev/learn/design/media-queries.md.txt). For the first time designers could meet people halfway. Designers could adjust their layouts to respond to people's devices.
@@ -14,10 +15,7 @@ That all changed with the introduction of [media queries](https://web.dev/learn/
 Remember, a media query comprises an optional media type and a mandatory media feature. There hasn't been much change in media types over the years. There are still just four possible values:
 
 ```css
-@media all
-@media screen
-@media print
-@media speech
+@media all @media screen @media print @media speech;
 ```
 
 [Media features](https://developer.mozilla.org/docs/Web/CSS/@media#media_features), on the other hand, have expanded greatly. Designers now can meet users beyond halfway, adapting designs to fit far more than just screen size.
@@ -101,6 +99,7 @@ Providing different styles for different aspect ratios could quickly get out of 
   // The width is greater than the height.
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/qBXVowV?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen qBXVowV by web-dot-dev on Codepen">
 </iframe>
 
@@ -154,7 +153,7 @@ button.back {
 }
 @media (display-mode: standalone) {
   button.back {
-     display: inline;
+    display: inline;
   }
 }
 ```
@@ -220,7 +219,7 @@ The browser provides default colors for things like scrollbars and form elements
 You can also set a `meta` tag for `color-scheme` to set a page's scheme before your styles load. If you set `color-scheme: normal` on an element in the page, it will use the `color-scheme` value that you set in this meta tag.
 
 ```html
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="dark light" />
 ```
 
 #### `prefers-color-scheme` media feature
@@ -239,8 +238,8 @@ To enable this, you need to set `color-scheme: light dark` on the element or one
 You first set a color to use in light mode, and then a color to use in dark mode.
 
 ```css
-h1{
-  color: light-dark( var(--text-light), var(--text-dark));
+h1 {
+  color: light-dark(var(--text-light), var(--text-dark));
 }
 ```
 
@@ -286,16 +285,17 @@ Your users may visit your site with JavaScript disabled, and you can adjust your
 ```css
 @media (scripting: none) {
   /* Styles when JavaScript is disabled*/
- }
+}
 
 @media (scripting: initial-only) {
   /* Styles when JavaScript is available only for an initial render, for example with a printed page or server side rendering */
 }
 
 @media (scripting: enabled) {
-   /* Styles when Javascript is enabled */
+  /* Styles when Javascript is enabled */
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/KwdRvZq?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen KwdRvZq by web-dot-dev on Codepen">
 </iframe>
 

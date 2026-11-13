@@ -7,18 +7,19 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Overhyped or necessity? Learn everything about dark mode and how to support it to the benefit of your users!
 
- Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
+Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
 
 ## Introduction
 
 > [!NOTE]
 > **Note:** I have done a lot of background research on the history and theory of dark mode, if you are only interested in working with dark mode, feel free to [skip the introduction](https://web.dev/articles/prefers-color-scheme.md.txt#activating_dark_mode_in_the_operating_system).
 
-### Dark mode before *Dark Mode*
+### Dark mode before _Dark Mode_
 
- Green screen ([Source](https://commons.wikimedia.org/wiki/File:Compaq_Portable_and_Wordperfect.JPG))
+Green screen ([Source](https://commons.wikimedia.org/wiki/File:Compaq_Portable_and_Wordperfect.JPG))
 
 We have gone full circle with dark mode.
 In the dawn of personal computing, dark mode wasn't a matter of choice,
@@ -27,7 +28,7 @@ Monochrome computer monitors worked by firing electron beams
 on a phosphorescent screen and the phosphor used in early CRTs was green.
 Because text was displayed in green and the rest of the screen was black, these models were often referred to as
 [green screens](https://commons.wikimedia.org/wiki/File:Schneider_CPC6128_with_green_monitor_GT65,_start_screen.jpg).
- Dark-on-white ([Source](https://www.youtube.com/watch?v=qKkABzt0Zqg))
+Dark-on-white ([Source](https://www.youtube.com/watch?v=qKkABzt0Zqg))
 
 The subsequently introduced Color CRTs displayed multiple colors
 through the use of red, green, and blue phosphors.
@@ -35,9 +36,9 @@ They created white by activating all three phosphors simultaneously.
 With the advent of more sophisticated
 [desktop publishing](https://en.wikipedia.org/wiki/Desktop_publishing),
 the idea of making the virtual document resemble a physical sheet of paper became popular.
- The WorldWideWeb browser ([Source](https://commons.wikimedia.org/wiki/File:WorldWideWeb_FSF_GNU.png))
+The WorldWideWeb browser ([Source](https://commons.wikimedia.org/wiki/File:WorldWideWeb_FSF_GNU.png))
 
-This is where *dark-on-white* as a design trend started,
+This is where _dark-on-white_ as a design trend started,
 and this trend was carried over to the
 [early document-based web](http://info.cern.ch/hypertext/WWW/TheProject.html).
 The first ever browser,
@@ -51,7 +52,7 @@ green on dark.
 These days, web pages and web apps are typically designed with dark text
 on a light background, a baseline assumption that is also hard-coded in user agent stylesheets, including
 [Chrome's](https://chromium.googlesource.com/chromium/blink/+/master/Source/core/css/html.css).
- Mobile phone used in bed
+Mobile phone used in bed
 
 The days of CRTs are long over.
 Content consumption and creation has shifted to mobile devices
@@ -62,7 +63,7 @@ Leisure tasks like web browsing, coding for fun, and high-end gaming
 frequently happen after-hours in dim environments.
 People even enjoy their devices in their beds at night-time.
 The more people use their devices in the dark,
-the more the idea of going back to the roots of *light-on-dark* becomes popular.
+the more the idea of going back to the roots of _light-on-dark_ becomes popular.
 
 ### Why dark mode
 
@@ -70,29 +71,29 @@ the more the idea of going back to the roots of *light-on-dark* becomes popular.
 
 When people get asked
 [why they like or want dark mode](https://medium.com/dev-channel/let-there-be-darkness-maybe-9facd9c3023d),
-the most popular response is that *"it's easier on the eyes,"*
-followed by *"it's elegant and beautiful."*
+the most popular response is that _"it's easier on the eyes,"_
+followed by _"it's elegant and beautiful."_
 Apple in their
 [Dark Mode developer documentation](https://developer.apple.com/documentation/appkit/supporting_dark_mode_in_your_interface)
-explicitly writes: *"The choice of whether to enable a light or dark appearance
-is an aesthetic one for most users, and might not relate to ambient lighting conditions."*
+explicitly writes: _"The choice of whether to enable a light or dark appearance
+is an aesthetic one for most users, and might not relate to ambient lighting conditions."_
 
 > [!NOTE]
 > **Note:** Read up more on [user research regarding why people want dark mode and how they use it](https://medium.com/dev-channel/let-there-be-darkness-maybe-9facd9c3023d).
 
- CloseView in Mac OS System 7 with "White on Black" mode ([Source](https://archive.org/details/mac_Macintosh_System_7_at_your_Fingertips_1992))
+CloseView in Mac OS System 7 with "White on Black" mode ([Source](https://archive.org/details/mac_Macintosh_System_7_at_your_Fingertips_1992))
 
 #### Dark mode as an accessibility tool
 
-There are also people who actually *need* dark mode and use it as another accessibility tool,
+There are also people who actually _need_ dark mode and use it as another accessibility tool,
 for example, users with low vision.
 The earliest occurrence of such an accessibility tool I could find is
-[System 7](https://en.wikipedia.org/wiki/System_7)'s *CloseView* feature, which had a toggle for
-*Black on White* and *White on Black*.
+[System 7](https://en.wikipedia.org/wiki/System_7)'s _CloseView_ feature, which had a toggle for
+_Black on White_ and _White on Black_.
 While System 7 supported color, the default user interface was still black-and-white.
 
 These inversion-based implementations demonstrated their weaknesses once color was introduced.
-User research by Szpiro *et al.* on
+User research by Szpiro _et al._ on
 [how people with low vision access computing devices](https://dl.acm.org/citation.cfm?id=2982168)
 showed that all interviewed users disliked inverted images,
 but that many preferred light text on a dark background.
@@ -103,9 +104,9 @@ and some apps that use dark color styles.
 
 A special form of low vision is Computer Vision Syndrome, also known as Digital Eye Strain, which is
 [defined](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1475-1313.2011.00834.x)
-as *"the combination of eye and vision problems associated with the use of computers
+as _"the combination of eye and vision problems associated with the use of computers
 (including desktop, laptop, and tablets) and other electronic displays (e.g.
-smartphones and electronic reading devices)."*
+smartphones and electronic reading devices)."_
 It has been [proposed](https://bmjopen.bmj.com/content/5/1/e006748)
 that the use of electronic devices by adolescents, particularly at night time,
 leads to an increased risk of shorter sleep duration,
@@ -125,7 +126,7 @@ as well as avoiding bright lights or irregular lights in general through dark th
 
 #### Dark mode power savings on AMOLED screens
 
-Finally, dark mode is known to save a *lot* of energy on
+Finally, dark mode is known to save a _lot_ of energy on
 screens.
 Android case studies that focused on popular Google apps
 like YouTube have shown that the power savings can be up to 60%.
@@ -136,14 +137,14 @@ The video below has more details on these case studies and the power savings per
 
 Now that I have covered the background of why dark mode is such a big deal for many users,
 let's review how you can support it.
- Android Q dark mode settings
+Android Q dark mode settings
 
 Operating systems that support a dark mode or dark theme
 typically have an option to activate it somewhere in the settings.
-On macOS X, it's in the system preference's *General* section and called *Appearance* ([screenshot](https://web.dev/articles/prefers-color-scheme/image/light-dark-theme-settings.png?auto=format)),
-and on Windows 10, it's in the *Colors* section and called *Choose your color* ([screenshot](https://web.dev/articles/prefers-color-scheme/image/choose-your-color.png?auto=format)).
-For Android Q, you can find it under *Display* as a *Dark Theme* toggle switch ([screenshot](https://web.dev/articles/prefers-color-scheme/image/android-display-dark.png?auto=format)),
-and on iOS 13, you can change the *Appearance* in the *Display \& Brightness*
+On macOS X, it's in the system preference's _General_ section and called _Appearance_ ([screenshot](https://web.dev/articles/prefers-color-scheme/image/light-dark-theme-settings.png?auto=format)),
+and on Windows 10, it's in the _Colors_ section and called _Choose your color_ ([screenshot](https://web.dev/articles/prefers-color-scheme/image/choose-your-color.png?auto=format)).
+For Android Q, you can find it under _Display_ as a _Dark Theme_ toggle switch ([screenshot](https://web.dev/articles/prefers-color-scheme/image/android-display-dark.png?auto=format)),
+and on iOS 13, you can change the _Appearance_ in the _Display \& Brightness_
 section of the settings ([screenshot](https://web.dev/articles/prefers-color-scheme/image/android-light-dark-theme.jpg?auto=format)).
 
 ## The `prefers-color-scheme` media query
@@ -181,8 +182,8 @@ supports dark mode by checking if the media query `prefers-color-scheme` matches
 Note how I don't include any value, but purely check if the media query alone matches.
 
 ```javascript
-if (window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
-  console.log('🎉 Dark mode is supported');
+if (window.matchMedia("(prefers-color-scheme)").media !== "not all") {
+  console.log("🎉 Dark mode is supported");
 }
 ```
 
@@ -203,8 +204,8 @@ allowing servers to inline the right CSS and therefore avoid a flash of incorrec
 ### Dark mode in practice
 
 Let's finally see how supporting dark mode looks like in practice.
-Just like with the [Highlander](https://web.dev/%3Chttps://en.wikipedia.org/wiki/Highlander_(film)%3E),
-with dark mode *there can be only one* : dark or light, but never both!
+Just like with the [Highlander](<https://web.dev/%3Chttps://en.wikipedia.org/wiki/Highlander_(film)%3E>),
+with dark mode _there can be only one_ : dark or light, but never both!
 Why do I mention this? Because this fact should have an impact on the loading strategy.
 **Please don't force users to download CSS in the critical rendering path
 that is for a mode they don't currently use.**
@@ -233,10 +234,10 @@ I hide the content of the page until `light.css` has loaded.
 <script>
   // If `prefers-color-scheme` is not supported, fall back to light mode.
   // In this case, light.css will be downloaded with `highest` priority.
-  if (window.matchMedia('(prefers-color-scheme: dark)').media === 'not all') {
-    document.documentElement.style.display = 'none';
+  if (window.matchMedia("(prefers-color-scheme: dark)").media === "not all") {
+    document.documentElement.style.display = "none";
     document.head.insertAdjacentHTML(
-      'beforeend',
+      "beforeend",
       '<link rel="stylesheet" href="/light.css" onload="document.documentElement.style.display = \'\'">',
     );
   }
@@ -265,7 +266,7 @@ this allows my generic `style.css` to be, well, generic,
 and all the light or dark mode customization happens in the two other files `dark.css` and `light.css`.
 Below you can see an excerpt of the actual styles, but it should suffice to convey the overall idea.
 I declare two variables, `-⁠-⁠color` and `-⁠-⁠background-color`
-that essentially create a *dark-on-light* and a *light-on-dark* baseline theme.
+that essentially create a _dark-on-light_ and a _light-on-dark_ baseline theme.
 
 ```css
 /* light.css: 👉 dark-on-light */
@@ -367,7 +368,7 @@ so that they never compete with resources that are needed by the site right now.
 > [!NOTE]
 > **Note:** 😲 Read up more on [why browsers download stylesheets with non-matching media queries](https://blog.tomayac.com/2018/11/08/why-browsers-download-stylesheets-with-non-matching-media-queries-180513).
 
- Site in light mode loads the dark mode CSS with lowest priority.  Site in dark mode loads the light mode CSS with lowest priority.  Site in default light mode on a browser that doesn't support `prefers-color-scheme` loads the dark mode CSS with lowest priority.
+Site in light mode loads the dark mode CSS with lowest priority. Site in dark mode loads the light mode CSS with lowest priority. Site in default light mode on a browser that doesn't support `prefers-color-scheme` loads the dark mode CSS with lowest priority.
 
 ### Reacting on dark mode changes
 
@@ -382,10 +383,10 @@ in order to see the theme color and favicon changes, open the
 [demo in a separate tab](https://googlechrome.github.io/samples/glitch-migration/darkmode/baseline/).
 
 ```javascript
-const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-darkModeMediaQuery.addEventListener('change', (e) => {
+const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+darkModeMediaQuery.addEventListener("change", (e) => {
   const darkModeOn = e.matches;
-  console.log(`Dark mode is ${darkModeOn ? '🌒 on' : '☀️ off'}.`);
+  console.log(`Dark mode is ${darkModeOn ? "🌒 on" : "☀️ off"}.`);
 });
 ```
 
@@ -439,12 +440,12 @@ I choose a slightly darker white. Something like `rgb(250, 250, 250)` works well
 ### Re-colorize and darken photographic images
 
 If you compare the two screenshots below, you will notice that not only the core theme has changed
-from *dark-on-light* to *light-on-dark* , but that also the hero image looks slightly different.
+from _dark-on-light_ to _light-on-dark_ , but that also the hero image looks slightly different.
 My [user research](https://medium.com/dev-channel/re-colorization-for-dark-mode-19e2e17b584b)
 has shown that the majority of the surveyed people
 prefer slightly less vibrant and brilliant images when dark mode is active.
-I refer to this as *re-colorization*.
- Hero image slightly darkened in dark mode.  Regular hero image in light mode.
+I refer to this as _re-colorization_.
+Hero image slightly darkened in dark mode. Regular hero image in light mode.
 
 Re-colorization can be achieved through a CSS filter on my images.
 I use a CSS selector that matches all images that don't have `.svg` in their URL,
@@ -463,7 +464,7 @@ there are no corresponding rules in `light.css`.
 /* dark.css */
 --image-filter: grayscale(50%);
 
-img:not([src*='.svg']) {
+img:not([src*=".svg"]) {
   filter: var(--image-filter);
 }
 ```
@@ -481,8 +482,8 @@ that is, the same element I can reference with the
 [`:root` CSS pseudo-class](https://developer.mozilla.org/docs/Web/CSS/:root).
 
 ```javascript
-const filter = 'grayscale(70%)';
-document.documentElement.style.setProperty('--image-filter', value);
+const filter = "grayscale(70%)";
+document.documentElement.style.setProperty("--image-filter", value);
 ```
 
 ### Invert vector graphics and icons
@@ -493,7 +494,7 @@ While [research](https://dl.acm.org/citation.cfm?id=2982168) has shown
 that people don't like inversion for photos, it does work very well for most icons.
 Again I use CSS variables to determine the inversion amount
 in the regular and in the [`:hover`](https://developer.mozilla.org/docs/Web/CSS/:hover) state.
- Icons are inverted in dark mode.  Regular icons in light mode.
+Icons are inverted in dark mode. Regular icons in light mode.
 
 Note how again I only invert icons in `dark.css` but not in `light.css`, and how `:hover`
 gets a different inversion intensity in the two cases to make the icon appear
@@ -504,7 +505,7 @@ slightly darker or slightly brighter, dependent on the mode the user has selecte
 --icon-filter: invert(100%);
 --icon-filter_hover: invert(40%);
 
-img[src*='.svg'] {
+img[src*=".svg"] {
   filter: var(--icon-filter);
 }
 ```
@@ -516,14 +517,14 @@ img[src*='.svg'] {
 
 ```css
 /* style.css */
-img[src*='.svg']:hover {
+img[src*=".svg"]:hover {
   filter: var(--icon-filter_hover);
 }
 ```
 
 ### Use `currentColor` for inline SVGs
 
-For *inline* SVG images, instead of [using inversion filters](https://web.dev/articles/prefers-color-scheme.md.txt#invert_vector_graphics_and_icons),
+For _inline_ SVG images, instead of [using inversion filters](https://web.dev/articles/prefers-color-scheme.md.txt#invert_vector_graphics_and_icons),
 you can leverage the [`currentColor`](https://developer.mozilla.org/docs/Web/CSS/color_value#currentColor_keyword)
 CSS keyword that represents the value of an element's `color` property.
 This lets you use the `color` value on properties that do not receive it by default.
@@ -534,7 +535,7 @@ Even better: this also works for
 [`<svg><use href="..."></svg>`](https://developer.mozilla.org/docs/Web/SVG/Element/use),
 so you can have separate resources
 and `currentColor` will still be applied in context.
-Please note that this only works for *inline* or `<use href="...">` SVGs,
+Please note that this only works for _inline_ or `<use href="...">` SVGs,
 but not SVGs that are referenced as the `src` of an image or somehow via CSS.
 You can see this applied in the demo below.
 
@@ -564,9 +565,9 @@ body {
   color: var(--color);
   background-color: var(--background-color);
 
-  transition: color var(--duration) var(--timing), background-color var(
-        --duration
-      ) var(--timing);
+  transition:
+    color var(--duration) var(--timing),
+    background-color var(--duration) var(--timing);
 }
 ```
 
@@ -580,7 +581,7 @@ On the web, art direction deals with the overall visual appearance of a page and
 stimulates moods, contrasts features, and psychologically appeals to a target audience.
 
 With dark mode, it's up to the judgment of the designer to decide what is the best image at a particular mode
-and whether [re-colorization of images](https://web.dev/articles/prefers-color-scheme.md.txt#re-colorize_and_darken_photographic_images) is maybe *not* good enough.
+and whether [re-colorization of images](https://web.dev/articles/prefers-color-scheme.md.txt#re-colorize_and_darken_photographic_images) is maybe _not_ good enough.
 If used with the `<picture>` element, the `<source>` of the image to be shown can be made dependent on the `media` attribute.
 In the example below, I show the Western hemisphere for dark mode, and the Eastern hemisphere for light mode
 or when no preference is given, defaulting to the Eastern hemisphere in all other cases.
@@ -591,9 +592,9 @@ Toggle dark mode on your device to see the difference.
 <picture>
   <source srcset="western.webp" media="(prefers-color-scheme: dark)" />
   <source srcset="eastern.webp" media="(prefers-color-scheme: light)" />
-  
 </picture>
 ```
+
 <iframe allow="geolocation; microphone; camera; midi; vr; encrypted-media" loading="lazy" src="https://googlechrome.github.io/samples/glitch-migration/darkmode/picture/" style="height: 100%; width: 100%; border: 0;" title="dark-mode-currentcolor embed"></iframe>
 
 ### Dark mode, but add an opt-out
@@ -627,7 +628,8 @@ The demo below shows the element in action
   remember="Remember this"
 ></dark-mode-toggle>
 ```
- `<dark-mode-toggle>` in light mode.  `<dark-mode-toggle>` in dark mode.
+
+`<dark-mode-toggle>` in light mode. `<dark-mode-toggle>` in dark mode.
 
 Try clicking or tapping the dark mode controls in the upper right corner in the following demo.
 If you check the checkbox in the third and the fourth control, see how your mode selection

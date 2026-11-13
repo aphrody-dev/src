@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 AV1 Image File Format (AVIF) is an encoding based on the open source AV1 video codec. AVIF is [even newer](https://caniuse.com/avif)---than WebP,
 only supported in Chrome and Opera since 2020, Firefox in 2021, and Safari in 2022. As with WebP, AVIF aims to address every conceivable use case for
 raster images on the web: GIF-like animation, PNG-like transparency, and improved perceptual quality at file sizes smaller than JPEG or WebP.
@@ -42,8 +43,8 @@ upon failing, will discard it without rendering anything at all. An image source
 huge point of failure for our content, and for the web at large---a broken image and wasted bandwidth to a huge number of users around
 the world. You shouldn't sacrifice a more resilient web for the sake of a more performant one.
 
-For a long time, our single-minded friend `` made it exceptionally difficult to use any new image format, no matter how promising
-it seemed. Remember, `` only supported a single source file, and was hyper-optimized to transfer that file quickly---so quickly,
+For a long time, our single-minded friend `made it exceptionally difficult to use any new image format, no matter how promising
+it seemed. Remember,` only supported a single source file, and was hyper-optimized to transfer that file quickly---so quickly,
 in fact, that we couldn't intercept that request via JavaScript. Until recently, the only viable option was to serve all users the brand
 new type of image, and request one of the "legacy" formats when the browser fired an error---incurring a second file transfer after the first one was wasted.
 

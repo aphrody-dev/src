@@ -15,7 +15,7 @@
 //   platform: web
 // Output format: sass_vars
 
-@use 'md-sys-typescale';
+@use "md-sys-typescale";
 
 /// md.comp.nav-bar.item.vertical.active-indicator.height
 $active-indicator-height: 32px;

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 009: Layout](https://thecsspodcast.libsyn.com/009-layout)
 
 Imagine you're working as a developer,
@@ -65,7 +66,7 @@ Any block level margin and padding will be ignored by the surrounding elements.
 
 ```css
 .my-element {
-    display: block;
+  display: block;
 }
 ```
 
@@ -77,7 +78,7 @@ The margin on all sides of a block element will be respected.
 
 ```css
 .my-element {
-    display: flex;
+  display: flex;
 }
 ```
 
@@ -89,7 +90,7 @@ This enables the flex properties that control alignment, ordering and flow.
 
 ## Flexbox and Grid
 
-There are two main layout mechanisms that create layout rules for multiple elements, *[flexbox](https://web.dev/learn/css/flexbox.md.txt)* and *[grid](https://web.dev/learn/css/grid.md.txt)*.
+There are two main layout mechanisms that create layout rules for multiple elements, _[flexbox](https://web.dev/learn/css/flexbox.md.txt)_ and _[grid](https://web.dev/learn/css/grid.md.txt)_.
 They share similarities, but are designed to solve different layout problems.
 
 > [!NOTE]
@@ -99,7 +100,7 @@ They share similarities, but are designed to solve different layout problems.
 
 ```css
 .my-element {
-    display: flex;
+  display: flex;
 }
 ```
 
@@ -122,7 +123,7 @@ You can also change how it shrinks or grows using the `flex` property.
 
 ```css
 .my-element div {
-    flex: 1 0 auto;
+  flex: 1 0 auto;
 }
 ```
 
@@ -131,9 +132,9 @@ You can expand the above example like this:
 
 ```css
 .my-element div {
- flex-grow: 1;
- flex-shrink: 0;
- flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;
 }
 ```
 
@@ -145,7 +146,7 @@ This makes it a very useful mechanism for responsive web design.
 
 ```css
 .my-element {
-    display: grid;
+  display: grid;
 }
 ```
 
@@ -165,6 +166,7 @@ with a gap between each item, with 3 CSS properties:
   gap: 1rem;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/rNjxGVz?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen rNjxGVz by web-dot-dev on Codepen"></iframe>
 
 This example above shows a single axis layout.
@@ -192,11 +194,11 @@ There are a number of layout methods that you can use to adjust the behavior and
 ### Inline block
 
 Remember how surrounding elements don't respect block margin and padding on an inline element?
-With `inline-block` you *can* cause that to happen.
+With `inline-block` you _can_ cause that to happen.
 
 ```css
 p span {
-    display: inline-block;
+  display: inline-block;
 }
 ```
 
@@ -205,9 +207,10 @@ but still flows inline with the text.
 
 ```css
 p span {
-    margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/PoWZJKw?height=300&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen PoWZJKw by web-dot-dev on Codepen"></iframe>
 
 ### Floats
@@ -218,8 +221,8 @@ You can do this with floats.
 
 ```css
 img {
-    float: left;
-    margin-right: 1em;
+  float: left;
+  margin-right: 1em;
 }
 ```
 
@@ -230,13 +233,13 @@ You can instruct an element to float `left`, `right` or `inherit`.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VwPaLMg?height=300&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VwPaLMg by web-dot-dev on Codepen"></iframe>
 
 > [!WARNING]
-> **Warning:** When you use `float`, keep in mind that any elements following the floated element may have their layout adjusted. To prevent this, you can clear the float, either by using `clear: both` on an element that follows your floated element *or* with `display: flow-root` on the parent of your floated elements. Find out more in the article [The end of the clearfix hack](https://rachelandrew.co.uk/archives/2017/01/24/the-end-of-the-clearfix-hack/).
+> **Warning:** When you use `float`, keep in mind that any elements following the floated element may have their layout adjusted. To prevent this, you can clear the float, either by using `clear: both` on an element that follows your floated element _or_ with `display: flow-root` on the parent of your floated elements. Find out more in the article [The end of the clearfix hack](https://rachelandrew.co.uk/archives/2017/01/24/the-end-of-the-clearfix-hack/).
 
 ### Multicolumn layout
 
 If you have a really long list of elements,
 such as a list of all of the countries of the world,
-it can result in *a lot* of scrolling and time wasted for a user.
+it can result in _a lot_ of scrolling and time wasted for a user.
 It can also create excess whitespace on the page.
 With CSS multicolumn,
 you can split this into multiple columns to help with both of these issues.
@@ -256,8 +259,8 @@ you can split this into multiple columns to help with both of these issues.
 
 ```css
 .countries {
-    column-count: 2;
-    column-gap: 1em;
+  column-count: 2;
+  column-gap: 1em;
 }
 ```
 
@@ -266,11 +269,12 @@ This automatically splits that long list into two columns and adds a gap between
 
 ```css
 .countries {
-    width: 100%;
-    column-width: 260px;
-    column-gap: 1em;
+  width: 100%;
+  column-width: 260px;
+  column-gap: 1em;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/jOyqPvB?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen jOyqPvB by web-dot-dev on Codepen"></iframe>
 
 Instead of setting the number of columns that the content is split into,
@@ -308,11 +312,11 @@ instead of the topmost relative parent, when it has an absolute position applied
 }
 
 .another-element {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 50px;
-    height: 50px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
 }
 ```
 

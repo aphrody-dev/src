@@ -79,7 +79,9 @@ export function loadDx12Hal(): { lib: HalLib; path: string } | null {
   for (const path of dx12HalCandidates()) {
     if (!existsSync(path)) continue;
     try {
-      const probe = dlopen(path, { dx12_hal_abi_version: symbols.dx12_hal_abi_version });
+      const probe = dlopen(path, {
+        dx12_hal_abi_version: symbols.dx12_hal_abi_version,
+      });
       const version = probe.symbols.dx12_hal_abi_version();
       probe.close();
       if (version !== DX12_HAL_ABI_VERSION) continue;
@@ -94,7 +96,9 @@ export function loadDx12Hal(): { lib: HalLib; path: string } | null {
 
 export class Dx12HalUnavailableError extends Error {
   constructor() {
-    super(`${DX12_HAL_LIB_FILE} not found (Windows only; set DX12_HAL_LIB or build crates/dx12-hal)`);
+    super(
+      `${DX12_HAL_LIB_FILE} not found (Windows only; set DX12_HAL_LIB or build crates/dx12-hal)`,
+    );
   }
 }
 
@@ -110,12 +114,15 @@ function call<T>(f: (lib: HalLib) => unknown): T {
     hal.lib.symbols.dx12_hal_free(p);
   }
   const v = JSON.parse(text) as T | { error: string };
-  if (v && typeof v === "object" && "error" in v && typeof v.error === "string") throw new Error(v.error);
+  if (v && typeof v === "object" && "error" in v && typeof v.error === "string")
+    throw new Error(v.error);
   return v as T;
 }
 
 /** DXGI adapters in high-performance order. */
-export const dx12Adapters = (): Dx12Adapter[] => call((l) => l.symbols.dx12_hal_adapters_json());
+export const dx12Adapters = (): Dx12Adapter[] =>
+  call((l) => l.symbols.dx12_hal_adapters_json());
 
 /** D3D12 device and DirectX 12 Ultimate tiers of the high-performance adapter. */
-export const dx12Device = (): Dx12Device => call((l) => l.symbols.dx12_hal_device_json());
+export const dx12Device = (): Dx12Device =>
+  call((l) => l.symbols.dx12_hal_device_json());

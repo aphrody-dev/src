@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## Support for 16-bit floating-point values in WGSL
@@ -14,7 +15,7 @@ François Beaufort [GitHub](https://github.com/beaufortfrancois)
 In WGSL, the [`f16` type](https://www.w3.org/TR/WGSL/#f16) is the set of 16-bit floating-point values of the IEEE-754 binary16 (half precision) format. It means that it uses 16 bits to represent a floating-point number, as opposed to 32 bits for conventional single-precision floating-point ([`f32`](https://gpuweb.github.io/gpuweb/wgsl/#f32)). This smaller size can lead to significant [performance improvements](https://therealmjp.github.io/posts/shader-fp16/), especially when processing large amounts of data.
 
 For comparison, on an Apple M1 Pro device, the `f16` implementation of [Llama2 7B models](https://huggingface.co/meta-llama/Llama-2-7b) used in the [WebLLM chat demo](https://webllm.mlc.ai/#chat-demo) is significantly faster than the `f32` implementation, with a 28% improvement in prefill speed and a 41% improvement in decoding speed as shown in the following screenshots.
- WebLLM chat demos with `f32` (left) and `f16` (right) Llama2 7B models.
+WebLLM chat demos with `f32` (left) and `f16` (right) Llama2 7B models.
 
 Not all GPUs support 16-bit floating-point values. When the [`"shader-f16"`](https://gpuweb.github.io/gpuweb/#shader-f16) feature is available in a `GPUAdapter`, you can now request a `GPUDevice` with this feature and create a WGSL shader module that takes advantage of the half-precision floating-point type `f16`. This type is valid to use in the WGSL shader module only if you enable the [`f16` WGSL extension](https://gpuweb.github.io/gpuweb/wgsl/#extension-f16) with `enable f16;`. Otherwise, [createShaderModule()](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createShaderModule) will generate a validation error. See the following minimal example and [issue dawn:1510](https://bugs.chromium.org/p/dawn/issues/detail?id=1510).
 
@@ -99,7 +100,7 @@ To improve the developer experience, the depth-stencil state [`depthWriteEnabled
 ## Adapter information updates
 
 Non-standard `type` and `backend` adapter info attributes are now available upon calling [requestAdapterInfo()](https://developer.mozilla.org/en-US/docs/Web/API/GPUAdapter/requestAdapterInfo) when the user has enabled the "WebGPU Developer Features" [flag](https://developer.chrome.com/docs/web-platform/chrome-flags.md.txt#chromeflags) at `chrome://flags/#enable-webgpu-developer-features`. The `type` can be "discrete GPU", "integrated GPU", "CPU", or "unknown". The `backend` is either "WebGPU", "D3D11", "D3D12", "metal", "vulkan", "openGL", "openGLES", or "null". See [issue dawn:2112](https://bugs.chromium.org/p/dawn/issues/detail?id=2112) and [issue dawn:2107](https://bugs.chromium.org/p/dawn/issues/detail?id=2107).
- Adapter info backend and type shown on [https://webgpureport.org](https://webgpureport.org/).
+Adapter info backend and type shown on [https://webgpureport.org](https://webgpureport.org/).
 
 The optional `unmaskHints` list parameter in [requestAdapterInfo()](https://developer.mozilla.org/en-US/docs/Web/API/GPUAdapter/requestAdapterInfo) has been removed. See [issue dawn:1427](https://bugs.chromium.org/p/dawn/issues/detail?id=1427).
 

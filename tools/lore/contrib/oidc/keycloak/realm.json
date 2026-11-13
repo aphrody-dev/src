@@ -112,10 +112,7 @@
           "temporary": false
         }
       ],
-      "realmRoles": [
-        "default-roles-lore",
-        "admin"
-      ]
+      "realmRoles": ["default-roles-lore", "admin"]
     },
     {
       "username": "bob",
@@ -131,10 +128,7 @@
           "temporary": false
         }
       ],
-      "realmRoles": [
-        "default-roles-lore",
-        "obliterate"
-      ]
+      "realmRoles": ["default-roles-lore", "obliterate"]
     },
     {
       "username": "service-account-lore-ci",
@@ -142,10 +136,7 @@
       "email": "lore-ci@google.com",
       "emailVerified": true,
       "serviceAccountClientId": "lore-ci",
-      "realmRoles": [
-        "default-roles-lore",
-        "push-protected"
-      ]
+      "realmRoles": ["default-roles-lore", "push-protected"]
     }
   ]
 }

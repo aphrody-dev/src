@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## Dual source blending
@@ -49,14 +50,14 @@ const shaderModule = device.createShaderModule({ code });
 ## Shader compilation time improvements on Metal
 
 The Chrome team is enhancing Tint, the WebGPU shader language compiler, by introducing an [intermediate representation](https://dawn.googlesource.com/dawn/+/refs/heads/main/docs/tint/ir.md) (IR) for devices that support WebGPU with the Metal backend. This IR, positioned between Tint's abstract syntax tree (AST) and the Metal backend writer, will make the compiler more efficient and maintainable, ultimately benefiting both developers and users. Initial tests show that the new version of Tint is up to 10 times faster when translating Unity's WGSL shaders to MSL.
- Render pipeline creation in macOS.
+Render pipeline creation in macOS.
 
 These improvements, already accessible on Android and ChromeOS, are being progressively expanded to macOS devices that support WebGPU with the Metal backend. See [issue 42251016](https://issues.chromium.org/issues/42251016).
 
 ## Deprecation of GPUAdapter requestAdapterInfo()
 
 The GPUAdapter `requestAdapterInfo()` asynchronous method is redundant as developers can already get GPUAdapterInfo synchronously using the GPUAdapter `info` attribute. Hence, the non-standard GPUAdapter `requestAdapterInfo()` method is now deprecated. See [intent to deprecate](https://groups.google.com/a/chromium.org/g/blink-dev/c/HxOgGf4NzQ4).
- Deprecated feature warning for `requestAdapterInfo()` in Chrome DevTools.
+Deprecated feature warning for `requestAdapterInfo()` in Chrome DevTools.
 
 ## Dawn updates
 

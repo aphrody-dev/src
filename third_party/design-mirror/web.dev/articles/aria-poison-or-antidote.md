@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Aaron Leventhal [X](https://twitter.com/aaronlev)
 
 ## What is ARIA?
@@ -114,7 +115,7 @@ to the ID of the active menu item, being careful to update it whenever it
 changes. For example,
 `aria-activedescendant="settings-menuitem"`. This causes the screen reader to
 consider our ARIA active item as the focus, which is read aloud or shown on a Braille display.
-Explanation of *ancestor* , *parent* , and *descendant* The term descendant refers to the
+Explanation of _ancestor_ , _parent_ , and _descendant_ The term descendant refers to the
 fact that an item is contained somewhere inside of another. The opposite term is ancestor, which is
 to say an item is contained by ancestors. For the next container up/down, these may use the more
 specific terms parent/child. For example, imagine a document with a paragraph that has a link

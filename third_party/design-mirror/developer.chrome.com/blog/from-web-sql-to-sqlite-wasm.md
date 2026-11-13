@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 With SQLite Wasm backed by the origin private file system, there is a versatile replacement for the deprecated Web SQL database technology. This article is a guide to migrating your data from Web SQL to SQLite Wasm.
 
- Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
+Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
 
 ## Required background
 
@@ -17,29 +18,29 @@ The post [Deprecating and removing Web SQL](https://developer.chrome.com/blog/de
 
 ## Migrating your databases
 
-The following four steps demonstrate the conceptual idea of migrating a Web SQL database over to SQLite Wasm, with the SQLite database backed by the origin private file system. This can serve as the foundation for your own code customized to *your* Web SQL migration needs.
+The following four steps demonstrate the conceptual idea of migrating a Web SQL database over to SQLite Wasm, with the SQLite database backed by the origin private file system. This can serve as the foundation for your own code customized to _your_ Web SQL migration needs.
 
 > [!TIP]
 > **Success:** The SQLite team have run some benchmarks on their WebAssembly implementation compared to the deprecated Web SQL. These benchmarks show that SQLite Wasm is generally about as fast as Web SQL. Sometimes it's a little slower, sometimes it's a little faster. See all details on the [results page](https://googlechrome.github.io/samples/sqlite-wasm-opfs/speedtest.html).
 
 ### The to-be-migrated Web SQL database(s)
 
-The baseline assumption of this migration guide is that you have one (or several) existing Web SQL databases that hold data relevant to your app. In the screenshot below, you see an example database called *mydatabase* with a rainstorms table that maps moods to severities. Chrome DevTools allow you to [view Web SQL databases for debugging](https://developer.chrome.com/docs/devtools/storage/websql.md.txt#view), as shown in the following screenshot.
+The baseline assumption of this migration guide is that you have one (or several) existing Web SQL databases that hold data relevant to your app. In the screenshot below, you see an example database called _mydatabase_ with a rainstorms table that maps moods to severities. Chrome DevTools allow you to [view Web SQL databases for debugging](https://developer.chrome.com/docs/devtools/storage/websql.md.txt#view), as shown in the following screenshot.
 
 ### Translating the Web SQL database to SQL statements
 
-To migrate the data in a way that is transparent to the user, that is, without requiring them to perform any of the migration steps on their own, the pieces of data in the database need to be translated back to the original SQL statements that created them in the first place. This challenge has come up before, and the migration script used in this article---[`mywebsqldump.js`](https://github.com/GoogleChrome/samples/blob/gh-pages/web-sql-to-sqlite-wasm/mywebsqldump.js)---is based on a community library called [`websqldump.js`](https://github.com/sdesalas/websqldump), with some minor adjustments. The following code sample shows the code required to translate the Web SQL database *mydatabase* to a set of SQL statements.
+To migrate the data in a way that is transparent to the user, that is, without requiring them to perform any of the migration steps on their own, the pieces of data in the database need to be translated back to the original SQL statements that created them in the first place. This challenge has come up before, and the migration script used in this article---[`mywebsqldump.js`](https://github.com/GoogleChrome/samples/blob/gh-pages/web-sql-to-sqlite-wasm/mywebsqldump.js)---is based on a community library called [`websqldump.js`](https://github.com/sdesalas/websqldump), with some minor adjustments. The following code sample shows the code required to translate the Web SQL database _mydatabase_ to a set of SQL statements.
 
 ```javascript
 websqldump.export({
-  database: 'mydatabase',
-  version: '1.0',
-  success: function(sql) {
+  database: "mydatabase",
+  version: "1.0",
+  success: function (sql) {
     // The SQL statements.
   },
-  error: function(err) {
+  error: function (err) {
     // Handle the error.
-  }
+  },
 });
 ```
 
@@ -53,14 +54,14 @@ INSERT INTO rainstorms(mood,severity) VALUES ('stormy','2');
 ```
 
 > [!WARNING]
-> **Warning:** The outlined steps show the conceptual idea tested on a small database. For migrating production-size databases, additional performance tuning steps may be necessary. For example, preprocessing the SQL statements string. One optimization would be to group the `INSERT` statements: `INSERT INTO rainstorms VALUES ('somber',6), ('rainy',8), ('stormy',2)`. You may also have to further patch `mywebsqldump.js`, so it correctly deals with corner cases present in *your* Web SQL data.
+> **Warning:** The outlined steps show the conceptual idea tested on a small database. For migrating production-size databases, additional performance tuning steps may be necessary. For example, preprocessing the SQL statements string. One optimization would be to group the `INSERT` statements: `INSERT INTO rainstorms VALUES ('somber',6), ('rainy',8), ('stormy',2)`. You may also have to further patch `mywebsqldump.js`, so it correctly deals with corner cases present in _your_ Web SQL data.
 
 ### Importing the data into SQLite Wasm
 
 All that remains is executing these SQL commands in the context of SQLite Wasm. For all details regarding setting SQLite Wasm up, I refer you to the article [SQLite Wasm in the browser backed by the Origin Private File System](https://developer.chrome.com/blog/sqlite-wasm-in-the-browser-backed-by-the-origin-private-file-system.md.txt), but the gist is again below. Remember that this code needs to run in a Worker (that the library automatically creates for you), with the [required HTTP headers](https://developer.chrome.com/blog/sqlite-wasm-in-the-browser-backed-by-the-origin-private-file-system.md.txt#setting_the_required_headers) set correctly. You can install the [`@sqlite.org/sqlite-wasm`](https://www.npmjs.com/package/@sqlite.org/sqlite-wasm) package from npm.
 
 ```javascript
-import { sqlite3Worker1Promiser } from '@sqlite.org/sqlite-wasm';
+import { sqlite3Worker1Promiser } from "@sqlite.org/sqlite-wasm";
 
 (async () => {
   try {
@@ -74,8 +75,8 @@ import { sqlite3Worker1Promiser } from '@sqlite.org/sqlite-wasm';
 
     let response;
 
-    response = await promiser('open', {
-      filename: 'file:mydatabase.db?vfs=opfs',
+    response = await promiser("open", {
+      filename: "file:mydatabase.db?vfs=opfs",
     });
     const { dbId } = response;
 
@@ -83,10 +84,10 @@ import { sqlite3Worker1Promiser } from '@sqlite.org/sqlite-wasm';
       CREATE TABLE IF NOT EXISTS rainstorms (mood text, severity int);
       INSERT INTO rainstorms(mood,severity) VALUES ('somber','6');
       INSERT INTO rainstorms(mood,severity) VALUES ('rainy','8');
-      INSERT INTO rainstorms(mood,severity) VALUES ('stormy','2');`
-    await promiser('exec', { dbId, sql });
+      INSERT INTO rainstorms(mood,severity) VALUES ('stormy','2');`;
+    await promiser("exec", { dbId, sql });
 
-    await promiser('close', { dbId });
+    await promiser("close", { dbId });
   } catch (err) {
     if (!(err instanceof Error)) {
       err = new Error(err.result.message);
@@ -118,11 +119,13 @@ const dropAllTables = () => {
             const tableName = result.rows.item(i).name;
             tableNames.push(`'${tableName}'`);
             db.transaction(function (tx) {
-              tx.executeSql('DROP TABLE ' + tableName);
+              tx.executeSql("DROP TABLE " + tableName);
             });
           }
-          console.log(`Dropped table${tableNames.length > 1 ? 's' : ''}: ${tableNames.join(', ')}.`);
-        }
+          console.log(
+            `Dropped table${tableNames.length > 1 ? "s" : ""}: ${tableNames.join(", ")}.`,
+          );
+        },
       );
     });
   } catch (err) {

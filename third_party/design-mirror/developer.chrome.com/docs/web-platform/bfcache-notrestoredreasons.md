@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Find which navigations were blocked from using the bfcache, and why.
 
- Chris Mills [X](https://twitter.com/chrisdavidmills) [GitHub](https://github.com/chrisdavidmills) [LinkedIn](https://www.linkedin.com/in/chris-mills-4471711)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Chris Mills [X](https://twitter.com/chrisdavidmills) [GitHub](https://github.com/chrisdavidmills) [LinkedIn](https://www.linkedin.com/in/chris-mills-4471711) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 The `notRestoredReasons` property, added to the [`PerformanceNavigationTiming`](https://developer.mozilla.org/docs/Web/API/PerformanceNavigationTiming) class, reports information on whether frames present in the document were blocked from using the [bfcache](https://web.dev/articles/bfcache) on navigation, and why. Developers can use this information to identify pages that need updates to make them bfcache-compatible, thereby improving site performance.
 
@@ -19,7 +20,6 @@ The `notRestoredReasons` API has shipped from Chrome 123 and is being rolled out
 
 > [!NOTE]
 > **Note:** Differences since the origin trial.
->
 >
 > From Chrome 109 until 114
 > [the API was available as an origin trial](https://developer.chrome.com/origintrials#/view_trial/3101854243351429121).
@@ -76,22 +76,22 @@ For history navigations, the `PerformanceNavigationTiming.notRestoredReasons` pr
 The properties are as follows:
 
 `children`
-:   An array of objects representing the blocked state of any same-origin frames embedded in the top-level frame. Each object has the same structure as the parent object --- this way, any number of levels of embedded frames can be represented inside the object recursively. If the frame has no children, the array will be empty.
+: An array of objects representing the blocked state of any same-origin frames embedded in the top-level frame. Each object has the same structure as the parent object --- this way, any number of levels of embedded frames can be represented inside the object recursively. If the frame has no children, the array will be empty.
 
 `id`
-:   A string representing the `id` attribute value of the frame (for example `<iframe id="foo" src="...">`). If the frame has no `id`, the value will be `null`. For the top-level page this is `null`.
+: A string representing the `id` attribute value of the frame (for example `<iframe id="foo" src="...">`). If the frame has no `id`, the value will be `null`. For the top-level page this is `null`.
 
 `name`
-:   A string representing the `name` attribute value of the frame (for example `<iframe name="bar" src="...">`). If the frame has no `name`, the value will be an empty string. For the top-level page this is `null`.
+: A string representing the `name` attribute value of the frame (for example `<iframe name="bar" src="...">`). If the frame has no `name`, the value will be an empty string. For the top-level page this is `null`.
 
 `reasons`
-:   An array of strings each representing a reason why the navigated page was blocked from using the bfcache. There are many different reasons why blocking could occur. See the [Blocking reasons](https://developer.chrome.com/docs/web-platform/bfcache-notrestoredreasons.md.txt#blocking_reasons) section for more details.
+: An array of strings each representing a reason why the navigated page was blocked from using the bfcache. There are many different reasons why blocking could occur. See the [Blocking reasons](https://developer.chrome.com/docs/web-platform/bfcache-notrestoredreasons.md.txt#blocking_reasons) section for more details.
 
 `src`
-:   A string representing the path to the frame's source (for example `<iframe src="b.html">`). If the frame has no `src`, the value will be an empty string. For the top-level page this is `null`.
+: A string representing the path to the frame's source (for example `<iframe src="b.html">`). If the frame has no `src`, the value will be an empty string. For the top-level page this is `null`.
 
 `url`
-:   A string representing the URL of the navigated page/iframe.
+: A string representing the URL of the navigated page/iframe.
 
 For `PerformanceNavigationTiming` objects that don't represent history navigations, the `notRestoredReasons` property will return `null`.
 

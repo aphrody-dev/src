@@ -25,4 +25,5 @@ Activate this skill before implementing unfamiliar upstream APIs, auditing archi
      ```
 
 ## Progressive Disclosure Reference
+
 - Detailed MCP JSON-RPC schemas, SQLite WAL cache tables, and authority tier ranking rules: see [`references/protocol-and-tiers.md`](./references/protocol-and-tiers.md).

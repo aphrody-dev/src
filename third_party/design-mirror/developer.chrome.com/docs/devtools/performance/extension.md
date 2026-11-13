@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Andrés Olivares [X](https://twitter.com/locohost80) [GitHub](https://github.com/and-oli)  Sofia Emelianova [GitHub](https://github.com/sofiayem)
+
+Andrés Olivares [X](https://twitter.com/locohost80) [GitHub](https://github.com/and-oli) Sofia Emelianova [GitHub](https://github.com/sofiayem)
 
 ## Overview
 
@@ -20,7 +21,7 @@ This API offers two approaches to achieve this:
 
 **1. The `console.timeStamp` API (extended for DevTools)**
 
-This API provides a high-performance method for instrumenting applications and surfacing timing data exclusively to the **Performance** panel in DevTools. It's designed for minimal runtime overhead, making it suitable for instrumenting hot paths and production builds. It does *not* add entries to the browser's internal performance timeline.
+This API provides a high-performance method for instrumenting applications and surfacing timing data exclusively to the **Performance** panel in DevTools. It's designed for minimal runtime overhead, making it suitable for instrumenting hot paths and production builds. It does _not_ add entries to the browser's internal performance timeline.
 
 **2. The User Timings API (using `performance.mark` and `performance.measure`)**
 
@@ -41,6 +42,7 @@ Both APIs offer:
   - Performance impact of instrumentation is a primary concern, especially in production builds.
   - You need a quick and efficient way to mark durations or events without the need for extra metadata.
   - You only need the data to be visualized within the Performance panel.
+
 - **User Timings API (`performance.mark`, `performance.measure`):**
 
   - Use when you need to store extra data with each entry, and when you are already using the User Timings API.
@@ -60,6 +62,7 @@ console.timeStamp(label: string, start?: string|number, end?: string|number, tra
 - `label`:
 
   The label for the timing entry.
+
 - `start` (optional):
 
   - If defined as string: the name of a previously recorded timestamp (using `console.timeStamp(timeStampName)`).
@@ -79,9 +82,11 @@ console.timeStamp(label: string, start?: string|number, end?: string|number, tra
 - `trackName`:
 
   The name of the custom track.
+
 - `trackGroup`:
 
   The name of the track group.
+
 - `color`:
 
   The color of the entry.
@@ -139,13 +144,27 @@ Here are a few examples of how to use the API to add your own data to the **Perf
 const start = performance.now();
 
 // Measure duration from start to now
-console.timeStamp("measure 1", start, undefined, "My Track", "My Group", "primary-light");
+console.timeStamp(
+  "measure 1",
+  start,
+  undefined,
+  "My Track",
+  "My Group",
+  "primary-light",
+);
 
 // Take an end timestamp
 const end = performance.now();
 
 // Measure duration from start to end
-console.timeStamp("measure 2", start, end, "My Track", "My Group", "secondary-dark");
+console.timeStamp(
+  "measure 2",
+  start,
+  end,
+  "My Track",
+  "My Group",
+  "secondary-dark",
+);
 ```
 
 This results in the following custom track entry in the performance timeline:
@@ -182,11 +201,11 @@ performance.measure("Image Processing Complete", {
       color: "tertiary-dark",
       properties: [
         ["Filter Type", "Gaussian Blur"],
-        ["Resize Dimensions", "500x300"]
+        ["Resize Dimensions", "500x300"],
       ],
-      tooltipText: "Image processed successfully"
-    }
-  }
+      tooltipText: "Image processed successfully",
+    },
+  },
 });
 ```
 
@@ -205,11 +224,11 @@ performance.mark("Image Upload", {
       color: "secondary",
       properties: [
         ["Image Size", "2.5MB"],
-        ["Upload Destination", "Cloud Storage"]
+        ["Upload Destination", "Cloud Storage"],
       ],
-      tooltipText: "Processed image uploaded"
-    }
-  }
+      tooltipText: "Processed image uploaded",
+    },
+  },
 });
 ```
 

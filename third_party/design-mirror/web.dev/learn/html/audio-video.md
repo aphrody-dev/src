@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 As you learned in the [images](https://web.dev/learn/html/images.md.txt) module, HTML enables
 embedding media into a web page. In this section, we look at audio and video
 files, including how to embed them, user controls, providing a static image
@@ -42,11 +43,22 @@ and English and French subtitles between the opening and closing tags.
 
 ```html
 <video controls poster="images/machine.jpg">
-  <source src="videos/machines.webm" type="video/webm">
-  <source src="videos/machines.mp4" type="video/mp4">
-  <source src="videos/machines.ogv" type="video/ogg">
-  <track label="English" kind="subtitles" srclang="en" src="vtt/subtitles-en.vtt" default />
-  <track label="Francais" kind="subtitles" srclang="fr" src="vtt/subtitles-fr.vtt" />
+  <source src="videos/machines.webm" type="video/webm" />
+  <source src="videos/machines.mp4" type="video/mp4" />
+  <source src="videos/machines.ogv" type="video/ogg" />
+  <track
+    label="English"
+    kind="subtitles"
+    srclang="en"
+    src="vtt/subtitles-en.vtt"
+    default
+  />
+  <track
+    label="Francais"
+    kind="subtitles"
+    srclang="fr"
+    src="vtt/subtitles-fr.vtt"
+  />
   <p>Watch <a href="https://youtube.com/link">video on Youtube</a></p>
 </video>
 ```
@@ -87,8 +99,20 @@ Between the opening and required closing tags of both audio and video, include o
 elements to specify timed text tracks. The following example includes two `<track>` files, providing timed text subtitles in both English and French.
 
 ```html
-<track label="English" kind="subtitles" srclang="en" src="vtt/subtitles-en.vtt" default />
-<track label="Français" kind="subtitles" srclang="fr" lang="fr-fr" src="vtt/subtitles-fr.vtt" />
+<track
+  label="English"
+  kind="subtitles"
+  srclang="en"
+  src="vtt/subtitles-en.vtt"
+  default
+/>
+<track
+  label="Français"
+  kind="subtitles"
+  srclang="fr"
+  lang="fr-fr"
+  src="vtt/subtitles-fr.vtt"
+/>
 ```
 
 The track files, specified in the `src` attribute, should be in [WebVTT format](https://developer.mozilla.org/docs/Web/API/WebVTT_API) (.vtt).
@@ -128,9 +152,9 @@ no controls. The HTML may look something like this:
 
 ```html
 <video playsinline autoplay loop muted poster="images/machine.jpg" role="none">
-  <source src="videos/machines.webm" type="video/webm">
-  <source src="videos/machines.mp4" type="video/mp4">
-  <source src="videos/machines.ogv" type="video/ogg">
+  <source src="videos/machines.webm" type="video/webm" />
+  <source src="videos/machines.mp4" type="video/mp4" />
+  <source src="videos/machines.ogv" type="video/ogg" />
 </video>
 ```
 
@@ -150,9 +174,14 @@ JavaScript to add custom media controls and remove the controls attribute. For e
 the play state of an audio file.
 
 ```html
-<button id="playPause" aria-controls="idOfAudio"
+<button
+  id="playPause"
+  aria-controls="idOfAudio"
   data-pause-text="Pause audio"
-  data-play-text="Play audio">Pause audio</button>
+  data-play-text="Play audio"
+>
+  Pause audio
+</button>
 ```
 
 This example includes a button with `dataset` attributes containing the text
@@ -167,13 +196,13 @@ and [`HTMLMediaElement.pause()`](https://developer.mozilla.org/docs/Web/API/HTML
 When toggling the play state, also toggle the text of the button:
 
 ```javascript
-const pauseButton = document.getElementById('playPause');
+const pauseButton = document.getElementById("playPause");
 
 pauseButton.addEventListener("click", pauseAndPlay, false);
 
 function pauseAndPlay() {
   console.log(this);
-  const media = document.getElementById(this.getAttribute('aria-controls'));
+  const media = document.getElementById(this.getAttribute("aria-controls"));
 
   if (media.paused) {
     media.play();
@@ -189,7 +218,7 @@ By including the `controls` attribute, the user has a way to control the audio (
 Only remove the controls attribute once a replacement button has been instantiated.
 
 ```javascript
-document.querySelector('[aria-controls]').removeAttribute('controls');
+document.querySelector("[aria-controls]").removeAttribute("controls");
 ```
 
 Always include external controls when users can't access the controls, such as with background videos that have their controls hidden

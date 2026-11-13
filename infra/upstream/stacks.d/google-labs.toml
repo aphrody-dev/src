@@ -35,7 +35,11 @@ runner = "prd"
 
 [stack.stitch-sdk.absorbed]
 commit = "f6aa86cde10c3f490acf09a63cc044582a50821d"
-paths = ["packages/sdk/src", "packages/sdk/generated/src", "packages/sdk/test/fixtures/responses"]
+paths = [
+  "packages/sdk/src",
+  "packages/sdk/generated/src",
+  "packages/sdk/test/fixtures/responses",
+]
 into = "packages/ai-os/src/google/stitch"
 
 [stack.jules-sdk]

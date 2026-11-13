@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Robert Flack [GitHub](https://github.com/flackr) [LinkedIn](https://www.linkedin.com/in/flackr) [Mastodon](https://front-end.social/@flackr) [Bluesky](https://bsky.app/profile/flackr.bsky.social)  Penny McLachlan [LinkedIn](https://www.linkedin.com/in/pjmclachlan) [Bluesky](https://bsky.app/profile/digitaltransient.bsky.social)  Lucas Radaelli [X](https://twitter.com/lucasradaelli) [LinkedIn](https://www.linkedin.com/in/lucasradaelli)
+
+Robert Flack [GitHub](https://github.com/flackr) [LinkedIn](https://www.linkedin.com/in/flackr) [Mastodon](https://front-end.social/@flackr) [Bluesky](https://bsky.app/profile/flackr.bsky.social) Penny McLachlan [LinkedIn](https://www.linkedin.com/in/pjmclachlan) [Bluesky](https://bsky.app/profile/digitaltransient.bsky.social) Lucas Radaelli [X](https://twitter.com/lucasradaelli) [LinkedIn](https://www.linkedin.com/in/lucasradaelli)
 
 Published: September 29, 2025
 
@@ -61,7 +62,7 @@ experience the content. This post covers three common types:
 
 ### Single-item carousels
 
-With single-item carousels, only one slide is *fully* visible and interactive at
+With single-item carousels, only one slide is _fully_ visible and interactive at
 a time (for example, hero banners or slideshows).
 
 ### Automatically paginated carousels
@@ -109,16 +110,18 @@ A user with a screen reader needs to know they've entered a carousel and when
 the slide changes. This requires a few ARIA attributes on the carousel
 container:
 
-| **ARIA attribute** | **Explanation** |
-|---|---|
-| `role="region"` | Identify the carousel as a landmark region on the page, making it easier to navigate to. |
-| `aria-label` | Give the region a descriptive name, like "Featured Products Slideshow". |
+| **ARIA attribute**   | **Explanation**                                                                                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `role="region"`      | Identify the carousel as a landmark region on the page, making it easier to navigate to.                                                                                       |
+| `aria-label`         | Give the region a descriptive name, like "Featured Products Slideshow".                                                                                                        |
 | `aria-live="polite"` | This is the magic ingredient. It tells screen readers to politely announce changes within this region, like when a new slide scrolls into view, without interrupting the user. |
 
 Here's the HTML structure:
 
 ```html
-<div class="carousel" role="region" aria-label="Slideshow" aria-live="polite"> ... </div>
+<div class="carousel" role="region" aria-label="Slideshow" aria-live="polite">
+  ...
+</div>
 ```
 
 ### Step 3: Make only the visible slide interactive
@@ -188,7 +191,9 @@ screen.
 
 ```css
 @keyframes interactive-when-visible {
-  0% { interactivity: auto; }
+  0% {
+    interactivity: auto;
+  }
 }
 .item {
   interactivity: inert;
@@ -196,6 +201,7 @@ screen.
   animation-timeline: view(inline);
 }
 ```
+
 <iframe height="500" style="width: 100%;" scrolling="no" title="Discrete paginated ::scroll-markers" src="https://codepen.io/web-dot-dev/embed/XJmLXmp?default-tab=result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
 See the Pen <a href="https://codepen.io/web-dot-dev/pen/XJmLXmp">
 Discrete paginated ::scroll-markers</a> by web.dev (<a href="https://codepen.io/web-dot-dev">@web-dot-dev</a>)
@@ -286,7 +292,7 @@ create high performance, accessible experiences that are interactive at first
 paint.
 
 Give these new APIs a try! As always, though these patterns and APIs are
-designed to make building interactive, fast and accessible components *easier*
+designed to make building interactive, fast and accessible components _easier_
 there is no substitute for full accessibility testing. You will always need to
 [verify](https://www.w3.org/WAI/test-evaluate/) that [your code is
 accessible](https://www.w3.org/WAI/test-evaluate/), and works for your Baseline

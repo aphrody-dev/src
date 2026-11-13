@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Monitor the sizes of your bundles over time to make sure your application stays fast.
 
- Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/)
+Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/)
 
 Optimizing an Angular application is important, but how do you make sure its performance doesn't regress over time? By introducing performance metrics and monitoring them on each code change!
 
@@ -48,8 +49,8 @@ To fix the build error, take a look at `app.component.ts`, which includes an imp
 
 Note that, since [differential loading](https://dev.to/lacolaco/differential-loading-a-new-feature-of-angular-cli-v8-4jl) is enabled by default in the Angular CLI, the `ng build` command produces two builds of the app:
 
-- A build for browsers *with* ECMAScript 2015 support. This build includes fewer polyfills and more modern JavaScript syntax. That syntax is more expressive, which leads to smaller bundles.
-- A build for older browsers *without* ECMAScript 2015 support. The older syntax is less expressive and requires more polyfills, which leads to larger bundles.
+- A build for browsers _with_ ECMAScript 2015 support. This build includes fewer polyfills and more modern JavaScript syntax. That syntax is more expressive, which leads to smaller bundles.
+- A build for older browsers _without_ ECMAScript 2015 support. The older syntax is less expressive and requires more polyfills, which leads to larger bundles.
 
 The `index.html` file of the sample app refers to both builds so that modern browsers can take advantage of the smaller ECMAScript 2015 build and older browsers can fall back to the ECMAScript 5 build.
 

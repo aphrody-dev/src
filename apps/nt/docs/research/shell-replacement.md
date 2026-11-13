@@ -14,26 +14,27 @@ Les 3 instantanés `~/.claude/shell-snapshots/snapshot-bash-*.sh` font exactemen
 
 ## 3. Candidats bash
 
-| Candidat | Version | Preuve | Verdict |
-|---|---|---|---|
-| **niubash** (unixwin, MIT, Rust ; moteur rubash) | v1.5.0 (2026-11-03), `winget Unixwin.Niubash`, zip portable + `SHA256SUMS` | SHA256 OK ; imports PE sans `msys-2.0.dll`/`cygwin1.dll` (dumpbin) ; `git.exe` niu-git importe `VCRUNTIME140` (MSVC) ; **test bout-en-bout `claude -p` réussi** : `SHELL=…\winuxcmd\bin\bash.exe`, `BASH_VERSION=5.3.20(1)-release` | **retenu** |
-| brush (reubeno, MIT, Rust) | 0.4.0 installé (2026-05-03) | test `claude -p` **échoue** : `a value is required for '-c <COMMAND>'` ; corrigé par PR #1398 (`d220c79d`, 2026-09-22), **non publié** (383 commits depuis 0.4.0) | secours : build `main` épinglé |
-| Git Bash (Git for Windows) | — | MSYS, interdit par l'utilisateur | à retirer |
+| Candidat                                         | Version                                                                    | Preuve                                                                                                                                                                                                                              | Verdict                        |
+| ------------------------------------------------ | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| **niubash** (unixwin, MIT, Rust ; moteur rubash) | v1.5.0 (2026-11-03), `winget Unixwin.Niubash`, zip portable + `SHA256SUMS` | SHA256 OK ; imports PE sans `msys-2.0.dll`/`cygwin1.dll` (dumpbin) ; `git.exe` niu-git importe `VCRUNTIME140` (MSVC) ; **test bout-en-bout `claude -p` réussi** : `SHELL=…\winuxcmd\bin\bash.exe`, `BASH_VERSION=5.3.20(1)-release` | **retenu**                     |
+| brush (reubeno, MIT, Rust)                       | 0.4.0 installé (2026-05-03)                                                | test `claude -p` **échoue** : `a value is required for '-c <COMMAND>'` ; corrigé par PR #1398 (`d220c79d`, 2026-09-22), **non publié** (383 commits depuis 0.4.0)                                                                   | secours : build `main` épinglé |
+| Git Bash (Git for Windows)                       | —                                                                          | MSYS, interdit par l'utilisateur                                                                                                                                                                                                    | à retirer                      |
 
 Rapport tiers (brush#1296) : suite GNU Bash `.tests` (83 fichiers) sous Windows, brush 5/83 correspondances sémantiques — non vérifié localement.
 
 ## 4. Utilitaires POSIX/GNU
 
-| Ensemble | Langage | Statut |
-|---|---|---|
-| **Coreutils for Windows** (`microsoft/coreutils`, `winget Microsoft.Coreutils`) : uutils coreutils + findutils + grep, multi-call | Rust | documenté sur Learn (`learn.microsoft.com/windows/core-utils/overview`), preview |
-| WinuxCmd (embarqué par niubash, `winuxcmd.exe` + liens) | C++ majoritaire | fourni avec niubash ; à placer **après** Coreutils dans le PATH |
-| sudo, curl, tar, Edit | — | intégrés à Windows 11 (Learn) |
-| `gawk` embarqué par niubash | C (GNU) | seul composant non Rust/non MS du shell |
+| Ensemble                                                                                                                          | Langage         | Statut                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------- |
+| **Coreutils for Windows** (`microsoft/coreutils`, `winget Microsoft.Coreutils`) : uutils coreutils + findutils + grep, multi-call | Rust            | documenté sur Learn (`learn.microsoft.com/windows/core-utils/overview`), preview |
+| WinuxCmd (embarqué par niubash, `winuxcmd.exe` + liens)                                                                           | C++ majoritaire | fourni avec niubash ; à placer **après** Coreutils dans le PATH                  |
+| sudo, curl, tar, Edit                                                                                                             | —               | intégrés à Windows 11 (Learn)                                                    |
+| `gawk` embarqué par niubash                                                                                                       | C (GNU)         | seul composant non Rust/non MS du shell                                          |
 
 ## 5. pwsh
 
 Pas de remplaçant « drop-in » : pwsh est un langage .NET distinct. Remplacement par usage :
+
 - Claude : outil PowerShell désactivé (`CLAUDE_CODE_USE_POWERSHELL_TOOL=0`), tout passe par niubash.
 - Windows Terminal : profil par défaut niubash (`niu --install-wt-profile --set-default`, Context7).
 - `justfile` (`src`, `nt`) : `windows-shell` pwsh → niubash, après test de chaque recette.

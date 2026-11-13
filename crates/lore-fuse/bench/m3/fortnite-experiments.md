@@ -58,6 +58,7 @@ the same for every run: a remote executor or cache configured there changes what
 
   or copy `target/release-lto/lore` from a machine that built it, and still clone the checkout for the
   scripts.
+
 - A Lore login to the host: `lore login lores://lore.internal.epicgames.net`. The login is kept in
   the keyring and `~/.config`, not under `LORE_GLOBAL_PATH`, so an existing one serves.
 - Passwordless cache drop, which every run does first. `../m2/cold-vfs.sh` does not check that the
@@ -72,6 +73,7 @@ the same for every run: a remote executor or cache configured there changes what
   ```
 
   The file name carries no dot: sudo skips files in `/etc/sudoers.d` whose name has one.
+
 - The Linux toolchain the engine names in `Engine/Config/Linux/Linux_SDK.json` (`MainVersion`), on
   `Release-43.00` `v26_clang-20.1.8-rockylinux8`:
 
@@ -81,6 +83,7 @@ the same for every run: a remote executor or cache configured there changes what
   tar xzf native-linux-v26_clang-20.1.8-rockylinux8.tar.gz    # /data/ue-toolchain/v26_clang-20.1.8-rockylinux8/
   rm native-linux-v26_clang-20.1.8-rockylinux8.tar.gz
   ```
+
 - The view filter, here `/data/fortnite-view.txt`. It must keep `/Engine/Source/ThirdParty/**/Linux/`:
   the third-party libraries' Linux builds and headers live there (ICU, Opus, MsQuic, the EOS SDK, ...).
   It excludes `/FortniteGame/Plugins/**/Content/`, the plugins' assets, 753 GiB a compile is not
@@ -320,5 +323,5 @@ clone: forced, the reset ignores the filter and restores everything the view exc
   to the server; the link rate the run saw. Compare runs only on a similar link.
 - p4 syncs from the Stockholm proxy, while Lore fetches from us-east-2: the network favours p4.
 - A run whose status is `discard`, or one on a busy machine, is not comparable. `quiet-run.sh
-  <label> <command>` reruns a command until it finishes undisturbed; on a long build on a desktop
+<label> <command>` reruns a command until it finishes undisturbed; on a long build on a desktop
   it may restart many times, so prefer a machine nothing else uses.

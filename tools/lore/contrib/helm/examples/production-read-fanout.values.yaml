@@ -14,30 +14,30 @@
 
 image:
   repository: ghcr.io/epicgames/lore/loreserver
-  tag: ""  # empty = the chart's appVersion
+  tag: "" # empty = the chart's appVersion
 
 topology:
   mode: tiered
 
 handler:
   replicas: 8
-  servePublic: true            # fan client reads across the handler cache tier
+  servePublic: true # fan client reads across the handler cache tier
   persistence:
-    type: hostPath             # fast node-local NVMe for the cache
+    type: hostPath # fast node-local NVMe for the cache
     hostPath:
       path: /mnt/nvme/lore-handler
       type: DirectoryOrCreate
 
 data:
   persistence:
-    type: pvc                  # authoritative store stays on durable, high-IOPS disk
+    type: pvc # authoritative store stays on durable, high-IOPS disk
     size: 4Ti
     storageClass: io2
 
 # Production compute — size to your workload.
 resources:
   requests: { cpu: "8", memory: 32Gi }
-  limits:   { cpu: "8", memory: 32Gi }
+  limits: { cpu: "8", memory: 32Gi }
 
 # Pin to NVMe-equipped nodes and spread pods across hosts for availability.
 nodeSelector:
@@ -65,7 +65,7 @@ service:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
 
 tls:
-  mode: certManager   # requires cert-manager installed in the cluster
+  mode: certManager # requires cert-manager installed in the cluster
   issuerName: <your-ca-clusterissuer>
   extraSANs: ["lore.google.com"]
 

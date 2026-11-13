@@ -6,62 +6,62 @@ Commands: `ay linux` and `ay pkg` (`packages/linux`, run by bun; routing in `cra
 
 ## 1. Tree
 
-| What | Where | Single source of |
-|---|---|---|
-| forks | `third_party/<name>` (untracked clones, pinned in `src.lock.json`), registered in `third_party/forks.txt` | upstream code + our commits |
-| patches | `infra/upstream/patches/<stack>/` (`.patches` + one `.patch` per change, Electron format) | our changes to the Linux forks |
-| stacks | `infra/upstream/stacks.toml` (`ay upstream`) | which fork follows which upstream |
-| tracked patchsets | `infra/linux/patchsets.toml` (`ay linux status/sync`) | pinned upstream versions: kernels, patchsets, GKI, ChromeOS, GPU, llvm-mingw |
-| kernel flavors | `infra/linux/kernels.toml` + `infra/linux/build/kernel.sh` | CachyOS settings per host, build image |
-| package recipes | `infra/pkg/recipes/<package>.toml` | one package, all distros |
-| distro matrix | `infra/pkg/distros.toml` | build containers, pinned by digest |
-| GPU | `infra/linux/gpu/` (scripts + `manifest.toml`) | NVIDIA/AMD installation, official sources |
-| AOSP / ChromiumOS | `infra/linux/android/` (partial fr1 mirror, manifests) | tracked GKI and ChromeOS branches |
-| base images | `infra/linux/images/<distro>/`, `infra/linux/cross-windows/` | `ghcr.io/aphrody-labs/base-*` |
-| CI | `.github/workflows/linux-pkg.yml`, `linux-kernel.yml`, `linux-images.yml` | matrix, kernel, images |
+| What              | Where                                                                                                     | Single source of                                                             |
+| ----------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| forks             | `third_party/<name>` (untracked clones, pinned in `src.lock.json`), registered in `third_party/forks.txt` | upstream code + our commits                                                  |
+| patches           | `infra/upstream/patches/<stack>/` (`.patches` + one `.patch` per change, Electron format)                 | our changes to the Linux forks                                               |
+| stacks            | `infra/upstream/stacks.toml` (`ay upstream`)                                                              | which fork follows which upstream                                            |
+| tracked patchsets | `infra/linux/patchsets.toml` (`ay linux status/sync`)                                                     | pinned upstream versions: kernels, patchsets, GKI, ChromeOS, GPU, llvm-mingw |
+| kernel flavors    | `infra/linux/kernels.toml` + `infra/linux/build/kernel.sh`                                                | CachyOS settings per host, build image                                       |
+| package recipes   | `infra/pkg/recipes/<package>.toml`                                                                        | one package, all distros                                                     |
+| distro matrix     | `infra/pkg/distros.toml`                                                                                  | build containers, pinned by digest                                           |
+| GPU               | `infra/linux/gpu/` (scripts + `manifest.toml`)                                                            | NVIDIA/AMD installation, official sources                                    |
+| AOSP / ChromiumOS | `infra/linux/android/` (partial fr1 mirror, manifests)                                                    | tracked GKI and ChromeOS branches                                            |
+| base images       | `infra/linux/images/<distro>/`, `infra/linux/cross-windows/`                                              | `ghcr.io/aphrody-labs/base-*`                                                |
+| CI                | `.github/workflows/linux-pkg.yml`, `linux-kernel.yml`, `linux-images.yml`                                 | matrix, kernel, images                                                       |
 
 Generated outputs (`ay pkg gen`) go to `var/pkg/` (ignored): only the recipes are versioned, one source per package.
 
 ## 2. Ownership
 
-| Component | Owner | aphrody-labs fork | `ay upstream` stack | Note |
-|---|---|---|---|---|
-| CachyOS linux-cachyos (kernel PKGBUILD) | linux | `linux-cachyos` (created 2026-11-13) | `linux-cachyos`, 1 patch | tier 1, `docs/linux/PATCHSETS.md` |
-| CachyOS-PKGBUILDS | linux | `CachyOS-PKGBUILDS` (created) | `cachyos-pkgbuilds`, empty series | CachyOS userland packages |
-| CachyOS kernel-patches | linux | `kernel-patches` (created) | `kernel-patches`, empty series | BORE, misc, nvidia per kernel series |
-| CachyOS/linux (kernel tree) | linux | no: remote `cachyos` of `third_party/linux` | - | same tree as `aphrody-labs/linux` (torvalds fork), no duplicate |
-| sched-ext/scx | linux | `scx` (created) | `scx`, empty series | sched_ext schedulers |
-| zen-kernel | linux | `zen-kernel` (created) | no (6.9 GB): registry only + remote `zen` | |
-| XanMod | linux | no: GitLab (`xanmod/linux` on GitHub archived 2024-10-25) | registry only + remote `xanmod` | |
-| Liquorix | linux | `liquorix-package` (created) | `liquorix`, empty series | branch `7.3/master` |
-| Clear Linux | excluded | - | - | repositories archived by Intel (2025-08) |
-| Upstream Linux | linux | `linux` (existing, remotes stable/next/gki/cachyos/zen/chromeos/xanmod) | - | |
-| GKI (kernel/common) | linux | no (Gerrit) | registry `gki` | partial fr1 mirror |
-| ChromiumOS kernel/manifest | linux | no (Gerrit) | registry `chromeos`, `chromiumos-release` | partial fr1 mirror |
-| AOSP platform/manifest | linux | no | - | `third_party/aosp-manifest` (existing), fr1 mirror |
-| kleaf (kernel/build) | linux | no | - | `third_party/kleaf` (existing) |
-| mingw-w64 | linux (cross toolchain) | `mingw-w64` (existing) | - | |
-| llvm-mingw | linux (cross toolchain) | `llvm-mingw` (existing) | registry `llvm-mingw` | |
-| ReactOS | nt (LiberNT) | `reactos` (existing) | - | base of LiberNT |
-| LiberNT | nt | `LiberNT` (existing) | - | "LibreNT" does not exist on GitHub (search of 2026-11-13): the project is LiberNT (libernt.com), a ReactOS fork, GPL-3.0 |
-| wgpu | rendering / Chromium engines | `wgpu` (existing; `third_party/wgpu` repointed: origin = fork, upstream = gfx-rs) | - | no new fork |
-| Wine, Proton, Mesa, DXVK, VKD3D | gaming | `wine` (existing); Proton and Mesa: not forked to date | - | reused, never re-forked here |
-| NVIDIA open modules, CUDA, container toolkit | linux (GPU) | no | registry `nvidia-open`, `cuda`, `nvidia-container-toolkit` | manifests and scripts only |
-| ROCm, RADV | linux (GPU) | no | registry `rocm`, `therock` | RADV comes from Mesa (gaming) via the distro packages |
-| LFS native bun | lfs | `lfs` (existing) | - | `ay lfs` |
-| pacman, mkinitcpio, archlinux-docker, docker-alpine, nix.dev, pkg-linux | linux (reference) | no | - | existing read clones |
+| Component                                                               | Owner                        | aphrody-labs fork                                                                 | `ay upstream` stack                                        | Note                                                                                                                     |
+| ----------------------------------------------------------------------- | ---------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| CachyOS linux-cachyos (kernel PKGBUILD)                                 | linux                        | `linux-cachyos` (created 2026-11-13)                                              | `linux-cachyos`, 1 patch                                   | tier 1, `docs/linux/PATCHSETS.md`                                                                                        |
+| CachyOS-PKGBUILDS                                                       | linux                        | `CachyOS-PKGBUILDS` (created)                                                     | `cachyos-pkgbuilds`, empty series                          | CachyOS userland packages                                                                                                |
+| CachyOS kernel-patches                                                  | linux                        | `kernel-patches` (created)                                                        | `kernel-patches`, empty series                             | BORE, misc, nvidia per kernel series                                                                                     |
+| CachyOS/linux (kernel tree)                                             | linux                        | no: remote `cachyos` of `third_party/linux`                                       | -                                                          | same tree as `aphrody-labs/linux` (torvalds fork), no duplicate                                                          |
+| sched-ext/scx                                                           | linux                        | `scx` (created)                                                                   | `scx`, empty series                                        | sched_ext schedulers                                                                                                     |
+| zen-kernel                                                              | linux                        | `zen-kernel` (created)                                                            | no (6.9 GB): registry only + remote `zen`                  |                                                                                                                          |
+| XanMod                                                                  | linux                        | no: GitLab (`xanmod/linux` on GitHub archived 2024-10-25)                         | registry only + remote `xanmod`                            |                                                                                                                          |
+| Liquorix                                                                | linux                        | `liquorix-package` (created)                                                      | `liquorix`, empty series                                   | branch `7.3/master`                                                                                                      |
+| Clear Linux                                                             | excluded                     | -                                                                                 | -                                                          | repositories archived by Intel (2025-08)                                                                                 |
+| Upstream Linux                                                          | linux                        | `linux` (existing, remotes stable/next/gki/cachyos/zen/chromeos/xanmod)           | -                                                          |                                                                                                                          |
+| GKI (kernel/common)                                                     | linux                        | no (Gerrit)                                                                       | registry `gki`                                             | partial fr1 mirror                                                                                                       |
+| ChromiumOS kernel/manifest                                              | linux                        | no (Gerrit)                                                                       | registry `chromeos`, `chromiumos-release`                  | partial fr1 mirror                                                                                                       |
+| AOSP platform/manifest                                                  | linux                        | no                                                                                | -                                                          | `third_party/aosp-manifest` (existing), fr1 mirror                                                                       |
+| kleaf (kernel/build)                                                    | linux                        | no                                                                                | -                                                          | `third_party/kleaf` (existing)                                                                                           |
+| mingw-w64                                                               | linux (cross toolchain)      | `mingw-w64` (existing)                                                            | -                                                          |                                                                                                                          |
+| llvm-mingw                                                              | linux (cross toolchain)      | `llvm-mingw` (existing)                                                           | registry `llvm-mingw`                                      |                                                                                                                          |
+| ReactOS                                                                 | nt (LiberNT)                 | `reactos` (existing)                                                              | -                                                          | base of LiberNT                                                                                                          |
+| LiberNT                                                                 | nt                           | `LiberNT` (existing)                                                              | -                                                          | "LibreNT" does not exist on GitHub (search of 2026-11-13): the project is LiberNT (libernt.com), a ReactOS fork, GPL-3.0 |
+| wgpu                                                                    | rendering / Chromium engines | `wgpu` (existing; `third_party/wgpu` repointed: origin = fork, upstream = gfx-rs) | -                                                          | no new fork                                                                                                              |
+| Wine, Proton, Mesa, DXVK, VKD3D                                         | gaming                       | `wine` (existing); Proton and Mesa: not forked to date                            | -                                                          | reused, never re-forked here                                                                                             |
+| NVIDIA open modules, CUDA, container toolkit                            | linux (GPU)                  | no                                                                                | registry `nvidia-open`, `cuda`, `nvidia-container-toolkit` | manifests and scripts only                                                                                               |
+| ROCm, RADV                                                              | linux (GPU)                  | no                                                                                | registry `rocm`, `therock`                                 | RADV comes from Mesa (gaming) via the distro packages                                                                    |
+| LFS native bun                                                          | lfs                          | `lfs` (existing)                                                                  | -                                                          | `ay lfs`                                                                                                                 |
+| pacman, mkinitcpio, archlinux-docker, docker-alpine, nix.dev, pkg-linux | linux (reference)            | no                                                                                | -                                                          | existing read clones                                                                                                     |
 
 ## 3. Package management per distribution
 
-| Distribution | Format generated by `ay pkg` | CI build | Manager |
-|---|---|---|---|
-| Arch, CachyOS | PKGBUILD (`makepkg`) | yes (`archlinux:base-devel`, `cachyos-v3`) | pacman |
-| Debian, Ubuntu | `debian/` (debhelper 13, `dpkg-buildpackage -b`) | yes (`debian:trixie-slim`, `ubuntu:26.04`) | apt, in the test container only |
-| Alpine | APKBUILD (`abuild`) | yes (`alpine:3.24.4`) | apk |
-| NixOS | `default.nix` derivation (`stdenvNoCC.mkDerivation`) | yes (`nixos/nix:2.35.6`, nixpkgs `nixos-26.05` pinned) | nix |
-| Chromium OS, Gentoo | ebuild EAPI 8 + `metadata.xml` (Portage) | syntax only | emerge |
-| Android | `Android.bp` (`prebuilt_etc`, `sh_binary`) when the recipe lists `android` | generation only | Soong |
-| all | OCI image `FROM scratch` (layer to copy) | yes | docker |
+| Distribution        | Format generated by `ay pkg`                                               | CI build                                               | Manager                         |
+| ------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------- |
+| Arch, CachyOS       | PKGBUILD (`makepkg`)                                                       | yes (`archlinux:base-devel`, `cachyos-v3`)             | pacman                          |
+| Debian, Ubuntu      | `debian/` (debhelper 13, `dpkg-buildpackage -b`)                           | yes (`debian:trixie-slim`, `ubuntu:26.04`)             | apt, in the test container only |
+| Alpine              | APKBUILD (`abuild`)                                                        | yes (`alpine:3.24.4`)                                  | apk                             |
+| NixOS               | `default.nix` derivation (`stdenvNoCC.mkDerivation`)                       | yes (`nixos/nix:2.35.6`, nixpkgs `nixos-26.05` pinned) | nix                             |
+| Chromium OS, Gentoo | ebuild EAPI 8 + `metadata.xml` (Portage)                                   | syntax only                                            | emerge                          |
+| Android             | `Android.bp` (`prebuilt_etc`, `sh_binary`) when the recipe lists `android` | generation only                                        | Soong                           |
+| all                 | OCI image `FROM scratch` (layer to copy)                                   | yes                                                    | docker                          |
 
 Debian/Ubuntu rule: these are output targets for their users. Their containers serve to build and test the `.deb`; no src tool is installed by apt, and apt stays forbidden on the PC (`docs/deps/POLICY.md`, rule 1.4).
 
@@ -75,11 +75,11 @@ Debian/Ubuntu rule: these are output targets for their users. Their containers s
 
 ## 5. Exclusions
 
-| Item | Reason |
-|---|---|
-| Clear Linux | archived upstream (2025-08) |
-| NVIDIA drivers, CUDA | NVIDIA licenses: no file redistributed; scripts and manifests pointing to `developer.download.nvidia.com` and the distro repositories |
-| MSVC CRT / Windows SDK in the `cross-windows` image | Microsoft license: `xwin splat` at run time, never in a published image |
-| full AOSP or ChromiumOS checkout | space: fr1 has 93 GB free (`df`, 2026-11-13) for the Chromium factory; partial mirror of 3.3 GB only |
-| zen-kernel fork as a daily stack | 6.9 GB; tracked by the registry and the `zen` remote |
-| licenses without a file (`CachyOS-PKGBUILDS`, `kernel-patches`: no license detected by the GitHub API) | forked under GitHub's terms (public fork), nothing is republished outside GitHub; our patches stay under MIT OR Apache-2.0 |
+| Item                                                                                                   | Reason                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Clear Linux                                                                                            | archived upstream (2025-08)                                                                                                           |
+| NVIDIA drivers, CUDA                                                                                   | NVIDIA licenses: no file redistributed; scripts and manifests pointing to `developer.download.nvidia.com` and the distro repositories |
+| MSVC CRT / Windows SDK in the `cross-windows` image                                                    | Microsoft license: `xwin splat` at run time, never in a published image                                                               |
+| full AOSP or ChromiumOS checkout                                                                       | space: fr1 has 93 GB free (`df`, 2026-11-13) for the Chromium factory; partial mirror of 3.3 GB only                                  |
+| zen-kernel fork as a daily stack                                                                       | 6.9 GB; tracked by the registry and the `zen` remote                                                                                  |
+| licenses without a file (`CachyOS-PKGBUILDS`, `kernel-patches`: no license detected by the GitHub API) | forked under GitHub's terms (public fork), nothing is republished outside GitHub; our patches stay under MIT OR Apache-2.0            |

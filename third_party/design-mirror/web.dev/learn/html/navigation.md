@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 As you learned in [links](https://web.dev/learn/html/links.md.txt), the `<a>` element with the `href`
 attribute creates links that users can follow by clicking or
 tapping. In [lists](https://web.dev/learn/html/lists.md.txt), you learned how to create lists of
@@ -23,7 +24,7 @@ a breadcrumb.
 A page's table of contents is another type of local navigation. A page
 containing hierarchical links to every single page on a site is called a site
 map. The navigation leading to the top-level pages of the website, which
-is likely found on every page, is called *global navigation*.
+is likely found on every page, is called _global navigation_.
 Global navigation can be displayed in several different ways, including
 navigation bars, drop-down menus, and flyout menus. The same site may display
 its global navigation differently, depending on the viewport size.
@@ -33,7 +34,7 @@ number of clicks, while making sure the navigation
 is intuitive and not overwhelming. That said, there are no specific requirements
 for navigational elements. [MachineLearningWorkshop.com](https://machinelearningworkshop.com),
 being a single-page website, has a local navigation bar in the top right; this is where multi-page sites often put their global navigation.
- If you visit this page on web.dev, you can spot a few navigational features. There is a breadcrumb above the title, a Learn HTML table of contents and, depending on the width of your screen, an "on this page" table of contents.
+If you visit this page on web.dev, you can spot a few navigational features. There is a breadcrumb above the title, a Learn HTML table of contents and, depending on the width of your screen, an "on this page" table of contents.
 
 ## "Skip to content" link
 
@@ -48,7 +49,7 @@ When clicked or when it has focus and the user hits `Enter`, it scrolls the page
 and gives focus to the element with a `main` ID, presumably the main content.
 
 ```html
-<main id="main">
+<main id="main"></main>
 ```
 
 For improved usability and accessibility, it's important to let users bypass the
@@ -73,7 +74,7 @@ user. The link target should be the beginning of the page's main content.
 The first element of our main content is the `<h1>` heading with the title of
 this page: `<h1>Navigation</h1>`. The main heading is
 followed by a brief description of the contents of this tutorial.
- The table of contents is always visible.
+The table of contents is always visible.
 
 On smaller screens, the table of contents appears after the heading. On larger
 screens, it's presented in a right-aligned sidebar.
@@ -93,7 +94,7 @@ Using an [`id`](https://web.dev/learn/html/attributes.md.txt#id), that could loo
 ```html
 <nav aria-labelledby="tocTitle">
   <p id="tocTitle">On this page</p>
-...
+  ...
 </nav>
 ```
 
@@ -108,11 +109,11 @@ The "On this page" navigation is the table of contents. If you want to use
 ```html
 <nav aria-label="Table of Contents">
   <p>On this page</p>
-...
+  ...
 </nav>
 ```
 
-To provide an accessible name on an element, you should *not* include the name
+To provide an accessible name on an element, you should _not_ include the name
 of the element. Screen readers provide the name of the element to the user.
 For example, when using the `<nav>` element, don't include the word
 "navigation," as that information is already included with semantic elements.
@@ -180,7 +181,7 @@ the current page is optional and requires a little extra attention.
 
 ```javascript
 const url = new URL("https://web.dev/learn/html/navigation");
-const sections = url.hostname + url.pathname.split('/');
+const sections = url.hostname + url.pathname.split("/");
 // "web.dev,learn,html,navigation"
 ```
 
@@ -229,7 +230,7 @@ with CSS, to display before each list item, starting with the second.
   border-top: 2px solid currentColor;
   border-right: 2px solid currentColor;
   rotate: 45deg;
-  opacity: .8
+  opacity: 0.8;
 }
 ```
 
@@ -268,9 +269,7 @@ Take a look at an alternative version of the breadcrumb with this practice:
     <li>
       <a href="/learn/html">Learn HTML!</a>
     </li>
-    <li aria-current="page">
-      Navigation
-    </li>
+    <li aria-current="page">Navigation</li>
   </ol>
 </nav>
 ```
@@ -325,14 +324,14 @@ Global navigation provides a consistent means of traveling anywhere in the
 application or website. Google's website doesn't have global navigation at the
 top of its pages. Yahoo! does. While all the main Yahoo! properties have
 different styles, the content for most sections are the same.
- The Yahoo! navigation, which includes a black picker on a grey background.
+The Yahoo! navigation, which includes a black picker on a grey background.
 
 The content of the news and sports global navigation headers are the same.
 However, the icon that shows the user is on the sports page doesn't have
 enough contrast to be accessible, even for visitors who have perfect vision.
 Both sections have a global navigation with a section-specific local navigation
 below it.
- Here's a better version of the navigation, with higher contrast.
+Here's a better version of the navigation, with higher contrast.
 
 Similar to global navigation, footers should be identical on all pages. But
 that's the only similarity. Global navigation allows for navigation to all

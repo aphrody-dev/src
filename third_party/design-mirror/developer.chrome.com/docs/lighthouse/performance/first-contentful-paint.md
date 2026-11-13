@@ -7,12 +7,13 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 First Contentful Paint (FCP) is one of six metrics
 tracked in the **Performance** section of the Lighthouse report.
 Each metric captures some aspect of page load speed.
 
 Lighthouse displays FCP in seconds:
- The Lighthouse First Contentful Paint score
+The Lighthouse First Contentful Paint score
 
 ## What FCP measures
 
@@ -20,7 +21,7 @@ FCP measures how long it takes the browser
 to render the first piece of DOM content
 after a user navigates to your page.
 Images, non-white `<canvas>` elements, and SVGs on your page are considered
-DOM content; anything inside an iframe *isn't* included.
+DOM content; anything inside an iframe _isn't_ included.
 
 ## How Lighthouse determines your FCP score
 
@@ -35,11 +36,11 @@ to learn how Lighthouse score thresholds are set.
 
 This table shows how to interpret your FCP score for mobile:
 
-| FCP time (in seconds) | Color-coding |
-|---|---|
-| 0--1.8 | Green (fast) |
-| 1.8--3 | Orange (moderate) |
-| Over 3 | Red (slow) |
+| FCP time (in seconds) | Color-coding      |
+| --------------------- | ----------------- |
+| 0--1.8                | Green (fast)      |
+| 1.8--3                | Orange (moderate) |
+| Over 3                | Red (slow)        |
 
 Lighthouse mobile FCP thresholds
 
@@ -47,11 +48,11 @@ The [Web Vitals initiative](https://web.dev/articles/vitals) recommends [the sam
 
 The following table shows how to interpret your FCP score on desktop:
 
-| FCP time (in seconds) | Color-coding |
-|---|---|
-| 0--0.9 | Green (fast) |
-| 0.9--1.6 | Orange (moderate) |
-| Over 1.6 | Red (slow) |
+| FCP time (in seconds) | Color-coding      |
+| --------------------- | ----------------- |
+| 0--0.9                | Green (fast)      |
+| 0.9--1.6              | Orange (moderate) |
+| Over 1.6              | Red (slow)        |
 
 Lighthouse desktop FCP thresholds
 
@@ -79,7 +80,7 @@ Unless you have a specific reason for focusing on a particular metric, it's
 usually better to focus on improving your overall Performance score.
 
 Use the **Diagnostics** section of your Lighthouse report to determine which improvements will have the most value for your page. The more significant the opportunity, the greater the effect it will have on your Performance score. For example, the following Lighthouse screenshot shows that [eliminating render-blocking resources](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources.md.txt) will yield the biggest improvement:
- Lighthouse: Diagnostics section
+Lighthouse: Diagnostics section
 
 See the [Performance audits](https://developer.chrome.com/docs/lighthouse/performance)
 to learn how to address the opportunities identified in your Lighthouse report.

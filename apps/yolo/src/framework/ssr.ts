@@ -5,7 +5,10 @@
  * canonical metadata, and initial deterministic JSON hydration state.
  */
 import { tokens } from "../../../../packages/design/src/index.ts";
-import { schemeCss, type Variant } from "../../../../packages/design/src/runtime.ts";
+import {
+  schemeCss,
+  type Variant,
+} from "../../../../packages/design/src/runtime.ts";
 
 /** Brand seed (assets/brand/brand.toml via packages/design/tokens). */
 export const BRAND_SEED = tokens.source.seed;

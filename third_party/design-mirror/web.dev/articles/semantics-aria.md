@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Introduction to ARIA and non-native HTML semantics
 
- Alice Boxhall [X](https://twitter.com/sundress)  Dave Gash  Meggin Kearney
+Alice Boxhall [X](https://twitter.com/sundress) Dave Gash Meggin Kearney
 
 So far, we've encouraged using native HTML elements because they give you focus,
 keyboard support, and built-in semantics, but there are times when a simple
@@ -32,9 +33,7 @@ In the following snippet, we use a list item as a kind of custom checkbox. The
 CSS "checkbox" class gives the element the required visual characteristics.
 
 ```html
-<li tabindex="0" class="checkbox" checked>
-    Receive promotional offers
-</li>
+<li tabindex="0" class="checkbox" checked>Receive promotional offers</li>
 ```
 
 While this works fine for sighted users, a screen reader will give no indication
@@ -49,7 +48,7 @@ accessibility tree and a screen reader will correctly report it as a checkbox.
 
 ```html
 <li tabindex="0" class="checkbox" role="checkbox" checked aria-checked="true">
-    Receive promotional offers
+  Receive promotional offers
 </li>
 ```
 
@@ -57,7 +56,6 @@ accessibility tree and a screen reader will correctly report it as a checkbox.
 > **Note:** We'll cover the list of ARIA attributes and when to use them [later](https://web.dev/articles/semantics-aria.md.txt#what_can_aria_do).
 
 ARIA works by changing and augmenting the standard DOM accessibility tree.
- 
 
 Although ARIA allows us to subtly (or even radically) modify the accessibility
 tree for any element on the page, that is the only thing it changes. **ARIA
@@ -73,6 +71,7 @@ correctly announced.
 It's also worth noting that certain HTML elements have restrictions on what ARIA
 roles and attributes can be used on them. For example, a standard `<input
 type="text">` element may not have any additional role/attribute applied to it.
+
 > See the [ARIA in HTML spec](https://www.w3.org/TR/html-aria/#sec-strong-native-semantics)
 > for more information.
 
@@ -86,7 +85,7 @@ express semantic patterns that don't exist at all in HTML, like a menu or a tab
 panel. Often, ARIA lets us create widget-type elements that wouldn't be possible
 with plain HTML.
 
-- For example, ARIA can add extra label and description text that is only exposed to assistive technology APIs.  
+- For example, ARIA can add extra label and description text that is only exposed to assistive technology APIs.
 
 ```html
 <button aria-label="screen reader only label"></button>
@@ -95,21 +94,19 @@ with plain HTML.
 - ARIA can express semantic relationships between elements that extend the standard parent/child connection, such as a custom scrollbar that controls a specific region.
 
 ```html
-    <div role="scrollbar" aria-controls="main"></div>
-    <div id="main">
-    . . .
-    </div>
+<div role="scrollbar" aria-controls="main"></div>
+<div id="main">. . .</div>
 ```
 
 - And ARIA can make parts of the page "live," so they immediately inform assistive technology when they change.
 
 ```html
-    <div aria-live="polite">
-      <span>GOOG: $400</span>
-    </div>
+<div aria-live="polite">
+  <span>GOOG: $400</span>
+</div>
 ```
 
-One of the core aspects of the ARIA system is its collection of *roles* . A role
+One of the core aspects of the ARIA system is its collection of _roles_ . A role
 in accessibility terms amounts to a shorthand indicator for a particular UI
 pattern. ARIA provides a vocabulary of patterns we can use via the `role`
 attribute on any HTML element.

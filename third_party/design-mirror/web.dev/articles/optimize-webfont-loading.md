@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)
 
 A "full" WebFont that includes all stylistic variants,
@@ -91,15 +92,16 @@ To work with the `font-display` property, add it to your `@font-face` rules:
 
 ```css
 @font-face {
-  font-family: 'Awesome Font';
+  font-family: "Awesome Font";
   font-style: normal;
   font-weight: 400;
   font-display: auto; /* or block, swap, fallback, optional */
-  src: local('Awesome Font'),
-       url('/fonts/awesome-l.woff2') format('woff2'), /* will be preloaded */
-       url('/fonts/awesome-l.woff') format('woff'),
-       url('/fonts/awesome-l.ttf') format('truetype'),
-       url('/fonts/awesome-l.eot') format('embedded-opentype');
+  src:
+    local("Awesome Font"),
+    url("/fonts/awesome-l.woff2") format("woff2"),
+    /* will be preloaded */ url("/fonts/awesome-l.woff") format("woff"),
+    url("/fonts/awesome-l.ttf") format("truetype"),
+    url("/fonts/awesome-l.eot") format("embedded-opentype");
   unicode-range: U+000-5FF; /* Latin glyphs */
 }
 ```
@@ -141,11 +143,13 @@ Browser Support
 
 ```javascript
 var font = new FontFace("Awesome Font", "url(/fonts/awesome.woff2)", {
-  style: 'normal', unicodeRange: 'U+000-5FF', weight: '400'
+  style: "normal",
+  unicodeRange: "U+000-5FF",
+  weight: "400",
 });
 
 // don't wait for the render tree, initiate an immediate fetch!
-font.load().then(function() {
+font.load().then(function () {
   // apply the font (which may re-render text and cause a page reflow)
   // after the font has finished downloading
   document.fonts.add(font);

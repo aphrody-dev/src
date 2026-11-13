@@ -7,7 +7,12 @@ on:
   push: { branches: [main] }
   workflow_dispatch:
     inputs:
-      project: { description: "project of packages/deploy/projects.toml (empty: affected projects)", required: false, default: "" }
+      project:
+        {
+          description: "project of packages/deploy/projects.toml (empty: affected projects)",
+          required: false,
+          default: "",
+        }
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: false

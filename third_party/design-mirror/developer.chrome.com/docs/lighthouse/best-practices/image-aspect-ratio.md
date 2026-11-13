@@ -7,8 +7,9 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-If a rendered image has an [aspect ratio](https://en.wikipedia.org/wiki/Aspect_ratio_(image)) that's significantly different
-to the aspect ratio in its source file (the *natural* aspect ratio),
+
+If a rendered image has an [aspect ratio](<https://en.wikipedia.org/wiki/Aspect_ratio_(image)>) that's significantly different
+to the aspect ratio in its source file (the _natural_ aspect ratio),
 the rendered image may look distorted,
 possibly creating an unpleasant user experience.
 

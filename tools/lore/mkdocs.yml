@@ -22,21 +22,21 @@ theme:
   font: false
   features:
     - navigation.instant
-    - navigation.instant.prefetch   # start fetching a page on link hover
-    - navigation.instant.progress   # top progress bar during instant nav
+    - navigation.instant.prefetch # start fetching a page on link hover
+    - navigation.instant.progress # top progress bar during instant nav
     - navigation.tracking
     - navigation.indexes
-    - navigation.path               # breadcrumbs above the page title
+    - navigation.path # breadcrumbs above the page title
     - navigation.top
-    - navigation.footer             # prev/next links at the page bottom
-    - search.suggest                # inline autocomplete of the last word
-    - search.highlight              # highlight matches on the target page
-    - search.share                  # shareable deep link to a search query
+    - navigation.footer # prev/next links at the page bottom
+    - search.suggest # inline autocomplete of the last word
+    - search.highlight # highlight matches on the target page
+    - search.share # shareable deep link to a search query
     - content.code.copy
     - content.code.annotate
-    - content.code.select           # selectable code line ranges
-    - content.tabs.link             # sync linked content tabs across the page
-    - content.action.view           # "View source" button (GitHub, read-only)
+    - content.code.select # selectable code line ranges
+    - content.tabs.link # sync linked content tabs across the page
+    - content.action.view # "View source" button (GitHub, read-only)
     - toc.follow
 
 extra_css:

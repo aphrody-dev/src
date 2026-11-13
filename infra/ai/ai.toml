@@ -31,9 +31,49 @@ registry = "https://models.dev/api.json"
 [[runtime]]
 id = "litellm"
 bin = "litellm"
-install.windows = [["uv", "tool", "install", "--no-build", "--force", "--python", "3.13", "--with", "litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl", "--with", "litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl", "litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-win_amd64.whl"]]
-install.linux = [["uv", "tool", "install", "--no-build", "--force", "--python", "3.13", "--with", "litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl", "--with", "litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl", "litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-manylinux_2_39_x86_64.whl"]]
-serve = ["litellm", "--config", "{config}", "--host", "{host}", "--port", "{port}", "--num_workers", "1"]
+install.windows = [
+  [
+    "uv",
+    "tool",
+    "install",
+    "--no-build",
+    "--force",
+    "--python",
+    "3.13",
+    "--with",
+    "litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl",
+    "--with",
+    "litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl",
+    "litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-win_amd64.whl",
+  ],
+]
+install.linux = [
+  [
+    "uv",
+    "tool",
+    "install",
+    "--no-build",
+    "--force",
+    "--python",
+    "3.13",
+    "--with",
+    "litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl",
+    "--with",
+    "litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl",
+    "litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-manylinux_2_39_x86_64.whl",
+  ],
+]
+serve = [
+  "litellm",
+  "--config",
+  "{config}",
+  "--host",
+  "{host}",
+  "--port",
+  "{port}",
+  "--num_workers",
+  "1",
+]
 env = { LITELLM_LOG = "ERROR", PYTHONUTF8 = "1" }
 health = "http://{host}:{port}/health/liveliness"
 
@@ -55,7 +95,24 @@ id = "llamacpp"
 os = ["windows"]
 bin = "llama-server"
 install.windows = [["ay", "up", "llama.cpp"]]
-serve = ["llama-server", "--host", "127.0.0.1", "--port", "8080", "-m", "{ollama_gguf:gemma4:e2b}", "--alias", "gemma4-e2b", "-ngl", "99", "-c", "8192", "-t", "4", "--jinja"]
+serve = [
+  "llama-server",
+  "--host",
+  "127.0.0.1",
+  "--port",
+  "8080",
+  "-m",
+  "{ollama_gguf:gemma4:e2b}",
+  "--alias",
+  "gemma4-e2b",
+  "-ngl",
+  "99",
+  "-c",
+  "8192",
+  "-t",
+  "4",
+  "--jinja",
+]
 health = "http://127.0.0.1:8080/health"
 
 # LM Studio sans interface : démon llmster + CLI lms (installateur officiel lmstudio.ai).
@@ -64,20 +121,51 @@ id = "lmstudio"
 os = ["windows"]
 bin = "lms"
 path = ["~/.lmstudio/bin"]
-install.windows = [["pwsh", "-NoProfile", "-Command", "irm https://lmstudio.ai/install.ps1 | iex"]]
-install.linux = [["sh", "-c", "curl -fsSL https://lmstudio.ai/install.sh | bash"]]
+install.windows = [
+  [
+    "pwsh",
+    "-NoProfile",
+    "-Command",
+    "irm https://lmstudio.ai/install.ps1 | iex",
+  ],
+]
+install.linux = [
+  ["sh", "-c", "curl -fsSL https://lmstudio.ai/install.sh | bash"],
+]
 serve = ["lms", "server", "start", "--port", "1234", "--bind", "127.0.0.1"]
 oneshot = true
 health = "http://127.0.0.1:1234/v1/models"
 # Lien dur du GGUF d'Ollama (aucun second téléchargement) ; un ré-import est signalé « déjà présent ».
-pull = ["lms", "import", "-y", "--hard-link", "--user-repo", "ollama/gemma4-e2b", "{ollama_gguf:gemma4:e2b}"]
+pull = [
+  "lms",
+  "import",
+  "-y",
+  "--hard-link",
+  "--user-repo",
+  "ollama/gemma4-e2b",
+  "{ollama_gguf:gemma4:e2b}",
+]
 
 [[runtime]]
 id = "jan"
 os = ["windows"]
 # Application de bureau : son serveur API (port 1337) ne tourne que dans l'application ouverte.
 bin = "~/AppData/Local/Programs/Jan/Jan-Desktop.exe"
-install.windows = [["winget", "install", "--id", "Jan.Jan", "--exact", "--source", "winget", "--silent", "--accept-package-agreements", "--accept-source-agreements", "--disable-interactivity"]]
+install.windows = [
+  [
+    "winget",
+    "install",
+    "--id",
+    "Jan.Jan",
+    "--exact",
+    "--source",
+    "winget",
+    "--silent",
+    "--accept-package-agreements",
+    "--accept-source-agreements",
+    "--disable-interactivity",
+  ],
+]
 health = "http://127.0.0.1:1337/v1/models"
 
 # prd (sans GPU) : roue CPU officielle de vLLM et binaire CPU de mistral.rs, installables, jamais servis :
@@ -87,7 +175,18 @@ health = "http://127.0.0.1:1337/v1/models"
 id = "vllm"
 os = ["linux"]
 bin = "vllm"
-install.linux = [["uv", "tool", "install", "--python", "3.12", "--torch-backend", "cpu", "vllm @ https://github.com/vllm-project/vllm/releases/download/v0.32.0/vllm-0.32.0+cpu-cp38-abi3-manylinux_2_39_x86_64.whl"]]
+install.linux = [
+  [
+    "uv",
+    "tool",
+    "install",
+    "--python",
+    "3.12",
+    "--torch-backend",
+    "cpu",
+    "vllm @ https://github.com/vllm-project/vllm/releases/download/v0.32.0/vllm-0.32.0+cpu-cp38-abi3-manylinux_2_39_x86_64.whl",
+  ],
+]
 # serve = ["vllm", "serve", "Qwen/Qwen3-0.6B", "--host", "127.0.0.1", "--port", "8000", "--max-model-len", "4096", "--served-model-name", "qwen3-0.6b"]
 env = { VLLM_CPU_KVCACHE_SPACE = "2", VLLM_CPU_OMP_THREADS_BIND = "0-3", OMP_NUM_THREADS = "4" }
 health = "http://127.0.0.1:8000/health"
@@ -197,7 +296,11 @@ validate = "https://api.mammouth.ai/v1/models"
 [[provider]]
 id = "google-vertex"
 route = "vertex_ai"
-credentials = ["env:VERTEX_APHRODY_SA_KEY", "env:GCP_ADMIN_SA_KEY", "file:~/.aphrody/secrets/yolo-automation.json"]
+credentials = [
+  "env:VERTEX_APHRODY_SA_KEY",
+  "env:GCP_ADMIN_SA_KEY",
+  "file:~/.aphrody/secrets/yolo-automation.json",
+]
 params = { vertex_location = "env:GOOGLE_CLOUD_LOCATION" }
 
 # Anthropic (clé payante, rattachée à un espace de travail) : en-tête anthropic-workspace-id et plafond de
@@ -210,4 +313,12 @@ key = "ANTHROPIC_API_KEY"
 # Hors LiteLLM : CLI Antigravity authentifiée (modèles listés par la CLI).
 [[provider]]
 id = "antigravity"
-cli = { models = ["agy", "models"], ask = ["agy", "-p", "{prompt}", "--mode", "plan", "--model", "{model}"] }
+cli = { models = ["agy", "models"], ask = [
+  "agy",
+  "-p",
+  "{prompt}",
+  "--mode",
+  "plan",
+  "--model",
+  "{model}",
+] }

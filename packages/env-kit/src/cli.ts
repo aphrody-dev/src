@@ -243,7 +243,9 @@ type VaultModule = typeof import("../../vault/src/index.ts");
 let vaultModule: Promise<VaultModule | undefined> | undefined;
 export function loadVault(): Promise<VaultModule | undefined> {
   const p = join(import.meta.dir, "..", "..", "vault", "src", "index.ts");
-  vaultModule ??= existsSync(p) ? import(p).catch(() => undefined) : Promise.resolve(undefined);
+  vaultModule ??= existsSync(p)
+    ? import(p).catch(() => undefined)
+    : Promise.resolve(undefined);
   return vaultModule;
 }
 
@@ -259,8 +261,13 @@ async function secretApi() {
       rm: v.deleteSecret,
       // A secret scoped to hosts is sealed for them at once; the scheduled sync pushes it.
       after: async (n: string) => {
-        const [policy, registry] = await Promise.all([v.loadPolicy(), v.loadRegistry()]);
-        const hosts = v.scopeOf(n, registry[n]?.kind ?? "token", policy, registry).filter((h) => h !== "pc");
+        const [policy, registry] = await Promise.all([
+          v.loadPolicy(),
+          v.loadRegistry(),
+        ]);
+        const hosts = v
+          .scopeOf(n, registry[n]?.kind ?? "token", policy, registry)
+          .filter((h) => h !== "pc");
         if (hosts.length) await v.sealOutbox(hosts).catch(() => undefined);
       },
     };
@@ -328,7 +335,9 @@ async function runSecretCommand(
       );
       return 2;
     }
-    const values = await Promise.all(names.map(async (n) => [n, await S.get(n)] as const));
+    const values = await Promise.all(
+      names.map(async (n) => [n, await S.get(n)] as const),
+    );
     const missing = values.filter(([, v]) => v === undefined).map(([n]) => n);
     if (missing.length) {
       console.error(`[env-kit] absent from the store: ${missing.join(", ")}`);
@@ -595,7 +604,9 @@ ${formatIdentities(ids)}`);
       console.error("env-kit vault: packages/vault absent (monorepo only)");
       return 2;
     }
-    const { main: vaultMain } = (await import(p)) as { main: (a: string[]) => Promise<number> };
+    const { main: vaultMain } = (await import(p)) as {
+      main: (a: string[]) => Promise<number>;
+    };
     return vaultMain(argv.slice(1));
   }
 
@@ -744,7 +755,11 @@ ${formatIdentities(ids)}`);
         scopes,
         openBrowser: (url) =>
           spawnSync(
-            process.platform === "win32" ? "cmd" : process.platform === "darwin" ? "open" : "xdg-open",
+            process.platform === "win32"
+              ? "cmd"
+              : process.platform === "darwin"
+                ? "open"
+                : "xdg-open",
             process.platform === "win32" ? ["/c", "start", "", url] : [url],
             { stdio: "ignore" },
           ),

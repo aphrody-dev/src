@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!NOTE]
 > **Note:** This is a module that discusses how web workers work at a high level. It is not an exhaustive explanation, but rather an overview of web workers, and a [subsequent demonstration](https://web.dev/learn/performance/web-worker-demo.md.txt) of how they can improve performance. For a deep dive into the subject, read [Use web workers to run JavaScript off the
 > browser's main thread](https://web.dev/articles/off-main-thread).
@@ -21,15 +22,15 @@ covered yet in this course, and that's the role of web workers in improving
 input responsiveness, which this and the next module covers.
 
 JavaScript is often described as a single-threaded language. In practice, this
-refers to the *main thread* , which is the single thread where the browser does
+refers to the _main thread_ , which is the single thread where the browser does
 most of the work that you see in the browser. This work includes tasks involved
 in things such as scripting, some types of rendering work, HTML and CSS parsing,
 and other kinds of user-facing work that drives the user experience. In truth,
-browsers *do* use other threads to do work that you, the developer, don't
+browsers _do_ use other threads to do work that you, the developer, don't
 typically have direct access to---such as [GPU threads](https://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome/).
 
 Where JavaScript is concerned, you're generally confined to doing work on
-the main thread---but only by default. It *is* possible to register and use
+the main thread---but only by default. It _is_ possible to register and use
 additional threads in JavaScript. The feature that allows for multi-threading in
 JavaScript is known as [the Web Workers API](https://developer.mozilla.org/docs/Web/API/Web_Workers_API/Using_web_workers).
 
@@ -50,10 +51,10 @@ can get that metadata back to the main thread for the user to see.
 A web worker is registered by instantiating the [`Worker` class](https://developer.mozilla.org/docs/Web/API/Worker). When you do
 so, you specify where the web worker code is located, which the browser loads
 and subsequently creates a new thread for. The resulting thread is often called
-a *worker thread*.
+a _worker thread_.
 
 ```javascript
-const myWebWorker = new Worker('/js/my-web-worker.js');
+const myWebWorker = new Worker("/js/my-web-worker.js");
 ```
 
 In the worker's JavaScript file---`my-web-worker.js` in this case---you can then
@@ -66,9 +67,9 @@ to the [`window` context](https://developer.mozilla.org/docs/Web/API/Window). an
 workers are subject to the following constraints:
 
 - Web workers can't directly access the DOM.
-- Web workers *can* communicate with the `window` context through a messaging pipeline, meaning that a web worker can *indirectly* access the DOM in a way.
+- Web workers _can_ communicate with the `window` context through a messaging pipeline, meaning that a web worker can _indirectly_ access the DOM in a way.
 - The web worker scope is `self`, rather than `window`.
-- The web worker scope *does* have access to JavaScript primitives and constructs, as well as APIs such as `fetch` and [a fairly large number of
+- The web worker scope _does_ have access to JavaScript primitives and constructs, as well as APIs such as `fetch` and [a fairly large number of
   other APIs](https://developer.mozilla.org/docs/Web/API/Web_Workers_API#supported_web_apis).
 
 ## How web workers talk to the `window`
@@ -93,7 +94,7 @@ message from the web worker thread using yet another `message` event:
 // scripts.js
 
 // Creates the web worker:
-const myWebWorker = new Worker('/js/my-web-worker.js');
+const myWebWorker = new Worker("/js/my-web-worker.js");
 
 // Adds an event listener on the web worker instance that listens for messages:
 myWebWorker.addEventListener("message", ({ data }) => {
@@ -113,7 +114,7 @@ the main thread.
 ## Test your knowledge
 
 What thread does a web worker run on?
-The main thread. Try again. Its own thread (also known as a *web worker thread*). Correct! The GPU thread. Try again. What can a web worker access?
+The main thread. Try again. Its own thread (also known as a _web worker thread_). Correct! The GPU thread. Try again. What can a web worker access?
 JavaScript primitives, such as arrays and objects. Correct! A strict subset of APIs available in the `window` context, including `fetch`. Correct! The `window` context, but only indirectly. Correct! How can a web worker access the \`window\` context?
 Directly, by referencing members of the `window` object. Try again. A web worker can't access the `window` by any means. Try again. Through a messaging pipeline facilitated by the `postMessage` method in the web worker context (`self`). Correct!
 

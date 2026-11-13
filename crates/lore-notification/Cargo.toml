@@ -27,7 +27,7 @@ lore-proto = { workspace = true }
 test-util = []
 
 [dev-dependencies]
-lore-notification = { path = ".", package = "aphrody-lore-notification",  features = ["test-util"]  }
+lore-notification = { path = ".", package = "aphrody-lore-notification", features = ["test-util"] }
 
 [lints]
 workspace = true

@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 After years of development, the Chrome team ships WebGPU which allows high-performance 3D graphics and data-parallel computation on the web.
 
- François Beaufort [GitHub](https://github.com/beaufortfrancois)  Corentin Wallez [X](https://twitter.com/DaKangz) [GitHub](https://github.com/Kangz) [Mastodon](https://mastodon.gamedev.place/@DaKangz)
+François Beaufort [GitHub](https://github.com/beaufortfrancois) Corentin Wallez [X](https://twitter.com/DaKangz) [GitHub](https://github.com/Kangz) [Mastodon](https://mastodon.gamedev.place/@DaKangz)
 
 The Chrome team is thrilled to announce that WebGPU is now available by default in Chrome 113, which is currently in the Beta channel. WebGPU is a new web graphics API that offers significant benefits such as greatly reduced JavaScript workload for the same graphics and more than three times improvements in machine learning model inferences. This is possible due to more flexible GPU programming and access to advanced capabilities that WebGL does not provide.
 

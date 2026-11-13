@@ -19,8 +19,8 @@ rejected, because src never uses Debian or Ubuntu.
    2. the official prebuilt release, pinned in `tools.toml` with sha256 or signature, installed by `ay up` in `~/.local/bin`;
    3. an `aphrody-labs` fork pinned by commit (`src.lock.json` then DEPS), only when it carries a patch or an optimization;
    4. the system manager, as a last resort: winget on Windows; in containers, apk (Alpine), pacman (Arch) or nix.
-   Never apt, snap or a Debian/Ubuntu image. flatpak/Flathub is used only for Linux desktop applications, outside the build chain.
-   Bounded exception (2026-11-13, owner request): Debian and Ubuntu are **output targets** of `ay pkg` (`infra/pkg`, `docs/linux/OWNERSHIP.md`); their digest-pinned containers are used only to build and test our `.deb` in CI, and the `base-debian` image for that test. No src tool depends on them, apt remains forbidden on the PC.
+      Never apt, snap or a Debian/Ubuntu image. flatpak/Flathub is used only for Linux desktop applications, outside the build chain.
+      Bounded exception (2026-11-13, owner request): Debian and Ubuntu are **output targets** of `ay pkg` (`infra/pkg`, `docs/linux/OWNERSHIP.md`); their digest-pinned containers are used only to build and test our `.deb` in CI, and the `base-debian` image for that test. No src tool depends on them, apt remains forbidden on the PC.
 2. **One lock per ecosystem, at the root**: `Cargo.lock`, `bun.lock`, `uv.lock`, `infra/go.sum` and `src.lock.json` (git repositories). DEPS, `.repo/manifests/default.xml` and MAINTAINERS are generated from it by `ay lock`. An `apps/*` submodule keeps the lock of its own repository.
 3. **One version per package.**
    - Rust: each crates.io dependency is declared only once in `[workspace.dependencies]`; members write `{ workspace = true }` and may only add `features` or `optional`.
@@ -44,47 +44,48 @@ rejected, because src never uses Debian or Ubuntu.
 
 ## 2. Components
 
-| Component | Chosen channel | Reason |
-|---|---|---|
-| rustc, cargo, clippy, rustfmt | rustup + `rust-toolchain.toml` (dated nightly) | same LLVM as clang; reproducible by date; `cargo-features` require nightly |
-| Rust crates | `Cargo.toml` `[workspace.dependencies]` + `Cargo.lock` + cargo-deny | one version per crate, single lock, licenses and sources controlled |
-| patched crates (russh, sntrup761) | `aphrody-dev` fork in `[patch.crates-io]`, commit in `Cargo.lock` | PQ-kex patch not published upstream |
-| cargo tools (nextest, binstall, dist, zigbuild) | GitHub release + checksum (`tools.toml`); `cargo binstall` otherwise; `cargo install` only on prd | no compilation on the workstation; binstall verifies published signatures |
-| bun | GitHub release `oven-sh/bun` + `SHASUMS256.txt` (`tools.toml`, lock `toolchains.bun`) | single binary, musl on Linux; Node replaced |
-| JS packages | `package.json` (root catalog) + `bun.lock` | native bun; zero external dependency today (only `@types/bun`) |
-| JS CLIs (wrangler, MCP) | `source = "bun"` in `tools.toml`, exact version | installed by bun, without npm |
-| Python (src projects) | root uv workspace (`pyproject.toml`, `uv.lock`) | a single resolver and a single lock; CPython managed by uv |
-| uv | GitHub release `astral-sh/uv` + `.sha256` | uv publishes a sha256 sum per archive |
-| Go (infra) | `infra/go.mod` + `go.sum`, `go 1.27.0` | MVS + sum.golang.org |
-| zig | ziglang.org archive (`tools.toml`, `source = "url"`); minisign signature to be added | no up-to-date system package |
-| clang, lld, llvm-* | `third_party/llvm-project` built on fr1, shared with Chromium | cross-language LTO, a single LLVM |
-| third-party C/C++ | vcpkg manifest + baseline (fork `aphrody-labs/vcpkg`) + LLVM triplet | intelligent-terminal model; binary = bitcode |
-| Chromium | gclient (`third_party/chromium`, upstream DEPS, CIPD); build on fr1 | indivisible unit, Google tooling |
-| .NET 11 / 10 | official Microsoft archives (dotnet-install); NuGet + `packages.lock.json` | NativeAOT; no Mono or VSTest |
-| MSVC, Windows SDK | Windows: winget (Build Tools); Linux: `xwin` (`tools.toml`) | only redistributable Microsoft channel |
-| Windows system tools (Docker Desktop, drivers) | winget, declared in DSC (`packages/machine/*.dsc.winget`) | intelligent-terminal's `.config/configuration.winget` model |
-| generic CLIs (rg, fd, bat, just, gh…) | GitHub release (`tools.toml`), sha256 per platform | static binary, same version on Windows and Linux |
-| OCI images | Alpine (light), Arch (heavy), `cgr.dev/chainguard/static` (Rust musl), pinned by digest | never Debian/Ubuntu |
-| Linux hosts | Arch/CachyOS (prd): pacman; nix (`flake.nix`) outside containers | no apt in the src chain |
-| Linux desktop applications | flatpak/Flathub | isolated, outside the build |
-| git upstreams (third_party) | `aphrody-labs` fork if patched, otherwise upstream; `src.lock.json` to DEPS | Chromium DEPS model |
+| Component                                       | Chosen channel                                                                                    | Reason                                                                     |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| rustc, cargo, clippy, rustfmt                   | rustup + `rust-toolchain.toml` (dated nightly)                                                    | same LLVM as clang; reproducible by date; `cargo-features` require nightly |
+| Rust crates                                     | `Cargo.toml` `[workspace.dependencies]` + `Cargo.lock` + cargo-deny                               | one version per crate, single lock, licenses and sources controlled        |
+| patched crates (russh, sntrup761)               | `aphrody-dev` fork in `[patch.crates-io]`, commit in `Cargo.lock`                                 | PQ-kex patch not published upstream                                        |
+| cargo tools (nextest, binstall, dist, zigbuild) | GitHub release + checksum (`tools.toml`); `cargo binstall` otherwise; `cargo install` only on prd | no compilation on the workstation; binstall verifies published signatures  |
+| bun                                             | GitHub release `oven-sh/bun` + `SHASUMS256.txt` (`tools.toml`, lock `toolchains.bun`)             | single binary, musl on Linux; Node replaced                                |
+| JS packages                                     | `package.json` (root catalog) + `bun.lock`                                                        | native bun; zero external dependency today (only `@types/bun`)             |
+| JS CLIs (wrangler, MCP)                         | `source = "bun"` in `tools.toml`, exact version                                                   | installed by bun, without npm                                              |
+| Python (src projects)                           | root uv workspace (`pyproject.toml`, `uv.lock`)                                                   | a single resolver and a single lock; CPython managed by uv                 |
+| uv                                              | GitHub release `astral-sh/uv` + `.sha256`                                                         | uv publishes a sha256 sum per archive                                      |
+| Go (infra)                                      | `infra/go.mod` + `go.sum`, `go 1.27.0`                                                            | MVS + sum.golang.org                                                       |
+| zig                                             | ziglang.org archive (`tools.toml`, `source = "url"`); minisign signature to be added              | no up-to-date system package                                               |
+| clang, lld, llvm-*                              | `third_party/llvm-project` built on fr1, shared with Chromium                                     | cross-language LTO, a single LLVM                                          |
+| third-party C/C++                               | vcpkg manifest + baseline (fork `aphrody-labs/vcpkg`) + LLVM triplet                              | intelligent-terminal model; binary = bitcode                               |
+| Chromium                                        | gclient (`third_party/chromium`, upstream DEPS, CIPD); build on fr1                               | indivisible unit, Google tooling                                           |
+| .NET 11 / 10                                    | official Microsoft archives (dotnet-install); NuGet + `packages.lock.json`                        | NativeAOT; no Mono or VSTest                                               |
+| MSVC, Windows SDK                               | Windows: winget (Build Tools); Linux: `xwin` (`tools.toml`)                                       | only redistributable Microsoft channel                                     |
+| Windows system tools (Docker Desktop, drivers)  | winget, declared in DSC (`packages/machine/*.dsc.winget`)                                         | intelligent-terminal's `.config/configuration.winget` model                |
+| generic CLIs (rg, fd, bat, just, gh…)           | GitHub release (`tools.toml`), sha256 per platform                                                | static binary, same version on Windows and Linux                           |
+| OCI images                                      | Alpine (light), Arch (heavy), `cgr.dev/chainguard/static` (Rust musl), pinned by digest           | never Debian/Ubuntu                                                        |
+| Linux hosts                                     | Arch/CachyOS (prd): pacman; nix (`flake.nix`) outside containers                                  | no apt in the src chain                                                    |
+| Linux desktop applications                      | flatpak/Flathub                                                                                   | isolated, outside the build                                                |
+| git upstreams (third_party)                     | `aphrody-labs` fork if patched, otherwise upstream; `src.lock.json` to DEPS                       | Chromium DEPS model                                                        |
 
 ## 3. Commands
 
-| Command | Effect |
-|---|---|
-| `ay doctor --deps` | compliance of the whole repository (rules below); exit code 1 on any error |
-| `ay doctor --deps --dups` | also lists crates resolved in several versions |
-| `ay doctor --deps --json` | JSON report (CI, dashboards) |
-| `ay lock --deps` | refreshes `Cargo.lock` (`cargo update --workspace`), `bun.lock` (`bun install --lockfile-only`) and `uv.lock` (`uv lock`) without bumping anything |
-| `ay lock --deps --hoist` | first hoists members' inline requirements into `[workspace.dependencies]` and relaxes the `=` |
-| `ay lock --deps --bump` | in-range bump: `cargo update`, `bun update --recursive`, `uv lock --upgrade`; shows duplicates before and after |
-| `ay lock --deps --dedupe` | like `bun dedupe`: each duplicated crate is brought down to a lower version already resolved (`cargo update -p name@high --precise low`) if all its dependents accept it and the total number of copies drops |
-| `ay lock --deps --breaking` | raises the `[workspace.dependencies]` requirements whose latest stable version (crates.io sparse index) falls outside the caret range, then `cargo update`; cargo 1.102-nightly no longer has `update --breaking`; to be validated by `cargo check` on prd |
-| `ay lock` | `src.lock.json` (relative paths) then DEPS, `.repo`, MAINTAINERS |
-| `just deps`, `just deps-lock`, `just deps-bump` | the same, via just (`deps-bump` chains `--bump --dedupe`) |
+| Command                                         | Effect                                                                                                                                                                                                                                                     |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ay doctor --deps`                              | compliance of the whole repository (rules below); exit code 1 on any error                                                                                                                                                                                 |
+| `ay doctor --deps --dups`                       | also lists crates resolved in several versions                                                                                                                                                                                                             |
+| `ay doctor --deps --json`                       | JSON report (CI, dashboards)                                                                                                                                                                                                                               |
+| `ay lock --deps`                                | refreshes `Cargo.lock` (`cargo update --workspace`), `bun.lock` (`bun install --lockfile-only`) and `uv.lock` (`uv lock`) without bumping anything                                                                                                         |
+| `ay lock --deps --hoist`                        | first hoists members' inline requirements into `[workspace.dependencies]` and relaxes the `=`                                                                                                                                                              |
+| `ay lock --deps --bump`                         | in-range bump: `cargo update`, `bun update --recursive`, `uv lock --upgrade`; shows duplicates before and after                                                                                                                                            |
+| `ay lock --deps --dedupe`                       | like `bun dedupe`: each duplicated crate is brought down to a lower version already resolved (`cargo update -p name@high --precise low`) if all its dependents accept it and the total number of copies drops                                              |
+| `ay lock --deps --breaking`                     | raises the `[workspace.dependencies]` requirements whose latest stable version (crates.io sparse index) falls outside the caret range, then `cargo update`; cargo 1.102-nightly no longer has `update --breaking`; to be validated by `cargo check` on prd |
+| `ay lock`                                       | `src.lock.json` (relative paths) then DEPS, `.repo`, MAINTAINERS                                                                                                                                                                                           |
+| `just deps`, `just deps-lock`, `just deps-bump` | the same, via just (`deps-bump` chains `--bump --dedupe`)                                                                                                                                                                                                  |
 
 Rules checked:
+
 - Rust: `CARGO-INLINE`, `CARGO-PATH`, `CARGO-GIT`, `CARGO-REGISTRY`, `CARGO-WILDCARD`, `CARGO-PRERELEASE` (warning), `CARGO-DUP` (warning), `CARGO-DENY`, `RUST-PIN`;
 - bun: `JS-CATALOG`, `JS-CATALOG-PIN`, `JS-FLOAT`, `JS-NODE`, `JS-INSTALL-SCRIPT`, `JS-ABS-PATH`, `JS-LOCK`;
 - Python: `PY-WORKSPACE`, `PY-LOCK`, `PY-MANIFEST`;
@@ -102,6 +103,7 @@ Major bumps (`--breaking`) and the nightly date are changed by hand, in a dedica
 `tools.toml` declares the CLIs installed by `ay up` (`[[tool]]`, all pinned and verified by sha256: GitHub release digests, or a measured sum when the release does not publish one). It also carries, at the end of the file, the `[toolchain."<name>"]` block generated by `scripts/toolchains-lock.ts` (`just toolchains-lock`): toolchains per host with `{ url, sha256 | sha512 }` per platform. This block is read by `infra/fleet/bootstrap`, `infra/docker` and `ay bun bump`. `packages/machine/toolchains.lock.toml` is deleted.
 
 Complements:
+
 - `docs/DEPS-MINIMIZE.md`: no versioned third-party code, Cargo git sources pinned by `rev`;
 - `deny.toml` `[sources.allow-org]`, recognized by `CARGO-GIT`;
 - `scripts/js-deps-check.ts`, run in `just check` and in CI: `bun.lock` duplicates, bun built-ins.
@@ -109,6 +111,7 @@ Complements:
 ## 6. Additions from other workstreams
 
 Every new path must pass `ay doctor --deps` without error:
+
 - a crate under `crates/` inherits from the workspace;
 - a package under `packages/` goes through the catalog;
 - a Python project becomes a member of the uv workspace;

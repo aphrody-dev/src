@@ -12,7 +12,6 @@ allowed-tools:
 > (upload, design-md, generate, html, download), DESIGN.md `ay design lint|export` (system: packages/design/DESIGN.md),
 > Jules `ay jules run|sessions` and tools `jules_run`, `jules_status`. JS/TS: bun only.
 
-
 # Local Action Verification with act
 
 You are setting up a repository so that Jules (or any agent) can run GitHub Actions workflows locally using [act](https://github.com/nektos/act) to verify code changes pass CI before pushing.
@@ -48,12 +47,13 @@ chmod +x scripts/act/install-act.sh scripts/act/run-act.sh
 
 Append the following section to the repository's `AGENTS.md` file (create it if it doesn't exist). This is how Jules discovers the local verification capability:
 
-```markdown
+````markdown
 ## Local CI Verification
 
 Before pushing code or opening a PR, verify changes pass CI locally using `act`.
 
 ### Prerequisites
+
 - Docker must be running
 - If `act` is not installed, run: `bash scripts/act/install-act.sh`
 
@@ -64,18 +64,21 @@ Before pushing code or opening a PR, verify changes pass CI locally using `act`.
    ```bash
    bash scripts/act/run-act.sh "push -j <JOB_ID>"
    ```
-   With matrix: `bash scripts/act/run-act.sh "push -j <JOB_ID> --matrix <KEY>:<VALUE>"`
-3. If the run fails, read the log output, fix the code, and re-run
-4. After verification, clean up:
-   ```bash
-   rm -f act_output.log
-   git checkout <any unintended file changes>
-   ```
+````
+
+With matrix: `bash scripts/act/run-act.sh "push -j <JOB_ID> --matrix <KEY>:<VALUE>"` 3. If the run fails, read the log output, fix the code, and re-run 4. After verification, clean up:
+
+```bash
+rm -f act_output.log
+git checkout <any unintended file changes>
+```
 
 ### Configuration
-- Timeout: `ACT_TIMEOUT=900 bash scripts/act/run-act.sh "..."`  (default: 600s)
-- Poll interval: `ACT_POLL=15 bash scripts/act/run-act.sh "..."`  (default: 10s)
+
+- Timeout: `ACT_TIMEOUT=900 bash scripts/act/run-act.sh "..."` (default: 600s)
+- Poll interval: `ACT_POLL=15 bash scripts/act/run-act.sh "..."` (default: 10s)
 - Custom image: pass `-P ubuntu-latest=node:20-bookworm` in the arguments for faster pulls
+
 ```
 
 ### Step 3: Update .gitignore
@@ -83,9 +86,12 @@ Before pushing code or opening a PR, verify changes pass CI locally using `act`.
 Append these entries to `.gitignore` if they don't already exist:
 
 ```
+
 # act artifacts
+
 act_output.log
 .secrets
+
 ```
 
 ### Step 4: Print next steps for the user
@@ -107,3 +113,4 @@ Tell the user:
 ## Resource References
 
 - [Troubleshooting Guide](resources/troubleshooting.md) — Detailed solutions for common issues
+```

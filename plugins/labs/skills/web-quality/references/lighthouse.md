@@ -2,19 +2,19 @@
 
 Run: `bun x lighthouse@13.6.0 <url> [flags]` (Node >=22.19). Browser binary: `CHROME_PATH`.
 
-| Flag | Use |
-|---|---|
-| `--chrome-flags="--headless --no-sandbox"` | headless / containers |
-| `--port=<n>` `--hostname` | attach to a running browser (CDP) |
-| `--preset=desktop\|perf\|experimental` | built-in config |
-| `--form-factor`, `--screenEmulation.disabled` | emulation |
-| `--only-categories` / `--only-audits` / `--skip-audits` | scope |
-| `--throttling-method=simulate\|devtools\|provided`, `--throttling.cpuSlowdownMultiplier` | throttling (default simulate, Lantern) |
-| `--output=json --output=html --output-path=<p>` | reports (`stdout` ok) |
-| `--max-wait-for-load`, `--blocked-url-patterns`, `--extra-headers`, `--disable-storage-reset` | load control |
-| `-G` / `-A` | gather artifacts / audit saved artifacts |
-| `--url-file`, `--fail-fast` | batch |
-| `--list-all-audits` | audit ids for this version |
+| Flag                                                                                          | Use                                      |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `--chrome-flags="--headless --no-sandbox"`                                                    | headless / containers                    |
+| `--port=<n>` `--hostname`                                                                     | attach to a running browser (CDP)        |
+| `--preset=desktop\|perf\|experimental`                                                        | built-in config                          |
+| `--form-factor`, `--screenEmulation.disabled`                                                 | emulation                                |
+| `--only-categories` / `--only-audits` / `--skip-audits`                                       | scope                                    |
+| `--throttling-method=simulate\|devtools\|provided`, `--throttling.cpuSlowdownMultiplier`      | throttling (default simulate, Lantern)   |
+| `--output=json --output=html --output-path=<p>`                                               | reports (`stdout` ok)                    |
+| `--max-wait-for-load`, `--blocked-url-patterns`, `--extra-headers`, `--disable-storage-reset` | load control                             |
+| `-G` / `-A`                                                                                   | gather artifacts / audit saved artifacts |
+| `--url-file`, `--fail-fast`                                                                   | batch                                    |
+| `--list-all-audits`                                                                           | audit ids for this version               |
 
 Categories: performance, accessibility, best-practices, seo, agentic-browsing (fraction score: agent-accessibility-tree, webmcp-form-coverage, webmcp-registered-tools, webmcp-schema-validity, llms-txt, ard-schema).
 
@@ -26,19 +26,31 @@ Best practices: is-on-https, redirects-http, csp-xss, has-hsts, origin-isolation
 SEO: is-crawlable, document-title, meta-description, http-status-code, link-text, crawlable-anchors, robots-txt, image-alt, hreflang, canonical, structured-data.
 
 Node API with Puppeteer (docs/puppeteer.md, docs/user-flows.md):
+
 ```js
-import puppeteer from 'puppeteer-core';
-import lighthouse, {startFlow} from 'lighthouse';
-const browser = await puppeteer.launch({executablePath: process.env.CHROME_PATH, headless: true});
+import puppeteer from "puppeteer-core";
+import lighthouse, { startFlow } from "lighthouse";
+const browser = await puppeteer.launch({
+  executablePath: process.env.CHROME_PATH,
+  headless: true,
+});
 const page = await browser.newPage();
-const r = await lighthouse(url, {output: 'json', onlyCategories: ['performance']}, undefined, page);
+const r = await lighthouse(
+  url,
+  { output: "json", onlyCategories: ["performance"] },
+  undefined,
+  page,
+);
 // lab INP: timespan flow
 const flow = await startFlow(page);
 await flow.navigate(url);
-await flow.startTimespan(); await page.click('button'); await flow.endTimespan();
+await flow.startTimespan();
+await page.click("button");
+await flow.endTimespan();
 await flow.snapshot();
-await Bun.write('flow.html', await flow.generateReport());
+await Bun.write("flow.html", await flow.generateReport());
 ```
+
 Modes: navigation (page load), timespan (interactions: INP, post-load CLS), snapshot (current DOM: a11y, state).
 
 Variability (docs/variability.md): >=3 runs, median, quiet host, same Chrome build. Lighthouse CI (`@lhci/cli`) for budgets: not verified here.

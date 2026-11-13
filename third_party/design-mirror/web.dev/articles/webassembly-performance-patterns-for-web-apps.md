@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
 
 In this guide, aimed at web developers who want to benefit from WebAssembly,
@@ -76,9 +77,9 @@ In HTML, there's a `form` with an `input` paired with an `output` and a submit
 ```
 
 ```javascript
-const input = document.querySelector('input');
-const output = document.querySelector('output');
-const button = document.querySelector('button');
+const input = document.querySelector("input");
+const output = document.querySelector("output");
+const button = document.querySelector("button");
 ```
 
 ## Loading, compilation, and instantiation of the module
@@ -103,7 +104,7 @@ In reality, the `fetch()` API is asynchronous and you need to `await` the
 result.
 
 ```javascript
-fetch('factorial.wasm');
+fetch("factorial.wasm");
 ```
 
 Next, compile and instantiate the Wasm module. There are temptingly named
@@ -115,7 +116,7 @@ and
 [`WebAssembly.instantiate()`](https://developer.mozilla.org/docs/WebAssembly/JavaScript_interface/instantiate_static)
 for these tasks, but, instead, the
 [`WebAssembly.instantiateStreaming()`](https://developer.mozilla.org/docs/WebAssembly/JavaScript_interface/instantiateStreaming_static)
-method compiles *and* instantiates a Wasm module directly from a streamed
+method compiles _and_ instantiates a Wasm module directly from a streamed
 underlying source like `fetch()`---no `await` needed. This is the most efficient
 and optimized way to load Wasm code. Assuming the Wasm module exports a
 `factorial()` function, you can then use it straight away.
@@ -123,12 +124,12 @@ and optimized way to load Wasm code. Assuming the Wasm module exports a
 ```javascript
 const importObject = {};
 const resultObject = await WebAssembly.instantiateStreaming(
-  fetch('factorial.wasm'),
+  fetch("factorial.wasm"),
   importObject,
 );
 const factorial = resultObject.instance.exports.factorial;
 
-button.addEventListener('click', (e) => {
+button.addEventListener("click", (e) => {
   e.preventDefault();
   output.textContent = factorial(parseInt(input.value, 10));
 });
@@ -154,15 +155,15 @@ let worker = null;
 
 // When the button is clicked, submit the input value
 //  to the Web Worker.
-button.addEventListener('click', (e) => {
+button.addEventListener("click", (e) => {
   e.preventDefault();
 
   // Create the Web Worker lazily on-demand.
   if (!worker) {
-    worker = new Worker('worker.js');
+    worker = new Worker("worker.js");
 
     // Listen for incoming messages and display the result.
-    worker.addEventListener('message', (e) => {
+    worker.addEventListener("message", (e) => {
       output.textContent = e.result;
     });
   }
@@ -188,14 +189,14 @@ Web Worker isn't ready yet, and the Web Worker never receives the message.
 // the promise is still being awaited, it's lost.
 const importObject = {};
 const resultObject = await WebAssembly.instantiateStreaming(
-  fetch('factorial.wasm'),
+  fetch("factorial.wasm"),
   importObject,
 );
 const factorial = resultObject.instance.exports.factorial;
 
 // Listen for incoming messages, run the task,
 // and post the result.
-self.addEventListener('message', (e) => {
+self.addEventListener("message", (e) => {
   const { integer } = e.data;
   self.postMessage({ result: factorial(integer) });
 });
@@ -227,12 +228,12 @@ const importObject = {};
 // 🚫 If the `Worker` is spun up frequently, the loading
 // compiling, and instantiating work will happen every time.
 const wasmPromise = WebAssembly.instantiateStreaming(
-  fetch('factorial.wasm'),
+  fetch("factorial.wasm"),
   importObject,
 );
 
 // Listen for incoming messages
-self.addEventListener('message', async (e) => {
+self.addEventListener("message", async (e) => {
   const { integer } = e.data;
   const resultObject = await wasmPromise;
   const factorial = resultObject.instance.exports.factorial;
@@ -257,21 +258,21 @@ task. The following code shows this flow.
 ```javascript
 /* Main thread. */
 
-const modulePromise = WebAssembly.compileStreaming(fetch('factorial.wasm'));
+const modulePromise = WebAssembly.compileStreaming(fetch("factorial.wasm"));
 
 let worker = null;
 
 // When the button is clicked, submit the input value
 // and the Wasm module to the Web Worker.
-button.addEventListener('click', async (e) => {
+button.addEventListener("click", async (e) => {
   e.preventDefault();
 
   // Create the Web Worker lazily on-demand.
   if (!worker) {
-    worker = new Worker('worker.js');
+    worker = new Worker("worker.js");
 
     // Listen for incoming messages and display the result.
-    worker.addEventListener('message', (e) => {
+    worker.addEventListener("message", (e) => {
       output.textContent = e.result;
     });
   }
@@ -297,7 +298,7 @@ once upon spinning up the Web Worker.
 let instance = null;
 
 // Listen for incoming messages
-self.addEventListener('message', async (e) => {
+self.addEventListener("message", async (e) => {
   // Extract the `WebAssembly.Module` from the message.
   const { integer, module } = e.data;
   const importObject = {};
@@ -324,7 +325,7 @@ based on the same JavaScript source file.
 ```javascript
 /* Main thread. */
 
-const modulePromise = WebAssembly.compileStreaming(fetch('factorial.wasm'));
+const modulePromise = WebAssembly.compileStreaming(fetch("factorial.wasm"));
 
 let worker = null;
 
@@ -346,11 +347,11 @@ self.addEventListener('message', async (e) => {
 });
 `,
     ],
-    { type: 'text/javascript' },
+    { type: "text/javascript" },
   ),
 );
 
-button.addEventListener('click', async (e) => {
+button.addEventListener("click", async (e) => {
   e.preventDefault();
 
   // Create the Web Worker lazily on-demand.
@@ -358,7 +359,7 @@ button.addEventListener('click', async (e) => {
     worker = new Worker(blobURL);
 
     // Listen for incoming messages and display the result.
-    worker.addEventListener('message', (e) => {
+    worker.addEventListener("message", (e) => {
       output.textContent = e.result;
     });
   }
@@ -382,7 +383,7 @@ code outside of the button's event listener.
 const worker = new Worker(blobURL);
 
 // Listen for incoming messages and display the result.
-worker.addEventListener('message', (e) => {
+worker.addEventListener("message", (e) => {
   output.textContent = e.result;
 });
 ```
@@ -412,7 +413,7 @@ wrong, be sure to terminate in all cases, success or failure.)
 
 let worker = null;
 
-const modulePromise = WebAssembly.compileStreaming(fetch('factorial.wasm'));
+const modulePromise = WebAssembly.compileStreaming(fetch("factorial.wasm"));
 
 const blobURL = URL.createObjectURL(
   new Blob(
@@ -434,11 +435,11 @@ self.addEventListener('message', async (e) => {
 });  
 `,
     ],
-    { type: 'text/javascript' },
+    { type: "text/javascript" },
   ),
 );
 
-button.addEventListener('click', async (e) => {
+button.addEventListener("click", async (e) => {
   e.preventDefault();
   // Terminate a potentially running Web Worker.
   if (worker) {
@@ -446,7 +447,7 @@ button.addEventListener('click', async (e) => {
   }
   // Create the Web Worker lazily on-demand.
   worker = new Worker(blobURL);
-  worker.addEventListener('message', (e) => {
+  worker.addEventListener("message", (e) => {
     worker.terminate();
     worker = null;
     output.textContent = e.data.result;

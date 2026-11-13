@@ -59,12 +59,12 @@ SHA-256, and copies the server's builds to the server.
   bootstrap.
 - **Network:** the client must reach these ports on the server:
 
-  | Port | Used by |
-  |---|---|
-  | SSH, the port in the inventory | the agent's commands to the server |
-  | 1666/tcp | P4 |
-  | 41337/udp and 41337/tcp | Lore |
-  | 5202/tcp and 5202/udp | iperf3, for calibration, and the round-trip probes |
+  | Port                           | Used by                                            |
+  | ------------------------------ | -------------------------------------------------- |
+  | SSH, the port in the inventory | the agent's commands to the server                 |
+  | 1666/tcp                       | P4                                                 |
+  | 41337/udp and 41337/tcp        | Lore                                               |
+  | 5202/tcp and 5202/udp          | iperf3, for calibration, and the round-trip probes |
 
 - **Disk:**
   - The client's data disk holds the corpus archive while it unpacks, the unpacked tree, and each
@@ -148,13 +148,13 @@ is pinned by its SHA-256.
 
 The spec can name these URL forms:
 
-| URL | Fetched with | Notes |
-|---|---|---|
-| `https://...` and `http://...` | curl | Resumes an interrupted download. A presigned object storage URL works too. |
-| `file:///path` | nothing | The file must be on the client host. The file is used in place. |
-| `s3://bucket/key` | the aws CLI | Needs the CLI and credentials on the client. |
-| `gs://bucket/key` | gcloud | Needs the CLI and credentials on the client. |
-| `gdrive://FILE_ID`, or a `drive.google.com` share link | curl | The name has no extension, so set `corpus.format`. Google Drive limits how often a large file can be downloaded, so prefer the other forms for large corpora. |
+| URL                                                    | Fetched with | Notes                                                                                                                                                         |
+| ------------------------------------------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `https://...` and `http://...`                         | curl         | Resumes an interrupted download. A presigned object storage URL works too.                                                                                    |
+| `file:///path`                                         | nothing      | The file must be on the client host. The file is used in place.                                                                                               |
+| `s3://bucket/key`                                      | the aws CLI  | Needs the CLI and credentials on the client.                                                                                                                  |
+| `gs://bucket/key`                                      | gcloud       | Needs the CLI and credentials on the client.                                                                                                                  |
+| `gdrive://FILE_ID`, or a `drive.google.com` share link | curl         | The name has no extension, so set `corpus.format`. Google Drive limits how often a large file can be downloaded, so prefer the other forms for large corpora. |
 
 Once fetched, the corpus is unpacked once and kept. Later runs with the same archive reuse it.
 
@@ -319,7 +319,7 @@ On AWS, for example:
 
 2. **Start two instances** from an Ubuntu 24.04 or newer image. Put them in one subnet and in a
    cluster placement group, so the unshaped round trip is small and steady.
-   - Choose instance types whose *baseline* network bandwidth is above the profile's rate. Many
+   - Choose instance types whose _baseline_ network bandwidth is above the profile's rate. Many
      types state an "up to" figure, which they sustain only in bursts.
    - Choose types with local NVMe (instance store) for the data disk, or give an EBS volume
      provisioned throughput: a gp3 volume's default of 125 MB/s would set the times on its own.
@@ -354,17 +354,17 @@ exceeded its bandwidth or packet allowance is flagged `throttled`.
 
 A spec is TOML. `examples/workstation-vms.toml` is complete, and `bench/spec.py` checks every key.
 
-| Section | Keys |
-|---|---|
-| top level | `name` (lowercase letters, digits and hyphens), `description` |
-| `[corpus]` | `url`, `sha256`, `root` (the directory in the archive to import), `format` (`auto` from the name, or `tar`, `tar.gz`, `tar.xz`, `tar.zst`) |
-| `[target]` | `kind = "static"`, `inventory` (a path relative to the spec) |
-| `[host.sysctl]` | kernel settings applied to both hosts: TCP buffer sizes (`net.ipv4.tcp_rmem`, `tcp_wmem`), socket buffer limits (`net.core.rmem_max`, `wmem_max`, `rmem_default`, `wmem_default`), `net.core.netdev_max_backlog`, congestion control, the default qdisc, the `vm.dirty_*` settings and `vm.swappiness`. `"inherit"` leaves a setting as the host has it. |
-| `[[profile]]` | `name`, `rtt_ms` (the round trip the tools see, the unshaped link's included), `rate_mbit`, `queue_bdp` (the shaper's queue in bandwidth-delay products, default 1), `loss_ppm`, `jitter_ms` |
-| `[tool.p4]` | `p4d` and `p4` (each `{ url, sha256 }`), `port` (`tcp` or `ssl`), `typemap` (`none`, `ue` or a file), `submit_threads`, `sync_threads`, `configurables` (set with `p4 configure`) |
-| `[tool.lore]` | `lore` and `loreserver` (each `{ url, sha256 }`), `client_env` (environment for the client), `server_config` (a TOML file for the server) |
-| `[run]` | `tests` (`import`, `fetch`), `repetitions`, `order` (`alternate` or `fixed`), `settle_s` (the pause before each test), `verify_sha256` (`first`, `all` or `none`), `stall_s` and `step_timeout_s` ([Watching a run](#watching-a-run)) |
-| `[run.calibration]` | `rtt_tolerance_ms`, `rtt_tolerance_rel`, `tcp_min_fraction`, `disk` (measure the disks), `enforce` (stop a profile whose link is out of tolerance) |
+| Section             | Keys                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| top level           | `name` (lowercase letters, digits and hyphens), `description`                                                                                                                                                                                                                                                                                            |
+| `[corpus]`          | `url`, `sha256`, `root` (the directory in the archive to import), `format` (`auto` from the name, or `tar`, `tar.gz`, `tar.xz`, `tar.zst`)                                                                                                                                                                                                               |
+| `[target]`          | `kind = "static"`, `inventory` (a path relative to the spec)                                                                                                                                                                                                                                                                                             |
+| `[host.sysctl]`     | kernel settings applied to both hosts: TCP buffer sizes (`net.ipv4.tcp_rmem`, `tcp_wmem`), socket buffer limits (`net.core.rmem_max`, `wmem_max`, `rmem_default`, `wmem_default`), `net.core.netdev_max_backlog`, congestion control, the default qdisc, the `vm.dirty_*` settings and `vm.swappiness`. `"inherit"` leaves a setting as the host has it. |
+| `[[profile]]`       | `name`, `rtt_ms` (the round trip the tools see, the unshaped link's included), `rate_mbit`, `queue_bdp` (the shaper's queue in bandwidth-delay products, default 1), `loss_ppm`, `jitter_ms`                                                                                                                                                             |
+| `[tool.p4]`         | `p4d` and `p4` (each `{ url, sha256 }`), `port` (`tcp` or `ssl`), `typemap` (`none`, `ue` or a file), `submit_threads`, `sync_threads`, `configurables` (set with `p4 configure`)                                                                                                                                                                        |
+| `[tool.lore]`       | `lore` and `loreserver` (each `{ url, sha256 }`), `client_env` (environment for the client), `server_config` (a TOML file for the server)                                                                                                                                                                                                                |
+| `[run]`             | `tests` (`import`, `fetch`), `repetitions`, `order` (`alternate` or `fixed`), `settle_s` (the pause before each test), `verify_sha256` (`first`, `all` or `none`), `stall_s` and `step_timeout_s` ([Watching a run](#watching-a-run))                                                                                                                    |
+| `[run.calibration]` | `rtt_tolerance_ms`, `rtt_tolerance_rel`, `tcp_min_fraction`, `disk` (measure the disks), `enforce` (stop a profile whose link is out of tolerance)                                                                                                                                                                                                       |
 
 The shaper counts Ethernet frames without the 24 bytes of preamble, gap and checksum each takes on
 the wire. A `rate_mbit` of 4920 is therefore 5 Gbit/s on the wire.
@@ -426,15 +426,15 @@ GNU time gives its CPU time and peak memory.
 **Flags** mark results that may not mean what they seem. A flagged result is kept and shown, and
 left out of trend medians.
 
-| Flag | Meaning |
-|---|---|
-| `step-failed` | A step exited with an error. |
-| `stalled` | The watchdog stopped a step. |
-| `verify-failed` | The fetched tree differs from the corpus. |
-| `steal` | The hypervisor took CPU time from a VM. |
-| `nic-drops` | The network card had no room for received frames, or the kernel's receive backlog dropped them. |
-| `throttled` | An AWS instance exceeded a network allowance. |
-| `busy-server` | Something other than the tool used the server's CPU. |
+| Flag            | Meaning                                                                                         |
+| --------------- | ----------------------------------------------------------------------------------------------- |
+| `step-failed`   | A step exited with an error.                                                                    |
+| `stalled`       | The watchdog stopped a step.                                                                    |
+| `verify-failed` | The fetched tree differs from the corpus.                                                       |
+| `steal`         | The hypervisor took CPU time from a VM.                                                         |
+| `nic-drops`     | The network card had no room for received frames, or the kernel's receive backlog dropped them. |
+| `throttled`     | An AWS instance exceeded a network allowance.                                                   |
+| `busy-server`   | Something other than the tool used the server's CPU.                                            |
 
 ## Watching a run
 

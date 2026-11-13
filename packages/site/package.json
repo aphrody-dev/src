@@ -1,0 +1,23 @@
+{
+  "name": "@aphrody/site",
+  "version": "0.1.0",
+  "description": "Framework de sites statiques sur bun : conventions app/ (page, layout, not-found, route, [param], generateStaticParams), métadonnées, i18n, images, polices, CDN /_static immuable, _headers et _redirects.",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "aphrody-site": "./src/cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./build": "./src/build.ts",
+    "./serve": "./src/serve.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aphrody/design": "workspace:*",
+    "@aphrody/wck": "workspace:*"
+  },
+  "license": "MIT OR Apache-2.0"
+}

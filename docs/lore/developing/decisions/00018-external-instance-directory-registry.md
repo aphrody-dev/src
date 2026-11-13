@@ -25,15 +25,15 @@ them and look up whether a repository path has one.
 
 ## Considered Options
 
-1) Registry of shared stores with external instance information
-    - Add a `registry.toml` to `<Lore global data directory>/stores` that has a record of all shared stores.
-    - Require all SWFS-backed instances to use shared stores
-2) Registry of stores (shared and some non-shared) with external instance information
-    - Add a `registry.toml` to `<Lore global data directory>/stores` that has a record of all shared stores.
-    - Also add all SWFS-backed instances' stores to the registry even if they're not shared.
-3) Registry of external instance directories mapped to paths
-    - `instances.toml` file stored in `<Lore global data directory>/instances` (renaming `vfs` to `instances` in the
-      external instance directory path)
+1. Registry of shared stores with external instance information
+   - Add a `registry.toml` to `<Lore global data directory>/stores` that has a record of all shared stores.
+   - Require all SWFS-backed instances to use shared stores
+2. Registry of stores (shared and some non-shared) with external instance information
+   - Add a `registry.toml` to `<Lore global data directory>/stores` that has a record of all shared stores.
+   - Also add all SWFS-backed instances' stores to the registry even if they're not shared.
+3. Registry of external instance directories mapped to paths
+   - `instances.toml` file stored in `<Lore global data directory>/instances` (renaming `vfs` to `instances` in the
+     external instance directory path)
 
 ## Decision Outcome
 

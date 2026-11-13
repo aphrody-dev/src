@@ -6,29 +6,29 @@
 
 ## 1. 既存のもの
 
-| 領域 | 状態 | 参照先 |
-| :--- | :--- | :--- |
-| UI の決定 | 2026-11-13 のオーナー決定(同日修正)。フレームワークは自由(Bevy UI、egui、iced、WinUI 3、Tauri、GPUI、WebUI など)で、基準は描画品質、性能、機能 | `docs/ui/STACK.md` |
-| デザインシステム | トークンは `packages/design`。Rust コアは `crates/aphrody-ui` で、レイアウトアダプター `to_bevy`(`css_to_bevy_node`)と `to_egui` を任意機能 `bevy`、`egui` の背後に置く | `docs/DESIGN_SYSTEM.md`、`crates/aphrody-ui/Cargo.toml` |
-| エンジンと GPU のピン | `[workspace.dependencies]`: bevy 0.20、egui 0.37、wgpu 30.0.1、winit 0.31.0-beta.4、image 0.25.10 | `Cargo.toml` 124〜162 行 |
-| メディア領域 | `crates/tv-core`、`tv-ffmpeg`(`ffmpeg-next` 9.1.0 の安全なラッパー)、`tv-cli`、`tv-i18n` | `docs/tv/plan-ecosysteme-c-rust.mdx` |
-| ライセンス方針 | `deny.toml` の許可リスト。GPL、LGPL、AGPL、OSI 非準拠、`NOASSERTION` のリポジトリは、レビューの記録がない限り不可。FFmpeg の libav* は動的リンクで、ベンダリングしない | `docs/ARCHITECTURE.md`、`deny.toml` |
-| C ABI | `crates/core-capi`(cbindgen、`include/aphrody_core.h`)が `crates/core` を包む。Bun バインディングは `packages/core/src/ffi.ts`、規則は `docs/llvm/C-ABI-2026.md` | 同左 |
-| コードグラフ | `ay graph build`(tree-sitter)、レシピ `just graph <path> <name>`、出力は `graphify-out/<name>`(追跡対象外) | `justfile` |
-| フラット化 | `ay flat list\|sync\|check` が bun フォークのリーフクレートを `crates/bun-flat` にコピーする。アップストリームのクレートごとに 1 モジュールで、フォークのコミットとライセンスを `flat.toml` に記録 | `crates/bun-flat/flat.toml` |
-| 固定済みチェックアウト | `third_party/artcraft`(`83aad5eb`)、`third_party/ffmpeg`(`46d13a83`)、`third_party/storyteller-bevy`(`4ce8b72c`)、`third_party/wgpu`(aphrody-labs フォーク)、`third_party/winit` | `DEPS`、`src.lock.json` |
-| 追跡中のフォーク | `third_party/forks.txt` に bevyengine 18、storytold 33、EpicGames 10 件 | `docs/epic/TRACKING.md` |
-| 方向性 | 「Epic track(予定なし)」。Unreal Engine は非公開フォーク経由のみ | `docs/STACK-ROADMAP.md` |
+| 領域                   | 状態                                                                                                                                                                                               | 参照先                                                  |
+| :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------ |
+| UI の決定              | 2026-11-13 のオーナー決定(同日修正)。フレームワークは自由(Bevy UI、egui、iced、WinUI 3、Tauri、GPUI、WebUI など)で、基準は描画品質、性能、機能                                                     | `docs/ui/STACK.md`                                      |
+| デザインシステム       | トークンは `packages/design`。Rust コアは `crates/aphrody-ui` で、レイアウトアダプター `to_bevy`(`css_to_bevy_node`)と `to_egui` を任意機能 `bevy`、`egui` の背後に置く                            | `docs/DESIGN_SYSTEM.md`、`crates/aphrody-ui/Cargo.toml` |
+| エンジンと GPU のピン  | `[workspace.dependencies]`: bevy 0.20、egui 0.37、wgpu 30.0.1、winit 0.31.0-beta.4、image 0.25.10                                                                                                  | `Cargo.toml` 124〜162 行                                |
+| メディア領域           | `crates/tv-core`、`tv-ffmpeg`(`ffmpeg-next` 9.1.0 の安全なラッパー)、`tv-cli`、`tv-i18n`                                                                                                           | `docs/tv/plan-ecosysteme-c-rust.mdx`                    |
+| ライセンス方針         | `deny.toml` の許可リスト。GPL、LGPL、AGPL、OSI 非準拠、`NOASSERTION` のリポジトリは、レビューの記録がない限り不可。FFmpeg の libav* は動的リンクで、ベンダリングしない                             | `docs/ARCHITECTURE.md`、`deny.toml`                     |
+| C ABI                  | `crates/core-capi`(cbindgen、`include/aphrody_core.h`)が `crates/core` を包む。Bun バインディングは `packages/core/src/ffi.ts`、規則は `docs/llvm/C-ABI-2026.md`                                   | 同左                                                    |
+| コードグラフ           | `ay graph build`(tree-sitter)、レシピ `just graph <path> <name>`、出力は `graphify-out/<name>`(追跡対象外)                                                                                         | `justfile`                                              |
+| フラット化             | `ay flat list\|sync\|check` が bun フォークのリーフクレートを `crates/bun-flat` にコピーする。アップストリームのクレートごとに 1 モジュールで、フォークのコミットとライセンスを `flat.toml` に記録 | `crates/bun-flat/flat.toml`                             |
+| 固定済みチェックアウト | `third_party/artcraft`(`83aad5eb`)、`third_party/ffmpeg`(`46d13a83`)、`third_party/storyteller-bevy`(`4ce8b72c`)、`third_party/wgpu`(aphrody-labs フォーク)、`third_party/winit`                   | `DEPS`、`src.lock.json`                                 |
+| 追跡中のフォーク       | `third_party/forks.txt` に bevyengine 18、storytold 33、EpicGames 10 件                                                                                                                            | `docs/epic/TRACKING.md`                                 |
+| 方向性                 | 「Epic track(予定なし)」。Unreal Engine は非公開フォーク経由のみ                                                                                                                                   | `docs/STACK-ROADMAP.md`                                 |
 
 ## 2. 統合を制約するバージョン(`gh api`、2026-11-13)
 
-| スタック | wgpu | winit | UI | ライセンス |
-| :--- | :--- | :--- | :--- | :--- |
-| src ワークスペース | 30.0.1 | 0.31.0-beta.4 | `docs/ui/STACK.md` に従う | MIT OR Apache-2.0 |
-| Bevy v0.20.1(最新リリース) | 30 | 0.30 | bevy_ui | MIT OR Apache-2.0 |
-| Craft Apps(photocraft、filmcraft、soundcraft、craft-launcher、craft-libs) | 30.0(`storytold/egui` の `6d518fc7` 経由) | 0.30.13(`storytold/winit` の `a517b384`) | egui 0.37.0(フォーク) | Apache-2.0 |
-| ArtCraft Studio(`storytold/artcraft`) | 未確認 | 未確認 | Tauri 2.11.2 の Web ビューと TypeScript フロントエンド | Apache-2.0 と MIT のファイル |
-| `storytold/artcraft-services`(バックエンド) | 該当なし | 該当なし | 該当なし | 「ArtCraft License (WIP)」。フェアソースで、私的利用のみ |
+| スタック                                                                  | wgpu                                      | winit                                    | UI                                                     | ライセンス                                               |
+| :------------------------------------------------------------------------ | :---------------------------------------- | :--------------------------------------- | :----------------------------------------------------- | :------------------------------------------------------- |
+| src ワークスペース                                                        | 30.0.1                                    | 0.31.0-beta.4                            | `docs/ui/STACK.md` に従う                              | MIT OR Apache-2.0                                        |
+| Bevy v0.20.1(最新リリース)                                                | 30                                        | 0.30                                     | bevy_ui                                                | MIT OR Apache-2.0                                        |
+| Craft Apps(photocraft、filmcraft、soundcraft、craft-launcher、craft-libs) | 30.0(`storytold/egui` の `6d518fc7` 経由) | 0.30.13(`storytold/winit` の `a517b384`) | egui 0.37.0(フォーク)                                  | Apache-2.0                                               |
+| ArtCraft Studio(`storytold/artcraft`)                                     | 未確認                                    | 未確認                                   | Tauri 2.11.2 の Web ビューと TypeScript フロントエンド | Apache-2.0 と MIT のファイル                             |
+| `storytold/artcraft-services`(バックエンド)                               | 該当なし                                  | 該当なし                                 | 該当なし                                               | 「ArtCraft License (WIP)」。フェアソースで、私的利用のみ |
 
 読み取り: Rust の 3 スタックはいずれも wgpu 30 なので、wgpu は 1 つで足ります。winit は異なります。src は 0.31.0-beta.4、Bevy 0.20.1 と Craft の egui フォークは 0.30.x です。現在 winit に依存するのは `gamescope-cli` のみで、`aphrody-ui` は `bevy_ui` だけを有効にしているため、ワークスペース内の winit は 1 つです。`bevy_winit` や `egui-winit` を追加すると 2 つ目が入ります。
 
@@ -44,16 +44,16 @@
 
 Rust のビルドは CI か fr1 で行い、ワークステーションでは行いません。
 
-| # | ステップ | 検証 | 状態 |
-| :--- | :--- | :--- | :--- |
-| 1 | 既存のチェックアウトを `just graph third_party/<path> <name>` でグラフ化 | ノード数とエッジ数を含む `GRAPH_REPORT.md` | 2026-11-13 に `ay graph build` で完了(出力は `graphify-out/`、追跡対象外)。libavcodec 29819 / 97225、`artcraft/crates` 34314 / 69018 など。各回ワークステーションで 6 秒以内 |
-| 2 | 共有 clang で同ライブラリの LLVM IR を fr1 上で生成(`docs/llvm/UNIFIED-TOOLCHAIN.md`) | 設定済みの LGPL ビルドから `.bc` を生成 | 未着手 |
-| 3 | フォーマット層: `storytold/craft-libs`(Apache-2.0、psd、pdf、exr、heif、tiff、webp、svg、raw、docx、xlsx など 114 の `craft-<name>` クレート)を、コピーせず `rev` で固定した git 依存として評価 | CI で `cargo deny check licenses` が通る | 未着手 |
-| 4 | メディア: `docs/tv` の記述どおり `crates/tv-*` を拡張(本計画は追加しない) | `ffmpeg_build_is_lgpl` を含む `tv-ffmpeg` のテスト | `crates/tv-*` を保守するセッションが担当 |
-| 5 | エンジン: `aphrody-ui` の `bevy` 機能の背後で Bevy クレートを 1 機能ずつ追加。`bevy_winit` を有効にする前に winit 0.30 と 0.31 のどちらかを決める | CI の `cargo tree -d` に winit と wgpu が 1 つずつ並ぶ | 未着手 |
-| 6 | 変更が必要なリーフクレートだけをフラット化: `ay flat` をフォークごとの `flat.toml` に一般化。ライセンスなしと OSI 非準拠のソースは除外 | `ay flat check --fork third_party/<name>` がクリーン | 2026-11-13 完了: `ay flat list\|sync\|check --fork third_party/<name> [--manifest]`、フォークごとに flat.toml(bun、diffutils)、deny.toml に対する SPDX ゲート |
-| 7 | fr1 で作ったリリースビルドから Craft Apps のキャプチャ(スクリーンショット、トークン)を取得し、git の外に保存 | `docs/games/ARTCRAFT.md` 記載のファイル | 未着手 |
-| 8 | Unreal Engine: 変更なし。非公開フォーク、連携のみ | `docs/epic/RESOURCES.md` | 本計画での作業なし |
+| #   | ステップ                                                                                                                                                                                        | 検証                                                   | 状態                                                                                                                                                                         |
+| :-- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | 既存のチェックアウトを `just graph third_party/<path> <name>` でグラフ化                                                                                                                        | ノード数とエッジ数を含む `GRAPH_REPORT.md`             | 2026-11-13 に `ay graph build` で完了(出力は `graphify-out/`、追跡対象外)。libavcodec 29819 / 97225、`artcraft/crates` 34314 / 69018 など。各回ワークステーションで 6 秒以内 |
+| 2   | 共有 clang で同ライブラリの LLVM IR を fr1 上で生成(`docs/llvm/UNIFIED-TOOLCHAIN.md`)                                                                                                           | 設定済みの LGPL ビルドから `.bc` を生成                | 未着手                                                                                                                                                                       |
+| 3   | フォーマット層: `storytold/craft-libs`(Apache-2.0、psd、pdf、exr、heif、tiff、webp、svg、raw、docx、xlsx など 114 の `craft-<name>` クレート)を、コピーせず `rev` で固定した git 依存として評価 | CI で `cargo deny check licenses` が通る               | 未着手                                                                                                                                                                       |
+| 4   | メディア: `docs/tv` の記述どおり `crates/tv-*` を拡張(本計画は追加しない)                                                                                                                       | `ffmpeg_build_is_lgpl` を含む `tv-ffmpeg` のテスト     | `crates/tv-*` を保守するセッションが担当                                                                                                                                     |
+| 5   | エンジン: `aphrody-ui` の `bevy` 機能の背後で Bevy クレートを 1 機能ずつ追加。`bevy_winit` を有効にする前に winit 0.30 と 0.31 のどちらかを決める                                               | CI の `cargo tree -d` に winit と wgpu が 1 つずつ並ぶ | 未着手                                                                                                                                                                       |
+| 6   | 変更が必要なリーフクレートだけをフラット化: `ay flat` をフォークごとの `flat.toml` に一般化。ライセンスなしと OSI 非準拠のソースは除外                                                          | `ay flat check --fork third_party/<name>` がクリーン   | 2026-11-13 完了: `ay flat list\|sync\|check --fork third_party/<name> [--manifest]`、フォークごとに flat.toml(bun、diffutils)、deny.toml に対する SPDX ゲート                |
+| 7   | fr1 で作ったリリースビルドから Craft Apps のキャプチャ(スクリーンショット、トークン)を取得し、git の外に保存                                                                                    | `docs/games/ARTCRAFT.md` 記載のファイル                | 未着手                                                                                                                                                                       |
+| 8   | Unreal Engine: 変更なし。非公開フォーク、連携のみ                                                                                                                                               | `docs/epic/RESOURCES.md`                               | 本計画での作業なし                                                                                                                                                           |
 
 ## 5. 未完了
 

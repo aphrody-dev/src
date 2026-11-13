@@ -1,7 +1,16 @@
 ---
 title: "Upstream Kernel Live State: Releases, Git Architecture, and Distro Deployments (Live 2026)"
 description: "Dynamically scraped and verified live snapshot from kernel.org releases.json, git.kernel.org architecture, and the complete distribution build-and-deploy pipeline."
-tags: ["linux", "kernelorg", "live-upstream", "releases", "distros", "deployments", "bun-crawler"]
+tags:
+  [
+    "linux",
+    "kernelorg",
+    "live-upstream",
+    "releases",
+    "distros",
+    "deployments",
+    "bun-crawler",
+  ]
 chapter: 13
 order: 13
 scraped_at: "2026-11-11T07:02:03.346Z"
@@ -11,22 +20,21 @@ scraped_at: "2026-11-11T07:02:03.346Z"
 
 ## 1. Upstream Active Releases (Live Verified via kernel.org)
 
-*Snapshot scraped at: `2026-11-11T07:02:03.346Z` using 100% native Bun crawler.*  
+_Snapshot scraped at: `2026-11-11T07:02:03.346Z` using 100% native Bun crawler._  
 **Current Latest Stable Kernel**: `7.3.4`
 
-| Moniker | Version | Released Date | Source Tarball | Patch Link | Gitweb |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **mainline** | `7.4-rc2` | 2026-11-09 | [tarball](https://git.kernel.org/torvalds/t/linux-7.4-rc2.tar.gz) | [patch](https://git.kernel.org/torvalds/p/v7.4-rc2/v7.4-rc1) | [gitweb](https://git.kernel.org/torvalds/h/v7.4-rc2) |
-| **stable** | `7.3.4` | 2026-11-10 | [tarball](https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.3.4.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v7.x/incr/patch-7.3.3-4.xz) | [gitweb](https://git.kernel.org/stable/h/v7.3.4) |
-| **stable** | `7.2.15` | 2026-11-01 | [tarball](https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.2.15.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v7.x/incr/patch-7.2.14-15.xz) | [gitweb](https://git.kernel.org/stable/h/v7.2.15) |
-| **longterm** | `6.18.63` | 2026-11-10 | [tarball](https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.63.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.18.62-63.xz) | [gitweb](https://git.kernel.org/stable/h/v6.18.63) |
-| **longterm** | `6.12.117` | 2026-11-10 | [tarball](https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.117.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.12.116-117.xz) | [gitweb](https://git.kernel.org/stable/h/v6.12.117) |
-| **longterm** | `6.6.162` | 2026-11-06 | [tarball](https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.162.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.161-162.xz) | [gitweb](https://git.kernel.org/stable/h/v6.6.162) |
-| **longterm** | `6.1.192` | 2026-11-06 | [tarball](https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.1.192.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.1.191-192.xz) | [gitweb](https://git.kernel.org/stable/h/v6.1.192) |
-| **longterm** | `5.15.225` | 2026-11-06 | [tarball](https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.225.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v5.x/incr/patch-5.15.224-225.xz) | [gitweb](https://git.kernel.org/stable/h/v5.15.225) |
-| **longterm** | `5.10.274` | 2026-11-06 | [tarball](https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.274.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v5.x/incr/patch-5.10.273-274.xz) | [gitweb](https://git.kernel.org/stable/h/v5.10.274) |
-| **linux-next** | `next-20261110` | 2026-11-11 | N/A | N/A | [gitweb](https://git.kernel.org/next/linux-next/h/next-20261110) |
-
+| Moniker        | Version         | Released Date | Source Tarball                                                                | Patch Link                                                                       | Gitweb                                                           |
+| :------------- | :-------------- | :------------ | :---------------------------------------------------------------------------- | :------------------------------------------------------------------------------- | :--------------------------------------------------------------- |
+| **mainline**   | `7.4-rc2`       | 2026-11-09    | [tarball](https://git.kernel.org/torvalds/t/linux-7.4-rc2.tar.gz)             | [patch](https://git.kernel.org/torvalds/p/v7.4-rc2/v7.4-rc1)                     | [gitweb](https://git.kernel.org/torvalds/h/v7.4-rc2)             |
+| **stable**     | `7.3.4`         | 2026-11-10    | [tarball](https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.3.4.tar.xz)    | [patch](https://cdn.kernel.org/pub/linux/kernel/v7.x/incr/patch-7.3.3-4.xz)      | [gitweb](https://git.kernel.org/stable/h/v7.3.4)                 |
+| **stable**     | `7.2.15`        | 2026-11-01    | [tarball](https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.2.15.tar.xz)   | [patch](https://cdn.kernel.org/pub/linux/kernel/v7.x/incr/patch-7.2.14-15.xz)    | [gitweb](https://git.kernel.org/stable/h/v7.2.15)                |
+| **longterm**   | `6.18.63`       | 2026-11-10    | [tarball](https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.63.tar.xz)  | [patch](https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.18.62-63.xz)   | [gitweb](https://git.kernel.org/stable/h/v6.18.63)               |
+| **longterm**   | `6.12.117`      | 2026-11-10    | [tarball](https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.117.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.12.116-117.xz) | [gitweb](https://git.kernel.org/stable/h/v6.12.117)              |
+| **longterm**   | `6.6.162`       | 2026-11-06    | [tarball](https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.162.tar.xz)  | [patch](https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.161-162.xz)  | [gitweb](https://git.kernel.org/stable/h/v6.6.162)               |
+| **longterm**   | `6.1.192`       | 2026-11-06    | [tarball](https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.1.192.tar.xz)  | [patch](https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.1.191-192.xz)  | [gitweb](https://git.kernel.org/stable/h/v6.1.192)               |
+| **longterm**   | `5.15.225`      | 2026-11-06    | [tarball](https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.225.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v5.x/incr/patch-5.15.224-225.xz) | [gitweb](https://git.kernel.org/stable/h/v5.15.225)              |
+| **longterm**   | `5.10.274`      | 2026-11-06    | [tarball](https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.274.tar.xz) | [patch](https://cdn.kernel.org/pub/linux/kernel/v5.x/incr/patch-5.10.273-274.xz) | [gitweb](https://git.kernel.org/stable/h/v5.10.274)              |
+| **linux-next** | `next-20261110` | 2026-11-11    | N/A                                                                           | N/A                                                                              | [gitweb](https://git.kernel.org/next/linux-next/h/next-20261110) |
 
 ---
 
@@ -51,11 +59,14 @@ The official kernel tree is orchestrated across dedicated Git namespaces under `
 ```
 
 ### 2.1 Release Verification & GPG Attestation
+
 Every stable tarball on `cdn.kernel.org` is cryptographically accompanied by a detached signature (`.tar.sign`). The signature is produced using offline master keys trusted by the Linux Foundation Web of Trust:
+
 - **Linus Torvalds GPG Fingerprint**: `ABAF 11C6 5A29 70B1 30AB  E3C4 79BE 3E43 0041 1886`
 - **Greg Kroah-Hartman GPG Fingerprint**: `647F 2865 4894 E3BD 4571  99BE 38DB 5CFB 400A C516`
 
 Verification is executed via:
+
 ```bash
 $ xz -cd linux-7.3.4.tar.xz | gpg --verify linux-7.3.4.tar.sign -
 ```
@@ -66,17 +77,17 @@ $ xz -cd linux-7.3.4.tar.xz | gpg --verify linux-7.3.4.tar.sign -
 
 Every distribution translates upstream tarballs and Git commits into bootable system images using specialized toolchains and deployment strategies:
 
-| Distribution | Source Manifest | Build Toolchain | Compiler / Flags | Packaging & Deploy Mechanism |
-| :--- | :--- | :--- | :--- | :--- |
-| **Arch Linux / CachyOS** | `https://gitlab.archlinux.org/archlinux/packaging/packages/linux.git (PKGBUILD)` | makepkg + pacman + ccache | GCC 14+ / Clang 19 with -march=x86-64-v3 or -v4, ThinLTO | pkg.tar.zst (Zstandard level 19) -> pacman -Syu -> mkinitcpio / dracut -> systemd-boot / GRUB UKI |
-| **Debian / Ubuntu Enterprise** | `https://salsa.debian.org/kernel-team/linux.git (debian/rules)` | dpkg-buildpackage + debhelper + kernel-wedge | GCC with retpoline, KASLR, stack protector strong, strict CFI | linux-image-*.deb (compressed with xz / zstd) -> apt-get upgrade -> update-initramfs -u -> update-grub -> kexec live reboot |
-| **Fedora / Red Hat Enterprise Linux (RHEL)** | `https://src.fedoraproject.org/rpms/kernel.git (kernel.spec)` | rpmbuild + mock + Koji / Brew build system | GCC with Red Hat hardened spec flags (LTO, -fstack-clash-protection) | kernel-*.rpm (cpio + zstd) -> dnf upgrade -> dracut -> grubby / BLS -> kpatch live kernel patching without reboot |
-| **NixOS (Declarative Linux)** | `https://github.com/NixOS/nixpkgs/tree/master/pkgs/os-specific/linux/kernel` | Nix hermetic sandbox builder (buildLinux / stdenv) | Clang or GCC pinned in nixpkgs stdenv | /nix/store/<hash>-linux-<version>/bzImage + modules -> nixos-rebuild switch -> atomic system profile generation symlink update |
-| **Alpine Linux (Musl Minimal)** | `https://git.alpinelinux.org/aports/tree/main/linux-lts/APKBUILD` | abuild + apk-tools | Alpine GCC targeting musl libc ABI | linux-lts-*.apk (tar + gzip/zstd signature verified) -> apk add --upgrade linux-lts -> update-extlinux -> sub-50ms reboot |
-| **Android / AOSP (Generic Kernel Image - GKI)** | `https://android.googlesource.com/kernel/common (build.config)` | Bazel / Kleaf build harness + Android NDK Clang | Google Prebuilt Android LLVM/Clang with ThinLTO and Kernel Control Flow Integrity (kCFI) | boot.img / vendor_boot.img (Android sparse image) -> Fastboot flash / Dynamic Partitions OTA -> A/B seamless partition slot swap |
-
+| Distribution                                    | Source Manifest                                                                  | Build Toolchain                                    | Compiler / Flags                                                                         | Packaging & Deploy Mechanism                                                                                                     |
+| :---------------------------------------------- | :------------------------------------------------------------------------------- | :------------------------------------------------- | :--------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| **Arch Linux / CachyOS**                        | `https://gitlab.archlinux.org/archlinux/packaging/packages/linux.git (PKGBUILD)` | makepkg + pacman + ccache                          | GCC 14+ / Clang 19 with -march=x86-64-v3 or -v4, ThinLTO                                 | pkg.tar.zst (Zstandard level 19) -> pacman -Syu -> mkinitcpio / dracut -> systemd-boot / GRUB UKI                                |
+| **Debian / Ubuntu Enterprise**                  | `https://salsa.debian.org/kernel-team/linux.git (debian/rules)`                  | dpkg-buildpackage + debhelper + kernel-wedge       | GCC with retpoline, KASLR, stack protector strong, strict CFI                            | linux-image-\*.deb (compressed with xz / zstd) -> apt-get upgrade -> update-initramfs -u -> update-grub -> kexec live reboot     |
+| **Fedora / Red Hat Enterprise Linux (RHEL)**    | `https://src.fedoraproject.org/rpms/kernel.git (kernel.spec)`                    | rpmbuild + mock + Koji / Brew build system         | GCC with Red Hat hardened spec flags (LTO, -fstack-clash-protection)                     | kernel-\*.rpm (cpio + zstd) -> dnf upgrade -> dracut -> grubby / BLS -> kpatch live kernel patching without reboot               |
+| **NixOS (Declarative Linux)**                   | `https://github.com/NixOS/nixpkgs/tree/master/pkgs/os-specific/linux/kernel`     | Nix hermetic sandbox builder (buildLinux / stdenv) | Clang or GCC pinned in nixpkgs stdenv                                                    | /nix/store/<hash>-linux-<version>/bzImage + modules -> nixos-rebuild switch -> atomic system profile generation symlink update   |
+| **Alpine Linux (Musl Minimal)**                 | `https://git.alpinelinux.org/aports/tree/main/linux-lts/APKBUILD`                | abuild + apk-tools                                 | Alpine GCC targeting musl libc ABI                                                       | linux-lts-\*.apk (tar + gzip/zstd signature verified) -> apk add --upgrade linux-lts -> update-extlinux -> sub-50ms reboot       |
+| **Android / AOSP (Generic Kernel Image - GKI)** | `https://android.googlesource.com/kernel/common (build.config)`                  | Bazel / Kleaf build harness + Android NDK Clang    | Google Prebuilt Android LLVM/Clang with ThinLTO and Kernel Control Flow Integrity (kCFI) | boot.img / vendor_boot.img (Android sparse image) -> Fastboot flash / Dynamic Partitions OTA -> A/B seamless partition slot swap |
 
 ### 3.1 Real-Time Kernel Deployment Models:
+
 1. **Traditional Monolithic Bootloader Update** (Debian, Arch): The package manager writes `vmlinuz` and calls `mkinitcpio` or `dracut` to generate an initramfs, updating `grub.cfg` or `systemd-boot` loader entries.
 2. **Atomic Generation Symlink Swap** (NixOS, Guix): The build outputs a complete hermetic derivation in `/nix/store`. Activating the new kernel updates the system generation symlink, providing instant rollback without file collision.
 3. **A/B Seamless Partition Flipping** (Android AOSP): The update engine flashes the inactive partition slot (`boot_b`). Upon verification, the bootloader flag is toggled to boot into slot B on the next restart.
@@ -87,5 +98,6 @@ Every distribution translates upstream tarballs and Git commits into bootable sy
 ## 4. Bun Continuous Scraping and Missing Runtime Patch Engine
 
 To maintain this dataset in continuous synchronization, Aphrody runs an autonomous Bun daemon with a fallback patch mechanism:
+
 - If a remote API format changes or network connectivity fails, the crawler emits an alert and falls back to local SQLite cached manifests.
 - Missing capabilities in the runtime environment trigger an automated patch workflow generating native Bun shims or WebMCP tool plugins on demand.

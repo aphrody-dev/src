@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Johan Bay [GitHub](https://github.com/johanbay)
 
 > [!NOTE]
@@ -28,17 +29,17 @@ Before we get to what this new full tree view looks like in DevTools, let us bri
 
 ```html
 <html>
-<head>
-  <title>How old are you?</title>
-</head>
-<body>
-  <label for="age">Age</label>
-  <input id="age" type="number" name="age" value="42">
-  <div>
-    <button>Back</button>
-    <button>Next</button>
-  </div>
-</body>
+  <head>
+    <title>How old are you?</title>
+  </head>
+  <body>
+    <label for="age">Age</label>
+    <input id="age" type="number" name="age" value="42" />
+    <div>
+      <button>Back</button>
+      <button>Next</button>
+    </div>
+  </body>
 </html>
 ```
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Garima Mimani [GitHub](https://github.com/garimamimani)
 
 > [!IMPORTANT]
@@ -25,7 +26,7 @@ First measure how the website performs before adding any optimizations.
 1. To preview the site, press **View App** . Then press **Fullscreen** .
 2. Press \`Control+Shift+J\` (or \`Command+Option+J\` on Mac) to open DevTools.
 3. Click the **Lighthouse** tab.
-4. Make sure the **Performance** checkbox is selected in the *Categories* list.
+4. Make sure the **Performance** checkbox is selected in the _Categories_ list.
 5. Click the **Generate report** button.
 
 The Lighthouse report that is generated will show you the fetching sequence of resources under **Maximum critical path latency**.
@@ -40,8 +41,14 @@ To avoid FOUT, you can preload web fonts that are required immediately. Add the 
 
 ```html
 <head>
- <!-- ... -->
- <link rel="preload" href="/assets/Pacifico-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- ... -->
+  <link
+    rel="preload"
+    href="/assets/Pacifico-Bold.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  />
 </head>
 ```
 

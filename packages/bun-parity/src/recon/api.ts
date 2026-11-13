@@ -27,7 +27,8 @@ function countIdlFiles(dir: string): number {
 export async function scanApiDomain(
   options: ScanOptions,
 ): Promise<DomainReport> {
-  const chromiumPath = options.chromiumPath ?? "C:/src/third_party/chromium/src";
+  const chromiumPath =
+    options.chromiumPath ?? "C:/src/third_party/chromium/src";
   const coreDir = join(chromiumPath, "third_party/blink/renderer/core");
   const modDir = join(chromiumPath, "third_party/blink/renderer/modules");
 

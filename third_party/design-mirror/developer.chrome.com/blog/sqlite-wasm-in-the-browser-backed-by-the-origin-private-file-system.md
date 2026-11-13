@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Use SQLite to handle all your storage needs performantly on the web.
 
- Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
+Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
 
 > [!TIP]
 > **Success:** In our blog post [Deprecating and removing Web SQL](https://developer.chrome.com/blog/deprecating-web-sql.md.txt), we promised a replacement for Web SQL based on SQLite. The SQLite Wasm library with the Origin Private File System persistence backend is our fulfillment of this promise.
@@ -121,11 +122,11 @@ the library automatically takes care of all of this for you and you can use it
 right from the main thread.
 
 ```javascript
-import { sqlite3Worker1Promiser } from '@sqlite.org/sqlite-wasm';
+import { sqlite3Worker1Promiser } from "@sqlite.org/sqlite-wasm";
 
 (async () => {
   try {
-    console.log('Loading and initializing SQLite3 module...');
+    console.log("Loading and initializing SQLite3 module...");
 
     const promiser = await new Promise((resolve) => {
       const _promiser = sqlite3Worker1Promiser({
@@ -135,38 +136,38 @@ import { sqlite3Worker1Promiser } from '@sqlite.org/sqlite-wasm';
       });
     });
 
-    console.log('Done initializing. Running demo...');
+    console.log("Done initializing. Running demo...");
 
     let response;
 
-    response = await promiser('config-get', {});
-    console.log('Running SQLite3 version', response.result.version.libVersion);
+    response = await promiser("config-get", {});
+    console.log("Running SQLite3 version", response.result.version.libVersion);
 
-    response = await promiser('open', {
-      filename: 'file:worker-promiser.sqlite3?vfs=opfs',
+    response = await promiser("open", {
+      filename: "file:worker-promiser.sqlite3?vfs=opfs",
     });
     const { dbId } = response;
     console.log(
-      'OPFS is available, created persisted database at',
-      response.result.filename.replace(/^file:(.*?)\?vfs=opfs$/, '$1'),
+      "OPFS is available, created persisted database at",
+      response.result.filename.replace(/^file:(.*?)\?vfs=opfs$/, "$1"),
     );
 
-    await promiser('exec', { dbId, sql: 'CREATE TABLE IF NOT EXISTS t(a,b)' });
-    console.log('Creating a table...');
+    await promiser("exec", { dbId, sql: "CREATE TABLE IF NOT EXISTS t(a,b)" });
+    console.log("Creating a table...");
 
-    console.log('Insert some data using exec()...');
+    console.log("Insert some data using exec()...");
     for (let i = 20; i <= 25; ++i) {
-      await promiser('exec', {
+      await promiser("exec", {
         dbId,
-        sql: 'INSERT INTO t(a,b) VALUES (?,?)',
+        sql: "INSERT INTO t(a,b) VALUES (?,?)",
         bind: [i, i * 2],
       });
     }
 
-    console.log('Query data with exec()');
-    await promiser('exec', {
+    console.log("Query data with exec()");
+    await promiser("exec", {
       dbId,
-      sql: 'SELECT a FROM t ORDER BY a LIMIT 3',
+      sql: "SELECT a FROM t ORDER BY a LIMIT 3",
       callback: (result) => {
         if (!result.row) {
           return;
@@ -175,7 +176,7 @@ import { sqlite3Worker1Promiser } from '@sqlite.org/sqlite-wasm';
       },
     });
 
-    await promiser('close', { dbId });
+    await promiser("close", { dbId });
   } catch (err) {
     if (!(err instanceof Error)) {
       err = new Error(err.result.message);

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Katie Hempenius [X](https://twitter.com/katiehempenius)
 
 > [!IMPORTANT]
@@ -92,9 +93,8 @@ support for older browsers.
 
 ```html
 <picture>
-  <source type="image/webp" srcset="images/flower1.webp">
-  <source type="image/jpeg" srcset="images/flower1.jpg">
-  
+  <source type="image/webp" srcset="images/flower1.webp" />
+  <source type="image/jpeg" srcset="images/flower1.jpg" />
 </picture>
 ```
 
@@ -106,19 +106,16 @@ Once completed, the `<picture>` tags in `index.html` should look like this:
 
 ```html
 <picture>
-  <source type="image/webp" srcset="images/flower1.webp">
-  <source type="image/jpeg" srcset="images/flower1.jpg">
-  
+  <source type="image/webp" srcset="images/flower1.webp" />
+  <source type="image/jpeg" srcset="images/flower1.jpg" />
 </picture>
 <picture>
-  <source type="image/webp" srcset="images/flower2.webp">
-  <source type="image/jpeg" srcset="images/flower2.jpg">
-  
+  <source type="image/webp" srcset="images/flower2.webp" />
+  <source type="image/jpeg" srcset="images/flower2.jpg" />
 </picture>
 <picture>
-  <source type="image/webp" srcset="images/flower3.webp">
-  <source type="image/png" srcset="images/flower3.png">
-  
+  <source type="image/webp" srcset="images/flower3.webp" />
+  <source type="image/png" srcset="images/flower3.png" />
 </picture>
 ```
 
@@ -133,7 +130,7 @@ know if all the images on your site are using next-gen formats like WebP.
 1. To preview the site, press **View App** . Then press **Fullscreen** .
 2. Press \`Control+Shift+J\` (or \`Command+Option+J\` on Mac) to open DevTools.
 3. Click the **Lighthouse** tab.
-4. Make sure the **Performance** checkbox is selected in the *Categories* list.
+4. Make sure the **Performance** checkbox is selected in the _Categories_ list.
 5. Click the **Generate report** button.
 6. Verify the **Serve images in next-gen formats** audit is passed.
 

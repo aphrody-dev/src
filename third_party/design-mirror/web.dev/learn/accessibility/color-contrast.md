@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Have you ever tried to read text on a screen and found it difficult to read due
 to the color scheme or struggled to see the screen in a very bright or
 low-light environment? Or maybe you are someone with a more permanent color
@@ -35,7 +36,7 @@ perceives color.
 > [!NOTE]
 > **Note:** In CSS, a color can be specified in many ways, such as with color names, RGB, RGBa, HEX, HSL, HSLa, HSV, or HSVa values. HSLa is the HSL model with an alpha value, which measures opacity from 0.0 (fully transparent) to 1.0 (fully opaque).
 
-*Hue* is a qualitative way to describe a color, such as red, green, or blue,
+_Hue_ is a qualitative way to describe a color, such as red, green, or blue,
 where each hue has a specific spot on the color spectrum with values ranging
 from 0 to 360, with red at 0, green at 120, and blue at 240.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dev-codepen-external/embed/eYrEZqE?height=350&amp;theme-id=auto&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen eYrEZqE by web-dev-codepen-external on Codepen"></iframe>
@@ -60,15 +61,13 @@ without needing contrast-enhancing assistive technology.
 
 Take a look at images with a vibrant color palette and compare how that image
 would appear to those with specific forms of color blindness.
- Photo by Alexander Grey on Unsplash.  Photo by Clark Van Der Beken on Unsplash.
+Photo by Alexander Grey on Unsplash. Photo by Clark Van Der Beken on Unsplash.
 
 On the left, the image shows rainbow sand with purple, red, orange, yellow,
 aqua green, light blue, and dark blue colors. On the right is a brighter,
 multicolored rainbow pattern.
 
 ### Deuteranopia
-
- 
 
 [Deuteranopia](https://www.color-blindness.com/deuteranopia-red-green-color-blindness/)
 (commonly known as green blind) occurs in 1% to 5% of males, 0.35% to 0.1% of
@@ -79,8 +78,6 @@ blindness filter simulates what this type of color blindness might look like.
 
 ### Protanopia
 
- 
-
 [Protanopia](https://www.color-blindness.com/protanopia-red-green-color-blindness/)
 (commonly known as red blind) occurs in 1.01% to 1.08% of males and 0.02% of
 0.03% of females.
@@ -89,8 +86,6 @@ People with Protanopia have a reduced sensitivity to red light. This color
 blindness filter simulates what this type of color blindness might look like.
 
 ### Achromatopsia or Monochromatism
-
- 
 
 [Achromatopsia or Monochromatism](https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/)
 (or complete color blindness) occurs very, very rarely.
@@ -180,7 +175,7 @@ navigating to a browser that supports this media query. Review the
 [Mac](https://support.apple.com/en-us/HT208976) and
 [Windows](https://blogs.windows.com/windowsexperience/2016/08/08/windows-10-tip-personalize-your-pc-by-enabling-the-dark-theme/)
 instructions for dark mode.
- macOS general settings for appearance. <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dev-codepen-external/embed/ExLvNOw?height=300&amp;theme-id=auto&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen ExLvNOw by web-dev-codepen-external on Codepen"></iframe> Compare light and dark mode.  Light mode.  Dark mode.
+macOS general settings for appearance. <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dev-codepen-external/embed/ExLvNOw?height=300&amp;theme-id=auto&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen ExLvNOw by web-dev-codepen-external on Codepen"></iframe> Compare light and dark mode. Light mode. Dark mode.
 
 ### Prefers contrast
 

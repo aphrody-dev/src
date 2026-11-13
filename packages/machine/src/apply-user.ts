@@ -128,14 +128,19 @@ if (existsSync(wt)) {
   // Bloc du profil délimité par ses lignes "{" / "}" (le GUID contient lui-même des accolades).
   const nameAt = cur.search(/"name"\s*:\s*"Niubash"/);
   // Indentation libre (WT réécrit le fichier en 4 ou 6 espaces) : début = dernière ligne "{" avant le nom.
-  const open = nameAt < 0 ? null : [...cur.slice(0, nameAt).matchAll(/\n([ \t]*)\{[ \t]*\r?\n/g)].at(-1);
+  const open =
+    nameAt < 0
+      ? null
+      : [...cur.slice(0, nameAt).matchAll(/\n([ \t]*)\{[ \t]*\r?\n/g)].at(-1);
   const start = open?.index ?? -1;
   const end = open ? cur.indexOf(`\n${open[1]}}`, nameAt) : -1;
   const block = start >= 0 && end > start ? cur.slice(start, end) : "";
   // État lu sur le JSONC parsé (indépendant du formatage).
-  const niu = (Bun.JSONC.parse(cur) as { profiles?: { list?: { name?: string; elevate?: boolean }[] } }).profiles?.list?.find(
-    (p) => p.name === "Niubash",
-  );
+  const niu = (
+    Bun.JSONC.parse(cur) as {
+      profiles?: { list?: { name?: string; elevate?: boolean }[] };
+    }
+  ).profiles?.list?.find((p) => p.name === "Niubash");
   const elevated = niu?.elevate === true;
   note(elevated, "Windows Terminal profil Niubash elevate=true");
   if (!elevated && block && !check) {

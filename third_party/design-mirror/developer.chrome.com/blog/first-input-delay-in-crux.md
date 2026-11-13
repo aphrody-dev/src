@@ -7,19 +7,20 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!NOTE]
 > **Update:** First Input Delay (FID) is no longer a Core Web Vital, and has been replaced by the [Interaction to Next Paint (INP) metric](https://developer.chrome.com/articles/inp). As a consequence, [support for FID will end](https://developer.chrome.com/blog/inp-cwv-launch) on September 9, 2024.
 
- Rick Viscomi [GitHub](https://github.com/rviscomi) [Bluesky](https://bsky.app/profile/rviscomi.dev) [Homepage](https://developer.chrome.com/rviscomi.dev/)
+Rick Viscomi [GitHub](https://github.com/rviscomi) [Bluesky](https://bsky.app/profile/rviscomi.dev) [Homepage](https://developer.chrome.com/rviscomi.dev/)
 
 The goal of the
 [Chrome User Experience Report](https://developer.chrome.com/docs/crux.md.txt)
 is to help the web community understand the distribution and evolution of real
 user performance. To date, our focus has been on paint and page load metrics
 like First Contentful Paint (FCP) and Onload (OL), which have helped us
-understand how websites *visually* perform for users. Starting with the
+understand how websites _visually_ perform for users. Starting with the
 June 2018 release, we're experimenting with a new user-centric metric that
-focuses on the *interactivity* of web pages:
+focuses on the _interactivity_ of web pages:
 [First Input Delay](https://github.com/WICG/event-timing)
 (FID). This new metric will enable us to better understand how responsive
 websites are to user input.
@@ -28,7 +29,7 @@ FID was recently made available in Chrome as an
 [origin trial](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md),
 which means that websites can opt into experimenting with this new web platform
 feature. Similarly, FID will be available in the Chrome UX Report as an
-*experimental* metric, which means it will be available for the duration of the
+_experimental_ metric, which means it will be available for the duration of the
 origin trial within a separate "experimental" namespace.
 
 ## How FID is measured
@@ -36,11 +37,12 @@ origin trial within a separate "experimental" namespace.
 So what exactly is FID? Here's how it's defined in the
 [First Input Delay](https://web.dev/articles/fid)
 announcement blog post:
+
 > First Input Delay (FID) measures the time from when a user first interacts
 > with your site (i.e. when they click a link, tap on a button, or use a custom,
 > JavaScript-powered control) to the time when the browser is actually able to
 > respond to that interaction.
-[Video](https://www.youtube.com/watch?v=5mo8JfIi3HI) Animation showing how a busy main thread delays the response to a user interaction.
+> [Video](https://www.youtube.com/watch?v=5mo8JfIi3HI) Animation showing how a busy main thread delays the response to a user interaction.
 
 It's like measuring the time from ringing someone's doorbell to them answering
 the door. If it takes a long time, there could be many reasons. For example,
@@ -105,13 +107,13 @@ GROUP BY
 ```
 
 | form_factor | fast_fid |
-|---|---|
-| desktop | 96.02% |
-| phone | 79.90% |
-| tablet | 76.48% |
+| ----------- | -------- |
+| desktop     | 96.02%   |
+| phone       | 79.90%   |
+| tablet      | 76.48%   |
 
 The results corroborate our hypothesis. Desktop has a higher cumulative density
-of fast FID experiences than phone and tablet form factors. Understanding *why*
+of fast FID experiences than phone and tablet form factors. Understanding _why_
 these differences exist, eg CPU performance, would require A/B testing outside
 the scope of the Chrome UX Report.
 
@@ -134,7 +136,7 @@ which puts this page in the 28th percentile.
 [](https://www.webpagetest.org/result/180709_RY_af81367611c5f54234743c8007b5bd3b/1/details)
 [](https://www.webpagetest.org/result/180709_RY_af81367611c5f54234743c8007b5bd3b/1/details)[](https://www.webpagetest.org/result/180709_RY_af81367611c5f54234743c8007b5bd3b/1/details)
 
-The pink bar spanning 2.7 to 3.0 seconds is the *Parse HTML* phase. During this
+The pink bar spanning 2.7 to 3.0 seconds is the _Parse HTML_ phase. During this
 time the page is not interactive and appears visually incomplete (see "3.0s"
 in the filmstrip above). After that, any long tasks that do need to be processed
 are broken up to ensure that the main thread stays quiescent. The pink lines on
@@ -156,13 +158,13 @@ the content.
 
 What's most interesting about the [results](https://www.webpagetest.org/result/180709_MJ_1e68212ac52efd92090f6d3755076711/3/details)
 is that nothing interactive is even visible while the main thread is busy
-between 3 and 5 seconds. *It's actually the slowness of this page's FCP that
-improves the FID*. This is a good example of the importance of using many metrics
+between 3 and 5 seconds. _It's actually the slowness of this page's FCP that
+improves the FID_. This is a good example of the importance of using many metrics
 to represent the user experience.
 
 ## Start exploring
 
-You can learn more about FID in this week's episode of *The State of the Web*:
+You can learn more about FID in this week's episode of _The State of the Web_:
 
 [Video](https://www.youtube.com/watch?v=ULU-4-ApcjM)
 

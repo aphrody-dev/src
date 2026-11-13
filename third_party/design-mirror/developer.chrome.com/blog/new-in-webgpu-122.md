@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 The number of WebGPU features might seem a little light this time, but major advancements are just around the corner! Next releases will include features like DP4a, read-only and read-write storage textures, separate stencil and depth aspect control, rendering to 3D texture slices, and shader compilation improvements.
@@ -20,7 +21,7 @@ WebGPU aligns well with modern graphics APIs (Vulkan, Metal, and D3D12), but som
 The Chrome team is working on a compatibility mode in WebGPU to address this by offering a slightly restricted version of WebGPU that works on older APIs like D3D11 and OpenGL ES. This will expand WebGPU's potential user base.
 
 Importantly, applications using compatibility mode remain fully valid WebGPU applications. Devices without compatibility mode support will seamlessly default to the core WebGPU adapter, ensuring broad usability.
- WebGPU compatibility mode expanded reach.
+WebGPU compatibility mode expanded reach.
 
 Check out the [proposal](https://github.com/gpuweb/gpuweb/blob/main/proposals/compatibility-mode.md) and [comment](https://github.com/gpuweb/gpuweb/issues/new/choose) if you have questions.
 

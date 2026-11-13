@@ -5,7 +5,9 @@
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
-  "bin": { "vault": "./src/cli.ts" },
+  "bin": {
+    "vault": "./src/cli.ts"
+  },
   "scripts": {
     "test": "bun test",
     "bench": "bun bench/bench.ts",

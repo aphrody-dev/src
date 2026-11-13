@@ -34,7 +34,7 @@ test = false
 test-util = []
 
 [dev-dependencies]
-lore-chaos-client = { path = ".", features = ["test-util"] , package = "aphrody-lore-chaos-client" }
+lore-chaos-client = { path = ".", features = ["test-util"], package = "aphrody-lore-chaos-client" }
 
 [lints]
 workspace = true

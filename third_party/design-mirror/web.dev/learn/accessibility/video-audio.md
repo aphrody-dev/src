@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Have you ever wanted to watch a live event but couldn't find your headphones,
 so you turned on the captions? Or maybe you didn't quite catch the last few
 talking points from your favorite podcast, so you decided to read the
@@ -71,13 +72,13 @@ as when watching a foreign language film.
 > [!NOTE]
 > **Note:** There are some geographical differences in what are considered captions and subtitles, so be sure to check the terminology in your location.
 
-| Features | Subtitles | Closed captions | Open captions |
-|---|---|---|---|
-| Visual text matches audio track | No | Yes | Yes |
-| Includes essential background sounds | No | Yes | Yes |
-| Ability to toggle on/off | Yes | Yes | No |
+| Features                             | Subtitles | Closed captions | Open captions |
+| ------------------------------------ | --------- | --------------- | ------------- |
+| Visual text matches audio track      | No        | Yes             | Yes           |
+| Includes essential background sounds | No        | Yes             | Yes           |
+| Ability to toggle on/off             | Yes       | Yes             | No            |
 
-[Video](https://www.youtube.com/watch?v=pXc_w49fsmI) Check out an example of captions in this video, *Google --- A CODA Story* . Toggle the CC button to **On** to see the closed captions on this video. Compare screenshots from this video, with and without captions.  
+[Video](https://www.youtube.com/watch?v=pXc_w49fsmI) Check out an example of captions in this video, _Google --- A CODA Story_ . Toggle the CC button to **On** to see the closed captions on this video. Compare screenshots from this video, with and without captions.
 
 ## Transcripts
 
@@ -114,9 +115,9 @@ ensure you've made your transcript available to all users by:
 - Including a link to the transcript, wherever it lives, within the video description on whatever media player platform you've used (such as YouTube or Vimeo).
 
 For example, visit YouTube to watch
-[*Password Problems? \| There's no place like Chrome*](https://www.youtube.com/watch?v=SlGuvC5nnTA)
+[_Password Problems? \| There's no place like Chrome_](https://www.youtube.com/watch?v=SlGuvC5nnTA)
 and review an example of a transcript.
- Under the video title, click and select **Show transcript** from the drop-down menu. The transcripts show up to the right or bottom of the video, depending on your screen size.
+Under the video title, click and select **Show transcript** from the drop-down menu. The transcripts show up to the right or bottom of the video, depending on your screen size.
 
 ## Audio descriptions
 
@@ -136,8 +137,8 @@ of the video.
 
 Audio descriptions and extended audio descriptions help people who are blind or
 have low vision, but could help people with some cognitive disorders as well.
-[Video](https://www.youtube.com/watch?v=fNq5jWyEeWo) Here's an example of an illustrated video with an audio description, titled *`[Audio Described]` Get started with Lookout from Google \|
-Android*.
+[Video](https://www.youtube.com/watch?v=fNq5jWyEeWo) Here's an example of an illustrated video with an audio description, titled _`[Audio Described]` Get started with Lookout from Google \|
+Android_.
 
 ## Sign language interpretation
 
@@ -157,4 +158,4 @@ budget to add sign language interpretation to your media, there are
 [over 300 different sign languages](https://en.wikipedia.org/wiki/List_of_sign_languages)
 worldwide. Adding one sign language interpretation to your media wouldn't be
 enough to support a global audience.
-[Video](https://www.youtube.com/watch?v=MbHuSHGZf5U) See how sign language interpreters narrated the story of Google sustainability in the video *Google Presents: Search On '22*.
+[Video](https://www.youtube.com/watch?v=MbHuSHGZf5U) See how sign language interpreters narrated the story of Google sustainability in the video _Google Presents: Search On '22_.

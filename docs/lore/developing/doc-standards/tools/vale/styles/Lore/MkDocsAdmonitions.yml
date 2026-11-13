@@ -8,4 +8,4 @@ link: docs/developing/doc-standards/canon/format.md#callouts-and-admonitions
 level: error
 nonword: true
 tokens:
-  - '^!!! (?:note|tip|warning|info|important|caution|danger|abstract|example|question|success|failure|bug|quote)'
+  - "^!!! (?:note|tip|warning|info|important|caution|danger|abstract|example|question|success|failure|bug|quote)"

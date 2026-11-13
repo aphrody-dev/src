@@ -626,14 +626,14 @@ Release notes for the open source Lore project. Releases before v0.8.4 predate t
 
 - Partial hash revision identifiers are refused as `NotSupported`. A revision is named by its whole 64-character hash
   signature, by `[branch]@<number>`, by `[branch]@LATEST` or by `<branch>@<hash>`. Three consequences:
-    - The `@` is optional, a target given without it applying to the branch the instance is on: `lore sync 42` is
-      `lore sync @42`, `lore sync LATEST` is `lore sync @LATEST`. Digits alone are a revision number at every length but
-      64, where they are a signature
-    - A revision identifies the branch it was created on, and a branch point can name the child branch instead, which
-      `<branch>@<hash>`, `[branch]@<number>` and `[branch]@LATEST` all do. `lore sync`, `lore clone --revision`,
-      `lore history`, `lore link update --pin` and `lore link add --disable-branching --pin` follow it, and a sync moves
-      onto that branch together with its layers
-    - `--search-limit` bounds `lore revision bisect` and layer revision matching alone
+  - The `@` is optional, a target given without it applying to the branch the instance is on: `lore sync 42` is
+    `lore sync @42`, `lore sync LATEST` is `lore sync @LATEST`. Digits alone are a revision number at every length but
+    64, where they are a signature
+  - A revision identifies the branch it was created on, and a branch point can name the child branch instead, which
+    `<branch>@<hash>`, `[branch]@<number>` and `[branch]@LATEST` all do. `lore sync`, `lore clone --revision`,
+    `lore history`, `lore link update --pin` and `lore link add --disable-branching --pin` follow it, and a sync moves
+    onto that branch together with its layers
+  - `--search-limit` bounds `lore revision bisect` and layer revision matching alone
 - `lore-server`: a `signature` field that is not a whole hash is answered `FAILED_PRECONDITION` on `RevisionInfo`,
   `RevisionTree`, `RevisionDiff` and `RevisionList`. An unset (empty) field is unaffected
 - C API: `lore_revision_resolve_event_data_t` replaces its `revision` string with a `target` naming what is resolved (
@@ -856,7 +856,7 @@ Release notes for the open source Lore project. Releases before v0.8.4 predate t
   `Stage file` also named a path that did not exist
 - `lore-server`: an HTTP/2 POST whose body carries no decodable gRPC message — what a plain `curl` sends — is reported
   as `InvalidArgument` rather than `Internal`, so `Internal` keeps meaning a genuine server fault
-- Performance: staging a path at depth *n* stats the working tree once rather than once per component; a scan allocates
+- Performance: staging a path at depth _n_ stats the working tree once rather than once per component; a scan allocates
   5.9 times per file on an unchanged tree where it allocated 16.2; and a one-item storage batch runs on the calling task
   rather than spawning
 - `lore-server`: a trusted internal QUIC connection's `ClientIdentify` user agent is recorded as sent, so a deployment
@@ -905,15 +905,15 @@ Release notes for the open source Lore project. Releases before v0.8.4 predate t
   fragment state table holding lifecycle state alone (a row's presence means the hash exists). Existing objects are not
   rewritten — they are read through a fallback to the old table, which must stay configured for them to remain readable.
   Under `[plugins.aws.immutable_store]`:
-    - Existing deployment: set `dynamodb_fragment_state_table` (required, no alias — start fails without it; normally
-      the table that held fragment metadata, since the key schema is unchanged and the two row shapes coexist) and
-      `dynamodb_fragment_metadata_table` (enables the fallback read, normally the same value; accepts the older
-      `dynamodb_metadata_table` spelling). Roll out as a full stop followed by a full start — old and new servers must
-      never run at the same time. To move the data across and retire the old table, see
-      `contrib/aws-migrate-0.9.0/README.md`
-    - New deployment: set `dynamodb_fragment_state_table` only. Leaving `dynamodb_fragment_metadata_table` unset
-      declares that no object predating the change exists, so no fallback read is ever issued and an object without its
-      own metadata is reported as damaged
+  - Existing deployment: set `dynamodb_fragment_state_table` (required, no alias — start fails without it; normally
+    the table that held fragment metadata, since the key schema is unchanged and the two row shapes coexist) and
+    `dynamodb_fragment_metadata_table` (enables the fallback read, normally the same value; accepts the older
+    `dynamodb_metadata_table` spelling). Roll out as a full stop followed by a full start — old and new servers must
+    never run at the same time. To move the data across and retire the old table, see
+    `contrib/aws-migrate-0.9.0/README.md`
+  - New deployment: set `dynamodb_fragment_state_table` only. Leaving `dynamodb_fragment_metadata_table` unset
+    declares that no object predating the change exists, so no fallback read is ever issued and an object without its
+    own metadata is reported as damaged
 - `lore.model.v1` and `lore.thin_client.v1`: `Repository.created`, `Branch.created` and `Revision.timestamp` now carry
   Unix epoch milliseconds instead of seconds
 - C API: `LoreMetadataType` discriminants are now stable integers shared between `lore.h` and the on-disk metadata

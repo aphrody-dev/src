@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Many people use a keyboard---or software or hardware that mimics the
 functionality of a keyboard, such as a switch device---as their primary
 means of navigation. This may be due to personal preference, efficiency, or

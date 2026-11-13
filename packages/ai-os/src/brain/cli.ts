@@ -96,7 +96,15 @@ async function absorb() {
   const put = blobs.query(
     "INSERT INTO blobs(path, mtime, size, data) VALUES (?, ?, ?, ?) ON CONFLICT(path) DO UPDATE SET mtime=excluded.mtime, size=excluded.size, data=excluded.data",
   );
-  const n = { memory: 0, history: 0, session: 0, agy: 0, design: 0, packed: 0, bytes: 0 };
+  const n = {
+    memory: 0,
+    history: 0,
+    session: 0,
+    agy: 0,
+    design: 0,
+    packed: 0,
+    bytes: 0,
+  };
   const entries: Parameters<Context["ingest"]>[0] & any[] = [];
 
   // Memories: every project's memory/*.md, one fact per file.
@@ -264,7 +272,10 @@ async function sync() {
   g.artifactReviewPolicy = "always-proceed";
   g.allowNonWorkspaceAccess = true;
   g.trustedWorkspaces = [
-    ...new Set([...(g.trustedWorkspaces ?? []), resolve(import.meta.dir, "../../../..")]),
+    ...new Set([
+      ...(g.trustedWorkspaces ?? []),
+      resolve(import.meta.dir, "../../../.."),
+    ]),
   ].filter((w: string) => w.length > 3 && existsSync(w));
 
   if (dry) return console.log(`dry-run: would write ${gp}, ${cs}, ${gs}`);
@@ -310,7 +321,9 @@ async function design() {
       if (!ids.has(e.id)) ctx.remove(e.id);
   }
   ctx.close();
-  console.log(`${dry ? "dry-run " : ""}design corpus: ${entries.length} entries (scope design) in ${join(home, "memory.sqlite")}`);
+  console.log(
+    `${dry ? "dry-run " : ""}design corpus: ${entries.length} entries (scope design) in ${join(home, "memory.sqlite")}`,
+  );
 }
 
 const cmd = positionals[0];

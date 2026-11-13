@@ -20,7 +20,8 @@ export function loadPlan(app: string, toml: T) {
   const svc: T = toml.services?.[h.service ?? app] ?? {};
   const merged: T = { ...svc, ...h, name: app };
   const nodes: T = toml.nodes ?? {};
-  const byRole = (re: RegExp) => Object.entries(nodes).find(([, n]: [string, T]) => re.test(n.role))?.[0];
+  const byRole = (re: RegExp) =>
+    Object.entries(nodes).find(([, n]: [string, T]) => re.test(n.role))?.[0];
   merged.prodNode = (svc.nodes?.[0] as string) ?? byRole(/production/);
   merged.edgeNode = byRole(/cdn|edge/);
   merged.nodeInfo = nodes;
@@ -28,7 +29,8 @@ export function loadPlan(app: string, toml: T) {
   return merged;
 }
 
-const relPath = (p: string) => p.replace(/^C:\/src\/?/i, "").replace(/\\/g, "/");
+const relPath = (p: string) =>
+  p.replace(/^C:\/src\/?/i, "").replace(/\\/g, "/");
 
 export function renderCf(p: T): Record<string, string> {
   if (p.cf_tool === "wrangler")
@@ -38,11 +40,19 @@ export function renderCf(p: T): Record<string, string> {
   const env: T = { ...(p.vars ?? {}), ...(p.cf ?? {}) };
   const bucket = env.r2_bucket;
   delete env.r2_bucket;
-  const bindingLines = Object.entries(env).map(([k, v]) => `    ${k}: bindings.text(${JSON.stringify(String(v))}),`);
+  const bindingLines = Object.entries(env).map(
+    ([k, v]) => `    ${k}: bindings.text(${JSON.stringify(String(v))}),`,
+  );
   const storage = String(env.STORAGE ?? "");
-  if (storage.startsWith("r2:") && bucket) bindingLines.push(`    ${storage.slice(3)}: bindings.r2({ name: ${JSON.stringify(bucket)} }),`);
+  if (storage.startsWith("r2:") && bucket)
+    bindingLines.push(
+      `    ${storage.slice(3)}: bindings.r2({ name: ${JSON.stringify(bucket)} }),`,
+    );
   const crons = Object.entries(p.crons ?? {}) as [string, string][];
-  if (crons.length) bindingLines.push(`    CRONS: bindings.text(${JSON.stringify(crons.map(([n, e]) => `${e}=${n}`).join(";"))}),`);
+  if (crons.length)
+    bindingLines.push(
+      `    CRONS: bindings.text(${JSON.stringify(crons.map(([n, e]) => `${e}=${n}`).join(";"))}),`,
+    );
   bindingLines.push(`    RUNTIME_TARGET: bindings.text("cf"),`);
   const triggers = crons.length
     ? `\n  triggers: [${crons.map(([, e]) => `triggers.scheduled({ schedule: ${JSON.stringify(e)} })`).join(", ")}],`
@@ -68,17 +78,34 @@ ${bindingLines.join("\n")}
 }
 
 export function renderVercel(p: T): Record<string, string> {
-  if (p.commercial) throw new Error(`${p.name} is commercial: Vercel Hobby forbids it (non-commercial personal use only). Use cf or vps.`);
-  const env: T = { ...(p.vars ?? {}), ...(p.vercel ?? {}), RUNTIME_TARGET: "vercel" };
+  if (p.commercial)
+    throw new Error(
+      `${p.name} is commercial: Vercel Hobby forbids it (non-commercial personal use only). Use cf or vps.`,
+    );
+  const env: T = {
+    ...(p.vars ?? {}),
+    ...(p.vercel ?? {}),
+    RUNTIME_TARGET: "vercel",
+  };
   const crons = Object.entries(p.crons ?? {}) as [string, string][];
   for (const [, e] of crons)
-    if (!/^\d+ \d+ \* \* [\d*]+$/.test(e)) throw new Error(`cron "${e}": Hobby allows at most once per day`);
-  const vercel: T = { $schema: "https://openapi.vercel.sh/vercel.json", bunVersion: "1.4.x" };
-  if (crons.length) vercel.crons = crons.map(([n, e]) => ({ path: `/__cron/${n}`, schedule: e }));
+    if (!/^\d+ \d+ \* \* [\d*]+$/.test(e))
+      throw new Error(`cron "${e}": Hobby allows at most once per day`);
+  const vercel: T = {
+    $schema: "https://openapi.vercel.sh/vercel.json",
+    bunVersion: "1.4.x",
+  };
+  if (crons.length)
+    vercel.crons = crons.map(([n, e]) => ({
+      path: `/__cron/${n}`,
+      schedule: e,
+    }));
   return {
     "vercel.json": `${JSON.stringify(vercel, null, 2)}\n`,
     "server.ts": `// Generated. Vercel's Bun preset detects the Bun.serve() call made by vps().\nimport "./${(p.vps_exec ?? "bun run src/entry.vps.ts").split(" ").pop()}";\n`,
-    "env.txt": `# Non-secret env to set in the Vercel project (vercel env add). Secrets (S3_*, CRON_SECRET) separately.\n${Object.entries(env)
+    "env.txt": `# Non-secret env to set in the Vercel project (vercel env add). Secrets (S3_*, CRON_SECRET) separately.\n${Object.entries(
+      env,
+    )
       .map(([k, v]) => `${k}=${v}`)
       .join("\n")}\n`,
   };
@@ -87,9 +114,18 @@ export function renderVercel(p: T): Record<string, string> {
 export function renderVps(p: T): Record<string, string> {
   if (!p.port) throw new Error(`${p.name}: no port in infra/deploy.toml`);
   const prod: T = p.nodeInfo[p.prodNode] ?? {};
-  const env: T = { ...(p.vars ?? {}), ...(p.vps ?? {}), RUNTIME_TARGET: "vps", PORT: p.port, HOST: "0.0.0.0" };
+  const env: T = {
+    ...(p.vars ?? {}),
+    ...(p.vps ?? {}),
+    RUNTIME_TARGET: "vps",
+    PORT: p.port,
+    HOST: "0.0.0.0",
+  };
   const dir = `/srv/${p.name}`;
-  const exec = (p.vps_exec ?? "bun run src/entry.vps.ts").replace(/^bun /, "/usr/local/bin/bun ");
+  const exec = (p.vps_exec ?? "bun run src/entry.vps.ts").replace(
+    /^bun /,
+    "/usr/local/bin/bun ",
+  );
   const unit = `# Generated from infra/deploy.toml [hosting.${p.name}] -> ${p.prodNode} (${prod.ssh_alias}). Secrets: /etc/aphrody/${p.name}.env (0600).
 [Unit]
 Description=${p.name} (runtime-adapter, vps)
@@ -115,13 +151,18 @@ WantedBy=multi-user.target
 `;
   const out: Record<string, string> = { [`${p.name}.service`]: unit };
   for (const [n, e] of Object.entries(p.crons ?? {}) as [string, string][]) {
-    out[`${p.name}-${n}.service`] = `[Unit]\nDescription=${p.name} cron ${n}\n[Service]\nType=oneshot\nWorkingDirectory=${dir}\nExecStart=${exec} --cron ${n}\nEnvironmentFile=-/etc/aphrody/${p.name}.env\n${Object.entries(env)
-      .map(([k, v]) => `Environment=${k}=${v}`)
-      .join("\n")}\nDynamicUser=yes\n`;
-    out[`${p.name}-${n}.timer`] = `[Unit]\nDescription=${p.name} cron ${n} (${e})\n[Timer]\nOnCalendar=${cronToCalendar(e)}\nPersistent=true\n[Install]\nWantedBy=timers.target\n`;
+    out[`${p.name}-${n}.service`] =
+      `[Unit]\nDescription=${p.name} cron ${n}\n[Service]\nType=oneshot\nWorkingDirectory=${dir}\nExecStart=${exec} --cron ${n}\nEnvironmentFile=-/etc/aphrody/${p.name}.env\n${Object.entries(
+        env,
+      )
+        .map(([k, v]) => `Environment=${k}=${v}`)
+        .join("\n")}\nDynamicUser=yes\n`;
+    out[`${p.name}-${n}.timer`] =
+      `[Unit]\nDescription=${p.name} cron ${n} (${e})\n[Timer]\nOnCalendar=${cronToCalendar(e)}\nPersistent=true\n[Install]\nWantedBy=timers.target\n`;
   }
   if (p.domains.length && p.edgeNode) {
-    out[`${p.name}.conf`] = `# Generated: nginx vhost on ${p.edgeNode} (${p.nodeInfo[p.edgeNode].ssh_alias}) proxying over the mesh to ${p.prodNode}.
+    out[`${p.name}.conf`] =
+      `# Generated: nginx vhost on ${p.edgeNode} (${p.nodeInfo[p.edgeNode].ssh_alias}) proxying over the mesh to ${p.prodNode}.
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
@@ -148,9 +189,20 @@ server {
 /** "m h * * dow" -> systemd OnCalendar. Only the simple forms used in infra/deploy.toml. */
 export function cronToCalendar(e: string): string {
   const [m, h, dom, mon, dow] = e.split(/\s+/);
-  const pad = (s?: string) => (s === "*" || s === undefined ? "*" : s.startsWith("*/") ? `00/${s.slice(2)}` : s.padStart(2, "0"));
+  const pad = (s?: string) =>
+    s === "*" || s === undefined
+      ? "*"
+      : s.startsWith("*/")
+        ? `00/${s.slice(2)}`
+        : s.padStart(2, "0");
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const d = dow && dow !== "*" ? `${dow.split(",").map((x) => days[Number(x) % 7]).join(",")} ` : "";
+  const d =
+    dow && dow !== "*"
+      ? `${dow
+          .split(",")
+          .map((x) => days[Number(x) % 7])
+          .join(",")} `
+      : "";
   return `${d}*-${mon === "*" ? "*" : mon}-${dom === "*" ? "*" : dom} ${pad(h)}:${pad(m)}:00`;
 }
 
@@ -166,16 +218,26 @@ export function render(app: string, target: string, toml: T) {
 if (import.meta.main) {
   const [app, target] = Bun.argv.slice(2);
   if (!app || !target) {
-    console.error("usage: bun scripts/deploy-target.ts <app> <cf|vercel|vps> [--out dir] [--stdout]");
+    console.error(
+      "usage: bun scripts/deploy-target.ts <app> <cf|vercel|vps> [--out dir] [--stdout]",
+    );
     process.exit(2);
   }
-  const toml = Bun.TOML.parse(await Bun.file(join(ROOT, "infra", "deploy.toml")).text()) as T;
+  const toml = Bun.TOML.parse(
+    await Bun.file(join(ROOT, "infra", "deploy.toml")).text(),
+  ) as T;
   const files = render(app, target, toml);
   const oi = Bun.argv.indexOf("--out");
-  const out = oi > 0 ? Bun.argv[oi + 1]! : join(ROOT, "infra/generated/hosting", app, target);
+  const out =
+    oi > 0
+      ? Bun.argv[oi + 1]!
+      : join(ROOT, "infra/generated/hosting", app, target);
   for (const [name, body] of Object.entries(files)) {
     if (Bun.argv.includes("--stdout")) console.log(`--- ${name}\n${body}`);
     else await Bun.write(join(out, name), body);
   }
-  if (!Bun.argv.includes("--stdout")) console.log(`${app} -> ${target}: ${Object.keys(files).join(", ")} in ${out}`);
+  if (!Bun.argv.includes("--stdout"))
+    console.log(
+      `${app} -> ${target}: ${Object.keys(files).join(", ")} in ${out}`,
+    );
 }

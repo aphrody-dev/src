@@ -1,6 +1,12 @@
 // Sovereign VCS Adapter: Jujutsu (jj), Gitoxide (gix), and Git integration
 import { SRC_ROOT } from "./root.ts";
-import { existsSync, lstatSync, readFileSync, readdirSync, statSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+} from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
 import type { RepoInfo, StackCommit, PatchBundle } from "./types.ts";
@@ -156,7 +162,10 @@ export function inspectRepo(
   let headCommit = fastHead?.sha || "0000000000000000000000000000000000000000";
   let headMessage = "Initial commit";
 
-  const logOutput = safeExec('git --no-optional-locks log -1 --pretty=format:"%H||%s"', dir);
+  const logOutput = safeExec(
+    'git --no-optional-locks log -1 --pretty=format:"%H||%s"',
+    dir,
+  );
   if (logOutput) {
     const [sha, msg] = logOutput.split("||");
     if (sha) headCommit = sha;
@@ -356,7 +365,9 @@ export function getRepoDiff(repoPath: string, commit?: string): string {
   if (commit) {
     return safeExec(`git show ${commit} --stat -p`, repoPath);
   }
-  return safeExec("git diff HEAD -- .", repoPath) || safeExec("git diff", repoPath);
+  return (
+    safeExec("git diff HEAD -- .", repoPath) || safeExec("git diff", repoPath)
+  );
 }
 
 export function slimRepo(repoPath: string): {

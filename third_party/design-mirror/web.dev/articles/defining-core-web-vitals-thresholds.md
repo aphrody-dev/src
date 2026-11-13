@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The research and methodology behind Core Web Vitals thresholds
 
- Bryan McQuade [X](https://twitter.com/bryanmcquade)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Bryan McQuade [X](https://twitter.com/bryanmcquade) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: May 21, 2020, Last updated: May 7, 2025
 
@@ -34,13 +35,12 @@ content.
 
 Each Core Web Vitals metric has associated thresholds, which categorize
 performance as either "good", "needs improvement", or "poor":
-  
 
-|   | Good | Poor | Percentile |
-|---|---|---|---|
-| Largest Contentful Paint | ≤2500 ms | \>4000 ms | 75 |
-| Interaction to Next Paint | ≤200 ms | \>500 ms | 75 |
-| Cumulative Layout Shift | ≤0.1 | \>0.25 | 75 |
+|                           | Good     | Poor      | Percentile |
+| ------------------------- | -------- | --------- | ---------- |
+| Largest Contentful Paint  | ≤2500 ms | \>4000 ms | 75         |
+| Interaction to Next Paint | ≤200 ms  | \>500 ms  | 75         |
+| Cumulative Layout Shift   | ≤0.1     | \>0.25    | 75         |
 
 Core Web Vitals thresholds
 
@@ -183,8 +183,8 @@ Two commonly cited sources for the 1 second threshold are [Card and others](http
 [Miller](https://dl.acm.org/doi/10.1145/1476589.1476628). Card defines a
 1-second "immediate response" threshold, citing Newell's [Unified Theories of
 Cognition](https://dl.acm.org/doi/book/10.5555/86564). Newell explains immediate
-responses as "responses that must be made to some stimulus within *very
-approximately one second* (that is, roughly from \~0.3sec to \~3sec)." This
+responses as "responses that must be made to some stimulus within _very
+approximately one second_ (that is, roughly from \~0.3sec to \~3sec)." This
 follows Newell's discussion on "real-time constraints on cognition", where it is
 noted that "interactions with the environment which evoke cognitive
 considerations take place on the order of seconds" which range from roughly 0.5
@@ -207,10 +207,10 @@ achievability of these candidate thresholds next.
 Using data from CrUX, we can determine the percentage of origins on the web that
 meet our candidate LCP "good" thresholds.
 
-|   | 1 second | 1.5 seconds | 2 seconds | 2.5 seconds | 3 seconds |
-|---|---|---|---|---|---|
-| **phone** | 3.5% | 13% | 27% | 42% | 55% |
-| **desktop** | 6.9% | 19% | 36% | 51% | 64% |
+|             | 1 second | 1.5 seconds | 2 seconds | 2.5 seconds | 3 seconds |
+| ----------- | -------- | ----------- | --------- | ----------- | --------- |
+| **phone**   | 3.5%     | 13%         | 27%       | 42%         | 55%       |
+| **desktop** | 6.9%     | 19%         | 36%       | 51%         | 64%       |
 
 % of CrUX origins classified as "good" for candidate LCP thresholds as of April 2020
 
@@ -229,10 +229,10 @@ consistently achievable.
 To identify a "poor" threshold for LCP, we use CrUX data to identify a threshold
 met by most origins:
 
-|   | 3 seconds | 3.5 seconds | 4 seconds | 4.5 seconds | 5 seconds |
-|---|---|---|---|---|---|
-| **phone** | 45% | 35% | 26% | 20% | 15% |
-| **desktop** | 36% | 26% | 19% | 14% | 10% |
+|             | 3 seconds | 3.5 seconds | 4 seconds | 4.5 seconds | 5 seconds |
+| ----------- | --------- | ----------- | --------- | ----------- | --------- |
+| **phone**   | 45%       | 35%         | 26%       | 20%         | 15%       |
+| **desktop** | 36%       | 26%         | 19%       | 14%         | 10%       |
 
 % of CrUX origins classified as "poor" for candidate LCP thresholds as of April 2020
 
@@ -295,10 +295,10 @@ Given this, we conclude that research points to 100 ms as a "good" Interaction t
 Using data from CrUX, we determine that the majority of origins on the web meet
 the 200 ms INP "good" threshold at the 75th percentile:
 
-|   | 100 ms | 200 ms | 300 ms | 400 ms | 500 ms |
-|---|---|---|---|---|---|
-| **phone** | 12% | 56% | 76% | 88% | 92% |
-| **desktop** | 83% | 96% | 98% | 99% | 99% |
+|             | 100 ms | 200 ms | 300 ms | 400 ms | 500 ms |
+| ----------- | ------ | ------ | ------ | ------ | ------ |
+| **phone**   | 12%    | 56%    | 76%    | 88%    | 92%    |
+| **desktop** | 83%    | 96%    | 98%    | 99%    | 99%    |
 
 % of CrUX origins classified as "good" for candidate INP thresholds as of May 2022
 
@@ -308,10 +308,10 @@ Taking into consideration the 100 ms threshold supported by research into the qu
 
 To identify a "poor" threshold for LCP, we use CrUX data to identify a threshold met by most origins:
 
-|   | 100 ms | 200 ms | 300 ms | 400 ms | 500 ms |
-|---|---|---|---|---|---|
-| **phone** | 88% | 44% | 24% | 12% | 8% |
-| **desktop** | 17% | 4% | 2% | 1% | 1% |
+|             | 100 ms | 200 ms | 300 ms | 400 ms | 500 ms |
+| ----------- | ------ | ------ | ------ | ------ | ------ |
+| **phone**   | 88%    | 44%    | 24%    | 12%    | 8%     |
+| **desktop** | 17%    | 4%     | 2%     | 1%     | 1%     |
 
 % of CrUX origins classified as "poor" for candidate INP thresholds as of May 2022
 
@@ -319,10 +319,10 @@ This suggests we can have a "poor" threshold of 300 ms.
 
 However, unlike LCP and CLS, INP has an inverse correlation with popularity---the more popular sites are often more complex, resulting in more likelihood of higher INP. When we look at the top 10,000 sites---which form the vast majority of internet browsing---we see a more complex picture emerge:
 
-|   | 100 ms | 200 ms | 300 ms | 400 ms | 500 ms |
-|---|---|---|---|---|---|
-| **phone** | 97% | 77% | 55% | 37% | 24% |
-| **desktop** | 48% | 17% | 8% | 4% | 2% |
+|             | 100 ms | 200 ms | 300 ms | 400 ms | 500 ms |
+| ----------- | ------ | ------ | ------ | ------ | ------ |
+| **phone**   | 97%    | 77%    | 55%    | 37%    | 24%    |
+| **desktop** | 48%    | 17%    | 8%     | 4%     | 2%     |
 
 % of CrUX origins in top 10,000 classified as "poor" for candidate INP thresholds as of May 2022
 
@@ -353,10 +353,10 @@ CLS thresholds.
 Based on CrUX data, we can see that nearly 50% of origins have CLS of 0.05 or
 lower.
 
-|   | 0.05 | 0.1 | 0.15 |
-|---|---|---|---|
-| **phone** | 49% | 60% | 69% |
-| **desktop** | 42% | 59% | 69% |
+|             | 0.05 | 0.1 | 0.15 |
+| ----------- | ---- | --- | ---- |
+| **phone**   | 49%  | 60% | 69%  |
+| **desktop** | 42%  | 59% | 69%  |
 
 % of CrUX origins classified as "good" for candidate CLS thresholds as of April 2020
 
@@ -376,10 +376,10 @@ Vitals.
 Additionally, to determine a "poor" threshold for CLS, we used CrUX data to
 identify a threshold met by most origins:
 
-|   | 0.15 | 0.2 | 0.25 | 0.3 |
-|---|---|---|---|---|
-| **phone** | 31% | 25% | 20% | 18% |
-| **desktop** | 31% | 23% | 18% | 16% |
+|             | 0.15 | 0.2 | 0.25 | 0.3 |
+| ----------- | ---- | --- | ---- | --- |
+| **phone**   | 31%  | 25% | 20%  | 18% |
+| **desktop** | 31%  | 23% | 18%  | 16% |
 
 % of CrUX origins classified as "poor" for candidate CLS thresholds as of April 2020
 

@@ -29,7 +29,14 @@ services:
     networks:
       - gitlab_mesh
     healthcheck:
-      test: ["CMD", "/opt/gitlab/bin/gitlab-healthcheck", "--fail", "--max-time", "10"]
+      test:
+        [
+          "CMD",
+          "/opt/gitlab/bin/gitlab-healthcheck",
+          "--fail",
+          "--max-time",
+          "10",
+        ]
       interval: 45s
       timeout: 15s
       retries: 10

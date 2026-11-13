@@ -38,7 +38,9 @@ lore-macro = { workspace = true }
 lore-telemetry = { workspace = true }
 
 [dev-dependencies]
-lore-aws = { path = ".", package = "aphrody-lore-aws",  features = ["test-util"]  }
+lore-aws = { path = ".", package = "aphrody-lore-aws", features = [
+  "test-util",
+] }
 mockall = { workspace = true }
 rand = { workspace = true }
 serial_test = { workspace = true }

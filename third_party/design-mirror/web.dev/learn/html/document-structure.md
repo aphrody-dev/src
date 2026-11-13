@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 HTML documents include a document type declaration and the `<html>` root
 element. Nested in the `<html>` element are the document head and document body.
 While the head of the document isn't visible outside of the code, it's vital
@@ -30,7 +31,7 @@ content if these elements are missing, but you should include them.
 
 The first thing in any HTML document is the preamble. For HTML, all you need is
 `<!DOCTYPE html>`. This looks like an HTML element, but it's actually special
-node called a *doctype* . The doctype tells the browser to use standards mode.
+node called a _doctype_ . The doctype tells the browser to use standards mode.
 When omitted, browsers use a different rendering mode known as
 [quirks mode](https://developer.mozilla.org/docs/Web/HTML/Quirks_Mode_and_Standards_Mode).
 Including the doctype helps prevent quirks mode.
@@ -72,10 +73,8 @@ Nested between the opening and closing `<html>` tags, we find the two children:
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-  </head>
-  <body>
-  </body>
+  <head> </head>
+  <body></body>
 </html>
 ```
 
@@ -148,7 +147,10 @@ zoom and scalability, but they both default to accessible values. If you want
 to be explicit, include:
 
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, user-scalable=1"
+/>
 ```
 
 Viewport is part of the [Lighthouse accessibility audit](https://web.dev/meta-viewport). Your
@@ -164,9 +166,7 @@ So far, the outline for our HTML file is:
     <title>Machine Learning Workshop</title>
     <meta name="viewport" content="width=device-width" />
   </head>
-  <body>
-
-  </body>
+  <body></body>
 </html>
 ```
 
@@ -237,7 +237,7 @@ Styles, added with `<link>`, `<style>`, or both, should go in the head. While
 they work when included in the document's body, but you should add styles in the
 head for performance reasons. That may seem counterintuitive, as you may think
 you want your content to load first. But, it's better for the browser to know
-*how* to render the content when it's loaded. Adding styles first prevents the
+_how_ to render the content when it's loaded. Adding styles first prevents the
 unnecessary repainting that occurs if an element is styled after it's first
 rendered.
 
@@ -250,9 +250,16 @@ and then hide everything in the head, and then with an inline `style` attribute,
 make a content-editable style block visible.
 
 ```html
-<style contenteditable style="display: block; font-family: monospace; white-space: pre;">
-  head { display: block; }
-  head * { display: none; }
+<style
+  contenteditable
+  style="display: block; font-family: monospace; white-space: pre;"
+>
+  head {
+    display: block;
+  }
+  head * {
+    display: none;
+  }
   :root {
     --theme-color: #226DAA;
   }
@@ -287,7 +294,12 @@ If you don't declare a favicon, the browser will look for a file named
 `<link>`, you can use a different filename and location:
 
 ```html
-<link rel="icon" sizes="16x16 32x32 48x48" type="image/png" href="/images/mlwicon.png" />
+<link
+  rel="icon"
+  sizes="16x16 32x32 48x48"
+  type="image/png"
+  href="/images/mlwicon.png"
+/>
 ```
 
 The preceding code says "use the `mlwicon.png` as the icon for scenarios where a
@@ -324,8 +336,16 @@ or alternate representations of the site.
 Pretend we have versions of the site translated into French and Brazilian Portuguese:
 
 ```html
-<link rel="alternate" href="https://www.machinelearningworkshop.com/fr/" hreflang="fr-FR" />
-<link rel="alternate" href="https://www.machinelearningworkshop.com/pt/" hreflang="pt-BR" />
+<link
+  rel="alternate"
+  href="https://www.machinelearningworkshop.com/fr/"
+  hreflang="fr-FR"
+/>
+<link
+  rel="alternate"
+  href="https://www.machinelearningworkshop.com/pt/"
+  hreflang="pt-BR"
+/>
 ```
 
 When using `alternate` for a translation, the `hreflang` attribute must be set.
@@ -337,7 +357,11 @@ is set to `application/rss+xml` or `application/atom+xml`.
 Link to a pretend PDF version of the site:
 
 ```html
-<link rel="alternate" type="application/x-pdf" href="https://machinelearningworkshop.com/mlw.pdf" />
+<link
+  rel="alternate"
+  type="application/x-pdf"
+  href="https://machinelearningworkshop.com/mlw.pdf"
+/>
 ```
 
 If the `rel` value is `alternate stylesheet`, it defines an
@@ -378,8 +402,8 @@ You will be including a tiny bit of JavaScript to create an
 
 ```html
 <script>
-  document.getElementById('switch').addEventListener('click', function() {
-    document.body.classList.toggle('black');
+  document.getElementById("switch").addEventListener("click", function () {
+    document.body.classList.toggle("black");
   });
 </script>
 ```
@@ -405,7 +429,7 @@ blocked during the download, and the JavaScript only executes after the document
 has otherwise finished rendering. With `async`, rendering isn't blocked during
 the download either, but once the script has finished downloading, the rendering
 is paused while the JavaScript is executed.
- Various loading strategies for scripts, illustrated. Some scripts benefit from deferring their execution, and some can execute immediately when loaded with the `async` attribute. **Note:** Module scripts loaded wirth using `<script type="module">` have `defer` enabled by default.
+Various loading strategies for scripts, illustrated. Some scripts benefit from deferring their execution, and some can execute immediately when loaded with the `async` attribute. **Note:** Module scripts loaded wirth using `<script type="module">` have `defer` enabled by default.
 
 To include MLW's JavaScript in an external file, you could write:
 
@@ -465,12 +489,19 @@ The code now looks like this:
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="icon" type="image/png" href="/images/favicon.png" />
-    <link rel="alternate" href="https://www.machinelearningworkshop.com/fr/" hreflang="fr-FR" />
-    <link rel="alternate" href="https://www.machinelearningworkshop.com/pt/" hreflang="pt-BR" />
+    <link
+      rel="alternate"
+      href="https://www.machinelearningworkshop.com/fr/"
+      hreflang="fr-FR"
+    />
+    <link
+      rel="alternate"
+      href="https://www.machinelearningworkshop.com/pt/"
+      hreflang="pt-BR"
+    />
     <link rel="canonical" href="https://www.machinelearning.com" />
   </head>
   <body>
-
     <!-- <script defer src="scripts/lightswitch.js"></script>-->
   </body>
 </html>

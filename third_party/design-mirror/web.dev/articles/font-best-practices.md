@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Optimize web fonts for Core Web Vitals.
 
- Katie Hempenius [X](https://twitter.com/katiehempenius)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Katie Hempenius [X](https://twitter.com/katiehempenius) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 This document discusses performance best practices for fonts. There are a
 variety of ways in which web fonts impact performance:
@@ -63,7 +64,7 @@ referenced by styling that is used on the page. For example:
 }
 
 h1 {
-  font-family: "Open Sans"
+  font-family: "Open Sans";
 }
 ```
 
@@ -100,7 +101,6 @@ stylesheet to download.
     }
 
     ...etc.
-
   </style>
 </head>
 ```
@@ -124,7 +124,7 @@ resource hint sets up a connection for loading the font stylesheet.
 
 ```html
 <head>
-  <link rel="preconnect" href="https://fonts.com">
+  <link rel="preconnect" href="https://fonts.com" />
 </head>
 ```
 
@@ -135,8 +135,8 @@ Unlike stylesheets, font files must be sent over a
 
 ```html
 <head>
-  <link rel="preconnect" href="https://fonts.com">
-  <link rel="preconnect" href="https://fonts.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.com" />
+  <link rel="preconnect" href="https://fonts.com" crossorigin />
 </head>
 ```
 
@@ -146,8 +146,8 @@ serve stylesheets and fonts from separate origins. For example, this is how the
 
 ```html
 <head>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 </head>
 ```
 
@@ -213,11 +213,10 @@ Brotli, WOFF2 compresses 30% better than WOFF, leading to less data to download
 and therefore faster performance.
 
 Given the browser support, experts now recommend only using WOFF2:
->
-> In fact, we think it is also time to proclaim: Use only WOFF2 and forget about everything else.  
+
+> In fact, we think it is also time to proclaim: Use only WOFF2 and forget about everything else.
 >
 > <br />
->
 >
 > This will simplify your CSS and workflow massively and also prevents any accidental double or incorrect font downloads. WOFF2 is now supported everywhere. So, unless you need to support really ancient browsers, just use WOFF2. If you can't, consider not serving any web fonts to those older browsers at all. This won't be a problem if you have a robust fallback strategy in place. Visitors on older browsers will see your fallback fonts.
 > [Bram Stein, from the 2022 Web Almanac](https://almanac.httparchive.org/en/2022/fonts#performance)
@@ -235,9 +234,9 @@ a font can be used for.
 
 ```css
 @font-face {
-    font-family: "Open Sans";
-    src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2");
-    unicode-range: U+0025-00FF;
+  font-family: "Open Sans";
+  src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2");
+  unicode-range: U+0025-00FF;
 }
 ```
 
@@ -265,30 +264,40 @@ does this by default:
 ```css
 /* devanagari */
 @font-face {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJbecnFHGPezSQ.woff2) format('woff2');
-  unicode-range: U+0900-097F, U+1CD0-1CF6, U+1CF8-1CF9, U+200C-200D, U+20A8, U+20B9, U+25CC, U+A830-A839, U+A8E0-A8FB;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJbecnFHGPezSQ.woff2)
+    format("woff2");
+  unicode-range:
+    U+0900-097F, U+1CD0-1CF6, U+1CF8-1CF9, U+200C-200D, U+20A8, U+20B9, U+25CC,
+    U+A830-A839, U+A8E0-A8FB;
 }
 /* latin-ext */
 @font-face {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJnecnFHGPezSQ.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJnecnFHGPezSQ.woff2)
+    format("woff2");
+  unicode-range:
+    U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
 @font-face {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecnFHGPc.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecnFHGPc.woff2)
+    format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+    U+FFFD;
 }
 ```
 
@@ -310,7 +319,7 @@ The fastest font to deliver is a font that isn't requested in the first place.
 System fonts and variable fonts are two ways to potentially reduce the number of
 web fonts used on your site.
 
-A *system font* is the default font used by the user interface of a user's
+A _system font_ is the default font used by the user interface of a user's
 device. System fonts typically vary by operating system and version. Because the
 font is already installed, the font does not need to be downloaded. System fonts
 can work particularly well for body text.
@@ -318,10 +327,10 @@ can work particularly well for body text.
 To use the system font in your CSS, list `system-ui` as the font-family:
 
 ```css
-font-family: system-ui
+font-family: system-ui;
 ```
 
-The idea behind [*variable fonts*](https://web.dev/articles/variable-fonts.md.txt) is that a single
+The idea behind [_variable fonts_](https://web.dev/articles/variable-fonts.md.txt) is that a single
 variable font can be used as a replacement for multiple font files. Variable
 fonts work by defining a "default" font style and providing
 ["axes"](https://web.dev/articles/variable-fonts.md.txt#axes_definitions) for manipulating the font.
@@ -330,7 +339,7 @@ lettering that would previously require separate fonts for light, regular, bold,
 and extra bold.
 
 > [!IMPORTANT]
-> **Key Term:** We often refer to "Times New Roman" and "Helvetica" as fonts. Technically speaking, these are *font families*. A font family is composed of styles, which are particular variations of the typeface (for example, light, medium, or bold italic). A font file contains a single style, unless it's a variable font. A typeface is the underlying design, which can be expressed as digital fonts---and in physical type, like carved woodblocks or metal.
+> **Key Term:** We often refer to "Times New Roman" and "Helvetica" as fonts. Technically speaking, these are _font families_. A font family is composed of styles, which are particular variations of the typeface (for example, light, medium, or bold italic). A font file contains a single style, unless it's a variable font. A typeface is the underlying design, which can be expressed as digital fonts---and in physical type, like carved woodblocks or metal.
 
 Not everyone benefits from switching to variable fonts.
 [Variable fonts](https://web.dev/articles/variable-fonts.md.txt) contain many styles, so typically
@@ -368,15 +377,15 @@ associated web font has not loaded. It's defined per font-face.
 
 There are five possible values for `font-display`:
 
-| **Value** | **Block period** | **Swap period** |
-|---|---|---|
-| Auto | Varies by browser | Varies by browser |
-| Block | 2-3 seconds | Infinite |
-| Swap | 0ms | Infinite |
-| Fallback | 100ms | 3 seconds |
-| Optional | 100ms | None |
+| **Value** | **Block period**  | **Swap period**   |
+| --------- | ----------------- | ----------------- |
+| Auto      | Varies by browser | Varies by browser |
+| Block     | 2-3 seconds       | Infinite          |
+| Swap      | 0ms               | Infinite          |
+| Fallback  | 100ms             | 3 seconds         |
+| Optional  | 100ms             | None              |
 
-- **Block period** : The block period begins when the browser requests a web font. During the block period, if the web font isn't available, the font is rendered in an *invisible* fallback font and thus the text is invisible to the user. If the font isn't available at the end of the block period, it's rendered in the fallback font.
+- **Block period** : The block period begins when the browser requests a web font. During the block period, if the web font isn't available, the font is rendered in an _invisible_ fallback font and thus the text is invisible to the user. If the font isn't available at the end of the block period, it's rendered in the fallback font.
 - **Swap period**: The swap period comes after the block period. If the web font becomes available during the swap period, it's "swapped" in.
 
 `font-display` strategies reflect different viewpoints about the tradeoff

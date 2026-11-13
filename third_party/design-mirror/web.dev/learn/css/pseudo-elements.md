@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 014: Pseudo-elements](https://thecsspodcast.libsyn.com/014-pseudo-elements)
 
 If you've got an article of content
@@ -26,6 +27,7 @@ p::first-letter {
   margin-inline-end: 0.2rem;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/PoWjybP?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen PoWjybP by web-dot-dev on Codepen"></iframe>
 
 A pseudo-element is like adding or targeting an extra element without having to add more HTML.
@@ -43,11 +45,11 @@ pseudo-elements create a child element inside an element **only** if you define 
 
 ```css
 .my-element::before {
-    content: "";
+  content: "";
 }
 
 .my-element::after {
-    content: "";
+  content: "";
 }
 ```
 
@@ -58,7 +60,7 @@ You can add an image `url`,
 which will insert an image at its original dimensions,
 so you won't be able to resize it.
 You can also insert a
-[`counter`](https://developer.mozilla.org/docs/Web/CSS/counter()).
+[`counter`](<https://developer.mozilla.org/docs/Web/CSS/counter()>).
 
 > [!IMPORTANT]
 > **Key term:** You can create a named counter and then increment it, based on its position in the document flow. There's all sorts of contexts where they can be really useful, such as automatically numbering an outline.
@@ -93,6 +95,7 @@ p::first-letter {
   font-weight: bold;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JjEJmOx?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JjEJmOx by web-dot-dev on Codepen"></iframe>
 
 > [!NOTE]
@@ -111,6 +114,7 @@ p::first-line {
   font-weight: bold;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/vYgZVaO?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen vYgZVaO by web-dot-dev on Codepen"></iframe>
 
 Like the `::first-letter` pseudo-element,
@@ -133,6 +137,7 @@ video::backdrop {
   background-color: goldenrod;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/rNjwqRQ?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen rNjwqRQ by web-dot-dev on Codepen"></iframe>
 
 ## `::marker`
@@ -154,11 +159,11 @@ ol ::marker {
 }
 
 summary::marker {
-  content: '\002B'' '; /* Plus symbol with space */
+  content: "\002B" " "; /* Plus symbol with space */
 }
 
 details[open] summary::marker {
-  content: '\2212'' '; /* Minus symbol with space */
+  content: "\2212" " "; /* Minus symbol with space */
 }
 ```
 
@@ -184,6 +189,7 @@ pseudo-element allows you to style how selected text looks.
   color: white;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JjEJeZK?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JjEJeZK by web-dot-dev on Codepen"></iframe>
 
 This pseudo-element can be used to style all selected text as in the above demo.
@@ -195,6 +201,7 @@ p:nth-of-type(2)::selection {
   color: yellow;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/MWJozXM?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen MWJozXM by web-dot-dev on Codepen"></iframe>
 
 As with other pseudo-elements, only a subset of CSS properties are allowed:
@@ -224,6 +231,7 @@ input::placeholder {
   color: darkcyan;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/KKaqrrY?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen KKaqrrY by web-dot-dev on Codepen"></iframe>
 
 The `::placeholder` only supports a subset of CSS rules:
@@ -253,7 +261,7 @@ This allows you to style the WebVTT cues,
 which are the captions of a `<video>` element.
 
 You can also pass a selector into a `::cue`,
-which allows you to style specific elements *inside* a caption.
+which allows you to style specific elements _inside_ a caption.
 
 ```css
 video::cue {

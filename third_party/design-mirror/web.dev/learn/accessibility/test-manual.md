@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!TIP]
 > **Tip:** This module on manual accessibility testing is a continuation of the previous module, [automated accessibility testing](https://web.dev/learn/accessibility/test-automated.md.txt). If you haven't yet completed the exercises in that module, we encourage you to do so. This module starts where the previous one left off.
 
@@ -15,7 +16,7 @@ modified: images et avatars retirés ; texte inchangé sinon
 Manual accessibility testing uses keyboard, visual, and cognitive tests, tools,
 and techniques to find issues that automated tooling cannot. As automated
 tooling doesn't cover all of the success criteria identified in WCAG, it's
-*vital* that you run automated accessibility tests and **keep testing**!
+_vital_ that you run automated accessibility tests and **keep testing**!
 
 As technology advances, [more tests could be covered by automated tooling alone](https://a11y-automation.dev/violations),
 but today, both manual and assistive technology checks need to be added to your
@@ -39,15 +40,15 @@ Disadvantages of manual accessibility tests:
 Compare what accessibility elements and details can be detected
 by an automated tool, versus those that won't be detected.
 
-| Can be automated | Can't be automated |
-|---|---|
-| Color contrast of text on solid backgrounds | [Color contrast](https://web.dev/learn/accessibility/color-contrast.md.txt) of text on gradients and images |
-| Image alternative text exists | [Image alternative text](https://web.dev/learn/accessibility/images.md.txt) is accurate and is properly assigned |
-| Headings, lists, and landmarks exist | [Headings, lists, and landmarks](https://web.dev/learn/accessibility/structure.md.txt) are correctly marked-up and all elements are accounted for |
-| ARIA is present | [ARIA](https://web.dev/learn/accessibility/aria-html.md.txt) is being used appropriately and applied to the correct element(s) |
-| Identifying keyboard-focusable elements | Which elements are missing [keyboard focus](https://web.dev/learn/accessibility/focus.md.txt), the focus order makes logical sense, and the focus indicator is visible |
-| iFrame title detection | [iFrame](https://web.dev/learn/accessibility/more-html.md.txt), the focus order makes logical sense, and the focus indicator is visible |
-| Video element is present | Video element has appropriate [alternative media](https://web.dev/learn/accessibility/motion.md.txt) present (such as captions and transcripts) |
+| Can be automated                            | Can't be automated                                                                                                                                                     |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Color contrast of text on solid backgrounds | [Color contrast](https://web.dev/learn/accessibility/color-contrast.md.txt) of text on gradients and images                                                            |
+| Image alternative text exists               | [Image alternative text](https://web.dev/learn/accessibility/images.md.txt) is accurate and is properly assigned                                                       |
+| Headings, lists, and landmarks exist        | [Headings, lists, and landmarks](https://web.dev/learn/accessibility/structure.md.txt) are correctly marked-up and all elements are accounted for                      |
+| ARIA is present                             | [ARIA](https://web.dev/learn/accessibility/aria-html.md.txt) is being used appropriately and applied to the correct element(s)                                         |
+| Identifying keyboard-focusable elements     | Which elements are missing [keyboard focus](https://web.dev/learn/accessibility/focus.md.txt), the focus order makes logical sense, and the focus indicator is visible |
+| iFrame title detection                      | [iFrame](https://web.dev/learn/accessibility/more-html.md.txt), the focus order makes logical sense, and the focus indicator is visible                                |
+| Video element is present                    | Video element has appropriate [alternative media](https://web.dev/learn/accessibility/motion.md.txt) present (such as captions and transcripts)                        |
 
 ## Types of manual tests
 
@@ -90,15 +91,15 @@ quite simple. All you need to do is set aside your mouse or install a
 test your website using only your keyboard. The following commands are essential
 for keyboard testing.
 
-| Key | Result |
-|---|---|
-| Tab | Moves forward one active element to another |
-| Shift + Tab | Moves backward one active element to another |
-| Arrows | Cycle through related controls |
-| Spacebar | Toggles states and moves down the page |
-| Shift + Spacebar | Moves up the page |
-| Enter | Triggers specific controls |
-| Escape | Dismisses dynamically displayed objects |
+| Key              | Result                                       |
+| ---------------- | -------------------------------------------- |
+| Tab              | Moves forward one active element to another  |
+| Shift + Tab      | Moves backward one active element to another |
+| Arrows           | Cycle through related controls               |
+| Spacebar         | Toggles states and moves down the page       |
+| Shift + Spacebar | Moves up the page                            |
+| Enter            | Triggers specific controls                   |
+| Escape           | Dismisses dynamically displayed objects      |
 
 ### Visual checks
 
@@ -166,11 +167,12 @@ scan the CSS in the demo, you should find the dreaded "outline: none" added to
 the codebase.
 
 ```css
-  :focus {
-    outline: none;
-  }
+:focus {
+  outline: none;
+}
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 As you learned in the [Keyboard focus module](https://web.dev/learn/accessibility/focus.md.txt#focus_indicator),
 you need to remove this line of code to allow web browsers to add a visible
@@ -191,16 +193,28 @@ used to subscribe to the newsletter does not receive focus. It has been removed
 from the natural focus order by a negative tabindex.
 
 ```html
-<input type="email" placeholder="Enter your e-mail address" aria-hidden="true" tabindex="-1" required>
+<input
+  type="email"
+  placeholder="Enter your e-mail address"
+  aria-hidden="true"
+  tabindex="-1"
+  required
+/>
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 Since we would like people to use this field to sign-up for our newsletter, all
 we need to do is remove the negative tabindex or set it to zero to allow the
 input to become keyboard focusable again.
 
 ```html
-<input type="email" placeholder="Enter your e-mail address" aria-hidden="true" required>
+<input
+  type="email"
+  placeholder="Enter your e-mail address"
+  aria-hidden="true"
+  required
+/>
 ```
 
 ### Step 3
@@ -215,7 +229,7 @@ paragraphs about the different medical conditions.
 
 For our page to be accessible, links must stand out from the surrounding text
 and include a non-color style change on mouse hover and keyboard focus.
- **Let's fix it.**
+**Let's fix it.**
 
 A quick solution is to add an underline to the links inside the paragraphs to
 make them stand out. This would solve the accessibility issue, but it might not
@@ -233,7 +247,7 @@ One option is to change the link color to match the other elements on the page.
 But if you change the link color to green, the body copy must also be modified
 to meet the overall color contrast requirements between all three elements:
 links, background, and surrounding text.
- When the link and body text is the same, the test fails.  When the link and body text is different, the test passes.
+When the link and body text is the same, the test fails. When the link and body text is different, the test passes.
 
 #### Issue 4: Icon color contrast
 
@@ -242,7 +256,7 @@ Another missed color contrast issue is the social media icons. In the
 module, you learned that essential icons need to meet a 3:1 color contrast
 against the background. However, in the demo, the social media icons have a
 contrast ratio of 1.3:1.
- **Let's fix it.**
+**Let's fix it.**
 
 To meet the 3:1 color contrast requirements, the social media icons are changed
 to a darker gray.
@@ -260,10 +274,11 @@ users to read.
 
 ```css
 p.bullet {
-   text-align: justify;
+  text-align: justify;
 }
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 To reset the text alignment in the demo, you can update the code to
 `text-align: left;` or remove that line entirely from the CSS, as left is the
@@ -272,13 +287,13 @@ inherited styles remove the default text alignment.
 
 ```css
 p.bullet {
-   text-align: left;
+  text-align: left;
 }
 ```
 
 ### Step 4
 
- All manual issues have now been addressed in the demo, as shown in this image.
+All manual issues have now been addressed in the demo, as shown in this image.
 
 Once you've identified and fixed all the manual accessibility issues outlined
 in the previous steps, your page should look similar to our screenshot.

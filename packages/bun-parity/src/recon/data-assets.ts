@@ -11,7 +11,8 @@ import { CHROMIUM_MIME_MAP } from "../polyfills/mime.ts";
 export async function scanDataAssetsDomain(
   options: ScanOptions,
 ): Promise<DomainReport> {
-  const chromiumPath = options.chromiumPath ?? "C:/src/third_party/chromium/src";
+  const chromiumPath =
+    options.chromiumPath ?? "C:/src/third_party/chromium/src";
   const mimeFile = join(chromiumPath, "net/base/mime_util.cc");
 
   let chromiumMimeCount = 0;

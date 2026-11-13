@@ -7,10 +7,11 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 This HTML course for web developers provides a solid overview for developers,
 from novice to expert level HTML.
 
-*HyperText Markup Language*, or HTML, is the backbone of the web, providing the
+_HyperText Markup Language_, or HTML, is the backbone of the web, providing the
 content, as well as the structure of that content, that you see displayed in
 your web browser.
 

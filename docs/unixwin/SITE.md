@@ -7,33 +7,33 @@ poste sont dans [LEARNINGS.md](LEARNINGS.md). Selon le site, les notes de versio
 
 ## Pages
 
-| Page | Source dans le dépôt du site | Contenu |
-|---|---|---|
-| https://unixwin.dev/en/ | `src/pages/en/index.astro` | six produits, installation, actualités |
-| /en/docs/ | `src/pages/en/docs/index.astro` | entrée de la doc |
-| /en/docs/cli/ | `src/pages/en/docs/cli/index.astro` | référence de la CLI `niu` et de `wpm` |
-| /en/docs/execution-model/ | `src/pages/en/docs/execution-model/index.astro` | modèle d'exécution sans `fork()` |
-| /en/docs/paths-and-msys/ | `src/pages/en/docs/paths-and-msys/index.astro` | dialectes de chemins, persona MSYS |
-| /en/docs/performance-model/ | `src/pages/en/docs/performance-model/index.astro` | modèle de coût, mesures |
-| /en/docs/compatibility/ | `src/pages/en/docs/compatibility/index.astro` | compatibilité GNU bash 5.3, plateformes |
-| /en/benchmarks/ | `src/pages/en/benchmarks/index.astro`, `data/bench/` (16 fichiers) | méthodologie et tableaux |
-| /en/ai/, /en/agents/ | `src/pages/en/ai/`, `src/data/agents.json` | branchement des agents IA |
-| /en/changelog/ | `src/data/changelogs.json` (tiré de GitHub par `scripts/fetch-changelogs.mjs`) | versions |
-| /products/{niubash,winuxcmd,rubash,niu-git,wpm,oh-my-niu}/ | `src/pages/en/products/*` | fiches produit |
-| /llms.txt, /agents.md | `src/pages/llms.txt.ts`, `src/pages/agents.md.ts` | index pour machines |
-| /install.ps1 | `public/install.ps1` | installateur PowerShell (`irm ... \| iex`) |
-| https://unixwin.github.io/niubash/ | `third_party/niubash/docs` | doc de niubash (contrat des chemins, agents) |
+| Page                                                       | Source dans le dépôt du site                                                   | Contenu                                      |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------- |
+| https://unixwin.dev/en/                                    | `src/pages/en/index.astro`                                                     | six produits, installation, actualités       |
+| /en/docs/                                                  | `src/pages/en/docs/index.astro`                                                | entrée de la doc                             |
+| /en/docs/cli/                                              | `src/pages/en/docs/cli/index.astro`                                            | référence de la CLI `niu` et de `wpm`        |
+| /en/docs/execution-model/                                  | `src/pages/en/docs/execution-model/index.astro`                                | modèle d'exécution sans `fork()`             |
+| /en/docs/paths-and-msys/                                   | `src/pages/en/docs/paths-and-msys/index.astro`                                 | dialectes de chemins, persona MSYS           |
+| /en/docs/performance-model/                                | `src/pages/en/docs/performance-model/index.astro`                              | modèle de coût, mesures                      |
+| /en/docs/compatibility/                                    | `src/pages/en/docs/compatibility/index.astro`                                  | compatibilité GNU bash 5.3, plateformes      |
+| /en/benchmarks/                                            | `src/pages/en/benchmarks/index.astro`, `data/bench/` (16 fichiers)             | méthodologie et tableaux                     |
+| /en/ai/, /en/agents/                                       | `src/pages/en/ai/`, `src/data/agents.json`                                     | branchement des agents IA                    |
+| /en/changelog/                                             | `src/data/changelogs.json` (tiré de GitHub par `scripts/fetch-changelogs.mjs`) | versions                                     |
+| /products/{niubash,winuxcmd,rubash,niu-git,wpm,oh-my-niu}/ | `src/pages/en/products/*`                                                      | fiches produit                               |
+| /llms.txt, /agents.md                                      | `src/pages/llms.txt.ts`, `src/pages/agents.md.ts`                              | index pour machines                          |
+| /install.ps1                                               | `public/install.ps1`                                                           | installateur PowerShell (`irm ... \| iex`)   |
+| https://unixwin.github.io/niubash/                         | `third_party/niubash/docs`                                                     | doc de niubash (contrat des chemins, agents) |
 
 ## Produits (versions au 2026-11-13)
 
-| Produit | Dernière version | Ce que publie le site |
-|---|---|---|
-| niubash | 1.5.0 (2026-11-03) | bash réel pour Windows, Linux, macOS, Android ; 83/83 suites GNU bash 5.3, dont 82 identiques à l'octet ; `( )` et `$( )` sans processus ; installation par winget (`Unixwin.Niubash`) ou `install.ps1` ; 1.5.0 apporte un débogueur (`niu --debug`, `--dap`) et supprime `config.toml` |
-| rubash | 1.5.0 (2026-11-03) | moteur bash 5.3 embarquable (`cargo add rubash`), bêta ; profileur `--profile` |
-| WinuxCmd | 1.2.1 (2026-11-02) | binaire Win32 unique d'environ 3,79 Mo ; 176 commandes et 1 924 options ; démarrage à froid d'environ 19 ms ; C++23, VS 2022 + CMake + Ninja, PGO ; 165 cas différentiels sur 178 identiques à GNU coreutils 9.7 |
-| niu-git | v2.56.0.3 | git for Windows (2.56.0.windows.4) compilé MSVC + CMake + vcpkg, TLS schannel ; `git --version` en 13,7 ms contre 45 à 103 ms pour Git Bash ; sans send-email, svn, cvs, git-gui, gitk ni `grep -P` |
-| wpm | intégré à WinuxCmd | `winuxcmd wpm`, 16 sous-commandes ; index `official-2026.11.02` de 282 paquets (289 dans le clone du 2026-11-08) ; sha256 obligatoire, cache `<pkg>-<version>-<sha8>`, liens durs ; 4 miroirs par priorité |
-| oh-my-niu | 2.1.0 (2026-11-02) | cadre façon Oh My Zsh au corps bash ; 27 thèmes, 23 plugins, 174 complétions TOML ; `prompt-core` ; installation par clone dans `~/.niubash/oh-my-niu` |
+| Produit   | Dernière version   | Ce que publie le site                                                                                                                                                                                                                                                                   |
+| --------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| niubash   | 1.5.0 (2026-11-03) | bash réel pour Windows, Linux, macOS, Android ; 83/83 suites GNU bash 5.3, dont 82 identiques à l'octet ; `( )` et `$( )` sans processus ; installation par winget (`Unixwin.Niubash`) ou `install.ps1` ; 1.5.0 apporte un débogueur (`niu --debug`, `--dap`) et supprime `config.toml` |
+| rubash    | 1.5.0 (2026-11-03) | moteur bash 5.3 embarquable (`cargo add rubash`), bêta ; profileur `--profile`                                                                                                                                                                                                          |
+| WinuxCmd  | 1.2.1 (2026-11-02) | binaire Win32 unique d'environ 3,79 Mo ; 176 commandes et 1 924 options ; démarrage à froid d'environ 19 ms ; C++23, VS 2022 + CMake + Ninja, PGO ; 165 cas différentiels sur 178 identiques à GNU coreutils 9.7                                                                        |
+| niu-git   | v2.56.0.3          | git for Windows (2.56.0.windows.4) compilé MSVC + CMake + vcpkg, TLS schannel ; `git --version` en 13,7 ms contre 45 à 103 ms pour Git Bash ; sans send-email, svn, cvs, git-gui, gitk ni `grep -P`                                                                                     |
+| wpm       | intégré à WinuxCmd | `winuxcmd wpm`, 16 sous-commandes ; index `official-2026.11.02` de 282 paquets (289 dans le clone du 2026-11-08) ; sha256 obligatoire, cache `<pkg>-<version>-<sha8>`, liens durs ; 4 miroirs par priorité                                                                              |
+| oh-my-niu | 2.1.0 (2026-11-02) | cadre façon Oh My Zsh au corps bash ; 27 thèmes, 23 plugins, 174 complétions TOML ; `prompt-core` ; installation par clone dans `~/.niubash/oh-my-niu`                                                                                                                                  |
 
 ## Documentation technique (résumé)
 

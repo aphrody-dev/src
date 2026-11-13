@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Chris Wilson [X](https://twitter.com/cwilso)
 
 I'm really excited by a new feature that went in to yesterday's Chrome Canary build (23.0.1270.0) - the ability to get low-latency access to live audio from a microphone or other audio input on OSX! (This has not yet been enabled on Windows - but don't worry, we're working on it!)
@@ -26,18 +27,18 @@ For those Web Audio coders among you, here's how to request the audio input stre
 ```javascript
 // success callback when requesting audio input stream
 function gotStream(stream) {
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    var audioContext = new AudioContext();
+  window.AudioContext = window.AudioContext || window.webkitAudioContext;
+  var audioContext = new AudioContext();
 
-    // Create an AudioNode from the stream.
-    var mediaStreamSource = audioContext.createMediaStreamSource( stream );
+  // Create an AudioNode from the stream.
+  var mediaStreamSource = audioContext.createMediaStreamSource(stream);
 
-    // Connect it to the destination to hear yourself (or any other node for processing!)
-    mediaStreamSource.connect( audioContext.destination );
+  // Connect it to the destination to hear yourself (or any other node for processing!)
+  mediaStreamSource.connect(audioContext.destination);
 }
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-navigator.getUserMedia( {audio:true}, gotStream );
+navigator.getUserMedia({ audio: true }, gotStream);
 ```
 
 There are many rich possibilities for low-latency audio input, particularly in the musical space. You can see a quick example of how to make use of this in a [simple pitch detector](https://webaudiodemos.appspot.com/pitchdetect/index.html) I threw together - try plugging in a guitar, or even just whistling into the microphone.

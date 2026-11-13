@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn about reasons why RUM data can show different Core Web Vitals numbers from CrUX.
 
- Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: August 15, 2022, Last updated: December 17, 2025
 
@@ -25,7 +26,7 @@ With both solutions measuring user experience metrics, it is natural to assume t
 
 CrUX is a great tool for a consistent view across sites and---as [the Google dataset for the Core Web Vitals program](https://developer.chrome.com/docs/crux)---sites will likely want to keep an eye on what it is showing. The aim of CrUX is to provide a statistically relevant overview of millions of websites for cross comparison.
 
-However, for a deeper dive in investigating *why* data is showing the numbers it is, investing in a full RUM solution to supplement CrUX can give you access to more detailed information than can be made available in a publicly queryable dataset. This can help you explain and improve your metrics in a number of ways.
+However, for a deeper dive in investigating _why_ data is showing the numbers it is, investing in a full RUM solution to supplement CrUX can give you access to more detailed information than can be made available in a publicly queryable dataset. This can help you explain and improve your metrics in a number of ways.
 
 ### Deeper analysis to investigate issues
 
@@ -46,7 +47,7 @@ A RUM solution allows collection of other custom metrics, tied directly to your 
 > A man with a watch knows what time it is. A man with two watches is never sure.
 > [Segal's Law](https://en.wikipedia.org/wiki/Segal%27s_law)
 
-Whenever you have two sources of data, it can often be confusing and frustrating as to why they differ. In much the same way as it's important to understand the difference between [lab and field metrics](https://web.dev/articles/lab-and-field-data-differences.md.txt), there can also be differences between two sources of *field* data. While the data would be the same in an ideal world, there are many reasons why they can differ.
+Whenever you have two sources of data, it can often be confusing and frustrating as to why they differ. In much the same way as it's important to understand the difference between [lab and field metrics](https://web.dev/articles/lab-and-field-data-differences.md.txt), there can also be differences between two sources of _field_ data. While the data would be the same in an ideal world, there are many reasons why they can differ.
 
 ### Lab data versus field data
 
@@ -64,7 +65,7 @@ The Chrome User Experience Report, as its name suggests, is Chrome-only. While t
 
 While Chrome is one of the world's most popular browsers---and therefore would likely give a broad representation of your site's performance in most cases---measuring just that browser is by no means a measure of all your users. This may explain one main difference between RUM and CrUX. This is particularly true for performance techniques that rely on APIs or image formats only available in Chrome, for example.
 
-The lack of iOS data can also lead to bias. For example, [as iOS users are typically on more performant devices](https://infrequently.org/2021/03/the-performance-inequality-gap/) or visiting from more countries with better network infrastructure, including them can lead to high overall performance metrics. On the other hand, *excluding* them---as CrUX does---can lead to data that is skewed to the lower end of site visitors ([example case study](https://www.smashingmagazine.com/2021/12/core-web-vitals-case-study-smashing-magazine/)). Android users typically cover a wider range of devices, device capabilities, and markets.
+The lack of iOS data can also lead to bias. For example, [as iOS users are typically on more performant devices](https://infrequently.org/2021/03/the-performance-inequality-gap/) or visiting from more countries with better network infrastructure, including them can lead to high overall performance metrics. On the other hand, _excluding_ them---as CrUX does---can lead to data that is skewed to the lower end of site visitors ([example case study](https://www.smashingmagazine.com/2021/12/core-web-vitals-case-study-smashing-magazine/)). Android users typically cover a wider range of devices, device capabilities, and markets.
 
 RUM solutions can get data for non-Chrome browsers, and in particular from Chromium-based browsers that often have the same metrics (such as Core Web Vitals) built-in. Non-Chromium-based browsers are also measured by RUM solutions, but may have a more limited set of metrics. For example, [Cumulative Layout Shift (CLS)](https://web.dev/articles/cls.md.txt) is only available in Chromium-based browsers. Some other paint-based metrics like LCP, INP, and even [First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt) can be measured quite differently (see later).
 
@@ -84,7 +85,7 @@ However, if specific pages of a site are marked as indexable but others are not,
 
 CrUX segments data by mobile, desktop, and tablet - though many tools concentrate on the first two and may not expose tablet data, or may include it within mobile or desktop. The performance characteristics on mobile versus desktop can be quite different---both in terms of the content delivered, and in the capabilities of the devices viewing them.
 
-RUM data will allow segmenting traffic similarly, but often shows consolidated data by default. RUM may only allow segmenting by device type (for example, mobile) or browser (for example, Chrome), but not both to only see mobile Chrome traffic. When comparing to CrUX data, ensure you are comparing like-for-like by filtering by device type *and* the Chrome browser.
+RUM data will allow segmenting traffic similarly, but often shows consolidated data by default. RUM may only allow segmenting by device type (for example, mobile) or browser (for example, Chrome), but not both to only see mobile Chrome traffic. When comparing to CrUX data, ensure you are comparing like-for-like by filtering by device type _and_ the Chrome browser.
 
 #### Sampling
 
@@ -107,7 +108,7 @@ CrUX metrics are measured at the 75th percentile---that is, looking at the value
 RUM products often give a wider number of options of how to aggregate the metrics, including 75th percentile, median and other percentiles. If comparing RUM values to CrUX data, it is necessary to ensure you are looking at 75th percentile data to compare like-for-like.
 
 The histogram data in CrUX includes all available data---not just 75th percentile---and shows the number of page views in each rating, but the aggregate score will be based on 75th percentile. This CrUX data is surfaced in tools like [PageSpeed Insights](https://pagespeed.web.dev/):
- PageSpeed Insights shows CrUX 75th percentile and histogram data
+PageSpeed Insights shows CrUX 75th percentile and histogram data
 
 ### Differences in metrics
 
@@ -131,7 +132,7 @@ For non-Chromium browsers, the differences can be more pronounced. paint based m
 
 #### Metrics timing
 
-Core Web Vitals metrics are provided by web browser APIs, but that does not mean there is not a potential for differences of values reported using them. Exactly *when* the metric measurement is taken---at page load or throughout the full page life cycle---can lead to differences. RUM tools may not always measure metrics in the same way---even if using the same names---and the same browser APIs to get the data, which can be confusing.
+Core Web Vitals metrics are provided by web browser APIs, but that does not mean there is not a potential for differences of values reported using them. Exactly _when_ the metric measurement is taken---at page load or throughout the full page life cycle---can lead to differences. RUM tools may not always measure metrics in the same way---even if using the same names---and the same browser APIs to get the data, which can be confusing.
 
 [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt) is a page-load metric. A number of LCP elements can be reported by the Web API if larger elements are loaded later after the initial render. The final LCP element is when the page finishes loading or the user interacts with the page. Therefore differences can arise if the LCP element is reported earlier than those two events.
 
@@ -155,7 +156,7 @@ Some RUM providers do attempt to detect "soft navigations" in SPAs, but if they'
 
 ### CrUX and Web API differences
 
-As well as the differences in *which* page views are measured, and *what* is measured, there are a few other, more complicated, scenarios to be aware of that can lead to differences in CrUX and RUM data. Some of these are due to limitations of the Web APIs used to measure the metrics, and some are where the results returned by the API need to be treated differently for certain scenarios. The Core Web Vitals documentation lists these differences for [LCP](https://web.dev/articles/lcp.md.txt#differences_between_the_metric_and_the_api) and [CLS](https://web.dev/articles/cls.md.txt#differences_between_the_metric_and_the_api) but the main differences are also noted in the following sections.
+As well as the differences in _which_ page views are measured, and _what_ is measured, there are a few other, more complicated, scenarios to be aware of that can lead to differences in CrUX and RUM data. Some of these are due to limitations of the Web APIs used to measure the metrics, and some are where the results returned by the API need to be treated differently for certain scenarios. The Core Web Vitals documentation lists these differences for [LCP](https://web.dev/articles/lcp.md.txt#differences_between_the_metric_and_the_api) and [CLS](https://web.dev/articles/cls.md.txt#differences_between_the_metric_and_the_api) but the main differences are also noted in the following sections.
 
 #### Back/forward cache
 

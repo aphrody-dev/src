@@ -4,32 +4,32 @@ Date : 2026-11-12. Légende : [V] vérifié dans la session (source + date), [NV
 
 ## Versions constatées (gh api / Codeberg, 2026-11-12)
 
-| Outil | Version | Source |
-|---|---|---|
-| LLVM | 23.1.5 (2026-11-03) | gh releases llvm/llvm-project [V] |
-| cargo-xwin | 0.23.1 (2026-08-13) | gh releases rust-cross/cargo-xwin [V] |
-| xwin | 0.10.0 (2026-08-12) | gh releases Jake-Shadle/xwin [V] |
-| cargo-zigbuild | 0.24.1 (2026-11-04) | gh releases rust-cross/cargo-zigbuild [V] |
-| Zig | 0.17.1 (tag), dépôt déplacé sur Codeberg ; GitHub figé à 0.15.1 | Codeberg API tags + gh repo description [V] |
-| llvm-mingw | 20261104 | gh releases mstorsjo/llvm-mingw [V] |
-| msvc-wine | pas de release, actif (commit 2026-11-12) | gh commits [V] |
-| cross-rs | dernière release v0.2.5 (2023-02-04), main actif (commit 2026-10-31) | gh [V] |
-| prd | rustc LLVM 23.1.1, clang 23.1.4, cargo-xwin 0.23.1 + cache xwin | `ssh prd` [V] |
+| Outil          | Version                                                              | Source                                      |
+| -------------- | -------------------------------------------------------------------- | ------------------------------------------- |
+| LLVM           | 23.1.5 (2026-11-03)                                                  | gh releases llvm/llvm-project [V]           |
+| cargo-xwin     | 0.23.1 (2026-08-13)                                                  | gh releases rust-cross/cargo-xwin [V]       |
+| xwin           | 0.10.0 (2026-08-12)                                                  | gh releases Jake-Shadle/xwin [V]            |
+| cargo-zigbuild | 0.24.1 (2026-11-04)                                                  | gh releases rust-cross/cargo-zigbuild [V]   |
+| Zig            | 0.17.1 (tag), dépôt déplacé sur Codeberg ; GitHub figé à 0.15.1      | Codeberg API tags + gh repo description [V] |
+| llvm-mingw     | 20261104                                                             | gh releases mstorsjo/llvm-mingw [V]         |
+| msvc-wine      | pas de release, actif (commit 2026-11-12)                            | gh commits [V]                              |
+| cross-rs       | dernière release v0.2.5 (2023-02-04), main actif (commit 2026-10-31) | gh [V]                                      |
+| prd            | rustc LLVM 23.1.1, clang 23.1.4, cargo-xwin 0.23.1 + cache xwin      | `ssh prd` [V]                               |
 
 ## Matrice hôte → cible
 
-| Cible | Hôte Linux (prd/CI) | Hôte Windows (PC) | Limites |
-|---|---|---|---|
-| windows-msvc (Rust) | **cargo-xwin** (clang-cl + lld-link + CRT/SDK via xwin) | cargo natif (link.exe ou lld-link) | SDK MS non redistribuable (voir licence) |
-| windows-msvc (C/C++23) | clang-cl + lld-link + splat xwin/msvc-wine (`/winsysroot`) | clang-cl ou cl.exe | `import std` : module STL MSVC à compiler soi-même [NV] |
-| windows-msvc (.NET NativeAOT) | **impossible** | `dotnet publish -r win-x64` | cross-OS non supporté (Learn) |
-| windows-gnu / gnullvm | cargo-zigbuild ou llvm-mingw | idem | ABI C++ incompatible MSVC ; refusé pour runtime (voir MinGW) |
-| linux-gnu (glibc ancienne) | **cargo-zigbuild** `--target x86_64-unknown-linux-gnu.2.17` | cargo-zigbuild | pas de `crt-static` glibc ; utiliser musl |
-| linux-musl (statique) | cargo-zigbuild ou cargo natif + `rust-lld` | cargo-zigbuild | allocateur musl lent : mimalloc [NV] |
-| linux (.NET NativeAOT) | natif / conteneur `sdk:10.0-noble-aot` | conteneur/WSL (WSL interdit chez nous → CI Linux) | même OS requis |
-| macOS | cargo-zigbuild + SDK macOS (images docker fournies) | idem | licence SDK Apple [NV] ; .NET : Mac requis |
-| wasm32-wasip2 / unknown | cargo natif (rust-lld) | cargo natif | pas de toolchain C : clang `--target=wasm32` + wasi-sdk [NV] |
-| Chromium win | gn/ninja Linux, `DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL` + zip `package_from_installed.py` | gclient natif | voir Chromium |
+| Cible                         | Hôte Linux (prd/CI)                                                                    | Hôte Windows (PC)                                 | Limites                                                      |
+| ----------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------ |
+| windows-msvc (Rust)           | **cargo-xwin** (clang-cl + lld-link + CRT/SDK via xwin)                                | cargo natif (link.exe ou lld-link)                | SDK MS non redistribuable (voir licence)                     |
+| windows-msvc (C/C++23)        | clang-cl + lld-link + splat xwin/msvc-wine (`/winsysroot`)                             | clang-cl ou cl.exe                                | `import std` : module STL MSVC à compiler soi-même [NV]      |
+| windows-msvc (.NET NativeAOT) | **impossible**                                                                         | `dotnet publish -r win-x64`                       | cross-OS non supporté (Learn)                                |
+| windows-gnu / gnullvm         | cargo-zigbuild ou llvm-mingw                                                           | idem                                              | ABI C++ incompatible MSVC ; refusé pour runtime (voir MinGW) |
+| linux-gnu (glibc ancienne)    | **cargo-zigbuild** `--target x86_64-unknown-linux-gnu.2.17`                            | cargo-zigbuild                                    | pas de `crt-static` glibc ; utiliser musl                    |
+| linux-musl (statique)         | cargo-zigbuild ou cargo natif + `rust-lld`                                             | cargo-zigbuild                                    | allocateur musl lent : mimalloc [NV]                         |
+| linux (.NET NativeAOT)        | natif / conteneur `sdk:10.0-noble-aot`                                                 | conteneur/WSL (WSL interdit chez nous → CI Linux) | même OS requis                                               |
+| macOS                         | cargo-zigbuild + SDK macOS (images docker fournies)                                    | idem                                              | licence SDK Apple [NV] ; .NET : Mac requis                   |
+| wasm32-wasip2 / unknown       | cargo natif (rust-lld)                                                                 | cargo natif                                       | pas de toolchain C : clang `--target=wasm32` + wasi-sdk [NV] |
+| Chromium win                  | gn/ninja Linux, `DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL` + zip `package_from_installed.py` | gclient natif                                     | voir Chromium                                                |
 
 ## Par outil
 

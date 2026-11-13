@@ -42,9 +42,9 @@ to the serialized format no longer being self-describing.
 - Startup handshake between client and service. The client includes versioning based on its `MessageToServer`
   type, and the service replies with versioning based on its `MessageToClient` type. If either the service or client
   receive an incompatible version they fail, with the service sending an error message.
-    - The service's error message uses the coarser wire format version.
+  - The service's error message uses the coarser wire format version.
 - Send the version prepended to every message.
-    - This works best for the use case of one-shot commands.
+  - This works best for the use case of one-shot commands.
 
 Both of these require incrementing the existing wire format version from 2 to 3.
 

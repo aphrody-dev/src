@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 020: Functions](https://thecsspodcast.libsyn.com/020-functions)
 
 So far in this course, you've been exposed to several CSS functions.
@@ -30,7 +31,7 @@ A function is a named, self-contained piece of code that completes a specific ta
 A function is named so you can call it within your code and you can pass data into the function.
 This is known as passing arguments.
 
-A lot CSS functions are *pure functions* ,
+A lot CSS functions are _pure functions_ ,
 which means that if you pass the same arguments into them,
 they will always give you the same result back,
 regardless of what is happening in the rest of your code.
@@ -48,7 +49,7 @@ We'll cover that in more detail, later in this module.
 
 ```css
 .post :is(h1, h2, h3) {
-    line-height: 1.2;
+  line-height: 1.2;
 }
 ```
 
@@ -66,11 +67,11 @@ the rest of the **CSS rule** will be applied to them.
 
 ```css
 :root {
-    --base-color: #ff00ff;
+  --base-color: #ff00ff;
 }
 
 .my-element {
-    background: var(--base-color);
+  background: var(--base-color);
 }
 ```
 
@@ -79,7 +80,7 @@ A custom property is a variable which lets you tokenize values in your CSS code.
 which means they can be contextually manipulated or redefined.
 A custom property must be prefixed with two dashes (`--`) and are case sensitive.
 
-The [`var()`](https://developer.mozilla.org/docs/Web/CSS/var())
+The [`var()`](<https://developer.mozilla.org/docs/Web/CSS/var()>)
 function takes one required argument:
 the custom property that you are trying to return as a value.
 
@@ -88,7 +89,7 @@ argument. If `--base-color` is defined, then `var()` will return the value.
 
 ```css
 .my-element {
-    background: var(--base-color, hotpink);
+  background: var(--base-color, hotpink);
 }
 ```
 
@@ -101,8 +102,8 @@ the passed **declaration** will be used instead, which in this sample's case is 
 
 The `var()` function is just one of the CSS functions that return a value.
 Functions like
-[`attr()`](https://developer.mozilla.org/docs/Web/CSS/attr()) and
-[`url()`](https://developer.mozilla.org/docs/Web/CSS/url()) follow a similar structure to `var()`---
+[`attr()`](<https://developer.mozilla.org/docs/Web/CSS/attr()>) and
+[`url()`](<https://developer.mozilla.org/docs/Web/CSS/url()>) follow a similar structure to `var()`---
 you pass one or more arguments and use them on the **right side** of your CSS declaration.
 
 ```css
@@ -119,7 +120,7 @@ this would automatically be reflected in this `content` attribute.
 
 ```css
 .my-element {
-    background-image: url('/path/to/image.jpg');
+  background-image: url("/path/to/image.jpg");
 }
 ```
 
@@ -154,14 +155,14 @@ Browser Support
 
 [Source](https://developer.mozilla.org/docs/Web/CSS/Reference/Values/calc)
 
-The [`calc()`](https://developer.mozilla.org/docs/Web/CSS/calc())
+The [`calc()`](<https://developer.mozilla.org/docs/Web/CSS/calc()>)
 function takes a single mathematical expression as its parameter.
 This mathematical expression can be a mix of types,
 such as length, number, angle and frequency. Units can be mixed too.
 
 ```css
 .my-element {
-    width: calc(100% - 2rem);
+  width: calc(100% - 2rem);
 }
 ```
 
@@ -195,9 +196,9 @@ Browser Support
 
 [Source](https://developer.mozilla.org/docs/Web/CSS/Reference/Values/min)
 
-The [`min()`](https://developer.mozilla.org/docs/Web/CSS/min())
+The [`min()`](<https://developer.mozilla.org/docs/Web/CSS/min()>)
 function returns the smallest computed value of the one or more passed arguments.
-The [`max()`](https://developer.mozilla.org/docs/Web/CSS/max())
+The [`max()`](<https://developer.mozilla.org/docs/Web/CSS/max()>)
 function does the opposite: get the largest value of the one or more passed arguments.
 
 ```css
@@ -227,7 +228,7 @@ Browser Support
 
 [Source](https://developer.mozilla.org/docs/Web/CSS/Reference/Values/clamp)
 
-The [`clamp()`](https://developer.mozilla.org/docs/Web/CSS/clamp())
+The [`clamp()`](<https://developer.mozilla.org/docs/Web/CSS/clamp()>)
 function takes three arguments: the minimum size,
 the ideal size and the maximum.
 
@@ -267,7 +268,7 @@ angle unit.
 
 ```css
 :root {
-  --sine-degrees: sin(45deg);     /* returns 0.7071 */
+  --sine-degrees: sin(45deg); /* returns 0.7071 */
   --sine-radians: sin(0.7853rad); /* returns 0.7071 */
 }
 ```
@@ -320,8 +321,8 @@ be the same unit type and `hypot()` will return the same type.
 
 ```css
 :root {
-  --use-ems: hypot(3em, 4em);   /* returns 5em */
-  --use-px:  hypot(30px, 40px); /* returns 50px */
+  --use-ems: hypot(3em, 4em); /* returns 5em */
+  --use-px: hypot(30px, 40px); /* returns 50px */
 }
 ```
 
@@ -333,7 +334,7 @@ The `pow()` function takes two numeric arguments, the base and the exponent, and
 raises the base by the power of the exponent. Both arguments must be numbers
 without units. The `exp()` function takes a single argument and is equivalent to
 calling the `pow()` function with a base of
-[*e*](https://en.wikipedia.org/wiki/E_(mathematical_constant)).
+[_e_](<https://en.wikipedia.org/wiki/E_(mathematical_constant)>).
 
 ```css
 .my-element {
@@ -364,7 +365,7 @@ the base for the logarithm.
 ```css
 :root {
   --log2: log(16, 2); /* returns 4      */
-  --logn: log(16);    /* returns 2.7725 */
+  --logn: log(16); /* returns 2.7725 */
 }
 ```
 
@@ -396,6 +397,7 @@ Positive values return `1` and negative values return `-1`. Zero values return
   top: calc(50vh + 25vh * sign(var(--value));
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/LEVLbaB?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="sign() pen by web-dot-dev on Codepen"></iframe>
 
 In the preceding examples, if `--value` is positive, the top value will be
@@ -412,12 +414,12 @@ CSS properties use shapes to visually clip your box or provide a shape for conte
 
 There are shape functions that can be used with both of these properties.
 Simple shapes such as
-[`circle()`](https://developer.mozilla.org/docs/Web/CSS/basic-shape/circle()),
-[`ellipse()`](https://developer.mozilla.org/docs/Web/CSS/basic-shape/ellipse()) and
-[`inset()`](https://developer.mozilla.org/docs/Web/CSS/basic-shape/inset())
+[`circle()`](<https://developer.mozilla.org/docs/Web/CSS/basic-shape/circle()>),
+[`ellipse()`](<https://developer.mozilla.org/docs/Web/CSS/basic-shape/ellipse()>) and
+[`inset()`](<https://developer.mozilla.org/docs/Web/CSS/basic-shape/inset()>)
 take configuration arguments to size them.
 More complex shapes, such as
-[`polygon()`](https://developer.mozilla.org/docs/Web/CSS/basic-shape/polygon())
+[`polygon()`](<https://developer.mozilla.org/docs/Web/CSS/basic-shape/polygon()>)
 take comma separated pairs of X and Y axis values to create custom shapes.
 
 ```css
@@ -426,9 +428,18 @@ take comma separated pairs of X and Y axis values to create custom shapes.
 }
 
 .polygon {
-  clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%);
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 75%,
+    75% 75%,
+    75% 100%,
+    50% 75%,
+    0% 75%
+  );
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/rNjYNNd?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen rNjYNNd by web-dot-dev on Codepen"></iframe>
 
 Like `polygon()`, there is also a `path()` function which takes an SVG fill rule as an argument.
@@ -453,12 +464,12 @@ Browser Support
 [Source](https://developer.mozilla.org/docs/Web/CSS/Reference/Values/transform-function/rotate)
 
 You can rotate an element using the
-[`rotate()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/rotate())
+[`rotate()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/rotate()>)
 function, which will rotate an element on its center axis.
 You can also use the
-[`rotateX()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/rotateX()),
-[`rotateY()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/rotateY()) and
-[`rotateZ()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/rotateZ())
+[`rotateX()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/rotateX()>),
+[`rotateY()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/rotateY()>) and
+[`rotateZ()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/rotateZ()>)
 functions to rotate an element on a specific axis instead.
 You can pass degree, turn and radian units to determine the level of rotation.
 
@@ -467,9 +478,10 @@ You can pass degree, turn and radian units to determine the level of rotation.
   transform: rotateX(10deg) rotateY(10deg) rotateZ(10deg);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/MWJOWzP?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen MWJOWzP by web-dot-dev on Codepen"></iframe>
 
-The [`rotate3d()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/rotate3d())
+The [`rotate3d()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/rotate3d()>)
 function takes four arguments.
 
 Browser Support
@@ -490,6 +502,7 @@ like the other rotation functions, accepts degrees, angle and turns.
   transform: rotate3d(1, 1, 1, 10deg);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/GRrOJxa?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen GRrOJxa by web-dot-dev on Codepen"></iframe>
 
 You can use the individual
@@ -513,15 +526,15 @@ Browser Support
 [Source](https://developer.mozilla.org/docs/Web/CSS/Reference/Values/transform-function/scale)
 
 You can change the scaling of an element with `transform` and the
-[`scale()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/scale()) function.
+[`scale()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/scale()>) function.
 The function accepts one or two numbers as a value which determine a positive or negative scaling.
 If you only define one number argument,
 both the X and Y axis will be scaled the same and defining both is a shorthand for X and Y.
 Just like `rotate()`,
 there are
-[`scaleX()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/scaleX()),
-[`scaleY()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/scaleY()) and
-[`scaleZ()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/scaleZ())
+[`scaleX()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/scaleX()>),
+[`scaleY()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/scaleY()>) and
+[`scaleZ()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/scaleZ()>)
 functions to scale an element on a specific axis instead.
 
 ```css
@@ -529,10 +542,11 @@ functions to scale an element on a specific axis instead.
   transform: scaleX(1.2) scaleY(1.2);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/vYgWOoq?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen vYgWOoq by web-dot-dev on Codepen"></iframe>
 
 Also like the `rotate` function, there is a
-[`scale3d()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/scale3d()) function.
+[`scale3d()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/scale3d()>) function.
 This is similar to `scale()`, but it takes three arguments: the X, Y and Z scale factor.
 
 You can use the individual [`scale`](https://developer.mozilla.org/docs/Web/CSS/scale) property to scale an element. When used outside of the `transform` property, you can [transition](https://web.dev/learn/css/functions/TODO) it separately from other transformations.
@@ -551,7 +565,7 @@ Browser Support
 
 [Source](https://developer.mozilla.org/docs/Web/CSS/Reference/Values/transform-function/translate)
 
-The [`translate()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/translate())
+The [`translate()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/translate()>)
 functions move an element while it maintains its position in the document flow.
 They accept length and percentage values as arguments.
 The `translate()` function translates an element along the X axis if one argument is defined,
@@ -562,21 +576,22 @@ and translates an element along the X and Y axis if both arguments are defined.
   transform: translatex(40px) translatey(25px);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/RwKjWgP?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen RwKjWgP by web-dot-dev on Codepen"></iframe>
 
 You can---just like with other transform functions---use specific functions for a specific axis,
 using
-[`translateX`](https://developer.mozilla.org/docs/Web/CSS/transform-function/translateX()),
-[`translateY`](https://developer.mozilla.org/docs/Web/CSS/transform-function/translateY()) and
-[`translateZ`](https://developer.mozilla.org/docs/Web/CSS/transform-function/translateZ()).
+[`translateX`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/translateX()>),
+[`translateY`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/translateY()>) and
+[`translateZ`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/translateZ()>).
 You can also use
-[`translate3d`](https://developer.mozilla.org/docs/Web/CSS/transform-function/translate3d())
+[`translate3d`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/translate3d()>)
 which lets you define the X, Y and Z translation in one function.
 
 Like `scale` and `rotate`, you can also use the [`translate`](https://developer.mozilla.org/docs/Web/CSS/translate) property outside of the `transform` property to move an element.
 
 ```css
-.my-element{
+.my-element {
   translate: 20px 30px;
 }
 ```
@@ -595,20 +610,21 @@ Browser Support
 [Source](https://developer.mozilla.org/docs/Web/CSS/Reference/Values/transform-function/skew)
 
 You can skew an element, using the
-[`skew()`](https://developer.mozilla.org/docs/Web/CSS/transform-function/skew())
+[`skew()`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/skew()>)
 functions which accept angles as arguments.
 The `skew()` function works in a very similar way to `translate()`.
 If you only define one argument, it will only affect the X axis and if you define both,
 it will affect the X and Y axis.
 You can also use
-[`skewX`](https://developer.mozilla.org/docs/Web/CSS/transform-function/skewX()) and
-[`skewY`](https://developer.mozilla.org/docs/Web/CSS/transform-function/skewY()) to affect each axis independently.
+[`skewX`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/skewX()>) and
+[`skewY`](<https://developer.mozilla.org/docs/Web/CSS/transform-function/skewY()>) to affect each axis independently.
 
 ```css
 .my-element {
   transform: skew(10deg);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JjEOYMq?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JjEOYMq by web-dot-dev on Codepen"></iframe>
 
 ### Perspective

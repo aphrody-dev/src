@@ -4,16 +4,18 @@ Everything was run on fr2 (`nice`, cargo nightly 1.102.0 of 2026-11-06), on copi
 
 ## Results
 
-| Tree | Crates | As is (`cargo package --no-verify`) | With the patch | `publish --dry-run` (with verify) |
-|---|---|---|---|---|
-| C:\labs | 25 | 4 OK, 21 KO (path dependencies without version) | **25/25 OK** | 13 verified OK, then **failure on `aphrody-lore-transport`** (see B2) |
-| C:\src-merge | 69 | majority KO (path dependencies without version) | **66/66 OK** (3 excluded, see B1) | not run (69 crates; to be done in CI once B2 and B3 are resolved) |
+| Tree         | Crates | As is (`cargo package --no-verify`)             | With the patch                    | `publish --dry-run` (with verify)                                     |
+| ------------ | ------ | ----------------------------------------------- | --------------------------------- | --------------------------------------------------------------------- |
+| C:\labs      | 25     | 4 OK, 21 KO (path dependencies without version) | **25/25 OK**                      | 13 verified OK, then **failure on `aphrody-lore-transport`** (see B2) |
+| C:\src-merge | 69     | majority KO (path dependencies without version) | **66/66 OK** (3 excluded, see B1) | not run (69 crates; to be done in CI once B2 and B3 are resolved)     |
 
 Generated patches (applied and tested on fr2, `git apply --check` OK locally):
+
 - `docs/publish/src-publish-fields.patch`: to apply on the src merge branch (`git apply`, then `cargo update -w` for the lock, which is excluded from the patch). 103 files;
 - `docs/publish/labs-publish-fields.patch`: same transformation for C:\labs. 47 files. Not applied, pending the labs-to-src merge (the lore* crates exist in both trees and must be published only once, from src).
 
 Patch contents:
+
 1. `version = "<x>"` on every internal path dependency (workspace.dependencies and members).
 2. Renames forced by already-taken names and the rule of `docs/IDENTITY.md` (`aphrody-<dir>`): `lore` becomes `aphrody-lore` (taken: 0.1.0, maintained by a third party), `ffi` becomes `aphrody-ffi`, `sys` becomes `aphrody-sys`, and for consistency `lore-*` becomes `aphrody-lore-*` (20 crates). The dependency key stays unchanged (`lore = { …, package = "aphrody-lore" }`), so the code is not touched.
 3. Internal dev-dependencies inherited from the workspace become path-only, which cargo strips when packaging. Without this, the cycle `lore-base` → `lore-io` → (dev) `lore-base` blocks.

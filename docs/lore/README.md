@@ -16,19 +16,19 @@ Documentation for installing, using, and understanding Lore.
 
 - [Tutorials](tutorials/README.md)
 
-    Guided walkthroughs to learn by doing.
+  Guided walkthroughs to learn by doing.
 
 - [How-To guides](how-to/README.md)
 
-    Goal-driven directions for getting things done.
+  Goal-driven directions for getting things done.
 
 - [Reference](reference/README.md)
 
-    Authoritative descriptions of commands, file formats, and protocols.
+  Authoritative descriptions of commands, file formats, and protocols.
 
 - [Explanation](explanation/README.md)
 
-    Why Lore works the way it does.
+  Why Lore works the way it does.
 
 </div>
 

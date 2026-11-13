@@ -39,7 +39,7 @@ So the user diffs pairs of revisions by hand until the line appears, without kno
 
 - Auditing a whole repository or several paths at once.
 - Detecting lines copied between files (`git blame -C`). The walk follows recorded moves only.
-- Following a merge into the branch it merged. See *Merges*.
+- Following a merge into the branch it merged. See _Merges_.
 - Reproducing an answer after the comparison rules change.
 
 ## Proposed Design
@@ -109,41 +109,41 @@ The walk stops after 100 steps unless the caller changes the budget. The first s
 
 ### Merges
 
-A line a merge brought in is attributed to the merge revision. The walk follows first parents only and does not enter the merged branch. *Alternatives Considered* explains why.
+A line a merge brought in is attributed to the merge revision. The walk follows first parents only and does not enter the merged branch. _Alternatives Considered_ explains why.
 
 ### Where an answer is not available
 
 The walk stops rather than guesses. When it cannot read a step, it reports every line still unattributed with the reason as its outcome. Lines it already attributed keep their outcome. It never attributes a line to a revision it did not verify.
 
-| Outcome | Cause |
-|---|---|
-| `obliterated` | `lore file obliterate` removed an old payload. The address remains, the content does not. |
-| `binary-in-history` | An older version holds binary content, which the walk cannot compare line by line. |
-| `link-unavailable` | The file is in a linked repository that is unauthorized or, offline, unreachable. |
+| Outcome               | Cause                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| `obliterated`         | `lore file obliterate` removed an old payload. The address remains, the content does not.     |
+| `binary-in-history`   | An older version holds binary content, which the walk cannot compare line by line.            |
+| `link-unavailable`    | The file is in a linked repository that is unauthorized or, offline, unreachable.             |
 | `content-unavailable` | The content is not local, and `--offline` or an instance with no remote prevents fetching it. |
-| `budget-exhausted` | The revision budget ran out. |
+| `budget-exhausted`    | The revision budget ran out.                                                                  |
 
 These outcomes describe the file or a configured state, and apply to the older versions the walk reads. An environment error, such as a lost connection or content this build cannot decompress, ends the query, and the completion event carries the error. If the error happens during the walk, the query first reports every line: attributed lines keep their outcome, and the lines the walk did not reach get `unresolved`. If it happens before the walk, for example while resolving the revision or reading the requested version, the query reports no ranges. The caller decides whether to show the ranges, the error, or both.
 
 ### Rules for the remaining cases
 
-| Case | Rule |
-|---|---|
-| Path absent at the requested revision | `FileNotFound`; no walk runs. A deleted path counts as not found |
-| Binary file | Error. Classification reuses `make_diff_content` (`lore-revision/src/file/diff.rs:1221-1227`) |
-| Empty file | Zero ranges and a successful completion |
-| Last line without a terminator | An ordinary line. Adding a terminator changes it |
-| Uncommitted edits on disk | Reported as `uncommitted` with no revision, and excluded from the walk. Line numbers are those on disk, so an editor can align them |
-| Revision named explicitly | The query ignores the working tree. The file on disk only describes the synced revision, so naming any revision, even the synced one, is a history query |
-| No file on disk at the path | Not an edit. A view filter or a sparse instance may leave the path empty on disk, so the revision's lines attribute normally. An empty file on disk has no lines and yields no ranges |
-| Recorded rename | Followed. The predecessor of a recorded move is the file node at its old path |
-| Unrecorded move (delete plus add) | Not detected. The adding revision owns the added lines |
-| Cherry-pick, revert, restore | Not followed. The cherry-pick revision owns the line; its metadata holds the origin hash |
-| Path in a linked repository | Followed (`lore-revision/src/file/diff.rs:1255-1263`). Each range names its own repository |
-| Content absent locally | Fetched through the existing read path (`lore-revision/src/file/diff.rs:1289-1296`). For an older version, `--offline` reports `content-unavailable` instead |
-| Whitespace-only change | Trailing whitespace is ignored by default (`--no-ignore-space-at-eol` turns this off); reindentation counts as a change unless `--ignore-space-change` is given |
-| Repeat query for the same revision | Recomputed. Version 1 caches nothing. A consumer can cache on the arguments it passed when it names an explicit revision |
-| Comparison rules change in a later release | An answer can change, and the old rules are not kept. A consumer that caches across releases includes the Lore version in its key |
+| Case                                       | Rule                                                                                                                                                                                  |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Path absent at the requested revision      | `FileNotFound`; no walk runs. A deleted path counts as not found                                                                                                                      |
+| Binary file                                | Error. Classification reuses `make_diff_content` (`lore-revision/src/file/diff.rs:1221-1227`)                                                                                         |
+| Empty file                                 | Zero ranges and a successful completion                                                                                                                                               |
+| Last line without a terminator             | An ordinary line. Adding a terminator changes it                                                                                                                                      |
+| Uncommitted edits on disk                  | Reported as `uncommitted` with no revision, and excluded from the walk. Line numbers are those on disk, so an editor can align them                                                   |
+| Revision named explicitly                  | The query ignores the working tree. The file on disk only describes the synced revision, so naming any revision, even the synced one, is a history query                              |
+| No file on disk at the path                | Not an edit. A view filter or a sparse instance may leave the path empty on disk, so the revision's lines attribute normally. An empty file on disk has no lines and yields no ranges |
+| Recorded rename                            | Followed. The predecessor of a recorded move is the file node at its old path                                                                                                         |
+| Unrecorded move (delete plus add)          | Not detected. The adding revision owns the added lines                                                                                                                                |
+| Cherry-pick, revert, restore               | Not followed. The cherry-pick revision owns the line; its metadata holds the origin hash                                                                                              |
+| Path in a linked repository                | Followed (`lore-revision/src/file/diff.rs:1255-1263`). Each range names its own repository                                                                                            |
+| Content absent locally                     | Fetched through the existing read path (`lore-revision/src/file/diff.rs:1289-1296`). For an older version, `--offline` reports `content-unavailable` instead                          |
+| Whitespace-only change                     | Trailing whitespace is ignored by default (`--no-ignore-space-at-eol` turns this off); reindentation counts as a change unless `--ignore-space-change` is given                       |
+| Repeat query for the same revision         | Recomputed. Version 1 caches nothing. A consumer can cache on the arguments it passed when it names an explicit revision                                                              |
+| Comparison rules change in a later release | An answer can change, and the old rules are not kept. A consumer that caches across releases includes the Lore version in its key                                                     |
 
 ### Surfaces
 
@@ -187,12 +187,12 @@ Per-line attribution makes per-person statistics easy to produce, and these can 
 
 **Assumptions**
 
-- **Assumption:** most files resolve within 100 file-changing revisions — *invalidated if:* measurement shows common files exceeding it.
+- **Assumption:** most files resolve within 100 file-changing revisions — _invalidated if:_ measurement shows common files exceeding it.
 
 **Risks**
 
-- **Risk:** on a sparse instance the walk is network-bound and too slow for an editor — *mitigation:* streaming, the default budget, and caching by the consumer on an explicit revision.
-- **Risk:** users read an unresolved range as a defect — *mitigation:* every unresolved range carries a specific outcome, and the CLI prints it.
+- **Risk:** on a sparse instance the walk is network-bound and too slow for an editor — _mitigation:_ streaming, the default budget, and caching by the consumer on an explicit revision.
+- **Risk:** users read an unresolved range as a defect — _mitigation:_ every unresolved range carries a specific outcome, and the CLI prints it.
 
 ## Drawbacks
 
@@ -208,47 +208,47 @@ Per-line attribution makes per-person statistics easy to produce, and these can 
 
 The server holds content locally, so it avoids client fetches, and one cache could serve every user.
 
-*Rejected because:* it does not work offline, needs a new server verb first, and delays every client behind a server release. The walk stays reusable, so a server phase can follow.
+_Rejected because:_ it does not work offline, needs a new server verb first, and delays every client behind a server release. The walk stays reusable, so a server phase can follow.
 
 ### Follow merges into the merged branch
 
 Follow the merge's second parent for affected lines, and report the revision that wrote them.
 
-*Rejected because:* the walk becomes a tree instead of a line. Each merge adds a second chain, and those chains contain further merges, so the work grows with the number of merges.
+_Rejected because:_ the walk becomes a tree instead of a line. Each merge adds a second chain, and those chains contain further merges, so the work grows with the number of merges.
 
 ### One record per line
 
 One record per line spares consumers from expanding ranges.
 
-*Rejected because:* the record count would equal the line count, not the number of changes. `lore-revision/src/branch.rs` has 3,968 lines and 31 revisions that changed it, so per-line output sends 3,968 records where ranges send at most a few hundred. Expanding ranges is trivial for a consumer.
+_Rejected because:_ the record count would equal the line count, not the number of changes. `lore-revision/src/branch.rs` has 3,968 lines and 31 revisions that changed it, so per-line output sends 3,968 records where ranges send at most a few hundred. Expanding ranges is trivial for a consumer.
 
 ### Store a precomputed index
 
 Store per-line provenance so a query becomes a lookup.
 
-*Rejected because:* storage grows with lines times revisions, every commit invalidates part of it, and one stored answer cannot serve every whitespace setting. Git recomputes on every call for the same reasons.
+_Rejected because:_ storage grows with lines times revisions, every commit invalidates part of it, and one stored answer cannot serve every whitespace setting. Git recomputes on every call for the same reasons.
 
 ### Repeat the revision's attribution on every range
 
 Each range carries the people, the timestamp and any keys the caller names, so the consumer needs no second call.
 
-*Rejected because:* the same metadata travels once per range instead of once per revision, and the audit API grows with every key a caller wants. `lore revision info` already reports it.
+_Rejected because:_ the same metadata travels once per range instead of once per revision, and the audit API grows with every key a caller wants. `lore revision info` already reports it.
 
 ### A header event with the query's facts
 
 One event before the ranges states the path, the revision, the whitespace settings and an algorithm version.
 
-*Rejected because:* the caller already knows all of these; it passed them.
+_Rejected because:_ the caller already knows all of these; it passed them.
 
 ### Report a lost connection as an unresolved range with a reason
 
 Mark the lines the walk could not fetch with a reason, as for content an offline instance lacks.
 
-*Rejected because:* a lost connection describes the environment, not the file, and a reason would hide a failure the caller should see. The query ends with the error on the completion event, and the lines it did not reach get `unresolved`.
+_Rejected because:_ a lost connection describes the environment, not the file, and a reason would hide a failure the caller should see. The query ends with the error on the completion event, and the lines it did not reach get `unresolved`.
 
 ### Do nothing
 
-*Rejected because:* users already perform this walk by hand with `lore file history` and repeated `lore file diff`.
+_Rejected because:_ users already perform this walk by hand with `lore file history` and repeated `lore file diff`.
 
 ## Prior Art
 

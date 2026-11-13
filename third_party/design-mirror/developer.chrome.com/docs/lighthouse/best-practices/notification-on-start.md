@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Good notifications are [timely, relevant, and precise](https://web.dev/articles/push-notifications-overview).
 If your page asks for permission to send notifications on page load,
 those notifications may not be relevant to your users or their needs.

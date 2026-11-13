@@ -5,26 +5,64 @@
 import { $ } from "bun";
 import { join } from "node:path";
 
-type Repo = { name: string; fork: boolean; archived: boolean; private: boolean };
-type Pr = { repository: { nameWithOwner: string }; state: string; url: string; title: string };
+type Repo = {
+  name: string;
+  fork: boolean;
+  archived: boolean;
+  private: boolean;
+};
+type Pr = {
+  repository: { nameWithOwner: string };
+  state: string;
+  url: string;
+  title: string;
+};
 
-const gh = async <T>(...args: string[]): Promise<T> => JSON.parse(await $`gh ${args}`.text()) as T;
+const gh = async <T>(...args: string[]): Promise<T> =>
+  JSON.parse(await $`gh ${args}`.text()) as T;
 
-const orgRepos = await gh<Repo[]>("api", "--paginate", "--slurp", "orgs/aphrody-labs/repos?type=public&per_page=100").then(
-  (pages) => (pages as unknown as Repo[][]).flat(),
-);
+const orgRepos = await gh<Repo[]>(
+  "api",
+  "--paginate",
+  "--slurp",
+  "orgs/aphrody-labs/repos?type=public&per_page=100",
+).then((pages) => (pages as unknown as Repo[][]).flat());
 const sources = orgRepos.filter((r) => !r.fork && !r.archived);
 const forks = orgRepos.filter((r) => r.fork);
-const languages = await gh<Record<string, number>>("api", "repos/aphrody-labs/src/languages");
+const languages = await gh<Record<string, number>>(
+  "api",
+  "repos/aphrody-labs/src/languages",
+);
 const prs = await gh<Pr[]>(
-  "search", "prs", "--author", "aphrody-dev", "--json", "repository,state,url,title", "-L", "200",
+  "search",
+  "prs",
+  "--author",
+  "aphrody-dev",
+  "--json",
+  "repository,state,url,title",
+  "-L",
+  "200",
 );
-const upstream = prs.filter((p) => !p.repository.nameWithOwner.startsWith("aphrody-"));
-const upstreamRepos = [...new Set(upstream.map((p) => p.repository.nameWithOwner))].sort();
+const upstream = prs.filter(
+  (p) => !p.repository.nameWithOwner.startsWith("aphrody-"),
+);
+const upstreamRepos = [
+  ...new Set(upstream.map((p) => p.repository.nameWithOwner)),
+].sort();
 const merged = await gh<Pr[]>(
-  "search", "prs", "--author", "aphrody-dev", "--merged", "--json", "repository,state,url,title", "-L", "200",
+  "search",
+  "prs",
+  "--author",
+  "aphrody-dev",
+  "--merged",
+  "--json",
+  "repository,state,url,title",
+  "-L",
+  "200",
 );
-const mergedUpstream = merged.filter((p) => !p.repository.nameWithOwner.startsWith("aphrody-"));
+const mergedUpstream = merged.filter(
+  (p) => !p.repository.nameWithOwner.startsWith("aphrody-"),
+);
 
 const stats = {
   generated: new Date().toISOString().slice(0, 10),
@@ -51,7 +89,17 @@ const stats = {
       languages: [],
     },
   ],
-  pulls: upstream.map((p) => ({ repo: p.repository.nameWithOwner, state: p.state, title: p.title, url: p.url })),
+  pulls: upstream.map((p) => ({
+    repo: p.repository.nameWithOwner,
+    state: p.state,
+    title: p.title,
+    url: p.url,
+  })),
 };
-await Bun.write(join(import.meta.dir, "stats.json"), JSON.stringify(stats, null, 2) + "\n");
-console.log(`${sources.length} sources, ${forks.length} forks, ${upstream.length} upstream PRs (${mergedUpstream.length} merged)`);
+await Bun.write(
+  join(import.meta.dir, "stats.json"),
+  JSON.stringify(stats, null, 2) + "\n",
+);
+console.log(
+  `${sources.length} sources, ${forks.length} forks, ${upstream.length} upstream PRs (${mergedUpstream.length} merged)`,
+);

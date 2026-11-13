@@ -1,9 +1,11 @@
 # Bun guides, project docs, lint rules index
+
 Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title — description. Read the file under C:/src/third_party/browsers/oven-sh_bun/docs/ or https://bun.com/docs/<path-without-ext>.
 
 ## guides/
 
 ### guides/binary
+
 - `arraybuffer-to-array` Convert an ArrayBuffer to an array of numbers
 - `arraybuffer-to-blob` Convert an ArrayBuffer to a Blob
 - `arraybuffer-to-buffer` Convert an ArrayBuffer to a Buffer
@@ -28,6 +30,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `typedarray-to-string` Convert a Uint8Array to a string
 
 ### guides/deployment
+
 - `aws-lambda` Deploy a Bun application on AWS Lambda
 - `digital-ocean` Deploy a Bun application on DigitalOcean
 - `google-cloud-run` Deploy a Bun application on Google Cloud Run
@@ -36,6 +39,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `vercel` Deploy a Bun application on Vercel
 
 ### guides/ecosystem
+
 - `astro` Build an app with Astro and Bun
 - `discordjs` Create a Discord bot
 - `docker` Containerize a Bun application with Docker
@@ -65,14 +69,17 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `vite` Build a frontend using Vite and Bun
 
 ### guides/format
+
 - `migrate-from-oxfmt` Migrate from oxfmt to bun fmt
 - `migrate-from-prettier` Migrate from Prettier to bun fmt
 
 ### guides/html-rewriter
+
 - `extract-links` Extract links from a webpage using HTMLRewriter
 - `extract-social-meta` Extract social share images and Open Graph tags
 
 ### guides/http
+
 - `cluster` Start a cluster of HTTP servers — Run multiple HTTP servers concurrently with the "reusePort" option to share the same port across multiple proc
 - `fetch-unix` fetch with unix domain sockets in Bun
 - `fetch` Send an HTTP request using fetch
@@ -88,9 +95,11 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `tls` Configure TLS on an HTTP server
 
 ### guides
+
 - `index` Guides — Code samples and walkthroughs for common tasks with Bun
 
 ### guides/install
+
 - `add-dev` Add a development dependency
 - `add-git` Add a Git dependency
 - `add-optional` Add an optional dependency
@@ -110,10 +119,12 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `yarnlock` Generate a yarn-compatible lockfile
 
 ### guides/lint
+
 - `migrate-from-eslint` Migrate from ESLint to bun lint
 - `migrate-from-oxlint` Migrate from oxlint to bun lint
 
 ### guides/process
+
 - `argv` Parse command-line arguments
 - `ctrl-c` Listen for CTRL+C
 - `ipc` Spawn a child process and communicate using IPC
@@ -125,6 +136,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `stdin` Read from stdin
 
 ### guides/read-file
+
 - `arraybuffer` Read a file to an ArrayBuffer
 - `buffer` Read a file to a Buffer
 - `exists` Check if a file exists
@@ -136,6 +148,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `watch` Watch a directory for changes
 
 ### guides/runtime
+
 - `build-time-constants` Build-time constants with --define
 - `cicd` Install and run Bun in GitHub Actions
 - `codesign-macos-executable` Codesign a single-file JavaScript executable on macOS — Fix the "can't be opened because it is from an unidentified developer" Gatekeeper warning when running your Ja
@@ -159,6 +172,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `web-debugger` Debugging Bun with the web debugger
 
 ### guides/streams
+
 - `node-readable-to-arraybuffer` Convert a Node.js Readable to an ArrayBuffer
 - `node-readable-to-blob` Convert a Node.js Readable to a Blob
 - `node-readable-to-json` Convert a Node.js Readable to JSON
@@ -173,6 +187,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `to-typedarray` Convert a ReadableStream to a Uint8Array
 
 ### guides/test
+
 - `bail` Bail early with the Bun test runner
 - `concurrent-test-glob` Selectively run tests concurrently with glob patterns — Set a glob pattern to decide which tests from which files run in parallel
 - `coverage-threshold` Set a code coverage threshold with the Bun test runner
@@ -194,6 +209,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `watch-mode` Run tests in watch mode with Bun
 
 ### guides/util
+
 - `base64` Encode and decode base64 data
 - `deep-equals` Check if two objects are deeply equal
 - `deflate` Compress and decompress data with DEFLATE
@@ -215,12 +231,14 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `which-path-to-executable-bin` Get the path to an executable bin file
 
 ### guides/websocket
+
 - `compression` Enable compression for WebSocket messages
 - `context` Set per-socket contextual data on a WebSocket
 - `pubsub` Build a publish-subscribe WebSocket server
 - `simple` Build a simple WebSocket server
 
 ### guides/write-file
+
 - `append` Append content to a file
 - `basic` Write a string to a file
 - `blob` Write a Blob to a file
@@ -235,6 +253,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 ## project/
 
 ### project
+
 - `benchmarking` Benchmarking — How to benchmark Bun
 - `bindgen` Bindgen — Bindgen for Bun
 - `building-windows` Building Windows — Building Bun on Windows
@@ -243,6 +262,7 @@ Source: oven-sh/bun@7f964e6 docs/ (2026-11-11). One line per doc: path — title
 - `roadmap` Roadmap — Bun's roadmap and long-term plans
 
 ## lint/rules/ (bun lint rule docs; names only, grouped by plugin)
+
 - **bun** (29): axios-no-unbounded-requests, consistent-directive-prefix, fast-check-no-unseeded-random, format, jsx-no-forbidden-nesting, no-array-just-to-count, no-cast-to-brand, no-console-window-flash, no-cwd-dependent-path, no-eager-dynamic-import, no-eager-native-addon, no-env-at-module-scope, no-literal-temp-dir, no-negative-repeat-count, no-redundant-catch-type, no-restricted-text, no-side-effects-on-import, no-unhandled-emitter-errors, no-unportable-commands, no-useless-spread-fallback, prefer-builtin-sleep, prefer-local-module, prefer-timeout-signal, prefer-url-for-sibling-files, react-no-latest-value-ref, react-no-local-render-helpers, react-no-namespace-hooks, react-prefer-updater-function, zod-prefer-lazy-schema
 - **bun-test** (65): consistent-test-filename, consistent-test-it, expect-expect, max-expects, max-nested-describe, no-alias-methods, no-commented-out-tests, no-conditional-expect, no-conditional-in-test, no-conditional-tests, no-disabled-tests, no-done-callback, no-duplicate-hooks, no-export, no-focused-tests, no-hooks, no-identical-title, no-interpolation-in-snapshots, no-large-snapshots, no-restricted-jest-methods, no-restricted-matchers, no-standalone-expect, no-test-prefixes, no-test-return-statement, no-unneeded-async-expect-function, padding-around-after-all-blocks, padding-around-test-blocks, prefer-called-once, prefer-called-times, prefer-called-with, prefer-comparison-matcher, prefer-describe-function-title, prefer-each, prefer-ending-with-an-expect, prefer-equality-matcher, prefer-expect-assertions, prefer-expect-resolves, prefer-expect-type-of, prefer-hooks-in-order, prefer-hooks-on-top, prefer-lowercase-title, prefer-mock-promise-shorthand, prefer-mock-return-shorthand, prefer-snapshot-hint, prefer-spy-on, prefer-strict-boolean-matchers, prefer-strict-equal, prefer-to-be-falsy, prefer-to-be-truthy, prefer-to-be, prefer-to-contain, prefer-to-have-been-called-times, prefer-to-have-been-called, prefer-to-have-length, prefer-todo, require-hook, require-mock-type-parameters, require-test-timeout, require-to-throw-message, require-top-level-describe, valid-describe-callback, valid-expect-in-promise, valid-expect, valid-title, warn-todo
 - **eslint** (218): accessor-pairs, array-callback-return, arrow-body-style, block-scoped-var, callback-return, camelcase, capitalized-comments, class-methods-use-this, complexity, consistent-return, consistent-this, constructor-super, curly, default-case-last, default-case, default-param-last, dot-notation, eqeqeq, for-direction, func-name-matching, func-names, func-style, getter-return, global-require, grouped-accessor-pairs, guard-for-in, handle-callback-err, id-blacklist, id-denylist, id-length, id-match, init-declarations, logical-assignment-operators, max-classes-per-file, max-depth, max-lines-per-function, max-lines, max-nested-callbacks, max-params, max-statements, new-cap, no-alert, no-array-constructor, no-async-promise-executor, no-await-in-loop, no-bitwise, no-buffer-constructor, no-caller, no-case-declarations, no-catch-shadow, no-class-assign, no-compare-neg-zero, no-cond-assign, no-console, no-const-assign, no-constant-binary-expression, no-constant-condition, no-constructor-return, no-continue, no-control-regex, no-debugger, no-delete-var, no-div-regex, no-dupe-args, no-dupe-class-members, no-dupe-else-if, no-dupe-keys, no-duplicate-case, no-duplicate-imports, no-else-return, no-empty-character-class, no-empty-function, no-empty-pattern, no-empty-static-block, no-empty, no-eq-null, no-eval, no-ex-assign, no-extend-native, no-extra-bind, no-extra-boolean-cast, no-extra-label, no-fallthrough, no-func-assign, no-global-assign, no-implicit-coercion, no-implicit-globals, no-implied-eval, no-import-assign, no-inline-comments, no-inner-declarations, no-invalid-regexp, no-invalid-this, no-irregular-whitespace, no-iterator, no-label-var, no-labels, no-lone-blocks, no-lonely-if, no-loop-func, no-loss-of-precision, no-magic-numbers, no-misleading-character-class, no-mixed-requires, no-multi-assign, no-multi-str, no-native-reassign, no-negated-condition, no-negated-in-lhs, no-nested-ternary, no-new-func, no-new-native-nonconstructor, no-new-object, no-new-require, no-new-symbol, no-new-wrappers, no-new, no-nonoctal-decimal-escape, no-obj-calls, no-object-constructor, no-octal-escape, no-octal, no-param-reassign, no-path-concat, no-plusplus, no-process-env, no-process-exit, no-promise-executor-return, no-proto, no-prototype-builtins, no-redeclare, no-regex-spaces, no-restricted-exports, no-restricted-globals, no-restricted-imports, no-restricted-modules, no-restricted-properties, no-restricted-syntax, no-return-assign, no-return-await, no-script-url, no-self-assign, no-self-compare, no-sequences, no-setter-return, no-shadow-restricted-names, no-shadow, no-sparse-arrays, no-sync, no-template-curly-in-string, no-ternary, no-this-before-super, no-throw-literal, no-unassigned-vars, no-undef-init, no-undef, no-undefined, no-underscore-dangle, no-unexpected-multiline, no-unmodified-loop-condition, no-unneeded-ternary, no-unreachable-loop, no-unreachable, no-unsafe-finally, no-unsafe-negation, no-unsafe-optional-chaining, no-unused-expressions, no-unused-labels, no-unused-private-class-members, no-unused-vars, no-use-before-define, no-useless-assignment, no-useless-backreference, no-useless-call, no-useless-catch, no-useless-computed-key, no-useless-concat, no-useless-constructor, no-useless-escape, no-useless-rename, no-useless-return, no-var, no-void, no-warning-comments, no-with, object-shorthand, one-var, operator-assignment, prefer-arrow-callback, prefer-const, prefer-destructuring, prefer-exponentiation-operator, prefer-named-capture-group, prefer-numeric-literals, prefer-object-has-own, prefer-object-spread, prefer-promise-reject-errors, prefer-reflect, prefer-regex-literals, prefer-rest-params, prefer-spread, prefer-template, preserve-caught-error, radix, require-atomic-updates, require-await, require-unicode-regexp, require-yield, sort-imports, sort-keys, sort-vars, strict, symbol-description, unicode-bom, use-isnan, valid-typeof, vars-on-top, yoda

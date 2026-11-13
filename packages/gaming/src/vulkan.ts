@@ -21,14 +21,24 @@ export interface VulkanManifest {
 }
 
 /** Parses one loader manifest (ICD or layer JSON); tolerant of `layers` arrays. */
-export function parseManifest(kind: ManifestKind, file: string, text: string): VulkanManifest[] {
+export function parseManifest(
+  kind: ManifestKind,
+  file: string,
+  text: string,
+): VulkanManifest[] {
   const doc = JSON.parse(text) as Record<string, any>;
   const layers: Record<string, any>[] =
-    kind === "icd" ? [doc.ICD ?? {}] : doc.layers ?? (doc.layer ? [doc.layer] : []);
+    kind === "icd"
+      ? [doc.ICD ?? {}]
+      : (doc.layers ?? (doc.layer ? [doc.layer] : []));
   return layers.map((l) => ({
     kind,
     file,
-    name: l.name ?? (kind === "icd" && l.library_path ? String(l.library_path).split(/[\\/]/).pop()! : null),
+    name:
+      l.name ??
+      (kind === "icd" && l.library_path
+        ? String(l.library_path).split(/[\\/]/).pop()!
+        : null),
     api_version: l.api_version ?? null,
     implementation_version: l.implementation_version ?? null,
     library_path: l.library_path ?? null,
@@ -45,7 +55,9 @@ const DIRS: Record<ManifestKind, string> = {
 
 function unixRoots(): string[] {
   const home = homedir();
-  const xdgData = (process.env.XDG_DATA_DIRS ?? "/usr/local/share:/usr/share").split(":");
+  const xdgData = (
+    process.env.XDG_DATA_DIRS ?? "/usr/local/share:/usr/share"
+  ).split(":");
   const xdgConf = (process.env.XDG_CONFIG_DIRS ?? "/etc/xdg").split(":");
   return [
     join(process.env.XDG_CONFIG_HOME ?? join(home, ".config"), "vulkan"),
@@ -66,10 +78,13 @@ const REG: Record<ManifestKind, string> = {
 function regManifests(kind: ManifestKind): string[] {
   const out: string[] = [];
   for (const hive of ["HKLM", "HKCU"]) {
-    const r = Bun.spawnSync(["reg", "query", `${hive}\\SOFTWARE\\Khronos\\Vulkan\\${REG[kind]}`], {
-      stdout: "pipe",
-      stderr: "ignore",
-    });
+    const r = Bun.spawnSync(
+      ["reg", "query", `${hive}\\SOFTWARE\\Khronos\\Vulkan\\${REG[kind]}`],
+      {
+        stdout: "pipe",
+        stderr: "ignore",
+      },
+    );
     for (const line of r.stdout.toString().split(/\r?\n/)) {
       const m = line.match(/^\s+(.+\.json)\s+REG_DWORD\s+0x0+\s*$/i);
       if (m) out.push(m[1]!.trim());
@@ -87,16 +102,29 @@ export function vulkanManifests(): VulkanManifest[] {
     try {
       out.push(...parseManifest(kind, file, readFileSync(file, "utf8")));
     } catch {
-      out.push({ kind, file, name: null, api_version: null, implementation_version: null, library_path: null, description: "unreadable manifest", disable_environment: [] });
+      out.push({
+        kind,
+        file,
+        name: null,
+        api_version: null,
+        implementation_version: null,
+        library_path: null,
+        description: "unreadable manifest",
+        disable_environment: [],
+      });
     }
   };
   for (const kind of Object.keys(DIRS) as ManifestKind[]) {
-    if (process.platform === "win32") for (const f of regManifests(kind)) add(kind, f);
+    if (process.platform === "win32")
+      for (const f of regManifests(kind)) add(kind, f);
     else
       for (const root of unixRoots()) {
         const dir = join(root, DIRS[kind]);
         if (!existsSync(dir)) continue;
-        for (const f of readdirSync(dir).filter((x) => x.endsWith(".json")).sort()) add(kind, join(dir, f));
+        for (const f of readdirSync(dir)
+          .filter((x) => x.endsWith(".json"))
+          .sort())
+          add(kind, join(dir, f));
       }
   }
   return out;
@@ -106,6 +134,9 @@ export function vulkanManifests(): VulkanManifest[] {
 export function vulkanInfoSummary(): string | null {
   const bin = Bun.which("vulkaninfo") ?? Bun.which("vulkaninfoSDK");
   if (!bin) return null;
-  const r = Bun.spawnSync([bin, "--summary"], { stdout: "pipe", stderr: "ignore" });
+  const r = Bun.spawnSync([bin, "--summary"], {
+    stdout: "pipe",
+    stderr: "ignore",
+  });
   return r.exitCode === 0 ? r.stdout.toString() : null;
 }

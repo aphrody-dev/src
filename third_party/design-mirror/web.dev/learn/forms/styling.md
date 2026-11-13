@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ## Help users use your form with their preferred browser
 
 To ensure that your form is accessible to as many people as possible, use the elements built for the
@@ -81,7 +82,7 @@ You can override the styles for `:focus` to match the color to your brand.
 
 ```css
 button:focus {
-    outline: 4px solid green;
+  outline: 4px solid green;
 }
 ```
 

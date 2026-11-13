@@ -34,7 +34,7 @@ pub struct InvalidPath {
 ```
 
 **Error sets** are per-module enums naming the discrete types that module can
-produce. The variant name *is* the discrete type name, so the type must be in
+produce. The variant name _is_ the discrete type name, so the type must be in
 scope:
 
 ```rust
@@ -108,10 +108,10 @@ The synchronous return value and `Complete.status` always agree, because both de
 
 The `Complete` event also carries a `LoreErrorDetail` in its `error` field. It is the empty default on success and the populated detail on failure:
 
-| Field | Type | Meaning |
-| --- | --- | --- |
-| `error_code` | `i32` | The error's FFI code. `0` on success, `-1` for an internal error. |
-| `message` | `LoreString` | The error message. Empty on success. |
+| Field             | Type                           | Meaning                                                                       |
+| ----------------- | ------------------------------ | ----------------------------------------------------------------------------- |
+| `error_code`      | `i32`                          | The error's FFI code. `0` on success, `-1` for an internal error.             |
+| `message`         | `LoreString`                   | The error message. Empty on success.                                          |
 | `trace_locations` | `LoreArray<LoreTraceLocation>` | The captured trace, one entry per location. Empty when no trace was captured. |
 
 Each `LoreTraceLocation` holds a `file`, a `line`, a `column`, and a per-location `context` string. A consumer reconstructs where the error was created or forwarded from these entries, without server logs.
@@ -133,26 +133,26 @@ Every discrete error type carries an `#[ffi_code(N)]`, and all of them are decla
 
 Every code is also a process exit status. The CLI returns the failing error's code from `main` as `ExitCode::from(code as u8)` (`lore-client/src/cli/client_main.rs`). That fixes two things: every code must fit in a `u8`, and no code may land on a value the shell or the OS already spends on something else. A `lore` command that exited 130 would be indistinguishable from one the user killed with Ctrl-C. The reserved rows below are those values, and no group block overlaps one.
 
-| Range | Group | Meaning |
-| --- | --- | --- |
-| 0 | *reserved* | Success. |
-| 1 | *reserved* | The CLI's own general failure (`ExitCode::FAILURE`), and the shell's generic error. |
-| 2 | *reserved* | The CLI's usage exit, and the shell's "misuse of a builtin". |
-| 3–15 | Input and validation | The request itself was malformed or names the wrong kind of thing. |
-| 16–27 | Authentication and authorization | The caller isn't known, or is known and not permitted. |
-| 28–39 | Connectivity and availability | The remote couldn't be reached or isn't currently serving. |
-| 40–55 | Repository state | The repository is in a state that refuses the operation. |
-| 56–63 | Already exists | Creating a resource that is already there. |
-| 64–78 | *reserved* | The BSD `sysexits.h` codes (`EX_USAGE` through `EX_CONFIG`). |
-| 79–99 | Not found | A named resource doesn't exist. |
-| 100–109 | *reserved* | The legacy `LoreError` categories (101, 102, 103). |
-| 110–117 | Configuration | Something the operation needs was never configured. |
-| 118–125 | Resource limits | A size, depth, or efficiency bound was hit. |
-| 126–128 | *reserved* | The shell's "found but not executable", "not found", and "bad argument to exit". |
-| 129–192 | *reserved* | `128 + signal`, i.e. killed by a signal. 130 is Ctrl-C, 137 is `SIGKILL`, 143 is `SIGTERM`. |
-| 193–200 | Library lifecycle | The library can't serve the call. |
-| 201–254 | *reserved* | Free for future groups. |
-| 255 | *reserved* | `Internal`, which is `-1` truncated to a `u8`. |
+| Range   | Group                            | Meaning                                                                                     |
+| ------- | -------------------------------- | ------------------------------------------------------------------------------------------- |
+| 0       | _reserved_                       | Success.                                                                                    |
+| 1       | _reserved_                       | The CLI's own general failure (`ExitCode::FAILURE`), and the shell's generic error.         |
+| 2       | _reserved_                       | The CLI's usage exit, and the shell's "misuse of a builtin".                                |
+| 3–15    | Input and validation             | The request itself was malformed or names the wrong kind of thing.                          |
+| 16–27   | Authentication and authorization | The caller isn't known, or is known and not permitted.                                      |
+| 28–39   | Connectivity and availability    | The remote couldn't be reached or isn't currently serving.                                  |
+| 40–55   | Repository state                 | The repository is in a state that refuses the operation.                                    |
+| 56–63   | Already exists                   | Creating a resource that is already there.                                                  |
+| 64–78   | _reserved_                       | The BSD `sysexits.h` codes (`EX_USAGE` through `EX_CONFIG`).                                |
+| 79–99   | Not found                        | A named resource doesn't exist.                                                             |
+| 100–109 | _reserved_                       | The legacy `LoreError` categories (101, 102, 103).                                          |
+| 110–117 | Configuration                    | Something the operation needs was never configured.                                         |
+| 118–125 | Resource limits                  | A size, depth, or efficiency bound was hit.                                                 |
+| 126–128 | _reserved_                       | The shell's "found but not executable", "not found", and "bad argument to exit".            |
+| 129–192 | _reserved_                       | `128 + signal`, i.e. killed by a signal. 130 is Ctrl-C, 137 is `SIGKILL`, 143 is `SIGTERM`. |
+| 193–200 | Library lifecycle                | The library can't serve the call.                                                           |
+| 201–254 | _reserved_                       | Free for future groups.                                                                     |
+| 255     | _reserved_                       | `Internal`, which is `-1` truncated to a `u8`.                                              |
 
 The trait carries a code as `i32` rather than a `u8` because `Internal` is `-1`, which isn't a code allocated here. A caller reading the library's `int32` return value or `Complete.status` sees `-1`; a caller reading the CLI's exit status sees 255.
 
@@ -177,13 +177,13 @@ surfaces in `LoreErrorDetail.trace_locations` and log nothing.
 
 ### 5.1 Choosing
 
-| Situation | Use |
-| --- | --- |
-| Source is an error set, target declares its variants | `.forward::<Target>("context")` |
-| Source is an error set that over-declares | `.forward_any::<Target>("context")` |
-| Source is foreign, caller can act on it | construct a named type from `lore-base/src/error.rs` |
-| Source is foreign and unhandleable | `.internal("context")` |
-| Translating one discrete type to another | `chain_err_from(source, "context")` |
+| Situation                                            | Use                                                  |
+| ---------------------------------------------------- | ---------------------------------------------------- |
+| Source is an error set, target declares its variants | `.forward::<Target>("context")`                      |
+| Source is an error set that over-declares            | `.forward_any::<Target>("context")`                  |
+| Source is foreign, caller can act on it              | construct a named type from `lore-base/src/error.rs` |
+| Source is foreign and unhandleable                   | `.internal("context")`                               |
+| Translating one discrete type to another             | `chain_err_from(source, "context")`                  |
 
 The context string is mandatory and lands on the trace, so write what was being
 attempted, not what failed.
@@ -332,10 +332,10 @@ The error framework itself. Provides `#[error_set]`, `Traced<E>`, `ChainError`, 
 
 `anyhow` is allowed in **binaries only**, not libraries:
 
-| Crate type | Error handling |
-| --- | --- |
+| Crate type                                          | Error handling                   |
+| --------------------------------------------------- | -------------------------------- |
 | Libraries (`lore-revision`, `lore-aws`, and others) | `#[error_set]` with typed errors |
-| Binaries (`lore-server`, CLI tools) | `anyhow` allowed for convenience |
+| Binaries (`lore-server`, CLI tools)                 | `anyhow` allowed for convenience |
 
 Libraries must expose typed errors so callers can match on specific error variants. Binaries are the end of the error chain and can use `anyhow` for simpler error aggregation.
 

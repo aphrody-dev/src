@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 One of the most important aspects of digital accessibility is the underlying
 structure of the page. When you build your website or app using
 [structural elements](https://www.w3.org/WAI/tutorials/page-structure/) instead
@@ -55,52 +56,55 @@ Let's compare the HTML landmark elements as
 [mapped](https://www.a11yproject.com/posts/aria-landmark-roles/) to their
 counterpart ARIA landmark roles.
 
-| HTML landmark element | ARIA landmark role |
-|---|---|
-| [`<header>`](https://developer.mozilla.org/docs/Web/HTML/Element/header) | [banner](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/banner_role) |
-| [`<aside>`](https://developer.mozilla.org/docs/Web/HTML/Element/aside) | [complementary](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/complementary_role) |
-| [`<footer>`](https://developer.mozilla.org/docs/Web/HTML/Element/footer) | [contentinfo](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/contentinfo_role) |
-| [`<nav>`](https://developer.mozilla.org/docs/Web/HTML/Element/nav) | [navigation](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/navigation_role) |
-| [`<main>`](https://developer.mozilla.org/docs/Web/HTML/Element/main) | [main](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/main_role) |
-| [`<form>`](https://developer.mozilla.org/docs/Web/HTML/Element/form) ^1^ | [form](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/form_role) |
-| [`<section>`](https://developer.mozilla.org/docs/Web/HTML/Element/section) ^1^ | [region](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/region_role) |
-[^1^ Requires inclusion of the `name` attribute to be accessible. A `section` must be [accessibly-named](https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/#whatareaccessiblenamesanddescriptions?) for its implicit ARIA role of [`region`](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/region_role) to be visible to assistive technology.]
+| HTML landmark element                                                                                                                                                                                                                                                                                                                                                            | ARIA landmark role                                                                                  |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| [`<header>`](https://developer.mozilla.org/docs/Web/HTML/Element/header)                                                                                                                                                                                                                                                                                                         | [banner](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/banner_role)               |
+| [`<aside>`](https://developer.mozilla.org/docs/Web/HTML/Element/aside)                                                                                                                                                                                                                                                                                                           | [complementary](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/complementary_role) |
+| [`<footer>`](https://developer.mozilla.org/docs/Web/HTML/Element/footer)                                                                                                                                                                                                                                                                                                         | [contentinfo](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/contentinfo_role)     |
+| [`<nav>`](https://developer.mozilla.org/docs/Web/HTML/Element/nav)                                                                                                                                                                                                                                                                                                               | [navigation](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/navigation_role)       |
+| [`<main>`](https://developer.mozilla.org/docs/Web/HTML/Element/main)                                                                                                                                                                                                                                                                                                             | [main](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/main_role)                   |
+| [`<form>`](https://developer.mozilla.org/docs/Web/HTML/Element/form) ^1^                                                                                                                                                                                                                                                                                                         | [form](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/form_role)                   |
+| [`<section>`](https://developer.mozilla.org/docs/Web/HTML/Element/section) ^1^                                                                                                                                                                                                                                                                                                   | [region](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/region_role)               |
+| [^1^ Requires inclusion of the `name` attribute to be accessible. A `section` must be [accessibly-named](https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/#whatareaccessiblenamesanddescriptions?) for its implicit ARIA role of [`region`](https://developer.mozilla.org/docs/Web/Accessibility/ARIA/Roles/region_role) to be visible to assistive technology.] |
 
 Now, compare examples of accessible content structure.
 Don't
 
 ```html
 <div>
-    <div>...</div>
+  <div>...</div>
 </div>
 
 <div>
-    <p>Stamp collecting, also known as philately, is
-    the study of postage stamps, stamped envelopes,
-    postmarks, postcards, and other materials relating
-    to postal delivery.</p>
+  <p>
+    Stamp collecting, also known as philately, is the study of postage stamps,
+    stamped envelopes, postmarks, postcards, and other materials relating to
+    postal delivery.
+  </p>
 </div>
 
 <div>
-<p>© 2022 - Stamps R Awesome</p>
+  <p>© 2022 - Stamps R Awesome</p>
 </div>
 ```
+
 Do
 
 ```html
 <header>
-    <nav>...</nav>
+  <nav>...</nav>
 </header>
 <main>
-    <section aria-label="Introduction to stamp collecting">
-    <p>Stamp collecting, also known as philately, is
-    the study of postage stamps, stamped envelopes,
-    postmarks, postcards, and other materials relating
-    to postal delivery.</p>
-    </section>
+  <section aria-label="Introduction to stamp collecting">
+    <p>
+      Stamp collecting, also known as philately, is the study of postage stamps,
+      stamped envelopes, postmarks, postcards, and other materials relating to
+      postal delivery.
+    </p>
+  </section>
 </main>
 <footer>
-<p>© 2022 - Stamps R Awesome</p>
+  <p>© 2022 - Stamps R Awesome</p>
 </footer>
 ```
 
@@ -142,22 +146,25 @@ Don't
 
 ```html
 <div>
-    <h3>Stamps</h3>
-    <p>Stamp collecting, also known as philately, is the study of
-  postage stamps, stamped envelopes, postmarks, postcards, and
-  other materials relating to postal delivery.</p>
+  <h3>Stamps</h3>
+  <p>
+    Stamp collecting, also known as philately, is the study of postage stamps,
+    stamped envelopes, postmarks, postcards, and other materials relating to
+    postal delivery.
+  </p>
 </div>
 
 <div>
-    <h3>How do I start a stamp collection?</h3>
+  <h3>How do I start a stamp collection?</h3>
   <h2>Equipment you will need</h2>
-    <h4>...</h4>
+  <h4>...</h4>
   <h2>How to acquire stamps</h2>
-    <h4>...</h4>
+  <h4>...</h4>
   <h2>Organizations you can join</h2>
-    <h4>...</h4>
+  <h4>...</h4>
 </div>
 ```
+
 Do
 
 ```html
@@ -165,15 +172,17 @@ Do
   <h1>Stamp collecting</h1>
 </header>
 <main>
-    <section aria-label="Introduction to stamp collecting">
-        <h2>What is stamp collecting?</h2>
-        <p>Stamp collecting, also known as philately, is the study of
-    postage stamps, stamped envelopes, postmarks, postcards, and
-    other materials relating to postal delivery.</p>
-    </section>
+  <section aria-label="Introduction to stamp collecting">
+    <h2>What is stamp collecting?</h2>
+    <p>
+      Stamp collecting, also known as philately, is the study of postage stamps,
+      stamped envelopes, postmarks, postcards, and other materials relating to
+      postal delivery.
+    </p>
+  </section>
 
-    <section aria-label="Start a stamp collection">
-        <h2>How do I start a stamp collection?</h2>
+  <section aria-label="Start a stamp collection">
+    <h2>How do I start a stamp collection?</h2>
     <h3>Required equiment</h3>
     <p>...</p>
 
@@ -181,8 +190,8 @@ Do
     <p>...</p>
 
     <h3>Organizations you can join</h3>
-        <p>...</p>
-    </section>
+    <p>...</p>
+  </section>
 </main>
 ```
 
@@ -222,15 +231,16 @@ Don't
 <div>
   <p>How do I start a stamp collection?</p>
   <p>Equipment you will need</p>
-    <div>
-      <p>Small tongs with rounded tips</p>
-      <p>Stamp hinges</p>
-      <p>Stockbook or albumn</p>
-      <p>Magnifying glass</p>
-      <p>Stamps</p>
-    </div>
+  <div>
+    <p>Small tongs with rounded tips</p>
+    <p>Stamp hinges</p>
+    <p>Stockbook or albumn</p>
+    <p>Magnifying glass</p>
+    <p>Stamps</p>
+  </div>
 </div>
 ```
+
 Do
 
 ```html
@@ -274,7 +284,9 @@ Don't
 
 ```html
 <table>
-  <caption>My stamp collection</caption>
+  <caption>
+    My stamp collection
+  </caption>
   <tr>
     <th>[Stamp Image 1]</th>
     <th>[Stamp Image 2]</th>
@@ -282,6 +294,7 @@ Don't
   </tr>
 </table>
 ```
+
 Do
 
 ```html
@@ -346,11 +359,14 @@ Don't
   </tr>
 </table>
 ```
+
 Do
 
 ```html
 <table>
-  <caption>My stamp collection</caption>
+  <caption>
+    My stamp collection
+  </caption>
   <tr>
     <th>Animal</th>
     <th>Year</th>

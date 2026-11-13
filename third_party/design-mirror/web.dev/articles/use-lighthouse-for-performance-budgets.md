@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Katie Hempenius [X](https://twitter.com/katiehempenius)
 
 [Lighthouse](https://github.com/GoogleChrome/lighthouse) now supports performance budgets. This feature, known as LightWallet, can be set up in under five minutes and provides feedback on performance metrics and the size and quantity of page resources.

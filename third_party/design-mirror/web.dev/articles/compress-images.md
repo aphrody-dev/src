@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)  Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+
+Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/) Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 Images often account for most of the downloaded bytes on a web page
 and also often occupy a significant amount of visual space.
@@ -82,13 +83,13 @@ As a result, if we know the dimensions of the grid we can easily calculate the f
 > [!NOTE]
 > **Note:** As an aside, regardless of the image format used to transfer the data from the server to the client, when the image is decoded by the browser, each pixel always occupies 4 bytes of memory. This can be an important constraint for large images and devices which do not have a lot of available memory ---for example, low-end mobile devices.
 
-| Dimensions | Pixels | File size |
-|---|---|---|
-| 100 x 100 | 10,000 | 39 KB |
-| 200 x 200 | 40,000 | 156 KB |
-| 300 x 300 | 90,000 | 351 KB |
-| 500 x 500 | 250,000 | 977 KB |
-| 800 x 800 | 640,000 | 2500 KB |
+| Dimensions | Pixels  | File size |
+| ---------- | ------- | --------- |
+| 100 x 100  | 10,000  | 39 KB     |
+| 200 x 200  | 40,000  | 156 KB    |
+| 300 x 300  | 90,000  | 351 KB    |
+| 500 x 500  | 250,000 | 977 KB    |
+| 800 x 800  | 640,000 | 2500 KB   |
 
 39 KB for a 100x100 pixel image may not seem like a big deal,
 but the filesize quickly explodes for larger images and makes image assets both slow and expensive to download.
@@ -99,7 +100,7 @@ One simple strategy is to reduce the "bit-depth" of the image from 8 bits per ch
 8 bits per channel gives us 256 values per channel and 16,777,216 (256 \^ 3) colors in total.
 What if you reduce the palette to 256 colors?
 Then you would only need 8 bits in total for the RGB channels and immediately save two bytes per pixel---that's 50% compression savings over the original 4 bytes per pixel format!
- Left to right (PNG): 32-bit (16M colors), 7-bit (128 colors), 5-bit (32 colors).
+Left to right (PNG): 32-bit (16M colors), 7-bit (128 colors), 5-bit (32 colors).
 
 Complex scenes with gradual color transitions (for example, gradients or sky)
 require larger color palettes to avoid visual artifacts such as the pixelated sky in the 5-bit asset.
@@ -179,7 +180,7 @@ Because images are often candidates for [Largest Contentful Paint](https://web.d
 
 When playing with compression settings on raster image formats, be sure to experiment with WebP and AVIF formats to see if you can deliver the same image in a small footprint as compared to older formats.
 
-You want to be careful not to *overcompress* raster images, though. A good solution is to use an image optimization CDN to find the best compression settings for you, but an alternative may be to use tools like [Butteraugli](https://github.com/google/butteraugli) to estimate visual differences so that you don't encode images *too* aggressively and lose too much quality.
+You want to be careful not to _overcompress_ raster images, though. A good solution is to use an image optimization CDN to find the best compression settings for you, but an alternative may be to use tools like [Butteraugli](https://github.com/google/butteraugli) to estimate visual differences so that you don't encode images _too_ aggressively and lose too much quality.
 
 ## Image optimization checklist
 

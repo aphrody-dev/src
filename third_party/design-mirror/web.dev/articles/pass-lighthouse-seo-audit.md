@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Lizzi Harvey [X](https://twitter.com/HarveyLizzi) [GitHub](https://github.com/ekharvey)
 
 ## Why does this matter?
@@ -24,7 +25,7 @@ search engines to see:
 
 1. Press \`Control+Shift+J\` (or \`Command+Option+J\` on Mac) to open DevTools.
 2. Click the **Lighthouse** tab.
-3. Make sure the **SEO** checkbox is selected in the *Categories* list.
+3. Make sure the **SEO** checkbox is selected in the _Categories_ list.
 4. Click the **Generate report** button.
 
 Lighthouse generates a report for your page so you can see areas where you can
@@ -40,6 +41,7 @@ increase visibility in search engines. You'll have to check the guidelines for
 individual search engines because they may have different requirements.
 
 Here are some guides for specific search engines:
+
 - [Bing](https://www.bing.com/webmaster/help/webmaster-guidelines-30fba23a)
 - [Google Search](https://support.google.com/webmasters/answer/35769)
 - [Yandex](https://webmaster.yandex.com/)

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The first step in building a website that loads quickly is to receive a timely
 response from the server for a page's HTML. When you enter a URL in the
 browser's address bar, the browser sends a [`GET` request](https://developer.mozilla.org/docs/Web/HTTP/Methods/GET) to the server to
@@ -17,7 +18,7 @@ goal.
 That initial request for HTML goes through several steps, each of which take
 some time. Reducing the time spent on each step gives you a faster [Time to
 First Byte (TTFB)](https://web.dev/articles/ttfb). While TTFB is not the sole metric you should focus on when
-it comes to how fast pages load, a high TTFB *does* make it challenging to reach
+it comes to how fast pages load, a high TTFB _does_ make it challenging to reach
 the designated "good" thresholds for metrics such as [Largest Contentful Paint
 (LCP)](https://web.dev/articles/lcp) and [First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt).
 
@@ -35,8 +36,8 @@ Redirects slow down page load speed because it requires the browser to make an
 additional HTTP request at the new location to retrieve the resource. There are
 two types of redirects:
 
-1. *Same-origin redirects* that occur entirely within your origin. These types of redirects are completely within your control, as the logic for managing them resides entirely on your web server.
-2. *Cross-origin redirects* that are initiated by another origin. These types of redirects are typically out of your control.
+1. _Same-origin redirects_ that occur entirely within your origin. These types of redirects are completely within your control, as the logic for managing them resides entirely on your web server.
+2. _Cross-origin redirects_ that are initiated by another origin. These types of redirects are typically out of your control.
 
 Cross-origin redirects are often used by ads, URL-shortening services, and other
 third party services. Though cross-origin redirects are outside of your control,
@@ -87,7 +88,7 @@ subsequent requests, the browser sends the `ETag` value through the
 [`If-None-Match` request header](https://developer.mozilla.org/docs/Web/HTTP/Headers/If-None-Match). If the `ETag` on the server matches the one
 sent by the browser, the server responds with a `304 Not Modified` response,
 and the browser uses the resource from the cache. While this still incurs
-network latency, a `304 Not Modified` response is *much* smaller than an entire
+network latency, a `304 Not Modified` response is _much_ smaller than an entire
 HTML resource.
 
 However, the network latency involved in revalidating a resource's freshness is
@@ -154,9 +155,9 @@ or tweak compression settings yourself:
 
 1. **Use Brotli where possible.** As stated previously, Brotli provides a fairly noticeable improvement over gzip, and [Brotli is supported in all major
    browsers](https://caniuse.com/brotli). Use Brotli when possible, but if your website is used by a high number of users on legacy browsers, be sure that gzip is used as a fallback, as any compression is better than no compression at all.
-2. **File size matters.** Very small resources---less than 1 KiB---don't compress very well, or sometimes don't even compress at all. Effectiveness of any type of data compression depends on having a large amount of data that a compression algorithm can work with in order to find more compressible bits of data. The larger a file is, the better compression works---however, don't ship very large resources for the mere fact that they can be compressed more effectively. Large resources---such as JavaScript and CSS for example---take significantly more time to parse and evaluate after the browser has *decompressed* them, and may change more frequently even if they've only changed marginally, as any changes result in a different [file hash](https://bundlers.tooling.report/hashing/).
-3. **Understand dynamic versus static compression.** Dynamic and static compression are differing approaches to *when* a resource should be compressed. Dynamic compression compresses a resource *at the time it's
-   requested* , and sometimes *every time* it is requested. On the other hand, static compression compresses files *ahead* of time, requiring no compression to be performed at the time of the request. Static compression removes the latency involved in compression itself, which can add to server response times in the case of dynamic compression. Static resources---such as JavaScript, CSS, and SVG images---should be statically compressed, whereas HTML resources---*especially* if they are dynamically generated for authenticated users---should be dynamically compressed.
+2. **File size matters.** Very small resources---less than 1 KiB---don't compress very well, or sometimes don't even compress at all. Effectiveness of any type of data compression depends on having a large amount of data that a compression algorithm can work with in order to find more compressible bits of data. The larger a file is, the better compression works---however, don't ship very large resources for the mere fact that they can be compressed more effectively. Large resources---such as JavaScript and CSS for example---take significantly more time to parse and evaluate after the browser has _decompressed_ them, and may change more frequently even if they've only changed marginally, as any changes result in a different [file hash](https://bundlers.tooling.report/hashing/).
+3. **Understand dynamic versus static compression.** Dynamic and static compression are differing approaches to _when_ a resource should be compressed. Dynamic compression compresses a resource _at the time it's
+   requested_ , and sometimes _every time_ it is requested. On the other hand, static compression compresses files _ahead_ of time, requiring no compression to be performed at the time of the request. Static compression removes the latency involved in compression itself, which can add to server response times in the case of dynamic compression. Static resources---such as JavaScript, CSS, and SVG images---should be statically compressed, whereas HTML resources---_especially_ if they are dynamically generated for authenticated users---should be dynamically compressed.
 
 Getting compression right on your own is challenging, and it's often best to let
 a Content Delivery Network (CDN)---which is discussed in the next section---to
@@ -181,7 +182,7 @@ significantly improve your website's TTFB in some cases.
 ## Test your knowledge
 
 What type of redirect is completely within your control?
-A *cross-origin* redirect. Try again. A *same-origin* redirect. Correct! The `Server-Timing` header can contain multiple metrics.
+A _cross-origin_ redirect. Try again. A _same-origin_ redirect. Correct! The `Server-Timing` header can contain multiple metrics.
 True. Correct! False. Try again.
 Which type of server is most likely to be physically closest to your end
 users?

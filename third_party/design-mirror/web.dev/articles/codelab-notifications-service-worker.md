@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Kate Jeffreys
 
 In this codelab, you'll use a service worker
@@ -71,12 +72,13 @@ This code will register `public/service-worker.js` as a service worker.
    ```javascript
    // Use the Service Worker API to register a service worker.
    async function registerServiceWorker() {
-     await navigator.serviceWorker.register('./service-worker.js')
+     await navigator.serviceWorker.register("./service-worker.js");
      updateUI();
    }
    ```
 
    Note that `registerServiceWorker` uses the [`async function`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/async_function) declaration to make handling promises more convenient. This lets you `await` the resolved value of a `Promise`. For example, the function above awaits the outcome of registering a service worker before updating the UI. See [`await` on MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/await) for more information.
+
 2. Now that the user can register a service worker, you can get a reference to the service worker registration object. In `public/index.js`, replace the `getRegistration` function with the following code:
 
    ```javascript
@@ -122,8 +124,8 @@ async function sendNotification() {
   // (so you can tell the notifications apart during testing!)
   let randy = Math.floor(Math.random() * 100);
   let notification = {
-    title: 'Test ' + randy,
-    options: { body: 'Test body ' + randy }
+    title: "Test " + randy,
+    options: { body: "Test body " + randy },
   };
   // Get a reference to the service worker registration.
   let registration = await getRegistration();
@@ -134,7 +136,7 @@ async function sendNotification() {
     if (navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage(notification);
     } else {
-      console.log('No service worker controller found. Try a soft reload.');
+      console.log("No service worker controller found. Try a soft reload.");
     }
   }
 }
@@ -156,14 +158,13 @@ Open `public/service-worker.js`. Add the following code to the end of the file:
 
 ```javascript
 // Show notification when received
-self.addEventListener('message', (event) => {
+self.addEventListener("message", (event) => {
   let notification = event.data;
-  self.registration.showNotification(
-    notification.title,
-    notification.options
-  ).catch((error) => {
-    console.log(error);
-  });
+  self.registration
+    .showNotification(notification.title, notification.options)
+    .catch((error) => {
+      console.log(error);
+    });
 });
 ```
 

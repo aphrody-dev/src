@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 003: Specificity](https://thecsspodcast.libsyn.com/003-specificity)
 
 Suppose that you're working with the following HTML and CSS:
@@ -43,7 +44,7 @@ You can think of specificity as a total score and each selector type earns point
 Declarations from rules with the highest specificity win.
 
 With specificity in a real project,
-the balancing act is making sure the CSS rules you expect to apply, actually *do apply,*
+the balancing act is making sure the CSS rules you expect to apply, actually _do apply,_
 while generally keeping scores low to prevent complexity.
 The specificity should only be as high as we need it to be,
 rather than aiming for the highest specificity possible.
@@ -59,7 +60,7 @@ that consists of three components: `A`, `B`, and `C`.
 
 It is often represented using the `(A,B,C)` notation. For example: `(1,0,2)`.
 The alternative `A-B-C` notation is also commonly used.
- A diagram demonstrating what component of specificity various selectors affect.
+A diagram demonstrating what component of specificity various selectors affect.
 
 ## How to compare specificities
 
@@ -143,7 +144,7 @@ The following examples have a specificity of `(0,1,0)`.
 #### Attribute selector
 
 ```css
-[href='#'] {
+[href="#"] {
   color: red;
 }
 ```
@@ -214,11 +215,11 @@ styles with basic selectors later in your style sheet:
 
 ```css
 :where(#my-content) {
-   color: red;
+  color: red;
 }
 
 p {
-   color: blue;
+  color: blue;
 }
 ```
 
@@ -257,7 +258,7 @@ so that it becomes part of [the Authored `!important` origin](https://web.dev/le
 
 An `!important` at the end of a CSS declaration does not affect specificity
 but puts the declaration in a different [origin](https://web.dev/learn/css/the-cascade.md.txt#origin),
-namely *Authored `!important`*.
+namely _Authored `!important`_.
 
 In the following example, the specificity of `.my-class` is not relevant for the
 `!important` declaration to win.
@@ -362,6 +363,7 @@ With HTML that looks like this:
 ```html
 <button class="my-button" onclick="alert('hello')">Click me</button>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/abpoxdR?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen abpoxdR by web-dot-dev on Codepen"></iframe>
 
 The button has a grey background,
@@ -384,6 +386,7 @@ button[onclick] {
   background: grey;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zYNOXBJ?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zYNOXBJ by web-dot-dev on Codepen"></iframe>
 
 Now, the button will have a blue background,
@@ -422,6 +425,7 @@ the button would then be blue.
   background: blue;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/WNReWRO?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen WNReWRO by web-dot-dev on Codepen"></iframe>
 
 This is because both selectors have the same specificity.

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Browsers have built-in features for validation to check that users have entered data in the correct format.
 You can activate these features by using the correct elements and attributes.
 On top of that, you can enhance form validation with CSS and JavaScript.
@@ -39,7 +40,7 @@ This happens because of the `required` attribute.
 
 ```html
 <label for="name">Name (required)</label>
-<input required type="text" id="name" name="name">
+<input required type="text" id="name" name="name" />
 ```
 
 > [!NOTE]
@@ -71,7 +72,13 @@ Toggle answer
 
 ```html
 <label for="password">Password (required)</label>
-<input required="" minlength="8" type="password" id="password" name="password">
+<input
+  required=""
+  minlength="8"
+  type="password"
+  id="password"
+  name="password"
+/>
 ```
 
 The name of the attribute is `minlength`.
@@ -85,8 +92,14 @@ If you want the opposite, use `maxlength`.
 
 ```html
 <label for="password">Password (required)</label>
-<input required minlength="8" type="password" id="password"
-  name="password" aria-describedby="password-minlength">
+<input
+  required
+  minlength="8"
+  type="password"
+  id="password"
+  name="password"
+  aria-describedby="password-minlength"
+/>
 <div id="password-minlength">Enter at least eight characters</div>
 ```
 
@@ -103,7 +116,7 @@ It's called `pattern`, and you can define a
 
 ```html
 <label for="animal">What is your favorite animal? (required)</label>
-<input required pattern="[a-z]{2,20}" type="text" id="animal" name="animal">
+<input required pattern="[a-z]{2,20}" type="text" id="animal" name="animal" />
 ```
 
 Here, only lowercase letters are allowed;
@@ -172,9 +185,9 @@ Let's see how this works.
 ```javascript
 const nameInput = document.querySelector('[name="name"]');
 
-nameInput.addEventListener('invalid', () => {
-    nameInput.setCustomValidity('Please enter your name.');
- });
+nameInput.addEventListener("invalid", () => {
+  nameInput.setCustomValidity("Please enter your name.");
+});
 ```
 
 Query the element where you want to set the custom error message.

@@ -233,23 +233,47 @@ describe("Spec 4 — Core Web Vitals Static Gate", () => {
   it("LCP budget uses index.html and only the stylesheets that page links", () => {
     // 40 KB of unlinked CSS (used by other pages) must not count against the homepage.
     // Random hex does not compress, so the gzipped size stays far above the 14 KB budget.
-    const unlinked = Array.from(crypto.getRandomValues(new Uint8Array(20 * 1024)), (b) => b.toString(16).padStart(2, "0")).join("");
+    const unlinked = Array.from(
+      crypto.getRandomValues(new Uint8Array(20 * 1024)),
+      (b) => b.toString(16).padStart(2, "0"),
+    ).join("");
     const ctx: WebFilesContext = {
       targetPath: "/virtual",
       isSingleFile: false,
       htmlFiles: [
-        { path: "/virtual/en/index.html", relPath: "en/index.html", content: "<p>" + "x".repeat(20 * 1024) + "</p>" },
-        { path: "/virtual/index.html", relPath: "index.html", content: '<!doctype html><html><head><link rel="stylesheet" href="/home.css"></head><body><h1>Home</h1></body></html>' },
+        {
+          path: "/virtual/en/index.html",
+          relPath: "en/index.html",
+          content: "<p>" + "x".repeat(20 * 1024) + "</p>",
+        },
+        {
+          path: "/virtual/index.html",
+          relPath: "index.html",
+          content:
+            '<!doctype html><html><head><link rel="stylesheet" href="/home.css"></head><body><h1>Home</h1></body></html>',
+        },
       ],
       cssFiles: [
-        { path: "/virtual/home.css", relPath: "home.css", content: "body{margin:0}", size: 14 },
-        { path: "/virtual/style.css", relPath: "style.css", content: unlinked, size: unlinked.length },
+        {
+          path: "/virtual/home.css",
+          relPath: "home.css",
+          content: "body{margin:0}",
+          size: 14,
+        },
+        {
+          path: "/virtual/style.css",
+          relPath: "style.css",
+          content: unlinked,
+          size: unlinked.length,
+        },
       ],
       jsFiles: [],
       wasmFiles: [],
       wgslFiles: [],
     } as WebFilesContext;
-    const budget = validateCoreWebVitalsSpec(ctx).checks.find((c) => c.id === "cwv-lcp-budget");
+    const budget = validateCoreWebVitalsSpec(ctx).checks.find(
+      (c) => c.id === "cwv-lcp-budget",
+    );
     expect(budget?.status).toBe("pass");
   });
 

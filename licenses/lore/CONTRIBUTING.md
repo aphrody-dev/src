@@ -196,15 +196,15 @@ lychee --config docs/developing/doc-standards/tools/lychee/lychee.toml docs/
 
 Get help on [Discord](https://discord.gg/E4SFJKRPbg):
 
-| Channel | Purpose |
-| --- | --- |
-| `#announcements` | Project news and releases |
-| `#welcome` | Introductions — say hello |
-| `#general` | General Lore discussion |
-| `#support-requests` | Help with using Lore |
-| `#feature-requests` | Ideas for future development |
-| `#show-and-tell` | Share what you've built with Lore |
-| `#off-topic` | Everything else |
+| Channel             | Purpose                           |
+| ------------------- | --------------------------------- |
+| `#announcements`    | Project news and releases         |
+| `#welcome`          | Introductions — say hello         |
+| `#general`          | General Lore discussion           |
+| `#support-requests` | Help with using Lore              |
+| `#feature-requests` | Ideas for future development      |
+| `#show-and-tell`    | Share what you've built with Lore |
+| `#off-topic`        | Everything else                   |
 
 For longer-form design discussions, open a GitHub Issue or bring the conversation to `#general` on [Discord](https://discord.gg/E4SFJKRPbg).
 

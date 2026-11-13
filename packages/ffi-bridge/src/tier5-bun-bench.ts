@@ -13,8 +13,20 @@ const wasmModule = new WebAssembly.Module(wasmBytes);
 const wasmInstance = new WebAssembly.Instance(wasmModule, {});
 
 const { wasm_fma_compute, wasm_triad, memory } = wasmInstance.exports as {
-  wasm_fma_compute: (ptr: number, count: number, iters: number, alpha: number, beta: number) => void;
-  wasm_triad: (a: number, b: number, c: number, count: number, alpha: number) => void;
+  wasm_fma_compute: (
+    ptr: number,
+    count: number,
+    iters: number,
+    alpha: number,
+    beta: number,
+  ) => void;
+  wasm_triad: (
+    a: number,
+    b: number,
+    c: number,
+    count: number,
+    alpha: number,
+  ) => void;
   memory: WebAssembly.Memory;
 };
 
@@ -123,7 +135,9 @@ if (isJson) {
         stream_latency_ns: Number(minWasmStreamNs.toFixed(2)),
         zero_copy_latency_ns: Number(zeroCopyNs.toFixed(2)),
         heap_clone_latency_ns: Number(cloneNs.toFixed(2)),
-        zero_copy_speedup: Number((cloneNs / Math.max(zeroCopyNs, 1)).toFixed(1)),
+        zero_copy_speedup: Number(
+          (cloneNs / Math.max(zeroCopyNs, 1)).toFixed(1),
+        ),
         octane_mandelbrot_latency_us: Number((mandelNs / 1000.0).toFixed(2)),
         shell_spawn_us: Number(shellSpawnUs.toFixed(2)),
         zero_copy_mechanism:
@@ -134,7 +148,9 @@ if (isJson) {
     ),
   );
 } else {
-  console.log("====================================================================");
+  console.log(
+    "====================================================================",
+  );
   console.log("Tier 5 - Pure oven-sh/bun + Inline WebAssembly AOT Result");
   console.log(`Runtime: Bun ${Bun.version} (JavaScriptCore)`);
   console.log(
@@ -146,7 +162,13 @@ if (isJson) {
   console.log(
     `Zero-Copy View Latency: ${zeroCopyNs.toFixed(2)} ns vs Heap Clone: ${(cloneNs / 1000.0).toFixed(2)} us (${(cloneNs / Math.max(zeroCopyNs, 1)).toFixed(1)}x speedup)`,
   );
-  console.log(`Mandelbrot (AreWeFastYet) 256x256: ${(mandelNs / 1000.0).toFixed(2)} us`);
-  console.log(`Shell Spawn Latency (cmd via Bun): ${shellSpawnUs.toFixed(2)} us`);
-  console.log("====================================================================");
+  console.log(
+    `Mandelbrot (AreWeFastYet) 256x256: ${(mandelNs / 1000.0).toFixed(2)} us`,
+  );
+  console.log(
+    `Shell Spawn Latency (cmd via Bun): ${shellSpawnUs.toFixed(2)} us`,
+  );
+  console.log(
+    "====================================================================",
+  );
 }

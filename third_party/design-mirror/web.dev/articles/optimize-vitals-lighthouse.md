@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Finding opportunities to improve user-experience with Chrome's web tooling.
 
- Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)
+Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)
 
 Published: May 11, 2021
 
@@ -48,7 +49,7 @@ this as a summary view of what aspects of user-experience require your attention
 > [!NOTE]
 > **Note:** Lighthouse focuses on measuring user-experience during the initial page load in a lab setting, emulating a slow phone or desktop machine. If there is behavior on your page that may cause layout shifts or long JavaScript tasks after page-load, the lab metrics won't reflect this. Try the DevTools Performance panel, [Search Console](https://search.google.com/search-console/about), or [RUM](https://web.dev/articles/vitals-measurement-getting-started.md.txt#measuring_web_vitals_using_rum_data) for a post-load view into the metrics.
 
- The new Web Vitals option in the DevTools Performance panel displays a track which highlights metric moments, such as Layout Shift (LS) shown above.
+The new Web Vitals option in the DevTools Performance panel displays a track which highlights metric moments, such as Layout Shift (LS) shown above.
 
 [Field metrics](https://web.dev/articles/vitals-field-measurement-best-practices.md.txt), such as those found in the [Chrome UX
 Report](https://developer.chrome.com/docs/crux) or
@@ -99,11 +100,15 @@ Thanks to the `imagesrcset` and `imagesizes` attributes added to the `link` attr
 preload a responsive image using the same image selection logic used by `srcset` and `sizes`:
 
 ```html
-<link rel="preload" as="image" href="lighthouse.jpg"
-           imagesrcset="lighthouse_400px.jpg 400w,
+<link
+  rel="preload"
+  as="image"
+  href="lighthouse.jpg"
+  imagesrcset="lighthouse_400px.jpg 400w,
                         lighthouse_800px.jpg 800w,
                         lighthouse_1600px.jpg 1600w"
-imagesizes="50vw">
+  imagesizes="50vw"
+/>
 ```
 
 Will the audit also highlight preload opportunities if the LCP image is defined via a CSS
@@ -131,7 +136,7 @@ contribution.
 Thanks to the new Lighthouse Element Screenshots feature, we can both see a visual preview of the
 key elements noted in the audit as well as click-to-zoom for a clearer view:
 
-For post-load CLS, there can be value in *persistently* visualizing with rectangles
+For post-load CLS, there can be value in _persistently_ visualizing with rectangles
 which elements contributed the most to CLS. This is a feature you'll find in third-party tools like
 SpeedCurve's [Core Web Vitals dashboard](https://speedcurve.com/blog/web-vitals-user-experience/)
 and which I love using [Defaced's Layout Shift GIF

@@ -6,9 +6,19 @@
 //   bun infra/agents/gh-token.ts git get    protocole credential helper de git (username/password)
 //   bun infra/agents/gh-token.ts install <dir>   écrit <dir>/gh (wrapper qui pose GH_TOKEN puis exécute le vrai gh)
 import { spawnSync } from "node:child_process";
-import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
 import { delimiter, join, resolve } from "node:path";
-import { appJwt, installationToken } from "../../packages/env-kit/src/github-app.ts";
+import {
+  appJwt,
+  installationToken,
+} from "../../packages/env-kit/src/github-app.ts";
 
 export const AGENT_PERMISSIONS = {
   contents: "write",
@@ -29,25 +39,45 @@ const CACHE = join(HOME, "state", "gh-token.json");
 
 function cred(name: string): string | undefined {
   if (process.env[name]) return process.env[name];
-  const f = join(process.env.HOME ?? "", ".config", "credstore.encrypted", name);
+  const f = join(
+    process.env.HOME ?? "",
+    ".config",
+    "credstore.encrypted",
+    name,
+  );
   if (!existsSync(f)) return undefined;
-  const r = spawnSync("systemd-creds", ["--user", `--name=${name}`, "decrypt", f, "-"], { encoding: "utf8" });
+  const r = spawnSync(
+    "systemd-creds",
+    ["--user", `--name=${name}`, "decrypt", f, "-"],
+    { encoding: "utf8" },
+  );
   return r.status === 0 ? r.stdout.trim() : undefined;
 }
 
 /** Jeton valide au moins 10 min ; undefined si l'App n'est pas configurée sur cet hôte. */
 export async function token(now = Date.now()): Promise<string | undefined> {
   try {
-    const c = JSON.parse(readFileSync(CACHE, "utf8")) as { token: string; expires_at: string };
+    const c = JSON.parse(readFileSync(CACHE, "utf8")) as {
+      token: string;
+      expires_at: string;
+    };
     if (Date.parse(c.expires_at) - now > MARGIN_MS) return c.token;
   } catch {}
   const pem = cred("APHRODY_APP_KEY");
   const cid = cred("APHRODY_APP_CLIENT_ID");
   if (!pem || !cid) return undefined;
-  const t = await installationToken({ owner: "aphrody-labs", permissions: AGENT_PERMISSIONS, jwt: appJwt(pem, cid) });
+  const t = await installationToken({
+    owner: "aphrody-labs",
+    permissions: AGENT_PERMISSIONS,
+    jwt: appJwt(pem, cid),
+  });
   mkdirSync(join(HOME, "state"), { recursive: true });
   const tmp = `${CACHE}.${process.pid}`;
-  writeFileSync(tmp, JSON.stringify({ token: t.token, expires_at: t.expires_at }), { mode: 0o600 });
+  writeFileSync(
+    tmp,
+    JSON.stringify({ token: t.token, expires_at: t.expires_at }),
+    { mode: 0o600 },
+  );
   renameSync(tmp, CACHE);
   return t.token;
 }
@@ -86,7 +116,9 @@ if (import.meta.main) {
     process.exit(0);
   }
   if (process.stdout.isTTY) {
-    console.error("gh-token : jeton non affiché sur un terminal (tube ou wrapper uniquement)");
+    console.error(
+      "gh-token : jeton non affiché sur un terminal (tube ou wrapper uniquement)",
+    );
     process.exit(2);
   }
   const t = await token();

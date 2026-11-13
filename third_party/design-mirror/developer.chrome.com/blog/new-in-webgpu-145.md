@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: January 28, 2026
@@ -28,7 +29,8 @@ if (!adapter.features.has("subgroups")) {
 }
 const device = await adapter.requestDevice({ requiredFeatures: ["subgroups"] });
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   enable subgroups;
   
   @group(0) @binding(0) var<storage, read_write> non_uniform: i32;

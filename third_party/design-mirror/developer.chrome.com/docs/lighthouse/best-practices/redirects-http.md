@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 All sites should be protected with HTTPS. Learn why and how to
 [set up HTTPS on your server](https://developer.chrome.com/docs/lighthouse/best-practices/is-on-https.md.txt).
 
@@ -14,7 +15,7 @@ All sites should be protected with HTTPS. Learn why and how to
 
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt)
 flags pages that aren't redirected to HTTPS:
- Lighthouse audit that shows that HTTP traffic isn't redirected to HTTPS.
+Lighthouse audit that shows that HTTP traffic isn't redirected to HTTPS.
 
 Lighthouse changes the page's URL to HTTP, loads the page, then waits for the
 [Chrome Remote Debugging Protocol](https://github.com/ChromeDevTools/devtools-protocol)

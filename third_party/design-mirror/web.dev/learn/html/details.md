@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Discover how the very useful details and summary elements work, and where to
 use them.
 
@@ -16,7 +17,7 @@ your viewport is less than 106 ems wide, clicking the "On this page" reveals the
 table of contents for this section. If you don't see it, shrink the browser to
 view the table of contents navigation on this page as an expander arrow.
 
-The [accordion](https://en.wikipedia.org/wiki/Accordion_(GUI)) graphical user
+The [accordion](<https://en.wikipedia.org/wiki/Accordion_(GUI)>) graphical user
 interface is a series of vertically stacked disclosure widgets. A common use
 case for the accordion is a Frequently Asked Questions (FAQ) page. In this case,
 an accordion FAQ contains a list of visible questions. When clicked on, the
@@ -134,6 +135,7 @@ details[open] summary::before {
   /* changes applied when open only */
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/jOvNMxL?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen jOvNMxL by web-dot-dev on Codepen"></iframe>
 
 This example removes the default marker, and adds generated content to create a

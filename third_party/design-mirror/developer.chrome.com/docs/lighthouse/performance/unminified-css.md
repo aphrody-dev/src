@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The Opportunities section of your Lighthouse report lists
 all unminified CSS files,
 along with the potential savings in [kibibytes (KiB)](https://en.wikipedia.org/wiki/Kibibyte)

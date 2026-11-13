@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Nesting CSS style rules can make your stylesheets more organized, easier to read, and more maintainable.
 
 <iframe src="https:///frame/learn/css/nesting/index_270a955afb1fd49c4a178f60ff3720951297f7df0614628d70d6946718ce5d07.frame" class="framebox inherit-locale " allow="clipboard-write https://" allowfullscreen is-upgraded></iframe>
@@ -39,11 +40,11 @@ This would be the same as writing each style separately:
 }
 
 .feature .link {
-   color: red;
+  color: red;
 }
 
 .feature .text {
-   font-size: 1.3em;
+  font-size: 1.3em;
 }
 ```
 
@@ -77,7 +78,7 @@ The nested rule will by default be related to the outer rule as a [descendant co
     color: blue;
   }
 
-/* targets all paragraphs that are direct children of the .feature element */
+  /* targets all paragraphs that are direct children of the .feature element */
   > p {
     font-size: 1.3em;
   }
@@ -90,7 +91,7 @@ You can also use the `&` selector to be more explicit when nesting style rules. 
 
 ```css
 .feature {
- & button {
+  & button {
     color: blue;
   }
 }
@@ -113,7 +114,7 @@ Without `&`, nested selectors will be descendent selectors of the parent selecto
   &:last-child {
     /* Selects the .feature element that is the :last-child, equivalent to .feature:last-child */
   }
-   
+
   & :last-child {
     /* Selects the :last-child inside of a .feature element, equivalent to .feature :last-child */
   }
@@ -123,17 +124,17 @@ Without `&`, nested selectors will be descendent selectors of the parent selecto
   }
 
   & .highlight {
-     /* Selects elements inside of the .feature element with the class .highlight, equivalent to .feature .highlight */
+    /* Selects elements inside of the .feature element with the class .highlight, equivalent to .feature .highlight */
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/ByorvWK?height=400&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen ByorvWK by web-dot-dev on Codepen">
 </iframe>
 
 You can also change the context and place the `&` selector at the end of the child selector, or on both sides of it.
 
 ```css
-
 /* Targets buttons with an adjacent sibling button */
 button {
   & + & {
@@ -168,6 +169,7 @@ Like [`:is()`](https://web.dev/learn/css/pseudo-classes.md.txt#is), the nesting 
   color: blue;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/MYaVZmr?height=400&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen MYaVZmr by web-dot-dev on Codepen">
 </iframe>
 
@@ -199,7 +201,9 @@ Since the first rule has an `id` in its selector list, and nested rules take the
 Similar to `:is()`, the nesting selector cannot represent pseudo elements.
 
 ```css
-blockquote, blockquote::before, blockquote::after {
+blockquote,
+blockquote::before,
+blockquote::after {
   color: navy;
 
   & {
@@ -207,6 +211,7 @@ blockquote, blockquote::before, blockquote::after {
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VYvXqbJ?height=400&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VYvXqbJ by web-dot-dev on Codepen">
 </iframe>
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 HTML rendering is built on top of the box model, but there's more to life (and web design) than rectangles. CSS supports multiple ways to change which areas of an element are rendered, giving developers freedom to create designs that support all shapes and sizes. Clipping allows for geometric shapes, while masking affects visibility at the pixel level.
 
 ## Paths and Shapes
@@ -53,6 +54,7 @@ The preceding example shows an elliptical clipping path using the `ellipse()` fu
   clip-path: ellipse(50% 25% at center top);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/QwjrzZv?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen QwjrzZv by web-dot-dev on Codepen">
 </iframe>
 
@@ -113,11 +115,7 @@ For other shapes, such as triangles, pentagons, stars, etc., the `polygon()` fun
   width: 60px;
   height: 60px;
   background: blue;
-  clip-path: polygon(
-    50% 0,
-    0 100%,
-    100% 100%
-  );
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
 }
 ```
 
@@ -181,7 +179,6 @@ The preceding example shows elements with a large (`20px` border), each using th
 A clipping path may be defined in an SVG document, either embedded in the HTML document or referenced externally. This can be useful to define complex clipping paths created in graphics programs or clipping paths that combine multiple shapes.
 
 ```html
-
 <svg>
   <defs>
     <clipPath id="kitten-clip-shape">
@@ -209,8 +206,7 @@ To apply a mask, set the `mask-image` property. This property accepts one or mor
 
 ```css
 .my-element {
-  mask-image: url(my-mask.png),
-              linear-gradient(black 0%, transparent 100%);
+  mask-image: url(my-mask.png), linear-gradient(black 0%, transparent 100%);
 }
 ```
 
@@ -234,14 +230,14 @@ In the preceding example a test pattern showing different color and alpha values
 
 CSS provides additional properties to fine-tune the behavior of your masks. Each of the properties accepts a comma-separated list of values, which will be matched to the list of masks set by the `mask-image` property. If there are fewer values than masks, the list will repeat until a value has been set for each mask. If there are more values than masks, any excess values are discarded.
 
-| Property | Description |
-|---|---|
-| `mask-clip` | Sets which reference box of the element masks are applied to. Defaults to `border-box.` |
-| `mask-composite` | Sets the interaction between masks when multiple masks are applied to the same element. Defaults to `add`. |
-| `mask-origin` | Sets the reference box that acts as the origin of a mask. Defaults to `border-box`. This behaves similarly to `background-origin` and accepts the same keywords. |
-| `mask-position` | Sets the position of a mask relative to the `mask-origin`. Accepts position keyword values such as `top` or `center`, percentages, size units, or values relative to a position keyword. This behaves similarly to `background-position` and accepts the same argument types. |
-| `mask-repeat` | Sets how a mask repeats if the masked element is larger than the mask. Defaults to `repeat`. This behaves similarly to `background-repeat` and accepts the same argument types. |
-| `mask-size` | Sets how a mask resizes relative to the size of the masked element. Defaults to `auto`. This behaves similarly to `background-size` and accepts the same argument types. |
+| Property         | Description                                                                                                                                                                                                                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mask-clip`      | Sets which reference box of the element masks are applied to. Defaults to `border-box.`                                                                                                                                                                                       |
+| `mask-composite` | Sets the interaction between masks when multiple masks are applied to the same element. Defaults to `add`.                                                                                                                                                                    |
+| `mask-origin`    | Sets the reference box that acts as the origin of a mask. Defaults to `border-box`. This behaves similarly to `background-origin` and accepts the same keywords.                                                                                                              |
+| `mask-position`  | Sets the position of a mask relative to the `mask-origin`. Accepts position keyword values such as `top` or `center`, percentages, size units, or values relative to a position keyword. This behaves similarly to `background-position` and accepts the same argument types. |
+| `mask-repeat`    | Sets how a mask repeats if the masked element is larger than the mask. Defaults to `repeat`. This behaves similarly to `background-repeat` and accepts the same argument types.                                                                                               |
+| `mask-size`      | Sets how a mask resizes relative to the size of the masked element. Defaults to `auto`. This behaves similarly to `background-size` and accepts the same argument types.                                                                                                      |
 
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zxvjbyZ?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zxvjbyZ by web-dot-dev on Codepen">
 </iframe>
@@ -252,16 +248,21 @@ You can set multiple mask properties at once with the mask shorthand. This can s
 
 ```css
 .longhand {
-  mask-image: linear-gradient(white, black),
-              linear-gradient(90deg, black, transparent);
+  mask-image:
+    linear-gradient(white, black), linear-gradient(90deg, black, transparent);
   mask-mode: luminance, alpha;
-  mask-position: bottom left, top right;
-  mask-size: 50% 50%, 30% 30%;
+  mask-position:
+    bottom left,
+    top right;
+  mask-size:
+    50% 50%,
+    30% 30%;
 }
 
 .shorthand {
-  mask: linear-gradient(white, black) luminance bottom left / 50% 50%,
-        linear-gradient(90deg, black, transparent) alpha top right / 30% 30%;
+  mask:
+    linear-gradient(white, black) luminance bottom left / 50% 50%,
+    linear-gradient(90deg, black, transparent) alpha top right / 30% 30%;
 }
 ```
 

@@ -5,9 +5,21 @@ name: ai-os
 on:
   push:
     branches: [main]
-    paths: ["packages/ai-os/**", "crates/agent-context/**", "crates/agent-py/**", ".github/workflows/ai-os.yml"]
+    paths:
+      [
+        "packages/ai-os/**",
+        "crates/agent-context/**",
+        "crates/agent-py/**",
+        ".github/workflows/ai-os.yml",
+      ]
   pull_request:
-    paths: ["packages/ai-os/**", "crates/agent-context/**", "crates/agent-py/**", ".github/workflows/ai-os.yml"]
+    paths:
+      [
+        "packages/ai-os/**",
+        "crates/agent-context/**",
+        "crates/agent-py/**",
+        ".github/workflows/ai-os.yml",
+      ]
   workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

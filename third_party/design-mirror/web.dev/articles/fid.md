@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
 
 Browser Support
@@ -117,7 +118,7 @@ time it must wait is the FID value for this user on this page.
 FID measures the delta between when an input event is received and when the main
 thread is next idle. This means FID is measured **even in cases where an event
 listener has not been registered.** The reason is because many user interactions
-do not require an event listener but *do* require the main thread to be idle in
+do not require an event listener but _do_ require the main thread to be idle in
 order to run.
 
 For example, all of the following HTML elements need to wait for
@@ -174,7 +175,7 @@ As mentioned above, FID only measures the "delay" in event processing. It does
 not measure the total event processing duration itself, nor the time it takes
 the browser to update the UI after running event handlers.
 
-Even though this time is important to the user and *does* affect the experience,
+Even though this time is important to the user and _does_ affect the experience,
 it's not included in this metric because doing so could incentivize developers
 to add workarounds that actually make the experience worse---that is, they
 could wrap their event handler logic in an asynchronous callback (via
@@ -219,9 +220,9 @@ entries and logs them to the console:
 new PerformanceObserver((entryList) => {
   for (const entry of entryList.getEntries()) {
     const delay = entry.processingStart - entry.startTime;
-    console.log('FID candidate:', delay, entry);
+    console.log("FID candidate:", delay, entry);
   }
-}).observe({type: 'first-input', buffered: true});
+}).observe({ type: "first-input", buffered: true });
 ```
 
 > [!WARNING]

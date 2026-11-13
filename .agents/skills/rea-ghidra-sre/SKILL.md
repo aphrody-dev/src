@@ -8,6 +8,7 @@ description: Pure-Rust Ghidra SRE + REA + mingw-w64-rea fork clean-room reverse-
 Activate this skill when inspecting native binaries (`.exe`, `.dll`, `.so`, `.dylib`, `.node`), stripping MinGW-w64 CRT startup/pseudo-reloc noise, synthesizing instrumented PE64 proxy/hook DLLs, or lifting Ghidra P-Code & Pseudo-C.
 
 ## Execution Paths
+
 - **Native Rust Ghidra Decompiler (`< 5ms`)**:
   ```powershell
   n2b ghidra C:\Users\aphro\.local\bin\n2b.exe --max-functions 8 --json

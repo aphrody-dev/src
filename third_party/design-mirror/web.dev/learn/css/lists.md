@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 030: Lists](https://thecsspodcast.libsyn.com/030-lists)
 
 Imagine you have a bunch of items you plan to buy during your next grocery trip. One common way to represent this visually is a list---but how can you add styling to your grocery list?
@@ -19,6 +20,7 @@ Imagine you have a bunch of items you plan to buy during your next grocery trip.
   <li>pie crust</li>
 </ul>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zYzrEOW?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zYzrEOW by web-dot-dev on Codepen"></iframe>
 
 ## Creating a List
@@ -54,6 +56,7 @@ And description lists are created with `<dl>`, however this list type does not u
   <dd>- breakfast food</dd>
 </dl>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/WNOrZNG?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen WNOrZNG by web-dot-dev on Codepen"></iframe>
 
 ## List styles
@@ -97,7 +100,8 @@ The final option is to style the [`list-style-type`](https://developer.mozilla.o
 Now that you have all of these individual properties, you can use the [`list-style`](https://developer.mozilla.org/docs/Web/CSS/list-style) shorthand to set all of our list styles in one line:
 
 ```css
-list-style: <'list-style-type'> || <'list-style-position'> || <'list-style-image'>
+list-style: < "list-style-type" > || < "list-style-position" > || <
+  "list-style-image" >;
 ```
 
 `list-style` allows you to declare combinations of one, two, or three of the `list-style` properties in any order. If `list-style-type` and `list-style-image` are both set, then`list-style-type` is used as a fallback if the image is unavailable.
@@ -107,7 +111,7 @@ list-style: <'list-style-type'> || <'list-style-position'> || <'list-style-image
 list-style: square;
 
 /* image */
-list-style: url('../img/shape.png');
+list-style: url("../img/shape.png");
 
 /* position */
 list-style: inside;
@@ -116,7 +120,7 @@ list-style: inside;
 list-style: georgian inside;
 
 /* type | image | position */
-list-style: lower-roman url('../img/shape.png') outside;
+list-style: lower-roman url("../img/shape.png") outside;
 
 /* Keyword value */
 list-style: none;
@@ -141,12 +145,12 @@ If you inspect the list in DevTools, you can see a `::marker` element for each o
 
 ```css
 ::marker {
-    unicode-bidi: isolate;
-    font-variant-numeric: tabular-nums;
-    text-transform: none;
-    text-indent: 0px !important;
-    text-align: start !important;
-    text-align-last: start !important;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  text-indent: 0px !important;
+  text-align: start !important;
+  text-align-last: start !important;
 }
 ```
 

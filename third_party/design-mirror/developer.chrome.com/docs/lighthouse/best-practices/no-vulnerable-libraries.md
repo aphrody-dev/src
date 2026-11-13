@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!CAUTION]
 > **Caution:** This audit was removed from [Lighthouse v10.0.0](https://github.com/GoogleChrome/lighthouse/releases/tag/v10.0.0) on February 9th 2023. For more information on the removal of this audit, see the relevant [GitHub pull request](https://github.com/GoogleChrome/lighthouse/pull/14194).
 

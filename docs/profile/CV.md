@@ -16,13 +16,13 @@ agent protocols are sent to those projects as pull requests.
 
 ## Selected work (aphrody-labs/src)
 
-| Project | What it is | Path |
-| :-- | :-- | :-- |
-| ay | One multicall CLI for the monorepo: architecture gate, locks, VCS tooling, Chromium tools, toolchain install, benchmarks | `crates/ay` |
-| nt | A model of the machine's Windows NT, rendered entirely by the GPU on the Microsoft stack | `apps/nt` |
-| ai-os | Agent core, model bridge discovered at run time, relay (MCP, A2A, ACP), gateway and TUI in one Bun package with no npm dependency | `packages/ai-os` |
-| aphrody.app | Rust WebGPU/WGSL tiling desktop shell with CRDT state, OPFS storage and WebMCP tools | `apps/aphrody-app` |
-| unixwin | Native Windows bash in Rust, with coreutils, an MSVC git and a package manager | `apps/unixwin` |
+| Project        | What it is                                                                                                                                                  | Path                   |
+| :------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------- |
+| ay             | One multicall CLI for the monorepo: architecture gate, locks, VCS tooling, Chromium tools, toolchain install, benchmarks                                    | `crates/ay`            |
+| nt             | A model of the machine's Windows NT, rendered entirely by the GPU on the Microsoft stack                                                                    | `apps/nt`              |
+| ai-os          | Agent core, model bridge discovered at run time, relay (MCP, A2A, ACP), gateway and TUI in one Bun package with no npm dependency                           | `packages/ai-os`       |
+| aphrody.app    | Rust WebGPU/WGSL tiling desktop shell with CRDT state, OPFS storage and WebMCP tools                                                                        | `apps/aphrody-app`     |
+| unixwin        | Native Windows bash in Rust, with coreutils, an MSVC git and a package manager                                                                              | `apps/unixwin`         |
 | Brand pipeline | `ay brand build`: outlined SVG logos and icons from the shared Material 3 tokens, ICO/PNG, social cards and ANSI banners rendered with resvg/usvg/tiny-skia | `crates/aphrody-brand` |
 
 Monorepo languages, GitHub linguist bytes on 2026-11-13: Rust 81.1 %, Python 8.0 %, TypeScript 6.4 %,

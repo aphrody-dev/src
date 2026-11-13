@@ -22,7 +22,7 @@ written with the bytes it is reading, and the two can no longer disagree.
 
 ## Motivation
 
-The AWS store keys S3 objects by the *content* hash while the object holds a *representation* of
+The AWS store keys S3 objects by the _content_ hash while the object holds a _representation_ of
 that content. Two writers may legitimately hold different valid representations of the same content
 — LZ4 and Zstd of the same bytes — and both address the same S3 key. The fragment describing which
 representation is stored lives in a separate `DynamoDB` record, so the object and the record are
@@ -64,10 +64,10 @@ What is needed is threefold:
 
 This is not a new idea. [ADR-00006](../developing/decisions/00006-s3-storage-options-reconsidered.md)
 decided in May 2024 to store the fragment together with its payload, and gave as its reason exactly
-the property this proposal is after: *"the fragment metadata is stored once, meaning there are no
-concerns about it getting out of sync with the stored payload."* It rejected the alternative of
-duplicating metadata partly because that would risk *"client errors if the metadata flags don't
-match what's stored in the payload object"* — which is the failure now occurring in production.
+the property this proposal is after: _"the fragment metadata is stored once, meaning there are no
+concerns about it getting out of sync with the stored payload."_ It rejected the alternative of
+duplicating metadata partly because that would risk _"client errors if the metadata flags don't
+match what's stored in the payload object"_ — which is the failure now occurring in production.
 
 **ADR-00006 is still accepted and has never been superseded**, and no decision record covers the
 change away from it:
@@ -80,8 +80,8 @@ change away from it:
 - No ADR describes a fragment metadata table at all.
 
 The reason is not in the log but is not in doubt either. Per the author of both ADRs: once
-ADR-00008 put associations in `DynamoDB`, a query could answer *whether* a fragment existed without
-touching S3, but reading *what* it was still meant an S3 request. Moving the fragment into
+ADR-00008 put associations in `DynamoDB`, a query could answer _whether_ a fragment existed without
+touching S3, but reading _what_ it was still meant an S3 request. Moving the fragment into
 `DynamoDB` as well removed that request. **S3 object metadata was not considered.**
 
 That reasoning was sound for the options on the table, and this proposal does not dispute the goal —
@@ -132,21 +132,21 @@ why — so no separate record of that move is needed.
 
 ### Where each piece of information lives
 
-| | Home | Why |
-| --- | --- | --- |
-| Payload bytes | S3 object body | — |
-| `flags` (payload bits), `size_payload`, `size_content` | S3 object metadata on that object | Describes the bytes; must never be separable from them |
-| Existence, obliteration state | `DynamoDB` fragment state table, PK `hash` | Must be answerable without S3; mutable, so cannot live on an immutable object |
-| Partition references | `DynamoDB` fragments table, PK `hash`, SK `repository‖context` | Access control and obliteration |
+|                                                        | Home                                                           | Why                                                                           |
+| ------------------------------------------------------ | -------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Payload bytes                                          | S3 object body                                                 | —                                                                             |
+| `flags` (payload bits), `size_payload`, `size_content` | S3 object metadata on that object                              | Describes the bytes; must never be separable from them                        |
+| Existence, obliteration state                          | `DynamoDB` fragment state table, PK `hash`                     | Must be answerable without S3; mutable, so cannot live on an immutable object |
+| Partition references                                   | `DynamoDB` fragments table, PK `hash`, SK `repository‖context` | Access control and obliteration                                               |
 
 The flags word is split by an explicit allowlist, `PAYLOAD_FLAGS`:
 
 - **On the object** — `PayloadFragmented`, the `PayloadCompressed` codec group and
-  `PayloadRevisionState`. These describe what the payload *is*, and are the same answer for every
+  `PayloadRevisionState`. These describe what the payload _is_, and are the same answer for every
   reader of those bytes.
 - **In `DynamoDB`** — `PayloadObliterating`, `PayloadObliterated`. Lifecycle state that changes while
   the bytes do not.
-- **Derived on read** — `PayloadStoredDurable`. This is a fact about *which store* holds the payload,
+- **Derived on read** — `PayloadStoredDurable`. This is a fact about _which store_ holds the payload,
   not about the payload. The AWS store now sets it on every fragment it returns rather than
   persisting whatever a client sent, so the claim cannot outlive the object.
 - **Not carried on the object** — `PayloadLocalCachePriority`. A per-machine caching hint: it says
@@ -175,7 +175,7 @@ and a `GetObject` returns headers and body from the same version. A full-object 
 reader observes the whole previous object or the whole new one, never a mix.
 
 Therefore two writers racing with different representations both write complete, self-describing
-objects, and whichever lands last is read back whole. Last-writer-wins is *safe*, which is what
+objects, and whichever lands last is read back whole. Last-writer-wins is _safe_, which is what
 removes the need for a protocol: no `If-None-Match`, no ETag compare-and-set, no abandonment
 heuristic, no reclaim path, no convergence.
 
@@ -245,22 +245,22 @@ Every step is individually idempotent:
 So the flow needs no compensation on failure and no journal of what it was doing. Retrying a put
 from the beginning converges from any interruption:
 
-| Interrupted after | Left behind | What a retry does | Residue |
-| --- | --- | --- | --- |
-| probe | nothing | full put | none |
-| `PutObject` | object, no row, no association | hash reads as unknown, so it re-uploads and publishes | none — the object is overwritten |
-| state row | object + row, no association | probe sees `Stored` + not associated + payload, so it writes the association only | none |
-| association | complete | returns `OK` | none |
+| Interrupted after | Left behind                    | What a retry does                                                                 | Residue                          |
+| ----------------- | ------------------------------ | --------------------------------------------------------------------------------- | -------------------------------- |
+| probe             | nothing                        | full put                                                                          | none                             |
+| `PutObject`       | object, no row, no association | hash reads as unknown, so it re-uploads and publishes                             | none — the object is overwritten |
+| state row         | object + row, no association   | probe sees `Stored` + not associated + payload, so it writes the association only | none                             |
+| association       | complete                       | returns `OK`                                                                      | none                             |
 
 **The ordering rule is load-bearing, not cosmetic.** Writing the state row before the object would
 leave, on interruption, a hash that claims to exist with no bytes behind it — and that state is
-*unrepairable by retry*. The next put probes, sees the row present, takes the "already stored"
+_unrepairable by retry_. The next put probes, sees the row present, takes the "already stored"
 branch, and writes only the association. It never uploads. Every reader of that hash then gets
 not-found for content the store believes it holds, permanently. Object-before-row inverts this: the
 leftover is a row-less object, which is invisible to every path and is overwritten by the next
 upload.
 
-The one case ordering cannot address is losing the object *after* the row exists — S3 durability
+The one case ordering cannot address is losing the object _after_ the row exists — S3 durability
 loss, or the obliteration race below. That is the pre-existing "published but missing payload"
 condition. It is detectable (a `GetObject` not-found on a hash whose row says `Stored`) and warrants
 a counter and an alarm, since the affected partition cannot repair it by re-putting.
@@ -352,7 +352,7 @@ Two callers are left owing something by this, and neither is resolved here:
                      CAS Obliterating → Obliterated         (tombstone)
 ```
 
-The mark is taken *before* the association is deleted. The other order would let a put racing the
+The mark is taken _before_ the association is deleted. The other order would let a put racing the
 obliteration re-associate the very partition being obliterated.
 
 Sub-fragment recursion moved after the reference count, so it is skipped entirely when other
@@ -364,7 +364,7 @@ reference list can be read.
 Because the mark is taken first, the two flows can interleave in exactly three ways:
 
 1. **Put probes before the mark, uploads after it.** Its conditional create fails, it reads back
-   `Obliterating`, and it returns `SLOWDOWN` *without writing an association*. Compliance is
+   `Obliterating`, and it returns `SLOWDOWN` _without writing an association_. Compliance is
    unaffected. The uploaded object is left unreferenced, and if the obliteration has already deleted
    the payload, that upload resurrects it as an orphan.
 2. **Put probes after the mark.** It sees `Obliterating` at the probe and backs off having done
@@ -388,7 +388,7 @@ single atomic `DeleteItem`. Every step after it is cleanup. An obliteration inte
 past that `DeleteItem` has therefore already met the requirement, and re-running it is safe: the
 state read at the top returns early for a hash already marked or tombstoned.
 
-Interruption *before* the `DeleteItem` but after the mark is the one bad case: the mark is left set
+Interruption _before_ the `DeleteItem` but after the mark is the one bad case: the mark is left set
 with nothing to clear it. The hash stays readable — the object is untouched until after the count —
 but becomes unwritable, since every put now returns `SLOWDOWN`. This is a known gap, and it is the
 first of the three duties of the [obliteration work table](#the-obliteration-work-table) below. Note
@@ -400,11 +400,11 @@ deliberately returns early when it finds one.
 Recording each obliteration as a work item, and **keeping the item after the obliteration completes**,
 gives one background job three duties on one schedule:
 
-| Item | State found | Duty |
-| --- | --- | --- |
-| incomplete, stale | a mark with nothing advancing it | **resume** — the crashed-obliteration case above |
-| complete | `Obliterated` **and** associations remain | **reconcile** — the drain race in case 3 |
-| complete | no associations remain | drop the item |
+| Item              | State found                               | Duty                                             |
+| ----------------- | ----------------------------------------- | ------------------------------------------------ |
+| incomplete, stale | a mark with nothing advancing it          | **resume** — the crashed-obliteration case above |
+| complete          | `Obliterated` **and** associations remain | **reconcile** — the drain race in case 3         |
+| complete          | no associations remain                    | drop the item                                    |
 
 The reconcile predicate is exact rather than heuristic. A successful re-put moves the state back to
 `Stored` before it associates, so a tombstone coexisting with a reference means no revival happened
@@ -417,7 +417,7 @@ could momentarily observe `Obliterated` alongside the racing put's association. 
 in-flight put makes the observation stable.
 
 The reconcile pass can repair rather than only report, and this is the one repair in the design that
-is unconditionally safe: the payload is *provably* gone, because only the obliteration that wrote
+is unconditionally safe: the payload is _provably_ gone, because only the obliteration that wrote
 that state could have deleted it, so the association references nothing and removing it destroys
 nothing. It is also the fix that matters. The tombstone alone does not block recovery — a put over
 `Obliterated` already takes the upload path — but the dangling association makes `query` report a
@@ -445,7 +445,7 @@ the loss surfaces as an ordinary miss and is invisible in aggregate.
 
 **Why it is self-perpetuating.** The obvious repair — have the client send the content again — is
 precisely the path deduplication short-circuits. A re-put from the same partition probes, finds the
-state row and its own association, and returns `OK` without uploading. A put from a *different*
+state row and its own association, and returns `OK` without uploading. A put from a _different_
 partition holding the payload takes the deduplicate branch and writes an association, attaching a
 second partition to a hash with no bytes. Re-putting therefore does not repair it, and can spread
 it.
@@ -455,28 +455,29 @@ re-put that sees `MatchFull` and does nothing.
 
 **What can be done**, in increasing order of commitment:
 
-1. **Detect it.** An association that survived the access check, plus a not-found from S3, *is* the
+1. **Detect it.** An association that survived the access check, plus a not-found from S3, _is_ the
    condition — the read holds both facts already and needs no extra request to notice. S3 not-found
    is definitive rather than transient, so there is nothing ambiguous to resolve. A counter and an
-   `error!` turn a silent miss into an alarmable one. *Implemented, on both reads that can observe
+   `error!` turn a silent miss into an alarmable one. _Implemented, on both reads that can observe
    it: `get` and `get_metadata`. Doing it on only one would have made detection depend on which call
    a client happened to make, and `get_metadata` is the cheaper one. The counter is
-   `urc.store.immutable.aws.missing_payload`.*
+   `urc.store.immutable.aws.missing_payload`._
 
    This is also why a failed `DynamoDB` read must never be reported as not-found. Repair acts on
    that signal, so mapping a throttle to a miss would let overload be recorded as data loss and
    clear a state row. See `is_dynamodb_overloaded`, which sorts timeouts, dispatch failures,
    429s, 5xxs and throttling codes from real errors. Covered by
    `a_failed_fragment_metadata_read_does_not_clear_the_state_row`.
+
 2. **Make it repairable, by clearing the state row on detection.** With the row gone the next put
    finds no state, takes the upload path, and republishes. This is only safe because the row carries
    no representation: deleting it discards nothing that the next write does not re-derive, which
    would not have been true when the row held the fragment. The cost is a write on a read path, so
-   it wants to be a deliberate choice rather than a side effect. *Implemented, and skipped when an
+   it wants to be a deliberate choice rather than a side effect. _Implemented, and skipped when an
    obliteration holds the mark: removing a mark mid-obliteration would let a put republish
    underneath it. Covered by `a_read_of_a_lost_payload_clears_its_state_so_a_put_can_restore_it` and
    `a_read_of_a_lost_payload_leaves_an_obliteration_mark_alone`, and
-   `a_failed_repair_still_reports_the_lost_payload_as_not_found` for the best-effort part.*
+   `a_failed_repair_still_reports_the_lost_payload_as_not_found` for the best-effort part._
 3. **Verify on the deduplicate branch.** A `HeadObject` before associating would stop the spread,
    and is rejected — it puts an S3 request on the hot path to defend against a rare condition, which
    is the trade this proposal exists to avoid.
@@ -507,14 +508,14 @@ synchronous obliterate cannot, and it shares a schedule with the
 
 ### Call-count comparison
 
-| Operation | `main` | This proposal |
-| --- | --- | --- |
-| Put, new content | 1–3 DDB reads, 1 S3 PUT, 2 DDB writes | 2 DDB reads (parallel), 1 S3 PUT, 2 DDB writes |
-| Put, already associated | 1–3 DDB reads | 2 DDB reads (parallel) |
-| Put, dedup across partitions | not supported — re-uploads | 2 DDB reads, 1 DDB write, **no S3** |
-| Get | 2 DDB reads, 1 S3 GET | **1 DDB read**, 1 S3 GET (parallel) |
-| Query (per fragment, ingress) | 2 DDB reads | 2 DDB reads (parallel), **no S3** |
-| Copy | 2 DDB reads, 1 DDB write | **1 DDB read**, 1 DDB write |
+| Operation                     | `main`                                | This proposal                                  |
+| ----------------------------- | ------------------------------------- | ---------------------------------------------- |
+| Put, new content              | 1–3 DDB reads, 1 S3 PUT, 2 DDB writes | 2 DDB reads (parallel), 1 S3 PUT, 2 DDB writes |
+| Put, already associated       | 1–3 DDB reads                         | 2 DDB reads (parallel)                         |
+| Put, dedup across partitions  | not supported — re-uploads            | 2 DDB reads, 1 DDB write, **no S3**            |
+| Get                           | 2 DDB reads, 1 S3 GET                 | **1 DDB read**, 1 S3 GET (parallel)            |
+| Query (per fragment, ingress) | 2 DDB reads                           | 2 DDB reads (parallel), **no S3**              |
+| Copy                          | 2 DDB reads, 1 DDB write              | **1 DDB read**, 1 DDB write                    |
 
 Cross-partition deduplication is new here, and costs no additional request: it reuses the same two
 probe reads the put already makes.
@@ -640,10 +641,11 @@ read compatibility are required, and both are cheap:
   being described from a row that cannot be about it. The setting is also the migration's own
   end-state marker — once a backfill completes, removing it retires the fallback.
 
-  *Implemented, and covered by `get_falls_back_to_the_legacy_row_for_an_object_with_no_metadata`,
+  _Implemented, and covered by `get_falls_back_to_the_legacy_row_for_an_object_with_no_metadata`,
   `query_matches_a_preexisting_object_without_reading_s3`,
   `get_refuses_an_object_with_no_metadata_when_no_legacy_table_is_configured` and
-  `get_does_not_fall_back_for_an_object_with_damaged_metadata`.*
+  `get_does_not_fall_back_for_an_object_with_damaged_metadata`._
+
 - **State.** None. The fragment state table is its own table and starts empty, so nothing reads a
   table-era row as state and no tolerance is needed for their shape. A tombstone in the old table is
   likewise invisible, which is only acceptable because no obliterated fragment exists there — if one
@@ -694,7 +696,7 @@ Two options, to be decided before the cut-over rather than during an incident:
 - **Prepare a rollback build.** Keep a branch of the current code carrying only the dual-read
   fragment fallback. It writes the old shape but reads both, so it can be deployed over a cut-over
   fleet without stranding anything. This costs one extra build to maintain and validate, and it must
-  exist *before* the cut-over to be worth anything.
+  exist _before_ the cut-over to be worth anything.
 
 Either way the window is bounded by how long the fleet serves writes before the change is trusted,
 so a short soak with writes disabled — reads only, exercising the dual-read path against the
@@ -721,7 +723,7 @@ target. Nothing in this design does so.
 
 ## Resolved
 
-- **Which flags travel on the object.** `PayloadRevisionState` does: it says what the payload *is*,
+- **Which flags travel on the object.** `PayloadRevisionState` does: it says what the payload _is_,
   which is the same answer for every reader of those bytes. `PayloadLocalCachePriority` does not: it
   is a per-machine hint about what one host should keep, so it has no meaning on a globally shared
   object.

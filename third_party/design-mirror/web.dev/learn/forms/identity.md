@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** User account [authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) is a complex issue in terms of privacy and security. For account safety, it's likely better to use a [third-party identity provider](https://web.dev/articles/sign-up-form-best-practices.md.txt#federated-login), instead of building your own secure authentication system. Learn more about [best practices for account authentication and password management](https://cloud.google.com/blog/products/identity-security/account-authentication-and-password-management-best-practices).
 

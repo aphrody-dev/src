@@ -3,11 +3,12 @@ Review: docs/ARCHITECTURE-ROOT.md
 
 Score: 8 / 20 — Clear strategic intent, but several invariants directly contradict each other and violate Cargo, Bun, Git, and Windows filesystem mechanics; key migration steps risk silent branch loss and bootstrap deadlocks.
 
-Criterion	Score	Verdict
-Factual & tooling accuracy	2 / 6	Broken Cargo/Bun/Git assumptions, false Chromium analogy, math mismatch, corrupted Unicode
-Internal consistency	2 / 4	Direct contradictions across §§1.1/2, 1.2/1.5, 1.4, and 1.7/1.8
-Architectural soundness	2 / 5	First-party nt core hidden in unversioned third_party, root-discovery bug, ay bootstrap deadlock
-Completeness & operational safety	2 / 5	Missing lock/identity schemas, Cargo target isolation, Go/C++ governance, and rollback mechanics
+Criterion Score Verdict
+Factual & tooling accuracy 2 / 6 Broken Cargo/Bun/Git assumptions, false Chromium analogy, math mismatch, corrupted Unicode
+Internal consistency 2 / 4 Direct contradictions across §§1.1/2, 1.2/1.5, 1.4, and 1.7/1.8
+Architectural soundness 2 / 5 First-party nt core hidden in unversioned third_party, root-discovery bug, ay bootstrap deadlock
+Completeness & operational safety 2 / 5 Missing lock/identity schemas, Cargo target isolation, Go/C++ governance, and rollback mechanics
+
 1. Factual Errors
 
 Corrupted Unicode breaking Markdown rendering (§1.2, §6.2, §§1–4):
@@ -66,7 +67,7 @@ Compilation on the Windows PC (C:\src) and fr1 is forbidden (§1.8); only prd/fr
 
 Workspace orphan directories (apps/*, infra/ Go, #![no_std] crates):
 
-§1.1 restricts Cargo to crates/* and Bun to packages/*, leaving apps/* (§2/§4) outside both workspaces. Mixing #![no_std] driver crates (windows-drivers-rs), Wasm targets, WinUI 3 apps, and Linux daemons in one flat Cargo workspace without default-members and resolver = "3" causes feature-unification and host-target build failures on cargo test --workspace.
+§1.1 restricts Cargo to crates/* and Bun to packages/_, leaving apps/_ (§2/§4) outside both workspaces. Mixing #![no_std] driver crates (windows-drivers-rs), Wasm targets, WinUI 3 apps, and Linux daemons in one flat Cargo workspace without default-members and resolver = "3" causes feature-unification and host-target build failures on cargo test --workspace.
 
 Split brain in repo tooling (ay vs packages/machine):
 
@@ -89,7 +90,7 @@ Windows filesystem hazards during third_party/.flatten (§5): Missing checks for
 License isolation policy: Merging public nt with private src/labs and GPLv2 (linux, LiberNT/reactos) / LGPL (wine) lacks cargo-deny rules preventing copyleft linkage into proprietary/MIT crates.
 
 4. Concrete Fixes
-Fix 1 — Strip invisible Unicode before committing
+   Fix 1 — Strip invisible Unicode before committing
 
 Run via Bun (no .sh/.ps1):
 
@@ -101,6 +102,7 @@ Fix 2 — Exact replacement for broken Invariants (§1) & §5 math
 Replace §1 items 1–8 and §5 bullet 1 in docs/ARCHITECTURE-ROOT.md:
 
 Markdown
+
 1. **Un seul de chaque par écosystème.** Un workspace Cargo (`crates/*`, `apps/*` Rust ; `resolver = "3"`), un workspace Bun (`packages/*`, `apps/*` web), un workspace Go (`infra/go.work`), une toolchain Rust (`rust-toolchain.toml`, nightly datée épinglée). Un seul `Cargo.lock`, `bun.lock`, `src.lock.json` et `justfile`. `[workspace.dependencies]` fixe une seule version par crate.
 2. **À plat au premier niveau.** `crates/<couche>-<nom>`, `packages/<nom>`, `apps/<nom>`, `third_party/<nom>`, sans sous-dossier de catégorie (exception documentée : sous-arbres `gclient` internes à `third_party/chromium`). La catégorie vit en métadonnée (`[package.metadata.layer]` / `src.lock.json`).
 3. **Un projet amont = un dossier dans `third_party/`.**
@@ -116,25 +118,31 @@ Markdown
 7. **Matrice multiplateforme explicite.** Les crates transverses (`sys-`, `vcs-`, `depot-`, `agent-core`, `shell-`) compilent et passent leurs tests sur `x86_64-pc-windows-msvc` et `x86_64-unknown-linux-gnu`. Les cibles spécifiques à un OS (`apps/nt-app` WinUI 3, `nt-*` Win32/D3D12, `windows-drivers-rs` `#![no_std]`) sont isolées hors de `default-members` et compilées/testées sur leur runner cible respectif.
 8. **Zéro régression vérifiée à distance.** Compilation et tests interdits sur le PC local (`C:\src`) et `fr1` ; exécution exclusivement sur `prd` / `fr2` (Linux natif + VM Windows KVM/GPU pour `windows-msvc` et WinUI 3). Une suite de tests dédiée par cible (sans augmentation de `#[ignore]`) doit passer à 100 % avant validation de phase ; un snapshot `src.lock.json` précède toute mutation de `third_party/`.
 
-
 And fix §5 line 1 + fork safety check:
 
 Markdown
+
 - 320 dépôts audités → 309 dossiers `third_party/<nom>` : 277 déplacements, 10 doublons purs supprimés, 1 fork fusionné en remote additionnel (`reactos` → `third_party/LiberNT`).
 - Sûreté Git multi-branches : un doublon n'est supprimé que si **toutes** ses refs locales et distantes (`refs/heads/*`, `refs/tags/*`, `git status --porcelain`, `git stash list`) sont ancêtres exacts d'une ref présente dans le dépôt conservé (`git merge-base --is-ancestor`), avec `core.longpaths=true` vérifié avant déplacement.
 
 Fix 3 — Root Cargo.toml & offline vendor separation
 Ini, TOML
+
 # Cargo.toml (racine)
+
 [workspace]
 resolver = "3"
-members = ["crates/*", "apps/*"]
+members = ["crates/_", "apps/_"]
+
 # Exclut les binaires Windows-only (WinUI 3) et no_std du `cargo test` générique Linux
+
 default-members = ["crates/depot-ay", "crates/sys-identity"]
 exclude = ["third_party", "vendor", "var"]
 
 Ini, TOML
+
 # .cargo/config.offline.toml (généré/mis à jour par `cargo vendor vendor/cargo > .cargo/config.offline.toml`)
+
 [source.crates-io]
 replace-with = "vendored-sources"
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
 
 Published: Oct 08, 2025
@@ -123,7 +124,7 @@ To debug view transitions, you can use the Animations panel from DevTools to pau
 Debugging view transitions with Chrome DevTools.
 
 Previously, when inspecting one of the `::view-transition-*` pseudo-elements, Chrome DevTools did not expose rules targeted to pseudos using their set `view-transition-class`. This changed in Chrome 139, which added the functionality.
- Figure: Screenshot of Chrome DevTools inspecting a `view-transition-group` pseudo-element in [the cards demo](https://view-transitions.chrome.dev/cards/spa-auto/). The styles tab shows the rules affecting that pseudo, including the rule that uses the `view-transition-group(*.card)` selector.
+Figure: Screenshot of Chrome DevTools inspecting a `view-transition-group` pseudo-element in [the cards demo](https://view-transitions.chrome.dev/cards/spa-auto/). The styles tab shows the rules affecting that pseudo, including the rule that uses the `view-transition-group(*.card)` selector.
 
 ### Nested view transition groups are available from Chrome 140
 
@@ -181,23 +182,26 @@ The [pseudo-elements inheriting more properties](https://chromestatus.com/featur
 When using the `finished` promise to execute a callback, Chrome used to wait for a frame to be produced before executing that logic. This could cause a flicker at the end of the animation when script moves some styles around in an attempt to preserve a visually similar state.
 
 ```javascript
- document.startViewTransition(() => {
-  if (from) {
-    dfrom.classList.remove("shadow");
-    dto.appendChild(target);
-  } else {
-    dto.classList.remove("shadow");
-    dfrom.appendChild(target);
-  }
-}).finished.then(() => {
-  if (from) {
-    dto.classList.add("shadow");
-  } else {
-    dfrom.classList.add("shadow");
-  }
-  from = 1 - from;
-});
+document
+  .startViewTransition(() => {
+    if (from) {
+      dfrom.classList.remove("shadow");
+      dto.appendChild(target);
+    } else {
+      dto.classList.remove("shadow");
+      dfrom.appendChild(target);
+    }
+  })
+  .finished.then(() => {
+    if (from) {
+      dto.classList.add("shadow");
+    } else {
+      dfrom.classList.add("shadow");
+    }
+    from = 1 - from;
+  });
 ```
+
 Recording of the previous code in action, recorded in Chrome 139 that does not include the timing fix. You can see a glitch when the box's shadow gets added when the transition has finished.
 
 This change in timing rectifies the situation by moving [the view transition clean up steps](https://www.w3.org/TR/css-view-transitions-1/#handle-transition-frame-algorithm) to run asynchronously after the lifecycle is completed. This ensures that the visual frame produced at `finished` promise resolution still maintains the view transition structure, thereby avoiding the flicker.

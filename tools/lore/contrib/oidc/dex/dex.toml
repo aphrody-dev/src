@@ -10,7 +10,12 @@ client_id = "lore-cli"
 # Dex adds `name` and `groups` to the token only when the client requests the
 # `profile` and `groups` scopes, and `https://localhost` to `aud` only through
 # the cross-client scope. See config.yaml.
-scopes = ["openid", "profile", "groups", "audience:server:client_id:https://localhost"]
+scopes = [
+  "openid",
+  "profile",
+  "groups",
+  "audience:server:client_id:https://localhost",
+]
 
 [immutable_store.local]
 path = "/tmp/lore-oidc-demo/dex-server"

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Here are some common terms and concepts for accessibility. This guide is
 includes key terms for web accessibility that we discuss within the course. For
 more technical terminology, refer to the
@@ -64,7 +65,7 @@ and alternative pointing devices.
 
 ## Captions: Closed and open
 
-*Captions* are words that describe the audio or sound portion of a program or
+_Captions_ are words that describe the audio or sound portion of a program or
 video. Captions include dialogue, identify who is speaking, and include
 non-speech information conveyed through sound, including meaningful sound
 effects. Captions should be included with
@@ -73,8 +74,8 @@ and [live content](https://www.w3.org/WAI/WCAG21/Understanding/captions-live),
 to help people who are deaf, hard of hearing, or have other auditory processing
 disabilities have equal access to multimedia content.
 
-There are two types of captions. *Closed captions* can be turned on and off by
-the viewer, while *open captions* (sometimes referred to as subtitles) cannot.
+There are two types of captions. _Closed captions_ can be turned on and off by
+the viewer, while _open captions_ (sometimes referred to as subtitles) cannot.
 
 ## Digital accessibility
 

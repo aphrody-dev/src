@@ -11,6 +11,7 @@ Example (checked 2026-11-12): anchor-name chrome 125, firefox 147, safari 26, ta
 Baseline is not stored in BCD. web-features (npm `web-features`) computes it (`status.baseline: high|low|false`, `baseline_low_date`, `baseline_high_date`). It is not cloned locally, so the field names are unverified. Online sources: the MDN page banner, https://webstatus.dev, caniuse. The Lighthouse `baseline` audit uses its bundled `core/lib/baseline/web-features-data.json`.
 
 List CSS properties that have no Safari support:
+
 ```sh
 bun -e 'const R="C:/src/third_party/web/mdn_browser-compat-data/";for await(const f of new Bun.Glob("css/properties/*.json").scan(R)){const j=await Bun.file(R+f).json();for(const[k,v]of Object.entries(j.css.properties)){const s=[v.__compat?.support.safari].flat()[0];if(s&&!s.version_added)console.log(k)}}'
 ```

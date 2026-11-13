@@ -123,7 +123,10 @@ export function depotJustRecipes(path: string = "justfile"): any {
   return callFfiString(lib.symbols.depot_just_recipes_json, ptr(pBuf));
 }
 
-export function depotTreeSitterSymbols(filePath: string, content: string): DepotTreeSitterSummary | null {
+export function depotTreeSitterSymbols(
+  filePath: string,
+  content: string,
+): DepotTreeSitterSummary | null {
   try {
     return parse(filePath, content) as unknown as DepotTreeSitterSummary;
   } catch {
@@ -131,10 +134,21 @@ export function depotTreeSitterSymbols(filePath: string, content: string): Depot
   }
 }
 
-export function depotGraphQuery(graphDir: string, term: string, dfs: boolean = false, maxTokens: number = 2000): any {
+export function depotGraphQuery(
+  graphDir: string,
+  term: string,
+  dfs: boolean = false,
+  maxTokens: number = 2000,
+): any {
   const lib = loadDepotFfi();
   if (!lib) return null;
   const gBuf = Buffer.from(`${graphDir}\0`, "utf8");
   const tBuf = Buffer.from(`${term}\0`, "utf8");
-  return callFfiString(lib.symbols.depot_graph_query_json, ptr(gBuf), ptr(tBuf), dfs, maxTokens);
+  return callFfiString(
+    lib.symbols.depot_graph_query_json,
+    ptr(gBuf),
+    ptr(tBuf),
+    dfs,
+    maxTokens,
+  );
 }

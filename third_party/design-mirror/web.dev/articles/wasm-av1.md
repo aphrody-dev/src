@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 WebAssembly lets us extend the browser with new features. This article shows how to port the AV1 video decoder and play AV1 video in any modern browser.
 
 Alex Danilo [X](https://twitter.com/alexanderdanilo)
@@ -372,14 +373,17 @@ paint it to the screen is this:
 
 ```javascript
 function show_frame(af) {
-    if (rgb_image != 0) {
-        // Convert The 16-bit YUV to 8-bit RGB
-        let buf = Module._AVX_Video_Frame_get_buffer(af);
-        Module._AVX_YUV_to_RGB(rgb_image, buf, WIDTH, HEIGHT);
-        // Paint the image onto the canvas
-        drawImageToCanvas(new Uint8Array(Module.HEAPU8.buffer,
-                rgb_image, 3 * WIDTH * HEIGHT), WIDTH, HEIGHT);
-    }
+  if (rgb_image != 0) {
+    // Convert The 16-bit YUV to 8-bit RGB
+    let buf = Module._AVX_Video_Frame_get_buffer(af);
+    Module._AVX_YUV_to_RGB(rgb_image, buf, WIDTH, HEIGHT);
+    // Paint the image onto the canvas
+    drawImageToCanvas(
+      new Uint8Array(Module.HEAPU8.buffer, rgb_image, 3 * WIDTH * HEIGHT),
+      WIDTH,
+      HEIGHT,
+    );
+  }
 }
 ```
 

@@ -15,7 +15,11 @@ export interface BlobObject {
 }
 export interface Storage {
   get(key: string, opts?: { range?: ByteRange }): Promise<BlobObject | null>;
-  put(key: string, data: string | ArrayBuffer | Uint8Array | Blob, opts?: { contentType?: string }): Promise<void>;
+  put(
+    key: string,
+    data: string | ArrayBuffer | Uint8Array | Blob,
+    opts?: { contentType?: string },
+  ): Promise<void>;
   delete(key: string): Promise<void>;
 }
 export interface KV {
@@ -25,7 +29,10 @@ export interface KV {
 }
 export interface SQL {
   /** Write `?` placeholders; they are rewritten to $1.. for Postgres. */
-  all<T = Record<string, unknown>>(query: string, params?: unknown[]): Promise<T[]>;
+  all<T = Record<string, unknown>>(
+    query: string,
+    params?: unknown[],
+  ): Promise<T[]>;
   run(query: string, params?: unknown[]): Promise<void>;
 }
 export interface Env {

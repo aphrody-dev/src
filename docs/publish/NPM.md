@@ -10,24 +10,24 @@ Verified on fr2 with `bun pm pack --dry-run` (bun 1.4.4) on the `C:\src-merge` t
 
 ## Packages (packages/*)
 
-| Package | Version | private | license | repository | pack dry-run | Name on npm |
-|---|---|---|---|---|---|---|
-| @aphrody/agy | 2.0.0 | no | – | – | OK, 13 files, 97.6 KB | free |
-| @aphrody/ai-os | 2.1.0 | no | – | – | OK, 76 files, 5.1 MB | free |
-| @aphrody/ai-triad | 1.0.0 | no | – | – | OK, 23 files, 206.9 KB | free |
-| @aphrody/brain | 0.1.0 | **yes** | – | – | OK, 6 files | free |
-| @aphrody/bun-parity | 1.0.0 | no | MIT | – | OK, 36 files | free |
-| @aphrody/bun-plugins | 1.0.0 | no | – | – | OK, 15 files | free |
-| @aphrody/chromium-bun | 2.1.0 | no | – | – | OK, 41 files | free |
-| @aphrody/env-kit | 1.0.0 | no | – | – | OK, 26 files | free |
-| @aphrody/epic-games | 0.1.0 | no | – | – | OK, 10 files | free, **do not publish** |
-| @aphrody/forge | 1.1.0 | no | – | – | OK, 22 files | free |
-| @aphrody/google-design | 2.0.0 | **yes** | – | – | OK, 172 files, **33.7 MB** | free |
-| @aphrody/knowledge-engine | 1.0.0 | no | – | – | OK, 18 files | free |
-| @aphrody/machine | 0.1.0 | **yes** | – | – | OK, 8 files | free |
-| @aphrody/pi-opencode | 1.0.0 | no | – | – | OK, 15 files | free |
-| @aphrody/shell-matrix | 0.1.0 | **yes** | – | – | OK, 4 files | free |
-| @aphrody/wck | 1.0.0 | no | – | – | OK, 17 files | free |
+| Package                   | Version | private | license | repository | pack dry-run               | Name on npm              |
+| ------------------------- | ------- | ------- | ------- | ---------- | -------------------------- | ------------------------ |
+| @aphrody/agy              | 2.0.0   | no      | –       | –          | OK, 13 files, 97.6 KB      | free                     |
+| @aphrody/ai-os            | 2.1.0   | no      | –       | –          | OK, 76 files, 5.1 MB       | free                     |
+| @aphrody/ai-triad         | 1.0.0   | no      | –       | –          | OK, 23 files, 206.9 KB     | free                     |
+| @aphrody/brain            | 0.1.0   | **yes** | –       | –          | OK, 6 files                | free                     |
+| @aphrody/bun-parity       | 1.0.0   | no      | MIT     | –          | OK, 36 files               | free                     |
+| @aphrody/bun-plugins      | 1.0.0   | no      | –       | –          | OK, 15 files               | free                     |
+| @aphrody/chromium-bun     | 2.1.0   | no      | –       | –          | OK, 41 files               | free                     |
+| @aphrody/env-kit          | 1.0.0   | no      | –       | –          | OK, 26 files               | free                     |
+| @aphrody/epic-games       | 0.1.0   | no      | –       | –          | OK, 10 files               | free, **do not publish** |
+| @aphrody/forge            | 1.1.0   | no      | –       | –          | OK, 22 files               | free                     |
+| @aphrody/google-design    | 2.0.0   | **yes** | –       | –          | OK, 172 files, **33.7 MB** | free                     |
+| @aphrody/knowledge-engine | 1.0.0   | no      | –       | –          | OK, 18 files               | free                     |
+| @aphrody/machine          | 0.1.0   | **yes** | –       | –          | OK, 8 files                | free                     |
+| @aphrody/pi-opencode      | 1.0.0   | no      | –       | –          | OK, 15 files               | free                     |
+| @aphrody/shell-matrix     | 0.1.0   | **yes** | –       | –          | OK, 4 files                | free                     |
+| @aphrody/wck              | 1.0.0   | no      | –       | –          | OK, 17 files               | free                     |
 
 All 16 pass `pack --dry-run`, and no `workspace:`/`file:`/`link:` dependency would block publication.
 

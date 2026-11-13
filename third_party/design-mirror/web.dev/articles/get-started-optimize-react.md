@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Want to make your React site as fast and accessible as possible? You've come to the right place!
 
- Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
+Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
 
 > [!CAUTION]
 > **Caution:** One or more demos on this page no longer work, as [Glitch has ended hosting](https://blog.glitch.com/post/changes-are-coming-to-glitch).
@@ -33,7 +34,7 @@ the React ecosystem are mentioned.
 
 ## What will you learn?
 
-The tutorials in this learning path do *not* focus on:
+The tutorials in this learning path do _not_ focus on:
 
 - How to use React
 - How React works under the hood

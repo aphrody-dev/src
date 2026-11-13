@@ -8,9 +8,7 @@
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/hook.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/hook.ts"],
             "timeout": 20,
             "onFailure": "block"
           }
@@ -22,9 +20,7 @@
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/hook.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/hook.ts"],
             "timeout": 30,
             "onFailure": "continue"
           }
@@ -37,9 +33,7 @@
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/hook.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/hook.ts"],
             "timeout": 20,
             "onFailure": "block"
           }
@@ -52,9 +46,7 @@
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/hook.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/hook.ts"],
             "timeout": 5,
             "async": true
           }
@@ -67,9 +59,7 @@
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/hook.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/hook.ts"],
             "timeout": 5
           }
         ]
@@ -81,9 +71,7 @@
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/hook.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/hook.ts"],
             "timeout": 10
           }
         ]
@@ -95,17 +83,13 @@
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/hook.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/hook.ts"],
             "timeout": 10
           },
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/learn-capture.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/learn-capture.ts"],
             "timeout": 10
           }
         ]
@@ -117,17 +101,13 @@
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/hook.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/hook.ts"],
             "timeout": 5
           },
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/learn-auto.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/learn-auto.ts"],
             "timeout": 5
           }
         ]
@@ -139,17 +119,13 @@
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/hook.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/hook.ts"],
             "timeout": 5
           },
           {
             "type": "command",
             "command": "bun",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/src/learn-capture.ts"
-            ],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/src/learn-capture.ts"],
             "timeout": 10
           }
         ]

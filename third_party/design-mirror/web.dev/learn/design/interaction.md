@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Small screen devices like mobile phones often have touchscreens. Large screen devices like laptops and desktop computers often come with hardware like a mouse or a trackpad. It's tempting to equate small screens with touch and large screens with pointers.
 
 But the reality is more nuanced. Some laptops have touchscreen capabilities. Users can interact with either a touchscreen or a trackpad or both. Likewise it's possible to use an external keyboard or mouse with a touchscreen device like a tablet.
@@ -53,7 +54,7 @@ Even if someone has a primary input mechanism capable of fine-grained control, t
 
 ## Any pointer
 
-The `pointer` media feature reports the fineness of the *primary* input mechanism. But many devices have more than one input mechanism. It's possible that someone is interacting with your website using both a touchscreen and a mouse at the same time.
+The `pointer` media feature reports the fineness of the _primary_ input mechanism. But many devices have more than one input mechanism. It's possible that someone is interacting with your website using both a touchscreen and a mouse at the same time.
 
 The `any-pointer` differs from the `pointer` media feature in that it reports if any pointing device passes the test.
 
@@ -63,7 +64,7 @@ An `any-pointer` value of `coarse` means that at least one pointing device is no
 
 An `any-pointer` value of `fine` means that at least one pointing device is capable of fine-grained control. But again, this might not be the primary input mechanism.
 
-Because the `any-pointer` media query will report a positive result if *any* of the input mechanisms pass the test, it's possible for a browser to report a result for `any-pointer: fine` and also report a result for `any-pointer: coarse`. In that case the order of your media queries matters. The last one will take precedence.
+Because the `any-pointer` media query will report a positive result if _any_ of the input mechanisms pass the test, it's possible for a browser to report a result for `any-pointer: fine` and also report a result for `any-pointer: coarse`. In that case the order of your media queries matters. The last one will take precedence.
 
 In this example, if the device has both a fine and a coarse input mechanism, the coarse styles are applied.
 
@@ -101,6 +102,7 @@ button .extra {
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VwMrYav?height=200&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VwMrYav by web-dot-dev on Codepen"></iframe>
 
 If you use your mouse to hover over that button, the icon will appear. But if you use your keyboard to tab to the button, the icon remains invisible. When you use the keyboard, you're focusing rather than hovering. A desktop device with a mouse attached will report that the primary input mechanism is capable of hovering, which is true. But anyone using a keyboard while a mouse is attached won't get the benefit of the `:hover` styles. So it's a good idea to combine `:hover` and `:focus` styles to cover both interactions.
@@ -123,7 +125,7 @@ Even if the primary input device is capable of hovering over elements, be carefu
 
 ## Any hover
 
-The `hover` media query only reports on the *primary* input mechanism. Some devices have multiple input mechanisms: touchscreen, mouse, keyboard, trackpad.
+The `hover` media query only reports on the _primary_ input mechanism. Some devices have multiple input mechanisms: touchscreen, mouse, keyboard, trackpad.
 
 Just as `any-pointer` reports on any of the input mechanisms, `any-hover` will be true if any of the available input mechanisms are capable of hovering over elements.
 
@@ -143,6 +145,7 @@ button:focus .extra {
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/Bawmyzd?height=200&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen Bawmyzd by web-dot-dev on Codepen"></iframe>
 
 On a device that has no input mechanism capable of hovering, the extra icon is always visible.
@@ -158,24 +161,25 @@ Unlike a physical keyboard, virtual keyboards can be tailored to match the expec
 [HTML5 input types](https://developer.mozilla.org/docs/Learn/Forms/HTML5_input_types) are a great way of describing your `input` elements. The `type` attribute accepts values such as `email`, `number`, `tel`, `url`, and more.
 
 ```html
-  <label for="email">Email</label>
-  <input type="email" id="email">
+<label for="email">Email</label>
+<input type="email" id="email" />
 ```
 
 ```html
-  <label for="number">Number</label>
-  <input type="number" id="number">
+<label for="number">Number</label>
+<input type="number" id="number" />
 ```
 
 ```html
-  <label for="tel">Tel</label>
-  <input type="tel" id="tel">
+<label for="tel">Tel</label>
+<input type="tel" id="tel" />
 ```
 
 ```html
-  <label for="url">URL</label>
-  <input type="url" id="url">
+<label for="url">URL</label>
+<input type="url" id="url" />
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zYEPxBX?height=400&amp;theme-id=dark&amp;default-tab=html%2C%20result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zYEPxBX by web-dot-dev on Codepen"></iframe>
 
 ### Input modes
@@ -195,15 +199,16 @@ If you're asking for a whole number, like somebody's age, use `inputmode="numeri
 
 ```html
 <label for="age">Age</label>
-<input type="number" id="age" inputmode="numeric">
+<input type="number" id="age" inputmode="numeric" />
 ```
 
 If you're asking for a number that includes decimal places, like a price, use `inputmode="decimal"`.
 
 ```html
 <label for="price">Price</label>
-<input type="number" id="price" inputmode="decimal">
+<input type="number" id="price" inputmode="decimal" />
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/mdBqyrO?height=300&amp;theme-id=dark&amp;default-tab=html%2C%20result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen mdBqyrO by web-dot-dev on Codepen"></iframe>
 
 ### Autocomplete
@@ -212,18 +217,19 @@ Nobody likes filling in forms. As a designer, you can improve the experience for
 
 ```html
 <label for="name">Name</label>
-<input type="text" id="name" autocomplete="name">
+<input type="text" id="name" autocomplete="name" />
 ```
 
 ```html
 <label for="country">Country</label>
-<input type="text" id="country" autocomplete="country">
+<input type="text" id="country" autocomplete="country" />
 ```
 
 ```html
 <label for="email">Email</label>
-<input type="email" id="email" autocomplete="email">
+<input type="email" id="email" autocomplete="email" />
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/oNGogYX?height=400&amp;theme-id=dark&amp;default-tab=html%2C%20result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen oNGogYX by web-dot-dev on Codepen"></iframe>
 
 These HTML attributes---`type`, `inputmode`, and `autocomplete`---are small additions to your form fields, but they can make a big difference to the user experience. By anticipating and responding to your user's device capabilities, you are empowering your users. For more in-depth information, there's a course dedicated to helping you [learn forms](https://web.dev/learn/forms.md.txt).

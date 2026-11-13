@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)  Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+
+Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/) Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 Next to eliminating unnecessary resource downloads, the best thing you can do to
 improve page load speed is to minimize the overall download size by optimizing
@@ -31,7 +32,7 @@ techniques:
 - There are many different compression techniques and algorithms.
 - You will need a variety of techniques to achieve the best compression.
 
-The process of reducing the size of data is *data compression*. Many people have
+The process of reducing the size of data is _data compression_. Many people have
 contributed algorithms, techniques, and optimizations to improve compression
 ratios, compression speed, and the memory required by various compression
 algorithms.
@@ -52,8 +53,8 @@ date: 08/25/16
 AAAZZBBBBEEEMMM EEETTTAAA
 ```
 
-1. Messages may contain arbitrary annotations---sometimes referred to as *comments*---which are indicated by the "#" prefix. Annotations do not affect the meaning of the message, or its behaviors.
-2. Messages may contain *headers* , which are key-value pairs (separated by `":"` in the preceding example) that appear at the beginning of the message.
+1. Messages may contain arbitrary annotations---sometimes referred to as _comments_---which are indicated by the "#" prefix. Annotations do not affect the meaning of the message, or its behaviors.
+2. Messages may contain _headers_ , which are key-value pairs (separated by `":"` in the preceding example) that appear at the beginning of the message.
 3. Messages carry text payloads.
 
 What can can be done to reduce the size of the prior message, which starts at
@@ -75,16 +76,16 @@ The new message is 56 characters long, which means that you've compressed the
 original message by 72%. That's a significant reduction!
 
 This is a toy example of how compression algorithms can be effective at
-reducing the *transfer size* of text-based resources. In practice, compression
+reducing the _transfer size_ of text-based resources. In practice, compression
 algorithms are far more sophisticated than the previous example illustrates, and
 on the web, compression algorithms can be used to significantly reduce download
 times for resources. By applying compression to text-based assets, a web page
-can spend less time *loading* resources, so that users can see the effects of
+can spend less time _loading_ resources, so that users can see the effects of
 those resources sooner than they would without compression.
 
 ## Minification: Preprocessing, and context-specific optimizations
 
-The first technique discussed here is *minification*. While minification is not
+The first technique discussed here is _minification_. While minification is not
 strictly a compression algorithm, it is a way of removing unnecessary and
 redundant characters used in source code to make resources more readable for
 humans. However, that readability isn't necessary to maintain the functionality
@@ -119,9 +120,7 @@ actual meaning or capabilities.
   </head>
   <body>
     <!-- awesome container content: START -->
-    <div>
-      This is my awesome container, and it is <em>so</em> awesome.
-    </div>
+    <div>This is my awesome container, and it is <em>so</em> awesome.</div>
     <!-- awesome container content: END -->
     <script>
       awesomeAnalytics(); // Beacon conversion metrics
@@ -143,10 +142,25 @@ that remains, though, is "how can the size of this page be reduced?"
 
 - Code comments are a developer's best friend, but the browser doesn't need them! Stripping CSS (`/* ... */`), HTML (`<!-- ... -->`), and JavaScript (`// ...`) comments reduces the total transfer size of the page and its subresources.
 - A "smart" CSS compressor could notice that we're using an inefficient way of defining rules for `.awesome-container`, and collapse the two declarations into one without affecting any other styles, saving more bytes. Over a large set of CSS rules, removing this kind of redundancy can add up---but it may not be something that can be applied aggressively, as selectors are often necessarily duplicated in different contexts, such as within media queries.
-- Spaces and tabs are developer conveniences in HTML, CSS, and JavaScript. An additional compressor could strip out all the tabs and spaces. Unlike other deduplication techniques, this sort of optimization *can* be applied fairly aggressively, so long as such spaces or tabs aren't necessary for the page's presentation---for example, you'd want to preserve the spaces within runs of text in an HTML document, as they ensure readability of content that users will actually see.
+- Spaces and tabs are developer conveniences in HTML, CSS, and JavaScript. An additional compressor could strip out all the tabs and spaces. Unlike other deduplication techniques, this sort of optimization _can_ be applied fairly aggressively, so long as such spaces or tabs aren't necessary for the page's presentation---for example, you'd want to preserve the spaces within runs of text in an HTML document, as they ensure readability of content that users will actually see.
 
 ```html
-<html><head><style>.awesome-container{font-size:120%;width:50%}</style></head><body><div>This is my awesome container, and it is <em>so</em> awesome.</div><script>awesomeAnalytics()</script></body></html>
+<html>
+  <head>
+    <style>
+      .awesome-container {
+        font-size: 120%;
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div>This is my awesome container, and it is <em>so</em> awesome.</div>
+    <script>
+      awesomeAnalytics();
+    </script>
+  </body>
+</html>
 ```
 
 After applying the previous steps, the page goes from 516 to 204 characters, which
@@ -225,20 +239,20 @@ All modern browsers advertise support for gzip and Brotli in the
 responsibility to ensure that the web server is properly configured to serve the
 compressed resource when the client requests it.
 
-| File | Algorithm | Uncompressed size | Compressed size | Compression ratio |
-|---|---|---|---|---|
-| angular-1.8.3.js | Brotli | 1,346 KiB | 256 KiB | **81%** |
-| angular-1.8.3.js | gzip | 1,346 KiB | 329 KiB | **76%** |
-| angular-1.8.3.min.js | Brotli | 173 KiB | 53 KiB | **69%** |
-| angular-1.8.3.min.js | gzip | 173 KiB | 60 KiB | **65%** |
-| jquery-3.7.1.js | Brotli | 302 KiB | 69 KiB | **77%** |
-| jquery-3.7.1.js | gzip | 302 KiB | 83 KiB | **73%** |
-| jquery-3.7.1.min.js | Brotli | 85 KiB | 27 KiB | **68%** |
-| jquery-3.7.1.min.js | gzip | 85 KiB | 30 KiB | **65%** |
-| lodash-4.17.21.js | Brotli | 531 KiB | 73 KiB | **86%** |
-| lodash-4.17.21.js | gzip | 531 KiB | 94 KiB | **82%** |
-| lodash-4.17.21.min.js | Brotli | 71 KiB | 23 KiB | **68%** |
-| lodash-4.17.21.min.js | gzip | 71 KiB | 25 KiB | **65%** |
+| File                  | Algorithm | Uncompressed size | Compressed size | Compression ratio |
+| --------------------- | --------- | ----------------- | --------------- | ----------------- |
+| angular-1.8.3.js      | Brotli    | 1,346 KiB         | 256 KiB         | **81%**           |
+| angular-1.8.3.js      | gzip      | 1,346 KiB         | 329 KiB         | **76%**           |
+| angular-1.8.3.min.js  | Brotli    | 173 KiB           | 53 KiB          | **69%**           |
+| angular-1.8.3.min.js  | gzip      | 173 KiB           | 60 KiB          | **65%**           |
+| jquery-3.7.1.js       | Brotli    | 302 KiB           | 69 KiB          | **77%**           |
+| jquery-3.7.1.js       | gzip      | 302 KiB           | 83 KiB          | **73%**           |
+| jquery-3.7.1.min.js   | Brotli    | 85 KiB            | 27 KiB          | **68%**           |
+| jquery-3.7.1.min.js   | gzip      | 85 KiB            | 30 KiB          | **65%**           |
+| lodash-4.17.21.js     | Brotli    | 531 KiB           | 73 KiB          | **86%**           |
+| lodash-4.17.21.js     | gzip      | 531 KiB           | 94 KiB          | **82%**           |
+| lodash-4.17.21.min.js | Brotli    | 71 KiB            | 23 KiB          | **68%**           |
+| lodash-4.17.21.min.js | gzip      | 71 KiB            | 25 KiB          | **65%**           |
 
 The preceding table shows the savings that both Brotli and gzip compression can
 provide for a few well-known JavaScript libraries. The savings range from 65% to
@@ -247,7 +261,7 @@ compression level was applied to each file for both Brotli and gzip. **Wherever
 possible, prefer Brotli over gzip.**
 
 > [!IMPORTANT]
-> **Important:** The prior table clearly demonstrates how applying compression on top of optimizations such as minification can provide additional savings. It is not always the case that compression alone renders the effects of minification to be meaningless---it is an *additive* optimization.
+> **Important:** The prior table clearly demonstrates how applying compression on top of optimizations such as minification can provide additional savings. It is not always the case that compression alone renders the effects of minification to be meaningless---it is an _additive_ optimization.
 
 Enabling compression is one of the simplest and most effective optimizations to
 implement. If your website is not taking advantage of it, you're missing out on
@@ -259,13 +273,13 @@ balances compression speed and ratio.
 A quick way to see compression in action is to open Chrome DevTools, open the
 **Network** panel, load a page of your choosing, and observe the very bottom of
 the network panel.
- A representation of the *transfer* size (that is, compressed) of all page resources versus their actual size as visualized in the network panel of Chrome DevTools.
+A representation of the _transfer_ size (that is, compressed) of all page resources versus their actual size as visualized in the network panel of Chrome DevTools.
 
 Like the preceding image, you should see a breakdown of:
 
 - The number of the requests, which is the number of resources loaded for the page.
-- The *transfer size* of all requests. This reflects the effectiveness of the compression applied to any of a page's resources.
-- The *resource size* of all requests. This reflects how large the resources for the page are *after* they have been decompressed.
+- The _transfer size_ of all requests. This reflects the effectiveness of the compression applied to any of a page's resources.
+- The _resource size_ of all requests. This reflects how large the resources for the page are _after_ they have been decompressed.
 
 > [!NOTE]
 > **Note:** Sometimes, compression algorithms can increase the size of the asset. Typically, this happens when the uncompressed asset is very small, and the overhead of the algorithm is higher than the compression savings, or when the resource is already well compressed. To avoid this problem, some servers allow you to specify a minimum file size threshold, which is typically less than four or five kilobytes.
@@ -288,7 +302,7 @@ applying these optimizations can improve your website's Core Web Vitals:
 - Some [LCP candidates](https://web.dev/articles/lcp.md.txt#what-elements-are-considered) can also be loaded sooner by using compression. For example, SVG images which are LCP candidates can have their [resource load
   duration](https://web.dev/articles/optimize-lcp#reduce-resource-load-duration) reduced through text-based compression. This is different than optimizations that you would make to other image types---which are intrinsically compressed through other compression methods---such as how JPEG images use lossy compression.
 - Additionally, text nodes can also be LCP candidates. How the techniques described in this guide depends on whether you're using a web font for text on your web pages. If you're using a web font, then [web font optimization best
-  practices](https://web.dev/learn/performance/optimize-web-fonts) apply. However, if you're *not* using web fonts---but rather system fonts that display without incurring any resource load duration---minifying and compressing your CSS reduces this duration, which means that rendering of potential LCP text nodes can occur sooner.
+  practices](https://web.dev/learn/performance/optimize-web-fonts) apply. However, if you're _not_ using web fonts---but rather system fonts that display without incurring any resource load duration---minifying and compressing your CSS reduces this duration, which means that rendering of potential LCP text nodes can occur sooner.
 
 ## Conclusion
 

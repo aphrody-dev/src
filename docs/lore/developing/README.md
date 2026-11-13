@@ -1,6 +1,6 @@
 # Developing
 
-Documentation for working *on* Lore, not *with* it.
+Documentation for working _on_ Lore, not _with_ it.
 
 ## What this folder is
 

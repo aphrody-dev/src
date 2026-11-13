@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Dale St. Marthe [LinkedIn](https://www.linkedin.com/in/dale-st-marthe)  Sofia Emelianova [GitHub](https://github.com/sofiayem)
+
+Dale St. Marthe [LinkedIn](https://www.linkedin.com/in/dale-st-marthe) Sofia Emelianova [GitHub](https://github.com/sofiayem)
 
 Use the **Performance** panel to analyze your website's performance.
 
@@ -37,7 +38,7 @@ Alternatively, follow these steps to open the **Performance** panel with the **C
 1. [Open DevTools](https://developer.chrome.com/docs/devtools/open.md.txt).
 2. Open the **Command menu** by pressing:
 3. macOS: <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
-4. Windows, Linux, ChromeOS: <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> 
+4. Windows, Linux, ChromeOS: <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
 5. Start typing `Performance panel`, select **Show Performance panel** , and press <kbd>Enter</kbd>.
 
 ## Observe Core Web Vitals live
@@ -58,7 +59,6 @@ To add field data:
 
 1. In **Performance** \> **Next steps** \> **Field data** , click **Set up**.
 
-   
 2. In the **Configure field data fetching** dialog, note the **Privacy disclosure** , and click **Ok**.
 
    #### Advanced: Set up a mapping between development and production environments...
@@ -67,8 +67,6 @@ To add field data:
    1. In the dialog window, expand the **Advanced** section and click **+ New**.
    2. In the mapping table, enter your development and production URLs and click **+**.
 
-      
-
       For example, a mapping of `http://localhost:8080` to `https://example.com` will bring up field data for `example.com/page1` when you navigate to `localhost:8080/page1`.
 
       Additionally, if for some reason you can't get the field data automatically, you can turn on **Always show field data for the below URL** and provide a URL. The **Performance** panel will attempt to fetch field data for this URL first and then show you this field data no matter what page you navigate to.
@@ -76,8 +74,6 @@ To add field data:
       To change your field data fetch settings after setup, click **Field data** \> **Configure**
 
    With the field data fetch set up, the **Performance** panel now shows you a comparison between your local metric scores and those that your users experience. You can see the collection period in the **Field data** section on the right.
-
-   
 
    To get a breakdown of a metric score, hover over the metric value to see a tooltip.
 
@@ -89,9 +85,8 @@ To configure your environment:
 
 1. In each metric card, expand the **Consider your local test conditions** section, if any, and read the recommendations.
 
-   
-
    Looks like in this example, to better match the experience of your users, you might want to use a common desktop screen size and throttle down the CPU and network.
+
 2. To match the environment configuration for this example:
 
    1. Set your viewport to one of the common screen sizes (for example, 720p or 1080p). To emulate specific devices and screen sizes, you can use the [Device mode](https://developer.chrome.com/docs/devtools/device-mode.md.txt) in the **Elements** panel.
@@ -102,8 +97,6 @@ To configure your environment:
    > **Tip:** In throttling drop-down menus of the **Environment settings** section, the **Performance** panel may also recommend the throttling presets to use. Additionally, to better match low- and mid-tier mobile devices, you can [calibrate custom CPU throttling presets](https://developer.chrome.com/docs/devtools/settings/throttling.md.txt#cpu-throttling) on your device. To do so, select **Calibrate** from **CPU** \> **Calibrated presets**.
 
 3. With your environment configured, reload the page, interact with it to capture your local INP, and compare the metric scores again.
-
-   
 
    Looks like the metric scores are now more similar to those that your users experience. Accordingly, the **Consider your local test conditions** sections disappeared from the metric cards.
 

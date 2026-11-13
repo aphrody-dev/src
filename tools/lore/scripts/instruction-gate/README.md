@@ -67,15 +67,15 @@ python3 scripts/instruction-gate/gate.py <base> <change>
 python3 scripts/instruction-gate/gate.py ../base . --bench revision_tree_bench --only capi-modify
 ```
 
-| Option | Meaning |
-| --- | --- |
-| `--bench` | The benches to gate, comma-separated; both by default. |
-| `--only` | Only these workloads, comma-separated, with their variants. |
-| `--ops` | Operations per workload, 5000 by default. Some workloads cap it. |
-| `--runs` | Counts of each workload per checkout, whose medians the gate compares; 1 for `state_bench` and 5 for `revision_tree_bench` by default. |
-| `--cpu` | The core to count on. |
-| `--work` | Where the builds and the results go, `target/instruction-gate` of the checkout holding the script by default. |
-| `--keep-binaries` | Keep every workload's binaries in the results, for `perf record` and `perf annotate`. |
+| Option            | Meaning                                                                                                                                |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `--bench`         | The benches to gate, comma-separated; both by default.                                                                                 |
+| `--only`          | Only these workloads, comma-separated, with their variants.                                                                            |
+| `--ops`           | Operations per workload, 5000 by default. Some workloads cap it.                                                                       |
+| `--runs`          | Counts of each workload per checkout, whose medians the gate compares; 1 for `state_bench` and 5 for `revision_tree_bench` by default. |
+| `--cpu`           | The core to count on.                                                                                                                  |
+| `--work`          | Where the builds and the results go, `target/instruction-gate` of the checkout holding the script by default.                          |
+| `--keep-binaries` | Keep every workload's binaries in the results, for `perf record` and `perf annotate`.                                                  |
 
 Each checkout builds in a target directory of its own under `<work>/build/`, which later runs
 against it reuse, and the two checkouts build at once. The first build compiles every dependency

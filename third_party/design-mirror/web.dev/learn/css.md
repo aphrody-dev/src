@@ -7,16 +7,17 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 044: Transitions](https://thecsspodcast.libsyn.com/044-transitions)
 
-When interacting with a website, you might notice that many elements have *state*. For example, dropdowns can be in opened or closed states. Buttons might change color when focused or hovered. Modals appear and disappear.
+When interacting with a website, you might notice that many elements have _state_. For example, dropdowns can be in opened or closed states. Buttons might change color when focused or hovered. Modals appear and disappear.
 
 By default, CSS switches the style of these states instantly.
 
 Using CSS transitions, we can interpolate between the initial state and the target state of the element. The transition between the two enhances the user experience by providing visual direction, support, and hints about the cause and effect of the interaction.
 
 > [!IMPORTANT]
-> **Key term:** *Interpolation* is the process of creating "in-between" steps that smoothly transition from one state to another.
+> **Key term:** _Interpolation_ is the process of creating "in-between" steps that smoothly transition from one state to another.
 
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zYzNrJV?height=320&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zYzNrJV by web-dot-dev on Codepen"></iframe>
 
@@ -152,7 +153,7 @@ Check out [our module on filters](https://web.dev/learn/css/filters.md.txt).
 
 ## Transition triggers
 
-Your CSS must include a change of state *and* an event that triggers that state change for CSS transitions to activate. A typical example of such a trigger is the `:hover` [pseudo-class](https://web.dev/learn/css/pseudo-classes.md.txt). This pseudo-class matches when the user hovers over an element with their cursor.
+Your CSS must include a change of state _and_ an event that triggers that state change for CSS transitions to activate. A typical example of such a trigger is the `:hover` [pseudo-class](https://web.dev/learn/css/pseudo-classes.md.txt). This pseudo-class matches when the user hovers over an element with their cursor.
 
 The following is a list of some pseudo-classes and events that can trigger state changes in your elements.
 
@@ -182,6 +183,7 @@ By setting different `transition` properties on hover/focus, it's possible to cr
   transition: background 150ms ease;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/OJgWMaO?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen OJgWMaO by web-dot-dev on Codepen"></iframe>
 
 ## Accessibility considerations

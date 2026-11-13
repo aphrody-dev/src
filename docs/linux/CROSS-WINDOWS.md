@@ -2,10 +2,10 @@
 
 Image `ghcr.io/aphrody-labs/base-cross-windows` (`infra/linux/cross-windows/Dockerfile`, CI `linux-images.yml`).
 
-| Cible | Chaîne | Origine |
-|---|---|---|
-| `x86_64-w64-windows-gnu`, `aarch64-w64-windows-gnu` | llvm-mingw : clang, lld, en-têtes et CRT mingw-w64, libc++ | release `mstorsjo/llvm-mingw` 20261104 (LLVM 23.1.5), sha256 vérifié (digest de l'API GitHub) |
-| `x86_64-pc-windows-msvc` | clang-cl + lld-link + llvm-lib, `msvc.cmake` | clang/lld/llvm d'Arch dans l'image ; CRT MSVC et SDK Windows posés à l'exécution par `xwin --accept-license splat --output /xwin` (xwin 0.10.0, même version que `tools.toml`) |
+| Cible                                               | Chaîne                                                     | Origine                                                                                                                                                                        |
+| --------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `x86_64-w64-windows-gnu`, `aarch64-w64-windows-gnu` | llvm-mingw : clang, lld, en-têtes et CRT mingw-w64, libc++ | release `mstorsjo/llvm-mingw` 20261104 (LLVM 23.1.5), sha256 vérifié (digest de l'API GitHub)                                                                                  |
+| `x86_64-pc-windows-msvc`                            | clang-cl + lld-link + llvm-lib, `msvc.cmake`               | clang/lld/llvm d'Arch dans l'image ; CRT MSVC et SDK Windows posés à l'exécution par `xwin --accept-license splat --output /xwin` (xwin 0.10.0, même version que `tools.toml`) |
 
 Forks : `aphrody-labs/mingw-w64` (`third_party/mingw-w64`), `aphrody-labs/llvm-mingw`, `aphrody-labs/reactos` et `aphrody-labs/LiberNT` (nt), tous existants.
 

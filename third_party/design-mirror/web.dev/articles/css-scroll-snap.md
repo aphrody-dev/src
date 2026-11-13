@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Create well-controlled scroll experiences by declaring scroll snapping positions.
 
- Robert Flack [GitHub](https://github.com/flackr) [LinkedIn](https://www.linkedin.com/in/flackr) [Mastodon](https://front-end.social/@flackr) [Bluesky](https://bsky.app/profile/flackr.bsky.social)  Majid Valipour [X](https://twitter.com/majido) [GitHub](https://github.com/majido)
+Robert Flack [GitHub](https://github.com/flackr) [LinkedIn](https://www.linkedin.com/in/flackr) [Mastodon](https://front-end.social/@flackr) [Bluesky](https://bsky.app/profile/flackr.bsky.social) Majid Valipour [X](https://twitter.com/majido) [GitHub](https://github.com/majido)
 
 The [CSS Scroll Snap](https://drafts.csswg.org/css-scroll-snap/) feature allows web
 developers to create well-controlled scroll experiences by declaring scroll
@@ -51,7 +52,7 @@ scroll container's layout and visibility, and details of the snap positions,
 then smoothly animate to it. Going back to our earlier example, as the user
 finishes scrolling the carousel, its visible image snaps into place. No scroll
 adjustments needed by JavaScript.
- Example of using css scroll snap with an image carousel. Here scroll snapping ensures at the end of scrolling an image horizontal center is aligned with the horizontal center of the scroll container.
+Example of using css scroll snap with an image carousel. Here scroll snapping ensures at the end of scrolling an image horizontal center is aligned with the horizontal center of the scroll container.
 
 ## CSS Scroll Snap
 
@@ -99,16 +100,12 @@ the snapping centers the image within the carousel.
 }
 
 #gallery img {
-   scroll-snap-align: center;
+  scroll-snap-align: center;
 }
 ```
 
 ```html
-<div id="gallery">
-  
-  
-  
-</div>
+<div id="gallery"></div>
 ```
 
 Because snap positions are associated with an element, the snapping algorithm
@@ -150,10 +147,10 @@ header {
 
 ```html
 <article>
-  <header> Header </header>
-  <section> Section One </section>
-  <section> Section Two </section>
-  <section> Section Three </section>
+  <header>Header</header>
+  <section>Section One</section>
+  <section>Section Two</section>
+  <section>Section Three</section>
 </article>
 ```
 
@@ -232,7 +229,7 @@ Avoid using `scroll-snap-type` which is also present in the deprecated specifica
 ### Feature detection in JavaScript
 
 ```javascript
-if (CSS.supports('scroll-snap-align: start')) {
+if (CSS.supports("scroll-snap-align: start")) {
   // use css scroll snap
 } else {
   // use fallback

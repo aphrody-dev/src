@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Jecelyn Yeen [X](https://twitter.com/jecfish) [GitHub](https://github.com/jecfish) [Bluesky](https://bsky.app/profile/jec.fish) [Homepage](https://jec.fish/)  Nancy Li [LinkedIn](https://www.linkedin.com/in/yangxinyu-li)  Dale St. Marthe [LinkedIn](https://www.linkedin.com/in/dale-st-marthe)
+
+Jecelyn Yeen [X](https://twitter.com/jecfish) [GitHub](https://github.com/jecfish) [Bluesky](https://bsky.app/profile/jec.fish) [Homepage](https://jec.fish/) Nancy Li [LinkedIn](https://www.linkedin.com/in/yangxinyu-li) Dale St. Marthe [LinkedIn](https://www.linkedin.com/in/dale-st-marthe)
 
 Use the **Performance** panel to profile the performance of [Node.js](https://nodejs.org/en) and [Deno](https://deno.com/) applications.
 
@@ -33,6 +34,7 @@ A CPU profile is a report that shows how the CPU was used over a period of time.
    ```bash
    deno --inspect file-name.js
    ```
+
 2. Connect to DevTools for Node in one of the following ways:
 
    - [Open DevTools](https://developer.chrome.com/docs/devtools/open.md.txt) and click the green Node button in the DevTools action bar at the top.
@@ -40,8 +42,6 @@ A CPU profile is a report that shows how the CPU was used over a period of time.
 
      - **Open dedicated DevTools for Node** under **Devices**.
      - **Inspect** under the target you want to profile.
-
-   
 
 ## Profile the CPU
 
@@ -56,16 +56,11 @@ After you stop the recording, the **Performance** panel organizes and displays d
 
 - **Timeline overview**. Located at the top under the activity bar. Shows CPU and NET activity charts on a timeline. Use it to identify performance bottlenecks.
 
-  
 - **Bottom-Up** : Use this tab to inspect a [selected portion of the recording](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#select) and see aggregated time spent on individual activities.
 
-  
 - **Call Tree** : This tab displays the root activities of a [selected portion of the recording](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#select). Root activities also have their call stacks nested. Use this tab to identify which activity is causing the most work.
 
-  
 - **Event Log** : This tab lists activities from a [selected portion of the recording](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#select) in the order that they occurred.
-
-  
 
 ## Profile with the `console.profile()` command
 
@@ -81,6 +76,7 @@ To use this command, follow these steps:
    doSomething();
    console.profileEnd();
    ```
+
 2. Run your code in one of two ways:
 
    - If you're using the **Console** , [open DevTools for Node](https://developer.chrome.com/docs/devtools/performance/nodejs.md.txt#open-devtools-for-node), paste your code to the **Console** , and press <kbd>Enter</kbd>.

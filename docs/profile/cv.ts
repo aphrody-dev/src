@@ -8,8 +8,12 @@ import { join } from "node:path";
 const DIR = import.meta.dir;
 const ROOT = join(DIR, "..", "..");
 const md = await Bun.file(join(DIR, "CV.md")).text();
-const tokens = await Bun.file(join(ROOT, "assets/brand/gen/tokens/tokens.css")).text();
-const mark = await Bun.file(join(ROOT, "assets/brand/gen/logo/aphrody-dev.svg")).text();
+const tokens = await Bun.file(
+  join(ROOT, "assets/brand/gen/tokens/tokens.css"),
+).text();
+const mark = await Bun.file(
+  join(ROOT, "assets/brand/gen/logo/aphrody-dev.svg"),
+).text();
 const font = join(ROOT, "assets/brand/gen-cache/GoogleSansFlex.ttf");
 
 const html = `<!doctype html>
@@ -41,7 +45,15 @@ console.log("docs/profile/CV.html");
 if (process.argv.includes("--pdf")) {
   const out = join(DIR, "CV.pdf");
   const p = Bun.spawnSync(
-    ["google-chrome", "--headless=new", "--no-sandbox", "--disable-gpu", "--no-pdf-header-footer", `--print-to-pdf=${out}`, `file://${join(DIR, "CV.html")}`],
+    [
+      "google-chrome",
+      "--headless=new",
+      "--no-sandbox",
+      "--disable-gpu",
+      "--no-pdf-header-footer",
+      `--print-to-pdf=${out}`,
+      `file://${join(DIR, "CV.html")}`,
+    ],
     { stdout: "inherit", stderr: "inherit" },
   );
   if (p.exitCode !== 0) process.exit(p.exitCode ?? 1);

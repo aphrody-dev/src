@@ -9,17 +9,19 @@
 ## 1. Decomposed Sub-Queries & Channel Telemetry
 
 ### Targeted Sub-Queries
+
 1. `Dioxus Blitz Stylo Taffy Vello Parley Kurbo Wgpu GPUI gpui-component Servo Tokio Axum Next.js Tailwind Shadcn Base UI Rust 12`
 2. `Dioxus Blitz Stylo Taffy Vello Parley Kurbo Wgpu GPUI gpui-component Servo Tokio Axum Next.js Tailwind Shadcn Base UI Rust 12 specification architecture reference`
 
 ### Parallel Channel Status
-| Channel | Status |
-| :--- | :--- |
-| `context7_official_docs` | OK (12 items) |
-| `exa_neural_web` | OK (5 items) |
-| `github_live_api` | OK (0 items) |
-| `systems_kernel_freedesktop` | OK (0 items) |
-| `local_monorepo_grounding` | OK (5 items) |
+
+| Channel                      | Status        |
+| :--------------------------- | :------------ |
+| `context7_official_docs`     | OK (12 items) |
+| `exa_neural_web`             | OK (5 items)  |
+| `github_live_api`            | OK (0 items)  |
+| `systems_kernel_freedesktop` | OK (0 items)  |
+| `local_monorepo_grounding`   | OK (5 items)  |
 
 ## 2. Ranked & Deduplicated Multi-Channel Evidence
 
@@ -30,7 +32,7 @@
 2. **[[Context7 /websites/rs_axum_axum] Description](https://context7.com/websites/rs_axum_axum)** (`context7`, blake3=`7fcb51962368`)
    - ### Description Serve the service with the supplied listener. This method of running a service is intentionally simple and doesn't support any configuration. Use hyper or hyper-util if you need configuration. It supports both HTTP/1 as well as HTTP/2.
 3. **[[Context7 /websites/rs_axum_axum] Serving a Router with axum::serve](https://docs.rs/axum/latest/axum/fn.serve.html)** (`context7`, blake3=`9834b2529ed7`)
-   - ### Serving a Router with axum::serve Source: https://docs.rs/axum/latest/axum/fn.serve.html Example of serving an axum Router using axum::serve. Binds a TCP listener to 0.0.0.0:3000 and serves the router. ```rust use axum::{Router, routing::get}; let router = Router::new().route("/", get(|| async { "Hello, World!" })); let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap(); axum::serve(listener, router).await.unwrap(); ```
+   - ### Serving a Router with axum::serve Source: https://docs.rs/axum/latest/axum/fn.serve.html Example of serving an axum Router using axum::serve. Binds a TCP listener to 0.0.0.0:3000 and serves the router. `rust use axum::{Router, routing::get}; let router = Router::new().route("/", get(|| async { "Hello, World!" })); let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap(); axum::serve(listener, router).await.unwrap(); `
 4. **[[Context7 /websites/rs_tokio] Decision tree for choosing a Tokio runtime](https://docs.rs/tokio/latest/src/tokio/runtime/mod.rs.html)** (`context7`, blake3=`492030aa35f5`)
    - ### Decision tree for choosing a Tokio runtime Source: https://docs.rs/tokio/latest/src/tokio/runtime/mod.rs.html ASCII diagram illustrating the decision process for selecting between multi-threaded, local, and current-thread runtimes based on work-stealing and !Send Future requirements. ```plaintext +------------------------------------------------------+ | Do you want work-stealing or multi-thread scheduler? | +------------------------------------------------------+ | Yes |
 5. **[[Context7 /websites/rs_tokio] match_flavor! macro and Handle methods](https://docs.rs/tokio/latest/src/tokio/runtime/scheduler/mod.rs.html)** (`context7`, blake3=`0a76adedae47`)
@@ -44,19 +46,32 @@
 9. **[[Context7 /websites/rs_wgpu] wgpu dispatch.rs: backend dispatch infrastructure](https://docs.rs/wgpu/latest/src/wgpu/dispatch.rs.html?search=)** (`context7`, blake3=`75b8bcbde59f`)
    - ### wgpu dispatch.rs: backend dispatch infrastructure Source: https://docs.rs/wgpu/latest/src/wgpu/dispatch.rs.html?search= Defines the dispatch infrastructure for wgpu backends, including the `trait_alias!` macro, callback type aliases, and the `InstanceInterface` and `AdapterInterface` traits. The code uses `#[cfg]` attributes to conditionally import backend modules and `#[cfg(send_sync)]` to vary callback signatures. The `AsAny` trait is provided for downcasting, and the `
 10. **[[Context7 /websites/rs_wgpu] wgpu Sampler and SamplerDescriptor definitions](https://docs.rs/wgpu/latest/src/wgpu/api/sampler.rs.html?search=Option%3CT%3E%2C+%28T+-%3E+U%29+-%3E+Option%3CU%3E)** (`context7`, blake3=`f5119bea86bd`)
-   - ### wgpu Sampler and SamplerDescriptor definitions Source: https://docs.rs/wgpu/latest/src/wgpu/api/sampler.rs.html?search=Option%3CT%3E%2C+%28T+-%3E+U%29+-%3E+Option%3CU%3E Defines the `Sampler` handle and `SamplerDescriptor` type alias for the wgpu crate. The `Sampler` struct wraps a dispatch sampler and implements equality, ordering, and hash via a proxy macro. The `as_custom` method is only available with the `custom` feature and returns a custom implementation if the bac
+
+- ### wgpu Sampler and SamplerDescriptor definitions Source: https://docs.rs/wgpu/latest/src/wgpu/api/sampler.rs.html?search=Option%3CT%3E%2C+%28T+-%3E+U%29+-%3E+Option%3CU%3E Defines the `Sampler` handle and `SamplerDescriptor` type alias for the wgpu crate. The `Sampler` struct wraps a dispatch sampler and implements equality, ordering, and hash via a proxy macro. The `as_custom` method is only available with the `custom` feature and returns a custom implementation if the bac
+
 11. **[[Context7 /websites/rs_wgpu] wgpu_core.rs backend implementation](https://docs.rs/wgpu/latest/src/wgpu/backend/wgpu_core.rs.html?search=)** (`context7`, blake3=`c5a1f627e42f`)
-   - ### wgpu_core.rs backend implementation Source: https://docs.rs/wgpu/latest/src/wgpu/backend/wgpu_core.rs.html?search= Rust source file for the wgpu_core backend, showing imports, the ContextWgpuCore struct, and methods for creating adapters, devices, and textures from HAL instances. Includes safety notes for raw instance handles and uses wgc::global::Global. ```rust use alloc::{ borrow::Cow::{self, Borrowed}, boxed::Box, format, string::{String, ToString as _}, sync::Arc, ve
+
+- ### wgpu_core.rs backend implementation Source: https://docs.rs/wgpu/latest/src/wgpu/backend/wgpu_core.rs.html?search= Rust source file for the wgpu_core backend, showing imports, the ContextWgpuCore struct, and methods for creating adapters, devices, and textures from HAL instances. Includes safety notes for raw instance handles and uses wgc::global::Global. ```rust use alloc::{ borrow::Cow::{self, Borrowed}, boxed::Box, format, string::{String, ToString as _}, sync::Arc, ve
+
 12. **[Local Monorepo Lockfile (src.lock.json)](file:///C:/src/src.lock.json)** (`local_monorepo`, blake3=`f1afe4b3e6df`)
-   - Pinned toolchains: archguard=archguard v0.1.0 (Rust 2024 Sovereign Monorepo Architecture Gate), rustc=rustc 1.101.0-nightly (708c94ef0 2026-11-03), wck=wck v1.0.0 (Compile-Time Web Validator - oven-sh/bun v1.4.4 Full Rust) | Locked repositories: crates/rust-stack@098565de, third_party/dioxus@17d9a592, third_party/blitz@e65ec76e, third_party/parley@36f82852
+
+- Pinned toolchains: archguard=archguard v0.1.0 (Rust 2024 Sovereign Monorepo Architecture Gate), rustc=rustc 1.101.0-nightly (708c94ef0 2026-11-03), wck=wck v1.0.0 (Compile-Time Web Validator - oven-sh/bun v1.4.4 Full Rust) | Locked repositories: crates/rust-stack@098565de, third_party/dioxus@17d9a592, third_party/blitz@e65ec76e, third_party/parley@36f82852
+
 13. **[Local Workspace Manifest: apps\shenron\Cargo.toml](file:///C:/src/apps/shenron/Cargo.toml)** (`local_monorepo`, blake3=`f21e56dcd4c0`)
-   - # Shenron Rust workspace: the shenron CLI, MCP server, C ABI, studio commands,
+
+- # Shenron Rust workspace: the shenron CLI, MCP server, C ABI, studio commands,
+
 14. **[Local Workspace Manifest: apps\shenron\README.md](file:///C:/src/apps/shenron/README.md)** (`local_monorepo`, blake3=`77a08abad8df`)
-   - <i>Engineered for Maximum Performance with Rust 2024, Upstream Bun v1.4.4+, Next.js 16.5+ / Leptos 0.8, Axum, and GPUI / Dioxus 0.8</i>
+
+- <i>Engineered for Maximum Performance with Rust 2024, Upstream Bun v1.4.4+, Next.js 16.5+ / Leptos 0.8, Axum, and GPUI / Dioxus 0.8</i>
+
 15. **[Local Workspace Manifest: crates\rust-stack\Cargo.toml](file:///C:/src/crates/rust-stack/Cargo.toml)** (`local_monorepo`, blake3=`e0b8c56f90da`)
-   - name = "rust-stack"
+
+- name = "rust-stack"
+
 16. **[Local Workspace Manifest: README.md](file:///C:/src/README.md)** (`local_monorepo`, blake3=`541b02483829`)
-   - Engineered around the foundational standards of **Linus Torvalds** (`Linux`, `Git`, POSIX/GNU clean flat hierarchy, sacred `C:\Windows\System32` userspace integrity, strict C-ABI boundaries), **Jarred Sumner** (`oven-sh/bun` v1.4.4 100% Full-Rust runtime, `bun fmt`, `bun check`, `bun:sqlite`, `bun:ffi`, AOT `--compile`), **Chromium `depot_tools`** (strict `t
+
+- Engineered around the foundational standards of **Linus Torvalds** (`Linux`, `Git`, POSIX/GNU clean flat hierarchy, sacred `C:\Windows\System32` userspace integrity, strict C-ABI boundaries), **Jarred Sumner** (`oven-sh/bun` v1.4.4 100% Full-Rust runtime, `bun fmt`, `bun check`, `bun:sqlite`, `bun:ffi`, AOT `--compile`), **Chromium `depot_tools`** (strict `t
 
 ### Tier 2: Upstream GitHub/GitLab Repo (0)
 
@@ -77,26 +92,26 @@ _No sources recorded in this tier for the given query._
 
 ## 3. Citation Ledger
 
-| # | Tier | Channel | Source | Blake3 Prefix |
-| :--- | :--- | :--- | :--- | :--- |
-| 1 | Tier 1 | `context7` | [[Context7 /websites/rs_axum_axum] axum::serve](https://docs.rs/axum/latest/axum/serve/fn.serve.html) | `2b040c0ba3cc9da9` |
-| 2 | Tier 1 | `context7` | [[Context7 /websites/rs_axum_axum] Description](https://context7.com/websites/rs_axum_axum) | `7fcb5196236816f2` |
-| 3 | Tier 1 | `context7` | [[Context7 /websites/rs_axum_axum] Serving a Router with axum::serve](https://docs.rs/axum/latest/axum/fn.serve.html) | `9834b2529ed7d0c3` |
-| 4 | Tier 1 | `context7` | [[Context7 /websites/rs_tokio] Decision tree for choosing a Tokio runtime](https://docs.rs/tokio/latest/src/tokio/runtime/mod.rs.html) | `492030aa35f5968c` |
-| 5 | Tier 1 | `context7` | [[Context7 /websites/rs_tokio] match_flavor! macro and Handle methods](https://docs.rs/tokio/latest/src/tokio/runtime/scheduler/mod.rs.html) | `0a76adedae472161` |
-| 6 | Tier 1 | `context7` | [[Context7 /websites/rs_tokio] push_remote_timer: Push alternative timer handle to inject_timers](https://docs.rs/tokio/latest/src/tokio/runtime/scheduler/multi_thread/worker.rs.html) | `a2d8a9b25155e712` |
-| 7 | Tier 1 | `context7` | [[Context7 /websites/rs_tokio] Run-queue structures for work-stealing scheduler](https://docs.rs/tokio/latest/src/tokio/runtime/scheduler/multi_thread/queue.rs.html) | `4dffe67fc27ac10f` |
-| 8 | Tier 1 | `context7` | [[Context7 /websites/rs_wgpu] is_browser_webgpu_supported: Check WebGPU support](https://docs.rs/wgpu/latest/src/wgpu/util/init.rs.html?search=u32+-%3E+bool) | `2317fa5a4528dec2` |
-| 9 | Tier 1 | `context7` | [[Context7 /websites/rs_wgpu] wgpu dispatch.rs: backend dispatch infrastructure](https://docs.rs/wgpu/latest/src/wgpu/dispatch.rs.html?search=) | `75b8bcbde59fd141` |
-| 10 | Tier 1 | `context7` | [[Context7 /websites/rs_wgpu] wgpu Sampler and SamplerDescriptor definitions](https://docs.rs/wgpu/latest/src/wgpu/api/sampler.rs.html?search=Option%3CT%3E%2C+%28T+-%3E+U%29+-%3E+Option%3CU%3E) | `f5119bea86bdceca` |
-| 11 | Tier 1 | `context7` | [[Context7 /websites/rs_wgpu] wgpu_core.rs backend implementation](https://docs.rs/wgpu/latest/src/wgpu/backend/wgpu_core.rs.html?search=) | `c5a1f627e42f0613` |
-| 12 | Tier 1 | `local_monorepo` | [Local Monorepo Lockfile (src.lock.json)](file:///C:/src/src.lock.json) | `f1afe4b3e6dfbe3d` |
-| 13 | Tier 1 | `local_monorepo` | [Local Workspace Manifest: apps\shenron\Cargo.toml](file:///C:/src/apps/shenron/Cargo.toml) | `f21e56dcd4c085e2` |
-| 14 | Tier 1 | `local_monorepo` | [Local Workspace Manifest: apps\shenron\README.md](file:///C:/src/apps/shenron/README.md) | `77a08abad8df2330` |
-| 15 | Tier 1 | `local_monorepo` | [Local Workspace Manifest: crates\rust-stack\Cargo.toml](file:///C:/src/crates/rust-stack/Cargo.toml) | `e0b8c56f90da5d2f` |
-| 16 | Tier 1 | `local_monorepo` | [Local Workspace Manifest: README.md](file:///C:/src/README.md) | `541b0248382971f6` |
-| 17 | Tier 3 | `exa` | [Blitz](https://webengineshackfest.org/2024/slides/blitz_a_truly_modular_hackable_web_renderer_by_nico_burns.pdf) | `e2db5282e5d5296f` |
-| 18 | Tier 3 | `exa` | [Blitz - A radically modular HTML/CSS rendering engine](https://github.com/dioxuslabs/blitz) | `d091f8fdf57d9b96` |
-| 19 | Tier 3 | `exa` | [gpui-component](https://crates.io/crates/gpui-component) | `2ddf8bee6b33a013` |
-| 20 | Tier 3 | `exa` | [Rust GUI frameworks](https://andygauge.github.io/rust-gui-frameworks/42) | `4d834e678029927f` |
-| 21 | Tier 3 | `exa` | [Tokio Releases Topcoat: A Batteries-Included Full-Stack Rust Framework - InfoQ](https://www.infoq.com/news/2026/11/topcoat-rust-framework) | `7a1631504889b092` |
+| #   | Tier   | Channel          | Source                                                                                                                                                                                            | Blake3 Prefix      |
+| :-- | :----- | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------- |
+| 1   | Tier 1 | `context7`       | [[Context7 /websites/rs_axum_axum] axum::serve](https://docs.rs/axum/latest/axum/serve/fn.serve.html)                                                                                             | `2b040c0ba3cc9da9` |
+| 2   | Tier 1 | `context7`       | [[Context7 /websites/rs_axum_axum] Description](https://context7.com/websites/rs_axum_axum)                                                                                                       | `7fcb5196236816f2` |
+| 3   | Tier 1 | `context7`       | [[Context7 /websites/rs_axum_axum] Serving a Router with axum::serve](https://docs.rs/axum/latest/axum/fn.serve.html)                                                                             | `9834b2529ed7d0c3` |
+| 4   | Tier 1 | `context7`       | [[Context7 /websites/rs_tokio] Decision tree for choosing a Tokio runtime](https://docs.rs/tokio/latest/src/tokio/runtime/mod.rs.html)                                                            | `492030aa35f5968c` |
+| 5   | Tier 1 | `context7`       | [[Context7 /websites/rs_tokio] match_flavor! macro and Handle methods](https://docs.rs/tokio/latest/src/tokio/runtime/scheduler/mod.rs.html)                                                      | `0a76adedae472161` |
+| 6   | Tier 1 | `context7`       | [[Context7 /websites/rs_tokio] push_remote_timer: Push alternative timer handle to inject_timers](https://docs.rs/tokio/latest/src/tokio/runtime/scheduler/multi_thread/worker.rs.html)           | `a2d8a9b25155e712` |
+| 7   | Tier 1 | `context7`       | [[Context7 /websites/rs_tokio] Run-queue structures for work-stealing scheduler](https://docs.rs/tokio/latest/src/tokio/runtime/scheduler/multi_thread/queue.rs.html)                             | `4dffe67fc27ac10f` |
+| 8   | Tier 1 | `context7`       | [[Context7 /websites/rs_wgpu] is_browser_webgpu_supported: Check WebGPU support](https://docs.rs/wgpu/latest/src/wgpu/util/init.rs.html?search=u32+-%3E+bool)                                     | `2317fa5a4528dec2` |
+| 9   | Tier 1 | `context7`       | [[Context7 /websites/rs_wgpu] wgpu dispatch.rs: backend dispatch infrastructure](https://docs.rs/wgpu/latest/src/wgpu/dispatch.rs.html?search=)                                                   | `75b8bcbde59fd141` |
+| 10  | Tier 1 | `context7`       | [[Context7 /websites/rs_wgpu] wgpu Sampler and SamplerDescriptor definitions](https://docs.rs/wgpu/latest/src/wgpu/api/sampler.rs.html?search=Option%3CT%3E%2C+%28T+-%3E+U%29+-%3E+Option%3CU%3E) | `f5119bea86bdceca` |
+| 11  | Tier 1 | `context7`       | [[Context7 /websites/rs_wgpu] wgpu_core.rs backend implementation](https://docs.rs/wgpu/latest/src/wgpu/backend/wgpu_core.rs.html?search=)                                                        | `c5a1f627e42f0613` |
+| 12  | Tier 1 | `local_monorepo` | [Local Monorepo Lockfile (src.lock.json)](file:///C:/src/src.lock.json)                                                                                                                           | `f1afe4b3e6dfbe3d` |
+| 13  | Tier 1 | `local_monorepo` | [Local Workspace Manifest: apps\shenron\Cargo.toml](file:///C:/src/apps/shenron/Cargo.toml)                                                                                                       | `f21e56dcd4c085e2` |
+| 14  | Tier 1 | `local_monorepo` | [Local Workspace Manifest: apps\shenron\README.md](file:///C:/src/apps/shenron/README.md)                                                                                                         | `77a08abad8df2330` |
+| 15  | Tier 1 | `local_monorepo` | [Local Workspace Manifest: crates\rust-stack\Cargo.toml](file:///C:/src/crates/rust-stack/Cargo.toml)                                                                                             | `e0b8c56f90da5d2f` |
+| 16  | Tier 1 | `local_monorepo` | [Local Workspace Manifest: README.md](file:///C:/src/README.md)                                                                                                                                   | `541b0248382971f6` |
+| 17  | Tier 3 | `exa`            | [Blitz](https://webengineshackfest.org/2024/slides/blitz_a_truly_modular_hackable_web_renderer_by_nico_burns.pdf)                                                                                 | `e2db5282e5d5296f` |
+| 18  | Tier 3 | `exa`            | [Blitz - A radically modular HTML/CSS rendering engine](https://github.com/dioxuslabs/blitz)                                                                                                      | `d091f8fdf57d9b96` |
+| 19  | Tier 3 | `exa`            | [gpui-component](https://crates.io/crates/gpui-component)                                                                                                                                         | `2ddf8bee6b33a013` |
+| 20  | Tier 3 | `exa`            | [Rust GUI frameworks](https://andygauge.github.io/rust-gui-frameworks/42)                                                                                                                         | `4d834e678029927f` |
+| 21  | Tier 3 | `exa`            | [Tokio Releases Topcoat: A Batteries-Included Full-Stack Rust Framework - InfoQ](https://www.infoq.com/news/2026/11/topcoat-rust-framework)                                                       | `7a1631504889b092` |

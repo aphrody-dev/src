@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: April 23, 2025
@@ -29,14 +30,14 @@ Since Chrome has not yet shipped support for fallback adapters, `isFallbackAdapt
 ## Shader compilation time improvements on D3D12
 
 The Chrome team keeps improving Tint, the WebGPU shader language compiler, by adding an intermediate representation (IR) for devices that support WebGPU with the D3D12 backend. This IR, positioned between Tint's abstract syntax tree (AST) and the HLSL backend writer, will make the compiler more efficient and maintainable, ultimately benefiting both developers and users. Initial tests show that the new version of Tint is up to 10 times faster when translating Unity's WGSL shaders to HLSL.
- Render pipeline creation in Windows.
+Render pipeline creation in Windows.
 
 These improvements---already accessible on Android, ChromeOS, and macOS---are being progressively expanded to Windows devices that support WebGPU with the D3D12 backend. See [issue 42251045](https://issues.chromium.org/issues/42251045).
 
 ## Save and copy canvas images
 
 Chrome users can now right-click on a WebGPU canvas and access context menu options **Save Image As...** or **Copy Image** . See [issue 40902474](https://issues.chromium.org/issues/40902474).
- User selected "Save Image As..." context menu.
+User selected "Save Image As..." context menu.
 
 ## Lift compatibility mode restrictions
 
@@ -49,7 +50,9 @@ Core-defaulting adapters always support the `"core-features-and-limits"` feature
 The following example is for an application that requires `"float32-blendable"` and supports using core features if available, but uses only compatibility features if core features are not available.
 
 ```javascript
-const adapter = await navigator.gpu.requestAdapter({ featureLevel: "compatibility" });
+const adapter = await navigator.gpu.requestAdapter({
+  featureLevel: "compatibility",
+});
 
 if (!adapter || !adapter.features.has("float32-blendable")) {
   throw new Error("32-bit float textures blending support is not available");

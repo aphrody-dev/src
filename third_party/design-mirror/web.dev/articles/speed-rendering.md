@@ -7,13 +7,14 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Tom Wiltzius
 
 ## Introduction
 
 You want your web app to feel responsive and smooth when doing animations, transitions, and other small UI effects. Making sure these effects are jank-free can mean the difference between a "native" feel or a clunky, unpolished one.
 
-This is the first in a series of articles covering rendering performance optimization in the browser. To kick things off, we'll cover why smooth animation is difficult and what needs to happen to achieve it, as well as a few easy best practices. Many of these ideas were originally presented in "Jank Busters," a talk Nat Duca and I gave at Google I/O talk ([video](https://www.youtube.com/watch?v=hAzhayTnhEI&amp;feature=plcp)) this year.
+This is the first in a series of articles covering rendering performance optimization in the browser. To kick things off, we'll cover why smooth animation is difficult and what needs to happen to achieve it, as well as a few easy best practices. Many of these ideas were originally presented in "Jank Busters," a talk Nat Duca and I gave at Google I/O talk ([video](https://www.youtube.com/watch?v=hAzhayTnhEI&feature=plcp)) this year.
 
 ## Introducing V-sync
 
@@ -52,12 +53,12 @@ Since we want a new frame ready on every screen refresh, there's only the time i
 16ms isn't a lot of time. Luckily Chrome's Developer Tools can help you track down if you're blowing your frame budget during the requestAnimationFrame callback.
 
 Opening up the Dev Tools timeline and taking a recording of this animation in action quickly shows that we're way over budget when animating. In Timeline switch to "Frames" and take a look:
- A demo with far too much layout
+A demo with far too much layout
 
 Those requestAnimationFrame (rAF) callbacks are taking \>200ms. That's an order of magnitude too long to tick out a frame every 16ms! Opening up one of those long rAF callbacks reveals what's going on inside: in this case, lots of layout.
 
 Paul's video goes into more detail about the specific cause of the relayout (it's reading `scrollTop`) and how to avoid it. But the point here is that you can dive into the callback and investigate what's taking so long.
- An updated demo with much reduced layout
+An updated demo with much reduced layout
 
 Notice the 16ms frame times. That blank space in the frames is the headroom you have to do more work (or let the browser do work it needs to do in the background). That blank space is a Good Thing.
 
@@ -92,17 +93,18 @@ There's an implicit statement in the above section on jank: browsers can only do
 When possible, using a CSS animation both simplifies your application and lets animations run smoothly, even while JavaScript runs.
 
 ```javascript
-  // see http://paulirish.com/2011/requestanimationframe-for-smart-animating/ for info on rAF polyfills
-  rAF = window.requestAnimationFrame;
+// see http://paulirish.com/2011/requestanimationframe-for-smart-animating/ for info on rAF polyfills
+rAF = window.requestAnimationFrame;
 
-  var degrees = 0;
-  function update(timestamp) {
-    document.querySelector('#foo').style.webkitTransform = "rotate(" + degrees + "deg)";
-    console.log('updated to degrees ' + degrees);
-    degrees = degrees + 1;
-    rAF(update);
-  }
+var degrees = 0;
+function update(timestamp) {
+  document.querySelector("#foo").style.webkitTransform =
+    "rotate(" + degrees + "deg)";
+  console.log("updated to degrees " + degrees);
+  degrees = degrees + 1;
   rAF(update);
+}
+rAF(update);
 ```
 
 If you click the button JavaScript runs for 180ms, causing jank. But if instead we drive that animation with CSS animations the jank no longer occurs.

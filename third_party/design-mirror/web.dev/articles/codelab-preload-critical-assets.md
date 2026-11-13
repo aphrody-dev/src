@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
 
 > [!IMPORTANT]
@@ -37,7 +38,7 @@ late:
 The `main.css` file is not fetched by a Link element (`<link>`) placed in the HTML
 document, but a separate JavaScript file, `fetch-css.js`, attaches
 the Link element to the DOM after the `window.onLoad` event. This means that the
-file is only fetched *after* the browser finishes parsing and executing the JS
+file is only fetched _after_ the browser finishes parsing and executing the JS
 file. Similarly, a web font (`K2D.woff2`) specified within `main.css` is only
 fetched once the CSS file has finished downloading.
 
@@ -166,12 +167,14 @@ The following block of code, which lives in `src/index.js,` is responsible for
 dynamically importing the method when the button is clicked.
 
 ```javascript
-form.addEventListener("submit", e => {
-  e.preventDefault()
-  import('lodash.sortby')
-    .then(module => module.default)
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  import("lodash.sortby")
+    .then((module) => module.default)
     .then(sortInput())
-    .catch(err => { alert(err) });
+    .catch((err) => {
+      alert(err);
+    });
 });
 ```
 
@@ -203,7 +206,7 @@ Although prefetch makes more sense for this use case, webpack also provides supp
 chunks that are dynamically imported.
 
 ```javascript
-import(/* webpackPreload: true */ 'module')
+import(/* webpackPreload: true */ "module");
 ```
 
 ## Conclusion

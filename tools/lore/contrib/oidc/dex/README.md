@@ -22,10 +22,10 @@ loreserver --config . --env dex-tier2
 
 ## The configuration
 
-| User | Groups |
-| --- | --- |
-| `alice` (`alice@google.com`) | `admin` |
-| `bob` (`bob@google.com`) | `obliterate` |
+| User                         | Groups       |
+| ---------------------------- | ------------ |
+| `alice` (`alice@google.com`) | `admin`      |
+| `bob` (`bob@google.com`)     | `obliterate` |
 
 - `lore-cli` is the public client the CLI logs in with, by the device grant. Dex's device callback
   is registered as its redirect URI, which the device grant needs.

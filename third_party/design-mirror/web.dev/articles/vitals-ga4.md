@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to send Web Vitals data to Google Analytics 4 properties and export the data for analysis in BigQuery and Looker Studio.
 
- Minhaz Kazi [X](https://twitter.com/_mkazi_) [GitHub](https://github.com/minhaz)  Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
+Minhaz Kazi [X](https://twitter.com/_mkazi_) [GitHub](https://github.com/minhaz) Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
 
 Google provides a number of tools---[Search
 Console](https://support.google.com/webmasters/answer/9205520), [PageSpeed
@@ -28,7 +29,7 @@ tools alone to measure your site's performance:
 
 - CrUX-based tools report data by either monthly or previous 28-day periods. This means you'll have to wait a long time after making any changes before you can see the results.
 - CrUX-based tools can only be segment by a limited number of dimensions, such as country, connection type, and device category (desktop or mobile). You can't slice the data by dimensions specific to your business (for example: engaged users, users in a particular experiment group, etc.).
-- CrUX-based tools can tell you *what* your performance is, but they can't tell you *why*. With analytics tools you can send additional data to help you track down and debug issues.
+- CrUX-based tools can tell you _what_ your performance is, but they can't tell you _why_. With analytics tools you can send additional data to help you track down and debug issues.
 
 For these reasons, we recommend all site owners monitor Core Web Vitals metrics
 using their existing analytics tool. This post explains how you can use free
@@ -237,7 +238,7 @@ for understanding your current performance and how it's trending over time. But
 what can you do if your performance is worse than expected but you're not sure
 why?
 
-Knowing *what* your scores are is not helpful if you're not able to take action
+Knowing _what_ your scores are is not helpful if you're not able to take action
 and fix the problems.
 
 [Debug performance in the field](https://web.dev/articles/debug-performance-in-the-field.md.txt) explains how
@@ -363,8 +364,8 @@ In such cases, visualizing the data can help you derive insights more quickly.
 BigQuery provides a quick way to visualize any query results through Data
 Studio. [Looker Studio](https://lookerstudio.google.com/) is a data visualization
 and dashboarding tool that is free to use. To visualize your query results,
-after running your query in the BigQuery UI, click the *Explore Data button* and
-select *Explore with Looker Studio*.
+after running your query in the BigQuery UI, click the _Explore Data button_ and
+select _Explore with Looker Studio_.
 
 This will create a direct link from BigQuery into Looker Studio in the explore
 view. In this view, you can select the fields you want to visualize, choose
@@ -544,21 +545,21 @@ dashboards from different datasets.
 
 As you navigate the dashboard, you can see the daily trends of the Web Vitals
 metrics and some usage information for your website like users and sessions, in
-the *Summary* tab.
+the _Summary_ tab.
 
-In the *User Analysis* tab, you can select a metric and then get a breakdown of
+In the _User Analysis_ tab, you can select a metric and then get a breakdown of
 the metrics percentile as well as user count by different usage and business
 metrics.
 
-The *Page Path Analysis* tab will help you to identify problem areas on your
+The _Page Path Analysis_ tab will help you to identify problem areas on your
 website. Here, You can pick a metric to see the overview. But you also see the
 scatter-map of all the page paths with the percentile value on y axis and record
 count on x axis. The scatter map can help to identify pages which have lower
 than expected metric values. Once you select the pages using the scatter
-chart of the *Page path* table, you can further drill down the problem area by
-viewing the *Debug Target* table.
+chart of the _Page path_ table, you can further drill down the problem area by
+viewing the _Debug Target_ table.
 
-The *Revenue Analysis* tab is an example of how you can monitor your business
+The _Revenue Analysis_ tab is an example of how you can monitor your business
 and performance metrics in the same place. This section plots all sessions where
 the user made a purchase. You can compare the revenue earned versus user experience
 during a specific session .

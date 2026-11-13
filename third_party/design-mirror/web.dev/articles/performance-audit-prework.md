@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sam Dutton [X](https://twitter.com/sw12) [GitHub](https://github.com/samdutton) [Mastodon](https://techhub.social/@samdutton) [Bluesky](https://bsky.app/profile/samdutton.bsky.social) [Homepage](https://samdutton.com)
 
 Before gathering performance metrics for a site audit, there are several checks you can do to
@@ -20,15 +21,15 @@ Wherever possible fix simple bugs and remove unneeded assets and code **before**
 measuring performance --- but make sure to keep a before-and-after record of problems and fixes. These
 improvements can still be a part of your audit work.
 
-**Site architecture and assets**   
+**Site architecture and assets**  
 Can anything easily be removed from the code repo and from the
 site, such as unused legacy pages, content or other assets? Check for orphaned pages, redundant
 templates, unused images and [unused code and libraries](https://developer.chrome.com/blog/new-in-devtools-59#coverage).
 
-**Runtime errors**   
+**Runtime errors**  
 Check for errors reported in the browser console. There shouldn't be any :).
 
-**Linting**   
+**Linting**  
 Are there errors in your HTML, CSS or JavaScript code? Building linting into your
 workflow can help maintain code quality and avoid regressions. We recommend
 [HTMLHint](http://htmlhint.com/), [StyleLint](https://stylelint.io) and
@@ -36,14 +37,14 @@ workflow can help maintain code quality and avoid regressions. We recommend
 the command line within workflow processes and continuous integration tools such as
 [Travis](https://travis-ci.org/).
 
-**Broken links and images**   
+**Broken links and images**  
 There are many tools to test for broken links at build time and
 runtime, including Chrome Extensions
 ([this one](https://chrome.google.com/webstore/detail/check-my-links/ojkcdipcgfaekbeaelaapakgnjflfglf)
 is good) and Node tools such as
 [Broken Link Checker](https://github.com/stevenvachon/broken-link-checker).
 
-**Plugins**   
+**Plugins**  
 Plugins such as Flash and Silverlight can be a security risk, support for them
 [has been deprecated](https://blog.chromium.org/2014/11/the-final-countdown-for-npapi.html),
 and they don't work on mobile. [Use Lighthouse to check for
@@ -58,23 +59,23 @@ Some of these checks are relatively subjective, but they can identify problems t
 performance. Broken links, for example, waste time and feel 'unresponsive'. Illegible text is slow
 to read.
 
-**Cross-device testing**   
+**Cross-device testing**  
 Try different viewport and window sizes. Use at least one mobile and
 one desktop device. If possible, try your site on a low-spec mobile device with a small screen. Is
 the text readable? Are any images broken? Can you zoom? Are touch targets large enough? Is it slow?
 Are any features unresponsive? Screenshot or video the results.
 
-**Cross-platform testing**   
+**Cross-platform testing**  
 What platforms do you target? You need to test on the browsers and
 operating systems your users use now and in the future.
 
-**Connectivity**   
+**Connectivity**  
 [Test on multiple target
 network types](https://web.dev/web/fundamentals/performance/poor-connectivity#testing): connected, wifi and
 cellular. You can use browser tools to [emulate a variety of network
 conditions](https://web.dev/web/tools/chrome-devtools/network-performance/network-conditions).
 
-**Devices**   
+**Devices**  
 Make sure to try out your site on the same devices as your users. The following
 photo shows the same page on two different phones.
 
@@ -86,7 +87,7 @@ Simple findings such as this can be far more important than obscure performance 
 
 ## Try out UI and UX
 
-**Accessibility, usability and readability**   
+**Accessibility, usability and readability**  
 To ensure that your site's content and
 functionality are accessible to everyone, you need to understand the diversity of your users.
 [Lighthouse](https://developer.chrome.com/docs/lighthouse) and other tools test for specific
@@ -104,17 +105,17 @@ Fundamentals article [How To Do an Accessibility Review](https://web.dev/web/fun
 Keep a record of your accessibility audit. Chances are that you'll be able to make simple
 improvements that are good for all your users.
 
-**Fundamental UI and UX problems**   
+**Fundamental UI and UX problems**  
 Interactions that don't work how they should, overflowing
 elements on smaller windows and viewports, too-small tap targets, unreadable content, janky
 scrolling... Open multiple pages on the site, try out navigation and all core functionality. Keep a
 record.
 
-**Images, audio and video**   
+**Images, audio and video**  
 Test for overflowing content, [incorrect aspect ratio](https://chrome.google.com/webstore/detail/image-checker/bacnicogfgpigmmenfiplfiofpkocpii),
 poor cropping, and quality problems.
 
-**Subjective UI tests**   
+**Subjective UI tests**
 
 These may not all be relevant, but simple changes can make refactoring easier:
 

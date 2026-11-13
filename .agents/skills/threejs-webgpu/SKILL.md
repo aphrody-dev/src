@@ -11,10 +11,10 @@ metadata:
 
 Two paths, only one per surface:
 
-| Surface | Path | Forbidden |
-|---|---|---|
+| Surface                               | Path                                                                                                                         | Forbidden                                      |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
 | Web (aphrody.com, aphrody.app, demos) | `three` (fork `aphrody-labs/three.js`), `WebGPURenderer` + TSL (`three/tsl`), automatic WebGL2 fallback of the same renderer | `@react-three/fiber`, drei, gltfjsx, vite, npm |
-| Desktop / native | `wgpu` (fork `aphrody-labs/wgpu`) from Rust, WGSL; GPUI for the chrome around the canvas | in-house engine on top of OpenGL |
+| Desktop / native                      | `wgpu` (fork `aphrody-labs/wgpu`) from Rust, WGSL; GPUI for the chrome around the canvas                                     | in-house engine on top of OpenGL               |
 
 ## Rules
 

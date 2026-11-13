@@ -5,12 +5,12 @@ directory holds a Docker Compose file, the provider's configuration with test us
 `[server.auth]` configurations that point `loreserver` at it, and a README with what is specific
 to the provider.
 
-| Directory | Provider |
-| --- | --- |
-| [`keycloak/`](keycloak/README.md) | [Keycloak](https://www.keycloak.org) |
-| [`dex/`](dex/README.md) | [Dex](https://dexidp.io) |
-| [`authentik/`](authentik/README.md) | [authentik](https://goauthentik.io) |
-| [`zitadel/`](zitadel/README.md) | [ZITADEL](https://zitadel.com) |
+| Directory                           | Provider                             |
+| ----------------------------------- | ------------------------------------ |
+| [`keycloak/`](keycloak/README.md)   | [Keycloak](https://www.keycloak.org) |
+| [`dex/`](dex/README.md)             | [Dex](https://dexidp.io)             |
+| [`authentik/`](authentik/README.md) | [authentik](https://goauthentik.io)  |
+| [`zitadel/`](zitadel/README.md)     | [ZITADEL](https://zitadel.com)       |
 
 Each provider runs as Tier 1, where the server reads each caller's actions from a claim in the
 login token and applies them to every repository, and as Tier 2, where the client exchanges its
@@ -33,11 +33,11 @@ configuration reference for the settings.
 
 Every provider has the same users:
 
-| User | Password | Lore actions beyond `read` and `write` |
-| --- | --- | --- |
-| `alice@google.com` | `alice` | `admin` |
-| `bob@google.com` | `bob` | `obliterate` |
-| CI client | secret `lore-ci-secret` (generated on ZITADEL) | `push-protected` (not supported by Dex in Tier 1) |
+| User               | Password                                       | Lore actions beyond `read` and `write`            |
+| ------------------ | ---------------------------------------------- | ------------------------------------------------- |
+| `alice@google.com` | `alice`                                        | `admin`                                           |
+| `bob@google.com`   | `bob`                                          | `obliterate`                                      |
+| CI client          | secret `lore-ci-secret` (generated on ZITADEL) | `push-protected` (not supported by Dex in Tier 1) |
 
 In Tier 1, every token holder gets `read`, and `write` through the server's default
 `implicit_actions`. The provider's roles or groups add the rest:
@@ -197,11 +197,11 @@ scoped to the one repository it's working on, at the token exchange service in
 `grants.json` in the provider's directory, in place of the provider's roles or groups. The grants
 name two repositories by fixed IDs, which `lore repository create --id` gives them:
 
-| User | `game`, ID `11111111111111111111111111111111` | `tools`, ID `22222222222222222222222222222222` |
-| --- | --- | --- |
-| alice | `write`, `admin` | `write`, `admin` |
-| bob | `write`, `obliterate` | `read` |
-| CI client | `write`, `push-protected` | none |
+| User      | `game`, ID `11111111111111111111111111111111` | `tools`, ID `22222222222222222222222222222222` |
+| --------- | --------------------------------------------- | ---------------------------------------------- |
+| alice     | `write`, `admin`                              | `write`, `admin`                               |
+| bob       | `write`, `obliterate`                         | `read`                                         |
+| CI client | `write`, `push-protected`                     | none                                           |
 
 Alice's grants are on `*`, every repository. A user with no grant on a repository can't reach it
 at all, and any grant on a repository lets the user read it.

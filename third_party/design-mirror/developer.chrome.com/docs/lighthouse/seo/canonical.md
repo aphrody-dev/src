@@ -7,16 +7,17 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 When multiple pages have similar content, search engines consider them duplicate
 versions of the same page. For example, desktop and mobile versions of a product
 page are often considered duplicates.
 
-Search engines select one of the pages as the *canonical* , or primary, version
+Search engines select one of the pages as the _canonical_ , or primary, version
 and **crawl** that one more. Valid canonical links let you tell search engines
 which version of a page to crawl and display to users in search results.
 
 > [!IMPORTANT]
-> **Key term:** *Crawling* is how a search engine updates its index of content on the web.
+> **Key term:** _Crawling_ is how a search engine updates its index of content on the web.
 
 Using canonical links has many advantages:
 
@@ -79,7 +80,7 @@ page.
 ### Google-specific guidelines
 
 - Use the [Google Search Console](https://search.google.com/search-console/index) to see which URLs Google considers canonical or duplicative across your entire site.
-- Don't use Google's URL removal tool for canonization. It removes *all* versions of a URL from search.
+- Don't use Google's URL removal tool for canonization. It removes _all_ versions of a URL from search.
 
 > [!NOTE]
 > **Note:** Recommendations for other search engines are welcome. [Edit this page](https://github.com/GoogleChrome/web.dev/blob/master/src/site/content/en/lighthouse-seo/canonical/index.md).

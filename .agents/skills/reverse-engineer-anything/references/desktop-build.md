@@ -245,7 +245,7 @@ the first source that has the app:
 - CherryTree: its first-run autosave "Choose Storage Type" dialog swallows
   keys, so save once early as `.ctd` and untick autosave.
 - VSCodium (its tarball, with `extra_packages: ["libnss3",
-  "libasound2t64"]`) runs on outside REA's reach, so `stop_build_capture`
+"libasound2t64"]`) runs on outside REA's reach, so `stop_build_capture`
   fails to clean it up: after `end`, quit it with Ctrl+Q, then stop. Enter
   accepts its word suggestions, so press Escape after typing a line.
 - Glade: a new widget's id is empty until you set it, and a second save

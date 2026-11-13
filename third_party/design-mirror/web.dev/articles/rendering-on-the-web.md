@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)  Jason Miller [X](https://twitter.com/_developit) [GitHub](https://github.com/developit) [Homepage](https://jasonformat.com)
+
+Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social) Jason Miller [X](https://twitter.com/_developit) [GitHub](https://github.com/developit) [Homepage](https://jasonformat.com)
 
 Published: February 6, 2019, Last updated: January 5, 2026
 
@@ -32,39 +33,39 @@ First, we define some terminology we will use.
 ### Rendering
 
 Server-side rendering (SSR)
-:   Rendering an app on the server to send HTML, rather than JavaScript, to the client.
+: Rendering an app on the server to send HTML, rather than JavaScript, to the client.
 
 Client-side rendering (CSR)
-:   Rendering an app in a browser, using JavaScript to modify the DOM.
+: Rendering an app in a browser, using JavaScript to modify the DOM.
 
 Prerendering
-:   Running a client-side application at build time to capture its initial state as static HTML. *Note "prerendering" in this sense is different to [browser prerendering of future navigations](https://developer.chrome.com/docs/web-platform/prerender-pages).*
+: Running a client-side application at build time to capture its initial state as static HTML. _Note "prerendering" in this sense is different to [browser prerendering of future navigations](https://developer.chrome.com/docs/web-platform/prerender-pages)._
 
 Hydration
-:   Running client-side scripts to add application state and interactivity to
-    server-rendered HTML. Hydration assumes the DOM doesn't change.
+: Running client-side scripts to add application state and interactivity to
+server-rendered HTML. Hydration assumes the DOM doesn't change.
 
 Rehydration
-:   While often used to mean the same thing as hydration, rehydration implies
-    regularly updating the DOM with the latest state, including after the initial
-    hydration.
+: While often used to mean the same thing as hydration, rehydration implies
+regularly updating the DOM with the latest state, including after the initial
+hydration.
 
 ### Performance
 
 [Time to First Byte (TTFB)](https://web.dev/articles/ttfb.md.txt)
-:   The time between clicking a link and the first byte of content loading on the
-    new page.
+: The time between clicking a link and the first byte of content loading on the
+new page.
 
 [First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt)
-:   The time when requested content (article body, etc) becomes visible.
+: The time when requested content (article body, etc) becomes visible.
 
 [Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt)
-:   A representative metric that assesses whether a page consistently responds
-    quickly to user inputs.
+: A representative metric that assesses whether a page consistently responds
+quickly to user inputs.
 
 [Total Blocking Time (TBT)](https://web.dev/articles/tbt.md.txt)
-:   A [proxy metric for INP](https://almanac.httparchive.org/en/2022/performance#inp-and-tbt)
-    that calculates how long the main thread was blocked during page load.
+: A [proxy metric for INP](https://almanac.httparchive.org/en/2022/performance#inp-and-tbt)
+that calculates how long the main thread was blocked during page load.
 
 ## Server-side rendering
 
@@ -83,7 +84,7 @@ This makes sense, because with server-side rendering, you're really just sending
 text and links to the user's browser. This approach can work well for a variety
 of device and network conditions and opens up interesting browser optimizations,
 such as streaming document parsing.
- FCP and TTI with server-side rendering.
+FCP and TTI with server-side rendering.
 
 With server-side rendering, users are less likely to be left waiting for
 CPU-bound JavaScript to run before they can use your site. Even when you can't
@@ -108,7 +109,7 @@ better chance of loading quickly.
 With many modern frameworks, libraries, and architectures, you can render the same
 application on both the client and the server. You can use these techniques for
 server-side rendering. However, architectures where rendering happens both on
-the server *and* on the client are their own class of solution with very
+the server _and_ on the client are their own class of solution with very
 different performance characteristics and tradeoffs. React users can use
 [server DOM APIs](https://react.dev/reference/react-dom/server) or solutions
 built on them like [Next.js](https://nextjs.org/) for server-side rendering. Vue
@@ -127,7 +128,7 @@ HTML for a page doesn't have to be dynamically generated on the server.
 Generally, static rendering means producing a separate HTML file for each URL
 ahead of time. With HTML responses generated in advance, you can deploy static
 renders to multiple CDNs to take advantage of edge caching.
- FCP and TTI with static rendering.
+FCP and TTI with static rendering.
 
 Solutions for static rendering come in all shapes and sizes. Tools like
 [Gatsby](https://www.gatsbyjs.org) are designed to make developers feel like
@@ -217,7 +218,7 @@ the performance of pure server-side rendering. You can get the parser to work
 for you faster by delivering critical scripts and data using `<link rel=preload>`
 We also recommend considering using patterns like [PRPL](https://web.dev/articles/apply-instant-loading-with-prpl.md.txt)
 to ensure that initial and subsequent navigations feel instant.
- FCP and TTI with client-side rendering.
+FCP and TTI with client-side rendering.
 
 The primary downside to client-side rendering is that the amount of JavaScript
 required tends to grow as an application grows, which can impact a page's INP.
@@ -266,7 +267,7 @@ without re-requesting all the data the server rendered its HTML with, most
 server-side rendering solutions serialize the response from a UI's data
 dependencies as script tags in the document. Because this duplicates a lot of
 HTML, rehydration can cause more problems than just delayed interactivity.
- HTML document containing serialized UI, inlined data and a bundle.js script.
+HTML document containing serialized UI, inlined data and a bundle.js script.
 
 The server is returning a description of the application's UI in response to a
 navigation request, but it's also returning the source data used to compose that
@@ -278,7 +279,7 @@ Performance metrics collected from real websites using server-side rendering and
 rehydration indicate that it's rarely the best option. The most important reason
 is its effect on the user experience, when a page looks ready but none of its
 interactive features work.
- The negative effects of client-side rendering on TTI.
+The negative effects of client-side rendering on TTI.
 
 There's hope for server-side rendering with rehydration. In the short
 term, only using server-side rendering for highly cacheable content can reduce
@@ -330,14 +331,14 @@ available without a full page load.
 ### Trisomorphic rendering
 
 If [service workers](https://developer.chrome.com/docs/workbox/service-worker-overview)
-are an option for you, consider *trisomorphic* rendering. This technique
+are an option for you, consider _trisomorphic_ rendering. This technique
 lets you use streaming server-side rendering for initial or non-JavaScript
 navigations, and then have your service worker take on rendering of HTML for
 navigations after it has been installed. This can keep cached components and
 templates up to date and enable SPA-style navigations for rendering new views in
 the same session. This approach works best when you can share the same
 templating and routing code between the server, client page, and service worker.
- Trisomorphic rendering, demonstrating a browser and service worker communicating with the server.
+Trisomorphic rendering, demonstrating a browser and service worker communicating with the server.
 
 ## SEO considerations
 
@@ -358,7 +359,7 @@ bottlenecks are. Consider whether static rendering or server-side rendering can
 get you most of the way there. It's fine to mostly ship HTML with minimal
 JavaScript to get an experience interactive. Here's a handy infographic showing
 the server-client spectrum:
- Rendering options and their tradeoffs.
+Rendering options and their tradeoffs.
 
 ## Credits
 

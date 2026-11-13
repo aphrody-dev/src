@@ -9,13 +9,13 @@ Versions verified 2026-11-12 from local clones (C:\src\third_party\web): lightho
 
 ## Thresholds (p75 of page loads, mobile and desktop split)
 
-| Metric | Good | Poor | Kind | Source |
-|---|---|---|---|---|
-| LCP | <=2500 ms | >4000 ms | CWV, loading | web-vitals src/onLCP.ts; web.dev/articles/vitals |
-| INP | <=200 ms | >500 ms | CWV, responsiveness | src/onINP.ts |
-| CLS | <=0.1 | >0.25 | CWV, visual stability | src/onCLS.ts |
-| FCP | <=1800 ms | >3000 ms | diagnostic | src/onFCP.ts |
-| TTFB | <=800 ms | >1800 ms | diagnostic | src/onTTFB.ts |
+| Metric | Good      | Poor     | Kind                  | Source                                           |
+| ------ | --------- | -------- | --------------------- | ------------------------------------------------ |
+| LCP    | <=2500 ms | >4000 ms | CWV, loading          | web-vitals src/onLCP.ts; web.dev/articles/vitals |
+| INP    | <=200 ms  | >500 ms  | CWV, responsiveness   | src/onINP.ts                                     |
+| CLS    | <=0.1     | >0.25    | CWV, visual stability | src/onCLS.ts                                     |
+| FCP    | <=1800 ms | >3000 ms | diagnostic            | src/onFCP.ts                                     |
+| TTFB   | <=800 ms  | >1800 ms | diagnostic            | src/onTTFB.ts                                    |
 
 Lab vs field: Lighthouse has no real INP in navigation mode (weight 0); use TBT as the lab proxy, and timespan user flows or field data for INP.
 
@@ -43,9 +43,24 @@ Our reference numbers (fr1, 2026-11-12, desktop preset, median of 3, Next 16.5 a
 ## Inject web-vitals (field or bench)
 
 ```js
-import {onLCP, onINP, onCLS, onFCP, onTTFB} from 'web-vitals/attribution'; // +~1.5 KB brotli vs standard build
-const send = (m) => navigator.sendBeacon('/rum', JSON.stringify({name:m.name, value:m.value, rating:m.rating, id:m.id, nav:m.navigationType, attr:m.attribution}));
-onLCP(send); onINP(send); onCLS(send); onFCP(send); onTTFB(send);
+import { onLCP, onINP, onCLS, onFCP, onTTFB } from "web-vitals/attribution"; // +~1.5 KB brotli vs standard build
+const send = (m) =>
+  navigator.sendBeacon(
+    "/rum",
+    JSON.stringify({
+      name: m.name,
+      value: m.value,
+      rating: m.rating,
+      id: m.id,
+      nav: m.navigationType,
+      attr: m.attribution,
+    }),
+  );
+onLCP(send);
+onINP(send);
+onCLS(send);
+onFCP(send);
+onTTFB(send);
 ```
 
 - Call each `on*` once per page (each creates a PerformanceObserver). `reportAllChanges:true` only for debugging.
@@ -55,18 +70,21 @@ onLCP(send); onINP(send); onCLS(send); onFCP(send); onTTFB(send);
 ## Top fixes per metric
 
 LCP (break down via attribution: TTFB, resourceLoadDelay, resourceLoadDuration, elementRenderDelay; fix the largest part)
+
 - LCP image discoverable in HTML: `<img fetchpriority="high">`, no `loading="lazy"` on it, no JS/CSS-background-only discovery. Guides: performance/optimize-image-priority, optimize-preload-priority.
 - Cut TTFB: CDN/edge cache, streaming HTML (performance/out-of-order-html-streaming), 103 Early Hints.
 - Remove render-blocking CSS/JS (`defer`/`type=module`, inline critical CSS); responsive AVIF/WebP with `srcset`/`sizes`.
 - Next-page loads: Speculation Rules prerender (performance/improve-next-page-load-performance).
 
 INP (attribution: inputDelay, processingDuration, presentationDelay; longAnimationFrameEntries)
+
 - Break up long tasks, yield: `scheduler.yield()` with fallback (performance/break-up-long-tasks, schedule-tasks-by-priority).
 - Do minimal work in the handler, paint first, defer the rest (performance/interaction-paint-timing, identify-inp-causes).
 - Shrink DOM/style recalc: `content-visibility:auto` (defer-rendering-heavy-content), avoid forced reflow (lighthouse forced-reflow-insight).
 - Audit third parties (third-parties-insight, identify-heavy-scripts).
 
 CLS (attribution: largestShiftTarget, largestShiftTime, loadState)
+
 - `width`/`height` or `aspect-ratio` on img/video/iframe/ads (unsized-images audit).
 - Reserve space for late content; never insert above existing content except on user input.
 - Fonts: `font-display` + `size-adjust`/metric overrides (font-display-insight).
@@ -78,9 +96,11 @@ TTFB/FCP: server caching, fewer redirects, preconnect to critical origins, HTTP/
 
 - Baseline: Newly available = in all core browsers (Chrome, Edge, Firefox, Safari, desktop+mobile); Widely available = 30 months after Newly (web.dev/baseline). Default policy: Widely available is safe without fallback.
 - Quick BCD lookup (local clone, raw JSON; key path = file path):
+
 ```sh
 bun -e 'const j=await Bun.file("C:/src/third_party/web/mdn_browser-compat-data/css/properties/anchor-name.json").json();const c=j.css.properties["anchor-name"].__compat;console.log(c.status,Object.fromEntries(["chrome","edge","firefox","safari","safari_ios","chrome_android"].map(b=>[b,[c.support[b]].flat()[0]?.version_added])),c.tags)'
 ```
+
 - `tags: ["web-features:<id>"]` links BCD to web-features, which holds the Baseline status (BCD itself has none). Lighthouse `baseline` audit (best-practices) lists features the page uses with status.
 - Details, paths, statuses: references/bcd.md.
 

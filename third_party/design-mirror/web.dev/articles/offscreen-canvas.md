@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Tim Dresser [X](https://twitter.com/tdresser)
 
 [Canvas](https://developer.mozilla.org/docs/Web/HTML/Element/canvas) is a popular way
@@ -63,10 +64,10 @@ to calculate a gradient color in a worker:
 // file: worker.js
 function getGradientColor(percent) {
   const canvas = new OffscreenCanvas(100, 1);
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-  gradient.addColorStop(0, 'red');
-  gradient.addColorStop(1, 'blue');
+  gradient.addColorStop(0, "red");
+  gradient.addColorStop(1, "blue");
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, ctx.canvas.width, 1);
   const imgd = ctx.getImageData(0, 0, ctx.canvas.width, 1);
@@ -74,7 +75,7 @@ function getGradientColor(percent) {
   return `rgba(${colors[0]}, ${colors[1]}, ${colors[2]}, ${colors[3]})`;
 }
 
-getGradientColor(40);  // rgba(152, 0, 104, 255 )
+getGradientColor(40); // rgba(152, 0, 104, 255 )
 ```
 
 ## Unblock main thread
@@ -85,9 +86,9 @@ method to mirror the regular canvas to an OffscreenCanvas instance. Operations a
 OffscreenCanvas will be rendered on the source canvas automatically.
 
 ```javascript
-const offscreen = document.querySelector('canvas').transferControlToOffscreen();
-const worker = new Worker('myworkerurl.js');
-worker.postMessage({canvas: offscreen}, [offscreen]);
+const offscreen = document.querySelector("canvas").transferControlToOffscreen();
+const worker = new Worker("myworkerurl.js");
+worker.postMessage({ canvas: offscreen }, [offscreen]);
 ```
 
 > [!IMPORTANT]
@@ -117,13 +118,13 @@ For example, you can feature-detect it and if available, use it with Three.js by
 the canvas option in the renderer constructor:
 
 ```javascript
-const canvasEl = document.querySelector('canvas');
+const canvasEl = document.querySelector("canvas");
 const canvas =
-  'OffscreenCanvas' in window
+  "OffscreenCanvas" in window
     ? canvasEl.transferControlToOffscreen()
     : canvasEl;
-canvas.style = {width: 0, height: 0};
-const renderer = new THREE.WebGLRenderer({canvas: canvas});
+canvas.style = { width: 0, height: 0 };
+const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 ```
 
 The one gotcha here is that Three.js expects canvas to have a `style.width` and `style.height` property.

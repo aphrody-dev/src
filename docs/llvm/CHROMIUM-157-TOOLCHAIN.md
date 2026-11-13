@@ -10,9 +10,9 @@ This file records the switch and its proof.
 From `third_party/toolchain-157.toml` (Chromium prebuilts, `tools/clang/scripts/update.py` and
 `tools/rust/update_rust.py` of the fr1 checkout, Chromium 157.0.8103.78):
 
-| Part | Version |
-|---|---|
-| clang, lld, llvm-* | clang 24.0.0git (llvm-project 86922d51, `llvmorg-24-init-7747-g62397f8b-67`) |
+| Part                                    | Version                                                                                      |
+| --------------------------------------- | -------------------------------------------------------------------------------------------- |
+| clang, lld, llvm-*                      | clang 24.0.0git (llvm-project 86922d51, `llvmorg-24-init-7747-g62397f8b-67`)                 |
 | rustc, cargo, clippy, rustfmt, rust-src | rustc 1.100.0-nightly (1edd55dcf 2026-09-09), cargo 1.100.0-nightly (3c0b53475), LLVM 24.0.0 |
 
 Checked live with `--version` / `rustc -vV` on fr1 (`/srv/chromium/src/third_party/...`) and on the
@@ -45,13 +45,13 @@ compiles nothing.
 
 ## What changed in the repository
 
-| File | Change |
-|---|---|
-| `rust-toolchain.toml` | `channel = "chromium-157"`, components rustfmt, clippy, rust-src (no Cranelift) |
-| `Cargo.toml` | `[profile.dev]` no longer selects `codegen-backend = "cranelift"`: Chromium's rustc has no Cranelift backend |
-| `scripts/toolchain.ts` | installer, status, env (bun) |
-| `.github/workflows/ci.yml`, `judge.yml` | toolchain step before cargo |
-| `infra/docker/Dockerfile` | `RUSTUP_TOOLCHAIN=${RUST_TOOLCHAIN}` for the Alpine images (exception below) |
+| File                                    | Change                                                                                                       |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `rust-toolchain.toml`                   | `channel = "chromium-157"`, components rustfmt, clippy, rust-src (no Cranelift)                              |
+| `Cargo.toml`                            | `[profile.dev]` no longer selects `codegen-backend = "cranelift"`: Chromium's rustc has no Cranelift backend |
+| `scripts/toolchain.ts`                  | installer, status, env (bun)                                                                                 |
+| `.github/workflows/ci.yml`, `judge.yml` | toolchain step before cargo                                                                                  |
+| `infra/docker/Dockerfile`               | `RUSTUP_TOOLCHAIN=${RUST_TOOLCHAIN}` for the Alpine images (exception below)                                 |
 
 ## Exceptions, stated and not hidden
 

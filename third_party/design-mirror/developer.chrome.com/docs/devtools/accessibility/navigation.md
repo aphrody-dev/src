@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
 This guide aims to help users who primarily rely on assistive technology (AT),
@@ -22,14 +23,14 @@ encounter along the way.
 
 ## Overview
 
-DevTools is divided into a series of *panels* which are organized into an
+DevTools is divided into a series of _panels_ which are organized into an
 [ARIA `tablist`](https://www.w3.org/TR/wai-aria-1.1/#tablist). For example:
 
 - The **Elements** panel lets you view and change [DOM nodes](https://developer.chrome.com/docs/devtools/dom.md.txt) or [CSS](https://developer.chrome.com/docs/devtools/css.md.txt).
 - The [**Console** panel](https://developer.chrome.com/docs/devtools/console.md.txt) lets you read JavaScript logs and live edit objects.
 
 Within the content area of each panel, there are a number of different tools,
-often referred to as *tabs* or *panes* in the documentation. For example, the
+often referred to as _tabs_ or _panes_ in the documentation. For example, the
 **Elements** panel contains additional tabs to inspect event listeners, the
 accessibility tree, and much more. The distinction between tabs and panes is
 somewhat arbitrary. The only reason you'll see one term or the other is to

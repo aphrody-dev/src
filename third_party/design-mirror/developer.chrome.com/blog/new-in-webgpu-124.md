@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## Read-only and read-write storage textures
@@ -18,25 +19,34 @@ Then, your WGSL shader code can use `read_write` and `read` access qualifier for
 It's recommended to use a [requires-directive](https://gpuweb.github.io/gpuweb/wgsl/#requires-directive) to signal the potential for non-portability with `requires readonly_and_readwrite_storage_textures;` at the top of your WGSL shader code. See the following example and [issue dawn:1972](https://bugs.chromium.org/p/dawn/issues/detail?id=1972).
 
 ```javascript
-if (!navigator.gpu.wgslLanguageFeatures.has("readonly_and_readwrite_storage_textures")) {
-  throw new Error("Read-only and read-write storage textures are not available");
+if (
+  !navigator.gpu.wgslLanguageFeatures.has(
+    "readonly_and_readwrite_storage_textures",
+  )
+) {
+  throw new Error(
+    "Read-only and read-write storage textures are not available",
+  );
 }
 
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
 const bindGroupLayout = device.createBindGroupLayout({
-  entries: [{
-    binding: 0,
-    visibility: GPUShaderStage.COMPUTE,
-    storageTexture: {
-      access: "read-write", // <-- New!
-      format: "r32uint",
+  entries: [
+    {
+      binding: 0,
+      visibility: GPUShaderStage.COMPUTE,
+      storageTexture: {
+        access: "read-write", // <-- New!
+        format: "r32uint",
+      },
     },
-  }],
+  ],
 });
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   requires readonly_and_readwrite_storage_textures;
 
   @group(0) @binding(0) var tex : texture_storage_2d<r32uint, read_write>;
@@ -46,7 +56,7 @@ const shaderModule = device.createShaderModule({ code: `
     var data = textureLoad(tex, vec2i(local_id.xy));
     data.x *= 2;
     textureStore(tex, vec2i(local_id.xy), data);
-  }`
+  }`,
 });
 
 // You can now create a compute pipeline with this shader module and
@@ -58,7 +68,7 @@ const shaderModule = device.createShaderModule({ code: `
 WebGPU in Chrome takes web workers support to the next level, now offering support for both [service workers](https://developer.mozilla.org/docs/Web/API/Service_Worker_API) and [shared workers](https://developer.mozilla.org/docs/Web/API/SharedWorker). You can use service workers to enhance background tasks and offline capabilities, and shared workers for efficient resource sharing across scripts. See [issue chromium:41494731](https://issues.chromium.org/issues/41494731).
 
 Check out the [chrome extension sample](https://github.com/GoogleChrome/chrome-extensions-samples/tree/main/functional-samples/sample.webgpu) and [WebLLM chrome extension](https://github.com/mlc-ai/web-llm/tree/main/examples/chrome-extension-webgpu-service-worker) to see how to use WebGPU in an extension service worker.
- WebLLM chrome extension.
+WebLLM chrome extension.
 
 ## New adapter information attributes
 
@@ -68,7 +78,7 @@ Non-standard `d3dShaderModel` and `vkDriverVersion` adapter info attributes are 
 
 - The `vkDriverVersion` is the vendor-specified version number of the Vulkan driver. See [documentation](https://dawn.googlesource.com/dawn/+/refs/heads/main/docs/dawn/features/adapter_properties.md#vulkan) and [issue chromium:327457605](https://issues.chromium.org/issues/327457605).
 
- Adapter info `vkDriverVersion` shown on <https://webgpureport.org>.
+Adapter info `vkDriverVersion` shown on <https://webgpureport.org>.
 
 ## Bug fixes
 

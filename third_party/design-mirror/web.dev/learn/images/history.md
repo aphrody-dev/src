@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-No matter how far along you are in learning to design and develop for the web, the `` element needs very little introduction.
+
+No matter how far along you are in learning to design and develop for the web, the `element needs very little introduction.
 [Launched in Netscape ("Mosaic," at the time) in 1993](https://www.wired.com/2010/04/0422mosaic-web-browser/) and added to the HTML
-specification in 1995, `` has long played a simple but powerful role within the web platform. The developer adds a "source" image
+specification in 1995,` has long played a simple but powerful role within the web platform. The developer adds a "source" image
 file with the `src` attribute and provides a text alternative with the `alt` attribute in the event that the image cannot be rendered or
 assistive technologies request an alternative. From there, the browser has only one job: get the image data, then render it as quickly as possible.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/jOpVPJa?height=300&amp;theme-id=light&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen jOpVPJa by web-dot-dev on Codepen"></iframe>
@@ -33,7 +34,7 @@ When rendering engines are given more image data than necessary for the space th
 to make informed decisions about how to render the reduced image, and can do so without introducing any visual artifacts or blurring.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/YzjpXBP?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen YzjpXBP by web-dot-dev on Codepen"></iframe>
 
-You wouldn't typically want to *upscale* an image---that is, render the `` at a size larger than the intrinsic size of the source image.
+You wouldn't typically want to _upscale_ an image---that is, render the `` at a size larger than the intrinsic size of the source image.
 The displayed image would appear blurry and grainy-looking.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/XWBNbOx?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen XWBNbOx by web-dot-dev on Codepen"></iframe>
 
@@ -48,11 +49,11 @@ single source for the image data, this approach required us to provide an image 
 the largest size at which it could be displayed. An image meant to occupy a space in a layout that could be anywhere
 from `300px` to `2000px` wide, depending on the user's viewport size, required an image source with an intrinsic width of
 at least `2000px`. For a user who only views the page by way of a small viewport, everything would look as expected---the
-image would scale just fine. In the rendered page, a massive but scaled-down source image would *look* no different from an
+image would scale just fine. In the rendered page, a massive but scaled-down source image would _look_ no different from an
 appropriately-sized one. However, they would still be transferring and rendering a `2000px` wide image, burning through a huge
 amount of bandwidth and processing power with no tangible benefit.
 
-Things got much worse with the advent of the first "Retina" devices, as display *density* became a concern alongside viewport
+Things got much worse with the advent of the first "Retina" devices, as display _density_ became a concern alongside viewport
 size. An image source needs a much larger intrinsic width in order to suit a high density display. In simple terms, a display with
 double the density requires twice as many image pixels to render the image as sharply as possible.
 
@@ -61,12 +62,12 @@ an `800px` wide source image in `src`, then specifying that it should be display
 rendered at double the pixel density:
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/QWBKrjX?height=700&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen QWBKrjX by web-dot-dev on Codepen"></iframe>
 
-A single source image, cut to suit the largest possible space in your layout and high-density displays, works for all users *visually*,
+A single source image, cut to suit the largest possible space in your layout and high-density displays, works for all users _visually_,
 of course. A huge, high resolution image source rendered on a small, low density display will look like any other small, low density image,
 but feel far slower. The user will be left bearing all the performance costs of that massive, 4000px-wide image source, to no benefit.
 
-For a long time, `` largely did one thing--- it "got image data and put it on the screen." It did that reasonably well, for certain,
-but `` wasn't up to the task of accommodating the radical shifts in browsing context we were experiencing. While responsive web design
+For a long time, `largely did one thing--- it "got image data and put it on the screen." It did that reasonably well, for certain,
+but` wasn't up to the task of accommodating the radical shifts in browsing context we were experiencing. While responsive web design
 became a mainstream development practice, browsers optimized the performance of `img` for nearly twenty years---but for all but the most privileged
-users, the image *content* of pages was inefficient from the outset. No matter how quickly the browser managed to request, parse, and render
+users, the image _content_ of pages was inefficient from the outset. No matter how quickly the browser managed to request, parse, and render
 an image source, that asset would likely be far bigger than the user needed.

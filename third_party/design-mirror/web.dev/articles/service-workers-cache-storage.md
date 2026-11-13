@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Jeff Posnick [X](https://twitter.com/jeffposnick) [GitHub](https://github.com/jeffposnick) [Homepage](https://jeffy.info/)
 
 You're locked in a struggle for network reliability. The browser's HTTP cache is
@@ -103,7 +104,7 @@ There are some things to keep in mind about the API's design:
 ## A quick detour: Promises and async/await
 
 Service workers and the Cache Storage API use
-[asynchronous programming concepts](https://en.wikipedia.org/wiki/Asynchrony_(computer_programming)).
+[asynchronous programming concepts](<https://en.wikipedia.org/wiki/Asynchrony_(computer_programming)>).
 In particular, they rely heavily on promises to represent the future result of
 async operations. You should familiarize yourself with
 [promises](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise),

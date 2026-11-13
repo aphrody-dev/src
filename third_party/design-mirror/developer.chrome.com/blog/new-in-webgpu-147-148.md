@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: April 22, 2026
@@ -25,13 +26,16 @@ This language extension can be feature-detected using `navigator.gpu.wgslLanguag
 
 ```javascript
 if (!navigator.gpu.wgslLanguageFeatures.has("linear_indexing")) {
-  throw new Error(`WGSL global_invocation_index and workgroup_index built-in values are not available`);
+  throw new Error(
+    `WGSL global_invocation_index and workgroup_index built-in values are not available`,
+  );
 }
 
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   requires linear_indexing;
 
   override x : u32;

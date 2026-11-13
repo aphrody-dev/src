@@ -466,9 +466,20 @@ export function renderMarkdown(
     out.push("", "Per-asset rows are in report.json (more than 300 checks).");
     return out.join("\n") + "\n";
   }
-  out.push("", "## Per asset", "", "| id | validator | result | ms | bytes | detail |", "|---|---|---|---|---|---|");
-  for (const r of rows.sort((x, y) => x.id.localeCompare(y.id) || x.validator.localeCompare(y.validator)))
-    out.push(`| ${r.id} | ${r.validator} | ${r.ok ? "pass" : "FAIL"} | ${r.ms.toFixed(2)} | ${r.bytes} | ${esc(r.detail)} |`);
+  out.push(
+    "",
+    "## Per asset",
+    "",
+    "| id | validator | result | ms | bytes | detail |",
+    "|---|---|---|---|---|---|",
+  );
+  for (const r of rows.sort(
+    (x, y) =>
+      x.id.localeCompare(y.id) || x.validator.localeCompare(y.validator),
+  ))
+    out.push(
+      `| ${r.id} | ${r.validator} | ${r.ok ? "pass" : "FAIL"} | ${r.ms.toFixed(2)} | ${r.bytes} | ${esc(r.detail)} |`,
+    );
   return out.join("\n") + "\n";
 }
 

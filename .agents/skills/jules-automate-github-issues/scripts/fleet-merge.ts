@@ -42,7 +42,11 @@ const headers = {
 
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
-const date = new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" })
+const date = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+})
   .format(new Date())
   .replaceAll("-", "_");
 
@@ -50,10 +54,14 @@ const root = path.dirname(findUpSync(".git")!);
 const fleetDir = path.join(root, ".fleet", date);
 
 // Load task ordering (already sorted by risk in the analysis phase)
-const analysis = await Bun.file(path.join(fleetDir, "issue_tasks.json")).json() as IssueAnalysis;
+const analysis = (await Bun.file(
+  path.join(fleetDir, "issue_tasks.json"),
+).json()) as IssueAnalysis;
 
 // Load session mapping written by fleet-dispatch.ts
-const sessions = await Bun.file(path.join(fleetDir, "sessions.json")).json() as Array<{
+const sessions = (await Bun.file(
+  path.join(fleetDir, "sessions.json"),
+).json()) as Array<{
   taskId: string;
   sessionId: string;
 }>;
@@ -71,9 +79,10 @@ async function findFleetPRs() {
 
   const prMap = new Map<string, GitHubPR>();
   for (const session of sessions) {
-    const matchingPR = pulls.find((pr: GitHubPR) =>
-      pr.head.ref.includes(session.sessionId) ||
-      pr.body?.includes(session.sessionId)
+    const matchingPR = pulls.find(
+      (pr: GitHubPR) =>
+        pr.head.ref.includes(session.sessionId) ||
+        pr.body?.includes(session.sessionId),
     );
     if (matchingPR) {
       prMap.set(session.taskId, matchingPR);
@@ -87,7 +96,10 @@ interface CheckRun {
   conclusion: string | null;
 }
 
-async function waitForCI(prNumber: number, maxWaitMs = 10 * 60 * 1000): Promise<boolean> {
+async function waitForCI(
+  prNumber: number,
+  maxWaitMs = 10 * 60 * 1000,
+): Promise<boolean> {
   const start = Date.now();
 
   // First, get the head SHA for this PR
@@ -96,35 +108,39 @@ async function waitForCI(prNumber: number, maxWaitMs = 10 * 60 * 1000): Promise<
   const headSha = prData.head.sha;
 
   while (Date.now() - start < maxWaitMs) {
-    const res = await fetch(`${API}/commits/${headSha}/check-runs`, { headers });
+    const res = await fetch(`${API}/commits/${headSha}/check-runs`, {
+      headers,
+    });
     const data = (await res.json()) as { check_runs: CheckRun[] };
 
     // No CI configured — skip validation
     if (data.check_runs.length === 0) {
-      console.log(`  ℹ️  No check runs found for PR #${prNumber}. Proceeding without CI.`);
+      console.log(
+        `  ℹ️  No check runs found for PR #${prNumber}. Proceeding without CI.`,
+      );
       return true;
     }
 
-    const allComplete = data.check_runs.every((run: CheckRun) => run.status === "completed");
-    const allPassed = data.check_runs.every((run: CheckRun) =>
-      run.conclusion === "success" || run.conclusion === "skipped"
+    const allComplete = data.check_runs.every(
+      (run: CheckRun) => run.status === "completed",
+    );
+    const allPassed = data.check_runs.every(
+      (run: CheckRun) =>
+        run.conclusion === "success" || run.conclusion === "skipped",
     );
 
     if (allComplete && allPassed) return true;
     if (allComplete && !allPassed) return false;
 
     console.log(`  ⏳ CI still running for PR #${prNumber}... waiting 30s`);
-    await new Promise(r => setTimeout(r, 30_000));
+    await new Promise((r) => setTimeout(r, 30_000));
   }
   console.log(`  ⏰ CI timeout for PR #${prNumber}`);
   return false;
 }
 
 // Re-dispatch a task as a new Jules session against current main
-async function redispatchTask(
-  task: Task,
-  oldPr: GitHubPR,
-): Promise<GitHubPR> {
+async function redispatchTask(task: Task, oldPr: GitHubPR): Promise<GitHubPR> {
   // Close the conflicting PR
   console.log(`  🔒 Closing conflicting PR #${oldPr.number}...`);
   await fetch(`${API}/pulls/${oldPr.number}`, {
@@ -137,7 +153,9 @@ async function redispatchTask(
   });
 
   // Create a new Jules session with the same prompt
-  console.log(`  🚀 Re-dispatching task "${task.id}" against current ${BASE_BRANCH}...`);
+  console.log(
+    `  🚀 Re-dispatching task "${task.id}" against current ${BASE_BRANCH}...`,
+  );
   const session = await jules.createSession({
     prompt: task.prompt,
     source: {
@@ -148,7 +166,7 @@ async function redispatchTask(
   console.log(`  📝 New session: ${session.id}`);
 
   // Update sessions.json with new session ID
-  const sessionEntry = sessions.find(s => s.taskId === task.id);
+  const sessionEntry = sessions.find((s) => s.taskId === task.id);
   if (sessionEntry) {
     sessionEntry.sessionId = session.id;
     const sessionsPath = path.join(fleetDir, "sessions.json");
@@ -159,13 +177,14 @@ async function redispatchTask(
   console.log(`  ⏳ Waiting for new PR from session ${session.id}...`);
   const start = Date.now();
   while (Date.now() - start < PR_POLL_TIMEOUT_MS) {
-    await new Promise(r => setTimeout(r, PR_POLL_INTERVAL_MS));
-    const res = await fetch(`${API}/pulls?state=open&per_page=100`, { headers });
+    await new Promise((r) => setTimeout(r, PR_POLL_INTERVAL_MS));
+    const res = await fetch(`${API}/pulls?state=open&per_page=100`, {
+      headers,
+    });
     const pulls = (await res.json()) as GitHubPR[];
     const newPr = pulls.find(
       (pr: GitHubPR) =>
-        pr.head.ref.includes(session.id) ||
-        pr.body?.includes(session.id)
+        pr.head.ref.includes(session.id) || pr.body?.includes(session.id),
     );
     if (newPr) {
       console.log(`  ✅ New PR #${newPr.number} found (${newPr.head.ref})`);
@@ -173,7 +192,9 @@ async function redispatchTask(
     }
     console.log(`  ⏳ No PR yet... polling again in 30s`);
   }
-  throw new Error(`Timed out waiting for new PR from re-dispatched session ${session.id}`);
+  throw new Error(
+    `Timed out waiting for new PR from re-dispatched session ${session.id}`,
+  );
 }
 
 // Main: sequential merge in task order
@@ -185,7 +206,9 @@ for (const [taskId, pr] of prMap) {
 }
 
 if (prMap.size !== analysis.tasks.length) {
-  console.error(`❌ Expected ${analysis.tasks.length} PRs but found ${prMap.size}. Waiting for all PRs before merging.`);
+  console.error(
+    `❌ Expected ${analysis.tasks.length} PRs but found ${prMap.size}. Waiting for all PRs before merging.`,
+  );
   process.exit(1);
 }
 
@@ -200,24 +223,37 @@ for (const task of analysis.tasks) {
   let merged = false;
 
   while (!merged) {
-    console.log(`\n📦 Processing Task "${task.id}" → PR #${pr!.number}${retryCount > 0 ? ` (retry ${retryCount})` : ""}`);
+    console.log(
+      `\n📦 Processing Task "${task.id}" → PR #${pr!.number}${retryCount > 0 ? ` (retry ${retryCount})` : ""}`,
+    );
 
     // Update branch from base before merging (skip for first PR on first attempt)
     if (analysis.tasks.indexOf(task) > 0 || retryCount > 0) {
-      console.log(`  🔄 Updating PR #${pr!.number} branch from ${BASE_BRANCH}...`);
-      const updateRes = await fetch(`${API}/pulls/${pr!.number}/update-branch`, {
-        method: "PUT",
-        headers: { ...headers, "Content-Type": "application/json" },
-      });
+      console.log(
+        `  🔄 Updating PR #${pr!.number} branch from ${BASE_BRANCH}...`,
+      );
+      const updateRes = await fetch(
+        `${API}/pulls/${pr!.number}/update-branch`,
+        {
+          method: "PUT",
+          headers: { ...headers, "Content-Type": "application/json" },
+        },
+      );
       if (!updateRes.ok) {
         const body = await updateRes.text();
         if (updateRes.status === 422) {
           if (retryCount >= MAX_RETRIES) {
-            console.error(`  ❌ Conflict persists after ${MAX_RETRIES} retries. Human intervention required.`);
-            console.error(`  PR: https://github.com/${OWNER}/${REPO}/pull/${pr!.number}`);
+            console.error(
+              `  ❌ Conflict persists after ${MAX_RETRIES} retries. Human intervention required.`,
+            );
+            console.error(
+              `  PR: https://github.com/${OWNER}/${REPO}/pull/${pr!.number}`,
+            );
             process.exit(1);
           }
-          console.log(`  ⚠️ Merge conflict detected. Re-dispatching task "${task.id}"...`);
+          console.log(
+            `  ⚠️ Merge conflict detected. Re-dispatching task "${task.id}"...`,
+          );
           pr = await redispatchTask(task, pr!);
           retryCount++;
           continue;
@@ -225,14 +261,16 @@ for (const task of analysis.tasks) {
         throw new Error(`Update branch failed (${updateRes.status}): ${body}`);
       }
       // Wait for the update to propagate
-      await new Promise(r => setTimeout(r, 5_000));
+      await new Promise((r) => setTimeout(r, 5_000));
     }
 
     // Wait for CI to pass
     console.log(`  🧪 Waiting for CI on PR #${pr!.number}...`);
     const ciPassed = await waitForCI(pr!.number);
     if (!ciPassed) {
-      console.error(`  ❌ CI failed for PR #${pr!.number}. Aborting sequential merge.`);
+      console.error(
+        `  ❌ CI failed for PR #${pr!.number}. Aborting sequential merge.`,
+      );
       process.exit(1);
     }
 
@@ -253,4 +291,6 @@ for (const task of analysis.tasks) {
   }
 }
 
-console.log(`\n✅ All ${analysis.tasks.length} PRs merged sequentially. No conflicts.`);
+console.log(
+  `\n✅ All ${analysis.tasks.length} PRs merged sequentially. No conflicts.`,
+);

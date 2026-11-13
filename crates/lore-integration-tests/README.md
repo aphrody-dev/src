@@ -34,7 +34,7 @@ Once the services are up, you can run the tests via the following:
 $ cargo test --package lore-integration-tests --features integration_tests
 ```
 
-This will run *only* the integration tests.
+This will run _only_ the integration tests.
 
 #### A Note on Storage
 

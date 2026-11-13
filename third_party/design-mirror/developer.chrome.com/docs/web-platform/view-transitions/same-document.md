@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Jake Archibald [X](https://twitter.com/jaffathecake) [Homepage](https://jakearchibald.com/)  Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
+
+Jake Archibald [X](https://twitter.com/jaffathecake) [Homepage](https://jakearchibald.com/) Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
 
 Published: Aug 17, 2021, Last updated: Sep 25, 2024
 
-When a view transition runs on a single document it is called a *same-document view transition*. This is typically the case in single-page applications (SPAs) where JavaScript is used to update the DOM. Same-document view transitions are supported in Chrome as of Chrome 111.
+When a view transition runs on a single document it is called a _same-document view transition_. This is typically the case in single-page applications (SPAs) where JavaScript is used to update the DOM. Same-document view transitions are supported in Chrome as of Chrome 111.
 
 To trigger a same-document view transition, call `document.startViewTransition`:
 
@@ -34,7 +35,7 @@ It then executes the passed in callback that updates the DOM, after which it tak
 
 These snapshots are then arranged in a tree of pseudo-elements and animated using the power of CSS animations. Pairs of snapshots from the old and new state smoothly transition from their old position and size to their new location, while their content crossfades. If you want, you can use CSS to customize the animations.
 
-*** ** * ** ***
+---
 
 ## The default transition: Cross-fade
 
@@ -63,7 +64,7 @@ Okay, a cross-fade isn't that impressive. Thankfully, transitions can be customi
 > [!NOTE]
 > **Note:** Demo links in this document are less visually impressive, but also have a tiny codebase. The goal is to make it easier to read and understand all of the code, without knowing any particular SPA framework.
 
-*** ** * ** ***
+---
 
 ## How these transitions work
 
@@ -116,28 +117,38 @@ Okay, that's still not impressive. Instead, the following code implements [Mater
 
 ```css
 @keyframes fade-in {
-  from { opacity: 0; }
+  from {
+    opacity: 0;
+  }
 }
 
 @keyframes fade-out {
-  to { opacity: 0; }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes slide-from-right {
-  from { transform: translateX(30px); }
+  from {
+    transform: translateX(30px);
+  }
 }
 
 @keyframes slide-to-left {
-  to { transform: translateX(-30px); }
+  to {
+    transform: translateX(-30px);
+  }
 }
 
 ::view-transition-old(root) {
-  animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+  animation:
+    90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
     300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
 }
 
 ::view-transition-new(root) {
-  animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+  animation:
+    210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
     300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
 }
 ```
@@ -151,7 +162,7 @@ Shared axis transition. [Minimal demo](https://simple-vt-demos.jakearchibald.com
 > [!IMPORTANT]
 > **Important:** Only one view transition is allowed to run at a time. If a new view transition starts while one is already running, the old transition skips to the end.
 
-*** ** * ** ***
+---
 
 ## Transition multiple elements
 
@@ -165,7 +176,7 @@ To avoid this, you can extract the header from the rest of the page so it can be
 }
 ```
 
-The value of `view-transition-name` can be whatever you want (except for `none`, which means there's no transition name). It's used to *uniquely* identify the element across the transition.
+The value of `view-transition-name` can be whatever you want (except for `none`, which means there's no transition name). It's used to _uniquely_ identify the element across the transition.
 
 > [!NOTE]
 > **Note:** `view-transition-name` must be unique. If two rendered elements have the same `view-transition-name` at the same time, the transition will be skipped.
@@ -231,7 +242,7 @@ Now the heading text does a little satisfying slide across to make space for the
 > [!NOTE]
 > **Note:** View transitions use a flat structure. In the real DOM, the heading text was in the header. But, during the transition, their respective `::view-transition-group`s are siblings. This is really handy when animating items from one container to another, as you don't need to worry about clipping from parent elements.
 
-*** ** * ** ***
+---
 
 ## Animate multiple pseudo-elements in the same way with `view-transition-class`
 
@@ -248,26 +259,34 @@ Say you have a view transition with a bunch of cards but also a title on the pag
 
 ```css
 h1 {
-    view-transition-name: title;
+  view-transition-name: title;
 }
 ::view-transition-group(title) {
-    animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
 }
 
-#card1 { view-transition-name: card1; }
-#card2 { view-transition-name: card2; }
-#card3 { view-transition-name: card3; }
-#card4 { view-transition-name: card4; }
-...
-#card20 { view-transition-name: card20; }
+#card1 {
+  view-transition-name: card1;
+}
+#card2 {
+  view-transition-name: card2;
+}
+#card3 {
+  view-transition-name: card3;
+}
+#card4 {
+  view-transition-name: card4;
+}
+... #card20 {
+  view-transition-name: card20;
+}
 
 ::view-transition-group(card1),
 ::view-transition-group(card2),
 ::view-transition-group(card3),
 ::view-transition-group(card4),
-...
-::view-transition-group(card20) {
-    animation-timing-function: var(--bounce);
+... ::view-transition-group(card20) {
+  animation-timing-function: var(--bounce);
 }
 ```
 
@@ -276,13 +295,24 @@ Got 20 elements? That's 20 selectors you need to write. Adding a new element? Th
 The `view-transition-class` can be used in the view transition pseudo-elements to apply the same style rule.
 
 ```css
-#card1 { view-transition-name: card1; }
-#card2 { view-transition-name: card2; }
-#card3 { view-transition-name: card3; }
-#card4 { view-transition-name: card4; }
-#card5 { view-transition-name: card5; }
-...
-#card20 { view-transition-name: card20; }
+#card1 {
+  view-transition-name: card1;
+}
+#card2 {
+  view-transition-name: card2;
+}
+#card3 {
+  view-transition-name: card3;
+}
+#card4 {
+  view-transition-name: card4;
+}
+#card5 {
+  view-transition-name: card5;
+}
+... #card20 {
+  view-transition-name: card20;
+}
 
 #cards-wrapper > div {
   view-transition-class: card;
@@ -301,7 +331,7 @@ Recording of the [Cards demo](https://view-transitions.chrome.dev/cards/spa/). U
 > [!NOTE]
 > **Note:** In collaboration with the CSS Working Group, the Chrome team is looking into a way to allow you to more easily and automatically give elements a `view-transition-name` in the future.
 
-*** ** * ** ***
+---
 
 ## Debug transitions
 
@@ -326,10 +356,10 @@ Then, when the thumbnail is clicked, it can be given the same `view-transition-n
 
 ```javascript
 thumbnail.onclick = async () => {
-  thumbnail.style.viewTransitionName = 'full-embed';
+  thumbnail.style.viewTransitionName = "full-embed";
 
   document.startViewTransition(() => {
-    thumbnail.style.viewTransitionName = '';
+    thumbnail.style.viewTransitionName = "";
     updateTheDOMSomehow();
   });
 };
@@ -342,7 +372,7 @@ The thumbnail now transitions into the main image. Even though they're conceptua
 
 The real code for this transition is a little more complicated than the preceding example, as it also handles the transition back to the thumbnail page. [See the source](https://github.com/jakearchibald/simple-vt-demos/tree/main/public/6-expanding-image) for the full implementation.
 
-*** ** * ** ***
+---
 
 ## Custom entry and exit transitions
 
@@ -377,13 +407,15 @@ To create specific entry and exit transitions, you can use the [`:only-child` ps
 ```css
 /* Entry transition */
 ::view-transition-new(sidebar):only-child {
-  animation: 300ms cubic-bezier(0, 0, 0.2, 1) both fade-in,
+  animation:
+    300ms cubic-bezier(0, 0, 0.2, 1) both fade-in,
     300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
 }
 
 /* Exit transition */
 ::view-transition-old(sidebar):only-child {
-  animation: 150ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+  animation:
+    150ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
     300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-right;
 }
 ```
@@ -407,7 +439,7 @@ The transition won't be started until the promise fulfills. During this time, th
 If you decide to wait for images or fonts to be ready, be sure to use an aggressive timeout:
 
 ```javascript
-const wait = ms => new Promise(r => setTimeout(r, ms));
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 document.startViewTransition(async () => {
   updateTheDOMSomehow();
@@ -419,7 +451,7 @@ document.startViewTransition(async () => {
 
 However, in some cases it's better to avoid the delay altogether, and use the content you already have.
 
-*** ** * ** ***
+---
 
 ### Make the most of content you already have
 
@@ -493,7 +525,7 @@ This means the thumbnail stays in the center of the element as the width expands
 
 For more detailed information, check out [View transitions: Handling aspect ratio changes](https://jakearchibald.com/2024/view-transitions-handling-aspect-ratio-changes/)
 
-*** ** * ** ***
+---
 
 ## Use media queries to change transitions for different device states
 
@@ -516,12 +548,14 @@ This can be achieved using regular media queries:
   /* Overrides for larger displays.
   This is the shared axis transition from earlier in the article. */
   ::view-transition-old(root) {
-    animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+    animation:
+      90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
       300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
   }
 
   ::view-transition-new(root) {
-    animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+    animation:
+      210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
       300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
   }
 }
@@ -529,7 +563,7 @@ This can be achieved using regular media queries:
 
 You may also want to change which elements you assign a `view-transition-name` depending on matching media queries.
 
-*** ** * ** ***
+---
 
 ### React to the 'reduced motion' preference
 
@@ -547,9 +581,9 @@ You could chose to prevent any transitions for these users:
 }
 ```
 
-However, a preference for 'reduced motion' doesn't mean the user wants *no motion*. Instead of the preceding snippet, you could choose a more subtle animation, but one that still expresses the relationship between elements, and the flow of data.
+However, a preference for 'reduced motion' doesn't mean the user wants _no motion_. Instead of the preceding snippet, you could choose a more subtle animation, but one that still expresses the relationship between elements, and the flow of data.
 
-*** ** * ** ***
+---
 
 ## Handle multiple view transition styles with view transition types
 
@@ -574,7 +608,7 @@ const direction = determineBackwardsOrForwards();
 
 const t = document.startViewTransition({
   update: updateTheDOMSomehow,
-  types: ['slide', direction],
+  types: ["slide", direction],
 });
 ```
 
@@ -642,7 +676,7 @@ html:active-view-transition {
 }
 ```
 
-*** ** * ** ***
+---
 
 ## Handle multiple view transition styles with a class name on the view transition root
 
@@ -656,17 +690,17 @@ Before [transition types](https://developer.chrome.com/docs/web-platform/view-tr
 
 ```javascript
 if (isBackNavigation) {
-  document.documentElement.classList.add('back-transition');
+  document.documentElement.classList.add("back-transition");
 }
 
 const transition = document.startViewTransition(() =>
-  updateTheDOMSomehow(data)
+  updateTheDOMSomehow(data),
 );
 
 try {
   await transition.finished;
 } finally {
-  document.documentElement.classList.remove('back-transition');
+  document.documentElement.classList.remove("back-transition");
 }
 ```
 
@@ -680,13 +714,15 @@ Now you can use that class name in your CSS to change the transition:
 ```css
 /* 'Forward' transitions */
 ::view-transition-old(root) {
-  animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+  animation:
+    90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
     300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
 }
 
 ::view-transition-new(root) {
-  animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in, 300ms
-      cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+  animation:
+    210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
 }
 
 /* Overrides for 'back' transitions */
@@ -701,7 +737,7 @@ Now you can use that class name in your CSS to change the transition:
 
 As with media queries, the presence of these classes could also be used to change which elements get a `view-transition-name`.
 
-*** ** * ** ***
+---
 
 ## Run transitions without freezing other animations
 
@@ -711,7 +747,7 @@ Video transition. [Minimal demo](https://simple-vt-demos.jakearchibald.com/video
 Did you see anything wrong with it? Don't worry if you didn't. Here it is slowed right down:
 Video transition, slower. [Minimal demo](https://simple-vt-demos.jakearchibald.com/video/). [Source](https://github.com/jakearchibald/simple-vt-demos/tree/main/public/video).
 
-During the transition, the video appears to freeze, then the playing version of the video fades in. This is because the `::view-transition-old(video)` is a screenshot of the old view, whereas the `::view-transition-new(video)` is a *live* image of the new view.
+During the transition, the video appears to freeze, then the playing version of the video fades in. This is because the `::view-transition-old(video)` is a screenshot of the old view, whereas the `::view-transition-new(video)` is a _live_ image of the new view.
 
 You can fix this, but first, ask yourself if it's worth fixing. If you didn't see the 'problem' when the transition was playing at its normal speed, I wouldn't bother changing it.
 
@@ -734,7 +770,7 @@ Video transition, slower. [Minimal demo](https://simple-vt-demos.jakearchibald.c
 
 Now the video plays throughout the transition.
 
-*** ** * ** ***
+---
 
 ## Integration with the Navigation API (and other frameworks)
 
@@ -744,31 +780,31 @@ In the following code snippet taken from [this pagination demo](https://view-tra
 
 ```javascript
 navigation.addEventListener("navigate", (e) => {
-    // Don't intercept if not needed
-    if (shouldNotIntercept(e)) return;
+  // Don't intercept if not needed
+  if (shouldNotIntercept(e)) return;
 
-    // Intercept the navigation
-    e.intercept({
-        handler: async () => {
-            // Fetch the new content
-            const newContent = await fetchNewContent(e.destination.url, {
-                signal: e.signal,
-            });
+  // Intercept the navigation
+  e.intercept({
+    handler: async () => {
+      // Fetch the new content
+      const newContent = await fetchNewContent(e.destination.url, {
+        signal: e.signal,
+      });
 
-            // The UA does not support View Transitions, or the UA
-            // already provided a Visual Transition by itself (e.g. swipe back).
-            // In either case, update the DOM directly
-            if (!document.startViewTransition || e.hasUAVisualTransition) {
-                setContent(newContent);
-                return;
-            }
+      // The UA does not support View Transitions, or the UA
+      // already provided a Visual Transition by itself (e.g. swipe back).
+      // In either case, update the DOM directly
+      if (!document.startViewTransition || e.hasUAVisualTransition) {
+        setContent(newContent);
+        return;
+      }
 
-            // Update the content using a View Transition
-            const t = document.startViewTransition(() => {
-                setContent(newContent);
-            });
-        }
-    });
+      // Update the content using a View Transition
+      const t = document.startViewTransition(() => {
+        setContent(newContent);
+      });
+    },
+  });
 });
 ```
 
@@ -791,7 +827,7 @@ Comparison of the same site without (left) and width (right) a check for `hasUAV
 > [!NOTE]
 > **Note:** By default Chrome on Android does not offer visual transitions for navigations invoked by a swipe gesture. This feature is in an experimental state and only available behind the `chrome://flags/#back-forward-transitions` feature flag.
 
-*** ** * ** ***
+---
 
 ## Animating with JavaScript
 
@@ -807,7 +843,7 @@ Thankfully, you can create transitions using the [Web Animation API](https://dev
 
 ```javascript
 let lastClick;
-addEventListener('click', event => (lastClick = event));
+addEventListener("click", (event) => (lastClick = event));
 
 function spaNavigate(data) {
   // Fallback for browsers that don't support this API:
@@ -822,7 +858,7 @@ function spaNavigate(data) {
   // Get the distance to the furthest corner
   const endRadius = Math.hypot(
     Math.max(x, innerWidth - x),
-    Math.max(y, innerHeight - y)
+    Math.max(y, innerHeight - y),
   );
 
   // With a transition:
@@ -842,10 +878,10 @@ function spaNavigate(data) {
       },
       {
         duration: 500,
-        easing: 'ease-in',
+        easing: "ease-in",
         // Specify which pseudo-element to animate
-        pseudoElement: '::view-transition-new(root)',
-      }
+        pseudoElement: "::view-transition-new(root)",
+      },
     );
   });
 }
@@ -853,7 +889,7 @@ function spaNavigate(data) {
 
 This example uses `transition.ready`, a promise that resolves once the transition pseudo-elements have been successfully created. Other properties of this object are covered in the [API reference](https://developer.chrome.com/docs/web-platform/view-transitions/same-document.md.txt#api-reference).
 
-*** ** * ** ***
+---
 
 ## Transitions as an enhancement
 
@@ -882,9 +918,9 @@ async function switchView(data) {
     },
     {
       duration: 500,
-      easing: 'ease-in',
-      pseudoElement: '::view-transition-new(root)',
-    }
+      easing: "ease-in",
+      pseudoElement: "::view-transition-new(root)",
+    },
   );
 }
 ```
@@ -921,9 +957,9 @@ async function animateFromMiddle(transition) {
       },
       {
         duration: 500,
-        easing: 'ease-in',
-        pseudoElement: '::view-transition-new(root)',
-      }
+        easing: "ease-in",
+        pseudoElement: "::view-transition-new(root)",
+      },
     );
   } catch (err) {
     // You might want to log this error, but it shouldn't break the app
@@ -935,19 +971,14 @@ This example uses `transition.updateCallbackDone` to wait for the DOM update, an
 
 If you want `switchView` to resolve when the new view has 'settled', as in, any animated transition has completed or skipped to the end, replace `transition.updateCallbackDone` with `transition.finished`.
 
-*** ** * ** ***
+---
 
 ## Not a polyfill, but...
 
 This is not an easy feature to polyfill. However, this helper function makes things much easier in browsers that don't support view transitions:
 
 ```javascript
-function transitionHelper({
-  skipTransition = false,
-  types = [],
-  update,
-}) {
-
+function transitionHelper({ skipTransition = false, types = [], update }) {
   const unsupported = (error) => {
     const updateCallbackDone = Promise.resolve(update()).then(() => {});
 
@@ -958,18 +989,22 @@ function transitionHelper({
       skipTransition: () => {},
       types,
     };
-  }
+  };
 
   if (skipTransition) {
-    return unsupported('skipTransition was set to true');
+    return unsupported("skipTransition was set to true");
   }
 
   if (!document.startViewTransition) {
-    return unsupported('Same-Document View Transitions are not supported in this browser');
+    return unsupported(
+      "Same-Document View Transitions are not supported in this browser",
+    );
   }
 
   if (!ViewTransition || !("types" in ViewTransition.prototype)) {
-    return unsupported('View Transitions with types are not supported in this browser');
+    return unsupported(
+      "View Transitions with types are not supported in this browser",
+    );
   }
 
   const transition = document.startViewTransition({
@@ -985,7 +1020,7 @@ And it can be used like this:
 
 ```javascript
 function spaNavigate(data) {
-  const types = isBackNavigation ? ['back-transition'] : [];
+  const types = isBackNavigation ? ["back-transition"] : [];
 
   const transition = transitionHelper({
     update() {
@@ -1004,7 +1039,7 @@ You can also provide some `classNames` to add to `<html>` during the transition,
 
 You can also pass `true` to `skipTransition` if you don't want an animation, even in browsers that support view transitions. This is useful if your site has a user preference to disable transitions.
 
-*** ** * ** ***
+---
 
 ## Working with frameworks
 
@@ -1016,13 +1051,13 @@ If you're working with a library or framework that abstracts away DOM changes, t
 - [Lit](https://goo.gle/vt-lit-demo)---the key here is the [`this.updateComplete`](https://lit.dev/docs/v1/components/lifecycle/#updatecomplete) promise within components, which fulfills once the DOM has been updated.
 - [Angular](https://goo.gle/vt-angular-demo)---the key here is [`applicationRef.tick`](https://angular.io/api/core/ApplicationRef#tick), which flushes pending DOM changes. As of Angular version 17 you can [use `withViewTransitions` that comes with `@angular/router`](https://blog.angular.io/check-out-angulars-support-for-the-view-transitions-api-3937376cfc19).
 
-*** ** * ** ***
+---
 
 ## API reference
 
 `const viewTransition = document.startViewTransition(update)`
 
-:   Start a new `ViewTransition`.
+: Start a new `ViewTransition`.
 
     `update` is a function that is called once the current state of the document is captured.
 
@@ -1030,7 +1065,7 @@ If you're working with a library or framework that abstracts away DOM changes, t
 
 `const viewTransition = document.startViewTransition({ update, types })`
 
-:   Start a new `ViewTransition` with the specified types
+: Start a new `ViewTransition` with the specified types
 
     `update` is called once the current state of the document is captured.
 
@@ -1040,13 +1075,13 @@ Instance members of `ViewTransition`:
 
 `viewTransition.updateCallbackDone`
 
-:   A promise that fulfills when the promise returned by `updateCallback` fulfills, or rejects when it rejects.
+: A promise that fulfills when the promise returned by `updateCallback` fulfills, or rejects when it rejects.
 
     The View Transition API wraps a DOM change and creates a transition. However, sometimes you don't care about the success or failure of the transition animation, you just want to know if and when the DOM change happens. `updateCallbackDone` is for that use-case.
 
 `viewTransition.ready`
 
-:   A promise that fulfills once the pseudo-elements for the transition are created, and the animation is about to start.
+: A promise that fulfills once the pseudo-elements for the transition are created, and the animation is about to start.
 
     It rejects if the transition cannot begin. This can be due to misconfiguration, such as duplicate `view-transition-name`s, or if `updateCallback` returns a rejected promise.
 
@@ -1054,7 +1089,7 @@ Instance members of `ViewTransition`:
 
 `viewTransition.finished`
 
-:   A promise that fulfills once the end state is fully visible and interactive to the user.
+: A promise that fulfills once the end state is fully visible and interactive to the user.
 
     It only rejects if `updateCallback` returns a rejected promise, as this indicates the end state wasn't created.
 
@@ -1062,7 +1097,7 @@ Instance members of `ViewTransition`:
 
 `viewTransition.types`
 
-:   A [`Set`-like](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set#set-like_browser_apis) object that holds the active view transition's types. To manipulate the entries, use [its instance methods](https://developer.mozilla.orgdocs/Web/JavaScript/Reference/Global_Objects/Set#instance_methods) `clear()`, `add()`, and `delete()`.
+: A [`Set`-like](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set#set-like_browser_apis) object that holds the active view transition's types. To manipulate the entries, use [its instance methods](https://developer.mozilla.orgdocs/Web/JavaScript/Reference/Global_Objects/Set#instance_methods) `clear()`, `add()`, and `delete()`.
 
     To respond to a specific type in CSS, use the `:active-view-transition-type(type)` pseudo-class selector on the transition root.
 
@@ -1070,20 +1105,20 @@ Instance members of `ViewTransition`:
 
 `viewTransition.skipTransition()`
 
-:   Skip the animation part of the transition.
+: Skip the animation part of the transition.
 
     This won't skip calling `updateCallback`, as the DOM change is separate to the transition.
 
-*** ** * ** ***
+---
 
 ## Default style and transition reference
 
 `::view-transition`
-:   The root pseudo-element which fills the viewport and contains each `::view-transition-group`.
+: The root pseudo-element which fills the viewport and contains each `::view-transition-group`.
 
 `::view-transition-group`
 
-:   Absolutely positioned.
+: Absolutely positioned.
 
     Transitions `width` and `height` between the 'before' and 'after' states.
 
@@ -1091,13 +1126,13 @@ Instance members of `ViewTransition`:
 
 `::view-transition-image-pair`
 
-:   Absolutely positioned to fill the group.
+: Absolutely positioned to fill the group.
 
     Has `isolation: isolate` to limit the effect of the `mix-blend-mode` on the old and new views.
 
 `::view-transition-new` and `::view-transition-old`
 
-:   Absolutely positioned to the top-left of the wrapper.
+: Absolutely positioned to the top-left of the wrapper.
 
     Fills 100% of the group width, but has an auto height, so it will maintain its aspect ratio rather than filling the group.
 
@@ -1105,7 +1140,7 @@ Instance members of `ViewTransition`:
 
     The old view transitions from `opacity: 1` to `opacity: 0`. The new view transitions from `opacity: 0` to `opacity: 1`.
 
-*** ** * ** ***
+---
 
 ## Feedback
 

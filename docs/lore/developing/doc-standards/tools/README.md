@@ -7,11 +7,11 @@ description: The three linters that maintain Lore documentation quality — Vale
 
 Three linters maintain Lore documentation quality. The tool configs live next to this README under `tools/<tool>/` so editor plugins discover them without configuration; this file documents how to invoke each tool, what it catches, and how to install it.
 
-| Tool | What it catches | Config location |
-| --- | --- | --- |
-| [Vale](#vale-prose-linting) | Prose: banned phrases, Git-isms, link text, product naming, sentence-case headings, and more. | `.vale.ini` (repo root) + `tools/vale/styles/` |
-| [markdownlint](#markdownlint-structural-linting) | Structure: heading hierarchy, fence-tag presence, list rules, table mechanics. | `.markdownlint-cli2.jsonc` (repo root) |
-| [lychee](#lychee-link-integrity) | Links: every internal and external link in the docs resolves. | `tools/lychee/lychee.toml` |
+| Tool                                             | What it catches                                                                               | Config location                                |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| [Vale](#vale-prose-linting)                      | Prose: banned phrases, Git-isms, link text, product naming, sentence-case headings, and more. | `.vale.ini` (repo root) + `tools/vale/styles/` |
+| [markdownlint](#markdownlint-structural-linting) | Structure: heading hierarchy, fence-tag presence, list rules, table mechanics.                | `.markdownlint-cli2.jsonc` (repo root)         |
+| [lychee](#lychee-link-integrity)                 | Links: every internal and external link in the docs resolves.                                 | `tools/lychee/lychee.toml`                     |
 
 ## Run all three
 
@@ -51,29 +51,29 @@ Auto-discovers `.vale.ini` at the repo root. The `--glob` exclusion skips `*-tem
 
 **Lore package**: Lore-specific rules plus ~30 rules derived from the Microsoft Writing Style Guide, covering capitalization (sentence-case headings), gender-neutral language, Oxford comma, hyphenation, weasel words, passive-voice flags, and wordiness. Two style-guide rules are disabled as documented divergences: `Lore.Dashes`, `Lore.We`. Each rule's `link:` field points to the canonical prose section, so a writer hitting a finding clicks through to the rule's home.
 
-| Rule | Catches | Severity | Documented in |
-| --- | --- | --- | --- |
-| `Lore.Difficulty` | Difficulty-claim register: `Just <verb>` / `simply <verb>` imperative softeners, `easily <verb>` / `easily <X>-able` passive ease claims, `all you have to do is`, bare `obviously` | warning | [`language.md` § Difficulty descriptors](../canon/language.md#difficulty-descriptors) |
-| `Lore.PermissionVerbs` | `allows you`, `lets you`, `permits the user`, `enables users` | warning | [`language.md` § Permission verbs](../canon/language.md#permission-verbs) |
-| `Lore.LinkText` | `[click here]`, `[here]`, `[this]`, `[read more]`, `[link]` as link text | error | [`language.md` § Link text](../canon/language.md#link-text) |
-| `Lore.Dropdown` | `drop-down`, `drop down` → `dropdown` | warning | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid) |
-| `Lore.ClickOn` | `click on`, `right-click on`, `double-click on` → drop the trailing `on` | warning | [`language.md` § Action verbs](../canon/language.md#action-verbs) |
-| `Lore.AndOr` | `and/or`, `either/or` (rewrite to `and` or `or`) | warning | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid) |
-| `Lore.Boolean` | lowercase `boolean` / `booleans` → `Boolean` / `Booleans` | warning | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid) |
-| `Lore.VsAbbrev` | `VS`, `vs.`, `VS.` → `vs` (lowercase, no period) | warning | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid) |
-| `Lore.HyphenLy` | hyphenated `-ly` adverb compounds (`fully-qualified`) | warning | [`format.md` § Hyphenation](../canon/format.md#hyphenation) |
-| `Lore.GitIsmSubstitutions` | `HEAD` → `latest`, `working copy` → `working tree`, `git index` → `stage`, `git pull`/`git fetch` → `lore sync` | warning | [`language.md` § Lore vocabulary, not Git-isms](../canon/language.md#lore-vocabulary-not-git-isms) |
-| `Lore.GitIsmFlagged` | `detached HEAD`, `git stash`/`stashed`/`stashing`, `refspec`, `reflog`, `submodule` (needs writer judgment — no analog or multiple analogs depending on intent) | warning | [`language.md` § Lore vocabulary, not Git-isms](../canon/language.md#lore-vocabulary-not-git-isms) |
-| `Lore.PerforceIsmSubstitutions` | `changelist` → `revision`, `p4 integrate` → `lore branch merge`, `p4 sync` → `lore sync`, `p4 submit` → `lore commit`, `p4 revert` → `lore reset` | warning | [`language.md` § Lore vocabulary, not Git-isms](../canon/language.md#lore-vocabulary-not-git-isms) |
-| `Lore.PerforceIsmFlagged` | `depot`, `depot path`, `shelve`/`unshelve`, `p4 client`, `p4 stream` (no Lore analog) | warning | [`language.md` § Lore vocabulary, not Git-isms](../canon/language.md#lore-vocabulary-not-git-isms) |
-| `Lore.MkDocsAdmonitions` | `!!! note`, `!!! tip`, `!!! warning` (legacy MkDocs syntax) | error | [`format.md` § Callouts and admonitions](../canon/format.md#callouts-and-admonitions) |
-| `Lore.MkDocsTabs` | Raw pymdownx tab syntax (`=== "..."`, `/// tab \|`) instead of the comment-delimited tab convention | error | [`format.md` § Content tabs](../canon/format.md#content-tabs) |
-| `Lore.AlertTypes` | Non-GFM alert types: `> [!INFO]`, `> [!DANGER]` (the five GFM-native types — `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION` — are all allowed) | warning | [`format.md` § Callouts and admonitions](../canon/format.md#callouts-and-admonitions) |
-| `Lore.ProductNaming` | `the Lore tool`, `the Lore CLI` | warning | [`language.md` § Lore product naming](../canon/language.md#lore-product-naming) |
-| `Lore.AmericanSpelling` | `cancelling`, `colour`, `defence`, `whilst`, `backwards`, `towards`, +14 others | warning | [`language.md`](../canon/language.md) |
-| `Lore.BlackWhiteList` | `blacklist` → `denylist`, `whitelist` → `allowlist` | error | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid) |
-| `Lore.NativeCode` | `native code` → `unmanaged code` | warning | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid) |
-| `Lore.LatinAbbrev` | `i.e.`, `e.g.`, `etc.`, `cf.`, `n.b.` | warning | [`language.md` § No Latin abbreviations](../canon/language.md#no-latin-abbreviations) |
+| Rule                            | Catches                                                                                                                                                                             | Severity | Documented in                                                                                      |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `Lore.Difficulty`               | Difficulty-claim register: `Just <verb>` / `simply <verb>` imperative softeners, `easily <verb>` / `easily <X>-able` passive ease claims, `all you have to do is`, bare `obviously` | warning  | [`language.md` § Difficulty descriptors](../canon/language.md#difficulty-descriptors)              |
+| `Lore.PermissionVerbs`          | `allows you`, `lets you`, `permits the user`, `enables users`                                                                                                                       | warning  | [`language.md` § Permission verbs](../canon/language.md#permission-verbs)                          |
+| `Lore.LinkText`                 | `[click here]`, `[here]`, `[this]`, `[read more]`, `[link]` as link text                                                                                                            | error    | [`language.md` § Link text](../canon/language.md#link-text)                                        |
+| `Lore.Dropdown`                 | `drop-down`, `drop down` → `dropdown`                                                                                                                                               | warning  | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid)                  |
+| `Lore.ClickOn`                  | `click on`, `right-click on`, `double-click on` → drop the trailing `on`                                                                                                            | warning  | [`language.md` § Action verbs](../canon/language.md#action-verbs)                                  |
+| `Lore.AndOr`                    | `and/or`, `either/or` (rewrite to `and` or `or`)                                                                                                                                    | warning  | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid)                  |
+| `Lore.Boolean`                  | lowercase `boolean` / `booleans` → `Boolean` / `Booleans`                                                                                                                           | warning  | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid)                  |
+| `Lore.VsAbbrev`                 | `VS`, `vs.`, `VS.` → `vs` (lowercase, no period)                                                                                                                                    | warning  | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid)                  |
+| `Lore.HyphenLy`                 | hyphenated `-ly` adverb compounds (`fully-qualified`)                                                                                                                               | warning  | [`format.md` § Hyphenation](../canon/format.md#hyphenation)                                        |
+| `Lore.GitIsmSubstitutions`      | `HEAD` → `latest`, `working copy` → `working tree`, `git index` → `stage`, `git pull`/`git fetch` → `lore sync`                                                                     | warning  | [`language.md` § Lore vocabulary, not Git-isms](../canon/language.md#lore-vocabulary-not-git-isms) |
+| `Lore.GitIsmFlagged`            | `detached HEAD`, `git stash`/`stashed`/`stashing`, `refspec`, `reflog`, `submodule` (needs writer judgment — no analog or multiple analogs depending on intent)                     | warning  | [`language.md` § Lore vocabulary, not Git-isms](../canon/language.md#lore-vocabulary-not-git-isms) |
+| `Lore.PerforceIsmSubstitutions` | `changelist` → `revision`, `p4 integrate` → `lore branch merge`, `p4 sync` → `lore sync`, `p4 submit` → `lore commit`, `p4 revert` → `lore reset`                                   | warning  | [`language.md` § Lore vocabulary, not Git-isms](../canon/language.md#lore-vocabulary-not-git-isms) |
+| `Lore.PerforceIsmFlagged`       | `depot`, `depot path`, `shelve`/`unshelve`, `p4 client`, `p4 stream` (no Lore analog)                                                                                               | warning  | [`language.md` § Lore vocabulary, not Git-isms](../canon/language.md#lore-vocabulary-not-git-isms) |
+| `Lore.MkDocsAdmonitions`        | `!!! note`, `!!! tip`, `!!! warning` (legacy MkDocs syntax)                                                                                                                         | error    | [`format.md` § Callouts and admonitions](../canon/format.md#callouts-and-admonitions)              |
+| `Lore.MkDocsTabs`               | Raw pymdownx tab syntax (`=== "..."`, `/// tab \|`) instead of the comment-delimited tab convention                                                                                 | error    | [`format.md` § Content tabs](../canon/format.md#content-tabs)                                      |
+| `Lore.AlertTypes`               | Non-GFM alert types: `> [!INFO]`, `> [!DANGER]` (the five GFM-native types — `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION` — are all allowed)                                    | warning  | [`format.md` § Callouts and admonitions](../canon/format.md#callouts-and-admonitions)              |
+| `Lore.ProductNaming`            | `the Lore tool`, `the Lore CLI`                                                                                                                                                     | warning  | [`language.md` § Lore product naming](../canon/language.md#lore-product-naming)                    |
+| `Lore.AmericanSpelling`         | `cancelling`, `colour`, `defence`, `whilst`, `backwards`, `towards`, +14 others                                                                                                     | warning  | [`language.md`](../canon/language.md)                                                              |
+| `Lore.BlackWhiteList`           | `blacklist` → `denylist`, `whitelist` → `allowlist`                                                                                                                                 | error    | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid)                  |
+| `Lore.NativeCode`               | `native code` → `unmanaged code`                                                                                                                                                    | warning  | [`language.md` § Other terms to avoid](../canon/language.md#other-terms-to-avoid)                  |
+| `Lore.LatinAbbrev`              | `i.e.`, `e.g.`, `etc.`, `cf.`, `n.b.`                                                                                                                                               | warning  | [`language.md` § No Latin abbreviations](../canon/language.md#no-latin-abbreviations)              |
 
 The link paths in each rule's YAML are repo-relative. They render as clickable paths in editor plugins. Once the doc site is live, batch-substitute to absolute URLs.
 
@@ -132,20 +132,20 @@ Auto-discovers `.markdownlint-cli2.jsonc` at the repo root. No `--config` flag n
 
 The config enables markdownlint's full default ruleset. The most useful rules for Lore docs:
 
-| Rule | Catches |
-| --- | --- |
-| `MD001` | Heading levels skip (H2 → H4 with no H3). |
-| `MD003` | Mixed heading styles (Setext vs ATX). |
-| `MD009` | Trailing whitespace. |
-| `MD012` | Multiple consecutive blank lines. |
-| `MD022` | Headings not surrounded by blank lines. |
-| `MD025` | More than one H1 in a page. |
+| Rule    | Catches                                           |
+| ------- | ------------------------------------------------- |
+| `MD001` | Heading levels skip (H2 → H4 with no H3).         |
+| `MD003` | Mixed heading styles (Setext vs ATX).             |
+| `MD009` | Trailing whitespace.                              |
+| `MD012` | Multiple consecutive blank lines.                 |
+| `MD022` | Headings not surrounded by blank lines.           |
+| `MD025` | More than one H1 in a page.                       |
 | `MD031` | Fenced code blocks not surrounded by blank lines. |
-| `MD034` | Bare URLs that should be Markdown links. |
-| `MD040` | Code fences without a language tag. |
-| `MD046` | Indented code blocks (use fenced). |
-| `MD048` | Inconsistent fence style. |
-| `MD056` | Tables with mismatched column counts. |
+| `MD034` | Bare URLs that should be Markdown links.          |
+| `MD040` | Code fences without a language tag.               |
+| `MD046` | Indented code blocks (use fenced).                |
+| `MD048` | Inconsistent fence style.                         |
+| `MD056` | Tables with mismatched column counts.             |
 
 Full rule list: <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md>.
 
@@ -153,11 +153,11 @@ Full rule list: <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.
 
 The Lore config disables two rules and tweaks two. Every other rule is at its default.
 
-| Rule | Setting | Why |
-| --- | --- | --- |
-| `MD013` (line length) | disabled | Lore docs don't enforce a hard wrap. Prose wraps for the reader's editor. |
-| `MD033` (no inline HTML) | disabled | Templates use HTML comments (`<!-- delete after copying -->`). Lore docs author no other inline HTML. |
-| `MD024` (no duplicate headings) | `siblings_only: true` | Type templates legitimately repeat H3s ("Definition," "When to Use It") across H2 sections. Duplicates within the same H2 still fail. |
+| Rule                               | Setting                  | Why                                                                                                                                                                                                                                                                                                    |
+| ---------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `MD013` (line length)              | disabled                 | Lore docs don't enforce a hard wrap. Prose wraps for the reader's editor.                                                                                                                                                                                                                              |
+| `MD033` (no inline HTML)           | disabled                 | Templates use HTML comments (`<!-- delete after copying -->`). Lore docs author no other inline HTML.                                                                                                                                                                                                  |
+| `MD024` (no duplicate headings)    | `siblings_only: true`    | Type templates legitimately repeat H3s ("Definition," "When to Use It") across H2 sections. Duplicates within the same H2 still fail.                                                                                                                                                                  |
 | `MD025` (single top-level heading) | `front_matter_title: ""` | The Lore standards require a body H1 that matches frontmatter `title`. markdownlint's default counts the frontmatter title as a heading and flags the body H1 as a duplicate. Disabling the frontmatter scan keeps the rule enforcing "one body H1 per page" without false-firing on the matched pair. |
 
 ### Install
@@ -211,10 +211,10 @@ Lychee is a one-way scanner. It reads the inputs you give it, extracts every lin
 
 That means:
 
-- A scan of a single file catches only *outgoing* breakage from that file. If you renamed `docs/explanation/old-name.md` to `new-name.md`, scanning only `new-name.md` won't tell you that `docs/tutorials/foo.md` still links to the old path.
+- A scan of a single file catches only _outgoing_ breakage from that file. If you renamed `docs/explanation/old-name.md` to `new-name.md`, scanning only `new-name.md` won't tell you that `docs/tutorials/foo.md` still links to the old path.
 - To catch breakage from moves and renames (by far the most common cause of broken links), scan the whole tree. This is what the recommended invocation above does.
 
-If you only want to check the links *outgoing from* a doc you're currently editing, see [Advanced: scoped scans](#advanced-scoped-scans). Be aware of what it doesn't cover.
+If you only want to check the links _outgoing from_ a doc you're currently editing, see [Advanced: scoped scans](#advanced-scoped-scans). Be aware of what it doesn't cover.
 
 ### Output
 
@@ -241,7 +241,7 @@ If you only want to validate the outgoing links of a single file you've recently
 lychee --config docs/developing/doc-standards/tools/lychee/lychee.toml docs/path/to/your-doc.md
 ```
 
-It doesn't catch breakage from *other* docs whose links may now be stale. Don't use it as a standalone before-merge check.
+It doesn't catch breakage from _other_ docs whose links may now be stale. Don't use it as a standalone before-merge check.
 
 ### Install
 

@@ -19,7 +19,11 @@
         "VCPKG_TARGET_TRIPLET": "$env{VSCMD_ARG_TGT_ARCH}-windows",
         "VCPKG_INSTALLED_DIR": "${sourceDir}/../../../target/vcpkg_installed"
       },
-      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     }
   ],
   "buildPresets": [{ "name": "windows", "configurePreset": "windows" }],

@@ -8,12 +8,12 @@ Measurements quoted here are summaries. `lore-io/BENCHMARKS.md` holds the result
 
 `IoDriver` is the entry point. It holds an `Arc<DriverInner>`, an enum with one variant per backend, and every operation dispatches through a match on that enum rather than through a trait object. Cloning an `IoDriver` increments a reference count, and clones share the backend.
 
-| Backend | Selector | Implementation |
-| --- | --- | --- |
+| Backend | Selector             | Implementation                                                                                                                                                                       |
+| ------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `psync` | `BackendKind::Psync` | Positional syscalls on the shared syscall pool. `pread`/`pwrite` through `FileExt::read_at`/`write_at` on Unix; `ReadFile`/`WriteFile` with the crate's own `OVERLAPPED` on Windows. |
-| `uring` | `BackendKind::Uring` | Linux only. Positional read, write and sync submitted to sharded `io_uring` instances; everything else forwards to `psync`. |
-| `iocp` | `BackendKind::Iocp` | Windows only. Positional read and write issued as overlapped operations against one I/O completion port; everything else forwards to `psync`. |
-| `auto` | `BackendKind::Auto` | Selects `psync` on every platform. |
+| `uring` | `BackendKind::Uring` | Linux only. Positional read, write and sync submitted to sharded `io_uring` instances; everything else forwards to `psync`.                                                          |
+| `iocp`  | `BackendKind::Iocp`  | Windows only. Positional read and write issued as overlapped operations against one I/O completion port; everything else forwards to `psync`.                                        |
+| `auto`  | `BackendKind::Auto`  | Selects `psync` on every platform.                                                                                                                                                   |
 
 `auto` selects `psync` everywhere, and the completion backends are opt-in. The two measurements disagree on that choice. Synthetic phases favour the completion backends: on Linux the ring measures 1.60× the syscall pool for commit-shaped reads on ext4, and on Windows `iocp` reaches 1.76× and 4.80× on the synthetic read phases while running two threads against a saturated thirty-two. The smoke suite, driving the real call sites end to end, measures a regression under them and recovers under `psync`. A whole-workload result outranks a per-operation one, so `psync` is the default.
 
@@ -68,14 +68,14 @@ The capability this shape does not offer is reading into memory the caller alrea
 
 `IoFile` pairs an `Arc<std::fs::File>` with the driver that runs its operations: the one whose `IoDriver::open` opened it, or the one `IoFile::from_std` wrapped a caller's file for. Cloning shares the handle. There is no file cursor: every operation is positional, and concurrent operations on one handle at disjoint offsets are safe and unordered.
 
-| Operation | Behavior |
-| --- | --- |
-| `read_at(max_len, offset)` | Reads up to `max_len` bytes, returning what arrived. Fewer than `max_len` means the file ended; empty means the offset was already at or past the end. |
-| `read_exact_at(len, offset)` | Loops until `len` bytes are read. `UnexpectedEof` if the file ends first. |
-| `write_at(buffer, offset)` | Writes the buffer contents. Returns the buffer and the byte count. |
-| `write_all_at(buffer, offset)` | Loops until the whole buffer is written. `WriteZero` if the file stops accepting bytes. |
-| `sync_data()` / `sync_all()` | `fdatasync` / `fsync`. |
-| `metadata()`, `set_len(len)` | Handle-scoped `stat`, and resize. Extending leaves a hole that reads as zeros. |
+| Operation                      | Behavior                                                                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `read_at(max_len, offset)`     | Reads up to `max_len` bytes, returning what arrived. Fewer than `max_len` means the file ended; empty means the offset was already at or past the end. |
+| `read_exact_at(len, offset)`   | Loops until `len` bytes are read. `UnexpectedEof` if the file ends first.                                                                              |
+| `write_at(buffer, offset)`     | Writes the buffer contents. Returns the buffer and the byte count.                                                                                     |
+| `write_all_at(buffer, offset)` | Loops until the whole buffer is written. `WriteZero` if the file stops accepting bytes.                                                                |
+| `sync_data()` / `sync_all()`   | `fdatasync` / `fsync`.                                                                                                                                 |
+| `metadata()`, `set_len(len)`   | Handle-scoped `stat`, and resize. Extending leaves a hole that reads as zeros.                                                                         |
 
 Reads take their length as an argument and writes take theirs from the buffer: a read has no length to infer until the caller states how much it wants, and a write already holds the bytes.
 
@@ -106,13 +106,13 @@ Both are bounded by `WHOLE_FILE_LIMIT`, 8 MiB, and fail with `InvalidInput` abov
 
 `SyscallPool` is a bounded pool of threads dedicated to blocking syscalls, independent of any tokio pool. One process-wide instance backs every operation on the `psync` backend and every control-plane operation on `uring` and `iocp`.
 
-| Property | Value |
-| --- | --- |
-| Maximum threads | `min(2 × cores, 16)`, from `available_parallelism` (2 when unavailable) |
-| Spawn policy | On demand: a submission spawns a thread only when no thread is idle and the cap is not reached |
-| Idle policy | A thread exits after 10 seconds without work |
-| Thread names | `lore-io-<n>` |
-| Queue | Unbounded `VecDeque`, drained FIFO |
+| Property        | Value                                                                                          |
+| --------------- | ---------------------------------------------------------------------------------------------- |
+| Maximum threads | `min(2 × cores, 16)`, from `available_parallelism` (2 when unavailable)                        |
+| Spawn policy    | On demand: a submission spawns a thread only when no thread is idle and the cap is not reached |
+| Idle policy     | A thread exits after 10 seconds without work                                                   |
+| Thread names    | `lore-io-<n>`                                                                                  |
+| Queue           | Unbounded `VecDeque`, drained FIFO                                                             |
 
 Pooled rather than inline execution is deliberate: a syscall against cold media or a network filesystem blocks for milliseconds or indefinitely, and running it inline on an async worker would allow a small number of such operations to stall the runtime. The cap is an eighth of the tokio blocking pool's 128-thread ceiling, and the pool is dedicated, so file I/O does not compete with unrelated blocking work for threads.
 
@@ -158,13 +158,13 @@ Two constraints bound the replacement. Operations with no asynchronous form — 
 
 Progress is observable as a shrinking match count. These are raw line counts over `lore-*/src` and `lore/src`, including imports and test modules, so they overstate distinct call sites and serve as a trend line:
 
-| Crate | `tokio::fs` | `std::fs::` |
-| --- | --- | --- |
-| `lore-revision` | 7 | 26 |
-| `lore-storage` | — | 51 |
-| `lore-server` | 2 | 30 |
-| `lore` | 3 | — |
-| `lore-base` | 1 | 13 |
+| Crate           | `tokio::fs` | `std::fs::` |
+| --------------- | ----------- | ----------- |
+| `lore-revision` | 7           | 26          |
+| `lore-storage`  | —           | 51          |
+| `lore-server`   | 2           | 30          |
+| `lore`          | 3           | —           |
+| `lore-base`     | 1           | 13          |
 
 `lore-storage` and `lore-revision` are migrated; most of what their counts still show is test modules. The library calls that remain in `lore-storage` are the directory walks, the `Drop` implementation in `read.rs` that removes a temporary file where nothing can be awaited, the `exists` probes the store open paths take before creating a directory, the bucket-version probe in `local/immutable_store.rs`, and the permission and directory-sync helpers in `fs_util.rs`. In `lore-revision` they are `Metadata` in type position, the ProjFS provider, and `sync_dir`; its `tokio::fs` count is entirely fixture setup in `repository/clone.rs`'s test module.
 

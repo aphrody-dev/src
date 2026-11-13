@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 When working with WebAssembly, you often want to download a module, compile it, instantiate it, and then use whatever it exports in JavaScript. This post explains our recommended approach for optimal efficiency.
 
- Mathias Bynens [X](https://twitter.com/mathias) [GitHub](https://github.com/mathiasbynens) [Homepage](https://mathiasbynens.be/)
+Mathias Bynens [X](https://twitter.com/mathias) [GitHub](https://github.com/mathiasbynens) [Homepage](https://mathiasbynens.be/)
 
 When working with WebAssembly, you often want to download a module, compile it, instantiate it, and
 then use whatever it exports in JavaScript. This post starts off with a common but suboptimal code
@@ -25,7 +26,7 @@ Don't use this!
 
 ```javascript
 (async () => {
-  const response = await fetch('fibonacci.wasm');
+  const response = await fetch("fibonacci.wasm");
   const buffer = await response.arrayBuffer();
   const module = new WebAssembly.Module(buffer);
   const instance = new WebAssembly.Instance(module);
@@ -41,7 +42,7 @@ use `await WebAssembly.compile(buffer)` instead:
 
 ```javascript
 (async () => {
-  const response = await fetch('fibonacci.wasm');
+  const response = await fetch("fibonacci.wasm");
   const buffer = await response.arrayBuffer();
   const module = await WebAssembly.compile(buffer);
   const instance = new WebAssembly.Instance(module);
@@ -50,7 +51,7 @@ use `await WebAssembly.compile(buffer)` instead:
 })();
 ```
 
-`await WebAssembly.compile(buffer)` is *still* not the optimal approach, but we'll get to that in a
+`await WebAssembly.compile(buffer)` is _still_ not the optimal approach, but we'll get to that in a
 second.
 
 Almost every operation in the modified snippet is now asynchronous, as the use of `await` makes
@@ -61,7 +62,7 @@ free](https://twitter.com/mathias/status/978549917332500480), we can use the asy
 
 ```javascript
 (async () => {
-  const response = await fetch('fibonacci.wasm');
+  const response = await fetch("fibonacci.wasm");
   const buffer = await response.arrayBuffer();
   const module = await WebAssembly.compile(buffer);
   const instance = await WebAssembly.instantiate(module);
@@ -81,7 +82,7 @@ This change also allows us to get rid of the intermediate array buffer, since we
 
 ```javascript
 (async () => {
-  const response = await fetch('fibonacci.wasm');
+  const response = await fetch("fibonacci.wasm");
   const module = await WebAssembly.compileStreaming(response);
   const instance = await WebAssembly.instantiate(module);
   const result = instance.exports.fibonacci(42);
@@ -98,7 +99,7 @@ returned by `fetch` directly, without explicitly `await`ing its result:
 
 ```javascript
 (async () => {
-  const fetchPromise = fetch('fibonacci.wasm');
+  const fetchPromise = fetch("fibonacci.wasm");
   const module = await WebAssembly.compileStreaming(fetchPromise);
   const instance = await WebAssembly.instantiate(module);
   const result = instance.exports.fibonacci(42);
@@ -110,8 +111,7 @@ If you don't need the `fetch` result elsewhere either, you could even pass it di
 
 ```javascript
 (async () => {
-  const module = await WebAssembly.compileStreaming(
-    fetch('fibonacci.wasm'));
+  const module = await WebAssembly.compileStreaming(fetch("fibonacci.wasm"));
   const instance = await WebAssembly.instantiate(module);
   const result = instance.exports.fibonacci(42);
   console.log(result);
@@ -126,8 +126,9 @@ See how we compile the response into a module, and then instantiate it immediate
 
 ```javascript
 (async () => {
-  const fetchPromise = fetch('fibonacci.wasm');
-  const { module, instance } = await WebAssembly.instantiateStreaming(fetchPromise);
+  const fetchPromise = fetch("fibonacci.wasm");
+  const { module, instance } =
+    await WebAssembly.instantiateStreaming(fetchPromise);
   // To create a new instance later:
   const otherInstance = await WebAssembly.instantiate(module);
   const result = instance.exports.fibonacci(42);
@@ -141,7 +142,7 @@ simplifying the code further:
 ```javascript
 // This is our recommended way of loading WebAssembly.
 (async () => {
-  const fetchPromise = fetch('fibonacci.wasm');
+  const fetchPromise = fetch("fibonacci.wasm");
   const { instance } = await WebAssembly.instantiateStreaming(fetchPromise);
   const result = instance.exports.fibonacci(42);
   console.log(result);

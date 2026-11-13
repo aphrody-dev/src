@@ -357,7 +357,10 @@ switch (cmd) {
   case "test-fr1":
     if (a1 && !/^[\w:-]+$/.test(a1))
       throw new Error("filtre : identifiant de test cargo");
-    if (!a1) throw new Error("filtre obligatoire : la suite complète tourne dans la CI du fork (aphrody tests)");
+    if (!a1)
+      throw new Error(
+        "filtre obligatoire : la suite complète tourne dans la CI du fork (aphrody tests)",
+      );
     await testFr1(a1);
     break;
   case "install":

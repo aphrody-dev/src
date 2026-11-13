@@ -3,11 +3,19 @@ import type { ByteRange, KV, SQL, Storage } from "./types";
 
 function slice(size: number, r: ByteRange) {
   const end = r.length ? Math.min(size, r.offset + r.length) : size;
-  return { start: r.offset, end, range: { offset: r.offset, length: end - r.offset } };
+  return {
+    start: r.offset,
+    end,
+    range: { offset: r.offset, length: end - r.offset },
+  };
 }
 
 /** Credentials come from S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY (Bun defaults) in the service env. */
-export function s3Storage(opts: { bucket: string; endpoint?: string; region?: string }): Storage {
+export function s3Storage(opts: {
+  bucket: string;
+  endpoint?: string;
+  region?: string;
+}): Storage {
   const c = new Bun.S3Client(opts);
   return {
     async get(key, o) {
@@ -16,12 +24,27 @@ export function s3Storage(opts: { bucket: string; endpoint?: string; region?: st
       const st = await f.stat();
       if (o?.range) {
         const s = slice(st.size, o.range);
-        return { body: f.slice(s.start, s.end).stream(), size: st.size, etag: st.etag, contentType: st.type, range: s.range };
+        return {
+          body: f.slice(s.start, s.end).stream(),
+          size: st.size,
+          etag: st.etag,
+          contentType: st.type,
+          range: s.range,
+        };
       }
-      return { body: f.stream(), size: st.size, etag: st.etag, contentType: st.type };
+      return {
+        body: f.stream(),
+        size: st.size,
+        etag: st.etag,
+        contentType: st.type,
+      };
     },
     async put(key, data, o) {
-      await c.write(key, data as never, o?.contentType ? { type: o.contentType } : undefined);
+      await c.write(
+        key,
+        data as never,
+        o?.contentType ? { type: o.contentType } : undefined,
+      );
     },
     async delete(key) {
       await c.delete(key);
@@ -32,7 +55,10 @@ export function s3Storage(opts: { bucket: string; endpoint?: string; region?: st
 export function fsStorage(root: string): Storage {
   const base = root.replace(/[\\/]+$/, "");
   const p = (k: string) => {
-    const clean = k.split("/").filter((s) => s && s !== "." && s !== "..").join("/");
+    const clean = k
+      .split("/")
+      .filter((s) => s && s !== "." && s !== "..")
+      .join("/");
     return `${base}/${clean}`;
   };
   return {
@@ -41,7 +67,12 @@ export function fsStorage(root: string): Storage {
       if (!(await f.exists())) return null;
       if (o?.range) {
         const s = slice(f.size, o.range);
-        return { body: f.slice(s.start, s.end).stream(), size: f.size, contentType: f.type, range: s.range };
+        return {
+          body: f.slice(s.start, s.end).stream(),
+          size: f.size,
+          contentType: f.type,
+          range: s.range,
+        };
       }
       return { body: f.stream(), size: f.size, contentType: f.type };
     },

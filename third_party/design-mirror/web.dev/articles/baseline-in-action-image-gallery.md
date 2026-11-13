@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Stacy Kvernmo [Bluesky](https://bsky.app/profile/stacykvernmo.com) [Homepage](https://oddbird.net/authors/stacy/)
 
 Published: October 29, 2025
@@ -91,7 +92,7 @@ With `backdrop-filter`, you can combine color effects and blurs that apply to th
 button {
   --btn-filter: blur(1em);
   backdrop-filter: var(--btn-filter);
-  
+
   &:hover,
   &:focus {
     --btn-filter: blur(0.75em) saturate(350%);
@@ -106,9 +107,9 @@ button {
 The demo also uses a `resolution` media query to add a bit of extra polish. The button's top border is `1px`, which will serve as a default size, but you can choose to display a subpixel border on higher resolution screens.
 
 ```css
- @media (min-resolution: 2x) {
-    --border-size: 0.5px;
-  }
+@media (min-resolution: 2x) {
+  --border-size: 0.5px;
+}
 ```
 
 ## Aspect ratio

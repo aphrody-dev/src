@@ -9,13 +9,13 @@ that do not exist, such as a clean-room mingw-w64 replacement and a locked 120 F
 
 ## 1. Compilers and targets
 
-| Host | Default Rust target | Linker | Notes |
-|---|---|---|---|
-| Windows 11 | `x86_64-pc-windows-msvc` | MSVC `link.exe` or `rust-lld` | The only Windows target used for first-party code. |
-| Windows, MinGW ABI needed | `x86_64-pc-windows-gnullvm` | LLVM (`lld`, `libunwind`), no GCC | Use instead of `x86_64-pc-windows-gnu`, which pulls in a MinGW-w64 GCC toolchain. Not installed by default. |
-| Linux | `x86_64-unknown-linux-gnu` / `-musl` | system `cc` / static musl | musl is the container target (`Dockerfile` builder stage). |
-| Linux -> Windows | `x86_64-pc-windows-msvc` | `cargo xwin` | Downloads the MSVC CRT and Windows SDK; no Wine, no MinGW. |
-| Any -> Linux/macOS | various | `cargo zigbuild` | Zig as the C linker for cross builds. |
+| Host                      | Default Rust target                  | Linker                            | Notes                                                                                                       |
+| ------------------------- | ------------------------------------ | --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Windows 11                | `x86_64-pc-windows-msvc`             | MSVC `link.exe` or `rust-lld`     | The only Windows target used for first-party code.                                                          |
+| Windows, MinGW ABI needed | `x86_64-pc-windows-gnullvm`          | LLVM (`lld`, `libunwind`), no GCC | Use instead of `x86_64-pc-windows-gnu`, which pulls in a MinGW-w64 GCC toolchain. Not installed by default. |
+| Linux                     | `x86_64-unknown-linux-gnu` / `-musl` | system `cc` / static musl         | musl is the container target (`Dockerfile` builder stage).                                                  |
+| Linux -> Windows          | `x86_64-pc-windows-msvc`             | `cargo xwin`                      | Downloads the MSVC CRT and Windows SDK; no Wine, no MinGW.                                                  |
+| Any -> Linux/macOS        | various                              | `cargo zigbuild`                  | Zig as the C linker for cross builds.                                                                       |
 
 `cargo-xwin` and `cargo-zigbuild` are installed in `~/.cargo/bin`. Cross-compilation presets belong in
 `src build --target` (see `docs/CONSOLIDATION_PLAN.md`), not in ad hoc scripts.
@@ -25,13 +25,13 @@ that do not exist, such as a clean-room mingw-w64 replacement and a locked 120 F
 Git for Windows ships an MSYS2 runtime (`/usr/bin` in Git Bash). First-party tooling must not depend
 on it. The replacements are native Rust binaries:
 
-| MSYS2 / GNU tool | Rust replacement | Status on this machine |
-|---|---|---|
-| coreutils (`ls`, `cp`, `sort`, ...) | uutils `coreutils` multicall, built with `--features windows` | 0.12.0 via winget (`WinGet/Links/ls.exe`) |
-| findutils (`find`, `xargs`, `locate`) | uutils `findutils` | 0.11.0 in `~/.cargo/bin` |
-| diffutils | uutils `diffutils` | installed via winget |
-| bash | `brush` (bash-compatible shell) | 0.4.0 in `~/.cargo/bin` |
-| grep | `ripgrep` | installed; call it by full path from Bun (see memory note on `rg.cmd`) |
+| MSYS2 / GNU tool                      | Rust replacement                                              | Status on this machine                                                 |
+| ------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| coreutils (`ls`, `cp`, `sort`, ...)   | uutils `coreutils` multicall, built with `--features windows` | 0.12.0 via winget (`WinGet/Links/ls.exe`)                              |
+| findutils (`find`, `xargs`, `locate`) | uutils `findutils`                                            | 0.11.0 in `~/.cargo/bin`                                               |
+| diffutils                             | uutils `diffutils`                                            | installed via winget                                                   |
+| bash                                  | `brush` (bash-compatible shell)                               | 0.4.0 in `~/.cargo/bin`                                                |
+| grep                                  | `ripgrep`                                                     | installed; call it by full path from Bun (see memory note on `rg.cmd`) |
 
 Install and audit these from one manifest with `unix-distro userland status|install`
 (`crates/unix`). The `justfile` uses `sh` on Unix and `pwsh` on Windows, so no recipe needs Git Bash.
@@ -62,14 +62,14 @@ guest plus an RDP channel; Linux GPU access goes through `/dev/dxg` and Mesa's d
 
 What ties Wayland to Unix, and the replacement for each:
 
-| Unix dependency | Where | Windows replacement | Web replacement |
-|---|---|---|---|
-| `AF_UNIX` stream socket | libwayland, `wayland-backend`, smithay `src/wayland/socket.rs` | Windows `AF_UNIX` (stream only) or named pipes | `WebSocket` / `MessagePort` |
-| fd passing (`SCM_RIGHTS`) for `wl_shm` pools, dmabuf, keymaps, data transfer | protocol args of type `fd` | Handle passing: sender `DuplicateHandle`s into the peer and sends the value | Transferable `ArrayBuffer` / `SharedArrayBuffer` |
-| `mmap` of shm pools | `wl_shm` | `CreateFileMapping` / `MapViewOfFile` | wasm memory views |
-| epoll/calloop event loop | smithay, calloop | IOCP (mio already supports it) | browser event loop |
-| drm/gbm/egl/libinput backends | smithay `backend_*` | wgpu (DX12) renderer + winit input | wgpu (WebGPU) renderer + winit web input |
-| XWayland | `src/xwayland` | out of scope until the core passes conformance | out of scope |
+| Unix dependency                                                              | Where                                                          | Windows replacement                                                         | Web replacement                                  |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------ |
+| `AF_UNIX` stream socket                                                      | libwayland, `wayland-backend`, smithay `src/wayland/socket.rs` | Windows `AF_UNIX` (stream only) or named pipes                              | `WebSocket` / `MessagePort`                      |
+| fd passing (`SCM_RIGHTS`) for `wl_shm` pools, dmabuf, keymaps, data transfer | protocol args of type `fd`                                     | Handle passing: sender `DuplicateHandle`s into the peer and sends the value | Transferable `ArrayBuffer` / `SharedArrayBuffer` |
+| `mmap` of shm pools                                                          | `wl_shm`                                                       | `CreateFileMapping` / `MapViewOfFile`                                       | wasm memory views                                |
+| epoll/calloop event loop                                                     | smithay, calloop                                               | IOCP (mio already supports it)                                              | browser event loop                               |
+| drm/gbm/egl/libinput backends                                                | smithay `backend_*`                                            | wgpu (DX12) renderer + winit input                                          | wgpu (WebGPU) renderer + winit web input         |
+| XWayland                                                                     | `src/xwayland`                                                 | out of scope until the core passes conformance                              | out of scope                                     |
 
 The fd/handle difference stays inside the transport layer, so the object model, protocol
 dispatch and compositor logic are shared across all three platforms. One renderer (wgpu: DX12 on

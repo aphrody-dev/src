@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Katie Hempenius [X](https://twitter.com/katiehempenius)
 
 > [!IMPORTANT]
@@ -20,7 +21,7 @@ for most websites, using a tool like Lighthouse to automate this is essential.
 1. To preview the site, press **View App** . Then press **Fullscreen** .
 2. Press \`Control+Shift+J\` (or \`Command+Option+J\` on Mac) to open DevTools.
 3. Click the **Lighthouse** tab.
-4. Make sure the **Performance** checkbox is selected in the *Categories* list.
+4. Make sure the **Performance** checkbox is selected in the _Categories_ list.
 5. Click the **Generate report** button.
 6. Look for the results of the **Properly Size Images** audit.
 

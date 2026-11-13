@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Most browsers can get access to the user's camera.
 
-Mat Scales [X](https://twitter.com/wibblymat)  Paul Kinlan [X](https://twitter.com/paul_kinlan) [GitHub](https://github.com/PaulKinlan) [LinkedIn](https://www.linkedin.com/in/paulkinlan) [Mastodon](https://status.kinlan.me/@paul) [Bluesky](https://bsky.app/profile/paul.kinlan.me) [Homepage](https://paul.kinlan.me/)
+Mat Scales [X](https://twitter.com/wibblymat) Paul Kinlan [X](https://twitter.com/paul_kinlan) [GitHub](https://github.com/PaulKinlan) [LinkedIn](https://www.linkedin.com/in/paulkinlan) [Mastodon](https://status.kinlan.me/@paul) [Bluesky](https://bsky.app/profile/paul.kinlan.me) [Homepage](https://paul.kinlan.me/)
 
 Many browsers now have the ability to access video and audio input from the
 user. However, depending on the browser it might be a full dynamic and inline
@@ -55,9 +56,9 @@ the `files` property of the event `target`.
 ```html
 <input type="file" accept="image/*" id="file-input" />
 <script>
-  const fileInput = document.getElementById('file-input');
+  const fileInput = document.getElementById("file-input");
 
-  fileInput.addEventListener('change', (e) =>
+  fileInput.addEventListener("change", (e) =>
     doSomethingWithFiles(e.target.files),
   );
 </script>
@@ -93,20 +94,20 @@ desktop or another application.
 ```html
 <div id="target">You can drag an image file here</div>
 <script>
-  const target = document.getElementById('target');
+  const target = document.getElementById("target");
 
-  target.addEventListener('drop', (e) => {
+  target.addEventListener("drop", (e) => {
     e.stopPropagation();
     e.preventDefault();
 
     doSomethingWithFiles(e.dataTransfer.files);
   });
 
-  target.addEventListener('dragover', (e) => {
+  target.addEventListener("dragover", (e) => {
     e.stopPropagation();
     e.preventDefault();
 
-    e.dataTransfer.dropEffect = 'copy';
+    e.dataTransfer.dropEffect = "copy";
   });
 </script>
 ```
@@ -128,9 +129,9 @@ but the user experience is a little harder to get right.
 ```html
 <textarea id="target">Paste an image here</textarea>
 <script>
-  const target = document.getElementById('target');
+  const target = document.getElementById("target");
 
-  target.addEventListener('paste', (e) => {
+  target.addEventListener("paste", (e) => {
     e.preventDefault();
     doSomethingWithFiles(e.clipboardData.files);
   });
@@ -153,16 +154,15 @@ make maintaining accessibility harder.
 Since most of the above methods produce a `FileList`, I should talk a little about what that is.
 
 A `FileList` is similar to an `Array`. It has numeric keys and a `length` property, but it isn't
-*actually* an array. There are no array methods, like `forEach()` or `pop()`, and it isn't iterable.
+_actually_ an array. There are no array methods, like `forEach()` or `pop()`, and it isn't iterable.
 Of course, you can get a real Array by using `Array.from(fileList)`.
 
 The entries of the `FileList` are `File` objects. These are exactly the same as `Blob` objects
 except that they have additional `name` and `lastModified` read-only properties.
 
 ```html
-
 <script>
-  const output = document.getElementById('output');
+  const output = document.getElementById("output");
 
   function doSomethingWithFiles(fileList) {
     let file = null;
@@ -213,7 +213,7 @@ that it will be available in Safari 11.
 It's very simple to detect support, however.
 
 ```javascript
-const supported = 'mediaDevices' in navigator;
+const supported = "mediaDevices" in navigator;
 ```
 
 > [!WARNING]
@@ -234,7 +234,7 @@ snapshot.
 ```html
 <video id="player" controls playsinline autoplay></video>
 <script>
-  const player = document.getElementById('player');
+  const player = document.getElementById("player");
 
   const constraints = {
     video: true,
@@ -268,16 +268,16 @@ The process is as follows:
 <button id="capture">Capture</button>
 <canvas id="canvas" width="320" height="240"></canvas>
 <script>
-  const player = document.getElementById('player');
-  const canvas = document.getElementById('canvas');
-  const context = canvas.getContext('2d');
-  const captureButton = document.getElementById('capture');
+  const player = document.getElementById("player");
+  const canvas = document.getElementById("canvas");
+  const context = canvas.getContext("2d");
+  const captureButton = document.getElementById("capture");
 
   const constraints = {
     video: true,
   };
 
-  captureButton.addEventListener('click', () => {
+  captureButton.addEventListener("click", () => {
     // Draw the video frame to the canvas.
     context.drawImage(player, 0, 0, canvas.width, canvas.height);
   });
@@ -312,20 +312,20 @@ for the stream returned by `getUserMedia()`.
 <button id="capture">Capture</button>
 <canvas id="canvas" width="320" height="240"></canvas>
 <script>
-  const player = document.getElementById('player');
-  const canvas = document.getElementById('canvas');
-  const context = canvas.getContext('2d');
-  const captureButton = document.getElementById('capture');
+  const player = document.getElementById("player");
+  const canvas = document.getElementById("canvas");
+  const context = canvas.getContext("2d");
+  const captureButton = document.getElementById("capture");
 
   const constraints = {
     video: true,
   };
 
-  captureButton.addEventListener('click', () => {
+  captureButton.addEventListener("click", () => {
     context.drawImage(player, 0, 0, canvas.width, canvas.height);
 
     // Stop all video streams.
-    player.srcObject.getVideoTracks().forEach(track => track.stop());
+    player.srcObject.getVideoTracks().forEach((track) => track.stop());
   });
 
   navigator.mediaDevices.getUserMedia(constraints).then((stream) => {

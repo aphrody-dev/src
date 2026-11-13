@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Katie Hempenius [X](https://twitter.com/katiehempenius)
 
 We've all been there: you forgot to scale down an image before adding it to the
@@ -46,6 +47,7 @@ You may find it helpful to check your analytics data (e.g. Google
 Analytics) to see which display sizes are commonly used by your users.
 Alternatively, [screensiz.es](http://screensiz.es/)
 provides information about the displays of many common devices.
+
 - **Absolute units**: Resize the image to match the size that it is displayed at.
 
 The DevTools Elements panel can be used to determine what size an image is

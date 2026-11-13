@@ -65,12 +65,20 @@ lore-macro = { workspace = true }
 
 # fs
 [target.'cfg(target_family = "windows")'.dependencies]
-windows-sys = { workspace = true, features = ["Win32_Foundation", "Win32_Storage_ProjectedFileSystem", "Win32_Storage_FileSystem", "Win32_System_Diagnostics", "Win32_System_Diagnostics_Debug", "Win32_System_IO", "Win32_Security"] }
+windows-sys = { workspace = true, features = [
+  "Win32_Foundation",
+  "Win32_Storage_ProjectedFileSystem",
+  "Win32_Storage_FileSystem",
+  "Win32_System_Diagnostics",
+  "Win32_System_Diagnostics_Debug",
+  "Win32_System_IO",
+  "Win32_Security",
+] }
 
 [dev-dependencies]
 # The crate's tests, the unit tests and the lore-stamp tests included, are built against the
 # library as other crates see it, without the `test` cfg, so they reach test_util through the feature.
-lore-base = { path = ".", features = ["test-util"] , package = "aphrody-lore-base" }
+lore-base = { path = ".", features = ["test-util"], package = "aphrody-lore-base" }
 # Its serde integration: the non-self-describing format the identifier types' serde impls must
 # round-trip through.
 bitcode = { workspace = true, features = ["serde"] }

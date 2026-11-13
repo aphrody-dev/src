@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Lars Knudsen is a Google Developer Expert, we talked to him about how a $10 device can make computers more accessible for people with disabilities.
 
- Monika Janota
+Monika Janota
 
 **Monika:** What inspired you to become a developer? What's your current professional focus?
 

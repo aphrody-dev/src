@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
 
 In [What is WebAssembly and where did it come from?](https://web.dev/articles/what-is-webassembly.md.txt), I explained how we ended up with the WebAssembly of today. In this article, I will show you my approach of compiling an existing C program, `mkbitmap`, to WebAssembly. It's more complex than the [hello world](https://web.dev/articles/what-is-webassembly.md.txt#compiling_to_webassembly) example, as it includes working with files, communicating between the WebAssembly and JavaScript lands, and drawing to a canvas, but it's still manageable enough to not overwhelm you.
@@ -22,7 +23,8 @@ You use `mkbitmap` by passing it a number of options and one or multiple file na
 ```bash
 $ mkbitmap [options] [filename...]
 ```
- The original image ([Source](https://potrace.sourceforge.net/mkbitmap.html)).  First scaled, then thresholded: `mkbitmap -f 2 -s 2 -t 0.48` ([Source](https://potrace.sourceforge.net/mkbitmap.html)).
+
+The original image ([Source](https://potrace.sourceforge.net/mkbitmap.html)). First scaled, then thresholded: `mkbitmap -f 2 -s 2 -t 0.48` ([Source](https://potrace.sourceforge.net/mkbitmap.html)).
 
 ## Get the code
 
@@ -37,6 +39,7 @@ The next step is to compile and install the tool locally to get a feeling for ho
 
    Running `configure` might take a while. While running, it prints
    some messages telling which features it is checking for.
+
 2. Type `make` to compile the package.
 
 3. Optionally, type `make check` to run any self-tests that come with
@@ -128,27 +131,26 @@ If you get the version details, you have successfully compiled and installed `mk
 ## Compile `mkbitmap` to WebAssembly
 
 [Emscripten](http://emscripten.org/) is a tool for compiling C/C++ programs to WebAssembly. Emscripten's [Building Projects](https://Emscripten.org/docs/compiling/Building-Projects.html) documentation states the following:
+
 > Building large projects with Emscripten is very easy. Emscripten provides two simple scripts that configure your makefiles to use `emcc` as a drop-in replacement for `gcc`---in most cases the rest of your project's current build system remains unchanged.
 
 The documentation then goes on (a little edited for brevity):
-> Consider the case where you normally build with the following commands:   
+
+> Consider the case where you normally build with the following commands:
 >
 > <br />
 >
+> `./configure`
 >
-> `./configure`   
->
-> `make`   
->
-> <br />
->
->
-> To build with Emscripten, you would instead use the following commands:   
+> `make`
 >
 > <br />
 >
+> To build with Emscripten, you would instead use the following commands:
 >
-> `emconfigure ./configure`  
+> <br />
+>
+> `emconfigure ./configure`
 >
 > `emmake make`
 
@@ -256,7 +258,7 @@ Copy the `mkbitmap.js` and the `mkbitmap.wasm` files to a new directory called `
 </html>
 ```
 
-Start a local server that serves the `mkbitmap` directory and open it in your browser. You should see a prompt that asks you for input. This is as expected, since, [according to the tool's man page](https://potrace.sourceforge.net/mkbitmap.1.html#:%7E:text=A%20filename%20of%20%22%2D%22%20may%20be%20given%20to%20specify%20reading%20from%20standard%20input), *"\[i\]f no filename arguments are given, then mkbitmap acts as a filter, reading from standard input"* , which for Emscripten by default is a [`prompt()`](https://developer.mozilla.org/docs/Web/API/Window/prompt).
+Start a local server that serves the `mkbitmap` directory and open it in your browser. You should see a prompt that asks you for input. This is as expected, since, [according to the tool's man page](https://potrace.sourceforge.net/mkbitmap.1.html#:%7E:text=A%20filename%20of%20%22%2D%22%20may%20be%20given%20to%20specify%20reading%20from%20standard%20input), _"\[i\]f no filename arguments are given, then mkbitmap acts as a filter, reading from standard input"_ , which for Emscripten by default is a [`prompt()`](https://developer.mozilla.org/docs/Web/API/Window/prompt).
 
 > [!WARNING]
 > **Warning:** Serving from the `file:` protocol doesn't work for `.wasm` files, you really need to start a local server.
@@ -267,7 +269,7 @@ To stop `mkbitmap` from executing immediately and instead make it wait for user 
 You can provide an implementation of `Module` to control the execution of code.
 When an Emscripten application starts up, it looks at the values on the `Module` object and applies them.
 
-In the case of `mkbitmap`, set [`Module.noInitialRun`](https://emscripten.org/docs/api_reference/module.html#Module.noInitialRun) to `true` to prevent the initial run that caused the prompt to appear. Create a script called `script.js`, include it *before* the `<script src="mkbitmap.js"></script>` in `index.html` and add the following code to `script.js`. When you now reload the app, the prompt should be gone.
+In the case of `mkbitmap`, set [`Module.noInitialRun`](https://emscripten.org/docs/api_reference/module.html#Module.noInitialRun) to `true` to prevent the initial run that caused the prompt to appear. Create a script called `script.js`, include it _before_ the `<script src="mkbitmap.js"></script>` in `index.html` and add the following code to `script.js`. When you now reload the app, the prompt should be gone.
 
 ```javascript
 var Module = {
@@ -279,6 +281,7 @@ var Module = {
 ### Create a modular build with some more build flags
 
 To provide input to the app, you can use Emscripten's [file system](https://emscripten.org/docs/api_reference/Filesystem-API.html) support in `Module.FS`. The [Including File System Support](https://emscripten.org/docs/api_reference/Filesystem-API.html#including-file-system-support) section of the documentation states:
+
 > Emscripten decides whether to include file system support automatically. Many programs don't need files, and file system support is not negligible in size, so Emscripten avoids including it when it doesn't see a reason to. That means that if your C/C++ code does not access files, then the `FS` object and other file system APIs will not be included in the output. And, on the other hand, if your C/C++ code does use files, then file system support will be automatically included.
 
 Unfortunately `mkbitmap` is one of the cases where Emscripten does not automatically include file system support, so you need to explicitly tell it to do so. This means you need to follow the `emconfigure` and `emmake` steps described previously, with a couple more flags set via a `CFLAGS` argument. The following flags may come in useful for other projects, too.
@@ -319,7 +322,7 @@ Modify `index.html` so that it only loads the ES module `script.js`, from which 
 
 ```javascript
 // This is `script.js`.
-import loadWASM from './mkbitmap.js';
+import loadWASM from "./mkbitmap.js";
 
 const run = async () => {
   const Module = await loadWASM();
@@ -337,11 +340,11 @@ The next step is to manually call `mkbitmap`'s `main()` function by running `Mod
 
 ```javascript
 // This is `script.js`.
-import loadWASM from './mkbitmap.js';
+import loadWASM from "./mkbitmap.js";
 
 const run = async () => {
   const Module = await loadWASM();
-  Module.callMain(['-v']);
+  Module.callMain(["-v"]);
 };
 
 run();
@@ -353,14 +356,14 @@ The standard output (`stdout`) by default is the console. However, you can redir
 
 ```javascript
 // This is `script.js`.
-import loadWASM from './mkbitmap.js';
+import loadWASM from "./mkbitmap.js";
 
 const run = async () => {
-  let consoleOutput = 'Powered by ';
+  let consoleOutput = "Powered by ";
   const Module = await loadWASM({
     print: (text) => (consoleOutput += text),
   });
-  Module.callMain(['-v']);
+  Module.callMain(["-v"]);
   document.body.textContent = consoleOutput;
 };
 
@@ -384,13 +387,15 @@ Note that the previous call to `Module.callMain(['-v'])` for printing the versio
 
 ```javascript
 // This is `script.js`.
-import loadWASM from './mkbitmap.js';
+import loadWASM from "./mkbitmap.js";
 
 const run = async () => {
   const Module = await loadWASM();
-  const buffer = await fetch('https://example.com/example.bmp').then((res) => res.arrayBuffer());
-  Module.FS.writeFile('example.bmp', new Uint8Array(buffer));
-  console.log(Module.FS.readdir('/'));
+  const buffer = await fetch("https://example.com/example.bmp").then((res) =>
+    res.arrayBuffer(),
+  );
+  Module.FS.writeFile("example.bmp", new Uint8Array(buffer));
+  console.log(Module.FS.readdir("/"));
 };
 
 run();
@@ -402,14 +407,16 @@ With everything in place, execute `mkbitmap` by running `Module.callMain(['examp
 
 ```javascript
 // This is `script.js`.
-import loadWASM from './mkbitmap.js';
+import loadWASM from "./mkbitmap.js";
 
 const run = async () => {
   const Module = await loadWASM();
-  const buffer = await fetch('https://example.com/example.bmp').then((res) => res.arrayBuffer());
-  Module.FS.writeFile('example.bmp', new Uint8Array(buffer));
-  Module.callMain(['example.bmp']);
-  console.log(Module.FS.readdir('/'));
+  const buffer = await fetch("https://example.com/example.bmp").then((res) =>
+    res.arrayBuffer(),
+  );
+  Module.FS.writeFile("example.bmp", new Uint8Array(buffer));
+  Module.callMain(["example.bmp"]);
+  console.log(Module.FS.readdir("/"));
 };
 
 run();
@@ -422,18 +429,20 @@ The `FS` object's [`readFile()`](https://emscripten.org/docs/api_reference/Files
 
 ```javascript
 // This is `script.js`.
-import loadWASM from './mkbitmap.js';
+import loadWASM from "./mkbitmap.js";
 
 const run = async () => {
   const Module = await loadWASM();
-  const buffer = await fetch('https://example.com/example.bmp').then((res) => res.arrayBuffer());
-  Module.FS.writeFile('example.bmp', new Uint8Array(buffer));
-  Module.callMain(['example.bmp']);
-  const output = Module.FS.readFile('example.pbm', { encoding: 'binary' });
-  const file = new File([output], 'example.pbm', {
-    type: 'image/x-portable-bitmap',
+  const buffer = await fetch("https://example.com/example.bmp").then((res) =>
+    res.arrayBuffer(),
+  );
+  Module.FS.writeFile("example.bmp", new Uint8Array(buffer));
+  Module.callMain(["example.bmp"]);
+  const output = Module.FS.readFile("example.pbm", { encoding: "binary" });
+  const file = new File([output], "example.pbm", {
+    type: "image/x-portable-bitmap",
   });
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = URL.createObjectURL(file);
   a.download = file.name;
   a.click();
@@ -448,7 +457,18 @@ To this point, the input file is hardcoded and `mkbitmap` runs with [default par
 
 ```javascript
 // Corresponds to `mkbitmap -o output.pbm input.bmp -s 8 -3 -f 4 -t 0.45`.
-Module.callMain(['-o', 'output.pbm', 'input.bmp', '-s', '8', '-3', '-f', '4', '-t', '0.45']);
+Module.callMain([
+  "-o",
+  "output.pbm",
+  "input.bmp",
+  "-s",
+  "8",
+  "-3",
+  "-f",
+  "4",
+  "-t",
+  "0.45",
+]);
 ```
 
 The PBM image format is not particularly hard to parse, so with [some JavaScript code](https://github.com/megawac/pbm-formatter), you could even show a preview of the output image. See the [source code](https://github.com/GoogleChrome/samples/tree/gh-pages/mkbitmap) of the embedded [demo](https://googlechrome.github.io/samples/mkbitmap) below for one way to do this.

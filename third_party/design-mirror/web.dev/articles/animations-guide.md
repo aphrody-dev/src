@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Kayce Basques [X](https://twitter.com/kaycebasques) [GitHub](https://github.com/kaycebasques)  Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
+
+Kayce Basques [X](https://twitter.com/kaycebasques) [GitHub](https://github.com/kaycebasques) Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
 
 This guide teaches you how to create high-performance CSS animations.
 
@@ -73,6 +74,7 @@ For example, to slide an item into view, use `translate`.
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/YPXyQZo?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe>
 
 Use `rotate` to rotate elements. The following example rotates an element
@@ -92,6 +94,7 @@ Use `rotate` to rotate elements. The following example rotates an element
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/azOvwmj?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe>
 
 ## Resize an element
@@ -113,6 +116,7 @@ To resize an element, use the `scale` keyword value of the
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/WbvQOJO?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe>
 
 ## Change an element's visibility
@@ -136,6 +140,7 @@ To show or hide an element, use [`opacity`](https://developer.mozilla.org/docs/W
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/ZYGbyEJ?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe>
 
 > [!NOTE]
@@ -207,11 +212,12 @@ Don't
 
 @keyframes move {
   50% {
-     top: calc(90vh - 160px);
-     left: calc(90vw - 200px);
+    top: calc(90vh - 160px);
+    left: calc(90vw - 200px);
   }
 }
 ```
+
 Do
 
 ```css
@@ -224,7 +230,7 @@ Do
 
 @keyframes move {
   50% {
-     transform: translate(calc(90vw - 200px), calc(90vh - 160px));
+    transform: translate(calc(90vw - 200px), calc(90vh - 160px));
   }
 }
 ```
@@ -243,7 +249,7 @@ and explore performance using DevTools.
 
 If you see a nonzero value for **Rendering** in the **Summary** tab, it might
 mean your animation is making the browser do layout work.
- The animation-with-top-left example causes rendering work.  The animation-with-transform example doesn't cause rendering work.
+The animation-with-top-left example causes rendering work. The animation-with-transform example doesn't cause rendering work.
 
 #### Firefox DevTools
 
@@ -269,7 +275,7 @@ Pay attention to the **Frames** label at the top of the **FPS meter** UI.
 This shows values like `50% 1 (938 m) dropped of 1878`. A high-performance
 animation has a high percentage, such as `99%`, meaning that few frames are
 being dropped and the animation looks smooth.
- The animation-with-top-left example causes 50% of frames to be dropped.  The animation-with-transform example causes only 1% of frames to be dropped.
+The animation-with-top-left example causes 50% of frames to be dropped. The animation-with-transform example causes only 1% of frames to be dropped.
 
 ### Check whether an animation triggers paint
 
@@ -285,7 +291,7 @@ repainted, as well as other painting-related performance issues.
 2. Select **Paint Flashing**.
 3. Move the pointer around the screen.
 
- In this example from Google Maps, you can see the elements being repainted.
+In this example from Google Maps, you can see the elements being repainted.
 
 If you see the whole screen flashing, or areas highlighted that you don't think
 should change, investigate further.

@@ -3,49 +3,311 @@
   "domain": "tokens",
   "verified": "2026-11-13",
   "sources": [
-    { "url": "https://vercel.com/geist/introduction", "license": "Propriétaire Vercel (https://vercel.com/legal/terms) : lecture seule, spec réécrite, aucun asset" },
-    { "url": "https://vercel.com/geist/colors", "license": "Propriétaire Vercel : faits (noms, échelles) repris, texte réécrit" },
-    { "url": "https://vercel.com/geist/typography", "license": "Propriétaire Vercel : faits (noms de classes) repris, texte réécrit" },
-    { "url": "https://vercel.com/geist/materials", "license": "Propriétaire Vercel : faits (noms, rayons) repris, texte réécrit" },
-    { "url": "https://vercel.com/geist/grid", "license": "Propriétaire Vercel : faits repris, texte réécrit" },
-    { "url": "https://vercel.com/geist/terminal", "license": "Propriétaire Vercel : valeurs hexadécimales citées comme faits" },
-    { "url": "https://vercel.com/design.md", "license": "Propriétaire Vercel : faits (grille, noms de tokens d'espacement) repris, texte réécrit" },
-    { "url": "https://vercel.com/font", "license": "Propriétaire Vercel (page) ; police Geist sous SIL OFL 1.1" },
-    { "url": "https://github.com/vercel/geist-font/blob/main/LICENSE.txt", "license": "OFL-1.1 (gh api repos/vercel/geist-font/license, main ef2597cf, release v1.9.2 du 2026-11-06) ; citée, non embarquée" }
+    {
+      "url": "https://vercel.com/geist/introduction",
+      "license": "Propriétaire Vercel (https://vercel.com/legal/terms) : lecture seule, spec réécrite, aucun asset"
+    },
+    {
+      "url": "https://vercel.com/geist/colors",
+      "license": "Propriétaire Vercel : faits (noms, échelles) repris, texte réécrit"
+    },
+    {
+      "url": "https://vercel.com/geist/typography",
+      "license": "Propriétaire Vercel : faits (noms de classes) repris, texte réécrit"
+    },
+    {
+      "url": "https://vercel.com/geist/materials",
+      "license": "Propriétaire Vercel : faits (noms, rayons) repris, texte réécrit"
+    },
+    {
+      "url": "https://vercel.com/geist/grid",
+      "license": "Propriétaire Vercel : faits repris, texte réécrit"
+    },
+    {
+      "url": "https://vercel.com/geist/terminal",
+      "license": "Propriétaire Vercel : valeurs hexadécimales citées comme faits"
+    },
+    {
+      "url": "https://vercel.com/design.md",
+      "license": "Propriétaire Vercel : faits (grille, noms de tokens d'espacement) repris, texte réécrit"
+    },
+    {
+      "url": "https://vercel.com/font",
+      "license": "Propriétaire Vercel (page) ; police Geist sous SIL OFL 1.1"
+    },
+    {
+      "url": "https://github.com/vercel/geist-font/blob/main/LICENSE.txt",
+      "license": "OFL-1.1 (gh api repos/vercel/geist-font/license, main ef2597cf, release v1.9.2 du 2026-11-06) ; citée, non embarquée"
+    }
   ],
   "rules": [
-    { "id": "geist.color.scales", "level": "MUST", "rule": "Utiliser uniquement les dix échelles du système : backgrounds, gray, gray-alpha, blue, red, amber, green, teal, purple, pink ; les couleurs P3 s'appliquent automatiquement sur écrans compatibles.", "value": ["backgrounds", "gray", "gray-alpha", "blue", "red", "amber", "green", "teal", "purple", "pink"], "source": "https://vercel.com/geist/colors" },
-    { "id": "geist.color.scale-steps", "level": "MUST", "rule": "Chaque échelle hors backgrounds a dix pas (100 à 1000) dont le rôle est fixé par le numéro, pas par la teinte : 100-300 fonds de composant (repos, survol, actif), 400-600 bordures (repos, survol, actif), 700-800 fonds à fort contraste (repos, survol), 900 texte et icônes secondaires, 1000 texte et icônes principaux.", "value": { "100": "fond repos", "200": "fond survol", "300": "fond actif", "400": "bordure repos", "500": "bordure survol", "600": "bordure active", "700": "fond fort contraste", "800": "fond fort contraste survol", "900": "texte/icône secondaire", "1000": "texte/icône principal" }, "source": "https://vercel.com/geist/colors" },
-    { "id": "geist.color.css-variables", "level": "MUST", "rule": "Consommer les couleurs par variables CSS nommées --ds-<échelle>-<pas> (ex. --ds-gray-400, --ds-blue-700), jamais par valeur codée en dur.", "value": "--ds-{scale}-{100..1000}", "source": "https://vercel.com/geist/colors" },
-    { "id": "geist.color.backgrounds", "level": "SHOULD", "rule": "Poser les pages et les composants sur Background 1 (--ds-background-100), surtout sous de la couleur ; réserver Background 2 (--ds-background-200) à une différenciation discrète et rare.", "value": { "--ds-background-100": "fond par défaut", "--ds-background-200": "fond secondaire" }, "source": "https://vercel.com/geist/colors" },
-    { "id": "geist.color.state-shift", "level": "SHOULD", "rule": "Sur un composant posé sur Background 1, décaler les états d'un pas : gray-100 au survol, gray-200 à l'activation ; les petits éléments (badges) prennent gray-200 ou gray-300 comme fond.", "source": "https://vercel.com/geist/colors" },
-    { "id": "geist.color.gray-vs-alpha", "level": "MUST", "rule": "Gray opaque par défaut pour texte, icônes, remplissages, bordures et séparateurs ; gray-alpha seulement quand le fond doit transparaître (ombres, voiles, bord qui se fond dans sa surface).", "source": "https://vercel.com/geist/colors" },
-    { "id": "geist.color.single-border", "level": "MUST-NOT", "rule": "Ne pas superposer deux bordures alpha : les intersections deviennent plus sombres ; un séparateur interne reste à l'intérieur de la bordure du conteneur.", "source": "https://vercel.com/geist/colors" },
-    { "id": "geist.color.translucent-shadow", "level": "MUST", "rule": "Les ombres des matériaux restent translucides ; une ombre opaque laisse un halo gris visible sur les fonds.", "source": "https://vercel.com/geist/colors" },
-    { "id": "geist.type.families", "level": "MUST", "rule": "Composer en Geist Sans (interface, texte, chiffres) et Geist Mono (code, commandes, chemins, identifiants courts) ; Geist Serif et Geist Pixel sont des familles d'affichage, pas d'interface.", "value": { "sans": "--font-geist-sans", "mono": "--font-geist-mono", "serif": "--font-geist-serif", "pixel": "--font-geist-pixel" }, "source": "https://vercel.com/font" },
-    { "id": "geist.type.mono-scope", "level": "SHOULD", "rule": "Ne mettre en Mono que l'identifiant lui-même, jamais la phrase ou le tableau entier qui le contient.", "source": "https://vercel.com/design.md" },
-    { "id": "geist.type.classes", "level": "MUST", "rule": "Utiliser les classes de texte prédéfinies (taille, interlignage, approche et graisse groupés) au lieu de tailles ou graisses arbitraires ; le nombre final de la classe est la taille en pixels.", "value": "text-{heading|button|label|copy}-{taille}[-mono]", "source": "https://vercel.com/geist/typography" },
-    { "id": "geist.type.headings", "level": "SHOULD", "rule": "Titres de page et de section : heading-72 à heading-14 ; les tailles 32, 24, 20 et 16 acceptent la variante atténuée (Subtle).", "value": [72, 64, 56, 48, 40, 32, 24, 20, 16, 14], "source": "https://vercel.com/geist/typography" },
-    { "id": "geist.type.button-only", "level": "MUST", "rule": "Les classes button-16/14/12 ne servent qu'à l'intérieur d'un bouton : 14 par défaut, 16 pour le plus grand, 12 uniquement pour un mini bouton logé dans un champ.", "value": { "16": "grand", "14": "défaut", "12": "dans un champ" }, "source": "https://vercel.com/geist/typography" },
-    { "id": "geist.type.label", "level": "SHOULD", "rule": "Label = texte sur une seule ligne avec interlignage confortable pour s'aligner sur les icônes ; label-14 est le style le plus courant (menus), label-13 sert de ligne secondaire et passe en chiffres tabulaires pour les nombres, label-12 pour le tertiaire des vues denses.", "value": [20, 18, 16, 14, "14-mono", 13, "13-mono", 12, "12-mono"], "source": "https://vercel.com/geist/typography" },
-    { "id": "geist.type.copy", "level": "SHOULD", "rule": "Copy = texte multiligne à interlignage plus haut que Label ; copy-14 est le corps courant, copy-16 pour les vues aérées (modales), copy-13 quand la place manque, copy-18 à 24 pour le marketing, copy-13-mono pour le code en ligne.", "value": [24, 20, 18, 16, 14, 13, "13-mono"], "source": "https://vercel.com/geist/typography" },
-    { "id": "geist.type.strong-modifier", "level": "MAY", "rule": "Obtenir la variante forte d'une classe en imbriquant un élément strong dans l'élément qui porte la classe, sans nouvelle classe.", "source": "https://vercel.com/geist/typography" },
-    { "id": "geist.type.mono-pairing", "level": "SHOULD", "rule": "Associer label-13-mono à du label-14 et label-14-mono à du texte de plus de 14 px : le mono paraît plus grand à taille égale.", "source": "https://vercel.com/geist/typography" },
-    { "id": "geist.material.surface", "level": "MUST", "rule": "Surfaces posées sur la page : material-base et material-small (rayon 6 px), material-medium et material-large (rayon 12 px), par élévation croissante.", "value": { "material-base": "6px", "material-small": "6px", "material-medium": "12px", "material-large": "12px" }, "source": "https://vercel.com/geist/materials" },
-    { "id": "geist.material.floating", "level": "MUST", "rule": "Surfaces flottantes : material-tooltip (6 px, ombre la plus légère, seule avec une pointe triangulaire), material-menu (12 px), material-modal (12 px), material-fullscreen (16 px, élévation maximale).", "value": { "material-tooltip": "6px", "material-menu": "12px", "material-modal": "12px", "material-fullscreen": "16px" }, "source": "https://vercel.com/geist/materials" },
-    { "id": "geist.material.radius-scale", "level": "SHOULD", "rule": "Limiter les rayons aux trois valeurs des matériaux : 6, 12 et 16 px.", "value": [6, 12, 16], "source": "https://vercel.com/geist/materials" },
-    { "id": "geist.grid.breakpoints", "level": "MUST", "rule": "La grille connaît trois points de rupture (sm, md, lg) ; définir colonnes et lignes à chacun pour une recomposition prévisible mobile/tablette/bureau.", "value": ["sm", "md", "lg"], "source": "https://vercel.com/geist/grid" },
-    { "id": "geist.grid.columns", "level": "SHOULD", "rule": "Grille de page : 12 colonnes sur bureau, 6 sur tablette, 4 sur mobile ; la prose occupe 6 à 7 colonnes sur bureau, tableaux et graphiques peuvent prendre les 12.", "value": { "lg": 12, "md": 6, "sm": 4, "prose": "6-7" }, "source": "https://vercel.com/design.md" },
-    { "id": "geist.grid.guides-usage", "level": "SHOULD", "rule": "Réserver le composant Grid à guides visibles aux pages marketing et vitrines ; pour une simple grille de cartes, une grille CSS ordinaire suffit ; ne pas imbriquer plus d'un niveau.", "source": "https://vercel.com/geist/grid" },
-    { "id": "geist.grid.solid-cells", "level": "MAY", "rule": "Une cellule pleine (solid) masque les guides qu'elle recouvre lorsque le contenu exige un fond opaque.", "source": "https://vercel.com/geist/grid" },
-    { "id": "geist.grid.a11y", "level": "MUST", "rule": "Les guides sont décoratifs (aria-hidden) ; vérifier leur contraste d'au moins 3:1 dans les deux thèmes ; une cellule cliquable a son propre anneau de focus et suit l'ordre de lecture.", "value": "3:1", "source": "https://vercel.com/geist/grid" },
-    { "id": "geist.space.gap-owner", "level": "SHOULD", "rule": "Chaque espacement a un seul propriétaire (le conteneur flow/stack/grid) ; les enfants n'ajoutent pas de marges concurrentes.", "source": "https://vercel.com/design.md" },
-    { "id": "geist.space.rhythm", "level": "SHOULD", "rule": "Rythme vertical : écarts internes à un groupe aux pas 2 à 4, entre groupes aux pas 6 à 8, changements de section aux pas 8 à 12, le pas 16 étant réservé aux ruptures majeures.", "value": { "intra-groupe": "space-2..4", "inter-groupes": "space-6..8", "section": "space-8..12", "rupture": "space-16" }, "source": "https://vercel.com/design.md" },
-    { "id": "geist.motion.stillness", "level": "SHOULD", "rule": "Immobilité par défaut : un mouvement n'existe que pour expliquer un changement d'état, préserver la continuité ou confirmer une action ; jamais de défilement automatique ni d'indicateur pulsant décoratif.", "source": "https://vercel.com/design.md" },
-    { "id": "geist.decor.none", "level": "MUST-NOT", "rule": "Pas de dégradés décoratifs, texte en dégradé, lueurs, verre, textures ni ombres d'ornement ; un dégradé n'est admis que comme échelle de données légendée.", "source": "https://vercel.com/design.md" },
-    { "id": "geist.icons.package", "level": "SHOULD", "rule": "Les icônes Geist sont distribuées séparément des composants (@vercel/geistcn-assets) ; la page de règles icônes redirige vers l'introduction (aucune règle publique lisible le 2026-11-13). Dans src, ne pas les embarquer : Material Symbols reste la cible.", "source": "https://vercel.com/geist/introduction" },
-    { "id": "geist.font.license", "level": "MUST", "rule": "La police Geist est sous SIL OFL 1.1 : la citer et la charger depuis sa distribution officielle (paquet geist, Google Fonts, releases GitHub) ; ne pas versionner ses fichiers dans src.", "value": "OFL-1.1", "source": "https://github.com/vercel/geist-font/blob/main/LICENSE.txt" },
-    { "id": "geist.terminal.neutrals", "level": "MAY", "rule": "Thèmes de terminal Geist : trois neutres hiérarchisent texte principal, secondaire et discret ; fond noir pur en sombre, blanc cassé en clair.", "value": { "dark": { "primary": "#EDEDED", "secondary": "#A0A0A0", "quiet": "#8F8F8F" }, "light": { "primary": "#24292F", "secondary": "#4F5359", "quiet": "#656A70" } }, "source": "https://vercel.com/geist/terminal" }
+    {
+      "id": "geist.color.scales",
+      "level": "MUST",
+      "rule": "Utiliser uniquement les dix échelles du système : backgrounds, gray, gray-alpha, blue, red, amber, green, teal, purple, pink ; les couleurs P3 s'appliquent automatiquement sur écrans compatibles.",
+      "value": [
+        "backgrounds",
+        "gray",
+        "gray-alpha",
+        "blue",
+        "red",
+        "amber",
+        "green",
+        "teal",
+        "purple",
+        "pink"
+      ],
+      "source": "https://vercel.com/geist/colors"
+    },
+    {
+      "id": "geist.color.scale-steps",
+      "level": "MUST",
+      "rule": "Chaque échelle hors backgrounds a dix pas (100 à 1000) dont le rôle est fixé par le numéro, pas par la teinte : 100-300 fonds de composant (repos, survol, actif), 400-600 bordures (repos, survol, actif), 700-800 fonds à fort contraste (repos, survol), 900 texte et icônes secondaires, 1000 texte et icônes principaux.",
+      "value": {
+        "100": "fond repos",
+        "200": "fond survol",
+        "300": "fond actif",
+        "400": "bordure repos",
+        "500": "bordure survol",
+        "600": "bordure active",
+        "700": "fond fort contraste",
+        "800": "fond fort contraste survol",
+        "900": "texte/icône secondaire",
+        "1000": "texte/icône principal"
+      },
+      "source": "https://vercel.com/geist/colors"
+    },
+    {
+      "id": "geist.color.css-variables",
+      "level": "MUST",
+      "rule": "Consommer les couleurs par variables CSS nommées --ds-<échelle>-<pas> (ex. --ds-gray-400, --ds-blue-700), jamais par valeur codée en dur.",
+      "value": "--ds-{scale}-{100..1000}",
+      "source": "https://vercel.com/geist/colors"
+    },
+    {
+      "id": "geist.color.backgrounds",
+      "level": "SHOULD",
+      "rule": "Poser les pages et les composants sur Background 1 (--ds-background-100), surtout sous de la couleur ; réserver Background 2 (--ds-background-200) à une différenciation discrète et rare.",
+      "value": {
+        "--ds-background-100": "fond par défaut",
+        "--ds-background-200": "fond secondaire"
+      },
+      "source": "https://vercel.com/geist/colors"
+    },
+    {
+      "id": "geist.color.state-shift",
+      "level": "SHOULD",
+      "rule": "Sur un composant posé sur Background 1, décaler les états d'un pas : gray-100 au survol, gray-200 à l'activation ; les petits éléments (badges) prennent gray-200 ou gray-300 comme fond.",
+      "source": "https://vercel.com/geist/colors"
+    },
+    {
+      "id": "geist.color.gray-vs-alpha",
+      "level": "MUST",
+      "rule": "Gray opaque par défaut pour texte, icônes, remplissages, bordures et séparateurs ; gray-alpha seulement quand le fond doit transparaître (ombres, voiles, bord qui se fond dans sa surface).",
+      "source": "https://vercel.com/geist/colors"
+    },
+    {
+      "id": "geist.color.single-border",
+      "level": "MUST-NOT",
+      "rule": "Ne pas superposer deux bordures alpha : les intersections deviennent plus sombres ; un séparateur interne reste à l'intérieur de la bordure du conteneur.",
+      "source": "https://vercel.com/geist/colors"
+    },
+    {
+      "id": "geist.color.translucent-shadow",
+      "level": "MUST",
+      "rule": "Les ombres des matériaux restent translucides ; une ombre opaque laisse un halo gris visible sur les fonds.",
+      "source": "https://vercel.com/geist/colors"
+    },
+    {
+      "id": "geist.type.families",
+      "level": "MUST",
+      "rule": "Composer en Geist Sans (interface, texte, chiffres) et Geist Mono (code, commandes, chemins, identifiants courts) ; Geist Serif et Geist Pixel sont des familles d'affichage, pas d'interface.",
+      "value": {
+        "sans": "--font-geist-sans",
+        "mono": "--font-geist-mono",
+        "serif": "--font-geist-serif",
+        "pixel": "--font-geist-pixel"
+      },
+      "source": "https://vercel.com/font"
+    },
+    {
+      "id": "geist.type.mono-scope",
+      "level": "SHOULD",
+      "rule": "Ne mettre en Mono que l'identifiant lui-même, jamais la phrase ou le tableau entier qui le contient.",
+      "source": "https://vercel.com/design.md"
+    },
+    {
+      "id": "geist.type.classes",
+      "level": "MUST",
+      "rule": "Utiliser les classes de texte prédéfinies (taille, interlignage, approche et graisse groupés) au lieu de tailles ou graisses arbitraires ; le nombre final de la classe est la taille en pixels.",
+      "value": "text-{heading|button|label|copy}-{taille}[-mono]",
+      "source": "https://vercel.com/geist/typography"
+    },
+    {
+      "id": "geist.type.headings",
+      "level": "SHOULD",
+      "rule": "Titres de page et de section : heading-72 à heading-14 ; les tailles 32, 24, 20 et 16 acceptent la variante atténuée (Subtle).",
+      "value": [72, 64, 56, 48, 40, 32, 24, 20, 16, 14],
+      "source": "https://vercel.com/geist/typography"
+    },
+    {
+      "id": "geist.type.button-only",
+      "level": "MUST",
+      "rule": "Les classes button-16/14/12 ne servent qu'à l'intérieur d'un bouton : 14 par défaut, 16 pour le plus grand, 12 uniquement pour un mini bouton logé dans un champ.",
+      "value": { "16": "grand", "14": "défaut", "12": "dans un champ" },
+      "source": "https://vercel.com/geist/typography"
+    },
+    {
+      "id": "geist.type.label",
+      "level": "SHOULD",
+      "rule": "Label = texte sur une seule ligne avec interlignage confortable pour s'aligner sur les icônes ; label-14 est le style le plus courant (menus), label-13 sert de ligne secondaire et passe en chiffres tabulaires pour les nombres, label-12 pour le tertiaire des vues denses.",
+      "value": [20, 18, 16, 14, "14-mono", 13, "13-mono", 12, "12-mono"],
+      "source": "https://vercel.com/geist/typography"
+    },
+    {
+      "id": "geist.type.copy",
+      "level": "SHOULD",
+      "rule": "Copy = texte multiligne à interlignage plus haut que Label ; copy-14 est le corps courant, copy-16 pour les vues aérées (modales), copy-13 quand la place manque, copy-18 à 24 pour le marketing, copy-13-mono pour le code en ligne.",
+      "value": [24, 20, 18, 16, 14, 13, "13-mono"],
+      "source": "https://vercel.com/geist/typography"
+    },
+    {
+      "id": "geist.type.strong-modifier",
+      "level": "MAY",
+      "rule": "Obtenir la variante forte d'une classe en imbriquant un élément strong dans l'élément qui porte la classe, sans nouvelle classe.",
+      "source": "https://vercel.com/geist/typography"
+    },
+    {
+      "id": "geist.type.mono-pairing",
+      "level": "SHOULD",
+      "rule": "Associer label-13-mono à du label-14 et label-14-mono à du texte de plus de 14 px : le mono paraît plus grand à taille égale.",
+      "source": "https://vercel.com/geist/typography"
+    },
+    {
+      "id": "geist.material.surface",
+      "level": "MUST",
+      "rule": "Surfaces posées sur la page : material-base et material-small (rayon 6 px), material-medium et material-large (rayon 12 px), par élévation croissante.",
+      "value": {
+        "material-base": "6px",
+        "material-small": "6px",
+        "material-medium": "12px",
+        "material-large": "12px"
+      },
+      "source": "https://vercel.com/geist/materials"
+    },
+    {
+      "id": "geist.material.floating",
+      "level": "MUST",
+      "rule": "Surfaces flottantes : material-tooltip (6 px, ombre la plus légère, seule avec une pointe triangulaire), material-menu (12 px), material-modal (12 px), material-fullscreen (16 px, élévation maximale).",
+      "value": {
+        "material-tooltip": "6px",
+        "material-menu": "12px",
+        "material-modal": "12px",
+        "material-fullscreen": "16px"
+      },
+      "source": "https://vercel.com/geist/materials"
+    },
+    {
+      "id": "geist.material.radius-scale",
+      "level": "SHOULD",
+      "rule": "Limiter les rayons aux trois valeurs des matériaux : 6, 12 et 16 px.",
+      "value": [6, 12, 16],
+      "source": "https://vercel.com/geist/materials"
+    },
+    {
+      "id": "geist.grid.breakpoints",
+      "level": "MUST",
+      "rule": "La grille connaît trois points de rupture (sm, md, lg) ; définir colonnes et lignes à chacun pour une recomposition prévisible mobile/tablette/bureau.",
+      "value": ["sm", "md", "lg"],
+      "source": "https://vercel.com/geist/grid"
+    },
+    {
+      "id": "geist.grid.columns",
+      "level": "SHOULD",
+      "rule": "Grille de page : 12 colonnes sur bureau, 6 sur tablette, 4 sur mobile ; la prose occupe 6 à 7 colonnes sur bureau, tableaux et graphiques peuvent prendre les 12.",
+      "value": { "lg": 12, "md": 6, "sm": 4, "prose": "6-7" },
+      "source": "https://vercel.com/design.md"
+    },
+    {
+      "id": "geist.grid.guides-usage",
+      "level": "SHOULD",
+      "rule": "Réserver le composant Grid à guides visibles aux pages marketing et vitrines ; pour une simple grille de cartes, une grille CSS ordinaire suffit ; ne pas imbriquer plus d'un niveau.",
+      "source": "https://vercel.com/geist/grid"
+    },
+    {
+      "id": "geist.grid.solid-cells",
+      "level": "MAY",
+      "rule": "Une cellule pleine (solid) masque les guides qu'elle recouvre lorsque le contenu exige un fond opaque.",
+      "source": "https://vercel.com/geist/grid"
+    },
+    {
+      "id": "geist.grid.a11y",
+      "level": "MUST",
+      "rule": "Les guides sont décoratifs (aria-hidden) ; vérifier leur contraste d'au moins 3:1 dans les deux thèmes ; une cellule cliquable a son propre anneau de focus et suit l'ordre de lecture.",
+      "value": "3:1",
+      "source": "https://vercel.com/geist/grid"
+    },
+    {
+      "id": "geist.space.gap-owner",
+      "level": "SHOULD",
+      "rule": "Chaque espacement a un seul propriétaire (le conteneur flow/stack/grid) ; les enfants n'ajoutent pas de marges concurrentes.",
+      "source": "https://vercel.com/design.md"
+    },
+    {
+      "id": "geist.space.rhythm",
+      "level": "SHOULD",
+      "rule": "Rythme vertical : écarts internes à un groupe aux pas 2 à 4, entre groupes aux pas 6 à 8, changements de section aux pas 8 à 12, le pas 16 étant réservé aux ruptures majeures.",
+      "value": {
+        "intra-groupe": "space-2..4",
+        "inter-groupes": "space-6..8",
+        "section": "space-8..12",
+        "rupture": "space-16"
+      },
+      "source": "https://vercel.com/design.md"
+    },
+    {
+      "id": "geist.motion.stillness",
+      "level": "SHOULD",
+      "rule": "Immobilité par défaut : un mouvement n'existe que pour expliquer un changement d'état, préserver la continuité ou confirmer une action ; jamais de défilement automatique ni d'indicateur pulsant décoratif.",
+      "source": "https://vercel.com/design.md"
+    },
+    {
+      "id": "geist.decor.none",
+      "level": "MUST-NOT",
+      "rule": "Pas de dégradés décoratifs, texte en dégradé, lueurs, verre, textures ni ombres d'ornement ; un dégradé n'est admis que comme échelle de données légendée.",
+      "source": "https://vercel.com/design.md"
+    },
+    {
+      "id": "geist.icons.package",
+      "level": "SHOULD",
+      "rule": "Les icônes Geist sont distribuées séparément des composants (@vercel/geistcn-assets) ; la page de règles icônes redirige vers l'introduction (aucune règle publique lisible le 2026-11-13). Dans src, ne pas les embarquer : Material Symbols reste la cible.",
+      "source": "https://vercel.com/geist/introduction"
+    },
+    {
+      "id": "geist.font.license",
+      "level": "MUST",
+      "rule": "La police Geist est sous SIL OFL 1.1 : la citer et la charger depuis sa distribution officielle (paquet geist, Google Fonts, releases GitHub) ; ne pas versionner ses fichiers dans src.",
+      "value": "OFL-1.1",
+      "source": "https://github.com/vercel/geist-font/blob/main/LICENSE.txt"
+    },
+    {
+      "id": "geist.terminal.neutrals",
+      "level": "MAY",
+      "rule": "Thèmes de terminal Geist : trois neutres hiérarchisent texte principal, secondaire et discret ; fond noir pur en sombre, blanc cassé en clair.",
+      "value": {
+        "dark": {
+          "primary": "#EDEDED",
+          "secondary": "#A0A0A0",
+          "quiet": "#8F8F8F"
+        },
+        "light": {
+          "primary": "#24292F",
+          "secondary": "#4F5359",
+          "quiet": "#656A70"
+        }
+      },
+      "source": "https://vercel.com/geist/terminal"
+    }
   ],
   "tokens": {
     "--ds-background-100": "Background 1, fond par défaut des pages et composants",

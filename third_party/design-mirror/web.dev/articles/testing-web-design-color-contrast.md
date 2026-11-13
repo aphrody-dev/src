@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 An overview of three tools and techniques for testing and verifying accessible color contrast of your design.
 
- Adam Argyle [X](https://twitter.com/argyleink) [GitHub](https://github.com/argyleink) [Homepage](https://nerdy.dev)  Charlie Gleason [X](https://twitter.com/superhighfives) [GitHub](https://github.com/https://github.com/superhighfives) [Homepage](https://charliegleason.com)
+Adam Argyle [X](https://twitter.com/argyleink) [GitHub](https://github.com/argyleink) [Homepage](https://nerdy.dev) Charlie Gleason [X](https://twitter.com/superhighfives) [GitHub](https://github.com/https://github.com/superhighfives) [Homepage](https://charliegleason.com)
 
 Say you have some text on a light background, like this:
 
@@ -43,16 +44,15 @@ WCAG is the best we have.
 
 ### What are the rules?
 
-|   | AA | AAA |
-|---|---|---|
-| Body text (\< 24px) | 4.5 | 7 |
-| Large text (\> 24px) | 3 | 4.5 |
-| UI (icons, graphs, etc.) | 3 | not defined |
+|                          | AA  | AAA         |
+| ------------------------ | --- | ----------- |
+| Body text (\< 24px)      | 4.5 | 7           |
+| Large text (\> 24px)     | 3   | 4.5         |
+| UI (icons, graphs, etc.) | 3   | not defined |
 
-A higher contrast ratio is scored with a higher number, like 4.5 or 7 instead of
-3. To get more familiar with the scoring table, check out [Polypane's Contrast
+A higher contrast ratio is scored with a higher number, like 4.5 or 7 instead of 3. To get more familiar with the scoring table, check out [Polypane's Contrast
 Checker](https://polypane.app/color-contrast/).
- Which of these color pairings do you feel contrast more?
+Which of these color pairings do you feel contrast more?
 
 ## Testing contrast between colors
 

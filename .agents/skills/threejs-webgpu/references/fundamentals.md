@@ -20,7 +20,12 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111318);
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000,
+);
 camera.position.set(0, 1.5, 5);
 
 const cube = new THREE.Mesh(
@@ -54,12 +59,12 @@ Without a bundler, the browser loads three.js as ES modules through an import ma
 
 ```html
 <script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+    }
   }
-}
 </script>
 ```
 
@@ -67,14 +72,14 @@ For WebGPURenderer work, map all four keys — `three.tsl.js` imports `three/web
 
 ```html
 <script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.webgpu.js",
-    "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.webgpu.js",
-    "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.tsl.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.webgpu.js",
+      "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.webgpu.js",
+      "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.tsl.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+    }
   }
-}
 </script>
 ```
 
@@ -97,7 +102,12 @@ scene.fog = new THREE.FogExp2(0x111318, 0.02); // exponential fog: density (pick
 
 ```javascript
 // PerspectiveCamera(fov in degrees, aspect, near, far)
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000,
+);
 camera.position.set(0, 5, 10);
 camera.lookAt(0, 0, 0); // rotates the camera to face the target
 
@@ -159,7 +169,11 @@ scene.add(cubeCamera);
 
 const chrome = new THREE.Mesh(
   new THREE.SphereGeometry(1, 32, 16),
-  new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0 }),
+  new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    metalness: 1,
+    roughness: 0,
+  }),
 );
 chrome.material.envMap = cubeRenderTarget.texture;
 scene.add(chrome);
@@ -242,14 +256,20 @@ obj.matrixWorldNeedsUpdate = true;
 
 ```javascript
 const group = new THREE.Group(); // an Object3D that exists to hold children
-const ball = new THREE.Mesh(new THREE.SphereGeometry(0.5), new THREE.MeshStandardMaterial());
+const ball = new THREE.Mesh(
+  new THREE.SphereGeometry(0.5),
+  new THREE.MeshStandardMaterial(),
+);
 group.add(ball);
 group.rotation.y = Math.PI / 4; // transforms the whole subtree
 scene.add(group);
 ```
 
 ```javascript
-const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial());
+const mesh = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshStandardMaterial(),
+);
 scene.add(mesh);
 
 // one material per geometry group; BoxGeometry has six (+x, −x, +y, −y, +z, −z)
@@ -324,7 +344,11 @@ m.decompose(position, quaternion, scale); // read them back
 m.multiply(new THREE.Matrix4()); // m = m * other (other applied first)
 m.premultiply(new THREE.Matrix4()); // m = other * m
 m.invert();
-m.lookAt(new THREE.Vector3(0, 0, 1), new THREE.Vector3(), new THREE.Vector3(0, 1, 0)); // eye, target, up
+m.lookAt(
+  new THREE.Vector3(0, 0, 1),
+  new THREE.Vector3(),
+  new THREE.Vector3(0, 1, 0),
+); // eye, target, up
 
 const q = new THREE.Quaternion();
 q.setFromEuler(new THREE.Euler(0, Math.PI / 2, 0, "YXZ")); // Euler order matters, XYZ is the default
@@ -365,7 +389,8 @@ const eased = THREE.MathUtils.smoothstep(0.5, 0, 1); // eased 0–1 curve
 ```javascript
 const manager = new THREE.LoadingManager();
 manager.onStart = (url, loaded, total) => console.log(`started ${url}`);
-manager.onProgress = (url, loaded, total) => console.log(`${loaded}/${total} ${url}`);
+manager.onProgress = (url, loaded, total) =>
+  console.log(`${loaded}/${total} ${url}`);
 manager.onLoad = () => console.log("all items loaded");
 manager.onError = (url) => console.error(`failed ${url}`);
 
@@ -378,7 +403,9 @@ const loader = new THREE.TextureLoader(manager); // any loader takes a manager
 scene.remove(mesh);
 // dispose geometry, materials and textures only when nothing else still uses them
 mesh.geometry.dispose();
-const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+const materials = Array.isArray(mesh.material)
+  ? mesh.material
+  : [mesh.material];
 for (const material of materials) {
   for (const value of Object.values(material)) {
     if (value?.isTexture) value.dispose(); // material.dispose() leaves its textures alone
@@ -431,7 +458,12 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111318); // the WebGPU canvas is transparent by default
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000,
+);
 camera.position.set(0, 1.5, 5);
 
 const cube = new THREE.Mesh(

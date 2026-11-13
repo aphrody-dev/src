@@ -109,12 +109,14 @@ const now = () => new Date().toISOString();
 // fleet.toml hosts say; every other role runs where its host lists it.
 const FACTORY = "fr1";
 export function accepts(fleet: Fleet, host: string, role: string): boolean {
-  if (!fleet.roles[role] || !fleet.hosts[host]?.roles.includes(role)) return false;
+  if (!fleet.roles[role] || !fleet.hosts[host]?.roles.includes(role))
+    return false;
   return !fleet.roles[role].heavy || host === FACTORY;
 }
 // Target host of a new task: heavy roles default to the factory, others to any accepting host.
 export function place(fleet: Fleet, role: string, host?: string): string {
-  const h = host && host !== "any" ? host : fleet.roles[role]?.heavy ? FACTORY : "any";
+  const h =
+    host && host !== "any" ? host : fleet.roles[role]?.heavy ? FACTORY : "any";
   if (h === "any") {
     if (!Object.keys(fleet.hosts).some((x) => accepts(fleet, x, role)))
       throw new Error(`no host accepts role ${role}`);
@@ -171,7 +173,12 @@ const GH_TOKEN_TS = join(HERE, "gh-token.ts");
 let ghWrapperDir: string | null | undefined;
 function ghEnv(): Record<string, string> {
   if (WIN) return {};
-  const r = Bun.spawnSync([process.execPath, GH_TOKEN_TS], { stdout: "pipe", stderr: "pipe", timeout: 60_000, env: { ...process.env, SRC_ROOT: SRC, AGENTS_HOME: HOME } });
+  const r = Bun.spawnSync([process.execPath, GH_TOKEN_TS], {
+    stdout: "pipe",
+    stderr: "pipe",
+    timeout: 60_000,
+    env: { ...process.env, SRC_ROOT: SRC, AGENTS_HOME: HOME },
+  });
   const t = r.stdout.toString().trim();
   if (r.exitCode !== 0 || !t) {
     const err = r.stderr.toString().trim();
@@ -179,13 +186,22 @@ function ghEnv(): Record<string, string> {
     return {};
   }
   if (ghWrapperDir === undefined) {
-    const w = Bun.spawnSync([process.execPath, GH_TOKEN_TS, "install", join(HOME, "bin")], { stdout: "pipe", env: { ...process.env, SRC_ROOT: SRC, AGENTS_HOME: HOME } });
-    ghWrapperDir = w.exitCode === 0 && w.stdout.toString().trim() ? join(HOME, "bin") : null;
+    const w = Bun.spawnSync(
+      [process.execPath, GH_TOKEN_TS, "install", join(HOME, "bin")],
+      {
+        stdout: "pipe",
+        env: { ...process.env, SRC_ROOT: SRC, AGENTS_HOME: HOME },
+      },
+    );
+    ghWrapperDir =
+      w.exitCode === 0 && w.stdout.toString().trim() ? join(HOME, "bin") : null;
   }
   return {
     GH_TOKEN: t,
     GITHUB_TOKEN: t,
-    ...(ghWrapperDir ? { PATH: `${ghWrapperDir}:${process.env.PATH ?? ""}` } : {}),
+    ...(ghWrapperDir
+      ? { PATH: `${ghWrapperDir}:${process.env.PATH ?? ""}` }
+      : {}),
     GIT_CONFIG_COUNT: "2",
     GIT_CONFIG_KEY_0: "credential.https://github.com.helper",
     GIT_CONFIG_VALUE_0: "",
@@ -595,8 +611,10 @@ export function defaultClis(
     claude: () =>
       !!(env.CLAUDE_CODE_OAUTH_TOKEN || env.ANTHROPIC_API_KEY) ||
       existsSync(join(home, ".claude", ".credentials.json")),
-    codex: () => !!env.OPENAI_API_KEY || existsSync(join(home, ".codex", "auth.json")),
-    opencode: () => existsSync(join(home, ".local", "share", "opencode", "auth.json")),
+    codex: () =>
+      !!env.OPENAI_API_KEY || existsSync(join(home, ".codex", "auth.json")),
+    opencode: () =>
+      existsSync(join(home, ".local", "share", "opencode", "auth.json")),
   };
   return DEFAULT_CLIS.filter((c) => has(c) && authed[c]!());
 }
@@ -1030,17 +1048,27 @@ function githubEvents() {
   if (HOST !== FLEET.ship.host) return;
   const env = credEnv();
   if (!env.CF_QUEUES_TOKEN) return;
-  const r = Bun.spawnSync([process.execPath, join(HERE, "github-events.ts"), "pull"], {
-    stdout: "pipe",
-    stderr: "pipe",
-    timeout: 90_000,
-    env: { ...process.env, CF_QUEUES_TOKEN: env.CF_QUEUES_TOKEN, SRC_ROOT: SRC, AGENTS_HOME: HOME, AGENTS_HOST: HOST },
-  });
+  const r = Bun.spawnSync(
+    [process.execPath, join(HERE, "github-events.ts"), "pull"],
+    {
+      stdout: "pipe",
+      stderr: "pipe",
+      timeout: 90_000,
+      env: {
+        ...process.env,
+        CF_QUEUES_TOKEN: env.CF_QUEUES_TOKEN,
+        SRC_ROOT: SRC,
+        AGENTS_HOME: HOME,
+        AGENTS_HOST: HOST,
+      },
+    },
+  );
   const out = r.stdout.toString().trim();
   if (r.exitCode === 0) {
     const j = JSON.parse(out || "{}");
     if (j.pulled) log("github_events", j);
-  } else log("github_events", { error: r.stderr.toString().trim().slice(-300) });
+  } else
+    log("github_events", { error: r.stderr.toString().trim().slice(-300) });
 }
 
 function health() {
@@ -1067,10 +1095,15 @@ function route() {
     } catch {
       continue;
     }
-    if ((t.host === HOST || t.host === "any") && accepts(FLEET, HOST, t.role)) continue;
+    if ((t.host === HOST || t.host === "any") && accepts(FLEET, HOST, t.role))
+      continue;
     const to = routeTarget(FLEET, HOST, t);
     if (!to) {
-      log("route_error", { id: t.id, role: t.role, err: "no reachable host takes this role" });
+      log("route_error", {
+        id: t.id,
+        role: t.role,
+        err: "no reachable host takes this role",
+      });
       continue;
     }
     try {
@@ -1084,8 +1117,13 @@ function route() {
   }
 }
 // Explicit target if it takes the role, else the factory for heavy roles, else the first ssh host taking it.
-export function routeTarget(fleet: Fleet, from: string, t: Pick<Task, "host" | "role">): string | null {
-  const ok = (h: string) => h !== from && h !== "pc" && accepts(fleet, h, t.role);
+export function routeTarget(
+  fleet: Fleet,
+  from: string,
+  t: Pick<Task, "host" | "role">,
+): string | null {
+  const ok = (h: string) =>
+    h !== from && h !== "pc" && accepts(fleet, h, t.role);
   if (t.host !== "any" && ok(t.host)) return t.host;
   if (fleet.roles[t.role]?.heavy) return ok(FACTORY) ? FACTORY : null;
   return Object.keys(fleet.hosts).find(ok) ?? null;

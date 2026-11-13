@@ -3,7 +3,7 @@ lep: YYYY-MM-DD-kebab-name
 title: Short, descriptive title
 authors:
   - Author 1
-status: Draft  # Draft → Accepted or Rejected. Set when the proposal is merged.
+status: Draft # Draft → Accepted or Rejected. Set when the proposal is merged.
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 # discussion: <link to a public discussion of this proposal> (optional; public links only)
@@ -67,11 +67,11 @@ updated: YYYY-MM-DD
 
 **Assumptions**
 
-- **Assumption:** <premise> — *invalidated if:* <what would prove this wrong>
+- **Assumption:** <premise> — _invalidated if:_ <what would prove this wrong>
 
 **Risks**
 
-- **Risk:** <failure mode> — *mitigation:* <how addressed, or accepted>
+- **Risk:** <failure mode> — _mitigation:_ <how addressed, or accepted>
 
 ## Drawbacks
 
@@ -83,13 +83,13 @@ updated: YYYY-MM-DD
 
 <description>
 
-*Rejected because:* <reason>
+_Rejected because:_ <reason>
 
 ### <alternative 2>
 
 <description>
 
-*Rejected because:* <reason>
+_Rejected because:_ <reason>
 
 ## Prior Art
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In the introduction to this series it says "HTML elements are the nodes that
 make up the [Document Object Model](https://developer.mozilla.org/docs/Web/API/Document_Object_Model)."
 We've discussed the type of element nodes. In this section we discuss element APIs that enable querying those nodes.
@@ -34,7 +35,7 @@ information about an element's attributes. For example, we can use [`HTMLImageEl
 get the `alt` attributes of all the images:
 
 ```javascript
-let allImages = document.querySelectorAll('img');
+let allImages = document.querySelectorAll("img");
 allImages.forEach((imageInstance) => {
   console.log(imageInstance.alt);
 });
@@ -44,7 +45,7 @@ HTML interfaces provide more than just access to an element's attributes; you ca
 find the read-only [`HTMLElement.offsetHeight`](https://developer.mozilla.org/docs/Web/API/HTMLElement/offsetHeight) to get the height of each section in our page, relative to the layout.
 
 ```javascript
-let allSections = document.querySelectorAll('section');
+let allSections = document.querySelectorAll("section");
 allSections.forEach((sectionInstance) => {
   console.log(sectionInstance.offsetHeight);
 });
@@ -182,17 +183,21 @@ We used Node's [`appendChild()`](https://developer.mozilla.org/docs/Web/API/Node
 The Node interface provides many useful properties and methods for querying and manipulating the DOM.
 
 ```javascript
-customElements.define('star-rating',
+customElements.define(
+  "star-rating",
   class extends HTMLElement {
     constructor() {
       super(); // Always call super first in constructor
-      const starRating = document.getElementById('star-rating-template').content;
+      const starRating = document.getElementById(
+        "star-rating-template",
+      ).content;
       const shadowRoot = this.attachShadow({
-        mode: 'open'
+        mode: "open",
       });
       shadowRoot.appendChild(starRating.cloneNode(true));
     }
-  });
+  },
+);
 ```
 
 The [`attachShadow()`](https://developer.mozilla.org/docs/Web/API/Element/attachShadow) method is a method of the Element

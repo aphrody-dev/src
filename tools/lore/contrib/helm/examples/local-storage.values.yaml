@@ -4,7 +4,7 @@
 
 image:
   repository: ghcr.io/epicgames/lore/loreserver
-  tag: ""  # empty = the chart's appVersion
+  tag: "" # empty = the chart's appVersion
 
 # tiered is the chart default; shown here for clarity.
 topology:
@@ -45,7 +45,7 @@ service:
 # cert-manager issues a stable self-signed cert. Clients clone with lore:// (skip
 # verify); add tls.extraSANs + use lores:// for verified TLS.
 tls:
-  mode: certManager   # requires cert-manager installed in the cluster
+  mode: certManager # requires cert-manager installed in the cluster
 
 # Open server (no auth). Set enabled: true + jwksEndpoint to require JWT.
 auth:

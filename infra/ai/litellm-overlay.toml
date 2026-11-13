@@ -23,4 +23,10 @@ budget_duration = "1d"
 
 # Ordre de préférence publié à côté de la config (lu par le relais) : gratuits ou locaux d'abord.
 [prefer]
-order = ["ollama/*", "llamacpp/*", "cloudflare-workers-ai/*", "google-vertex-aphrody/*", "anthropic/*"]
+order = [
+  "ollama/*",
+  "llamacpp/*",
+  "cloudflare-workers-ai/*",
+  "google-vertex-aphrody/*",
+  "anthropic/*",
+]

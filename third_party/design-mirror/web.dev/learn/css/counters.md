@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Many types of content are best represented as an HTML [list](https://web.dev/learn/html/lists.md.txt). For ordered list content, like recipe steps or footnotes for an article, the marker often contains information as well. CSS provides several ways to control the counters in a list.
 
 ## List styles
@@ -55,6 +56,7 @@ a:after {
   vertical-align: super;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VYLNybr?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VYLNybr by web-dot-dev on Codepen">
 </iframe>
 
@@ -64,9 +66,10 @@ What happens when you nest a list inside of a list? The `list-item` counter is i
 
 ```css
 li::marker {
-  content: counters(list-item, ".")
-  }
+  content: counters(list-item, ".");
+}
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/azvYevG?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen azvYevG by web-dot-dev on Codepen">
 </iframe>
 

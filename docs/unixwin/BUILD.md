@@ -17,15 +17,15 @@ Rien ne compile sur le poste. Le binaire `niu.exe` en service se construit à pa
 Le pilote `scripts/unixwin/unixwin.ts` (bun) enchaîne les étapes. Les recettes sont dans
 `scripts/unixwin/unixwin.just`, importé par le justfile racine.
 
-| Commande | Effet |
-|---|---|
-| `just unixwin-status` | avance et retard de chaque fork sur l'amont (`gh api compare`), pins, sha256 du `niu.exe` installé |
-| `just unixwin-sync` | clones manquants (`packages/machine/src/forks.ts <noms>`), puis pins dans `src.lock.json` |
-| `just unixwin-build [triple]` | build sur prd (`ay ssh cp` + `ay ssh exec`), rapatriement dans `var/unixwin/prd/<triple>`, contrôle sha256 |
-| `just unixwin-fetch-ci [triple]` | artefact du run `aphrody build` réussi au commit épinglé, dans `var/unixwin/ci/<triple>`, contrôle sha256 |
+| Commande                                  | Effet                                                                                                                                                                                                                                                                                                   |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `just unixwin-status`                     | avance et retard de chaque fork sur l'amont (`gh api compare`), pins, sha256 du `niu.exe` installé                                                                                                                                                                                                      |
+| `just unixwin-sync`                       | clones manquants (`packages/machine/src/forks.ts <noms>`), puis pins dans `src.lock.json`                                                                                                                                                                                                               |
+| `just unixwin-build [triple]`             | build sur prd (`ay ssh cp` + `ay ssh exec`), rapatriement dans `var/unixwin/prd/<triple>`, contrôle sha256                                                                                                                                                                                              |
+| `just unixwin-fetch-ci [triple]`          | artefact du run `aphrody build` réussi au commit épinglé, dans `var/unixwin/ci/<triple>`, contrôle sha256                                                                                                                                                                                               |
 | `just unixwin-install [ci\|prd] [triple]` | remplace `niu.exe` et ses copies identiques (`winuxcmd/bin/bash.exe`, `sh.exe`) dans `%LOCALAPPDATA%\Programs\Niubash` ; copie revérifiée (`*.new`), échange par renommage avec restauration ; l'ancien binaire devient `*.old-<horodatage>`, purgé à l'installation suivante s'il était encore exécuté |
-| `just unixwin-test` | suite bun de bout en bout (`apps/unixwin/tests`) |
-| `just unixwin-test-fr1 [filtre]` | `cargo test` de rubash sur fr1 (usine) au commit épinglé (`infra/unixwin/fr1-test.sh`, `aphrody-heavy`, 4 tâches) |
+| `just unixwin-test`                       | suite bun de bout en bout (`apps/unixwin/tests`)                                                                                                                                                                                                                                                        |
+| `just unixwin-test-fr1 [filtre]`          | `cargo test` de rubash sur fr1 (usine) au commit épinglé (`infra/unixwin/fr1-test.sh`, `aphrody-heavy`, 4 tâches)                                                                                                                                                                                       |
 
 Mise à jour d'un fork : commit sur sa branche par défaut dans `third_party/<nom>`, push, puis
 `bun scripts/unixwin/unixwin.ts lock` et commit de `src.lock.json`. `ay lock --lock-only` réécrit tout le lock

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 If you're reading this, you're using the World Wide Web.
 Your forms may be used by people speaking different languages,
 people from different countries, and people with different cultural backgrounds.
@@ -21,7 +22,7 @@ This attribute enables screen readers to invoke the correct pronunciation,
 and helps browsers offer a translation of the page if the defined language is not the default browser language.
 
 ```html
-<html lang="en-us">
+<html lang="en-us"></html>
 ```
 
 Learn more about the [`lang`](https://developer.mozilla.org/docs/Web/HTML/Global_attributes/lang) attribute.
@@ -31,10 +32,18 @@ How can you make sure search engines and browsers know about the translated vers
 You can add `<link>` elements in your site's `<head>` describing the alternate versions.
 
 ```html
-<link rel="alternate" title="The form element"
-  href="https://example.com/en/form" hreflang="en">
-<link rel="alternate" title="Das Formularelement"
-  href="https://example.com/de/form" hreflang="de">
+<link
+  rel="alternate"
+  title="The form element"
+  href="https://example.com/en/form"
+  hreflang="en"
+/>
+<link
+  rel="alternate"
+  title="Das Formularelement"
+  href="https://example.com/de/form"
+  hreflang="de"
+/>
 ```
 
 ## Help users who speak another language to use your form

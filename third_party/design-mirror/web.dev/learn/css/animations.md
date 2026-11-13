@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 022: Animation](https://thecsspodcast.libsyn.com/022-animation)
 
 Sometimes you see little helpers on interfaces that when clicked,
@@ -72,12 +73,12 @@ You could re-create the same rule like this:
 
 ```css
 @keyframes my-animation {
-    0% {
-        transform: translateY(20px);
-    }
-    100% {
-        transform: translateY(0px);
-    }
+  0% {
+    transform: translateY(20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 ```
 
@@ -97,6 +98,7 @@ represent the changes for each of these keyframes.
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/mdRXGeJ?height=300&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen mdRXGeJ by web-dot-dev on Codepen"></iframe>
 
 ## The `animation` properties
@@ -127,7 +129,7 @@ Browser Support
 
 ```css
 .my-element {
-    animation-duration: 10s;
+  animation-duration: 10s;
 }
 ```
 
@@ -149,7 +151,7 @@ Browser Support
 
 To help recreate natural motion in animation, you can use timing functions that
 calculate the speed of an animation at each point. Calculated values are often
-*curved* , making the animation run at variable speeds over the course of
+_curved_ , making the animation run at variable speeds over the course of
 `animation-duration`, and making the element appear to bounce if the browser
 calculates a value beyond those defined in `@keyframes`.
 
@@ -159,9 +161,10 @@ There are several keywords available as presets in CSS, which are used as the va
 
 ```css
 .my-element {
-    animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/YzNeJbL?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen YzNeJbL by web-dot-dev on Codepen"></iframe>
 
 Easing function values appear to curve because easing is calculated using a
@@ -172,7 +175,7 @@ which accepts four number values: `x1`, `y1`, `x2`, `y2`.
 
 ```css
 .my-element {
-    animation-timing-function: cubic-bezier(.42, 0, .58, 1);
+  animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
 }
 ```
 
@@ -189,7 +192,7 @@ you break the timeline into defined intervals of **equal duration**.
 
 ```css
 .my-element {
-    animation-timing-function: steps(10, end);
+  animation-timing-function: steps(10, end);
 }
 ```
 
@@ -218,7 +221,7 @@ Browser Support
 
 ```css
 .my-element {
-    animation-iteration-count: 10;
+  animation-iteration-count: 10;
 }
 ```
 
@@ -245,7 +248,7 @@ Browser Support
 
 ```css
 .my-element {
-    animation-direction: reverse;
+  animation-direction: reverse;
 }
 ```
 
@@ -273,7 +276,7 @@ Browser Support
 
 ```css
 .my-element {
-    animation-delay: 5s;
+  animation-delay: 5s;
 }
 ```
 
@@ -281,7 +284,7 @@ The [animation-delay](https://developer.mozilla.org/docs/Web/CSS/animation-delay
 property defines how long the browser waits before starting the animation.
 Like the `animation-duration` property, this accepts a time value.
 
-Unlike `animation-duration`, you *can* define `animation-delay` as a negative
+Unlike `animation-duration`, you _can_ define `animation-delay` as a negative
 value, which makes the animation start at the corresponding point in your
 timeline. For example, if your animation is 10 seconds long and you set
 `animation-delay` to `-5s`, the animation starts from halfway through your
@@ -301,7 +304,7 @@ Browser Support
 
 ```css
 .my-element:hover {
-    animation-play-state: paused;
+  animation-play-state: paused;
 }
 ```
 
@@ -350,7 +353,7 @@ following order:
 
 ```css
 .my-element {
-    animation: my-animation 10s ease-in-out 1s infinite forwards forwards running;
+  animation: my-animation 10s ease-in-out 1s infinite forwards forwards running;
 }
 ```
 

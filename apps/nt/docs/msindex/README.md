@@ -16,17 +16,17 @@ Empreinte du graphe : `1b9767a8e6b276d7c3766b9379880d9e815ab34b8112e7b7e5f66ec5d
 
 ## Preuves
 
-| contrôle | réussis | total | méthode |
-|---|---|---|---|
-| RoGetActivationFactory | 1820 | 1848 | fabrique obtenue (IID_IActivationFactory), classes en processus |
-| activation-export | 1847 | 1848 | DllPath exporte DllGetActivationFactory |
-| apiset-host | 857 | 989 | PEB->ApiSetMap : le contrat a une DLL hôte |
-| dotnet-impl | 8262 | 8262 | type de référence défini (TypeDef) par le runtime partagé, redirections ExportedType suivies |
-| loader | 16697 | 16806 | LoadLibraryExW(DONT_RESOLVE_DLL_REFERENCES) + GetProcAddress (processus enfant) |
-| pe-export | 18409 | 18520 | contrat API Set résolu, nom présent dans la table d'exports PE de l'hôte |
-| ucrtbase-export | 1257 | 1529 | déclaration _ACRTIMP exportée par ucrtbase.dll |
-| wasdk-activation | 1665 | 1665 | appxfragment du paquet -> DLL du paquet exportant DllGetActivationFactory |
-| winrt-registered | 1864 | 1891 | HKLM\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId |
+| contrôle               | réussis | total | méthode                                                                                      |
+| ---------------------- | ------- | ----- | -------------------------------------------------------------------------------------------- |
+| RoGetActivationFactory | 1820    | 1848  | fabrique obtenue (IID_IActivationFactory), classes en processus                              |
+| activation-export      | 1847    | 1848  | DllPath exporte DllGetActivationFactory                                                      |
+| apiset-host            | 857     | 989   | PEB->ApiSetMap : le contrat a une DLL hôte                                                   |
+| dotnet-impl            | 8262    | 8262  | type de référence défini (TypeDef) par le runtime partagé, redirections ExportedType suivies |
+| loader                 | 16697   | 16806 | LoadLibraryExW(DONT_RESOLVE_DLL_REFERENCES) + GetProcAddress (processus enfant)              |
+| pe-export              | 18409   | 18520 | contrat API Set résolu, nom présent dans la table d'exports PE de l'hôte                     |
+| ucrtbase-export        | 1257    | 1529  | déclaration _ACRTIMP exportée par ucrtbase.dll                                               |
+| wasdk-activation       | 1665    | 1665  | appxfragment du paquet -> DLL du paquet exportant DllGetActivationFactory                    |
+| winrt-registered       | 1864    | 1891  | HKLM\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId                                    |
 
 ## Nœuds par type
 

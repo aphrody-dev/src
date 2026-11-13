@@ -7,18 +7,18 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Penny McLachlan [LinkedIn](https://www.linkedin.com/in/pjmclachlan) [Bluesky](https://bsky.app/profile/digitaltransient.bsky.social)  Rick Viscomi [GitHub](https://github.com/rviscomi) [Bluesky](https://bsky.app/profile/rviscomi.dev) [Homepage](https://developer.chrome.com/rviscomi.dev/)
+
+Penny McLachlan [LinkedIn](https://www.linkedin.com/in/pjmclachlan) [Bluesky](https://bsky.app/profile/digitaltransient.bsky.social) Rick Viscomi [GitHub](https://github.com/rviscomi) [Bluesky](https://bsky.app/profile/rviscomi.dev) [Homepage](https://developer.chrome.com/rviscomi.dev/)
 
 Chrome 80 introduced [quieter permission UI for notifications](https://blog.chromium.org/2020/01/introducing-quieter-permission-ui-for.html).
 To help site owners understand notification permission metrics, we're adding this
 data to the [Chrome User Experience Report](https://developer.chrome.com/docs/crux.md.txt)
-(CrUX) in the [202001 dataset](https://console.cloud.google.com/bigquery?p=chrome-ux-report&d=all&t=202001&page=table), released on February 11,
-2020. This will allow site owners gain a better understanding of typical user
+(CrUX) in the [202001 dataset](https://console.cloud.google.com/bigquery?p=chrome-ux-report&d=all&t=202001&page=table), released on February 11, 2020. This will allow site owners gain a better understanding of typical user
 notification permission responses for their sites and comparable sites in
 their category.
 
 CrUX only provides a high level summary of notification permission request
-*Accept* , *Block* , *Ignore* , and *Dismiss* rates. We recommend you augment
+_Accept_ , _Block_ , _Ignore_ , and _Dismiss_ rates. We recommend you augment
 this data with detailed analytics from your preferred analytics platform.
 
 ## About CrUX notification permission data
@@ -35,17 +35,17 @@ Users can actively or passively take one of four actions, described in the
 table below.
 
 |---|---|
-| *Allow* | The user explicitly allows the website to show them notifications. |
-| *Block* | The user has explicitly disallowed the website from showing them notifications. |
-| *Dismiss* | The user closes the permission prompt without any explicit response. Tab close counts as a dismiss. On mobile, tab switch also counts as a dismiss action, and the quiet UI has an explicit user dismiss option. |
-| *Ignore* | The user does not interact with the prompt at all. Navigation events also count as an ignore, such as the back button or navigation using the omnibox. |
+| _Allow_ | The user explicitly allows the website to show them notifications. |
+| _Block_ | The user has explicitly disallowed the website from showing them notifications. |
+| _Dismiss_ | The user closes the permission prompt without any explicit response. Tab close counts as a dismiss. On mobile, tab switch also counts as a dismiss action, and the quiet UI has an explicit user dismiss option. |
+| _Ignore_ | The user does not interact with the prompt at all. Navigation events also count as an ignore, such as the back button or navigation using the omnibox. |
 
 The CrUX dataset includes data for each of these user actions as a percentage
 of responses.
 
 ## How to interpret your data
 
-*Block* and *Accept* rates are the two most important metrics. As described in
+_Block_ and _Accept_ rates are the two most important metrics. As described in
 the [quieter notification permissions blog post](https://blog.chromium.org/2020/01/introducing-quieter-permission-ui-for.html),
 Chrome will automatically enroll sites with very low Accept rates into the
 quieter UI. Block rate is also a strong signal. When a user clicks
@@ -113,11 +113,11 @@ News. We use the `SUM` function to add up the permission rates for each
 dimension (form factor and effective connection type) so we get an
 origin-wide view.
 
-| accept | deny | ignore | dismiss |
-|---|---|---|---|
-| 0.8231 | 0.0476 | 0.0502 | 0.0791 |
+| accept | deny   | ignore | dismiss |
+| ------ | ------ | ------ | ------- |
+| 0.8231 | 0.0476 | 0.0502 | 0.0791  |
 
- Pie chart representing accept rates
+Pie chart representing accept rates
 
 The results show that 82.3% of users accept the notification permission
 prompt, while 4.8% deny, 5.0% ignore, and 7.9% dismiss it.

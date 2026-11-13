@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 How to add Lighthouse to a continuous integration system, such as GitHub Actions.
 
- Katie Hempenius [X](https://twitter.com/katiehempenius)
+Katie Hempenius [X](https://twitter.com/katiehempenius)
 
 [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) is a suite of
 tools for using Lighthouse during continuous integration. Lighthouse CI can be
@@ -79,12 +80,14 @@ easiest way to make sure that your `lighthouserc.js` is configured correctly.
    repo](https://github.com/GoogleChrome/lighthouse-ci/blob/master/docs/configuration.md#build-context),
    the instructions in this article assume that your project repo is configured to
    use git.
+
 2. In the root of your repository, create a `lighthouserc.js` [configuration
    file](https://github.com/GoogleChrome/lighthouse-ci/blob/v0.4.1/docs/configuration.md#configuration-file).
 
    ```bash
    touch lighthouserc.js
    ```
+
 3. Add the following code to `lighthouserc.js`. This code is an empty
    Lighthouse CI configuration. You will be adding to this configuration in
    later steps.
@@ -92,15 +95,12 @@ easiest way to make sure that your `lighthouserc.js` is configured correctly.
    ```javascript
    module.exports = {
      ci: {
-       collect: {
-         /* Add configuration here */
-       },
-       upload: {
-         /* Add configuration here */
-       },
+       collect: {/* Add configuration here */},
+       upload: {/* Add configuration here */},
      },
    };
    ```
+
 4. Every time that Lighthouse CI runs, it starts a server to serve your site.
    This server is what enables Lighthouse to load your site even when no other
    servers are running. When Lighthouse CI finishes running, it will
@@ -132,6 +132,7 @@ easiest way to make sure that your `lighthouserc.js` is configured correctly.
      startServerCommand: 'npm run start',
    }
    ```
+
 5. Add the
    [`url`](https://github.com/GoogleChrome/lighthouse-ci/blob/master/docs/configuration.md#url)
    property to the `ci.collect` object to indicate URL(s) that Lighthouse CI
@@ -142,7 +143,7 @@ easiest way to make sure that your `lighthouserc.js` is configured correctly.
    ```javascript
    collect: {
      // ...
-     url: ['http://localhost:8080']
+     url: ["http://localhost:8080"];
    }
    ```
 
@@ -173,6 +174,7 @@ easiest way to make sure that your `lighthouserc.js` is configured correctly.
    ```
 
    (This URL won't work because the report has already been deleted.)
+
 7. Run the Lighthouse CI CLI from the terminal using the `autorun` command.
    This will run Lighthouse three times and upload the median Lighthouse
    report.
@@ -217,6 +219,7 @@ easiest way to make sure that your `lighthouserc.js` is configured correctly.
    `lighthouserc.js`. For example, the `lighthouserc.js` configuration below
    indicates that five Lighthouse runs should be collected every time `autorun`
    executes.
+
 8. Update `lighthouserc.js` to use the `numberOfRuns` property:
 
    ```javascript
@@ -229,6 +232,7 @@ easiest way to make sure that your `lighthouserc.js` is configured correctly.
      },
    };
    ```
+
 9. Re-run the `autorun` command:
 
    ```bash
@@ -305,9 +309,9 @@ module.exports = {
     },
     assert: {
       assertions: {
-        'categories:performance': ['warn', {minScore: 1}],
-        'categories:accessibility': ['error', {minScore: 1}]
-      }
+        "categories:performance": ["warn", { minScore: 1 }],
+        "categories:accessibility": ["error", { minScore: 1 }],
+      },
     },
     upload: {
       // ...
@@ -344,12 +348,14 @@ to display these results on each pull request.
    mkdir .github
    mkdir .github/workflows
    ```
+
 2. In `.github/workflows` create a file named `lighthouse-ci.yaml`. This file
    will hold the configuration for a new workflow.
 
    ```bash
    touch lighthouse-ci.yaml
    ```
+
 3. Add the following text to `lighthouse-ci.yaml`.
 
    ```yaml
@@ -380,6 +386,7 @@ to display these results on each pull request.
    - Install and configure Node
    - Install required npm packages
    - Run Lighthouse CI and upload the results to temporary public storage.
+
 4. Commit these changes and push them to GitHub. If you've correctly followed
    the steps above, pushing code to GitHub will trigger running the workflow
    you just added.
@@ -389,12 +396,9 @@ to display these results on each pull request.
    **Build project and Run Lighthouse CI** workflow listed under your most
    recent commit.
 
-   
-
    You can navigate to the Lighthouse report corresponding to a particular commit
    from the **Actions** tab. Click on the commit, click on the **Lighthouse CI**
    workflow step, then expand the results of the **run Lighthouse CI** step.
-   
 
    You've just set up a GitHub Action to run Lighthouse CI. This will be most
    useful when used in conjunction with a GitHub [status
@@ -425,7 +429,6 @@ The steps below explain how to set up a status check for Lighthouse CI.
 5. To add the token, navigate to the **Settings** page of your GitHub
    repository, click **Secrets** , then click **Add a new secret**.
 
-   
 6. Set the **Name** field to `LHCI_GITHUB_APP_TOKEN` and set the **Value**
    field to the token that you copied in the last step and then click the **Add
    secret** button.
@@ -449,7 +452,6 @@ The steps below explain how to set up a status check for Lighthouse CI.
 The Lighthouse CI server provides a dashboard for exploring historical
 Lighthouse reporting. It can also act as a private, long-term datastore for
 Lighthouse reports.
- 
 
 1. Choose which commits to compare.
 2. The amount that the Lighthouse score has changed between the two commits.

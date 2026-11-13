@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 A logical tab order is important for users to have a smooth keyboard experience.
 Screen readers and other assistive technologies navigate the page in DOM order.
 The flow of information should make sense.

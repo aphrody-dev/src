@@ -79,7 +79,9 @@ async function main() {
     case "depot": {
       const sub = args[1] || "status";
       if (!isFfiAvailable()) {
-        console.error("Error: aphrody_ffi (crates/ffi) not found or failed to load");
+        console.error(
+          "Error: aphrody_ffi (crates/ffi) not found or failed to load",
+        );
         process.exit(1);
       }
       switch (sub) {
@@ -105,14 +107,28 @@ async function main() {
             process.exit(1);
           }
           const content = await Bun.file(target).text();
-          console.log(JSON.stringify(ffiTreeSitterSymbols(target, content), null, 2));
+          console.log(
+            JSON.stringify(ffiTreeSitterSymbols(target, content), null, 2),
+          );
           break;
         }
         case "ingest": {
           const target = args[2] || ".";
-          const maxTokens = parseInt(args.slice(3).find((a) => a.startsWith("--tokens="))?.split("=")[1] || "0", 10);
+          const maxTokens = parseInt(
+            args
+              .slice(3)
+              .find((a) => a.startsWith("--tokens="))
+              ?.split("=")[1] || "0",
+            10,
+          );
           const outline = args.includes("--outline");
-          console.log(JSON.stringify(ffiIngestCodebase(target, maxTokens, outline), null, 2));
+          console.log(
+            JSON.stringify(
+              ffiIngestCodebase(target, maxTokens, outline),
+              null,
+              2,
+            ),
+          );
           break;
         }
         case "graph": {
@@ -123,7 +139,9 @@ async function main() {
           }
           const target = args[3] || ".";
           const dfs = args.includes("--dfs");
-          console.log(JSON.stringify(ffiGraphQuery(target, term, dfs), null, 2));
+          console.log(
+            JSON.stringify(ffiGraphQuery(target, term, dfs), null, 2),
+          );
           break;
         }
         case "repo": {
@@ -139,7 +157,8 @@ async function main() {
       break;
     }
     case "status": {
-      const includeThirdParty = args.includes("--all") || args.includes("--third-party");
+      const includeThirdParty =
+        args.includes("--all") || args.includes("--third-party");
       const target = args.slice(1).find((a) => !a.startsWith("-"));
       if (target) {
         const repoPath = resolve(target);
@@ -529,18 +548,20 @@ async function main() {
       console.log(
         `[4-Pillar VCS Governance Audit] Root: ${report.srcRoot} | Junctions: ${report.rootJunctionCount} (${report.danglingJunctions.length} dangling)\n`,
       );
-      console.log(
-        "PILLAR      STATUS  HEAD          REMOTES   SUMMARY",
-      );
+      console.log("PILLAR      STATUS  HEAD          REMOTES   SUMMARY");
       console.log(
         "----------------------------------------------------------------------------------------",
       );
       for (const p of Object.values(report.pillars)) {
         const nameCol = p.pillar.toUpperCase().padEnd(11);
         const stCol = (p.healthy ? "OK" : "FAIL").padEnd(7);
-        const headCol = (p.headCommit ? p.headCommit.substring(0, 10) : "-").padEnd(13);
+        const headCol = (
+          p.headCommit ? p.headCommit.substring(0, 10) : "-"
+        ).padEnd(13);
         const remCol = `${Object.keys(p.remotes).length} rem`.padEnd(9);
-        console.log(`${nameCol} ${stCol} ${headCol} ${remCol} ${p.details.join("; ")}`);
+        console.log(
+          `${nameCol} ${stCol} ${headCol} ${remCol} ${p.details.join("; ")}`,
+        );
       }
       console.log(
         `\nOverall Status: ${report.allHealthy ? "PASS (Git + Chromium + Kernel + AOSP aligned)" : "FAIL"}`,

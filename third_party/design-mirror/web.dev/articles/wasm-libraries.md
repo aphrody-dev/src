@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 A showcase of tools now available on the web thanks to WebAssembly.
 
- Thomas Nattestad [X](https://twitter.com/fractorious)
+Thomas Nattestad [X](https://twitter.com/fractorious)
 
 WebAssembly enables developers to bring new performant functionality to the web from other languages. Over the past few years developers have really taken advantage of the possibilities. This post showcases just a few of the shiny new tools that you can benefit from, thanks in part to WebAssembly.
 
@@ -49,4 +50,4 @@ OpenCV is an industry standard of programming functions mainly for real-time com
 
 In addition to these specific examples, there is much to be excited about in terms of [WebAssembly's potential to change the pace of new web functionality](https://blog.chromium.org/2023/04/how-webassembly-is-accelerating-new-web.html). Chrome has even set up [the Advanced Web Apps Fund](https://developer.chrome.com/blog/advanced-web-apps-fund) that can help developers fund their work to advance the web functionality available to all developers!
 
-*Hero image from [Pexels](https://www.pexels.com/photo/low-angle-photography-of-library-1296000/), by [Ann Marie Kennon](https://www.pexels.com/@ann-marie-kennon-547933/).*
+_Hero image from [Pexels](https://www.pexels.com/photo/low-angle-photography-of-library-1296000/), by [Ann Marie Kennon](https://www.pexels.com/@ann-marie-kennon-547933/)._

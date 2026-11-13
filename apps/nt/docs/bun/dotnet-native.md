@@ -4,13 +4,13 @@ Contexte : appeler du .NET 11 depuis bun sans la couche Node-API de node-api-dot
 
 ## Sources (relevées le 2026-11-12)
 
-| Source | Révision |
-|---|---|
-| bun (fork aphrody-labs, amont oven-sh) | `4b8463ee11cb` (2026-11-12), bun 1.4.4 |
-| JavaScriptCore FFI (oven-sh/WebKit, épinglé par bun `scripts/build/deps/webkit.ts:6`) | `6fc709c29840`, `Source/JavaScriptCore/ffi/` |
-| dotnet/runtime | `release/11.0` @ `426561366bbf` (2026-11-11) : `src/native/corehost/hostfxr.h`, `coreclr_delegates.h`, `docs/design/features/native-hosting.md`, `ComponentActivator.cs` |
-| Microsoft Learn | « Building native libraries », « Native code interop with Native AOT », « Disabled runtime marshalling », « NativeAOT uses lib prefix… (.NET 11) », « MSBuild reference : EnableDynamicLoading » |
-| Mesures | locales et CI, `docs/research/bench/dotnet-ffi-*.json` (section 2) |
+| Source                                                                                | Révision                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| bun (fork aphrody-labs, amont oven-sh)                                                | `4b8463ee11cb` (2026-11-12), bun 1.4.4                                                                                                                                                           |
+| JavaScriptCore FFI (oven-sh/WebKit, épinglé par bun `scripts/build/deps/webkit.ts:6`) | `6fc709c29840`, `Source/JavaScriptCore/ffi/`                                                                                                                                                     |
+| dotnet/runtime                                                                        | `release/11.0` @ `426561366bbf` (2026-11-11) : `src/native/corehost/hostfxr.h`, `coreclr_delegates.h`, `docs/design/features/native-hosting.md`, `ComponentActivator.cs`                         |
+| Microsoft Learn                                                                       | « Building native libraries », « Native code interop with Native AOT », « Disabled runtime marshalling », « NativeAOT uses lib prefix… (.NET 11) », « MSBuild reference : EnableDynamicLoading » |
+| Mesures                                                                               | locales et CI, `docs/research/bench/dotnet-ffi-*.json` (section 2)                                                                                                                               |
 
 Point d'architecture établi dans le source : depuis cette version, `dlopen`, `CFunction` et `JSCallback` sont compilés par JavaScriptCore (`JSC::FFI`, invoke thunks JIT, intrinsèque DFG `FFIDFGCodegen.cpp:90-107`) ; TinyCC ne sert plus qu'à `cc()` (`src/runtime/ffi/ffi_body.rs:1019-1292`, `JSCFFIBridge.cpp:65-97`). Tout correctif de marshalling touche donc d'abord le fork WebKit, pas le dépôt bun.
 
@@ -39,19 +39,19 @@ Constat .NET (SDK 11.0.100) : avec `PublishAot=true` inconditionnel, le `.runtim
 
 Données brutes : `docs/research/bench/dotnet-ffi-*.json` (`just bench-interop`). Colonnes : L = local (i7-13700F, Windows 10.0.28120.3302 26H1) ; W = CI `windows-2025-vs2026` (Xeon Platinum 8573C) ; U = CI `ubuntu-latest` (EPYC 9V45). Tous : bun 1.4.4+38afee6c8, .NET 11.0.0, 2026-11-12. Les exécuteurs CI sont partagés : ordre de grandeur seulement.
 
-| cas | L AOT | L CoreCLR | W AOT | W CoreCLR | U AOT | U CoreCLR |
-|---|---:|---:|---:|---:|---:|---:|
-| référence C sans appel système (L/W `kernel32!GetCurrentProcessId`, U `libc!abs`) | 2,2 | | 3,7 | | 1,7 | |
-| référence JS `add` | 0,3 | | 0,6 | | 0,2 | |
-| `noop()` | 3,3 | 5,1 | 4,9 | 7,1 | 6,6 | 5,5 |
-| `add(i32, i32)` | 3,5 | 5,1 | 5,1 | 7,0 | 4,4 | 5,2 |
-| retour i64 (BigInt) | 11,2 | 12,7 | 18,6 | 17,7 | 14,0 | 15,4 |
-| entrée UTF-8 `cstring` (non ASCII) | 21,5 | 23,1 | 32,8 | 30,6 | 19,9 | 21,7 |
-| entrée UTF-16 (`Buffer.from(…, "utf16le")`) | 51,3 | 51,1 | 72,8 | 72,6 | 49,4 | 49,5 |
-| sortie UTF-16 `machineName()` (tampon + décodage + travail .NET) | 303,6 | 300,2 | 460,1 | 443,2 | 507,1 | 611,8 |
-| rappel .NET -> JS (`JSCallback`, par rappel) | 59,1 | 59,1 | 87,4 | 87,5 | 62,5 | 68,3 |
-| `systemInfo(struct*)` (registre Windows inclus) | 8 944 | 8 927 | 12 173 | 12 287 | 51 | 52 |
-| ouverture, ms (dlopen / init CoreCLR + 14 pointeurs) | 2,63 | 29,13 | 3,91 | 39,94 | 0,55 | 26,08 |
+| cas                                                                               | L AOT | L CoreCLR |  W AOT | W CoreCLR | U AOT | U CoreCLR |
+| --------------------------------------------------------------------------------- | ----: | --------: | -----: | --------: | ----: | --------: |
+| référence C sans appel système (L/W `kernel32!GetCurrentProcessId`, U `libc!abs`) |   2,2 |           |    3,7 |           |   1,7 |           |
+| référence JS `add`                                                                |   0,3 |           |    0,6 |           |   0,2 |           |
+| `noop()`                                                                          |   3,3 |       5,1 |    4,9 |       7,1 |   6,6 |       5,5 |
+| `add(i32, i32)`                                                                   |   3,5 |       5,1 |    5,1 |       7,0 |   4,4 |       5,2 |
+| retour i64 (BigInt)                                                               |  11,2 |      12,7 |   18,6 |      17,7 |  14,0 |      15,4 |
+| entrée UTF-8 `cstring` (non ASCII)                                                |  21,5 |      23,1 |   32,8 |      30,6 |  19,9 |      21,7 |
+| entrée UTF-16 (`Buffer.from(…, "utf16le")`)                                       |  51,3 |      51,1 |   72,8 |      72,6 |  49,4 |      49,5 |
+| sortie UTF-16 `machineName()` (tampon + décodage + travail .NET)                  | 303,6 |     300,2 |  460,1 |     443,2 | 507,1 |     611,8 |
+| rappel .NET -> JS (`JSCallback`, par rappel)                                      |  59,1 |      59,1 |   87,4 |      87,5 |  62,5 |      68,3 |
+| `systemInfo(struct*)` (registre Windows inclus)                                   | 8 944 |     8 927 | 12 173 |    12 287 |    51 |        52 |
+| ouverture, ms (dlopen / init CoreCLR + 14 pointeurs)                              |  2,63 |     29,13 |   3,91 |     39,94 |  0,55 |     26,08 |
 
 Lecture : la transition bun -> .NET coûte 1 à 3 ns de plus qu'un appel C (stub de transition GC plus marqué sous CoreCLR) ; les coûts dominants sont côté bun : BigInt pour tout 64 bits (+8 à +14 ns), UTF-16 sans type natif (×2,3 à ×2,5 par rapport au `cstring` UTF-8), allocation et décodage des chaînes de sortie, rappels ~60-90 ns. `systemInfo` mesure surtout le travail .NET (lectures du registre sous Windows). Constat annexe : appeler une fonction bun:ffi avec un argument de trop fait passer `GetCurrentProcessId` de 2,2 à 8 ns (local) : l'intrinsèque DFG n'est pris qu'à arité exacte (`jsc:FFIDFG.cpp:63`) ; les enrobages générés respectent l'arité.
 
@@ -121,15 +121,15 @@ Notation : `bun:` = dépôt bun @ `4b8463ee11cb` ; `jsc:` = oven-sh/WebKit @ `6f
 
 ## 4. Plan de correctifs pour aphrody-labs/bun
 
-| Ordre | Correctif | Dépôt | Taille | Gain .NET |
-|---|---|---|---|---|
-| 1 | L6 : `jsvalue` dans dlopen/CFunction/JSCallback + `protect/unprotect` | bun (`ffi_body.rs`, `abi_type.rs`, `ffi.ts`, `ffi.d.ts`) | petite | objets JS passés à .NET sans Node-API |
-| 2 | L7 : `dlopen(…, { unload: false })` | bun (`ffi_body.rs`, `ffi.ts`) | petite | `close()` sûr avec NativeAOT |
-| 3 | L5 : `Bun.FFI.pin()` | bun (`FFIObject.rs`, `FFIObject.bind.ts`) | moyenne | E/S asynchrones .NET sur tampons JS |
-| 4 | L4b : fermeture auto des `JSCallback` | bun (`src/js/bun/ffi.ts`) | petite | fin des fuites/plantages de rappels |
-| 5 | L2 : type `u16string` | WebKit (`FFIType.h`, `FFIConversions.cpp`) + bun | moyenne | chaînes .NET ×2,4 plus rapides en entrée |
-| 6 | L4a : `threadsafe: "blocking"` | WebKit (`FFICallbackThunk.cpp`, `FFIContext`) + bun (`JSCFFIBridge.cpp`) | moyenne | rappels avec résultat depuis le ThreadPool |
-| 7 | L1 : structures par valeur | WebKit (`FFISignature`, `FFICallingConvention`, thunks) + bun | grande | signatures .NET idiomatiques |
-| 8 | L6b : `napi_env` pour `dlopen` | bun (`ffi_body.rs:2748`) | moyenne | Node-API de bun.exe appelé directement par .NET |
+| Ordre | Correctif                                                             | Dépôt                                                                    | Taille  | Gain .NET                                       |
+| ----- | --------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------- | ----------------------------------------------- |
+| 1     | L6 : `jsvalue` dans dlopen/CFunction/JSCallback + `protect/unprotect` | bun (`ffi_body.rs`, `abi_type.rs`, `ffi.ts`, `ffi.d.ts`)                 | petite  | objets JS passés à .NET sans Node-API           |
+| 2     | L7 : `dlopen(…, { unload: false })`                                   | bun (`ffi_body.rs`, `ffi.ts`)                                            | petite  | `close()` sûr avec NativeAOT                    |
+| 3     | L5 : `Bun.FFI.pin()`                                                  | bun (`FFIObject.rs`, `FFIObject.bind.ts`)                                | moyenne | E/S asynchrones .NET sur tampons JS             |
+| 4     | L4b : fermeture auto des `JSCallback`                                 | bun (`src/js/bun/ffi.ts`)                                                | petite  | fin des fuites/plantages de rappels             |
+| 5     | L2 : type `u16string`                                                 | WebKit (`FFIType.h`, `FFIConversions.cpp`) + bun                         | moyenne | chaînes .NET ×2,4 plus rapides en entrée        |
+| 6     | L4a : `threadsafe: "blocking"`                                        | WebKit (`FFICallbackThunk.cpp`, `FFIContext`) + bun (`JSCFFIBridge.cpp`) | moyenne | rappels avec résultat depuis le ThreadPool      |
+| 7     | L1 : structures par valeur                                            | WebKit (`FFISignature`, `FFICallingConvention`, thunks) + bun            | grande  | signatures .NET idiomatiques                    |
+| 8     | L6b : `napi_env` pour `dlopen`                                        | bun (`ffi_body.rs:2748`)                                                 | moyenne | Node-API de bun.exe appelé directement par .NET |
 
 Les correctifs 5 à 7 exigent de construire WebKit : bun télécharge par défaut une archive précompilée d'oven-sh/WebKit (`scripts/build/deps/webkit.ts:93`) ; un clone local est pris en charge (`webkit.ts:761`, `vendor/WebKit` ou `BUN_WEBKIT_PATH`). Les correctifs 1 à 4 et 8 se limitent au dépôt bun.

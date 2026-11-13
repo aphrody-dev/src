@@ -3,11 +3,12 @@ Review: third_party/ECOSYSTEM.toml
 
 Score: 4 / 20 — Speculative inventory disguised as an active build manifest: 129 of 131 visible entries reference a non-existent crates/core (and docs/llvm), 30 status values have unclosed quotes, the file truncates mid-token, llvm-project claims CC=clang from an unbuilt sparse checkout missing clang, and placing a tracked TOML inside third_party/ violates the root monorepo invariants.
 
-Criterion	Score	Verdict
-Factual & repo-truth accuracy	1 / 6	Phantom crates/core & docs/llvm; false "registered" status; impossible CC=clang; multi-grammar bug
-Syntax & cross-doc consistency	1 / 4	30 unclosed string quotes; truncated at ["SPIRV-T; contradicts ARCHITECTURE-ROOT.md & TARGETS.md
-Build & systems architecture	1 / 5	Statically links 127 C/C++ grammars (incl. poe-filter, nqc) into core; breaks offline & WASM builds
-Completeness & schema rigor	1 / 5	No commit SHAs, SPDX licenses, ABI versions, sub-grammar paths, or query/extension mappings
+Criterion Score Verdict
+Factual & repo-truth accuracy 1 / 6 Phantom crates/core & docs/llvm; false "registered" status; impossible CC=clang; multi-grammar bug
+Syntax & cross-doc consistency 1 / 4 30 unclosed string quotes; truncated at ["SPIRV-T; contradicts ARCHITECTURE-ROOT.md & TARGETS.md
+Build & systems architecture 1 / 5 Statically links 127 C/C++ grammars (incl. poe-filter, nqc) into core; breaks offline & WASM builds
+Completeness & schema rigor 1 / 5 No commit SHAs, SPDX licenses, ABI versions, sub-grammar paths, or query/extension mappings
+
 1. Factual Errors
 
 Vaporware consumers & fabricated "registered" status (Header & 129/131 entries):
@@ -42,7 +43,7 @@ Direct violations of docs/ARCHITECTURE-ROOT.md Invariants 1, 2, 3, and 4:
 
 Invariants 1 & 4: third_party/ is gitignored/unversioned and materialized solely from root src.lock.json. Putting third_party/ECOSYSTEM.toml inside an unversioned directory either leaves it untracked or creates a second competing manifest alongside src.lock.json.
 
-Invariant 2: crates/core violates mandatory <couche>-<nom> naming (crates/sys-*, crates/code-*), and scripts/ecosystem-check.ts introduces a banned root scripts/ folder instead of crates/depot-* (ay) or packages/machine.
+Invariant 2: crates/core violates mandatory <couche>-<nom> naming (crates/sys-_, crates/code-_), and scripts/ecosystem-check.ts introduces a banned root scripts/ folder instead of crates/depot-* (ay) or packages/machine.
 
 Invariant 3: docs/core/grammars.patch stores code patches inside docs/ instead of committing tree-sitter.json directly to pinned aphrody-labs forks.
 
@@ -73,7 +74,7 @@ Missing Tier-1 monorepo languages: Includes poe-filter and nqc, yet omits wat/wa
 Existence & integrity check in CI: No check verifying that every used_by path and src/parser.c exists on disk.
 
 4. Concrete Fixes
-Fix 1 — Architecture & File Placement
+   Fix 1 — Architecture & File Placement
 
 Delete third_party/ECOSYSTEM.toml and docs/core/grammars.patch. Keep repository URLs/SHAs exclusively in root src.lock.json.
 
@@ -109,6 +110,7 @@ doc_refs = ["docs/compat/TARGETS.md"]
 notes = "Host clang-cl/clang toolchain provisioned on prd/fr2 runners, not compiled from C:\\src"
 
 # Multi-grammar repo example (fixes typescript + tsx)
+
 [[grammars]]
 id = "typescript"
 repo = "third_party/tree-sitter-typescript"
@@ -148,13 +150,13 @@ import { join } from "node:path";
 const ALLOWED_LICENSES = new Set(["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "0BSD", "Unlicense"]);
 
 type Grammar = {
-  id: string;
-  repo: string;
-  subpath?: string;
-  scanner: "none" | "c";
-  status: "unwired" | "registered" | "wasm";
-  license: string;
-  used_by: string[];
+id: string;
+repo: string;
+subpath?: string;
+scanner: "none" | "c";
+status: "unwired" | "registered" | "wasm";
+license: string;
+used_by: string[];
 };
 
 const raw = await Bun.file("crates/code-grammars/grammars.toml").text();
@@ -162,27 +164,26 @@ const doc = Bun.TOML.parse(raw) as { grammars: Grammar[]; toolchains: Record<str
 const errors: string[] = [];
 
 for (const [name, tc] of Object.entries(doc.toolchains ?? {})) {
-  if (!existsSync(tc.path)) errors.push(`[toolchain:${name}] missing path: ${tc.path}`);
-  for (const consumer of tc.used_by) {
-    if (!existsSync(consumer)) errors.push(`[toolchain:${name}] phantom used_by: ${consumer}`);
-  }
+if (!existsSync(tc.path)) errors.push(`[toolchain:${name}] missing path: ${tc.path}`);
+for (const consumer of tc.used_by) {
+if (!existsSync(consumer)) errors.push(`[toolchain:${name}] phantom used_by: ${consumer}`);
+}
 }
 
 for (const g of doc.grammars ?? []) {
-  if (!ALLOWED_LICENSES.has(g.license)) errors.push(`[${g.id}] forbidden/unverified license: ${g.license}`);
-  const dir = g.subpath ? join(g.repo, g.subpath) : g.repo;
-  if (!existsSync(join(dir, "src/parser.c"))) errors.push(`[${g.id}] missing pre-generated ${dir}/src/parser.c`);
-  if (existsSync(join(dir, "src/scanner.cc"))) errors.push(`[${g.id}] C++ scanner.cc forbidden; port or move to wasm tier`);
-  for (const consumer of g.used_by) {
-    if (!existsSync(consumer)) errors.push(`[${g.id}] phantom used_by: ${consumer}`);
-    if (g.status === "registered" && !existsSync(join(consumer, "build.rs"))) {
-      errors.push(`[${g.id}] marked registered but ${consumer}/build.rs does not exist`);
-    }
-  }
+if (!ALLOWED_LICENSES.has(g.license)) errors.push(`[${g.id}] forbidden/unverified license: ${g.license}`);
+const dir = g.subpath ? join(g.repo, g.subpath) : g.repo;
+if (!existsSync(join(dir, "src/parser.c"))) errors.push(`[${g.id}] missing pre-generated ${dir}/src/parser.c`);
+if (existsSync(join(dir, "src/scanner.cc"))) errors.push(`[${g.id}] C++ scanner.cc forbidden; port or move to wasm tier`);
+for (const consumer of g.used_by) {
+if (!existsSync(consumer)) errors.push(`[${g.id}] phantom used_by: ${consumer}`);
+if (g.status === "registered" && !existsSync(join(consumer, "build.rs"))) {
+errors.push(`[${g.id}] marked registered but ${consumer}/build.rs does not exist`);
+}
+}
 }
 
 if (errors.length > 0) {
-  console.error(errors.join("\n"));
-  process.exit(1);
+console.error(errors.join("\n"));
+process.exit(1);
 }
-

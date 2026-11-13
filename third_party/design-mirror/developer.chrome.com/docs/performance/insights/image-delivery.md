@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Published: Oct 8, 2025
 
 Reducing the download time of images can improve the perceived load time of the
@@ -17,11 +18,11 @@ page and LCP.
 The insight highlights images that have unnecessarily large download sizes. The
 estimated byte savings are calculated by comparing the download size of the
 image to an efficient bytes-to-pixel ratio for the image format.
->
+
 > > [!NOTE]
 > > **Note:** Any images with estimated byte savings less than 4 KiB won't be flagged.
->
- DevTools Improve Image Delivery Insight.
+
+DevTools Improve Image Delivery Insight.
 
 ## How to improve image download time
 
@@ -50,10 +51,10 @@ for more on AVIF.
 WebP is supported by [all major browsers](https://caniuse.com/webp) and provides
 better lossy and lossless compression for images on the web. See
 [Use WebP images](https://web.dev/articles/serve-images-webp) for more on WebP.
->
+
 > > [!NOTE]
 > > **Note:** Webp and AVIF images videos won't work on iPhones before iOS 16.
->
+
 ## Use video formats for animated content
 
 Large GIFs are inefficient for delivering animated content compared to videos.
@@ -62,10 +63,10 @@ images instead of GIF to save network bytes.
 
 See [Replace animated GIFs with video for faster page loads](https://web.dev/articles/replace-gifs-with-videos)
 to learn how to replace GIF images with videos.
->
+
 > > [!NOTE]
 > > **Note:** WebM videos won't work on iPhones before iOS 16.
->
+
 ## Serve images with responsive size
 
 Ideally, your page should never serve images that are larger than the version

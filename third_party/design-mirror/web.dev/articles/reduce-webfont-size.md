@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)  Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+
+Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/) Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 Typography is fundamental to good design, branding, readability, and accessibility. Web fonts enable all of the above and more: the text is selectable, searchable, zoomable, and high-DPI friendly, providing consistent and sharp text rendering regardless of the screen size and resolution. WebFonts are critical to good design, UX, and performance.
 
@@ -15,7 +16,7 @@ Web font optimization is a critical piece of the overall performance strategy. E
 
 ## Anatomy of a web font
 
-A *web font* is a collection of glyphs, and each glyph is a vector shape that describes a letter or symbol. As a result, two simple variables determine the size of a particular font file: the complexity of the vector paths of each glyph and the number of glyphs in a particular font. For example, Open Sans, which is one of the most popular WebFonts, contains 897 glyphs, which include Latin, Greek, and Cyrillic characters.
+A _web font_ is a collection of glyphs, and each glyph is a vector shape that describes a letter or symbol. As a result, two simple variables determine the size of a particular font file: the complexity of the vector paths of each glyph and the number of glyphs in a particular font. For example, Open Sans, which is one of the most popular WebFonts, contains 897 glyphs, which include Latin, Greek, and Cyrillic characters.
 
 When picking a font, it's important to consider which character sets are supported. If you need to localize your page content to multiple languages, you should use a font that can deliver a consistent look and experience to your users. For example, [Google's Noto font family](https://www.google.com/get/noto/) aims to support all the world's languages. Note, however, that the total size of Noto, with all languages included, results in a 1.1GB+ ZIP download.
 
@@ -59,27 +60,29 @@ Each `@font-face` declaration provides the name of the font family, which acts a
 
 ```css
 @font-face {
-  font-family: 'Awesome Font';
+  font-family: "Awesome Font";
   font-style: normal;
   font-weight: 400;
-  src: local('Awesome Font'),
-       url('/fonts/awesome.woff2') format('woff2'),
-       /* Only serve WOFF if necessary. Otherwise,
+  src:
+    local("Awesome Font"),
+    url("/fonts/awesome.woff2") format("woff2"),
+    /* Only serve WOFF if necessary. Otherwise,
           WOFF 2.0 is fine by itself. */
-       url('/fonts/awesome.woff') format('woff');
+      url("/fonts/awesome.woff") format("woff");
 }
 
 @font-face {
-  font-family: 'Awesome Font';
+  font-family: "Awesome Font";
   font-style: italic;
   font-weight: 400;
-  src: local('Awesome Font Italic'),
-       url('/fonts/awesome-i.woff2') format('woff2'),
-       url('/fonts/awesome-i.woff') format('woff');
+  src:
+    local("Awesome Font Italic"),
+    url("/fonts/awesome-i.woff2") format("woff2"),
+    url("/fonts/awesome-i.woff") format("woff");
 }
 ```
 
-First, note that the above examples define a single *Awesome Font* family with two styles (normal and *italic* ), each of which points to a different set of font resources. In turn, each `src` descriptor contains a prioritized, comma-separated list of resource variants:
+First, note that the above examples define a single _Awesome Font_ family with two styles (normal and _italic_ ), each of which points to a different set of font resources. In turn, each `src` descriptor contains a prioritized, comma-separated list of resource variants:
 
 - The `local()` directive allows you to reference, load, and use locally installed fonts. If the user already has the font installed on their system, this bypasses the network entirely, and is the fastest.
 - The `url()` directive allows you to load external fonts, and are allowed to contain an optional `format()` hint indicating the format of the font referenced by the provided URL.
@@ -110,26 +113,28 @@ The [`unicode-range` descriptor](http://www.w3.org/TR/css3-fonts/#descdef-unicod
 - Interval range (for example, `U+400-4ff`): indicates the start and end codepoints of a range
 - Wildcard range (for example, `U+4??`): `?` characters indicate any hexadecimal digit
 
-For example, you can split your *Awesome Font* family into Latin and Japanese
+For example, you can split your _Awesome Font_ family into Latin and Japanese
 subsets, each of which the browser downloads on an as-needed basis:
 
 ```css
 @font-face {
-  font-family: 'Awesome Font';
+  font-family: "Awesome Font";
   font-style: normal;
   font-weight: 400;
-  src: local('Awesome Font'),
-       url('/fonts/awesome-l.woff2') format('woff2');
+  src:
+    local("Awesome Font"),
+    url("/fonts/awesome-l.woff2") format("woff2");
   /* Latin glyphs */
   unicode-range: U+000-5FF;
 }
 
 @font-face {
-  font-family: 'Awesome Font';
+  font-family: "Awesome Font";
   font-style: normal;
   font-weight: 400;
-  src: local('Awesome Font'),
-       url('/fonts/awesome-jp.woff2') format('woff2');
+  src:
+    local("Awesome Font"),
+    url("/fonts/awesome-jp.woff2") format("woff2");
   /* Japanese glyphs */
   unicode-range: U+3000-9FFF, U+ff??;
 }
@@ -161,35 +166,37 @@ The above diagram illustrates a font family that offers three different bold wei
 - 900 (extra bold).
 
 All other in-between variants (indicated in gray) are automatically mapped to the closest variant by the browser.
->
+
 > When a weight is specified for which no face exists, a face with a nearby weight is used. In general, bold weights map to faces with heavier weights and light weights map to faces with lighter weights.
 > [CSS font matching algorithm](http://www.w3.org/TR/css3-fonts/#font-matching-algorithm)
 
-Similar logic applies to *italic* variants. The font designer controls which variants they will produce, and you control which variants you'll use on the page. Because each variant is a separate download, it's a good idea to keep the number of variants small. For example, you can define two bold variants for the *Awesome Font* family:
+Similar logic applies to _italic_ variants. The font designer controls which variants they will produce, and you control which variants you'll use on the page. Because each variant is a separate download, it's a good idea to keep the number of variants small. For example, you can define two bold variants for the _Awesome Font_ family:
 
 ```css
 @font-face {
-  font-family: 'Awesome Font';
+  font-family: "Awesome Font";
   font-style: normal;
   font-weight: 400;
-  src: local('Awesome Font'),
-       url('/fonts/awesome-l.woff2') format('woff2');
+  src:
+    local("Awesome Font"),
+    url("/fonts/awesome-l.woff2") format("woff2");
   /* Latin glyphs */
   unicode-range: U+000-5FF;
 }
 
 @font-face {
-  font-family: 'Awesome Font';
+  font-family: "Awesome Font";
   font-style: normal;
   font-weight: 700;
-  src: local('Awesome Font'),
-       url('/fonts/awesome-l-700.woff2') format('woff2');
+  src:
+    local("Awesome Font"),
+    url("/fonts/awesome-l-700.woff2") format("woff2");
   /* Latin glyphs */
   unicode-range: U+000-5FF;
 }
 ```
 
-The above example declares the *Awesome Font* family that is composed of two resources that cover the same set of Latin glyphs (`U+000-5FF`) but offer two different "weights": normal (400) and bold (700). However, what happens if one of your CSS rules specifies a different font weight, or sets the `font-style` property to `italic`?
+The above example declares the _Awesome Font_ family that is composed of two resources that cover the same set of Latin glyphs (`U+000-5FF`) but offer two different "weights": normal (400) and bold (700). However, what happens if one of your CSS rules specifies a different font weight, or sets the `font-style` property to `italic`?
 
 - If an exact font match isn't available, the browser substitutes the closest match.
 - If no stylistic match is found (for example, no italic variants were declared in the example above), then the browser synthesizes its own font variant.

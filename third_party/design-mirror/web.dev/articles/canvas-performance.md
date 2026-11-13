@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Boris Smus [X](https://twitter.com/borismus) [Homepage](https://smus.com/)
 
 ## Introduction
@@ -81,10 +82,10 @@ function render() {
 pre-rendering:
 
 ```javascript
-var m_canvas = document.createElement('canvas');
+var m_canvas = document.createElement("canvas");
 m_canvas.width = 64;
 m_canvas.height = 64;
-var m_context = m_canvas.getContext('2d');
+var m_context = m_canvas.getContext("2d");
 drawMario(m_context);
 
 function render() {
@@ -133,7 +134,7 @@ words, rather than drawing separate lines:
 ```javascript
 for (var i = 0; i < points.length - 1; i++) {
   var p1 = points[i];
-  var p2 = points[i+1];
+  var p2 = points[i + 1];
   context.beginPath();
   context.moveTo(p1.x, p1.y);
   context.lineTo(p2.x, p2.y);
@@ -147,7 +148,7 @@ We get better performance from drawing a single polyline:
 context.beginPath();
 for (var i = 0; i < points.length - 1; i++) {
   var p1 = points[i];
-  var p2 = points[i+1];
+  var p2 = points[i + 1];
   context.moveTo(p1.x, p1.y);
   context.lineTo(p2.x, p2.y);
 }
@@ -179,7 +180,7 @@ render the next stripe, etc:
 
 ```javascript
 for (var i = 0; i < STRIPES; i++) {
-  context.fillStyle = (i % 2 ? COLOR1 : COLOR2);
+  context.fillStyle = i % 2 ? COLOR1 : COLOR2;
   context.fillRect(i * GAP, 0, GAP, 480);
 }
 ```
@@ -188,12 +189,12 @@ Or render all odd stripes and then all even stripes:
 
 ```javascript
 context.fillStyle = COLOR1;
-for (var i = 0; i < STRIPES/2; i++) {
-  context.fillRect((i*2) * GAP, 0, GAP, 480);
+for (var i = 0; i < STRIPES / 2; i++) {
+  context.fillRect(i * 2 * GAP, 0, GAP, 480);
 }
 context.fillStyle = COLOR2;
-for (var i = 0; i < STRIPES/2; i++) {
-  context.fillRect((i*2+1) * GAP, 0, GAP, 480);
+for (var i = 0; i < STRIPES / 2; i++) {
+  context.fillRect((i * 2 + 1) * GAP, 0, GAP, 480);
 }
 ```
 
@@ -265,7 +266,7 @@ blur primitives, but this operation can be very expensive:
 context.shadowOffsetX = 5;
 context.shadowOffsetY = 5;
 context.shadowBlur = 4;
-context.shadowColor = 'rgba(255, 0, 0, 0.5)';
+context.shadowColor = "rgba(255, 0, 0, 0.5)";
 context.fillRect(20, 20, 150, 100);
 ```
 
@@ -307,7 +308,7 @@ the result to eliminate the fractional part.
 // With a bitwise or.
 rounded = (0.5 + somenum) | 0;
 // A double bitwise not.
-rounded = ~~ (0.5 + somenum);
+rounded = ~~(0.5 + somenum);
 // Finally, a left bitwise shift.
 rounded = (0.5 + somenum) << 0;
 ```

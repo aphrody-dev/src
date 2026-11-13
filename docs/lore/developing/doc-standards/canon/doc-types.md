@@ -19,12 +19,12 @@ Match the question the reader is asking to the doc type. Picking the wrong type 
 
 ### User-facing types
 
-| Reader intent | Doc type | Folder | Mood | Length |
-| --- | --- | --- | --- | --- |
-| "Walk me through learning X." | **Tutorial** | `tutorials/` | Imperative for steps | 300–2000 |
-| "I have a goal — give me the recipe." | **How-To** | `how-to/` | Imperative for steps | 200–800 typical |
-| "What does each option/field/flag do?" | **Reference** | `reference/` | Indicative | As long as the surface |
-| "Help me understand X / why X is so." | **Explanation** | `explanation/` | Indicative | 300–3000 |
+| Reader intent                          | Doc type        | Folder         | Mood                 | Length                 |
+| -------------------------------------- | --------------- | -------------- | -------------------- | ---------------------- |
+| "Walk me through learning X."          | **Tutorial**    | `tutorials/`   | Imperative for steps | 300–2000               |
+| "I have a goal — give me the recipe."  | **How-To**      | `how-to/`      | Imperative for steps | 200–800 typical        |
+| "What does each option/field/flag do?" | **Reference**   | `reference/`   | Indicative           | As long as the surface |
+| "Help me understand X / why X is so."  | **Explanation** | `explanation/` | Indicative           | 300–3000               |
 
 Decision rules of thumb:
 
@@ -35,10 +35,10 @@ Decision rules of thumb:
 
 ### Contributor types
 
-| Contributor question | Doc type | Folder |
-| --- | --- | --- |
-| "How's this part of Lore actually built?" — byte layouts, on-disk formats, wire protocols, internal struct shapes. | **Internals** | `docs/developing/internals/` |
-| "Why did the project choose X over Y?" — durable record of an architectural decision and its trade-offs. | **ADR** | `docs/developing/decisions/` |
+| Contributor question                                                                                                          | Doc type          | Folder                            |
+| ----------------------------------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------- |
+| "How's this part of Lore actually built?" — byte layouts, on-disk formats, wire protocols, internal struct shapes.            | **Internals**     | `docs/developing/internals/`      |
+| "Why did the project choose X over Y?" — durable record of an architectural decision and its trade-offs.                      | **ADR**           | `docs/developing/decisions/`      |
 | "How do I write source code that conforms to Lore conventions?" — language- or area-scoped rules with rationale and examples. | **Code-Standard** | `docs/developing/code-standards/` |
 
 A single page is one type. If you find yourself writing a Tutorial that turns into a Reference, split into two linked pages. If you find yourself writing an Internals page that pivots into a decision rationale, split into an Internals page plus an ADR.
@@ -60,13 +60,13 @@ Tutorials are the one type a single feature usually doesn't trigger. Tutorials g
 
 User-facing types arrange on two axes:
 
-- **Action vs Cognition.** Tutorials and How-Tos are about *doing*. References and Explanations are about *knowing*.
-- **Acquisition vs Application.** Tutorials and Explanations serve the reader's *study* (acquiring something new). How-Tos and References serve the reader's *work* (applying what they already know).
+- **Action vs Cognition.** Tutorials and How-Tos are about _doing_. References and Explanations are about _knowing_.
+- **Acquisition vs Application.** Tutorials and Explanations serve the reader's _study_ (acquiring something new). How-Tos and References serve the reader's _work_ (applying what they already know).
 
-| | **Acquisition (study)** | **Application (work)** |
-| --- | --- | --- |
-| **Action (doing)** | Tutorial | How-To |
-| **Cognition (knowing)** | Explanation | Reference |
+|                         | **Acquisition (study)** | **Application (work)** |
+| ----------------------- | ----------------------- | ---------------------- |
+| **Action (doing)**      | Tutorial                | How-To                 |
+| **Cognition (knowing)** | Explanation             | Reference              |
 
 When you can't decide between two types, use the compass. A doc that mixes acquisition and application — for example, a "tutorial" that pivots into a flag table halfway through — is two docs jammed together. Split them.
 
@@ -123,11 +123,11 @@ Each child page filename includes the parent's slug as a prefix (`<parent>-part-
 
 ### Definition
 
-A How-To is a recipe that addresses a specific goal a competent reader has *right now*. The reader already knows the basics; the page exists to give them the shortest path to a result they can describe up front. How-Tos pair with Tutorials and References: Tutorials teach the underlying skill, References catalog the surface, How-Tos package one applied procedure.
+A How-To is a recipe that addresses a specific goal a competent reader has _right now_. The reader already knows the basics; the page exists to give them the shortest path to a result they can describe up front. How-Tos pair with Tutorials and References: Tutorials teach the underlying skill, References catalog the surface, How-Tos package one applied procedure.
 
 ### When to use it
 
-- The reader knows what they want to accomplish (*"set up zsh completions,"* *"configure a shared store,"* *"recover from a failed merge"*) but not the exact incantations.
+- The reader knows what they want to accomplish (_"set up zsh completions,"_ _"configure a shared store,"_ _"recover from a failed merge"_) but not the exact incantations.
 - The task crosses two or more commands or files and benefits from being captured as one procedure.
 - The reader will skim, not read top-to-bottom.
 
@@ -135,14 +135,14 @@ A How-To is a recipe that addresses a specific goal a competent reader has *righ
 
 - The reader is a beginner who needs to build the underlying mental model. Write a Tutorial.
 - The task is a single command. Document it as an example in the Reference.
-- The page would be mostly *why* the configuration is set this way. Write an Explanation.
+- The page would be mostly _why_ the configuration is set this way. Write an Explanation.
 - The procedure is the new-user golden path from zero to working. That's a Tutorial.
 
 ### Required structure
 
 1. H1 page title — verb-first goal phrasing ("Set up zsh completions", "Recover from a failed merge").
 2. One-paragraph context: when you would reach for this guide and the assumed starting state.
-3. **Before you start** (optional, terse) — assumed prerequisites in one or two bullets, *not* the full Tutorial-style prerequisites list.
+3. **Before you start** (optional, terse) — assumed prerequisites in one or two bullets, _not_ the full Tutorial-style prerequisites list.
 4. **Steps** — numbered, imperative, terse. No pedagogy. Inline commands and minimal explanation.
 5. **Result** (optional, one line) — what the reader sees when it worked.
 6. **See also** — links to the Reference for the surfaces touched and the Explanation for the why.
@@ -162,7 +162,7 @@ See [`docs/how-to/how-to-template.md`](../../../how-to/how-to-template.md) — c
 
 ### Definition
 
-A Reference page is the in-depth, exhaustive description of a Lore surface — a command, a config file, an API. It catalogs every option, flag, field, or input. The reader is at *work* and looking up a *fact*, not learning. They will arrive via search or a deep link, not by reading the page top-to-bottom.
+A Reference page is the in-depth, exhaustive description of a Lore surface — a command, a config file, an API. It catalogs every option, flag, field, or input. The reader is at _work_ and looking up a _fact_, not learning. They will arrive via search or a deep link, not by reading the page top-to-bottom.
 
 ### When to use it
 
@@ -203,14 +203,14 @@ See [`docs/reference/reference-template.md`](../../../reference/reference-templa
 
 ### Definition
 
-An Explanation page makes a topic understandable. It supplies context, background, and reasoning — *why* the system works the way it does, *what* the underlying model does, *how* the topic connects to its neighbors. Explanation belongs to acquisition + cognition on the Diátaxis compass: the reader is studying, not working.
+An Explanation page makes a topic understandable. It supplies context, background, and reasoning — _why_ the system works the way it does, _what_ the underlying model does, _how_ the topic connects to its neighbors. Explanation belongs to acquisition + cognition on the Diátaxis compass: the reader is studying, not working.
 
 Explanation is content-shaped. A page about "Why Lore?" reads differently from a page describing the commit object model, and both read differently from a one-page primer that sits in front of a Tutorial. The required structure below is loose by design; the worked examples that follow show the three shapes you'll most often produce in Lore docs.
 
 ### When to use it
 
 - The reader needs to understand a Lore subsystem before they can use it productively.
-- A design decision needs context — *why* the system works this way — that doesn't belong inside step-by-step instructions.
+- A design decision needs context — _why_ the system works this way — that doesn't belong inside step-by-step instructions.
 - A topic crosses several Reference pages and benefits from a single explanatory home.
 - The page is the written companion to a talk, whitepaper, or rationale that needs a permanent home in the docs.
 
@@ -227,7 +227,7 @@ Explanation is content-shaped. A page about "Why Lore?" reads differently from a
 3. Body sections — flexible H2 sequence depending on the explanation's shape (see worked examples).
 4. **Related** or **See also** — short links to neighboring Explanations, References, and Tutorials.
 
-Section *content* is type-driven; section *order* is shape-driven. Pages within one shape stay parallel — see worked examples below.
+Section _content_ is type-driven; section _order_ is shape-driven. Pages within one shape stay parallel — see worked examples below.
 
 ### Voice and length
 
@@ -242,7 +242,7 @@ See [`docs/explanation/explanation-template.md`](../../../explanation/explanatio
 
 ### Worked example: Why this exists (long-form rationale)
 
-A long-form rationale doc — like *Why Lore?* or *Why we chose CRDT-based storage* — explains the reasoning behind a Lore design decision and what it means for adopters. It's the written companion to a talk, a whitepaper, or a charter section.
+A long-form rationale doc — like _Why Lore?_ or _Why we chose CRDT-based storage_ — explains the reasoning behind a Lore design decision and what it means for adopters. It's the written companion to a talk, a whitepaper, or a charter section.
 
 Typical H2 sequence:
 
@@ -269,7 +269,7 @@ Length: 500–1500 words. If the page would push past 1500 words, split into mul
 
 ### Worked example: Short explanation primer
 
-A primer is a 200–800 word Explanation that sits in front of a deeper Tutorial or Reference and gives the reader the high-level shape of a topic before they invest. *Why Lore?* is one example. A primer that introduces a subsystem before its full model Explanation is another.
+A primer is a 200–800 word Explanation that sits in front of a deeper Tutorial or Reference and gives the reader the high-level shape of a topic before they invest. _Why Lore?_ is one example. A primer that introduces a subsystem before its full model Explanation is another.
 
 Typical H2 sequence:
 
@@ -293,7 +293,7 @@ An Internals doc is the austere, descriptive reference for a piece of Lore's imp
 
 ### When not to use it
 
-- The page would explain *why* the implementation is the way it is. That's an ADR (if it captures a decision) or an Explanation in `docs/explanation/` (if the context is user-facing).
+- The page would explain _why_ the implementation is the way it is. That's an ADR (if it captures a decision) or an Explanation in `docs/explanation/` (if the context is user-facing).
 - The page would walk a contributor through making a change. That's a How-To in `docs/how-to/` (if about using the product) or a How-To in `docs/developing/` (if about contributing to the project).
 - The page documents a public surface — CLI flags, library API, on-disk format that Lore users construct directly. That's a Reference in `docs/reference/`.
 
@@ -314,7 +314,7 @@ An Internals doc is the austere, descriptive reference for a piece of Lore's imp
 
 ### Template
 
-````markdown
+```markdown
 # <Internal surface name>
 
 <One paragraph: what this surface is, where it appears in the source, and
@@ -324,11 +324,11 @@ which other Lore subsystems consume it.>
 
 ### Layout
 
-| Offset | Size | Field | Description |
-| -------- | ------ | ------- | ------------- |
-| `0x00` | 4 B  | `magic` | Constant `0xLORE` (network byte order). |
+| Offset | Size | Field     | Description                                        |
+| ------ | ---- | --------- | -------------------------------------------------- |
+| `0x00` | 4 B  | `magic`   | Constant `0xLORE` (network byte order).            |
 | `0x04` | 4 B  | `version` | Schema version. Increment on incompatible changes. |
-| `0x08` | n B  | `payload` | Length-prefixed payload. |
+| `0x08` | n B  | `payload` | Length-prefixed payload.                           |
 
 ### Encoding rules
 
@@ -347,7 +347,7 @@ which other Lore subsystems consume it.>
 
 - [<Related internals page>](<page>.md)
 - [<decision that constrains this surface>](../decisions/NNNNN-<slug>.md)
-````
+```
 
 ## ADR
 
@@ -386,11 +386,11 @@ Optional fields (omit when not relevant):
 2. **Context and Problem Statement** — what circumstance, constraint, or problem motivated the decision. Free form, two to three sentences, or an illustrative story. Link out to collaboration boards or issue trackers when useful.
 3. **Decision Drivers** — bulleted list of forces, constraints, or concerns that shape the decision.
 4. **Considered Options** — bulleted list of the option titles weighed before the decision.
-5. **Decision Outcome** — names the chosen option and gives the justification. Includes a nested `### Consequences` H3 listing the *Good, because …* and *Bad, because …* outcomes the project lives with.
+5. **Decision Outcome** — names the chosen option and gives the justification. Includes a nested `### Consequences` H3 listing the _Good, because …_ and _Bad, because …_ outcomes the project lives with.
 
 Optional sections (use when the content warrants):
 
-- **Pros and Cons of the Options** — between *Decision Outcome* and *More Information*. One H3 per option, with bulleted *Good, because …*, *Neutral, because …*, *Bad, because …* arguments.
+- **Pros and Cons of the Options** — between _Decision Outcome_ and _More Information_. One H3 per option, with bulleted _Good, because …_, _Neutral, because …_, _Bad, because …_ arguments.
 - **More Information** — at the end. Additional evidence, team agreement, links to other decisions, or notes on when the decision should be revisited.
 
 ### Filename pattern
@@ -407,7 +407,7 @@ Numbering is monotonic across the project. A new ADR claims the next available n
 
 ### Immutability and supersession
 
-Once an ADR moves from `proposed` to `accepted`, the body is **immutable** except for the `status` and `date` header fields. To change a decision, write a new ADR, set its `status` to `accepted` with today's `date`, link to the prior ADR from *More Information*, and edit the prior ADR's `status` to `superseded by ADR-NNNNN`. The prior body stays unchanged so the original record remains readable.
+Once an ADR moves from `proposed` to `accepted`, the body is **immutable** except for the `status` and `date` header fields. To change a decision, write a new ADR, set its `status` to `accepted` with today's `date`, link to the prior ADR from _More Information_, and edit the prior ADR's `status` to `superseded by ADR-NNNNN`. The prior body stays unchanged so the original record remains readable.
 
 ### Template
 
@@ -495,8 +495,8 @@ types involved. A short list or table.>
 
 ## Key files
 
-| File | Purpose |
-| --- | --- |
+| File                    | Purpose           |
+| ----------------------- | ----------------- |
 | `<crate>/src/<file>.rs` | <what it defines> |
 ````
 
@@ -626,7 +626,7 @@ The entry-writing rules — alphabetical order, headword formatting, sense disam
 
 ### Public-facing, but contributor-baseline
 
-Contributor docs are still public; they ship in the open-source repository and are readable by anyone. The open-source posture rules apply (see the *Open-source posture* section of [`../operational/review-checklist.md`](../operational/review-checklist.md)): a Code-Standard must not reference internal sponsor-organization tooling, internal hostnames, internal ticket-tracker IDs, or private dependencies.
+Contributor docs are still public; they ship in the open-source repository and are readable by anyone. The open-source posture rules apply (see the _Open-source posture_ section of [`../operational/review-checklist.md`](../operational/review-checklist.md)): a Code-Standard must not reference internal sponsor-organization tooling, internal hostnames, internal ticket-tracker IDs, or private dependencies.
 
 ### Page templates are starting points, not contracts
 

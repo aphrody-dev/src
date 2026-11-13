@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)
 
 > [!CAUTION]
@@ -48,7 +49,7 @@ To load the video conditionally, first check if the Network Information API is a
 
 ```javascript
 if (navigator.connection && !!navigator.connection.effectiveType) {
-  if (navigator.connection.effectiveType === '4g') {
+  if (navigator.connection.effectiveType === "4g") {
     // Only load video on the fastest connections.
   } else {
     // In any other case load the image.
@@ -61,17 +62,17 @@ still load in browsers that don't support the Network Information API.
 
 ```javascript
 if (navigator.connection && !!navigator.connection.effectiveType) {
-  if (navigator.connection.effectiveType === '4g') {
+  if (navigator.connection.effectiveType === "4g") {
     // video loading code
   } else {
     // image loading code
   }
 } else {
-  const video = document.getElementById('coverVideo');
-  const videoSource = video.getAttribute('data-src');
-  video.setAttribute('src', videoSource);
+  const video = document.getElementById("coverVideo");
+  const videoSource = video.getAttribute("data-src");
+  video.setAttribute("src", videoSource);
 
-  video.setAttribute('style', 'height: 100%; width: 100%; display:inline');
+  video.setAttribute("style", "height: 100%; width: 100%; display:inline");
 }
 ```
 
@@ -81,11 +82,11 @@ If the `effectiveType` is `'4g'`, use the video loading code from the
 beginning of the codelab.
 
 ```javascript
-if (navigator.connection.effectiveType === '4g') {
-  const video = document.getElementById('coverVideo');
-  const videoSource = video.getAttribute('data-src');
-  video.setAttribute('src', videoSource);
-  video.setAttribute('style', 'height: 100%; width: 100%; display:inline');
+if (navigator.connection.effectiveType === "4g") {
+  const video = document.getElementById("coverVideo");
+  const videoSource = video.getAttribute("data-src");
+  video.setAttribute("src", videoSource);
+  video.setAttribute("style", "height: 100%; width: 100%; display:inline");
 } else {
   // image loading code
 }
@@ -94,7 +95,14 @@ if (navigator.connection.effectiveType === '4g') {
 Here's how the video loading code works: the `<video>` tag doesn't download or display anything at first because its `src` attribute is not set. The video URL to load is specified using the `data-src` attribute.
 
 ```html
-<video id="coverVideo" playsinline autoplay loop muted data-src="https://cdn.glitch.com/b6491350-b058-4eb6-aa6c-55c93122073e%2FMatrix%2C%20Console%2C%20Hacking%2C%20Code.mp4?1551464245607"></video>
+<video
+  id="coverVideo"
+  playsinline
+  autoplay
+  loop
+  muted
+  data-src="https://cdn.glitch.com/b6491350-b058-4eb6-aa6c-55c93122073e%2FMatrix%2C%20Console%2C%20Hacking%2C%20Code.mp4?1551464245607"
+></video>
 ```
 
 [Data attributes](https://developer.mozilla.org/docs/Learn/HTML/Howto/Use_data_attributes) allow you to store extra information on standard HTML elements. A data element can be named anything, as long as it starts with "data-".
@@ -104,25 +112,25 @@ To actually display the video on the page, you need to get the value from `data-
 First, get the DOM element that contains the asset:
 
 ```javascript
-const video = document.getElementById('coverVideo');
+const video = document.getElementById("coverVideo");
 ```
 
 Then get the resource location from the `data-src` attribute:
 
 ```javascript
-const videoSource = video.getAttribute('data-src');
+const videoSource = video.getAttribute("data-src");
 ```
 
 And finally set that as the `src` attribute of the video element:
 
 ```javascript
-video.setAttribute('src', videoSource);
+video.setAttribute("src", videoSource);
 ```
 
 The last line takes care of CSS positioning:
 
 ```javascript
-video.setAttribute('style', 'height: 100%; width: 100%; display:inline');
+video.setAttribute("style", "height: 100%; width: 100%; display:inline");
 ```
 
 ## Step 3: Load image
@@ -141,18 +149,18 @@ In `script.js`, add code to set the image's `src` attribute depending on the
 `effectiveType` of the network.
 
 ```javascript
-if (navigator.connection.effectiveType === '4g') {
-  const video = document.getElementById('coverVideo');
-  const videoSource = video.getAttribute('data-src');
-  video.setAttribute('src', videoSource);
+if (navigator.connection.effectiveType === "4g") {
+  const video = document.getElementById("coverVideo");
+  const videoSource = video.getAttribute("data-src");
+  video.setAttribute("src", videoSource);
 
-  video.setAttribute('style', 'height: 100%; width: 100%; display:inline');
+  video.setAttribute("style", "height: 100%; width: 100%; display:inline");
 } else {
-  const image = document.getElementById('coverImage');
-  const imageSource = image.getAttribute('data-src');
-  image.setAttribute('src', imageSource);
+  const image = document.getElementById("coverImage");
+  const imageSource = image.getAttribute("data-src");
+  image.setAttribute("src", imageSource);
 
-  image.setAttribute('style', 'height: 100%; width: 100%; display:inline');
+  image.setAttribute("style", "height: 100%; width: 100%; display:inline");
 }
 ```
 
@@ -178,7 +186,7 @@ code will call the `displayNetworkInfo` function whenever the network
 information changes.
 
 ```javascript
-navigator.connection.addEventListener('change', displayNetworkInfo);
+navigator.connection.addEventListener("change", displayNetworkInfo);
 ```
 
 There's already an empty `<h2>` element on the `index.html` page. Now define the
@@ -187,7 +195,8 @@ There's already an empty `<h2>` element on the `index.html` page. Now define the
 
 ```javascript
 function displayNetworkInfo() {
-  document.getElementById('connection').innerHTML = navigator.connection.effectiveType;
+  document.getElementById("connection").innerHTML =
+    navigator.connection.effectiveType;
 }
 
 displayNetworkInfo();

@@ -7,7 +7,9 @@ import { secretGet } from "./secret-store";
 
 /** Personal Google accounts never live in the public repo: environment first, then the vault (env-kit secret set). */
 const vaultCache = new Map<string, string | undefined>();
-export function personalAccount(key: "APHRODY_AI_GOOGLE_ACCOUNT" | "APHRODY_OWNER_GOOGLE_ACCOUNT"): string {
+export function personalAccount(
+  key: "APHRODY_AI_GOOGLE_ACCOUNT" | "APHRODY_OWNER_GOOGLE_ACCOUNT",
+): string {
   let v = process.env[key];
   if (!v && vaultCache.has(key)) v = vaultCache.get(key);
   else if (!v) {

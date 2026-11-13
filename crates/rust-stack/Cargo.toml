@@ -30,6 +30,13 @@ rusqlite = { workspace = true, features = ["bundled"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 sha2 = { workspace = true }
-tokio = { workspace = true, features = ["io-util", "macros", "net", "rt-multi-thread", "sync", "time"] }
+tokio = { workspace = true, features = [
+  "io-util",
+  "macros",
+  "net",
+  "rt-multi-thread",
+  "sync",
+  "time",
+] }
 ureq = { workspace = true, features = ["json"] }
 corelib = { version = "0.3.0", package = "aphrody-corelib", path = "../corelib" }

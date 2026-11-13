@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 This course is created for beginner and advanced web developers alike, covering everything from the basics of ensuring image sources are efficiently requested and rendered, to the details of how common image formats are communicated from server to client. Throughout this course you'll learn how to achieve the smallest possible transfer sizes for your images without compromising on their quality---at least, not in a way anyone will be able to see.
 
 You can go through the series from start to finish for a holistic understanding of how images work on the modern web, or use it as a reference for the specific concepts and markup patterns you'll be using in your day-to-day work.

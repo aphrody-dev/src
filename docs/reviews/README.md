@@ -15,6 +15,7 @@ just review <chemins|diff|A..B|commit> [-- chemins] [--voices gemini,claude,judg
   - les extraits pertinents des sources officielles Google, choisis selon le sujet des fichiers revus : Chromium styleguide et code_reviews, depot_tools, google/eng-practices, google/styleguide, ChromiumOS, Android Soong, Bazel.
 
   Les sources sont lues dans le dépôt officiel : `gh api` pour GitHub, gitiles pour googlesource. Elles sont mises en cache dans `var/review/sources/`, ignoré par git, et rafraîchies au plus une fois par jour, avec le commit source noté. `ai-os review sources --force` force le rafraîchissement.
+
 - **Garde-fous.** Le slug est confiné à `docs/reviews` (`^[a-z0-9][a-z0-9-]{0,63}# Revues de src : le tribunal `ai-os review`
 
 Toute revue de livrable passe par une seule commande, sans humain et sans navigateur :
@@ -32,11 +33,13 @@ just review <chemins|diff|A..B|commit> [-- chemins] [--voices gemini,claude,judg
   - les extraits pertinents des sources officielles Google, choisis selon le sujet des fichiers revus : Chromium styleguide et code_reviews, depot_tools, google/eng-practices, google/styleguide, ChromiumOS, Android Soong, Bazel.
 
   Les sources sont lues dans le dépôt officiel : `gh api` pour GitHub, gitiles pour googlesource. Elles sont mises en cache dans `var/review/sources/`, ignoré par git, et rafraîchies au plus une fois par jour, avec le commit source noté. ). Les fichiers ignorés par git et les fichiers de secrets (`.env*`, clés) sont écartés, et le contenu est expurgé avant d'aller au moteur ou dans un verdict (motifs de `nhitl/index.ts`). Une revue tronquée, ou à laquelle il manque une voix, finit au mieux « incomplet », jamais « conforme ».
+
 - **Sortie.** L'outil écrit :
   - `docs/reviews/<voix>-<date>-<slug>.md` : note /20, moteur, essais, sources avec leur commit, listes appliquées, verdict brut ;
   - une ligne de [INDEX.md](INDEX.md), remplacée à chaque nouveau tour.
 
   Code de sortie : 0 si la revue est conforme ou en `--dry-run` ; 1 si elle est sous le seuil, incomplète ou gelée ; 2 si aucun moteur n'a répondu.
+
 - **Correction automatique (`--fix`).** Si la note reste sous le seuil, l'outil ouvre un ticket coder de l'orchestrateur sur les fichiers revus, avec un commit borné poussé sur main par le runner, puis relit main à jour. La revue est gelée après deux tours sans progrès (`docs/ALPHABET.md`, « Arrêt et gel »). Il n'y a pas de correction automatique sur `diff` (arbre de travail local).
 - **NHITL.** Une voix sans moteur est indexée dans `var/agents/nhitl.sqlite` (source `review`, catégorie `engine_missing`) et repasse à `fixed` dès qu'un moteur répond.
 - **Automatisation.**

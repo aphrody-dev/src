@@ -185,7 +185,9 @@ export function createOAuth(o: OAuthOptions) {
         }
       })().catch((e: Error) => {
         // Vault unusable here (sandbox, no store): the relay keeps serving on its 0600 state file.
-        console.error(`[oauth] coffre indisponible (${e.message.split("\n")[0]}), état en fichier ${file}`);
+        console.error(
+          `[oauth] coffre indisponible (${e.message.split("\n")[0]}), état en fichier ${file}`,
+        );
         sealed = false;
         st = undefined as unknown as State;
       })

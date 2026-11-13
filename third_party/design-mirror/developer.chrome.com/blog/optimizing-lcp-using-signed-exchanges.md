@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 How to measure and optimize signed exchanges to get the most improvement out of them
 
- Devin Mullins [X](https://twitter.com/twifkak) [GitHub](https://github.com/twifkak)
+Devin Mullins [X](https://twitter.com/twifkak) [GitHub](https://github.com/twifkak)
 
 Signed exchanges (SXGs) are a means to improve your page speed---mainly [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp). When referring sites (currently Google Search) link to a page, they can [prefetch it](https://developers.google.com/search/docs/advanced/experience/signed-exchange) into the browser cache before the user clicks on the link.
 
@@ -22,7 +23,7 @@ Most people publishing SXGs today are using Cloudflare's easy-to-use [Automatic 
 
 In many cases, checking the box to enable this feature is enough to get the kind of substantial improvement shown above. Sometimes, there are a few more steps to ensure these SXGs are working as intended at each stage of the pipeline, and to optimize pages to take full advantage of prefetch.
 
-In the past couple of months since Cloudflare's launch, I've been reading and responding to questions on [various](https://support.google.com/webmasters/threads?thread_filter=('%22signed+exchange%22')) [forums](https://community.cloudflare.com/t/automatic-signed-exchanges-sxgs-beta-launch/312634) and learning how to advise sites on how to make sure they're getting the most out of their SXG deployments. This post is a collection of my advice. I'll walk through the steps to:
+In the past couple of months since Cloudflare's launch, I've been reading and responding to questions on [various](<https://support.google.com/webmasters/threads?thread_filter=('%22signed+exchange%22')>) [forums](https://community.cloudflare.com/t/automatic-signed-exchanges-sxgs-beta-launch/312634) and learning how to advise sites on how to make sure they're getting the most out of their SXG deployments. This post is a collection of my advice. I'll walk through the steps to:
 
 - [Analyze SXG performance](https://developer.chrome.com/blog/optimizing-lcp-using-signed-exchanges.md.txt#analyze) using WebPageTest.
 - [Debug the SXG pipeline](https://developer.chrome.com/blog/optimizing-lcp-using-signed-exchanges.md.txt#debug) if the Analyze step shows that it's not working.
@@ -59,7 +60,7 @@ Generate a test without SXG as follows:
 - In the **Test Settings** tab, it may be helpful to set Connection to 4G and increase "Number of Tests to Run" to 7.
 - Click **Start Test**.
 
-Generate a test *with* SXG by using the same steps as above, but before clicking **Start Test** , go to the **Script** tab, paste in the following [WebPageTest script](https://docs.webpagetest.org/scripting/), and modify the two `navigate` URLs as directed:
+Generate a test _with_ SXG by using the same steps as above, but before clicking **Start Test** , go to the **Script** tab, paste in the following [WebPageTest script](https://docs.webpagetest.org/scripting/), and modify the two `navigate` URLs as directed:
 
     // Disable log collection for the first step. We only want the waterfall for the target navigation.
     logData 0
@@ -87,8 +88,6 @@ Append `&medianMetric=LCP` to the compare URL so WebPageTest selects the run wit
 To compare waterfalls, expand the **Waterfall Opacity** section and drag the slider. To view the video, click **Adjust Filmstrip Settings** , scroll down inside that dialog, and click **View Video**.
 
 If the SXG prefetch is successful, you will see that the "with SXG" waterfall doesn't include a row for the HTML, and the fetches for subresources start sooner. For example, compare "Before" and "After" here:
-
- 
 
 ## Debug
 
@@ -181,7 +180,7 @@ The Google developer document on SXG also has instructions for [querying the cac
 
 ## Optimize
 
-If the SXG Validator Chrome extension shows all check marks (✅), you have a SXG that can be served to users! Read on to find out how to optimize your web page so that you get the *most* LCP improvement from SXG.
+If the SXG Validator Chrome extension shows all check marks (✅), you have a SXG that can be served to users! Read on to find out how to optimize your web page so that you get the _most_ LCP improvement from SXG.
 
 ### max-age
 
@@ -199,9 +198,7 @@ We hope to learn more about values in between those two, as we study the data mo
 
 ### user-agent
 
-One time, I saw LCP *increase* when using a prefetched SXG. I ran [WebPageTest](https://www.webpagetest.org/), comparing median results without and with SXG prefetch. Clicking on **After** below:
-
- 
+One time, I saw LCP _increase_ when using a prefetched SXG. I ran [WebPageTest](https://www.webpagetest.org/), comparing median results without and with SXG prefetch. Clicking on **After** below:
 
 I saw that prefetch was working. The HTML is removed from the critical path and, thus, all of the subresources are able to load earlier. But LCP---that green dashed line---**increased from 2s to 2.1s**.
 
@@ -210,8 +207,6 @@ To diagnose this, I looked at the film strips. I found that the page rendered di
 I dug deeper and discovered the reason for the difference in layout is that the page varies by `User-Agent`, and there was an error in the logic. It was serving a desktop page even though the SXG crawl header indicated mobile. After this was fixed, the browser correctly identified the page's headline as its largest element again.
 
 Now, clicking on "After", I saw that the prefetched LCP **drops to 1.3s**:
-
- 
 
 SXGs are enabled for all form factors. To prepare for that, ensure that one of these is true:
 
@@ -259,7 +254,7 @@ Read the [Contemporary study section](https://developer.chrome.com/blog/optimizi
 
 ### Contemporary study
 
-When looking at real user monitoring (RUM) data, you should split page loads into SXG and non-SXG. When doing so, it is essential to limit the set of page loads you look at, so the non-SXG side matches the eligibility conditions for SXG, in order to avoid selection bias. Otherwise, all of the following would exist *only* in the set of non-SXG page loads, which may have innately different LCP:
+When looking at real user monitoring (RUM) data, you should split page loads into SXG and non-SXG. When doing so, it is essential to limit the set of page loads you look at, so the non-SXG side matches the eligibility conditions for SXG, in order to avoid selection bias. Otherwise, all of the following would exist _only_ in the set of non-SXG page loads, which may have innately different LCP:
 
 - **iOS devices:** due to differences in hardware or network speed among the users who have these devices.
 - **Older Chromium browsers:** for the same reasons.
@@ -280,15 +275,17 @@ Create a copy of this segment, named "SXG", except with `isSXG` exactly matches 
 In your site template, add the following snippet above the Google Analytics snippet. This is a [special syntax](https://github.com/google/sxg-rs#sxg-only-behavior) that ASX will change `false` to `true` when generating a SXG:
 
 ```html
-<script data-issxg-var>window.isSXG=false</script>
+<script data-issxg-var>
+  window.isSXG = false;
+</script>
 ```
 
 Customize your Google Analytics reporting script [as recommended](https://github.com/GoogleChrome/web-vitals#send-the-results-to-google-analytics) to record LCP. If you're using gtag.js, modify the `'config'` command to set the custom dimension (replacing `'dimension1'` and `'dimension2'` with the names that Google Analytics says to use):
 
 ```javascript
-gtag('config', 'YOUR_TRACKING_ID', {
-  'dimension1': String(isSXG),
-  'dimension2': document.referrer,
+gtag("config", "YOUR_TRACKING_ID", {
+  dimension1: String(isSXG),
+  dimension2: document.referrer,
 });
 ```
 
@@ -345,7 +342,7 @@ The ideal way to measure impact would be to conduct a holdback study. Unfortunat
 
 A holdback study has the following properties:
 
-- In the experiment group, some random fraction of page views that *would* be SXG are "held back", and served as non-SXG instead. This allows for an "apples-to-apples" comparison between equivalent users, devices, scenarios, and pages.
+- In the experiment group, some random fraction of page views that _would_ be SXG are "held back", and served as non-SXG instead. This allows for an "apples-to-apples" comparison between equivalent users, devices, scenarios, and pages.
 - Those held-back (aka counterfactual) page views are labeled as such in the analytics. This allows for a "zoomed-in" view of the data, where we can compare SXG page loads in the control to SXG counterfactuals in the experiment. This, in turn, reduces noise from the other page loads that would be unaffected by SXG prefetch.
 
 This would eliminate the aforementioned possible sources of selection bias, although it wouldn't eliminate the risk of LCP survivorship bias. Both of these properties require either the browser or the referrer to enable.

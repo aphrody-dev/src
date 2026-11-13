@@ -18,7 +18,7 @@ These rules apply to every comment, wherever it appears.
   argument names first. Use a comment only for behaviour or semantics that naming cannot convey.
 - Write each comment about the thing it documents. Do not describe specific consumers or use cases.
 - State only what the code is and does. Never state what a change did or didn't do, or what the code was
-  before it, with words such as *no longer*, *now*, *used to*, *instead of* or *doesn't grow*. The commit
+  before it, with words such as _no longer_, _now_, _used to_, _instead of_ or _doesn't grow_. The commit
   message carries that history.
 - Comments shouldn't be used to group functions into sections.
 - Document complex logic, and dependencies between sections of code, in the doc comment of the function or

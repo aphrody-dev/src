@@ -41,7 +41,10 @@ let wasm: Promise<Exports> | undefined;
 function loadWasm(): Promise<Exports> {
   wasm ??= (async () => {
     const res = await fetch(new URL("brand-gpu.wasm", import.meta.url));
-    const { instance } = await WebAssembly.instantiate(await res.arrayBuffer(), {});
+    const { instance } = await WebAssembly.instantiate(
+      await res.arrayBuffer(),
+      {},
+    );
     return instance.exports as unknown as Exports;
   })();
   return wasm;
@@ -55,7 +58,11 @@ async function start(host: HTMLElement): Promise<void> {
   const w = await loadWasm();
   const vcount = w.vertex_count();
   const icount = w.index_count();
-  const vertices = new Float32Array(w.memory.buffer, w.mesh(), vcount * 8).slice();
+  const vertices = new Float32Array(
+    w.memory.buffer,
+    w.mesh(),
+    vcount * 8,
+  ).slice();
   const indices = new Uint16Array(w.memory.buffer, w.indices(), icount).slice();
 
   const img = host.querySelector("img");
@@ -63,17 +70,32 @@ async function start(host: HTMLElement): Promise<void> {
   if (!src) return;
   const bitmap = await createImageBitmap(await (await fetch(src)).blob());
 
-  const vbuf = device.createBuffer({ size: vertices.byteLength, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST });
+  const vbuf = device.createBuffer({
+    size: vertices.byteLength,
+    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+  });
   device.queue.writeBuffer(vbuf, 0, vertices);
-  const ibuf = device.createBuffer({ size: indices.byteLength, usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST });
+  const ibuf = device.createBuffer({
+    size: indices.byteLength,
+    usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST,
+  });
   device.queue.writeBuffer(ibuf, 0, indices);
-  const ubuf = device.createBuffer({ size: 128, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+  const ubuf = device.createBuffer({
+    size: 128,
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+  });
   const texture = device.createTexture({
     size: [bitmap.width, bitmap.height],
     format: "rgba8unorm-srgb",
-    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+    usage:
+      GPUTextureUsage.TEXTURE_BINDING |
+      GPUTextureUsage.COPY_DST |
+      GPUTextureUsage.RENDER_ATTACHMENT,
   });
-  device.queue.copyExternalImageToTexture({ source: bitmap }, { texture }, [bitmap.width, bitmap.height]);
+  device.queue.copyExternalImageToTexture({ source: bitmap }, { texture }, [
+    bitmap.width,
+    bitmap.height,
+  ]);
 
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("webgpu");
@@ -87,25 +109,37 @@ async function start(host: HTMLElement): Promise<void> {
     vertex: {
       module,
       entryPoint: "vs",
-      buffers: [{
-        arrayStride: 32,
-        attributes: [
-          { shaderLocation: 0, offset: 0, format: "float32x3" },
-          { shaderLocation: 1, offset: 12, format: "float32x3" },
-          { shaderLocation: 2, offset: 24, format: "float32x2" },
-        ],
-      }],
+      buffers: [
+        {
+          arrayStride: 32,
+          attributes: [
+            { shaderLocation: 0, offset: 0, format: "float32x3" },
+            { shaderLocation: 1, offset: 12, format: "float32x3" },
+            { shaderLocation: 2, offset: 24, format: "float32x2" },
+          ],
+        },
+      ],
     },
     fragment: { module, entryPoint: "fs", targets: [{ format }] },
     primitive: { topology: "triangle-list", cullMode: "back" },
-    depthStencil: { format: "depth24plus", depthWriteEnabled: true, depthCompare: "less" },
+    depthStencil: {
+      format: "depth24plus",
+      depthWriteEnabled: true,
+      depthCompare: "less",
+    },
     multisample: { count: sampleCount },
   });
   const bind = device.createBindGroup({
     layout: pipeline.getBindGroupLayout(0),
     entries: [
       { binding: 0, resource: { buffer: ubuf } },
-      { binding: 1, resource: device.createSampler({ magFilter: "linear", minFilter: "linear" }) },
+      {
+        binding: 1,
+        resource: device.createSampler({
+          magFilter: "linear",
+          minFilter: "linear",
+        }),
+      },
       { binding: 2, resource: texture.createView() },
     ],
   });
@@ -119,17 +153,44 @@ async function start(host: HTMLElement): Promise<void> {
     canvas.height = Math.max(1, Math.round(r.height * dpr));
     msaa?.destroy();
     depth?.destroy();
-    msaa = device.createTexture({ size: [canvas.width, canvas.height], format, sampleCount, usage: GPUTextureUsage.RENDER_ATTACHMENT });
-    depth = device.createTexture({ size: [canvas.width, canvas.height], format: "depth24plus", sampleCount, usage: GPUTextureUsage.RENDER_ATTACHMENT });
+    msaa = device.createTexture({
+      size: [canvas.width, canvas.height],
+      format,
+      sampleCount,
+      usage: GPUTextureUsage.RENDER_ATTACHMENT,
+    });
+    depth = device.createTexture({
+      size: [canvas.width, canvas.height],
+      format: "depth24plus",
+      sampleCount,
+      usage: GPUTextureUsage.RENDER_ATTACHMENT,
+    });
   };
 
   const draw = (t: number) => {
-    const m = new Float32Array(w.memory.buffer, w.frame(t, canvas.width / canvas.height), 32).slice();
+    const m = new Float32Array(
+      w.memory.buffer,
+      w.frame(t, canvas.width / canvas.height),
+      32,
+    ).slice();
     device.queue.writeBuffer(ubuf, 0, m);
     const enc = device.createCommandEncoder();
     const pass = enc.beginRenderPass({
-      colorAttachments: [{ view: msaa!.createView(), resolveTarget: ctx.getCurrentTexture().createView(), loadOp: "clear", storeOp: "discard", clearValue: { r: 0, g: 0, b: 0, a: 0 } }],
-      depthStencilAttachment: { view: depth!.createView(), depthLoadOp: "clear", depthClearValue: 1, depthStoreOp: "discard" },
+      colorAttachments: [
+        {
+          view: msaa!.createView(),
+          resolveTarget: ctx.getCurrentTexture().createView(),
+          loadOp: "clear",
+          storeOp: "discard",
+          clearValue: { r: 0, g: 0, b: 0, a: 0 },
+        },
+      ],
+      depthStencilAttachment: {
+        view: depth!.createView(),
+        depthLoadOp: "clear",
+        depthClearValue: 1,
+        depthStoreOp: "discard",
+      },
     });
     pass.setPipeline(pipeline);
     pass.setBindGroup(0, bind);
@@ -168,4 +229,5 @@ class AphrodyTile extends HTMLElement {
   }
 }
 
-if (!customElements.get("aphrody-tile")) customElements.define("aphrody-tile", AphrodyTile);
+if (!customElements.get("aphrody-tile"))
+  customElements.define("aphrody-tile", AphrodyTile);

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Adam Raine [GitHub](https://github.com/adamraine)
 
 Published: Mar 27, 2025
@@ -21,7 +22,7 @@ The insight checks if any of the following conditions affected the initial docum
 - It took more than 600ms for the server to respond to the request.
 - The response was uncompressed.
 
- DevTools reports that the document latency can be reduced by eliminating redirects
+DevTools reports that the document latency can be reduced by eliminating redirects
 
 > [!IMPORTANT]
 > **Key point:** The [Core Web Vitals recommended Time to First Byte (TTFB) time](https://web.dev/articles/ttfb#what_is_a_good_ttfb_score) (800 ms) is longer than the server response time recommended by this insight (600ms). This is because TTFB includes the time to do DNS lookup and handle redirects as well as the server response time.
@@ -61,7 +62,7 @@ Accept-Encoding: gzip, compress, br, zstd
 See also [Optimize the encoding and transfer size of text-based assets](https://web.dev/articles/reduce-network-payloads-using-text-compression).
 
 Your server should return the [`Content-Encoding`](https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Encoding) HTTP response header to indicate what compression algorithm it used.
- DevTools reports that the document request is using gzip compression
+DevTools reports that the document request is using gzip compression
 
 ## Stack-specific guidance
 

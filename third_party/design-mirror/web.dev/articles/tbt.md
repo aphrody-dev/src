@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+
+Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: November 7, 2019, Last updated: October 15, 2025
 
@@ -22,28 +23,28 @@ The Total Blocking Time (TBT) metric measures the total amount of time after [Fi
 
 By default, Lighthouse stops monitoring TBT after [Time to Interactive (TTI)](https://web.dev/articles/tti.md.txt), as do some other lab tools that measure page load. See [How does TBT relate to TTI?](https://web.dev/articles/tbt.md.txt#how_does_tbt_relate_to_tti).
 
-The main thread is considered "blocked" any time there's a [Long Task](https://web.dev/articles/custom-metrics.md.txt#long-tasks-api) a task that runs on the main thread for more than 50 milliseconds. We say the main thread is "blocked" because the browser cannot interrupt a task that's in progress. So in the event that a user *does* interact with the page in the middle of a long task, the browser must wait for the task to finish before it can respond.
+The main thread is considered "blocked" any time there's a [Long Task](https://web.dev/articles/custom-metrics.md.txt#long-tasks-api) a task that runs on the main thread for more than 50 milliseconds. We say the main thread is "blocked" because the browser cannot interrupt a task that's in progress. So in the event that a user _does_ interact with the page in the middle of a long task, the browser must wait for the task to finish before it can respond.
 
 If the task is long enough (anything higher than 50 milliseconds), it's likely that the user will notice the delay and perceive the page as sluggish or broken.
 
-The *blocking time* of a given long task is its duration in excess of 50 milliseconds. And the *total blocking time* for a page is the sum of the *blocking time* for each long task that occurs after FCP for the measured timeframe (typically TTI for page load tools, or the total trace time for other tooling).
+The _blocking time_ of a given long task is its duration in excess of 50 milliseconds. And the _total blocking time_ for a page is the sum of the _blocking time_ for each long task that occurs after FCP for the measured timeframe (typically TTI for page load tools, or the total trace time for other tooling).
 
 For example, consider the following diagram of the browser's main thread during page load:
- A timeline of tasks on the main thread.
+A timeline of tasks on the main thread.
 
 The timeline depicted in the preceding image has five tasks, three of which are Long Tasks because their duration exceeds 50 milliseconds. The next diagram shows the blocking time for each of the long tasks:
- The same tasks, with blocking times marked.
+The same tasks, with blocking times marked.
 
 So while the total time spent running tasks on the main thread is 560 milliseconds, only 345 milliseconds of that time is considered blocking time.
 
-|   | Task duration (milliseconds) | Task blocking time (milliseconds) |
-|---|---|---|
-| Task one | 250 | 200 |
-| Task two | 90 | 40 |
-| Task three | 35 | 0 |
-| Task four | 30 | 0 |
-| Task five | 155 | 105 |
-| **Total Blocking Time** || **345 milliseconds** |
+|                         | Task duration (milliseconds) | Task blocking time (milliseconds) |
+| ----------------------- | ---------------------------- | --------------------------------- |
+| Task one                | 250                          | 200                               |
+| Task two                | 90                           | 40                                |
+| Task three              | 35                           | 0                                 |
+| Task four               | 30                           | 0                                 |
+| Task five               | 155                          | 105                               |
+| **Total Blocking Time** |                              | **345 milliseconds**              |
 
 ### How does TBT relate to INP?
 

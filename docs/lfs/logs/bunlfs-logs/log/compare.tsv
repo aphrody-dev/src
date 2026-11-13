@@ -1,0 +1,8 @@
+distro	image	digest	size_MB	libc	kernel_pkg
+arch	archlinux:latest	sha256:d4594bb2300c	400.0	ldd (GNU libc) 2.44	7.2.15.arch1-1
+debian	debian:stable	sha256:3f0347f4b50e	120.1	ldd (Debian GLIBC 2.41-12+deb13u4) 2.41	6.12.116-1
+ubuntu	ubuntu:latest	sha256:065aa8626841	101.5	ldd (Ubuntu GLIBC 2.43-2ubuntu2.4) 2.43	7.0.0-43.43
+alpine	alpine:latest	sha256:f59abe656b69	8.4	Version 1.2.6	    https://dl-cdn.alpinelinux.org/alpine/v3.24/main
+fedora	fedora:latest	sha256:a7d72ba2745b	191.9	ldd (GNU libc) 2.44	7.3.3-300.fc45
+nixos	nixos/nix:latest	sha256:b49cb33f3a7e	503.4		6.18.63
+bunlfs	(this build)	d74dd5e28503	125.2	glibc 2.44 (built)	7.3.4 (built, LLVM=1, CONFIG_RUST=y)

@@ -99,8 +99,14 @@ export async function buildYoloApp(): Promise<{
       join(BRAND_FONTS, "google-sans-code.woff2"),
       join(DIST_DIR, "assets/fonts/GoogleSansCode-latin.woff2"),
     ],
-    [join(BRAND_FONTS, "google-sans-flex-OFL.txt"), join(DIST_DIR, "assets/fonts/GoogleSansFlex-OFL.txt")],
-    [join(BRAND_FONTS, "google-sans-code-OFL.txt"), join(DIST_DIR, "assets/fonts/GoogleSansCode-OFL.txt")],
+    [
+      join(BRAND_FONTS, "google-sans-flex-OFL.txt"),
+      join(DIST_DIR, "assets/fonts/GoogleSansFlex-OFL.txt"),
+    ],
+    [
+      join(BRAND_FONTS, "google-sans-code-OFL.txt"),
+      join(DIST_DIR, "assets/fonts/GoogleSansCode-OFL.txt"),
+    ],
     [join(BRAND_ICONS, "favicon.ico"), join(DIST_DIR, "favicon.ico")],
   ];
 

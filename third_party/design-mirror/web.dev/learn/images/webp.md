@@ -7,10 +7,11 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Google originally developed WebP as a lossy image format to supersede JPEG, one that was able to produce files smaller than a
 comparable-quality image file encoded as JPEG. Later updates to the format introduced the option of lossless compression,
 PNG-like alpha channel transparency, and GIF-like animation---all of which can be used alongside JPEG-style lossy compression.
-WebP is an *unbelievably* versatile format.
+WebP is an _unbelievably_ versatile format.
 
 WebP's lossy compression algorithm is based on a method that the [VP8 video codec](https://datatracker.ietf.org/doc/html/draft-bankoski-vp8-bitstream-01#page-7)
 uses to compress keyframes in videos. At a high level, it's similar to JPEG encoding: WebP operates in terms of "blocks" rather than individual pixels,
@@ -26,7 +27,7 @@ of their surrounding blocks---specifically the blocks above and to the left of t
 that do this work are fairly complex, but to put it in plain language: "if there's blue above the current block, and blue to the left
 of the current block, assume this block is blue."
 
-In truth, both PNG and JPEG also do this sort of prediction to *some* degree. WebP, however, is unique in that it samples the surrounding
+In truth, both PNG and JPEG also do this sort of prediction to _some_ degree. WebP, however, is unique in that it samples the surrounding
 blocks' data and then attempts to populate the current block by way of several different "prediction modes", effectively trying to "draw"
 the missing part of the image. The results provided by each prediction mode are then compared to the real image data, and the closest
 predictive match is selected.
@@ -66,6 +67,7 @@ _ _ -1 _ _ _ -4 _ _
 ```
 
 Put in the same kind of plain language as some of the legacy format encodings we've discussed:
+
 > 2x9 grid using prediction mode one. +4 to 1x5, -1 to 2x3, -4 to 2x7.
 
 The end result is an unbelievably efficient encoded file.
@@ -82,15 +84,15 @@ when compared with the high-resolution original, but certainly not noticeable wi
 Likewise, the detailed inflorescence of the milkweed, and the leaves in the foreground---you and I may see traces of compression
 artifacts with our trained eyes, but even with the compression dialed up well beyond reasonable levels things in the foreground
 still look passably crisp. The low-frequency information at the top left of the picture---the blurry green backdrop of leaves---looks
-*terrible*. Even an untrained viewer would immediately notice the quality issue---the subtle gradients in the background are
+_terrible_. Even an untrained viewer would immediately notice the quality issue---the subtle gradients in the background are
 rounded down to jagged, solid-color blocks.
 
-In order to avoid this, WebP takes an *adaptive* approach to quantization: an image is broken into up to four visually similar
+In order to avoid this, WebP takes an _adaptive_ approach to quantization: an image is broken into up to four visually similar
 segments, and compression parameters for those segments are tuned independently. Using the same outsized compression with WebP:
 
 The size of both these image files is about the same. The quality is about the same when we look at the monarch's wings---you
 can spot a few tiny differences in the end result if you look very, very closely, but no real difference in overall quality.
-In the WebP, the flowers of the milkweed are just a *little* sharper---again, likely not enough to be noticeable unless you're
+In the WebP, the flowers of the milkweed are just a _little_ sharper---again, likely not enough to be noticeable unless you're
 comparing the two side-by-side and really looking for differences in quality, the way we are. The background is a different story
 altogether: it has barely a trace of JPEG's glaringly obvious artifacts. WebP gives us the same file size, but a much higher
 quality image---give or take a few tiny details that our psychovisual systems wouldn't be able to detect if we weren't comparing
@@ -100,7 +102,7 @@ the two so closely.
 
 The internals of WebP might be considerably more complex than JPEG encoding, but just as simple for the purpose of our daily
 work: all the complexity of WebP's encoding is standardized around a single "quality" value---expressed from 0--100, just like JPEG.
-And once again, that's not to say that you're *limited* to a single overarching "quality" setting. You can---and should---tinker with all
+And once again, that's not to say that you're _limited_ to a single overarching "quality" setting. You can---and should---tinker with all
 the fine details of WebP encoding, if only to gain a better understanding of how these normally-invisible settings can impact
 file size and quality.
 

@@ -29,58 +29,58 @@ Vérifié le 2026-11-13. Contenu m3.material.io : propriétaire (conditions Goog
 
 ## Ressorts (androidx tokens v0_14_0)
 
-| token | standard amortissement / raideur | expressive amortissement / raideur | courbe web expressive | courbe web standard |
-|---|---|---|---|---|
-| md.sys.motion.spring.fast.spatial | 0.9 / 1400 | 0.6 / 800 | cubic-bezier(0.42, 1.67, 0.21, 0.90), 350ms | cubic-bezier(0.27, 1.06, 0.18, 1.00), 350ms |
-| md.sys.motion.spring.fast.effects | 1 / 3800 | 1 / 3800 | cubic-bezier(0.31, 0.94, 0.34, 1.00), 150ms | cubic-bezier(0.31, 0.94, 0.34, 1.00), 150ms |
-| md.sys.motion.spring.default.spatial | 0.9 / 700 | 0.8 / 380 | cubic-bezier(0.38, 1.21, 0.22, 1.00), 500ms | cubic-bezier(0.27, 1.06, 0.18, 1.00), 500ms |
-| md.sys.motion.spring.default.effects | 1 / 1600 | 1 / 1600 | cubic-bezier(0.34, 0.80, 0.34, 1.00), 200ms | cubic-bezier(0.34, 0.80, 0.34, 1.00), 200ms |
-| md.sys.motion.spring.slow.spatial | 0.9 / 300 | 0.8 / 200 | cubic-bezier(0.39, 1.29, 0.35, 0.98), 650ms | cubic-bezier(0.27, 1.06, 0.18, 1.00), 750ms |
-| md.sys.motion.spring.slow.effects | 1 / 800 | 1 / 800 | cubic-bezier(0.34, 0.88, 0.34, 1.00), 300ms | cubic-bezier(0.34, 0.88, 0.34, 1.00), 300ms |
+| token                                | standard amortissement / raideur | expressive amortissement / raideur | courbe web expressive                       | courbe web standard                         |
+| ------------------------------------ | -------------------------------- | ---------------------------------- | ------------------------------------------- | ------------------------------------------- |
+| md.sys.motion.spring.fast.spatial    | 0.9 / 1400                       | 0.6 / 800                          | cubic-bezier(0.42, 1.67, 0.21, 0.90), 350ms | cubic-bezier(0.27, 1.06, 0.18, 1.00), 350ms |
+| md.sys.motion.spring.fast.effects    | 1 / 3800                         | 1 / 3800                           | cubic-bezier(0.31, 0.94, 0.34, 1.00), 150ms | cubic-bezier(0.31, 0.94, 0.34, 1.00), 150ms |
+| md.sys.motion.spring.default.spatial | 0.9 / 700                        | 0.8 / 380                          | cubic-bezier(0.38, 1.21, 0.22, 1.00), 500ms | cubic-bezier(0.27, 1.06, 0.18, 1.00), 500ms |
+| md.sys.motion.spring.default.effects | 1 / 1600                         | 1 / 1600                           | cubic-bezier(0.34, 0.80, 0.34, 1.00), 200ms | cubic-bezier(0.34, 0.80, 0.34, 1.00), 200ms |
+| md.sys.motion.spring.slow.spatial    | 0.9 / 300                        | 0.8 / 200                          | cubic-bezier(0.39, 1.29, 0.35, 0.98), 650ms | cubic-bezier(0.27, 1.06, 0.18, 1.00), 750ms |
+| md.sys.motion.spring.slow.effects    | 1 / 800                          | 1 / 800                            | cubic-bezier(0.34, 0.88, 0.34, 1.00), 300ms | cubic-bezier(0.34, 0.88, 0.34, 1.00), 300ms |
 
 ## Easing
 
-| token | valeur |
-|---|---|
-| easing-emphasized-accelerate | cubic-bezier(0.3, 0, 0.8, 0.15) |
-| easing-emphasized-decelerate | cubic-bezier(0.05, 0.7, 0.1, 1) |
-| easing-legacy | cubic-bezier(0.4, 0, 0.2, 1) |
-| easing-legacy-accelerate | cubic-bezier(0.4, 0, 1, 1) |
-| easing-legacy-decelerate | cubic-bezier(0, 0, 0.2, 1) |
-| easing-linear | cubic-bezier(0, 0, 1, 1) |
-| easing-standard | cubic-bezier(0.2, 0, 0, 1) |
-| easing-standard-accelerate | cubic-bezier(0.3, 0, 1, 1) |
-| easing-standard-decelerate | cubic-bezier(0, 0, 0, 1) |
-| easing-emphasized | path M 0,0 C 0.05,0 0.133333,0.06 0.166666,0.4 C 0.208333,0.82 0.25,1 1,1 (repli CSS : easing-standard) |
+| token                        | valeur                                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------- |
+| easing-emphasized-accelerate | cubic-bezier(0.3, 0, 0.8, 0.15)                                                                         |
+| easing-emphasized-decelerate | cubic-bezier(0.05, 0.7, 0.1, 1)                                                                         |
+| easing-legacy                | cubic-bezier(0.4, 0, 0.2, 1)                                                                            |
+| easing-legacy-accelerate     | cubic-bezier(0.4, 0, 1, 1)                                                                              |
+| easing-legacy-decelerate     | cubic-bezier(0, 0, 0.2, 1)                                                                              |
+| easing-linear                | cubic-bezier(0, 0, 1, 1)                                                                                |
+| easing-standard              | cubic-bezier(0.2, 0, 0, 1)                                                                              |
+| easing-standard-accelerate   | cubic-bezier(0.3, 0, 1, 1)                                                                              |
+| easing-standard-decelerate   | cubic-bezier(0, 0, 0, 1)                                                                                |
+| easing-emphasized            | path M 0,0 C 0.05,0 0.133333,0.06 0.166666,0.4 C 0.208333,0.82 0.25,1 1,1 (repli CSS : easing-standard) |
 
 ## Durées
 
-| token | valeur |
-|---|---|
-| duration-short1 | 50ms |
-| duration-short2 | 100ms |
-| duration-short3 | 150ms |
-| duration-short4 | 200ms |
-| duration-medium1 | 250ms |
-| duration-medium2 | 300ms |
-| duration-medium3 | 350ms |
-| duration-medium4 | 400ms |
-| duration-long1 | 450ms |
-| duration-long2 | 500ms |
-| duration-long3 | 550ms |
-| duration-long4 | 600ms |
-| duration-extra-long1 | 700ms |
-| duration-extra-long2 | 800ms |
-| duration-extra-long3 | 900ms |
+| token                | valeur |
+| -------------------- | ------ |
+| duration-short1      | 50ms   |
+| duration-short2      | 100ms  |
+| duration-short3      | 150ms  |
+| duration-short4      | 200ms  |
+| duration-medium1     | 250ms  |
+| duration-medium2     | 300ms  |
+| duration-medium3     | 350ms  |
+| duration-medium4     | 400ms  |
+| duration-long1       | 450ms  |
+| duration-long2       | 500ms  |
+| duration-long3       | 550ms  |
+| duration-long4       | 600ms  |
+| duration-extra-long1 | 700ms  |
+| duration-extra-long2 | 800ms  |
+| duration-extra-long3 | 900ms  |
 | duration-extra-long4 | 1000ms |
 
 ## Couples easing + durée
 
-| easing | durée | usage |
-|---|---|---|
-| emphasized | 500ms | début et fin à l'écran |
-| emphasized-decelerate | 400ms | entrée à l'écran |
-| emphasized-accelerate | 200ms | sortie de l'écran |
-| standard | 300ms | début et fin à l'écran |
-| standard-decelerate | 250ms | entrée à l'écran |
-| standard-accelerate | 200ms | sortie de l'écran |
+| easing                | durée | usage                  |
+| --------------------- | ----- | ---------------------- |
+| emphasized            | 500ms | début et fin à l'écran |
+| emphasized-decelerate | 400ms | entrée à l'écran       |
+| emphasized-accelerate | 200ms | sortie de l'écran      |
+| standard              | 300ms | début et fin à l'écran |
+| standard-decelerate   | 250ms | entrée à l'écran       |
+| standard-accelerate   | 200ms | sortie de l'écran      |

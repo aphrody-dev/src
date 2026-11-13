@@ -1,8 +1,9 @@
 # Listes de contrôle des revues
 
-Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge-*, consistency-*, facts-*, vault-*, auto/), 2026-11-13. Une entrée = un défaut vu dans au moins deux verdicts, ou de gravité haute (sécurité, perte de données, injection). `ai-os review` injecte dans chaque revue les sections dont le sujet correspond aux fichiers revus (motifs `topics` de `packages/ai-os/config/review.json`) ; `ai-os review mine` recompte les notes des verdicts. Ajouter une entrée ici quand un défaut revient.
+Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-_, judge-_, consistency-_, facts-_, vault-*, auto/), 2026-11-13. Une entrée = un défaut vu dans au moins deux verdicts, ou de gravité haute (sécurité, perte de données, injection). `ai-os review` injecte dans chaque revue les sections dont le sujet correspond aux fichiers revus (motifs `topics` de `packages/ai-os/config/review.json`) ; `ai-os review mine` recompte les notes des verdicts. Ajouter une entrée ici quand un défaut revient.
 
 ## bun-ts
+
 - [ ] Toute recherche par clé venant de l'extérieur (nom d'outil, sous-commande, id de CLI) passe par `Object.hasOwn` ou une `Map`, jamais par `obj[k]` nu (`constructor`, `toString`) (sources: gemini-2026-11-13-ai-os.md, 9f5240b8f1f6.md)
 - [ ] Aucun `parseArgs`, `throw` ou E/S au niveau du module : exporter `main(argv)` et l'appeler sous `if (import.meta.main)` (sources: 9f5240b8f1f6.md, ad0eca921e22.md, ae7bde973904.md, c8d7c8bf9698.md, dece87e0dadc.md)
 - [ ] Toute écriture de config, d'état ou de secret se fait dans un fichier temporaire puis `rename`, avec `mode: 0o600` dès la création (pas de `chmod` après coup) (sources: gemini-2026-11-13-relay-oauth.md, ad0eca921e22.md, ae7bde973904.md, vault-2026-11-13-gemini.md, gemini-2026-11-13-fr2-cloudflare.md)
@@ -16,6 +17,7 @@ Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge
 - [ ] `bun install --frozen-lockfile` en CI, et un diff de `bun.lock` ne contient que des workspaces liés au sujet du commit (sources: gemini-2026-11-13-npm-publish.md, judge-2026-11-13-apps-aphrody.md, 6797a38b56a8.md)
 
 ## rust
+
 - [ ] `rust-toolchain.toml` épingle `nightly-AAAA-MM-JJ` (pas `nightly` nu), avec un `rust-version` du `Cargo.toml` cohérent avec le commentaire (sources: facts-2026-11-13.md, consistency-2026-11-13.md, gemini-2026-11-13-ay-migration.md, gemini-2026-11-13-unixwin.md)
 - [ ] Aucun `cargo build/test --workspace` sur le PC ni sur fr1 hors Chromium/LLVM : Rust passe par `gh workflow run ci.yml` + `gh run watch --exit-status` (sources: judge-2026-11-13-justfile.md, judge-2026-11-13-env-kit.md, consistency-2026-11-13.md, gemini-2026-11-12-architecture-root.md)
 - [ ] Les fonctions qui appellent git ou des E/S renvoient `Result` : aucune erreur de `git ls-files`/`readdir` avalée en liste vide (sources: gemini-2026-11-13-root-identity.md, vault-2026-11-13-gemini.md)
@@ -27,6 +29,7 @@ Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge
 - [ ] Chaque crate de `apps/*` est couverte par `cargo test` + `clippy` dans un workflow (sources: judge-2026-11-13-apps-aphrody.md, gemini-2026-11-12-philosophy-architecture.md)
 
 ## shell-justfile
+
 - [ ] Aucune interpolation `{{param}}` de texte libre dans une ligne shell : passer par un paramètre exporté `$var` ou par argv (sources: judge-2026-11-13-justfile.md, gemini-2026-11-13-terminal.md, gemini-2026-11-13-orch.md)
 - [ ] Toute valeur envoyée dans `ssh` est filtrée par une regex de liste blanche (`error()` sinon) ou quotée par `sh_quote` avant l'appel (sources: judge-2026-11-13-justfile.md, vault-2026-11-13-gemini.md, gemini-2026-11-13-orch.md, gemini-2026-11-13-ay-migration.md)
 - [ ] `set -o pipefail` est actif ; aucun `| head` ni `<(...)` ne masque l'échec ; aucun `a && b` sous `set -e` (utiliser `if`) ; `jq -er` plutôt que `jq -r` (sources: gemini-2026-11-13-fleet-resilience.md, gemini-2026-11-13-orch.md, gemini-2026-11-13-npm-publish.md, gemini-2026-11-13-terminal.md, vault-2026-11-13-gemini.md)
@@ -39,6 +42,7 @@ Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge
 - [ ] Chaque recette ne cite que des paquets, chemins et liens existants (pas de recette fantôme ni morte) (sources: judge-2026-11-13-justfile.md, consistency-2026-11-13.md)
 
 ## ci
+
 - [ ] `cancel-in-progress: ${{ github.event_name == 'pull_request' }}` : jamais d'annulation sur main (sources: judge-2026-11-13-ci.md, gemini-2026-11-13-agent-first.md)
 - [ ] `runs-on: ubuntu-latest` ; fr1 seulement pour Chromium/LLVM, ni prd ni fr2 ; une étape du judge refuse tout autre `runs-on` fr1 (sources: judge-2026-11-13-ci.md, consistency-2026-11-13.md, judge-2026-11-13-justfile.md)
 - [ ] Une étape par suite de tests avec `if: ${{ !cancelled() }}` : le premier paquet rouge ne masque pas les suivants (sources: judge-2026-11-13-ci.md)
@@ -50,6 +54,7 @@ Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge
 - [ ] Une étape refuse un JSON de config qui commence par le BOM `EF BB BF` (sources: 57a7ba24017c.md, 8a56fe8bd140.md)
 
 ## infra-fleet
+
 - [ ] Les rôles cités suivent `deploy.toml` : fr1 = builds Chromium/LLVM, fr2 = proxy/CDN, prd = production (sources: judge-2026-11-13-chromium-bun.md, judge-2026-11-13-ci.md, consistency-2026-11-13.md, gemini-2026-11-13-upstream-stack.md)
 - [ ] Aucune compilation ni test lourd sur le PC (sources: consistency-2026-11-13.md, judge-2026-11-13-justfile.md, judge-2026-11-13-env-kit.md, gemini-2026-11-12-architecture-root.md)
 - [ ] Les runners d'agents tournent sous l'utilisateur `agent` sans sudo (`runuser`), jamais en root et jamais avec `IS_SANDBOX=1` (sources: gemini-2026-11-13-agent-first.md, gemini-2026-11-13-aphrody-nhitl.md, gemini-2026-11-13-upstream-stack.md)
@@ -63,6 +68,7 @@ Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge
 - [ ] `deploy.toml` et les configs d'hôte ne contiennent aucun chemin `C:/` (sources: judge-2026-11-13-apps-aphrody.md, consistency-2026-11-13.md)
 
 ## cloudflare
+
 - [ ] Le filtrage d'origine couvre IPv4 et IPv6, TCP et UDP 443, et `proof.ts` sonde aussi l'adresse v6 (sources: gemini-2026-11-13-fr2-cloudflare.md)
 - [ ] Jamais `tcp dport 22` dans les plages Cloudflare : cloudflared joint sshd en local (sources: gemini-2026-11-13-fr2-cloudflare.md)
 - [ ] admin, console et control sont derrière une app Access avant toute exposition ; aucun hôte de test public sans Access (sources: gemini-2026-11-13-fr2-cloudflare.md, gemini-2026-11-12-cloudflare-one.md)
@@ -76,6 +82,7 @@ Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge
 - [ ] `wrangler.toml` ne mélange pas `pages_build_output_dir` et `[assets]` ; wrangler est appelé à une version épinglée (sources: judge-2026-11-13-apps-aphrody.md, facts-2026-11-13.md)
 
 ## security
+
 - [ ] SSRF : DNS en échec = refus, IPv6 qui encapsule de l'IPv4 refusée (`::ffff:`, `64:ff9b::`, `2002::`, Teredo), redirections manuelles revalidées à chaque saut, taille plafonnée (sources: judge-2026-11-13-chromium-bun.md, gemini-2026-11-13-relay-oauth.md)
 - [ ] Jetons et cookies comparés par `timingSafeEqual` ; le cookie contient un HMAC du jeton, pas le jeton (sources: gemini-2026-11-13-relay-oauth.md, gemini-2026-11-13-ai-os.md)
 - [ ] Chaque route HTTP, webhooks compris, exige l'authentification ; un POST d'état exige `Sec-Fetch-Site: same-origin` ou un `Origin` identique (sources: gemini-2026-11-13-ai-os.md, gemini-2026-11-13-relay-oauth.md)
@@ -89,6 +96,7 @@ Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge
 - [ ] Redirections OAuth avec fragment refusées ; en-tête JWT (`alg`, `typ`) vérifié ; tirage par rejet pour les codes (pas de biais de modulo) (sources: gemini-2026-11-13-relay-oauth.md)
 
 ## nhitl-agents
+
 - [ ] Le filtre de commandes est présenté comme garde-fou, pas comme frontière ; la frontière OS (WSL2 sandbox, compte dédié + Job Object) est un chantier suivi (sources: judge-2026-11-13-aphrody-nhitl.md, gemini-2026-11-13-aphrody-nhitl.md, gemini-2026-11-13-nhitl.md)
 - [ ] Normaliser avant de comparer : verbe dé-échappé (`r\m`), jokers sur les noms de secrets (`.e?v`), variables expansées, préfixes `busybox`/`toybox`, pipe ou here-string vers un shell, `-EncodedCommand` décodé puis réanalysé (sources: judge-2026-11-13-aphrody-nhitl.md, gemini-2026-11-13-nhitl.md, gemini-2026-11-13-aphrody-nhitl.md)
 - [ ] Hook PreToolUse des shells en `block` avec un délai borné ; un fail-open éventuel est explicite et documenté (sources: judge-2026-11-13-aphrody-nhitl.md, gemini-2026-11-13-aphrody-nhitl.md, 57a7ba24017c.md)
@@ -102,6 +110,7 @@ Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge
 - [ ] Commit atomique : le diff ne contient que le sujet du message, et le message ne revendique ni correctif ni preuve absents du diff (sources: 6797a38b56a8.md, ae7bde973904.md, 57a7ba24017c.md, 9f5240b8f1f6.md, judge-2026-11-13-ci.md)
 
 ## docs-facts
+
 - [ ] Chaque version, date ou SHA est revérifiée sur une source live (`gh api`, registre) et datée (sources: facts-2026-11-13.md, 4fa51945a406.md, 6797a38b56a8.md, gemini-2026-11-12-editors-agents-matrix.md)
 - [ ] Recompter les décomptes et les sommes (CNAME, totaux avant/après) (sources: gemini-2026-11-13-fr2-cloudflare.md, gemini-2026-11-12-architecture-root.md, 8a56fe8bd140.md, c8d7c8bf9698.md)
 - [ ] Aucun chemin absolu (`C:\src`, `C:/Users/...`, `file:///`) dans les docs, skills et configs : chemins relatifs à la racine (sources: consistency-2026-11-13.md, facts-2026-11-13.md, judge-2026-11-13-apps-aphrody.md, judge-2026-11-13-env-kit.md, gemini-2026-11-12-cloudflare-one.md, 57a7ba24017c.md)
@@ -116,6 +125,7 @@ Défauts récurrents distillés des verdicts de `docs/reviews/` (gemini-*, judge
 - [ ] La revue porte sur le fichier brut complet ou le diff complet, pas sur un résumé tronqué ou des extraits (sources: INDEX.md, gemini-2026-11-13-ay-migration.md, gemini-2026-11-13-unixwin.md)
 
 ## chromium-google
+
 - [ ] La version Stable de Chromium, `CLANG_REVISION` et `RUST_REVISION` sont relevées sur chromiumdash et le tag, à la date du document (sources: facts-2026-11-13.md, gemini-2026-11-12-targets.md)
 - [ ] Le support d'une cible LLVM se prouve par un build et un link, pas par la présence dans `Triple.h` ; les backends expérimentaux sont séparés (sources: gemini-2026-11-12-targets.md, INDEX.md)
 - [ ] Deux toolchains (LLVM de Chromium contre LLVM de rustc) sont déclarées comme telles, sans promesse de toolchain unique (sources: facts-2026-11-13.md, gemini-2026-11-13-ay-migration.md)

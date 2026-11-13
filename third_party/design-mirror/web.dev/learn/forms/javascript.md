@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ## Respond to form events
 
 You can use JavaScript to respond to user interactions on your form, reveal additional form fields, submit a form, and much more.
@@ -22,9 +23,9 @@ You can use JavaScript to reveal an `<input>` only when the associated `<input t
 
 ```javascript
 if (event.target.checked) {
-    // show additional field
+  // show additional field
 } else {
-   // hide additional field
+  // hide additional field
 }
 ```
 
@@ -68,10 +69,10 @@ Your backend script can check if a `POST` request appears to be from the browser
 such as a `fetch()` request.
 
 ```javascript
-if (req.xhr || req.headers.accept.indexOf('json') !== -1) {
-    // return JSON
+if (req.xhr || req.headers.accept.indexOf("json") !== -1) {
+  // return JSON
 } else {
-    // return HTML
+  // return HTML
 }
 ```
 
@@ -137,7 +138,7 @@ It's important to enable screen reader users to know when a password is displaye
 
 ```html
 <span class="visually-hidden" aria-live="polite">
-    <!-- Dynamically change this text with JavaScript -->
+  <!-- Dynamically change this text with JavaScript -->
 </span>
 ```
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In the document structure section you learned about the components you (almost) always find in the `<head>` of an HTML document. While everything in the `<head>`, including the `<title>`, `<link>`, `<script>`, `<style>`, and the lesser used `<base>`, is actually "meta data", there is a `<meta>` tag for metadata that cannot be represented by these other elements.
 
 The specification includes several meta types, and there are many, many other application-supported meta types not in any official specification. In this section, we'll discuss the attributes and values that are included in the specifications, some common meta names and content values, and a few meta types that are incredibly useful for search engine optimization, social media posting, and user experience that are not officially defined by the [WHATWG](https://html.spec.whatwg.org/multipage/semantics.html#the-meta-element) or [W3C](https://www.w3.org/MarkUp/html-spec/Elements/META.html).
@@ -32,7 +33,10 @@ The specification defines seven [pragma directives](https://html.spec.whatwg.org
 The most common pragma directive is the `refresh` directive.
 
 ```html
-<meta http-equiv="refresh" content="60; https://machinelearningworkshop.com/regTimeout" />
+<meta
+  http-equiv="refresh"
+  content="60; https://machinelearningworkshop.com/regTimeout"
+/>
 ```
 
 While you can set a directive to refresh at an interval of the number of seconds set in the `content` attribute, and even redirect to a different URL, this is not advisable. Refreshing and redirecting content without an explicit user request to do so is poor usability and negatively impacts accessibility. Don't you hate it when you're in the middle of a paragraph and the page resets? Imagine having cognitive or vision issues and that happening. If you are going to set a refresh with a redirect, make sure the user has enough time to read the page, a link to hasten the process, and, if appropriate, a button to "stop the clock" and prevent the redirect from happening.
@@ -62,8 +66,10 @@ Search engine optimization snake-oil salespeople abused the keywords meta tag by
 The `description` value, however, is useful for SEO: the description content value is often what search engines display under the page's title in search results. Several browsers, like Firefox and Opera, use this as the default description of bookmarked pages. The description should be a short and accurate summary of the page's content.
 
 ```html
-<meta name="description"
-  content="Register for a machine learning workshop at our school for machines who can't learn good and want to do other stuff good too" />
+<meta
+  name="description"
+  content="Register for a machine learning workshop at our school for machines who can't learn good and want to do other stuff good too"
+/>
 ```
 
 If the second half of our description makes no sense to you, you probably haven't seen the movie [Zoolander](https://www.youtube.com/watch?v=NQ-8IuUkJJc).
@@ -102,9 +108,18 @@ Create a Facebook media card:
 
 ```html
 <meta property="og:title" content="Machine Learning Workshop" />
-<meta property="og:description" content="School for Machines Who Can't Learn Good and Want to Do Other Stuff Good Too" />
-<meta property="og:image" content="http://www.machinelearningworkshop.com/image/all.png" />
-<meta property="og:image:alt" content="Black and white line drawing of refrigerator, french door refrigerator, range, washer, fan, microwave, vaccuum, space heater and air conditioner" />
+<meta
+  property="og:description"
+  content="School for Machines Who Can't Learn Good and Want to Do Other Stuff Good Too"
+/>
+<meta
+  property="og:image"
+  content="http://www.machinelearningworkshop.com/image/all.png"
+/>
+<meta
+  property="og:image:alt"
+  content="Black and white line drawing of refrigerator, french door refrigerator, range, washer, fan, microwave, vaccuum, space heater and air conditioner"
+/>
 ```
 
 Include a title of your post for display. This title is generally displayed below the image and above the description. The description should be up to three sentences that summarize your post. This will appear after the headline defined in `og:title`. Provide the absolute URL to the banner image you want displayed, including the `https://` protocol. When including an image in HTML, always include an alternative text description for the image, even when the image will appear elsewhere. For Open Graph social media cards, define the `alt` as the content value for the `og:image:alt` property. You can also include a canonical URL with `og:url`.
@@ -115,9 +130,18 @@ Other social media have their own similar syntaxes, like [Twitter card markup](h
 
 ```html
 <meta name="twitter:title" content="Machine Learning Workshop" />
-<meta name="twitter:description" content="School for machines who can't learn good and want to do other stuff good too" />
-<meta name="twitter:url" content="https://www.machinelearningworkshop.com/?src=twitter" />
-<meta name="twitter:image:src" content="http://www.machinelearningworkshop.com/image/all.png" />
+<meta
+  name="twitter:description"
+  content="School for machines who can't learn good and want to do other stuff good too"
+/>
+<meta
+  name="twitter:url"
+  content="https://www.machinelearningworkshop.com/?src=twitter"
+/>
+<meta
+  name="twitter:image:src"
+  content="http://www.machinelearningworkshop.com/image/all.png"
+/>
 <meta name="twitter:image:alt" content="27 different home appliances" />
 <meta name="twitter:creator" content="@estellevw" />
 <meta name="twitter:site" content="@perfmattersconf" />
@@ -138,8 +162,16 @@ If someone bookmarks your site, adding it to their home screen, or if your site 
 You can use the `<link>` tag to link to the startup images that you want to use. Here's an example of including a few images, with media queries:
 
 ```html
-<link rel="apple-touch-startup-image" href="icons/ios-portrait.png" media="orientation: portrait" />
-<link rel="apple-touch-startup-image" href="icons/ios-landscape.png" media="orientation: landscape" />
+<link
+  rel="apple-touch-startup-image"
+  href="icons/ios-portrait.png"
+  media="orientation: portrait"
+/>
+<link
+  rel="apple-touch-startup-image"
+  href="icons/ios-landscape.png"
+  media="orientation: landscape"
+/>
 ```
 
 If your site or application is web-app capable, meaning the site can stand on its own with minimal UI, such as no back button, you can use meta tags to tell the browser that too:
@@ -177,27 +209,55 @@ Your HTML now looks something like this:
     <meta charset="utf-8" />
     <title>Machine Learning Workshop</title>
     <meta name="viewport" content="width=device-width" />
-    <meta name="description" content="Register for a machine learning workshop at our school for machines who can't learn good and want to do other stuff good too" />
+    <meta
+      name="description"
+      content="Register for a machine learning workshop at our school for machines who can't learn good and want to do other stuff good too"
+    />
     <meta property="og:title" content="Machine Learning Workshop" />
-    <meta property="og:description" content="School for Machines Who Can't Learn Good and Want to Do Other Stuff Good Too" />
-    <meta property="og:image" content="http://www.machinelearningworkshop.com/image/all.png" />
-    <meta property="og:image:alt" content="Black and white line drawing of refrigerator, french door refrigerator, range, washer, fan, microwave, vaccuum, space heater and air conditioner" />
+    <meta
+      property="og:description"
+      content="School for Machines Who Can't Learn Good and Want to Do Other Stuff Good Too"
+    />
+    <meta
+      property="og:image"
+      content="http://www.machinelearningworkshop.com/image/all.png"
+    />
+    <meta
+      property="og:image:alt"
+      content="Black and white line drawing of refrigerator, french door refrigerator, range, washer, fan, microwave, vaccuum, space heater and air conditioner"
+    />
     <meta name="twitter:title" content="Machine Learning Workshop" />
-    <meta name="twitter:description" content="School for machines who can't learn good and want to do other stuff good too" />
-    <meta name="twitter:url" content="https://www.machinelearningworkshop.com/?src=twitter" />
-    <meta name="twitter:image:src" content="http://www.machinelearningworkshop.com/image/all.png" />
+    <meta
+      name="twitter:description"
+      content="School for machines who can't learn good and want to do other stuff good too"
+    />
+    <meta
+      name="twitter:url"
+      content="https://www.machinelearningworkshop.com/?src=twitter"
+    />
+    <meta
+      name="twitter:image:src"
+      content="http://www.machinelearningworkshop.com/image/all.png"
+    />
     <meta name="twitter:image:alt" content="27 different home appliances" />
     <meta name="twitter:creator" content="@estellevw" />
     <meta name="twitter:site" content="@perfmattersconf" />
     <link rel="stylesheet" src="css/styles.css" />
     <link rel="icon" type="image/png" href="/images/favicon.png" />
-    <link rel="alternate" href="https://www.machinelearningworkshop.com/fr/" hreflang="fr-FR" />
-    <link rel="alternate" href="https://www.machinelearningworkshop.com/pt/" hreflang="pt-BR" />
+    <link
+      rel="alternate"
+      href="https://www.machinelearningworkshop.com/fr/"
+      hreflang="fr-FR"
+    />
+    <link
+      rel="alternate"
+      href="https://www.machinelearningworkshop.com/pt/"
+      hreflang="pt-BR"
+    />
     <link rel="canonical" href="https://www.machinelearning.com" />
     <link rel="manifest" href="/mlwmanifest.json" />
   </head>
   <body>
-
     <!-- <script defer src="scripts/lightswitch.js"></script>-->
   </body>
 </html>

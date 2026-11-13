@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 When you create a form, you work with user data.
 Your number one concern should be to ensure that user data is kept private and transferred securely.
 Let's have a look at what can be done.

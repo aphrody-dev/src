@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Paul Irish [X](https://twitter.com/paul_irish) [GitHub](https://github.com/paulirish) [Mastodon](https://toot.cafe/@paul_irish) [Bluesky](https://bsky.app/profile/paul.irish) [Homepage](https://www.paulirish.com/)
 
 ## Introduction
 
- View the Font Previewer for a taste of how flexible webfonts are
+View the Font Previewer for a taste of how flexible webfonts are
 
 The @font-face feature from CSS3 allows us to use custom typefaces on the web in an accessible, manipulable, and scalable way. But, you might say, "Why would we use @font-face if we have Cufon, sIFR, and using text in images?"
 A few benefits of leveraging @font-face for custom fonts:
@@ -27,42 +28,49 @@ At its most basic, we declare a new custom remote font to be used like so:
 
 ```css
 @font-face {
-  font-family: 'Tagesschrift';
-  src: url('tagesschrift.ttf');
+  font-family: "Tagesschrift";
+  src: url("tagesschrift.ttf");
 }
 ```
 
 Then put it to use:
 
 ```css
-h1, h2, h3 { font-family: 'Tagesschrift', 'Georgia', serif; }
+h1,
+h2,
+h3 {
+  font-family: "Tagesschrift", "Georgia", serif;
+}
 ```
 
 In this @font-face declaration we're using the `font-family` property to explicitly name the font. It can be anything, regardless of what the font is actually called; `font-family: 'SuperDuperComicSans';` would work out just fine, though perhaps not for your reputation. In the `src` property we point to where the browser can find the font asset. Depending on the browser, some valid font types are eot, ttf, otf, svg, or a [data URI](http://en.wikipedia.org/wiki/Data_URI_scheme) embedding the entire font data inline.
 
-|   | otf \& ttf | svg | woff | eot |
-| IE | IE9 |   | IE9 | IE5+ |
-| Firefox | FF3.5 | FF3.5 | FF3.6 |   |
-| Chrome | Chrome 4 | Chrome 0.3 | Chrome 5 |   |
-| Safari | 3.1 | 3.1 |   |   |
-| Opera | Opera 10.00 | Opera 9 |   |   |
-| iOS |   | iOS 1 |   |   |
-| Android | 2.2 |   |   |   |
-|---|---|---|---|---|
+| | otf \& ttf | svg | woff | eot |
+| IE | IE9 | | IE9 | IE5+ |
+| Firefox | FF3.5 | FF3.5 | FF3.6 | |
+| Chrome | Chrome 4 | Chrome 0.3 | Chrome 5 | |
+| Safari | 3.1 | 3.1 | | |
+| Opera | Opera 10.00 | Opera 9 | | |
+| iOS | | iOS 1 | | |
+
+| Android | 2.2 |     |     |     |
+| ------- | --- | --- | --- | --- |
 
 Of course, nothing is ever as simple as it should be. The initial limitation of the above code was that it did not serve an EOT to IE 6-8. The [bulletproof @font-face syntax](http://paulirish.com/2009/bulletproof-font-face-implementation-syntax/) proposed a way of solving this; a robust version follows.
 
 ```css
 @font-face {
-  font-family: 'Tagesschrift';
-  src: url('tagesschrift.eot'); /* IE 5-8 */ 
-  src: local('&#9786;'),             /* sneakily trick IE */
-        url('tagesschrift.woff') format('woff'),    /* FF 3.6, Chrome 5, IE9 */
-        url('tagesschrift.ttf') format('truetype'), /* Opera, Safari */
-        url('tagesschrift.svg#font') format('svg'); /* iOS */
+  font-family: "Tagesschrift";
+  src: url("tagesschrift.eot"); /* IE 5-8 */
+  src:
+    local("&#9786;"),
+    /* sneakily trick IE */ url("tagesschrift.woff") format("woff"),
+    /* FF 3.6, Chrome 5, IE9 */ url("tagesschrift.ttf") format("truetype"),
+    /* Opera, Safari */ url("tagesschrift.svg#font") format("svg"); /* iOS */
 }
 ```
- The Font Squirrel generator
+
+The Font Squirrel generator
 
 Inducing a headache yet? If you'd rather just get this off the ground quickly, head to the [Font Squirrel generator](http://www.fontsquirrel.com/fontface/generator), a tool that simplifies the whole process for you, taking your font and preparing its variants and CSS for you. It's indispensable for putting webfonts into practice today.
 
@@ -84,19 +92,19 @@ A common surprise to designers is that just because you purchase a font license 
 ## Dealing with FOUT
 
 The [Flash of Unstyled Text](http://paulirish.com/2009/fighting-the-font-face-fout/) is a phenomenon in Firefox and Opera that few web designers are fond of. When you apply a custom typeface via @font-face, there is a brief moment, when loading the page, where the font hasn't been downloaded and applied yet, and the next font in the `font-family` stack is used. This causes a flash of a different (typically less good looking) font, before it gets upgraded.
- The Flash of Unstyled Text happening to the HTML5 Slide deck.
+The Flash of Unstyled Text happening to the HTML5 Slide deck.
 
 Accompanying the Google Font API is the [WebFont Loader](http://code.google.com/apis/webfonts/docs/webfont_loader.html), a javascript library aiming to provide a number of event hooks giving you a lot of control over the loading. Let's take a look at how you can get other browsers to mimic WebKit's behavior of hiding the fallback text while the @font-face font loads.
 
 ```html
 <script src="//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js"></script>
 <script>
-WebFont.load({
-  custom: {
-    families: ['Tagesschrift'],
-    urls: ['http://paulirish.com/tagesschrift.css']
-  }
-});
+  WebFont.load({
+    custom: {
+      families: ["Tagesschrift"],
+      urls: ["http://paulirish.com/tagesschrift.css"],
+    },
+  });
 </script>
 ```
 
@@ -105,9 +113,10 @@ WebFont.load({
 .wf-loading h2 {
   visibility: hidden;
 }
-.wf-active h2, .wf-inactive h2 {
+.wf-active h2,
+.wf-inactive h2 {
   visibility: visible;
-  font-family: 'Tagesschrift', 'Georgia', serif;
+  font-family: "Tagesschrift", "Georgia", serif;
 }
 ```
 

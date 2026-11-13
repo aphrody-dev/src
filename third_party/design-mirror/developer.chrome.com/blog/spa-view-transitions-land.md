@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Jake Archibald [X](https://twitter.com/jaffathecake) [Homepage](https://jakearchibald.com/)
 
 The View Transition API lets you update the DOM in a single step, while generating an animated transition between the two states.

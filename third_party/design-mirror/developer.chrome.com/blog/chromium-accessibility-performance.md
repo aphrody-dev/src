@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 This post is from Chromium contributor ​​Ahmed Elwasefi, sharing how he became a
 contributor through the Google Summer of Code, and the accessibility performance
 issues he has identified and fixed.
 
- Ahmed Elwasefi [X](https://twitter.com/AhmedElwasefi) [GitHub](https://github.com/Ahmad45123) [LinkedIn](https://www.linkedin.com/in/ahmad45123)
+Ahmed Elwasefi [X](https://twitter.com/AhmedElwasefi) [GitHub](https://github.com/Ahmad45123) [LinkedIn](https://www.linkedin.com/in/ahmad45123)
 
 As I approached my final year in computer engineering at the German University
 in Cairo, I decided to explore opportunities to contribute to open source. I
@@ -62,7 +63,7 @@ funded by the Google OpenCollective program.
 
 ### Cache improvement
 
-In Chrome, there's a special data structure called the *accessibility tree* that
+In Chrome, there's a special data structure called the _accessibility tree_ that
 mirrors the DOM tree. It's used to help assistive technologies access web
 content. Sometimes, when a device needs information from this tree, it might not
 be ready, so the browser has to schedule those requests for later.
@@ -74,18 +75,18 @@ of how closures are processed.
 To improve this, we switched to a system using enums. Each task is assigned a
 specific enum value, and once the accessibility tree is ready, the correct
 method for that task is called. This change made the code easier to understand
-and improved performance by over *20%*.
- A graph of runtimes of several performance tests where there's a visible drop of about 20% across all of them.
+and improved performance by over _20%_.
+A graph of runtimes of several performance tests where there's a visible drop of about 20% across all of them.
 
 ### Finding and fixing scroll performance issues
 
 Next, I explored how performance improves when we turn off bounding box
-serialization. *Bounding boxes* are the positions and sizes of elements on a
+serialization. _Bounding boxes_ are the positions and sizes of elements on a
 web page, including details like width, height, and their position relative to
 their parent element.
 
 To test this, we temporarily removed the code that handles bounding boxes and
-ran performance tests to see the impact. One test, *focus-links.html* showed a
+ran performance tests to see the impact. One test, _focus-links.html_ showed a
 huge improvement of about 1618%. This discovery became the foundation for
 further work.
 
@@ -99,13 +100,13 @@ happened with focus action. To test this, I added `{preventScroll: true}` to the
 
 With scrolling disabled, the test time dropped to 1.2 milliseconds when bounding
 box calculations were active. This showed that scrolling was the real problem.
- Focus-links test runtime drops from 20 ms to 1.1 ms when scrolling is disabled or bounding box serialization is removed.
+Focus-links test runtime drops from 20 ms to 1.1 ms when scrolling is disabled or bounding box serialization is removed.
 
-I created a new test called *scroll-in-page.html* to replicate the
-*focus-links* test, but instead of using focus, it scrolls through elements
+I created a new test called _scroll-in-page.html_ to replicate the
+_focus-links_ test, but instead of using focus, it scrolls through elements
 with `scrollIntoView()`. I tested both smooth and instant scrolling, with and
 without bounding box calculations.
- Time taken to process scrolls in instant scrolling is 65 ms while smooth scrolling takes 123 ms.
+Time taken to process scrolls in instant scrolling is 65 ms while smooth scrolling takes 123 ms.
 
 The results showed that with instant scrolling and bounding boxes, the process
 took about 66ms. Smooth scrolling was even slower at around 124ms. When we
@@ -116,18 +117,18 @@ triggered.
 
 We'd now learned that scrolling is the source of a lot of slowness in
 accessibility serialization, but we still had to find out why. To analyze this,
-Two tools called *perf* and *pprof* were used to break down the work done in the
+Two tools called _perf_ and _pprof_ were used to break down the work done in the
 browser process. These tools are often used in C++ for profiling.
 The following graphs shows a
 snippet of the interesting part.
- A graph generated from profiling of scrolling tests. Shows that time is mostly spent in calls to a function called Unserialize as well as another called IsChildOfLeaf.
+A graph generated from profiling of scrolling tests. Shows that time is mostly spent in calls to a function called Unserialize as well as another called IsChildOfLeaf.
 
 After investigating, we found that the issue wasn't the deserialization code
 itself, but the frequency of calls to it. To understand this, we need to look at
 how accessibility updates work in Chromium. Updates aren't sent individually;
 instead, there's a central location called `AXObjectCache` that stores all
 properties. When a node changes, various methods notify the cache to mark that
-node as *dirty* for later serialization. Then, all properties of dirty notes,
+node as _dirty_ for later serialization. Then, all properties of dirty notes,
 including unchanged properties, are serialized and sent to the browser. While
 this design simplifies the code and reduces complexity by having a single update
 path, it becomes slow when there are rapid "mark as dirty" events, such as those
@@ -147,7 +148,7 @@ serialization. This ensures that scrolling updates are processed through the
 fast path, enhancing performance without unnecessary delays. By packing scroll
 offsets with bounding box data, we optimize the process for smoother and more
 efficient updates, creating a less janky experience for users with accessibility
-turned on. The improvement after the implementation of the fix is *up to 825%* in scrolling tests.
+turned on. The improvement after the implementation of the fix is _up to 825%_ in scrolling tests.
 
 ### Code simplifications
 
@@ -185,8 +186,8 @@ experience for those relying on assistive technologies but also contribute to
 the overall performance and efficiency of the browser.
 
 The performance results have been impressive. For example, the switch to using
-enums for scheduling tasks improved performance by *over 20%* . Additionally,
-our scrolling fix resulted in up to an *825%* reduction in scrolling tests.
+enums for scheduling tasks improved performance by _over 20%_ . Additionally,
+our scrolling fix resulted in up to an _825%_ reduction in scrolling tests.
 Code simplifications changes have not only made the code clearer and more
 maintainable, but also paved the way for future enhancements.
 

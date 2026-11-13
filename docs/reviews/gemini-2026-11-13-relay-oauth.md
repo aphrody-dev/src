@@ -6,25 +6,25 @@
 
 Chaque défaut a été vérifié dans le code avant d'être corrigé. Les corrections sont dans le commit qui suit ce fichier.
 
-| # | Défaut annoncé | Statut |
-|---|---|---|
-| 1 | le cookie contient le jeton fixe, comparaison non constante | corrigé : cookie = HMAC du jeton (`relayCookie`), comparé avec `timingSafeEqual` |
-| 2 | POST de consentement sans protection CSRF | corrigé : `Sec-Fetch-Site: same-origin` ou `Origin` identique exigé (`ownerPost`) |
-| 3 | `oauth.json` écrit puis `chmod` après coup | corrigé : `mode: 0o600` à la création, écriture atomique (fichier temporaire puis `rename`) |
-| 4 | fichier corrompu : clé régénérée sans bruit | corrigé : régénération seulement si le fichier est absent, sinon erreur |
-| 5 | `st` utilisé sans `load()` | corrigé |
-| 6 | le jeton tourné reste stocké jusqu'à son expiration | conservé : la marque `used` sert à détecter une réutilisation (OAuth 2.1 §4.3.1) ; purgé à l'expiration |
-| 7 | refresh : `resource` non restreint | corrigé : limité à l'ensemble d'origine |
-| 8 | table des grants device | non reproduit : l'URN complet enregistré passe par `g.includes(grant)` ; l'alias `device_code` est seulement en plus |
-| 9 | biais de modulo du `user_code` ; pas de limite de débit | biais corrigé (échantillonnage par rejet) ; limite de débit non faite (l'approbation exige le jeton du relais ou le cookie) |
-| 10 | `approve` ne permet plus de refuser après un accord | voulu : un accord donné n'est pas révocable par `approve`, il l'est par `/oauth/revoke` |
-| 11 | Basic : `split(":")` casse un secret contenant `:` | corrigé (`indexOf`) ; contrôle strict de la méthode d'authentification non fait |
-| 12 | CIMD sans protection SSRF ni limite de taille | corrigé : hôtes privés et boucle locale refusés, 64 Kio au plus, redirections validées, cache borné à 256 entrées. La résolution DNS vers une IP privée n'est pas vérifiée |
-| 13 | redirection avec fragment acceptée | corrigé (`badRedirect`), test ajouté |
-| 14 | approbation automatique derrière un mandataire | déjà couvert : elle exige aussi que l'hôte de la requête soit en boucle locale ; `RELAY_OAUTH_AUTO=0` la coupe |
-| 15 | refresh émis même sans grant `refresh_token` | corrigé |
-| 16 | jeton fixe : `aud` vide | voulu : le jeton fixe sert à l'usage local, il ouvre toutes les ressources |
-| 17 | en-tête JWT (`alg`, `typ`) non vérifié | corrigé |
-| 18 | alias `/.well-known/openid-configuration` sans les champs OIDC | retiré ; `/oauth/wait` en GET seulement |
-| 19 | pages sans CSP ni `nosniff` | corrigé : CSP `default-src 'none'`, rechargement par `meta refresh` au lieu d'un script |
-| 20 | « aucun test visible » | inexact : `packages/ai-os/test/relay/oauth.test.ts` (6 tests) ; découpage en modules non fait |
+| #   | Défaut annoncé                                                 | Statut                                                                                                                                                                     |
+| --- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | le cookie contient le jeton fixe, comparaison non constante    | corrigé : cookie = HMAC du jeton (`relayCookie`), comparé avec `timingSafeEqual`                                                                                           |
+| 2   | POST de consentement sans protection CSRF                      | corrigé : `Sec-Fetch-Site: same-origin` ou `Origin` identique exigé (`ownerPost`)                                                                                          |
+| 3   | `oauth.json` écrit puis `chmod` après coup                     | corrigé : `mode: 0o600` à la création, écriture atomique (fichier temporaire puis `rename`)                                                                                |
+| 4   | fichier corrompu : clé régénérée sans bruit                    | corrigé : régénération seulement si le fichier est absent, sinon erreur                                                                                                    |
+| 5   | `st` utilisé sans `load()`                                     | corrigé                                                                                                                                                                    |
+| 6   | le jeton tourné reste stocké jusqu'à son expiration            | conservé : la marque `used` sert à détecter une réutilisation (OAuth 2.1 §4.3.1) ; purgé à l'expiration                                                                    |
+| 7   | refresh : `resource` non restreint                             | corrigé : limité à l'ensemble d'origine                                                                                                                                    |
+| 8   | table des grants device                                        | non reproduit : l'URN complet enregistré passe par `g.includes(grant)` ; l'alias `device_code` est seulement en plus                                                       |
+| 9   | biais de modulo du `user_code` ; pas de limite de débit        | biais corrigé (échantillonnage par rejet) ; limite de débit non faite (l'approbation exige le jeton du relais ou le cookie)                                                |
+| 10  | `approve` ne permet plus de refuser après un accord            | voulu : un accord donné n'est pas révocable par `approve`, il l'est par `/oauth/revoke`                                                                                    |
+| 11  | Basic : `split(":")` casse un secret contenant `:`             | corrigé (`indexOf`) ; contrôle strict de la méthode d'authentification non fait                                                                                            |
+| 12  | CIMD sans protection SSRF ni limite de taille                  | corrigé : hôtes privés et boucle locale refusés, 64 Kio au plus, redirections validées, cache borné à 256 entrées. La résolution DNS vers une IP privée n'est pas vérifiée |
+| 13  | redirection avec fragment acceptée                             | corrigé (`badRedirect`), test ajouté                                                                                                                                       |
+| 14  | approbation automatique derrière un mandataire                 | déjà couvert : elle exige aussi que l'hôte de la requête soit en boucle locale ; `RELAY_OAUTH_AUTO=0` la coupe                                                             |
+| 15  | refresh émis même sans grant `refresh_token`                   | corrigé                                                                                                                                                                    |
+| 16  | jeton fixe : `aud` vide                                        | voulu : le jeton fixe sert à l'usage local, il ouvre toutes les ressources                                                                                                 |
+| 17  | en-tête JWT (`alg`, `typ`) non vérifié                         | corrigé                                                                                                                                                                    |
+| 18  | alias `/.well-known/openid-configuration` sans les champs OIDC | retiré ; `/oauth/wait` en GET seulement                                                                                                                                    |
+| 19  | pages sans CSP ni `nosniff`                                    | corrigé : CSP `default-src 'none'`, rechargement par `meta refresh` au lieu d'un script                                                                                    |
+| 20  | « aucun test visible »                                         | inexact : `packages/ai-os/test/relay/oauth.test.ts` (6 tests) ; découpage en modules non fait                                                                              |

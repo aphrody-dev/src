@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 A common pattern for web pages is to use JavaScript to dynamically replace the content on a page, without loading a new, full HTML document. This is called a Single Page Application, or SPA. View transitions give you a way to show continuity or context between the pages in your SPA.
 
 <iframe src="https:///frame/learn/css/view-transitions-spas/index_a76095a01630631774cba9ec5345ab4db2a38bbb5a7239f9bae2d957bc09d861.frame" class="framebox inherit-locale " allow="clipboard-write https://" allowfullscreen is-upgraded></iframe>
@@ -22,6 +23,7 @@ To use view transitions, you will need to wrap the logic for changing the DOM in
 ```javascript
 document.startViewTransition(() => updateTheDOMSomehow());
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/emprEOW?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen emprEOW by web-dot-dev on Codepen">
 </iframe>
 
@@ -52,7 +54,7 @@ You can specify the leaving transition with `::view-transition-old()` and the en
 In this example, the old view will transition out using the `slide-out-to-left` transition and the new view will transition in using the `slide-in-from-right` transition. They both will have a duration of 200 milliseconds.
 
 ```css
-::view-transition-group(root){
+::view-transition-group(root) {
   animation-duration: 200ms;
 }
 
@@ -64,6 +66,7 @@ In this example, the old view will transition out using the `slide-out-to-left` 
   animation-name: slide-in-from-right;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/PwPeKYr?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen PwPeKYr by web-dot-dev on Codepen">
 </iframe>
 
@@ -91,13 +94,14 @@ html:active-view-transition-type(forwards) {
 You can then pick which view transition type to use when calling `document.startViewTransition()`.
 
 ```javascript
-const direction = next === 'home' ? 'backwards' : 'forwards';
+const direction = next === "home" ? "backwards" : "forwards";
 
 document.startViewTransition({
   update: updateTheDOMSomehow,
   types: [direction],
 });
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JoYvyjv?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JoYvyjv by web-dot-dev on Codepen">
 </iframe>
 

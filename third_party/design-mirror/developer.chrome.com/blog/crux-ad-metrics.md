@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Alex Cone [X](https://twitter.com/https://x.com/alextcone) [LinkedIn](https://www.linkedin.com/in/alextcone)
 
 Published: September 15, 2026
@@ -28,29 +29,35 @@ We expect these metrics to be particularly useful for web advertisers and the se
 >
 > A sample of ecosystem support we have received in regards to publishing this data:
 > -
->   > *"By providing a clearer picture of the ad environment our clients are competing in, these new metrics will provide us with enabling insights to drive greater efficiency and impact."*
 >
->   ***--- Ryan Storrar, Global President, Media Management \& Delivery, WPP***
+> > _"By providing a clearer picture of the ad environment our clients are competing in, these new metrics will provide us with enabling insights to drive greater efficiency and impact."_
+>
+> _**--- Ryan Storrar, Global President, Media Management \& Delivery, WPP**_
 > -
->   > *"This is a great step forward for the ecosystem. As a publisher focused on independent, quality journalism, we want to be valued for the experiences we build, and these metrics provide a clear, objective ground truth to support that."*
 >
->   ***--- Sara Badler, Chief Advertising Officer, North America, The Guardian***
+> > _"This is a great step forward for the ecosystem. As a publisher focused on independent, quality journalism, we want to be valued for the experiences we build, and these metrics provide a clear, objective ground truth to support that."_
+>
+> _**--- Sara Badler, Chief Advertising Officer, North America, The Guardian**_
 > -
->   > *"Chrome is investing in the right signals to improve the web, and Mediavine is excited to help demonstrate that quality experiences deliver stronger results. Expanding visibility into these metrics empowers both advertisers and publishers to make smarter decisions that benefit the entire ecosystem."*
 >
->   ***--- Amanda Martin, CRO, Mediavine***
+> > _"Chrome is investing in the right signals to improve the web, and Mediavine is excited to help demonstrate that quality experiences deliver stronger results. Expanding visibility into these metrics empowers both advertisers and publishers to make smarter decisions that benefit the entire ecosystem."_
+>
+> _**--- Amanda Martin, CRO, Mediavine**_
 > -
->   > *"We're excited about Google Chrome's approach to building metrics with the advertising ecosystem. There's still work to be done on how best to use the data, but you can see the potential for an incentive shift --- one that rewards media owners who've built better ad experiences for consumers and improved attention and performance for marketers. This could be the start of a win-win for good actors on the open internet."*
 >
->   ***--- Michael McNeeley, SVP Product, Index Exchange***
+> > _"We're excited about Google Chrome's approach to building metrics with the advertising ecosystem. There's still work to be done on how best to use the data, but you can see the potential for an incentive shift --- one that rewards media owners who've built better ad experiences for consumers and improved attention and performance for marketers. This could be the start of a win-win for good actors on the open internet."_
+>
+> _**--- Michael McNeeley, SVP Product, Index Exchange**_
 > -
->   > *"Display \& Video 360 supports this initiative to bring transparency to page layout quality. We look forward to exploring with the industry how these signals can improve quality and support advertiser goals."*
 >
->   ***--- Bill Reardon, General Manager, Enterprise Platform, Google Ads***
+> > _"Display \& Video 360 supports this initiative to bring transparency to page layout quality. We look forward to exploring with the industry how these signals can improve quality and support advertiser goals."_
+>
+> _**--- Bill Reardon, General Manager, Enterprise Platform, Google Ads**_
 > -
->   > *"Better ad experiences benefit users, publishers, and advertisers, but the industry needs stronger incentives to reward quality. Chrome's new CrUX metrics add visibility into the ad experience and complement AU's media quality signals, helping advertisers make better decisions and encouraging a higher-quality ecosystem."*
 >
->   ***--- Marc Guldimann, CEO \& Co-founder of Adelaide***
+> > _"Better ad experiences benefit users, publishers, and advertisers, but the industry needs stronger incentives to reward quality. Chrome's new CrUX metrics add visibility into the ad experience and complement AU's media quality signals, helping advertisers make better decisions and encouraging a higher-quality ecosystem."_
+>
+> _**--- Marc Guldimann, CEO \& Co-founder of Adelaide**_
 
 The new CrUX ad metrics are reported on the same dimensions and follow the same eligibility criteria as [our existing Web Vitals](https://developer.chrome.com/docs/crux.md.txt). While inspired by [Core Web Vitals](https://web.dev/articles/vitals), which help provide visibility into websites' speed, responsiveness and visual stability, CrUX ad metrics are not part of Core Web Vitals and don't have suggested targets or thresholds.
 

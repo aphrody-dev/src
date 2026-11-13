@@ -6,18 +6,18 @@ The thread running through every theme is the path to a **1.0 stable release**. 
 
 ## At a glance
 
-| Theme | Timeline | Status |
-| --- | --- | --- |
-| [**Lore OSS and UEFN compatibility**](#lore-oss-and-uefn-compatibility) | 2026 | In progress |
-| [**VS Code plugin**](#vs-code-plugin) | 2026 | In progress |
-| [**Scalable file locking**](#scalable-file-locking) | 2026 | In progress |
-| [**Virtual file system (VFS)**](#virtual-file-system) | 2026 | In progress |
-| [**Links and layers**](#links-and-layers) | 2026 | In progress |
-| [**Desktop client**](#desktop-client) | 2027 | In progress |
-| [**Unreal Editor plugin**](#unreal-editor-plugin) | 2027 | In progress |
-| [**Web client**](#web-client) | 2027 | Committed |
-| [**Edge instances and advanced server topologies**](#edge-instances-and-advanced-server-topologies) | 2027 | Exploring |
-| [**Forks and isolated partitions**](#forks-and-isolated-partitions) | Later | Exploring |
+| Theme                                                                                               | Timeline | Status      |
+| --------------------------------------------------------------------------------------------------- | -------- | ----------- |
+| [**Lore OSS and UEFN compatibility**](#lore-oss-and-uefn-compatibility)                             | 2026     | In progress |
+| [**VS Code plugin**](#vs-code-plugin)                                                               | 2026     | In progress |
+| [**Scalable file locking**](#scalable-file-locking)                                                 | 2026     | In progress |
+| [**Virtual file system (VFS)**](#virtual-file-system)                                               | 2026     | In progress |
+| [**Links and layers**](#links-and-layers)                                                           | 2026     | In progress |
+| [**Desktop client**](#desktop-client)                                                               | 2027     | In progress |
+| [**Unreal Editor plugin**](#unreal-editor-plugin)                                                   | 2027     | In progress |
+| [**Web client**](#web-client)                                                                       | 2027     | Committed   |
+| [**Edge instances and advanced server topologies**](#edge-instances-and-advanced-server-topologies) | 2027     | Exploring   |
+| [**Forks and isolated partitions**](#forks-and-isolated-partitions)                                 | Later    | Exploring   |
 
 **Status legend**:
 

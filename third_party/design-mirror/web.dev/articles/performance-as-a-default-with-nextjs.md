@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Next.js takes care of many optimizations in your React app so you don't have to
 
- Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
+Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
 
 > [!CAUTION]
 > **Caution:** One or more demos on this page no longer work, as [Glitch has ended hosting](https://blog.glitch.com/post/changes-are-coming-to-glitch).
@@ -107,7 +108,7 @@ page is loaded, providing the benefits of **automated code-splitting**.
 Moreover, every initial page load in Next.js is **server-side rendered**. If you open
 the Network panel in DevTools, you can see the initial request for the document returns
 a fully server-rendered page.
- The Preview tab of the Network panel shows that Next.js returns visually complete HTML when a page is requested.
+The Preview tab of the Network panel shows that Next.js returns visually complete HTML when a page is requested.
 
 > [!NOTE]
 > **Note:** Check out [Server Rendering](https://web.dev/articles/rendering-on-the-web.md.txt#server-side_rendering) to learn how server-side rendering often results in a better experience for users.

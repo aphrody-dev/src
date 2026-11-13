@@ -2,11 +2,11 @@
 
 ## Emergency access
 
-| Node | Provider | Console / rescue |
-|---|---|---|
-| fr1 `vps-203bea89` 51.77.147.152 | OVH VPS (KVM) | OVH Manager > Bare Metal Cloud > VPS > `vps-203bea89.vps.ovh.net` > "Reboot in rescue mode" (credentials sent by e-mail), or web KVM console (serial `ttyS0` and `tty1` active in the cmdline). In rescue: `mount /dev/sda1 /mnt` (ext4 root); `/home` = btrfs `sdb1+sdc1`, subvol `@home`. |
-| fr2 `bunos` 51.255.162.6 | OVH Public Cloud (OpenStack Nova) | OVH Manager > Public Cloud > Instances > "VNC console" or "Rescue" (rescue-pro image). API: `openstack server rescue`. |
-| prd `srv2116886` 72.60.186.43 | Hostinger VPS (id 2116886) | hPanel > VPS > Browser console / Recovery mode. API: `https://developers.hostinger.com/api/vps/v1/virtual-machines/2116886` (`HOSTINGER_API_TOKEN` on the PC): `POST .../recovery`, `POST .../restart`. |
+| Node                             | Provider                          | Console / rescue                                                                                                                                                                                                                                                                            |
+| -------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fr1 `vps-203bea89` 51.77.147.152 | OVH VPS (KVM)                     | OVH Manager > Bare Metal Cloud > VPS > `vps-203bea89.vps.ovh.net` > "Reboot in rescue mode" (credentials sent by e-mail), or web KVM console (serial `ttyS0` and `tty1` active in the cmdline). In rescue: `mount /dev/sda1 /mnt` (ext4 root); `/home` = btrfs `sdb1+sdc1`, subvol `@home`. |
+| fr2 `bunos` 51.255.162.6         | OVH Public Cloud (OpenStack Nova) | OVH Manager > Public Cloud > Instances > "VNC console" or "Rescue" (rescue-pro image). API: `openstack server rescue`.                                                                                                                                                                      |
+| prd `srv2116886` 72.60.186.43    | Hostinger VPS (id 2116886)        | hPanel > VPS > Browser console / Recovery mode. API: `https://developers.hostinger.com/api/vps/v1/virtual-machines/2116886` (`HOSTINGER_API_TOKEN` on the PC): `POST .../recovery`, `POST .../restart`.                                                                                     |
 
 ssh: keys only on all three nodes (`PasswordAuthentication no`, root `prohibit-password`). The PC goes through the public IPs (`~/.ssh/config`), never through the mesh. Cutting the mesh therefore does not cut access.
 
@@ -41,7 +41,7 @@ ssh: keys only on all three nodes (`PasswordAuthentication no`, root `prohibit-p
   - `enable --now` of the `TIMERS`, `wg-quick@` enabled with Restart=on-failure, linger and user units (`USER_UNITS`);
   - docker `live-restore`: without it, a dockerd crash killed the containers without restarting them (observed on fr2); `unless-stopped` policy for compose containers;
   - `nofail` on secondary mounts (`NOFAIL`), dead units disabled (`DISABLE`, `DISABLE_USER`), low priority for backups and syncs (`BATCH`).
-  Filtering stays `fleet-firewall` (`/etc/fleet/firewall.nft`); `check` verifies that ufw and nftables.service stay inactive.
+    Filtering stays `fleet-firewall` (`/etc/fleet/firewall.nft`); `check` verifies that ufw and nftables.service stay inactive.
 - No `WatchdogSec`: none of these services emits `WATCHDOG=1`. The HTTP `PROBES` of `fleet-resilience.sh heal` (3 failures: restart) take its place.
 - prd: the ai-os relay runs from the read-only git checkout `/srv/src` (partial and sparse clone), kept up to date by `src-checkout-update.timer` (10 min, `--ff-only`, relay restarted if `packages/ai-os` changes).
 - PC: `infra/fleet/pc/resilience.ps1`. AphrodyRelay and WireGuard as Automatic (Delayed Start) with recovery restart 5/10/30 s; `Aphrody\Agents*` and `ay-ai-*` tasks restartable, StartWhenAvailable.

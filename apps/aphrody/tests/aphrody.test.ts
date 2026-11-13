@@ -71,21 +71,43 @@ describe("Aphrody build output", () => {
 
   it("homepage is the public holding page, without technical content", () => {
     const html = readFileSync(join(dist, "index.html"), "utf-8");
-    expect(html).toContain("<title>Aphrody\u202f: moteur de jeu et suite créative open source</title>");
+    expect(html).toContain(
+      "<title>Aphrody\u202f: moteur de jeu et suite créative open source</title>",
+    );
     expect(html).toContain('href="/holding.css"');
     expect(html).not.toContain('id="root"');
     expect((html.match(/<h1[ >]/g) || []).length).toBe(1);
-    for (const h of ["Ce qui existe", "En cours", "Construit", "Prévu"]) expect(html).toContain(h);
-    for (const href of ['href="mailto:contact@aphrody.com"', 'href="https://aphrody.app/"', 'href="https://rosegriffon.fr/"'])
+    for (const h of ["Ce qui existe", "En cours", "Construit", "Prévu"])
+      expect(html).toContain(h);
+    for (const href of [
+      'href="mailto:contact@aphrody.com"',
+      'href="https://aphrody.app/"',
+      'href="https://rosegriffon.fr/"',
+      'href="/play"',
+    ])
       expect(html).toContain(href);
     // Public pages never talk about code, repositories or packages.
-    const text = html.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
-    for (const banned of [/github/i, /\bnpm\b/i, /monorepo/i, /\bcommit/i, /\bcrates?\b/i, /\bbun\b/i, /\bcargo\b/i])
+    const text = html
+      .replace(/<script[\s\S]*?<\/script>/g, "")
+      .replace(/<[^>]+>/g, " ");
+    for (const banned of [
+      /github/i,
+      /\bnpm\b/i,
+      /monorepo/i,
+      /\bcommit/i,
+      /\bcrates?\b/i,
+      /\bbun\b/i,
+      /\bcargo\b/i,
+    ])
       expect(banned.test(text)).toBe(false);
     expect(html).not.toContain("github.com");
     expect(html).not.toMatch(/\{(container|glyph|bolt)\}/);
     // Public identity is anonymous: no personal name or mailbox, only contact@aphrody.com.
-    for (const banned of ["gmail.com", "Gemini", ...(Bun.env.APHRODY_PII_TERMS ?? "").split(",").filter(Boolean)])
+    for (const banned of [
+      "gmail.com",
+      "Gemini",
+      ...(Bun.env.APHRODY_PII_TERMS ?? "").split(",").filter(Boolean),
+    ])
       expect(html).not.toContain(banned);
     expect(/\p{Extended_Pictographic}/u.test(html)).toBe(false);
   });

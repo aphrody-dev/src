@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 036: Text \& Typography](https://thecsspodcast.libsyn.com/tcp036-v2)
 
 Text is one of the core building blocks of the web.
@@ -47,55 +48,55 @@ installed on the user's device.
     local("Trickster"),
     url("trickster-COLRv1.otf") format("opentype") tech(color-COLRv1),
     url("trickster-outline.otf") format("opentype"),
-    url("trickster-outline.woff") format("woff")
+    url("trickster-outline.woff") format("woff");
 }
 ```
 
 ### Descriptors
 
 [`ascent-override`](https://developer.mozilla.org/docs/Web/CSS/@font-face/ascent-override)
-:   Customizes the ascent metric, impacting the space above the baseline.
+: Customizes the ascent metric, impacting the space above the baseline.
 
 [`descent-override`](https://developer.mozilla.org/docs/Web/CSS/@font-face/descent-override)
-:   Adjusts the descent metric, affecting the space below the baseline.
+: Adjusts the descent metric, affecting the space below the baseline.
 
 [`font-display`](https://developer.mozilla.org/docs/Web/CSS/@font-face/font-display)
-:   Controls the font's display behavior depending on its download status.
+: Controls the font's display behavior depending on its download status.
 
 [`font-family`](https://developer.mozilla.org/docs/Web/CSS/font-family)
-:   Names the font for use within font-related properties.
+: Names the font for use within font-related properties.
 
 [`font-stretch`](https://developer.mozilla.org/docs/Web/CSS/font-stretch)
-:   Sets acceptable horizontal scaling, specified as a single value or range.
+: Sets acceptable horizontal scaling, specified as a single value or range.
 
 [`font-style`](https://developer.mozilla.org/docs/Web/CSS/font-style)
-:   Defines the font style, supporting angle ranges for oblique styles.
+: Defines the font style, supporting angle ranges for oblique styles.
 
 [`font-weight`](https://developer.mozilla.org/docs/Web/CSS/font-weight)
-:   Determines the font's weight or range of weights available.
+: Determines the font's weight or range of weights available.
 
 [`font-feature-settings`](https://developer.mozilla.org/docs/Web/CSS/font-feature-settings)
-:   Enables access to OpenType font features.
+: Enables access to OpenType font features.
 
 [`font-variation-settings`](https://developer.mozilla.org/docs/Web/CSS/font-variation-settings)
-:   Provides fine-tuned control over variable font settings.
+: Provides fine-tuned control over variable font settings.
 
 [`line-gap-override`](https://developer.mozilla.org/docs/Web/CSS/@font-face/line-gap-override)
-:   Overrides the font's default line gap.
+: Overrides the font's default line gap.
 
 [`size-adjust`](https://developer.mozilla.org/docs/Web/CSS/@font-face/size-adjust)
-:   Applies a scaling factor to the font's outline and metrics.
+: Applies a scaling factor to the font's outline and metrics.
 
 [`src`](https://developer.mozilla.org/docs/Web/CSS/@font-face/src)
-:   Defines the font source, whether local or remote. This is required for the
-    `@font-face` rule.
-    Combining `url()` and `local()` within the `src` is a common strategy that
-    uses a local font if available, reverting to a remote font file as a fallback.
-    Browsers prioritize resources based on the order of declaration, so `local()`
-    should typically precede `url()`.
+: Defines the font source, whether local or remote. This is required for the
+`@font-face` rule.
+Combining `url()` and `local()` within the `src` is a common strategy that
+uses a local font if available, reverting to a remote font file as a fallback.
+Browsers prioritize resources based on the order of declaration, so `local()`
+should typically precede `url()`.
 
 [`unicode-range`](https://developer.mozilla.org/docs/Web/CSS/@font-face/unicode-range)
-:   Limits the characters this font should be used for.
+: Limits the characters this font should be used for.
 
 ### Description
 
@@ -109,12 +110,12 @@ necessarily depend on an internet connection.
 
 ### Font MIME types
 
-| **Format** | **MIME Type** |
-|---|---|
-| TrueType | `font/ttf` |
-| OpenType | `font/otf` |
-| Web Open Font Format | `font/woff` |
-| Web Open Font Format 2 | `font/woff2` |
+| **Format**             | **MIME Type** |
+| ---------------------- | ------------- |
+| TrueType               | `font/ttf`    |
+| OpenType               | `font/otf`    |
+| Web Open Font Format   | `font/woff`   |
+| Web Open Font Format 2 | `font/woff2`  |
 
 > [!NOTE]
 > **Note:** Web fonts follow the same-origin policy but can be configured for cross-origin use with HTTP access controls.
@@ -143,11 +144,7 @@ To summarize, `@font-face` declares a font and gives it a name, and
 Here's an example of using both:
 
 ```css
-<table>
-  <thead>
-    <tr>
-      <th><p><pre>
-@font-face {
+<table > <thead > <tr > <th > <p > <pre > @font-face {
   font-family: "CustomFont";
   src: url("customfont.woff2") format("woff2");
 }
@@ -174,7 +171,7 @@ Browser Support
 
 Use [`font-family`](https://developer.mozilla.org/docs/Web/CSS/font-family) to change the typeface of your text.
 
-The `font-family` property accepts a comma-separated list of strings, either referring to *specific* or *generic* font families. Specific font families are quoted strings, such as "Helvetica", "EB Garamond", or "Times New Roman". Generic font families are keywords such as `serif`, `sans-serif`, and `monospace` (find the [full list of options on MDN](https://developer.mozilla.org/docs/Web/CSS/font-family#values)). The browser will display the first available typeface from the provided list.
+The `font-family` property accepts a comma-separated list of strings, either referring to _specific_ or _generic_ font families. Specific font families are quoted strings, such as "Helvetica", "EB Garamond", or "Times New Roman". Generic font families are keywords such as `serif`, `sans-serif`, and `monospace` (find the [full list of options on MDN](https://developer.mozilla.org/docs/Web/CSS/font-family#values)). The browser will display the first available typeface from the provided list.
 
 > [!NOTE]
 > **Note:** When the browser chooses which font to display from your `font-family` declaration, it doesn't stop at the first available font in the list. Instead, it selects fonts one character at a time. If a particular character isn't available in the first font in the list, it moves on to the next, until the end of the list of specified fonts is reached.
@@ -235,10 +232,10 @@ Browser Support
 
 Use [`font-size`](https://developer.mozilla.org/docs/Web/CSS/font-size) to control the size of your text elements. This property accepts length values, percentages, and a handful of keyword values.
 
-In addition to length and percentage values, `font-size` accepts some *absolute* keyword values (`xx-small`, `x-small`, `small`, `medium`, `large`, `x-large`, `xx-large`) and a couple of *relative* keyword values (`smaller`, `larger`). The relative values are relative to the parent element's `font-size`.
+In addition to length and percentage values, `font-size` accepts some _absolute_ keyword values (`xx-small`, `x-small`, `small`, `medium`, `large`, `x-large`, `xx-large`) and a couple of _relative_ keyword values (`smaller`, `larger`). The relative values are relative to the parent element's `font-size`.
 
 > [!NOTE]
-> **Note:** Q: What's the difference between `em` and `rem`? A: In CSS, `em` represents the `font-size` inherited from the element's parent. For example, `font-size: 2em` is equivalent to the parent's `font-size` multiplied by two. `rem` is similar, but instead represents the `font-size` inherited from the *root element* , such as `<html>`.
+> **Note:** Q: What's the difference between `em` and `rem`? A: In CSS, `em` represents the `font-size` inherited from the element's parent. For example, `font-size: 2em` is equivalent to the parent's `font-size` multiplied by two. `rem` is similar, but instead represents the `font-size` inherited from the _root element_ , such as `<html>`.
 
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/eYEroda?height=370&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen eYEroda by web-dot-dev on Codepen"></iframe> <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/vYJzYzw?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen vYJzYzw by web-dot-dev on Codepen"></iframe>
 
@@ -269,7 +266,7 @@ Browser Support
 
 Use [`letter-spacing`](https://developer.mozilla.org/docs/Web/CSS/letter-spacing) to control the amount of horizontal space between characters in your text. This property accepts length values such as `em`, `px`, and `rem`.
 
-Note that the specified value *increases* the amount of natural space between characters. In the following demo, try selecting an individual letter to see the size of its letterbox and how it changes with `letter-spacing`.
+Note that the specified value _increases_ the amount of natural space between characters. In the following demo, try selecting an individual letter to see the size of its letterbox and how it changes with `letter-spacing`.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/abyGxBz?height=560&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen abyGxBz by web-dot-dev on Codepen"></iframe>
 
 ## Change the space between words
@@ -283,7 +280,7 @@ Browser Support
 
 [Source](https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/word-spacing)
 
-Use [`word-spacing`](https://developer.mozilla.org/docs/Web/CSS/word-spacing) to increase or decrease the length of space between each word in your text. This property accepts length values such as `em`, `px`, and `rem`. Note that the length you specify is for *extra* space in addition to the normal spacing. This means that `word-spacing: 0` is equivalent to `word-spacing: normal`.
+Use [`word-spacing`](https://developer.mozilla.org/docs/Web/CSS/word-spacing) to increase or decrease the length of space between each word in your text. This property accepts length values such as `em`, `px`, and `rem`. Note that the length you specify is for _extra_ space in addition to the normal spacing. This means that `word-spacing: 0` is equivalent to `word-spacing: normal`.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/xxLjeRG?height=280&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen xxLjeRG by web-dot-dev on Codepen"></iframe>
 
 ## `font` shorthand
@@ -542,7 +539,7 @@ Check out [our article on Variable Fonts](https://web.dev/articles/variable-font
 ## Pseudo-elements
 
 > [!IMPORTANT]
-> **Key term:** A *pseudo-element* is a part of an element that you can target using CSS keywords without having to add more HTML. Check out [our module on pseudo-elements](https://web.dev/learn/css/pseudo-elements.md.txt) for a deep-dive into this subject!
+> **Key term:** A _pseudo-element_ is a part of an element that you can target using CSS keywords without having to add more HTML. Check out [our module on pseudo-elements](https://web.dev/learn/css/pseudo-elements.md.txt) for a deep-dive into this subject!
 
 ## `::first-letter` and `::first-line` pseudo-elements
 

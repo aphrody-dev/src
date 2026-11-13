@@ -7,24 +7,25 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)  Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)  Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)
+
+Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/) Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/) Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)
 
 When you open a web page, the browser requests the HTML document from a server, parses its contents, and submits separate requests for any referenced resources. As a developer, you already know about all the resources your page needs and which of them are the most important. You can use that knowledge to request the critical resources ahead of time and speed up the loading process. This post explains how to achieve that with `<link rel="preload">`.
 
 ## How preloading works
 
 Preloading is best suited for resources typically discovered late by the browser.
- In this example, Pacifico font is defined in the stylesheet with a [`@font-face`](https://web.dev/articles/reduce-webfont-size.md.txt#define_a_font_family_with_font-face)) rule. The browser loads the font file only after it has finished downloading and parsing the stylesheet.
+In this example, Pacifico font is defined in the stylesheet with a [`@font-face`](https://web.dev/articles/reduce-webfont-size.md.txt#define_a_font_family_with_font-face)) rule. The browser loads the font file only after it has finished downloading and parsing the stylesheet.
 
 By preloading a certain resource, you are telling the browser that you would like to fetch it sooner than the browser would otherwise discover it because you are certain that it is important for the current page.
- In this example, Pacifico font is preloaded, so the download happens in parallel with the stylesheet.
+In this example, Pacifico font is preloaded, so the download happens in parallel with the stylesheet.
 
 The critical request chain represents the order of resources that are prioritized and fetched by the browser. Lighthouse identifies assets that are on the third level of this chain as late-discovered. You can use the [**Preload key requests**](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preload) audit to identify which resources to preload.
 
 You can preload resources by adding a `<link>` tag with `rel="preload"` to the head of your HTML document:
 
 ```html
-<link rel="preload" as="script" href="critical.js">
+<link rel="preload" as="script" href="critical.js" />
 ```
 
 The browser caches preloaded resources so they are available immediately when needed. (It doesn't execute the scripts or apply the stylesheets.)
@@ -66,7 +67,7 @@ The simplest way to implement `preload` is to add a `<link>` tag to the `<head>`
 
 ```html
 <head>
-  <link rel="preload" as="script" href="critical.js">
+  <link rel="preload" as="script" href="critical.js" />
 </head>
 ```
 
@@ -81,7 +82,13 @@ Supplying the `as` attribute helps the browser set the priority of the prefetche
 Some types of resources, such as fonts, are loaded in [anonymous mode](https://www.w3.org/TR/css-fonts-3/#font-fetching-requirements). For those you must set the `crossorigin` attribute with `preload`:
 
 ```html
-<link rel="preload" href="ComicSans.woff2" as="font" type="font/woff2" crossorigin>
+<link
+  rel="preload"
+  href="ComicSans.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
 ```
 
 > [!CAUTION]

@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Brendan Kenny [GitHub](https://github.com/brendankenny) [Bluesky](https://bsky.app/profile/brendankenny.bsky.social)  Elizabeth Sweeny [X](https://twitter.com/egsweeny) [GitHub](https://github.com/egsweeny)
+
+Brendan Kenny [GitHub](https://github.com/brendankenny) [Bluesky](https://bsky.app/profile/brendankenny.bsky.social) Elizabeth Sweeny [X](https://twitter.com/egsweeny) [GitHub](https://github.com/egsweeny)
 
 We are thrilled to have the first round of tooling support for the new [pending responsiveness metric](https://web.dev/vitals#pending), Interaction to Next Paint (INP). To learn about the metric itself, check out [the official INP metric guide](https://web.dev/articles/inp).
 
@@ -33,9 +34,9 @@ Try it out at [PageSpeed Insights](https://pagespeed.web.dev/).
 If you'd like to collect INP data for a site yourself, the easiest way to do so is the [`web-vitals`](https://github.com/GoogleChrome/web-vitals/tree/f33da096d689a5a8809b58c19e8546cb88a8f78c#install-and-load-the-library) library, which now has full INP support in its beta release.
 
 ```javascript
-import {onINP} from 'web-vitals';
+import { onINP } from "web-vitals";
 
-onINP(({value}) => {
+onINP(({ value }) => {
   // Log the value to the console, or send it to your analytics provider.
   console.log(value);
 });
@@ -60,19 +61,19 @@ The same series of interactions can be automated by using [Lighthouse user flows
 ### Tool availability details
 
 - **Chrome User Experience Report (CrUX)**
-  - *BigQuery* : INP available as `interaction_to_next_paint`
-  - *CrUX API* : INP available as `interaction_to_next_paint`
-  - *CrUX Dashboard*: Includes INP data
+  - _BigQuery_ : INP available as `interaction_to_next_paint`
+  - _CrUX API_ : INP available as `interaction_to_next_paint`
+  - _CrUX Dashboard_: Includes INP data
 - **PageSpeed Insights**
-  - *pagespeed.web.dev*: Page-level and origin-level INP field data from the CrUX API surfaced as 'Interaction to Next Paint'
-  - *PSI API* : INP available as `INTERACTION_TO_NEXT_PAINT_MS`
+  - _pagespeed.web.dev_: Page-level and origin-level INP field data from the CrUX API surfaced as 'Interaction to Next Paint'
+  - _PSI API_ : INP available as `INTERACTION_TO_NEXT_PAINT_MS`
 - **`web-vitals` JS library**
-  - *`web-vitals`* includes INP support
+  - _`web-vitals`_ includes INP support
 - **Web Vitals Chrome extension**
   - Includes local INP measurement and INP field data when available from the CrUX API
 - **Lighthouse**
-  - *Lighthouse panel in DevTools*: INP measurement available in 'timespan' mode in Chrome Canary (104)
-  - *Lighthouse npm module*: INP measurement available in timespans (use puppeteer for synthetic input)
+  - _Lighthouse panel in DevTools_: INP measurement available in 'timespan' mode in Chrome Canary (104)
+  - _Lighthouse npm module_: INP measurement available in timespans (use puppeteer for synthetic input)
 
 ## Future work and request for feedback
 

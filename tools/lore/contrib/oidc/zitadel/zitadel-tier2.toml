@@ -13,7 +13,11 @@ resource_claim = "resources"
 # client_id is in local.toml, which setup.js writes: ZITADEL generates it.
 # ZITADEL adds the project to `aud` only for the project's `aud` scope. The
 # exchange service needs no roles.
-scopes = ["openid", "profile", "urn:zitadel:iam:org:project:id:lore-project:aud"]
+scopes = [
+  "openid",
+  "profile",
+  "urn:zitadel:iam:org:project:id:lore-project:aud",
+]
 client_credentials_scopes = ["urn:zitadel:iam:org:project:id:lore-project:aud"]
 resource_template = "https://localhost/partitions/{id}"
 # The exchange service in ../exchange/. It signs with keys of its own, which the

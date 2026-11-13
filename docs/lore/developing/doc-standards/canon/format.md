@@ -17,7 +17,7 @@ A deep heading tree produces an unreadable right-rail TOC. If a section needs H4
 Use **sentence case** for every heading: capitalize the first word and any proper nouns; lowercase everything else.
 
 - Right: `## Stage and commit files`
-- Right: `## Configure the Lore CLI` *(Lore is a proper noun; CLI is an acronym)*
+- Right: `## Configure the Lore CLI` _(Lore is a proper noun; CLI is an acronym)_
 - Wrong: `## Stage and Commit Files`
 
 Vale `Lore.Headings` enforces.
@@ -28,22 +28,31 @@ Headings at the same level should share a parallel grammatical structure. Pick o
 
 ```markdown
 <!-- correct: all gerund -->
+
 ## Cloning a repository
+
 ## Branching from main
+
 ## Merging into main
 ```
 
 ```markdown
 <!-- correct: all imperative -->
+
 ## Clone a repository
+
 ## Branch from main
+
 ## Merge into main
 ```
 
 ```markdown
 <!-- wrong: mixed -->
+
 ## Cloning a repository
+
 ## How to branch
+
 ## Merge
 ```
 
@@ -87,12 +96,14 @@ Bold the leading term. Separate it from the explanation with a colon (`:`) or an
 
 ```markdown
 <!-- correct -->
+
 - **Commit:** A snapshot of the repository at a point in time.
 - **Branch —** A movable pointer to a commit.
 ```
 
 ```markdown
 <!-- wrong -->
+
 - **Commit** - snapshot
 ```
 
@@ -113,10 +124,10 @@ Bold the leading term. Separate it from the explanation with a colon (`:`) or an
 - Use tables for tabular data, not for layout.
 
 ```markdown
-| Setting           | Description                                                  | Default |
-| ------------------- | -------------------------------------------------------------- | --------- |
-| **Auto Connect**  | Connect to the default server automatically on open.         | `false` |
-| **Default Server**| Server URL the system tries to connect to on **Go Live**.    | none    |
+| Setting            | Description                                               | Default |
+| ------------------ | --------------------------------------------------------- | ------- |
+| **Auto Connect**   | Connect to the default server automatically on open.      | `false` |
+| **Default Server** | Server URL the system tries to connect to on **Go Live**. | none    |
 ```
 
 ## Bold
@@ -172,13 +183,13 @@ Don't bake text into images of code. Always use a code block, never a screenshot
 
 Lore docs use **GitHub Flavored Markdown alert syntax**. Use the five GFM-native types and pick the one that matches the content.
 
-| Type | When to use | Decision rule |
-| --- | --- | --- |
-| `TIP` | Optional shortcut, productivity hint, or nice-to-know context. The reader can skip it with no loss. | The content is *helpful* but not required. |
-| `NOTE` | Useful context that belongs on the page but interrupts flow. The reader benefits from seeing it but the page works without it. | The content is *informative* — neither optional nor required. |
-| `IMPORTANT` | Information the reader must take in to succeed at the task on the page. Skipping leads to failure or confusion, not damage. | The content is *required for success*. |
-| `CAUTION` | An action with a recoverable downside or a non-obvious side effect. A heads-up before the reader acts. | The content describes a *recoverable risk* — think before acting. |
-| `WARNING` | An action causing data loss, security exposure, or other unrecoverable damage. The reader must heed it. | The content describes an *unrecoverable risk*. |
+| Type        | When to use                                                                                                                    | Decision rule                                                     |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `TIP`       | Optional shortcut, productivity hint, or nice-to-know context. The reader can skip it with no loss.                            | The content is _helpful_ but not required.                        |
+| `NOTE`      | Useful context that belongs on the page but interrupts flow. The reader benefits from seeing it but the page works without it. | The content is _informative_ — neither optional nor required.     |
+| `IMPORTANT` | Information the reader must take in to succeed at the task on the page. Skipping leads to failure or confusion, not damage.    | The content is _required for success_.                            |
+| `CAUTION`   | An action with a recoverable downside or a non-obvious side effect. A heads-up before the reader acts.                         | The content describes a _recoverable risk_ — think before acting. |
+| `WARNING`   | An action causing data loss, security exposure, or other unrecoverable damage. The reader must heed it.                        | The content describes an _unrecoverable risk_.                    |
 
 Decision tree, top-down:
 
@@ -213,7 +224,7 @@ Don't use the legacy MkDocs `!!! note` / `!!! tip` / `!!! warning` syntax — it
 
 Don't hide load-bearing instructions or warnings inside collapsed sections.
 
-Match content to type. A `WARNING` that's actually a tip cries wolf; an `IMPORTANT` used for nice-to-know dilutes the ones that matter. When in doubt between two adjacent types (`NOTE` vs `IMPORTANT`, `CAUTION` vs `WARNING`), pick the *less alarming* one — escalation is meaningful only if you reserve it.
+Match content to type. A `WARNING` that's actually a tip cries wolf; an `IMPORTANT` used for nice-to-know dilutes the ones that matter. When in doubt between two adjacent types (`NOTE` vs `IMPORTANT`, `CAUTION` vs `WARNING`), pick the _less alarming_ one — escalation is meaningful only if you reserve it.
 
 ## Material for MkDocs features
 
@@ -223,22 +234,22 @@ Lore docs render on two surfaces: GitHub (raw Markdown) and the published site t
 
 `mkdocs.yml` enables a small set of extensions and theme features. The ones that affect authoring are:
 
-| Feature | Extension or theme flag | What it gives you |
-| --- | --- | --- |
-| GFM alert rendering | `gfm_admonition` | Converts `> [!NOTE]` / `> [!IMPORTANT]` / `> [!WARNING]` etc. to Material admonitions at parse time. Required for callouts to render as styled boxes on the published site. (`markdown-gfm-admonition` package.) |
-| Content tabs | `pymdownx.tabbed` | Side-by-side variants of the same content (for example, per-platform install steps). Authored in the comment-delimited convention below; the `content_tabs.py` hook converts each group at build time. |
-| Collapsible blocks | `pymdownx.details` | `???` and `???+` collapsibles. |
-| Rich code fences | `pymdownx.superfences` | Nested fences inside lists, tabs, and admonitions. |
-| Code copy button | `content.code.copy` | Adds a copy icon to every code block. Free; no syntax change. |
-| Code annotations | `content.code.annotate` | Numbered callouts pointing at lines inside a code block. |
-| HTML attributes | `attr_list` | Per-element classes and IDs via `{ .class #id }`. |
-| HTML in Markdown | `md_in_html` | Lets Markdown inside `<div>` blocks still parse as Markdown. |
+| Feature             | Extension or theme flag | What it gives you                                                                                                                                                                                                |
+| ------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GFM alert rendering | `gfm_admonition`        | Converts `> [!NOTE]` / `> [!IMPORTANT]` / `> [!WARNING]` etc. to Material admonitions at parse time. Required for callouts to render as styled boxes on the published site. (`markdown-gfm-admonition` package.) |
+| Content tabs        | `pymdownx.tabbed`       | Side-by-side variants of the same content (for example, per-platform install steps). Authored in the comment-delimited convention below; the `content_tabs.py` hook converts each group at build time.           |
+| Collapsible blocks  | `pymdownx.details`      | `???` and `???+` collapsibles.                                                                                                                                                                                   |
+| Rich code fences    | `pymdownx.superfences`  | Nested fences inside lists, tabs, and admonitions.                                                                                                                                                               |
+| Code copy button    | `content.code.copy`     | Adds a copy icon to every code block. Free; no syntax change.                                                                                                                                                    |
+| Code annotations    | `content.code.annotate` | Numbered callouts pointing at lines inside a code block.                                                                                                                                                         |
+| HTML attributes     | `attr_list`             | Per-element classes and IDs via `{ .class #id }`.                                                                                                                                                                |
+| HTML in Markdown    | `md_in_html`            | Lets Markdown inside `<div>` blocks still parse as Markdown.                                                                                                                                                     |
 
 Several of these have no GFM equivalent and won't render on GitHub. The copy button and code annotations are free — they cost the reader nothing on GitHub because the syntax is invisible. Tabs, collapsibles, and `attr_list` change the source enough to matter.
 
 ### When to reach for a Material-only feature
 
-Ask: *would this doc be worse without it?* If the alternative is a long parallel subsection structure, a hard-to-scan list, or three near-duplicate procedures, a Material feature probably earns its keep. If the alternative is a single short list, plain Markdown wins.
+Ask: _would this doc be worse without it?_ If the alternative is a long parallel subsection structure, a hard-to-scan list, or three near-duplicate procedures, a Material feature probably earns its keep. If the alternative is a single short list, plain Markdown wins.
 
 A counter-example is admonitions: GFM alerts render on both surfaces and are better than `!!! note`, so the rule there is closed — see the section above. Tabs are now closed too: the comment-delimited convention below renders cleanly on both surfaces, so raw `=== "..."` syntax is banned in source. Vale `Lore.MkDocsTabs` enforces.
 
@@ -248,10 +259,11 @@ Use content tabs for parallel content that the reader will pick exactly one of: 
 
 Tabs are authored in a comment-delimited convention, never raw `=== "..."` syntax (Vale `Lore.MkDocsTabs` enforces). GitHub renders the comments as nothing and the titles as bold text, so the source stays readable on both surfaces; the `content_tabs.py` hook converts each group to Material tabs when the site builds.
 
-``````markdown
+````markdown
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS**
 
 ```bash
@@ -259,6 +271,7 @@ curl -Lo lore https://google.com/lore-macos
 ```
 
 <!-- tab -->
+
 **Linux**
 
 ```bash
@@ -266,7 +279,7 @@ curl -Lo lore https://google.com/lore-linux
 ```
 
 <!-- tabs:end -->
-``````
+````
 
 The hook checks every group at build time — a malformed group is left unconverted and fails `mkdocs build --strict`:
 
@@ -282,7 +295,7 @@ Don't hide load-bearing instructions inside tabs. A reader who needs all platfor
 Material ships features frequently and training data drifts. When you need a feature not covered here, use the `context7` MCP to read current docs rather than guessing:
 
 1. Call `resolve-library-id` with `libraryName: "Material for MkDocs"`. It returns the Context7 ID `/squidfunk/mkdocs-material`.
-2. Call `query-docs` with that ID and a specific question — for example, *"How do content tabs work with nested code blocks?"* or *"What does `content.code.annotate` enable and how are annotations written?"*
+2. Call `query-docs` with that ID and a specific question — for example, _"How do content tabs work with nested code blocks?"_ or _"What does `content.code.annotate` enable and how are annotations written?"_
 
 Most of the rich Markdown syntax in Material comes from PyMdown Extensions, documented at <https://facelessuser.github.io/pymdown-extensions/> and reachable via Context7 as `/facelessuser/pymdown-extensions`. Tab syntax, collapsibles, snippets, and superfences all live there — query that library when the question is about how the syntax itself works, not how Material styles it.
 
@@ -311,11 +324,11 @@ Vale `Lore.HyphenLy` enforces.
 
 Lore docs use **spaces around em and en dashes**.
 
-| Mark | Width | Use | Spacing |
-| --- | --- | --- | --- |
+| Mark          | Width           | Use                                                                   | Spacing                |
+| ------------- | --------------- | --------------------------------------------------------------------- | ---------------------- |
 | Em dash (`—`) | width of an `m` | Sets off explanatory text; substitutes for paragraphs, commas, colons | Space before and after |
-| En dash (`–`) | half an em | Numeric and date ranges | Space before and after |
-| Hyphen (`-`) | keyboard | Compound words | n/a |
+| En dash (`–`) | half an em      | Numeric and date ranges                                               | Space before and after |
+| Hyphen (`-`)  | keyboard        | Compound words                                                        | n/a                    |
 
 A hyphen isn't a valid substitute for an em dash, en dash, or colon.
 
@@ -341,30 +354,30 @@ Spell out `Shift`, `Hyphen`, and any ambiguous keys.
 
 ## Symbols and characters
 
-| Symbol | Meaning |
-| --- | --- |
-| `—` | Em dash |
-| `–` | En dash |
-| `©` | Copyright symbol |
-| `®` | Registered symbol |
-| `™` | Trademark symbol |
-| `°` | Degree symbol |
+| Symbol | Meaning           |
+| ------ | ----------------- |
+| `—`    | Em dash           |
+| `–`    | En dash           |
+| `©`    | Copyright symbol  |
+| `®`    | Registered symbol |
+| `™`    | Trademark symbol  |
+| `°`    | Degree symbol     |
 
 Less common keyboard names useful when describing combinations:
 
-| Key | Name |
-| --- | --- |
-| `~` | tilde |
-| `` ` `` | backtick |
-| `[ ]` | left and right brackets |
-| `{ }` | left and right curly brackets (also: curly braces) |
-| `< >` | left and right angle brackets |
-| `^` | caret |
-| `*` | asterisk |
-| `&` | ampersand |
-| `/` | slash (also: forward slash) |
-| `\` | backslash |
-| `\|` | pipe (also: vertical bar) |
+| Key     | Name                                               |
+| ------- | -------------------------------------------------- |
+| `~`     | tilde                                              |
+| `` ` `` | backtick                                           |
+| `[ ]`   | left and right brackets                            |
+| `{ }`   | left and right curly brackets (also: curly braces) |
+| `< >`   | left and right angle brackets                      |
+| `^`     | caret                                              |
+| `*`     | asterisk                                           |
+| `&`     | ampersand                                          |
+| `/`     | slash (also: forward slash)                        |
+| `\`     | backslash                                          |
+| `\|`    | pipe (also: vertical bar)                          |
 
 ## Reusing content across pages
 

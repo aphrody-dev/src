@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sam Dutton [X](https://twitter.com/sw12) [GitHub](https://github.com/samdutton) [Mastodon](https://techhub.social/@samdutton) [Bluesky](https://bsky.app/profile/samdutton.bsky.social) [Homepage](https://samdutton.com)
 
 You won't be able to build a PWA without HTTPS.
@@ -16,7 +17,7 @@ you need to justify implementation costs, find out [why HTTPS matters](https://w
 
 If a site uses HTTP for any assets, users will be warned in the URL bar. Chrome displays a warning
 like the following.
- *From Chrome 68, the address bar warns if not all assets use HTTPS*
+_From Chrome 68, the address bar warns if not all assets use HTTPS_
 
 HTTPS should be implemented everywhere --- not just, for example, on login or checkout pages. Any
 insecure page or asset can be a vector for attack, making your site a liability for your users and
@@ -26,4 +27,4 @@ Site security is easy to check with [Chrome DevTools Security panel](https://web
 problems.
 
 The site in the following example is not secure, since some assets are served over HTTP.
- *Chrome DevTools Security panel*
+_Chrome DevTools Security panel_

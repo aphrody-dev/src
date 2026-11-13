@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
 
 The View Transition API is a web development game changer. Whether your website is single or multi-page, this powerful API lets you create seamless transitions between views, resulting in native-like experiences that captivate users. Currently available in Chrome, with same document view transitions soon to be available in Safari.
@@ -59,14 +60,14 @@ But still, don't let spotty browser support prevent you from implementing view t
 
 ```javascript
 function handleClick(e) {
-    // Fallback for browsers that don't support this API:
-    if (!document.startViewTransition) {
-        updateTheDOMSomehow();
-        return;
-    }
+  // Fallback for browsers that don't support this API:
+  if (!document.startViewTransition) {
+    updateTheDOMSomehow();
+    return;
+  }
 
-    // With a View Transition:
-    document.startViewTransition(() => updateTheDOMSomehow());
+  // With a View Transition:
+  document.startViewTransition(() => updateTheDOMSomehow());
 }
 ```
 
@@ -90,7 +91,7 @@ You can choose to block rendering until a certain element is present in the DOM.
 To do so, use this link tag:
 
 ```html
-<link rel="expect" blocking="render" href="#elementId">
+<link rel="expect" blocking="render" href="#elementId" />
 ```
 
 This overrides the browser's heuristics used to decide when to perform its first render: the first render gets delayed until the specified element is present in the DOM tree.

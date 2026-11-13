@@ -7,7 +7,12 @@ path = "third_party/tree-sitter"
 url = "https://github.com/tree-sitter/tree-sitter.git"
 sha = "8a476cb87443c11e63b23f797af8927c60755e13"
 kind = "toolchain"
-used_by = ["crates/core", "tree-sitter-highlight", "tree-sitter-tags", "tree-sitter-loader"]
+used_by = [
+  "crates/core",
+  "tree-sitter-highlight",
+  "tree-sitter-tags",
+  "tree-sitter-loader",
+]
 status = "vendored"
 
 [entry.tree-sitter-agda]
@@ -1031,7 +1036,11 @@ path = "third_party/llvm-project"
 url = "https://github.com/aphrody-dev/llvm-project.git"
 sha = "392dfff97d29b59d77e5cac6d4b6ef2585fe7117"
 kind = "toolchain"
-used_by = ["docs/compat/TARGETS.md", "docs/llvm", "crates/core (CC=clang for grammar build)"]
+used_by = [
+  "docs/compat/TARGETS.md",
+  "docs/llvm",
+  "crates/core (CC=clang for grammar build)",
+]
 status = "sparse (lld, llvm/lib/{LTO,Passes,Support,Target,TargetParser})"
 
 [entry.llvm-test-suite]
@@ -1055,7 +1064,9 @@ path = "third_party/SPIRV-Tools"
 url = "https://github.com/KhronosGroup/SPIRV-Tools.git"
 sha = "a567f833434dbd7456ddf3d320c330d7a0272d41"
 kind = "gpu"
-used_by = ["docs/compat/TARGETS.md (spirv-val/opt for LLVM SPIRV backend output)"]
+used_by = [
+  "docs/compat/TARGETS.md (spirv-val/opt for LLVM SPIRV backend output)",
+]
 status = "reference"
 
 [entry.SPIRV-LLVM-Translator]
@@ -1120,7 +1131,11 @@ path = "third_party/wgpu"
 url = "https://github.com/gfx-rs/wgpu.git"
 sha = "101edc8f3afa5bf41bc3ab4ca801f3e67c22d499"
 kind = "gpu"
-used_by = ["docs/compat/TARGETS.md (naga: SPIR-V <-> WGSL/MSL)", "agent (WebGPU runtime)", "packages/chromium-bun/src/engines (WebGPU de Firefox, Servo, Blitz, Deno)"]
+used_by = [
+  "docs/compat/TARGETS.md (naga: SPIR-V <-> WGSL/MSL)",
+  "agent (WebGPU runtime)",
+  "packages/chromium-bun/src/engines (WebGPU de Firefox, Servo, Blitz, Deno)",
+]
 status = "reference"
 
 [entry.dawn]
@@ -1128,5 +1143,8 @@ path = "third_party/dawn"
 url = "https://github.com/google/dawn.git"
 sha = "022096b337f6e37e6f24947514b6e995d35d471d"
 kind = "gpu"
-used_by = ["packages/chromium-bun/src/engines (WebGPU de Chrome)", "ay rt matrix (dawn_revision par canal Chrome)"]
+used_by = [
+  "packages/chromium-bun/src/engines (WebGPU de Chrome)",
+  "ay rt matrix (dawn_revision par canal Chrome)",
+]
 status = "reference"

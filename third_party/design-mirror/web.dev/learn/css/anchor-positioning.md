@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 When you're placing a tooltip or a drop-down menu, you often want to position it relative to another element on the page. While there have been ways using absolute positioning to achieve this effect, more complex requirements have historically resorted to positioning items using JavaScript.
 
 CSS anchor positioning provides a way to declaratively position an element relative to another element.
@@ -25,15 +26,16 @@ Finally, you'll need to set how to position the anchor. You'll learn more about 
 
 ```css
 #anchor {
-   anchor-name: --my-anchor;
+  anchor-name: --my-anchor;
 }
 
 #positionedElement {
-     position: absolute;
-     position-anchor: --my-anchor;
-     position-area: end;
+  position: absolute;
+  position-anchor: --my-anchor;
+  position-area: end;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/YPyLpeN?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen YPyLpeN by web-dot-dev on Codepen">
 </iframe>
 
@@ -42,13 +44,15 @@ Finally, you'll need to set how to position the anchor. You'll learn more about 
 [Popovers](https://web.dev/learn/css/popover-and-dialog.md.txt) are even simpler to tether. When you open a popover using a button with a `popovertarget` or by setting a `source` with `showPopover({source})`, the popover has an "implicit anchor" already set. Because a popover is already floating with `position: fixed` by default, to position a popover, all you need to do is set the position.
 
 ```css
-#anchor{}
+#anchor {
+}
 
 #positionedElement {
   position-area: end;
   margin: unset;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/azvGBKO?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen azvGBKO by web-dot-dev on Codepen">
 </iframe>
 
@@ -65,7 +69,7 @@ The `anchor-scope` property sets which anchor names will be matched only among a
 
 An `anchor-scope` is ideally added to an ancestor of both the positioned element and anchor element that does not contain other anchor elements with the same name. Often, this is on the reusable component's root.
 
-The following example shows the difference `anchor-scope` makes when applied to repeated elements with the same `anchor-name`. In the example, all of the `` elements and the image banners reference the `--image` anchor name. When `anchor-scope` is applied to the `<li>` elements, `position-anchor: --image` will match only the `` element within the same `<li>` element as the banner, otherwise it will match the last rendered ``.
+The following example shows the difference `anchor-scope` makes when applied to repeated elements with the same `anchor-name`. In the example, all of the ``elements and the image banners reference the `--image` anchor name. When `anchor-scope` is applied to the `<li>` elements, `position-anchor: --image` will match only the`` element within the same `<li>` element as the banner, otherwise it will match the last rendered ``.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/GgpdNBM?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen GgpdNBM by web-dot-dev on Codepen">
 </iframe>
 
@@ -147,9 +151,10 @@ If an anchor can't be found for an `anchor()` function, the entire declaration w
 
 ```css
 .positionedElement {
-   block-start: anchor(--my-anchor, 100px)
+  block-start: anchor(--my-anchor, 100px);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VYvxmRb?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VYvxmRb by web-dot-dev on Codepen">
 </iframe>
 
@@ -159,12 +164,12 @@ In the preceding example, the positioned element's left value is anchored to `--
 
 The anchor side value chooses which of the anchor's edges to position against. Similar to `position-area`, the anchor side value supports several different types of syntax.
 
-| Type | Values | Description |
-|---|---|---|
-| Physical | `top`, `left`, `bottom`, `right` | Physical keywords correspond to a specific side of the anchor, but can only be used on the same axis as the positioned element's inset that you are setting. For example, `top: anchor(bottom)` positions the element's top at the anchor's bottom, but `left: anchor(top)` won't work. |
-| Side | `inside`, `outside` | The `inside` keyword corresponds to the same side as the inset property, and the `outside` keyword corresponds to the opposite side on the same axis. For example, `inset-block-start: anchor(inside)` refers to the `block-start` side of the anchor, and `inset-inline-end: (outside)` refers to the `inline-start` side of the anchor. |
-| Logical | `start`, `end`, `self-start`, `self-end` | Logical keywords refer to the anchor's sides based on the writing mode of the positioned element with `self-start` and `self-end`, or with the writing mode of the positioned element's containing block with `start` and `end`. |
-| Percentage | 0% - 100% | A percentage value places the positioned element along the axis from the anchor's start to end on the specified axis. `0%` is at the anchor's `start` side, and `100%` is the anchor's end side. `center` is equivalent to `50%`. If you are using a percentage on an end-side inset like `bottom`, this is not reversed---`0%` is still the anchor's `start` side. |
+| Type       | Values                                   | Description                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Physical   | `top`, `left`, `bottom`, `right`         | Physical keywords correspond to a specific side of the anchor, but can only be used on the same axis as the positioned element's inset that you are setting. For example, `top: anchor(bottom)` positions the element's top at the anchor's bottom, but `left: anchor(top)` won't work.                                                                             |
+| Side       | `inside`, `outside`                      | The `inside` keyword corresponds to the same side as the inset property, and the `outside` keyword corresponds to the opposite side on the same axis. For example, `inset-block-start: anchor(inside)` refers to the `block-start` side of the anchor, and `inset-inline-end: (outside)` refers to the `inline-start` side of the anchor.                           |
+| Logical    | `start`, `end`, `self-start`, `self-end` | Logical keywords refer to the anchor's sides based on the writing mode of the positioned element with `self-start` and `self-end`, or with the writing mode of the positioned element's containing block with `start` and `end`.                                                                                                                                    |
+| Percentage | 0% - 100%                                | A percentage value places the positioned element along the axis from the anchor's start to end on the specified axis. `0%` is at the anchor's `start` side, and `100%` is the anchor's end side. `center` is equivalent to `50%`. If you are using a percentage on an end-side inset like `bottom`, this is not reversed---`0%` is still the anchor's `start` side. |
 
 This example shows how a percentage value always goes from the start to the end on the specified axis:
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/yyYjgVL?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen yyYjgVL by web-dot-dev on Codepen">
@@ -181,15 +186,17 @@ One limitation is that you are only able to use `anchor()` functions on inset pr
 The preceding example adds a background behind the open details panel that animates smoothly when a different panel is opened, and stretches to include a hovered details panel. To accomplish this, it uses `min()` to pick the smaller length between two anchors.
 
 ```css
-#indicator{
-/*  Use the smaller of the 2 values:  */
+#indicator {
+  /*  Use the smaller of the 2 values:  */
   inset-block-start: min(
-/*   1. The start side of the default anchor, which is the open `<details>` element  */
+    /*   1. The start side of the default anchor, which is the open `<details>` element  */
     anchor(start),
-/*   2. The start side of the hovered `<details>` element.    */
-    anchor(--hovered start,
-/*     If no `<details>` element is hovered, this falls back to infinity px, so that the other value is smaller, and therefore used.   */
-       var(calc(1px * infinity)))
+    /*   2. The start side of the hovered `<details>` element.    */
+    anchor(
+        --hovered start,
+        /*     If no `<details>` element is hovered, this falls back to infinity px, so that the other value is smaller, and therefore used.   */
+        var(calc(1px * infinity))
+      )
   );
 }
 ```
@@ -222,6 +229,7 @@ You can use any `position-area` value as a fallback option. In this example, in 
   position-try-fallbacks: block-end span-inline-start;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/vENjgmj?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen vENjgmj by web-dot-dev on Codepen">
 </iframe>
 
@@ -246,9 +254,12 @@ You can also create a custom fallback option with `@position-try`---this lets yo
 
 ```css
 #positioned-element {
-  position-try: --menu-below, flip-inline --menu-below;
+  position-try:
+    --menu-below,
+    flip-inline --menu-below;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/PwPeWjx?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen PwPeWjx by web-dot-dev on Codepen">
 </iframe>
 

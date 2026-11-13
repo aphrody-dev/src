@@ -11,33 +11,33 @@ A virtual clone is a working tree that the Lore service mounts with FUSE and ser
 
 1. **Name the build that serves your clones (optional).**
 
-    Every command that makes or works in a virtual clone is carried out by the Lore service. A clone that finds no service running starts it from the `lore` you ran. If several builds of `lore` are on your machine, name the one that serves your clones, so it doesn't depend on which you run first:
+   Every command that makes or works in a virtual clone is carried out by the Lore service. A clone that finds no service running starts it from the `lore` you ran. If several builds of `lore` are on your machine, name the one that serves your clones, so it doesn't depend on which you run first:
 
-    ```bash
-    lore service set-executable "$(command -v lore)"
-    ```
+   ```bash
+   lore service set-executable "$(command -v lore)"
+   ```
 
 2. **Choose where the shared store lives (optional).**
 
-    A virtual clone keeps the content it fetches in the shared store for its server, and the service finds its virtual clones through the shared stores when it starts. The first clone from a server creates its store in Lore's data directory, `~/.local/share/lore`. To keep the store on another drive, create it there before you clone anything from that server, passing the server's address with no repository path:
+   A virtual clone keeps the content it fetches in the shared store for its server, and the service finds its virtual clones through the shared stores when it starts. The first clone from a server creates its store in Lore's data directory, `~/.local/share/lore`. To keep the store on another drive, create it there before you clone anything from that server, passing the server's address with no repository path:
 
-    ```bash
-    lore shared-store create lore://127.0.0.1:41337 --path /mnt/data/lore
-    ```
+   ```bash
+   lore shared-store create lore://127.0.0.1:41337 --path /mnt/data/lore
+   ```
 
-    A store created after the first clone becomes the new default, and clones that follow the default then open the new, empty store. See [Keep the store on another drive](run-parallel-instances-over-a-shared-store.md#keep-the-store-on-another-drive).
+   A store created after the first clone becomes the new default, and clones that follow the default then open the new, empty store. See [Keep the store on another drive](run-parallel-instances-over-a-shared-store.md#keep-the-store-on-another-drive).
 
 3. **Clone with `--vfs fuse`.**
 
-    ```bash
-    lore clone lore://127.0.0.1:41337/my-project ~/my-project-fuse --vfs fuse
-    ```
+   ```bash
+   lore clone lore://127.0.0.1:41337/my-project ~/my-project-fuse --vfs fuse
+   ```
 
-    `findmnt ~/my-project-fuse` then lists a `fuse.lore` mount. `--vfs default` makes the same kind of clone on Linux. A virtual clone always uses the shared store, so it needs no `--use-shared-store`.
+   `findmnt ~/my-project-fuse` then lists a `fuse.lore` mount. `--vfs default` makes the same kind of clone on Linux. A virtual clone always uses the shared store, so it needs no `--use-shared-store`.
 
 4. **Work in it as in any working tree.**
 
-    Edit files with any tool. The mount records each change as it's written, so `lore status` and `lore stage .` see it with no `--scan` and no `lore file dirty`. Stage, commit, push, sync, and switch branches as usual.
+   Edit files with any tool. The mount records each change as it's written, so `lore status` and `lore stage .` see it with no `--scan` and no `lore file dirty`. Stage, commit, push, sync, and switch branches as usual.
 
 ## Get your clones back after the service stops
 

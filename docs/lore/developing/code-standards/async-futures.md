@@ -6,18 +6,18 @@ This document defines how to write futures, boxes, and spawned tasks so that fut
 
 A future is stored as an enum of its suspension states. Its size is its largest state plus a prefix reserved in every state.
 
-| Held in the prefix | Cause |
-| --- | --- |
-| The arguments of an `async fn` | Captured for the future's whole life. An argument used after an await is stored a second time, in the local it is moved into. |
-| The captures of an `async move` block | Captured for the future's whole life, once. |
-| A local live across two or more awaits | Reserved in every state, including states before it exists. |
+| Held in the prefix                     | Cause                                                                                                                         |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| The arguments of an `async fn`         | Captured for the future's whole life. An argument used after an await is stored a second time, in the local it is moved into. |
+| The captures of an `async move` block  | Captured for the future's whole life, once.                                                                                   |
+| A local live across two or more awaits | Reserved in every state, including states before it exists.                                                                   |
 
-| Held in a state after its last use | Cause |
-| --- | --- |
-| A value a pattern moves part of | `while let`, `for`, `if let`, `match`, and `select!` arms keep the scrutinee until its scope ends. |
-| A borrowed local, or a local of a `Copy` type | Kept until its scope ends. |
-| A shadowed local | Shadowing does not end storage. |
-| The futures of `join!` | Held side by side: the sum, not the maximum. |
+| Held in a state after its last use            | Cause                                                                                              |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| A value a pattern moves part of               | `while let`, `for`, `if let`, `match`, and `select!` arms keep the scrutinee until its scope ends. |
+| A borrowed local, or a local of a `Copy` type | Kept until its scope ends.                                                                         |
+| A shadowed local                              | Shadowing does not end storage.                                                                    |
+| The futures of `join!`                        | Held side by side: the sum, not the maximum.                                                       |
 
 A future awaited inline is part of its parent's state, so a byte a callee holds is held by every future above it.
 

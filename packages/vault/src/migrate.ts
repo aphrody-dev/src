@@ -9,7 +9,12 @@ import { join } from "node:path";
 import { b3Files } from "./crypto.ts";
 import { legacyDpapiDir, localStore, WIN } from "./paths.ts";
 
-export async function migrateLegacy(): Promise<{ moved: number; kept: number; from: string; to: string }> {
+export async function migrateLegacy(): Promise<{
+  moved: number;
+  kept: number;
+  from: string;
+  to: string;
+}> {
   const info = localStore();
   const from = legacyDpapiDir();
   const res = { moved: 0, kept: 0, from, to: info.dir };
@@ -24,7 +29,10 @@ export async function migrateLegacy(): Promise<{ moved: number; kept: number; fr
   for (const f of files) {
     const src = join(from, f);
     const dst = join(info.dir, f);
-    const [s, d] = await Promise.all([stat(src), stat(dst).catch(() => undefined)]);
+    const [s, d] = await Promise.all([
+      stat(src),
+      stat(dst).catch(() => undefined),
+    ]);
     if (!d || s.mtimeMs > d.mtimeMs) {
       await copyFile(src, dst);
       await utimes(dst, s.atime, s.mtime);

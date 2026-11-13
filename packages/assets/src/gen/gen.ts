@@ -74,7 +74,9 @@ const CDN = "https://cdn.aphrody.com/wallpapers/v1/";
 // LGPL build (/opt/ffmpeg-lgpl on fr1) via FFMPEG_LGPL; FFMPEG overrides the binary.
 const FFMPEG =
   process.env.FFMPEG ??
-  (process.env.FFMPEG_LGPL ? `${process.env.FFMPEG_LGPL}/bin/ffmpeg` : "ffmpeg");
+  (process.env.FFMPEG_LGPL
+    ? `${process.env.FFMPEG_LGPL}/bin/ffmpeg`
+    : "ffmpeg");
 const GENERATOR = "aphrody-assets-gen";
 const themesPath =
   process.env.THEMES_JSON ??

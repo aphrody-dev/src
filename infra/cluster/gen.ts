@@ -4,21 +4,45 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 type Check = { path: string; host: string; expect: string };
-type Svc = { mode?: "http" | "tcp"; pinned?: boolean; lb_port: number; targets: Record<string, string | string[]>; bluegreen?: { service: string; active?: "blue" | "green" }; standby?: string[]; check?: Check; cache?: "micro" | "honor" | "off" };
-type Member = { node: string; ssh: string; weight: number; slice?: Record<string, string> };
+type Svc = {
+  mode?: "http" | "tcp";
+  pinned?: boolean;
+  lb_port: number;
+  targets: Record<string, string | string[]>;
+  bluegreen?: { service: string; active?: "blue" | "green" };
+  standby?: string[];
+  check?: Check;
+  cache?: "micro" | "honor" | "off";
+};
+type Member = {
+  node: string;
+  ssh: string;
+  weight: number;
+  slice?: Record<string, string>;
+};
 type Cluster = {
-  domain: string; mesh_port: number; stats_port: number; check_inter_ms: number; check_fall: number; check_rise: number;
-  cache_max_size: string; members: Record<string, Member>; services: Record<string, Svc>;
+  domain: string;
+  mesh_port: number;
+  stats_port: number;
+  check_inter_ms: number;
+  check_fall: number;
+  check_rise: number;
+  cache_max_size: string;
+  members: Record<string, Member>;
+  services: Record<string, Svc>;
 };
 
 const root = join(import.meta.dir, "..");
-const deploy = Bun.TOML.parse(await Bun.file(join(root, "deploy.toml")).text()) as any;
+const deploy = Bun.TOML.parse(
+  await Bun.file(join(root, "deploy.toml")).text(),
+) as any;
 const c = deploy.cluster as Cluster;
 const ipOf = (m: string) => deploy.nodes[c.members[m].node].public_ip as string;
 const names = Object.keys(c.members);
 const id = (m: string) => names.indexOf(m) + 1; // stable server ids: identical consistent-hash ring on every member
 const shardPort = (s: Svc) => s.lb_port + 10000;
-const cached = (s: Svc) => (s.mode ?? "http") === "http" && (s.cache ?? "off") !== "off";
+const cached = (s: Svc) =>
+  (s.mode ?? "http") === "http" && (s.cache ?? "off") !== "off";
 const sni = (svc: string, m: string) => `${svc}.${m}.${c.domain}`;
 const TLS = "/etc/aphrody-cluster/tls";
 // Origins of a service on a member, primary first. bluegreen: targets[m] is the host, ports come from
@@ -29,15 +53,27 @@ function addrs(s: Svc, m: string): string[] {
   if (s.bluegreen) {
     const app = deploy.services[s.bluegreen.service];
     const act = s.bluegreen.active ?? "green";
-    const ports = act === "green" ? [app.green_port, app.blue_port] : [app.blue_port, app.green_port];
+    const ports =
+      act === "green"
+        ? [app.green_port, app.blue_port]
+        : [app.blue_port, app.green_port];
     return ports.map((p: number) => `${t}:${p}`);
   }
   return Array.isArray(t) ? t : [t];
 }
 // HAProxy server lines for local origins: first primary, the rest backup, all health-checked.
 // standby (svc.standby lists the member): every line is a backup, used only when all primary members are down.
-const originServers = (name: string, base: number, w: number | null, list: string[], standby = false) =>
-  list.map((a, i) => `    server ${i ? `${name}-b${i}` : name} ${a}${base ? ` id ${base + 100 * i}` : ""}${w ? ` weight ${w}` : ""}${i || standby ? " backup" : ""} check`);
+const originServers = (
+  name: string,
+  base: number,
+  w: number | null,
+  list: string[],
+  standby = false,
+) =>
+  list.map(
+    (a, i) =>
+      `    server ${i ? `${name}-b${i}` : name} ${a}${base ? ` id ${base + 100 * i}` : ""}${w ? ` weight ${w}` : ""}${i || standby ? " backup" : ""} check`,
+  );
 
 function haproxy(self: string): string {
   const out: string[] = [
@@ -79,17 +115,35 @@ function haproxy(self: string): string {
     `    tcp-request content reject unless { ssl_fc_sni -m end .${self}.${c.domain} }`,
   ];
   const local = Object.entries(c.services).filter(([, s]) => s.targets[self]);
-  for (const [n] of local) out.push(`    use_backend in_${n} if { ssl_fc_sni -i ${sni(n, self)} }`);
+  for (const [n] of local)
+    out.push(`    use_backend in_${n} if { ssl_fc_sni -i ${sni(n, self)} }`);
   out.push("");
   for (const [n, s] of local) {
-    out.push(`backend in_${n}`, "    mode tcp",
-      ...(cached(s) ? [`    server local 127.0.0.1:${shardPort(s)}`] : originServers("local", 0, null, addrs(s, self))), "");
+    out.push(
+      `backend in_${n}`,
+      "    mode tcp",
+      ...(cached(s)
+        ? [`    server local 127.0.0.1:${shardPort(s)}`]
+        : originServers("local", 0, null, addrs(s, self))),
+      "",
+    );
   }
-  for (const [n, s] of Object.entries(c.services).filter(([, s]) => !s.pinned)) {
+  for (const [n, s] of Object.entries(c.services).filter(
+    ([, s]) => !s.pinned,
+  )) {
     const tcp = s.mode === "tcp";
-    out.push(`frontend lb_${n}`, `    bind 127.0.0.1:${s.lb_port}`, `    mode ${tcp ? "tcp" : "http"}`);
+    out.push(
+      `frontend lb_${n}`,
+      `    bind 127.0.0.1:${s.lb_port}`,
+      `    mode ${tcp ? "tcp" : "http"}`,
+    );
     if (!tcp) out.push(`    http-request set-header X-Cluster-Entry ${self}`);
-    out.push(`    default_backend pool_${n}`, "", `backend pool_${n}`, `    mode ${tcp ? "tcp" : "http"}`);
+    out.push(
+      `    default_backend pool_${n}`,
+      "",
+      `backend pool_${n}`,
+      `    mode ${tcp ? "tcp" : "http"}`,
+    );
     if (tcp) out.push("    balance roundrobin");
     else {
       const ck = s.check!;
@@ -108,7 +162,10 @@ function haproxy(self: string): string {
       const w = c.members[m].weight;
       const sb = s.standby?.includes(m) ?? false;
       if (m === self) {
-        if (cached(s)) out.push(`    server ${m} 127.0.0.1:${shardPort(s)} id ${id(m)} weight ${w}${sb ? " backup" : ""} check`);
+        if (cached(s))
+          out.push(
+            `    server ${m} 127.0.0.1:${shardPort(s)} id ${id(m)} weight ${w}${sb ? " backup" : ""} check`,
+          );
         else out.push(...originServers(m, id(m), w, addrs(s, m), sb));
       } else {
         const h = sni(n, m);
@@ -123,7 +180,9 @@ function haproxy(self: string): string {
 }
 
 function nginx(self: string): string {
-  const shards = Object.entries(c.services).filter(([, s]) => s.targets[self] && cached(s));
+  const shards = Object.entries(c.services).filter(
+    ([, s]) => s.targets[self] && cached(s),
+  );
   const out: string[] = [
     `# GENERATED by infra/cluster/gen.ts from infra/deploy.toml [cluster]; member ${self}. Do not edit.`,
     "# Cache shards: HAProxy hashes each URI to one member cluster-wide, so proxy_cache_lock on that member",
@@ -138,8 +197,18 @@ function nginx(self: string): string {
     "",
   ];
   for (const [n, s] of shards) {
-    const micro = s.cache === "micro" ? "        proxy_cache_valid 200 301 302 404 1s;\n" : "";
-    out.push(`upstream acl_${n} { ${addrs(s, self).map((a, i) => `server ${a}${i ? " backup" : " max_fails=1 fail_timeout=3s"};`).join(" ")} keepalive 16; }`);
+    const micro =
+      s.cache === "micro"
+        ? "        proxy_cache_valid 200 301 302 404 1s;\n"
+        : "";
+    out.push(
+      `upstream acl_${n} { ${addrs(s, self)
+        .map(
+          (a, i) =>
+            `server ${a}${i ? " backup" : " max_fails=1 fail_timeout=3s"};`,
+        )
+        .join(" ")} keepalive 16; }`,
+    );
     out.push(`server {
     listen 127.0.0.1:${shardPort(s)};
     access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
@@ -199,18 +268,34 @@ ${micro}        add_header X-Cluster-Cache $upstream_cache_status always;
 
 function slice(self: string): string {
   const s = c.members[self].slice ?? {};
-  return ["# GENERATED by infra/cluster/gen.ts. Cluster workloads (HAProxy, edge containers) run here.", "[Slice]",
-    ...Object.entries(s).map(([k, v]) => `${k}=${v}`), ""].join("\n");
+  return [
+    "# GENERATED by infra/cluster/gen.ts. Cluster workloads (HAProxy, edge containers) run here.",
+    "[Slice]",
+    ...Object.entries(s).map(([k, v]) => `${k}=${v}`),
+    "",
+  ].join("\n");
 }
 
 // ssh over the mesh: <member>-mesh aliases on the members (the PC is outside the fleet-IP firewall of 7444).
 // ProxyCommand /usr/local/bin/aphrody-ssh-mesh; client cert ~/.config/aphrody-cluster/{client.pem,ca.pem}.
 function sshConfig(): string {
-  const out = ["# GENERATED by infra/cluster/gen.ts: ssh to <member>-mesh = sshd through the mTLS mesh (TCP " + c.mesh_port + ").", ""];
+  const out = [
+    "# GENERATED by infra/cluster/gen.ts: ssh to <member>-mesh = sshd through the mTLS mesh (TCP " +
+      c.mesh_port +
+      ").",
+    "",
+  ];
   for (const m of names) {
-    out.push(`Host ${m}-mesh`, `    HostName ${ipOf(m)}`, `    HostKeyAlias ${m}`,
+    out.push(
+      `Host ${m}-mesh`,
+      `    HostName ${ipOf(m)}`,
+      `    HostKeyAlias ${m}`,
       "    StrictHostKeyChecking accept-new # server already authenticated by the mesh certificate",
-      "    ConnectTimeout 10", "    ServerAliveInterval 15", `    ProxyCommand /usr/local/bin/aphrody-ssh-mesh ${m}`, "");
+      "    ConnectTimeout 10",
+      "    ServerAliveInterval 15",
+      `    ProxyCommand /usr/local/bin/aphrody-ssh-mesh ${m}`,
+      "",
+    );
   }
   return out.join("\n");
 }
@@ -232,8 +317,14 @@ exec openssl s_client -quiet -verify_quiet -verify_return_error -verify_hostname
 }
 
 mkdirSync(join(import.meta.dir, "generated", "ssh"), { recursive: true });
-writeFileSync(join(import.meta.dir, "generated", "ssh", "ssh_config.host"), sshConfig());
-writeFileSync(join(import.meta.dir, "generated", "ssh", "aphrody-ssh-mesh"), sshMesh());
+writeFileSync(
+  join(import.meta.dir, "generated", "ssh", "ssh_config.host"),
+  sshConfig(),
+);
+writeFileSync(
+  join(import.meta.dir, "generated", "ssh", "aphrody-ssh-mesh"),
+  sshMesh(),
+);
 
 for (const m of names) {
   const dir = join(import.meta.dir, "generated", m);

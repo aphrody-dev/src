@@ -21,13 +21,13 @@ disable_ui_effects = true
 eco_qos_background_renderers = true
 backup_path = "gpu-diet-backup.json"
 target_processes = [
-    "msedgewebview2.exe",
-    "SearchHost.exe",
-    "TextInputHost.exe",
-    "WWAHost.exe",
-    "ShellExperienceHost.exe",
-    "StartMenuExperienceHost.exe",
-    "explorer.exe",
+  "msedgewebview2.exe",
+  "SearchHost.exe",
+  "TextInputHost.exe",
+  "WWAHost.exe",
+  "ShellExperienceHost.exe",
+  "StartMenuExperienceHost.exe",
+  "explorer.exe",
 ]
 
 [inference]
@@ -40,7 +40,7 @@ vps_threads = 8
 temperature = 0.7
 top_p = 0.9
 models = [
-    { id = "r3d-q8-nano", backend = "vps-cpu-avx2", context = 4096, description = "Ring-3 AVX2/FMA Quantized CPU Transformer" },
-    { id = "r3d-ada-sm89", backend = "cuda-sm89", context = 16384, description = "NVIDIA RTX 4070 Ada Lovelace Tensor-Core Engine" },
-    { id = "r3d-webgpu-edge", backend = "webgpu-wgsl", context = 4096, description = "Client Browser In-Memory WGSL Compute Engine" },
+  { id = "r3d-q8-nano", backend = "vps-cpu-avx2", context = 4096, description = "Ring-3 AVX2/FMA Quantized CPU Transformer" },
+  { id = "r3d-ada-sm89", backend = "cuda-sm89", context = 16384, description = "NVIDIA RTX 4070 Ada Lovelace Tensor-Core Engine" },
+  { id = "r3d-webgpu-edge", backend = "webgpu-wgsl", context = 4096, description = "Client Browser In-Memory WGSL Compute Engine" },
 ]

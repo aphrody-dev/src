@@ -33,8 +33,6 @@ graphify-out/
 !/docs/
 # Brand sources and generated assets (assets/brand, `ay brand build`).
 !/assets/
-# Brand sources and generated assets (assets/brand, `ay brand build`).
-!/assets/
 !/apps/
 !/packages/
 !/crates/

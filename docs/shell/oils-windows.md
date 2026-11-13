@@ -12,16 +12,16 @@ Date : 2026-11-12. **[V]** mesuré/vérifié dans cette session ; **[NV]** non v
 
 ## Architecture du portage
 
-| Fichier | Rôle |
-|---|---|
-| `cpp/win32/posix_compat.h` | force-inclus (`-FI`) : types, constantes, signaux, wait macros, stat/glob/fnmatch/regex/termios/pwd… ; macros `open/access/stat/chdir/getcwd/unlink/isatty/execve` vers versions qui traduisent les chemins |
-| `cpp/win32/compat.cc` | implémentation Win32 (~1 800 lignes) |
-| `cpp/win32/oils_win.cc` | TU qui `#include` `oils_for_unix.mycpp.cc` ; `#define fork() fork_win(this)` remplace l'unique appel (`Process::StartProcess`) |
-| `cpp/win32/main_win.cc` | `main` : argv UTF-8 via `CommandLineToArgvW`, argv[0] normalisé (`C:/x/osh`) pour le dispatch d'applet |
-| `cpp/win32/tools/asdl_empty_bases.cc` | ajoute `OILS_EMPTY_BASES` aux en-têtes ASDL pré-générés |
-| `cpp/win32/tools/line_patch.cc` + `oils_for_unix.lpatch` | 3 correctifs ligne-à-ligne du C++ généré (chemins `C:/` absolus) |
-| `asdl/gen_cpp.py`, `mycpp/common.h` | correctif amont : `__declspec(empty_bases)` sous `_MSC_VER` |
-| `cpp/stdlib.h`, `cpp/core.cc` | `fork`/`_exit` sous `#ifdef _WIN32` ; `IsSameFile` via index de fichier NTFS |
+| Fichier                                                  | Rôle                                                                                                                                                                                                        |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cpp/win32/posix_compat.h`                               | force-inclus (`-FI`) : types, constantes, signaux, wait macros, stat/glob/fnmatch/regex/termios/pwd… ; macros `open/access/stat/chdir/getcwd/unlink/isatty/execve` vers versions qui traduisent les chemins |
+| `cpp/win32/compat.cc`                                    | implémentation Win32 (~1 800 lignes)                                                                                                                                                                        |
+| `cpp/win32/oils_win.cc`                                  | TU qui `#include` `oils_for_unix.mycpp.cc` ; `#define fork() fork_win(this)` remplace l'unique appel (`Process::StartProcess`)                                                                              |
+| `cpp/win32/main_win.cc`                                  | `main` : argv UTF-8 via `CommandLineToArgvW`, argv[0] normalisé (`C:/x/osh`) pour le dispatch d'applet                                                                                                      |
+| `cpp/win32/tools/asdl_empty_bases.cc`                    | ajoute `OILS_EMPTY_BASES` aux en-têtes ASDL pré-générés                                                                                                                                                     |
+| `cpp/win32/tools/line_patch.cc` + `oils_for_unix.lpatch` | 3 correctifs ligne-à-ligne du C++ généré (chemins `C:/` absolus)                                                                                                                                            |
+| `asdl/gen_cpp.py`, `mycpp/common.h`                      | correctif amont : `__declspec(empty_bases)` sous `_MSC_VER`                                                                                                                                                 |
+| `cpp/stdlib.h`, `cpp/core.cc`                            | `fork`/`_exit` sous `#ifdef _WIN32` ; `IsSameFile` via index de fichier NTFS                                                                                                                                |
 
 Bug ABI trouvé : sous l'ABI MSVC, une classe à plusieurs bases vides (`Token : loc_t, word_t, …`) ne place que la première à l'offset 0 ; `tag()` lit alors l'`ObjHeader` au mauvais endroit (assertion `word_e`). Corrigé par `empty_bases`. [V]
 
@@ -58,12 +58,12 @@ Pas de ré-exec avec état sérialisé. Selon le thunk :
 
 ## Mesures (hyperfine, -N, 20 runs) [V]
 
-| Cas | osh.exe | brush |
-|---|---|---|
-| `-c true` | 8,1 ms | 8,8 ms |
-| boucle `while` 20 000 itérations | 37,9 ms | 210,8 ms |
-| 10 × `x=$(echo $i)` | 8,7 ms | 9,7 ms |
-| `coreutils echo a \| coreutils wc -c` | 18,1 ms | 18,7 ms |
+| Cas                                   | osh.exe | brush    |
+| ------------------------------------- | ------- | -------- |
+| `-c true`                             | 8,1 ms  | 8,8 ms   |
+| boucle `while` 20 000 itérations      | 37,9 ms | 210,8 ms |
+| 10 × `x=$(echo $i)`                   | 8,7 ms  | 9,7 ms   |
+| `coreutils echo a \| coreutils wc -c` | 18,1 ms | 18,7 ms  |
 
 ## Stubs et limites connues
 

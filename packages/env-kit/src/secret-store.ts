@@ -47,11 +47,14 @@ const ENTROPY = new TextEncoder().encode("aphrody/env-kit/secret-store/v1");
 // Format v2 (shared with packages/vault/src/store.ts): "AYD2" + DPAPI blob, entropy bound to the name.
 // Both versions are read; writes are v2 (lazy migration). A raw DPAPI blob starts with 01 00 00 00.
 const DPAPI_V2 = new TextEncoder().encode("AYD2");
-const entropyV2 = (name: string) => new TextEncoder().encode(`aphrody/vault/dpapi/v2|${name}`);
-const isV2 = (b: Uint8Array) => b.byteLength > 4 && DPAPI_V2.every((c, i) => b[i] === c);
+const entropyV2 = (name: string) =>
+  new TextEncoder().encode(`aphrody/vault/dpapi/v2|${name}`);
+const isV2 = (b: Uint8Array) =>
+  b.byteLength > 4 && DPAPI_V2.every((c, i) => b[i] === c);
 
 function assertName(name: string): void {
-  if (!NAME.test(name)) throw new Error(`invalid secret name: ${JSON.stringify(name)}`);
+  if (!NAME.test(name))
+    throw new Error(`invalid secret name: ${JSON.stringify(name)}`);
 }
 
 const isRoot = (): boolean => process.getuid?.() === 0;
@@ -59,19 +62,30 @@ const isRoot = (): boolean => process.getuid?.() === 0;
 export function storeInfo(): SecretStoreInfo {
   const override = process.env.ENV_KIT_SECRET_DIR;
   if (process.platform === "win32") {
-    const base = process.env.LOCALAPPDATA ?? join(homedir(), "AppData", "Local");
+    const base =
+      process.env.LOCALAPPDATA ?? join(homedir(), "AppData", "Local");
     const old = join(base, "aphrody", "secrets");
     if (override) return { backend: "dpapi", dir: override };
     // Inside the monorepo (packages/env-kit/src): the vault; elsewhere (npm install): the old place.
-    const root = process.env.SRC_ROOT ?? resolve(import.meta.dir, "..", "..", "..");
+    const root =
+      process.env.SRC_ROOT ?? resolve(import.meta.dir, "..", "..", "..");
     const inRepo = existsSync(join(root, "packages", "vault", "package.json"));
     const vault = process.env.APHRODY_VAULT_DIR ?? join(root, "var", "secrets");
-    return inRepo ? { backend: "dpapi", dir: join(vault, "local"), legacy: [old] } : { backend: "dpapi", dir: old };
+    return inRepo
+      ? { backend: "dpapi", dir: join(vault, "local"), legacy: [old] }
+      : { backend: "dpapi", dir: old };
   }
   if (process.platform === "linux") {
-    if (isRoot()) return { backend: "systemd-creds", dir: override ?? "/etc/credstore.encrypted" };
+    if (isRoot())
+      return {
+        backend: "systemd-creds",
+        dir: override ?? "/etc/credstore.encrypted",
+      };
     const base = process.env.XDG_CONFIG_HOME ?? join(homedir(), ".config");
-    return { backend: "systemd-creds-user", dir: override ?? join(base, "credstore.encrypted") };
+    return {
+      backend: "systemd-creds-user",
+      dir: override ?? join(base, "credstore.encrypted"),
+    };
   }
   throw new Error(`secret store: unsupported platform ${process.platform}`);
 }
@@ -104,12 +118,24 @@ let dpapi: Dpapi | undefined;
 
 function loadDpapi(): Dpapi {
   if (dpapi) return dpapi;
-  const { dlopen, FFIType, ptr, toArrayBuffer } = require("bun:ffi") as typeof import("bun:ffi");
+  const { dlopen, FFIType, ptr, toArrayBuffer } =
+    require("bun:ffi") as typeof import("bun:ffi");
   const sig = {
-    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.u32, FFIType.ptr],
+    args: [
+      FFIType.ptr,
+      FFIType.ptr,
+      FFIType.ptr,
+      FFIType.ptr,
+      FFIType.ptr,
+      FFIType.u32,
+      FFIType.ptr,
+    ],
     returns: FFIType.i32,
   } as const;
-  const crypt32 = dlopen("crypt32.dll", { CryptProtectData: sig, CryptUnprotectData: sig });
+  const crypt32 = dlopen("crypt32.dll", {
+    CryptProtectData: sig,
+    CryptUnprotectData: sig,
+  });
   const kernel32 = dlopen("kernel32.dll", {
     LocalFree: { args: [FFIType.ptr], returns: FFIType.ptr },
   });
@@ -121,7 +147,11 @@ function loadDpapi(): Dpapi {
     if (bytes.byteLength) b.writeBigUInt64LE(BigInt(ptr(bytes)), 8);
     return b;
   };
-  const call = (fn: "CryptProtectData" | "CryptUnprotectData", input: Uint8Array, extra: Uint8Array = ENTROPY): Uint8Array => {
+  const call = (
+    fn: "CryptProtectData" | "CryptUnprotectData",
+    input: Uint8Array,
+    extra: Uint8Array = ENTROPY,
+  ): Uint8Array => {
     // Copy into a buffer bun owns for the duration of the call (ptr() needs a non-empty view).
     const data = new Uint8Array(Math.max(input.byteLength, 1));
     data.set(input);
@@ -130,14 +160,32 @@ function loadDpapi(): Dpapi {
     const out = Buffer.alloc(16);
     const ok =
       fn === "CryptProtectData"
-        ? crypt32.symbols.CryptProtectData(ptr(inBlob), null, ptr(entropy), null, null, CRYPTPROTECT_UI_FORBIDDEN, ptr(out))
-        : crypt32.symbols.CryptUnprotectData(ptr(inBlob), null, ptr(entropy), null, null, CRYPTPROTECT_UI_FORBIDDEN, ptr(out));
+        ? crypt32.symbols.CryptProtectData(
+            ptr(inBlob),
+            null,
+            ptr(entropy),
+            null,
+            null,
+            CRYPTPROTECT_UI_FORBIDDEN,
+            ptr(out),
+          )
+        : crypt32.symbols.CryptUnprotectData(
+            ptr(inBlob),
+            null,
+            ptr(entropy),
+            null,
+            null,
+            CRYPTPROTECT_UI_FORBIDDEN,
+            ptr(out),
+          );
     data.fill(0);
     if (!ok) throw new Error(`${fn} failed`);
     const len = out.readUInt32LE(0);
     const p = Number(out.readBigUInt64LE(8));
     try {
-      return len ? new Uint8Array(toArrayBuffer(p as never, 0, len)).slice() : new Uint8Array();
+      return len
+        ? new Uint8Array(toArrayBuffer(p as never, 0, len)).slice()
+        : new Uint8Array();
     } finally {
       if (p) kernel32.symbols.LocalFree(p as never);
     }
@@ -151,7 +199,11 @@ function loadDpapi(): Dpapi {
 
 // --- Linux systemd-creds ----------------------------------------------------------------------
 
-function creds(info: SecretStoreInfo, args: string[], input?: Uint8Array): Uint8Array {
+function creds(
+  info: SecretStoreInfo,
+  args: string[],
+  input?: Uint8Array,
+): Uint8Array {
   const user = info.backend === "systemd-creds-user" ? ["--user"] : [];
   const r = spawnSync("systemd-creds", [...user, ...args], {
     input: input ? Buffer.from(input) : undefined,
@@ -159,7 +211,9 @@ function creds(info: SecretStoreInfo, args: string[], input?: Uint8Array): Uint8
   });
   if (r.status !== 0) {
     // stderr of systemd-creds never contains the payload.
-    throw new Error(`systemd-creds ${args[0]} failed: ${String(r.stderr ?? r.error ?? "").trim()}`);
+    throw new Error(
+      `systemd-creds ${args[0]} failed: ${String(r.stderr ?? r.error ?? "").trim()}`,
+    );
   }
   return new Uint8Array(r.stdout);
 }
@@ -170,7 +224,8 @@ export function secretSet(name: string, value: string | Uint8Array): void {
   assertName(name);
   const info = storeInfo();
   mkdirSync(info.dir, { recursive: true, mode: 0o700 });
-  const bytes = typeof value === "string" ? new TextEncoder().encode(value) : value;
+  const bytes =
+    typeof value === "string" ? new TextEncoder().encode(value) : value;
   if (!bytes.byteLength) throw new Error(`secret ${name}: empty value`);
   const file = fileOf(info, name);
   if (info.backend === "dpapi") {
@@ -197,7 +252,9 @@ export function secretGetBytes(name: string): Uint8Array | undefined {
     // `vault migrate-dpapi` leaves this marker once every blob is v2: v1 is refused from then on.
     if (!isV2(raw) && existsSync(join(info.dir, ".dpapi-v2-only")))
       throw new Error(`secret ${name}: DPAPI v1 refused (vault is v2-only)`);
-    return isV2(raw) ? loadDpapi().unprotect(raw.subarray(4), entropyV2(name)) : loadDpapi().unprotect(raw);
+    return isV2(raw)
+      ? loadDpapi().unprotect(raw.subarray(4), entropyV2(name))
+      : loadDpapi().unprotect(raw);
   }
   return creds(info, ["decrypt", `--name=${name}`, file, "-"]);
 }

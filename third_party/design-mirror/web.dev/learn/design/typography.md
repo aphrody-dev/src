@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-If you don't specify any styles for your text, browsers will apply their own default styles. These are called *User Agent stylesheets*, and may vary from browser to browser. Users can set their own preferences for displaying text too.
+
+If you don't specify any styles for your text, browsers will apply their own default styles. These are called _User Agent stylesheets_, and may vary from browser to browser. Users can set their own preferences for displaying text too.
 
 If you don't specify a line length, browsers will wrap lines of text at the edge of the screen. So text on the web is responsive by default---it flows to fit the user's viewport.
 
@@ -53,6 +54,7 @@ You can use media queries to change the `font-size` property as the screen size 
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/WNZeBWY?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen WNZeBWY by web-dot-dev on Codepen"></iframe>
 
 ## Scaling text
@@ -70,7 +72,7 @@ html {
 }
 ```
 
-If you do, the user won't be able to resize the text. The text will be resizable if you mix in a relative unit---like `em`, `rem` or `ch`. The CSS [`calc()`](https://developer.mozilla.org/docs/Web/CSS/calc()) function is perfect for this.
+If you do, the user won't be able to resize the text. The text will be resizable if you mix in a relative unit---like `em`, `rem` or `ch`. The CSS [`calc()`](<https://developer.mozilla.org/docs/Web/CSS/calc()>) function is perfect for this.
 Do
 
 ```css
@@ -82,11 +84,11 @@ html {
 Let the browser do the math. This makes it difficult to predict exactly what the text size will be at any specific width, but you know that the text size will be in the right range. The user's browser takes care of figuring out the exact text size calculations.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zYEOQQG?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zYEOQQG by web-dot-dev on Codepen"></iframe>
 
-But now there's a possibility that the text will get *too* small on narrow screens and *too* big on wide screens.
+But now there's a possibility that the text will get _too_ small on narrow screens and _too_ big on wide screens.
 
 ## Clamping text
 
-You probably don't want your text to shrink and grow to extremes. You can control where the scaling starts and ends using the CSS [`clamp()`](https://developer.mozilla.org/docs/Web/CSS/clamp()) function. This "clamps" the scaling to a specific range.
+You probably don't want your text to shrink and grow to extremes. You can control where the scaling starts and ends using the CSS [`clamp()`](<https://developer.mozilla.org/docs/Web/CSS/clamp()>) function. This "clamps" the scaling to a specific range.
 
 The `clamp()` function is like the `calc()` function but it takes three values. The middle value is the same as what you pass to `calc()`. The opening value specifies the minimum size, in this case 1rem so as to not go below the user's preferred font size. The closing value specifies the maximum size.
 
@@ -95,6 +97,7 @@ html {
   font-size: clamp(1rem, 0.75rem + 1.5vw, 2rem);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/wvrwbbx?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen wvrwbbx by web-dot-dev on Codepen"></iframe>
 
 Now the text size shrinks and grows in proportion to the user's screen but the text size will never be smaller than `1rem` or larger than `2rem`.
@@ -103,7 +106,8 @@ Now the text size shrinks and grows in proportion to the user's screen but the t
 
 The web is not print, but we can learn lessons from the world of print and apply them on the web.
 
-In his classic book [*The Elements of Typographic Style*](http://webtypography.net/2.1.2), Robert Bringhurst had this to say on line length (or measure):
+In his classic book [_The Elements of Typographic Style_](http://webtypography.net/2.1.2), Robert Bringhurst had this to say on line length (or measure):
+
 > Anything from 45 to 75 characters is widely regarded as a satisfactory line length for a single-column page set in a serifed text face in a text size. The 66-character line (counting both letters and spaces) is widely regarded as ideal. For multiple column work, a better average is 40 to 50 characters.
 
 You can't set a line length directly in CSS. There is no `line-length` property. But you can stop text from getting too wide by limiting how wide the container can be. The [`max-inline-size`](https://developer.mozilla.org/docs/Web/CSS/max-inline-size) property is perfect for this.
@@ -116,6 +120,7 @@ article {
   max-inline-size: 700px;
 }
 ```
+
 Do
 
 ```css
@@ -143,6 +148,7 @@ blockquote {
   line-height: 2;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/oNGvRrZ?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen oNGvRrZ by web-dot-dev on Codepen"></iframe>
 
 Use unitless values for your `line-height` declarations. This ensures that the line height is relative to the `font-size`.
@@ -151,6 +157,7 @@ Don't
 ```css
 line-height: 24px;
 ```
+
 Do
 
 ```css
@@ -170,7 +177,7 @@ Use `@font-face` to tell browsers where to find your web font files. Use woff2 a
 ```css
 @font-face {
   font-family: Roboto;
-  src: url('/fonts/roboto-regular.woff2') format('woff2');
+  src: url("/fonts/roboto-regular.woff2") format("woff2");
 }
 body {
   font-family: Roboto, sans-serif;
@@ -184,8 +191,13 @@ But every web font file you add could potentially degrade the user experience as
 You can request that browsers start downloading a font file as soon as possible. Add a `link` element to the `head` of your document that references your web font file. A `rel` attribute with a value of `preload` tells the browser to prioritize that file. An `as` attribute with a value of `font` tells the browser what kind of file this is. The `type` attribute lets you be even more specific.
 
 ```html
-<link href="/fonts/roboto-regular.woff2" type="font/woff2"
-  rel="preload" as="font" crossorigin>
+<link
+  href="/fonts/roboto-regular.woff2"
+  type="font/woff2"
+  rel="preload"
+  as="font"
+  crossorigin
+/>
 ```
 
 You need to include the `crossorigin` attribute even if you are hosting the font files yourself.

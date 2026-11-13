@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## DP4a built-in functions support in WGSL
@@ -25,7 +26,8 @@ if (!navigator.gpu.wgslLanguageFeatures.has("packed_4x8_integer_dot_product")) {
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   requires packed_4x8_integer_dot_product;
 
   fn main() {
@@ -49,14 +51,17 @@ Check out [Pointers As Function Parameters \| Tour of WGSL](https://google.githu
 This feature can be feature-detected using [`navigator.gpu.wgslLanguageFeatures`](https://developer.mozilla.org/docs/Web/API/WGSLLanguageFeatures). It's recommended to always use a [requires-directive](https://gpuweb.github.io/gpuweb/wgsl/#requires-directive) to signal the potential for non-portability with `requires unrestricted_pointer_parameters;` at the top of your WGSL shader code. See the following example, the [WGSL spec changes](https://github.com/gpuweb/gpuweb/commit/9298d2f06082ae61d03dcb31f44196a212e5c3a1), and [issue tint:2053](https://bugs.chromium.org/p/tint/issues/detail?id=2053).
 
 ```javascript
-if (!navigator.gpu.wgslLanguageFeatures.has("unrestricted_pointer_parameters")) {
+if (
+  !navigator.gpu.wgslLanguageFeatures.has("unrestricted_pointer_parameters")
+) {
   throw new Error(`Unrestricted pointer parameters are not available`);
 }
 
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   requires unrestricted_pointer_parameters;
 
   @group(0) @binding(0) var<storage, read_write> S : i32;
@@ -68,7 +73,7 @@ const shaderModule = device.createShaderModule({ code: `
   @compute @workgroup_size(1)
   fn main() {
     func(&S);
-  }`
+  }`,
 });
 ```
 
@@ -92,7 +97,8 @@ if (!navigator.gpu.wgslLanguageFeatures.has("pointer_composite_access")) {
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   requires pointer_composite_access;
 
   fn main() {
@@ -100,7 +106,7 @@ const shaderModule = device.createShaderModule({ code: `
     let p : ptr<function, vec3f> = &a;
     let r1 = (*p).x; // always valid.
     let r2 = p.x; // requires pointer composite access.
-  }`
+  }`,
 });
 ```
 

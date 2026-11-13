@@ -9,16 +9,16 @@ Légende : **v** = vérifié le 12/11/2026 sur la page source ; **nv** = non vé
 
 ## Dernières versions stables au 12/11/2026
 
-| Projet | Version | Date | Statut | Source |
-|---|---|---|---|---|
-| Rust | 1.99.1 | 15/10/2026 (annonce blog) | v | blog.rust-lang.org/releases |
-| GCC | 16.2 | 07/08/2026 | v | gcc.gnu.org/releases.html |
-| GCC (branches maintenues) | 15.3 (12/06/2026), 14.4 (26/06/2026), 13.5 (11/09/2026) | — | v | idem |
-| LLVM/Clang/lld | 23.1.5 | 03/11/2026 (année déduite des assets) | v | github.com/llvm/llvm-project/releases |
-| FFmpeg | 9.0.2 « Lei » | 18/09/2026 | v | ffmpeg.org/download.html |
-| FFmpeg (branches) | 8.1.3 (21/09/2026), 8.0.3, 7.1.5, 6.1.6 (juin 2026) | — | v | idem |
-| C (norme) | C23, ISO/IEC 9899, adoptée en 2024 | — | v | open-std.org WG14 |
-| C2y | non publiée ; brouillon N3998 du 25/10/2026 | — | v | open-std.org WG14 projects |
+| Projet                    | Version                                                 | Date                                  | Statut | Source                                |
+| ------------------------- | ------------------------------------------------------- | ------------------------------------- | ------ | ------------------------------------- |
+| Rust                      | 1.99.1                                                  | 15/10/2026 (annonce blog)             | v      | blog.rust-lang.org/releases           |
+| GCC                       | 16.2                                                    | 07/08/2026                            | v      | gcc.gnu.org/releases.html             |
+| GCC (branches maintenues) | 15.3 (12/06/2026), 14.4 (26/06/2026), 13.5 (11/09/2026) | —                                     | v      | idem                                  |
+| LLVM/Clang/lld            | 23.1.5                                                  | 03/11/2026 (année déduite des assets) | v      | github.com/llvm/llvm-project/releases |
+| FFmpeg                    | 9.0.2 « Lei »                                           | 18/09/2026                            | v      | ffmpeg.org/download.html              |
+| FFmpeg (branches)         | 8.1.3 (21/09/2026), 8.0.3, 7.1.5, 6.1.6 (juin 2026)     | —                                     | v      | idem                                  |
+| C (norme)                 | C23, ISO/IEC 9899, adoptée en 2024                      | —                                     | v      | open-std.org WG14                     |
+| C2y                       | non publiée ; brouillon N3998 du 25/10/2026             | —                                     | v      | open-std.org WG14 projects            |
 
 Écarts : environnement.mdx donne 1.99.1 au 13/10/2026 (date de build rustc), le blog annonce le 15/10. Rust 1.100 : cadence de 6 semaines après 1.99.0 (01/10) donne le 12/11/2026, mais aucune annonce n'est visible : **nv**. La forge Rust n'affiche pas les numéros (tableau vide).
 
@@ -28,14 +28,14 @@ Origine (nv) : projet personnel de Graydon Hoare (2006), sponsorisé par Mozilla
 
 Chaîne rustc (architecture décrite dans le rustc-dev-guide) :
 
-| Étape | Représentation | Rôle |
-|---|---|---|
-| Lexing/parsing | tokens → AST (`rustc_parse`) | macros, expansion, résolution de noms |
-| Lowering | HIR (`rustc_hir`) | désucrage, inférence et vérification de types (`rustc_hir_typeck`) |
-| THIR | arbre typé | vérification des motifs, `unsafe` checking |
-| MIR | graphe de flux | borrow checker (NLL, Polonius en cours), const-eval (Miri), optimisations MIR |
-| Monomorphisation | instances | collecte des génériques à générer |
-| Codegen | `rustc_codegen_ssa` → LLVM IR | backend par défaut LLVM |
+| Étape            | Représentation                | Rôle                                                                          |
+| ---------------- | ----------------------------- | ----------------------------------------------------------------------------- |
+| Lexing/parsing   | tokens → AST (`rustc_parse`)  | macros, expansion, résolution de noms                                         |
+| Lowering         | HIR (`rustc_hir`)             | désucrage, inférence et vérification de types (`rustc_hir_typeck`)            |
+| THIR             | arbre typé                    | vérification des motifs, `unsafe` checking                                    |
+| MIR              | graphe de flux                | borrow checker (NLL, Polonius en cours), const-eval (Miri), optimisations MIR |
+| Monomorphisation | instances                     | collecte des génériques à générer                                             |
+| Codegen          | `rustc_codegen_ssa` → LLVM IR | backend par défaut LLVM                                                       |
 
 - Backends alternatifs : `rustc_codegen_cranelift` (compilation rapide en debug, composant rustup sur certaines cibles, nv pour Windows MSVC) ; `rustc_codegen_gcc` (libgccjit, vise cibles non LLVM). État 2026 : nv.
 - gccrs : front-end Rust intégré à GCC (depuis GCC 14, nv) ; ne compile pas encore `core` complet ni ne fait de borrow checking complet : nv au 12/11/2026.

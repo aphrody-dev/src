@@ -3,14 +3,21 @@
 // Usage : bun packages/machine/src/shells.ts [--gen | --check] [--only nu,fish,bash,pwsh,carapace]
 //   (aucun)  génère + installe (idempotent)     --gen  génère seulement     --check  rapporte l'écart (code 1)
 // Appelé aussi par apply-user.ts (export `shells`). Windows et Linux (flotte : bun présent).
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { hostname } from "node:os";
 import { dirname, join, normalize } from "node:path";
 
 const SH = join(import.meta.dir, "..", "shells");
 const WIN = process.platform === "win32";
 const HOME = (WIN ? process.env.USERPROFILE : process.env.HOME) ?? "";
-const HEADER = "généré par packages/machine/src/shells.ts depuis shells/env.toml — ne pas éditer";
+const HEADER =
+  "généré par packages/machine/src/shells.ts depuis shells/env.toml — ne pas éditer";
 
 type Plat = "windows" | "linux";
 type VarDef = { all?: string; windows?: string; linux?: string };
@@ -21,7 +28,8 @@ type EnvToml = {
 };
 type Part = { lit: string } | { home: true } | { ref: string };
 
-const envToml = (): EnvToml => Bun.TOML.parse(readFileSync(join(SH, "env.toml"), "utf8")) as EnvToml;
+const envToml = (): EnvToml =>
+  Bun.TOML.parse(readFileSync(join(SH, "env.toml"), "utf8")) as EnvToml;
 
 function parts(v: string): Part[] {
   const out: Part[] = [];
@@ -45,7 +53,11 @@ const sq = (s: string) => `'${s.replaceAll("'", `'\\''`)}'`;
 
 function emitSh(e: EnvToml): string {
   const val = (ps: Part[]) =>
-    ps.map((x) => ("lit" in x ? sq(x.lit) : "home" in x ? `"$_ay_h"` : `"\${${x.ref}}"`)).join("");
+    ps
+      .map((x) =>
+        "lit" in x ? sq(x.lit) : "home" in x ? `"$_ay_h"` : `"\${${x.ref}}"`,
+      )
+      .join("");
   const branch = (p: Plat) => {
     const l: string[] = [];
     for (const v of vars(e, p)) l.push(`  export ${v.name}=${val(v.value)}`);
@@ -98,12 +110,20 @@ unset -f _ay_pp
 function emitPs1(e: EnvToml): string {
   const val = (ps: Part[]) =>
     ps
-      .map((x) => ("lit" in x ? `'${x.lit.replaceAll("'", "''")}'` : "home" in x ? "$_ayH" : `$env:${x.ref}`))
+      .map((x) =>
+        "lit" in x
+          ? `'${x.lit.replaceAll("'", "''")}'`
+          : "home" in x
+            ? "$_ayH"
+            : `$env:${x.ref}`,
+      )
       .join(" + ") || "''";
   const branch = (p: Plat) => {
     const l: string[] = [];
     for (const v of vars(e, p)) l.push(`  $env:${v.name} = ${val(v.value)}`);
-    l.push(`  $_ayD = @(${(e.path[p] ?? []).map((d) => `(${val(parts(d))})`).join(", ")})`);
+    l.push(
+      `  $_ayD = @(${(e.path[p] ?? []).map((d) => `(${val(parts(d))})`).join(", ")})`,
+    );
     return l.join("\n");
   };
   return `# ${HEADER}
@@ -131,7 +151,8 @@ function emitNu(e: EnvToml): string {
   const val = (ps: Part[]) => {
     const xs = ps.map((x) => {
       if ("lit" in x) {
-        if (x.lit.includes("'")) throw new Error(`apostrophe non supportée pour nu : ${x.lit}`);
+        if (x.lit.includes("'"))
+          throw new Error(`apostrophe non supportée pour nu : ${x.lit}`);
         return `'${x.lit}'`;
       }
       return "home" in x ? "$h" : `$env.${x.ref}`;
@@ -163,7 +184,11 @@ ${branch("linux")}
 
 function emitFish(e: EnvToml): string {
   const val = (ps: Part[]) =>
-    ps.map((x) => ("lit" in x ? sq(x.lit) : "home" in x ? `"$HOME"` : `"$${x.ref}"`)).join("") || "''";
+    ps
+      .map((x) =>
+        "lit" in x ? sq(x.lit) : "home" in x ? `"$HOME"` : `"$${x.ref}"`,
+      )
+      .join("") || "''";
   const l: string[] = [];
   for (const v of vars(e, "linux")) l.push(`set -gx ${v.name} ${val(v.value)}`);
   const dirs = (e.path.linux ?? []).map((d) => val(parts(d)));
@@ -181,12 +206,19 @@ type Opt = { short?: string; long?: string; value: boolean; desc: string };
 type Cmd = { name: string; desc: string; opts: Opt[]; cmds: Cmd[] };
 
 function help(argv: string[]): string | null {
-  const r = Bun.spawnSync(argv, { stdout: "pipe", stderr: "pipe", timeout: 5000 });
+  const r = Bun.spawnSync(argv, {
+    stdout: "pipe",
+    stderr: "pipe",
+    timeout: 5000,
+  });
   const out = r.stdout.toString();
   return r.exitCode === 0 && /Usage:/.test(out) ? out : null;
 }
 
-function parseHelp(text: string): { cmds: { name: string; desc: string }[]; opts: Opt[] } {
+function parseHelp(text: string): {
+  cmds: { name: string; desc: string }[];
+  opts: Opt[];
+} {
   const cmds: { name: string; desc: string }[] = [];
   const opts: Opt[] = [];
   let sec = "";
@@ -201,9 +233,12 @@ function parseHelp(text: string): { cmds: { name: string; desc: string }[]; opts
     }
     if (sec === "Commands") {
       const m = line.match(/^ {2}([a-z][\w-]*)(?:\s{2,}(.*))?$/);
-      if (m && m[1] !== "help") cmds.push({ name: m[1], desc: (m[2] ?? "").trim() });
+      if (m && m[1] !== "help")
+        cmds.push({ name: m[1], desc: (m[2] ?? "").trim() });
     } else if (sec === "Options") {
-      const m = line.match(/^ {2,6}(?:(-[A-Za-z0-9]),? ?)?(--[\w-]+)?(?:, [\w-]+)?((?:[ =][<[][^\s]*)*)\s*(.*)$/);
+      const m = line.match(
+        /^ {2,6}(?:(-[A-Za-z0-9]),? ?)?(--[\w-]+)?(?:, [\w-]+)?((?:[ =][<[][^\s]*)*)\s*(.*)$/,
+      );
       if (m && (m[1] || m[2]))
         opts.push({
           short: m[1],
@@ -216,7 +251,12 @@ function parseHelp(text: string): { cmds: { name: string; desc: string }[]; opts
   return { cmds, opts };
 }
 
-function crawl(ay: string, path: string[], desc: string, depth: number): Cmd | null {
+function crawl(
+  ay: string,
+  path: string[],
+  desc: string,
+  depth: number,
+): Cmd | null {
   const text = help([ay, ...path, "--help"]);
   if (!text) return null;
   const p = parseHelp(text);
@@ -224,16 +264,24 @@ function crawl(ay: string, path: string[], desc: string, depth: number): Cmd | n
     depth < 3
       ? p.cmds.flatMap((c) => {
           const sub = crawl(ay, [...path, c.name], c.desc, depth + 1);
-          return sub ? [sub] : [{ name: c.name, desc: c.desc, opts: [], cmds: [] }];
+          return sub
+            ? [sub]
+            : [{ name: c.name, desc: c.desc, opts: [], cmds: [] }];
         })
       : p.cmds.map((c) => ({ name: c.name, desc: c.desc, opts: [], cmds: [] }));
-  return { name: path.at(-1) ?? "ay", desc: desc || text.split(/\r?\n/)[0].trim(), opts: p.opts, cmds };
+  return {
+    name: path.at(-1) ?? "ay",
+    desc: desc || text.split(/\r?\n/)[0].trim(),
+    opts: p.opts,
+    cmds,
+  };
 }
 
 function carapaceSpec(c: Cmd): unknown {
   const flags: Record<string, string> = {};
   for (const o of c.opts)
-    flags[[o.short, o.long].filter(Boolean).join(", ") + (o.value ? "=" : "")] = o.desc;
+    flags[[o.short, o.long].filter(Boolean).join(", ") + (o.value ? "=" : "")] =
+      o.desc;
   return {
     name: c.name,
     description: c.desc,
@@ -243,8 +291,12 @@ function carapaceSpec(c: Cmd): unknown {
 }
 
 function fishCompl(root: Cmd): string {
-  const q = (s: string) => `'${s.replaceAll("\\", "\\\\").replaceAll("'", "\\'")}'`;
-  const l = [`# ${HEADER.replace("shells/env.toml", "`ay --help`")}`, "complete -c ay -f"];
+  const q = (s: string) =>
+    `'${s.replaceAll("\\", "\\\\").replaceAll("'", "\\'")}'`;
+  const l = [
+    `# ${HEADER.replace("shells/env.toml", "`ay --help`")}`,
+    "complete -c ay -f",
+  ];
   const walk = (c: Cmd, chain: string[]) => {
     const names = c.cmds.map((x) => x.name).join(" ");
     const here = chain.length
@@ -252,10 +304,17 @@ function fishCompl(root: Cmd): string {
       : names
         ? `not __fish_seen_subcommand_from ${names}`
         : "true";
-    for (const s of c.cmds) l.push(`complete -c ay -n ${q(here)} -a ${s.name} -d ${q(s.desc)}`);
+    for (const s of c.cmds)
+      l.push(`complete -c ay -n ${q(here)} -a ${s.name} -d ${q(s.desc)}`);
     for (const o of c.opts) {
-      const f = [o.short ? `-s ${o.short.slice(1)}` : "", o.long ? `-l ${o.long.slice(2)}` : "", o.value ? "-r" : ""];
-      l.push(`complete -c ay -n ${q(here)} ${f.filter(Boolean).join(" ")} -d ${q(o.desc)}`);
+      const f = [
+        o.short ? `-s ${o.short.slice(1)}` : "",
+        o.long ? `-l ${o.long.slice(2)}` : "",
+        o.value ? "-r" : "",
+      ];
+      l.push(
+        `complete -c ay -n ${q(here)} ${f.filter(Boolean).join(" ")} -d ${q(o.desc)}`,
+      );
     }
     for (const s of c.cmds) walk(s, [...chain, s.name]);
   };
@@ -264,7 +323,10 @@ function fishCompl(root: Cmd): string {
 }
 
 function nuExterns(root: Cmd): string {
-  const l = [`# ${HEADER.replace("shells/env.toml", "`ay --help`")}`, "# Signatures externes : complétion native nushell des sous-commandes et options de `ay`."];
+  const l = [
+    `# ${HEADER.replace("shells/env.toml", "`ay --help`")}`,
+    "# Signatures externes : complétion native nushell des sous-commandes et options de `ay`.",
+  ];
   const walk = (c: Cmd, chain: string[]) => {
     const name = ["ay", ...chain].join(" ");
     const sig = c.opts.map((o) => {
@@ -273,7 +335,12 @@ function nuExterns(root: Cmd): string {
         : o.short!;
       return `  ${flag}${o.value ? ": string" : ""}  # ${o.desc.replaceAll("\n", " ")}`;
     });
-    l.push(`export extern "${name}" [`, ...sig, ...(c.cmds.length ? [] : ["  ...args: string"]), "]");
+    l.push(
+      `export extern "${name}" [`,
+      ...sig,
+      ...(c.cmds.length ? [] : ["  ...args: string"]),
+      "]",
+    );
     for (const s of c.cmds) walk(s, [...chain, s.name]);
   };
   walk(root, []);
@@ -298,7 +365,13 @@ function expand(p: string): string {
 
 const read = (f: string) => (existsSync(f) ? readFileSync(f, "utf8") : null);
 
-function put(res: Results, check: boolean, file: string, content: string, label: string) {
+function put(
+  res: Results,
+  check: boolean,
+  file: string,
+  content: string,
+  label: string,
+) {
   const ok = read(file) === content;
   res.push(`${ok ? "ok  " : check ? "DIFF" : "set "} ${label}`);
   if (!ok && !check) {
@@ -316,17 +389,42 @@ function generate(res: Results, check: boolean) {
   put(res, check, join(SH, "env.fish"), lf(emitFish(e)), "shells/env.fish");
   const ay = Bun.which("ay");
   if (!ay) {
-    res.push("info ay absent : complétions ay non régénérées (fichiers du dépôt utilisés)");
+    res.push(
+      "info ay absent : complétions ay non régénérées (fichiers du dépôt utilisés)",
+    );
     return;
   }
   const root = crawl(ay, [], "Aphrody monorepo CLI", 0);
   if (!root) return void res.push("DIFF ay --help illisible");
-  put(res, check, join(SH, "completions", "ay.yaml"), `${JSON.stringify(carapaceSpec(root), null, 2)}\n`, "shells/completions/ay.yaml (carapace)");
-  put(res, check, join(SH, "completions", "ay.fish"), fishCompl(root), "shells/completions/ay.fish");
-  put(res, check, join(SH, "completions", "ay.nu"), nuExterns(root), "shells/completions/ay.nu");
+  put(
+    res,
+    check,
+    join(SH, "completions", "ay.yaml"),
+    `${JSON.stringify(carapaceSpec(root), null, 2)}\n`,
+    "shells/completions/ay.yaml (carapace)",
+  );
+  put(
+    res,
+    check,
+    join(SH, "completions", "ay.fish"),
+    fishCompl(root),
+    "shells/completions/ay.fish",
+  );
+  put(
+    res,
+    check,
+    join(SH, "completions", "ay.nu"),
+    nuExterns(root),
+    "shells/completions/ay.nu",
+  );
 }
 
-type Link = { shell: string; src: string; dst: string | Partial<Record<Plat, string>>; mode: "source" | "copy" };
+type Link = {
+  shell: string;
+  src: string;
+  dst: string | Partial<Record<Plat, string>>;
+  mode: "source" | "copy";
+};
 
 function stub(shell: string, src: string): string {
   const p = src.replaceAll("\\", "/");
@@ -345,7 +443,9 @@ function stub(shell: string, src: string): string {
 }
 
 function links(res: Results, check: boolean, only?: string[]) {
-  const m = Bun.TOML.parse(readFileSync(join(SH, "manifest.toml"), "utf8")) as { link?: Link[] };
+  const m = Bun.TOML.parse(readFileSync(join(SH, "manifest.toml"), "utf8")) as {
+    link?: Link[];
+  };
   const plat: Plat = WIN ? "windows" : "linux";
   for (const l of m.link ?? []) {
     const d = typeof l.dst === "string" ? l.dst : l.dst[plat];
@@ -356,7 +456,8 @@ function links(res: Results, check: boolean, only?: string[]) {
       res.push(`DIFF ${l.src} absent (manifest)`);
       continue;
     }
-    const content = l.mode === "copy" ? readFileSync(src, "utf8") : stub(l.shell, src);
+    const content =
+      l.mode === "copy" ? readFileSync(src, "utf8") : stub(l.shell, src);
     put(res, check, dst, content, `${l.mode} ${l.src} -> ${dst}`);
   }
 }
@@ -365,7 +466,9 @@ function links(res: Results, check: boolean, only?: string[]) {
 function nuCaches(res: Results, check: boolean) {
   const nu = Bun.which("nu");
   if (!nu) return;
-  const r = Bun.spawnSync([nu, "-n", "-c", "$nu.vendor-autoload-dirs | last"], { stdout: "pipe" });
+  const r = Bun.spawnSync([nu, "-n", "-c", "$nu.vendor-autoload-dirs | last"], {
+    stdout: "pipe",
+  });
   const dir = r.stdout.toString().trim();
   if (!dir) return;
   const gens: [string, string[]][] = [
@@ -383,12 +486,20 @@ function nuCaches(res: Results, check: boolean) {
       res.push(`${existsSync(f) ? "ok  " : "DIFF"} nu autoload ${file}`);
       continue;
     }
-    const out = Bun.spawnSync([exe, ...argv.slice(1)], { stdout: "pipe" }).stdout.toString();
+    const out = Bun.spawnSync([exe, ...argv.slice(1)], {
+      stdout: "pipe",
+    }).stdout.toString();
     put(res, false, f, out, `nu autoload ${file}`);
   }
   // Ancienne config à plat (remplacée par le dépôt + autoload) : purge.
-  const old = process.env.APPDATA ? join(process.env.APPDATA, "nushell") : join(HOME, ".config", "nushell");
-  for (const f of ["carapace.nu", "zoxide.nu", "config.nu.before-cwd-fix.bak"]) {
+  const old = process.env.APPDATA
+    ? join(process.env.APPDATA, "nushell")
+    : join(HOME, ".config", "nushell");
+  for (const f of [
+    "carapace.nu",
+    "zoxide.nu",
+    "config.nu.before-cwd-fix.bak",
+  ]) {
     const p = join(old, f);
     if (existsSync(p)) {
       res.push(`${check ? "DIFF" : "rm  "} ${p} (obsolète)`);
@@ -406,11 +517,19 @@ type LockEntry = {
   hosts?: string[];
 };
 
-const HOSTS: Record<string, string> = { srv2116886: "prd", bunos: "fr2", "vps-203bea89": "fr1" };
+const HOSTS: Record<string, string> = {
+  srv2116886: "prd",
+  bunos: "fr2",
+  "vps-203bea89": "fr1",
+};
 
 function lock(res: Results) {
-  const t = Bun.TOML.parse(readFileSync(join(SH, "shells.lock.toml"), "utf8")) as { shell: Record<string, LockEntry> };
-  const host = WIN ? "pc" : (process.env.AY_HOST ?? HOSTS[hostname()] ?? hostname());
+  const t = Bun.TOML.parse(
+    readFileSync(join(SH, "shells.lock.toml"), "utf8"),
+  ) as { shell: Record<string, LockEntry> };
+  const host = WIN
+    ? "pc"
+    : (process.env.AY_HOST ?? HOSTS[hostname()] ?? hostname());
   const arch = process.arch === "arm64" ? "aarch64" : "x86_64";
   const key = `${WIN ? "windows" : "linux"}-${arch}`;
   const b3 = Bun.which("b3sum");
@@ -423,21 +542,35 @@ function lock(res: Results) {
       res.push(`DIFF lock ${name} ${s.version} : ${exe} absent`);
       continue;
     }
-    const v = Bun.spawnSync([exe, ...(s.verify ?? ["--version"])], { stdout: "pipe", stderr: "pipe", timeout: 5000 });
+    const v = Bun.spawnSync([exe, ...(s.verify ?? ["--version"])], {
+      stdout: "pipe",
+      stderr: "pipe",
+      timeout: 5000,
+    });
     const vout = v.stdout.toString() + v.stderr.toString();
     const want = s.expect ?? s.version;
     const vok = vout.includes(want);
     const sum = s.b3sum?.[WIN ? key : host];
     let hok = true;
-    if (sum && b3) hok = Bun.spawnSync([b3, "--no-names", exe], { stdout: "pipe" }).stdout.toString().trim() === sum;
-    res.push(`${vok && hok ? "ok  " : "DIFF"} lock ${name} ${want}${vok ? "" : ` (version: ${vout.split("\n")[0].trim()})`}${hok ? "" : " (b3sum diffère)"}`);
+    if (sum && b3)
+      hok =
+        Bun.spawnSync([b3, "--no-names", exe], { stdout: "pipe" })
+          .stdout.toString()
+          .trim() === sum;
+    res.push(
+      `${vok && hok ? "ok  " : "DIFF"} lock ${name} ${want}${vok ? "" : ` (version: ${vout.split("\n")[0].trim()})`}${hok ? "" : " (b3sum diffère)"}`,
+    );
   }
 }
 
-const run = (argv: string[]) => Bun.spawnSync(argv, { stdout: "pipe", stderr: "pipe" });
+const run = (argv: string[]) =>
+  Bun.spawnSync(argv, { stdout: "pipe", stderr: "pipe" });
 const winExpand = (s: string) =>
-  s.replace(/%USERPROFILE%/gi, HOME).replace(/%LOCALAPPDATA%/gi, process.env.LOCALAPPDATA ?? "");
-const pathKey = (s: string) => winExpand(s).replaceAll("/", "\\").replace(/\\+$/, "").toLowerCase();
+  s
+    .replace(/%USERPROFILE%/gi, HOME)
+    .replace(/%LOCALAPPDATA%/gi, process.env.LOCALAPPDATA ?? "");
+const pathKey = (s: string) =>
+  winExpand(s).replaceAll("/", "\\").replace(/\\+$/, "").toLowerCase();
 
 // HKCU\Environment : variables [persist.windows] (setx : écrit et diffuse WM_SETTINGCHANGE) et
 // tête du PATH utilisateur [persist_path] (reg add REG_EXPAND_SZ, reste du PATH conservé).
@@ -454,26 +587,56 @@ function persist(res: Results, check: boolean) {
     const v = expand(raw);
     const cur = have.get(k.toLowerCase());
     const ok = cur !== undefined && winExpand(cur) === v;
-    res.push(`${ok ? "ok  " : check ? "DIFF" : "set "} HKCU\\Environment ${k}=${v}${ok ? "" : ` (actuel: ${cur ?? "absent"})`}`);
+    res.push(
+      `${ok ? "ok  " : check ? "DIFF" : "set "} HKCU\\Environment ${k}=${v}${ok ? "" : ` (actuel: ${cur ?? "absent"})`}`,
+    );
     if (!ok && !check) run(["setx", k, v]);
   }
   const front = (e.persist_path?.windows ?? []).map(expand);
   if (!front.length) return;
   const cur = (have.get("path") ?? "").split(";").filter(Boolean);
   const keys = new Set(front.map(pathKey));
-  const next = [...front.filter((d) => existsSync(d)), ...cur.filter((x) => !keys.has(pathKey(x)))];
-  const ok = next.slice(0, front.length).map(pathKey).join(";") === cur.slice(0, front.length).map(pathKey).join(";");
-  res.push(`${ok ? "ok  " : check ? "DIFF" : "set "} HKCU\\Environment Path : tête = ${front.join(" ; ")}`);
-  if (!ok && !check) run(["reg", "add", "HKCU\\Environment", "/v", "Path", "/t", "REG_EXPAND_SZ", "/d", next.join(";"), "/f"]);
+  const next = [
+    ...front.filter((d) => existsSync(d)),
+    ...cur.filter((x) => !keys.has(pathKey(x))),
+  ];
+  const ok =
+    next.slice(0, front.length).map(pathKey).join(";") ===
+    cur.slice(0, front.length).map(pathKey).join(";");
+  res.push(
+    `${ok ? "ok  " : check ? "DIFF" : "set "} HKCU\\Environment Path : tête = ${front.join(" ; ")}`,
+  );
+  if (!ok && !check)
+    run([
+      "reg",
+      "add",
+      "HKCU\\Environment",
+      "/v",
+      "Path",
+      "/t",
+      "REG_EXPAND_SZ",
+      "/d",
+      next.join(";"),
+      "/f",
+    ]);
 }
 
 // Windows Terminal : [terminal] de manifest.toml comparé à settings.json (lecture seule).
 function terminal(res: Results) {
   if (!WIN) return;
   const m = Bun.TOML.parse(readFileSync(join(SH, "manifest.toml"), "utf8")) as {
-    terminal?: { default?: string; profile?: Record<string, Record<string, string | boolean>> };
+    terminal?: {
+      default?: string;
+      profile?: Record<string, Record<string, string | boolean>>;
+    };
   };
-  const f = join(process.env.LOCALAPPDATA ?? "", "Packages", "Microsoft.WindowsTerminal_8wekyb3d8bbwe", "LocalState", "settings.json");
+  const f = join(
+    process.env.LOCALAPPDATA ?? "",
+    "Packages",
+    "Microsoft.WindowsTerminal_8wekyb3d8bbwe",
+    "LocalState",
+    "settings.json",
+  );
   if (!m.terminal || !existsSync(f)) return;
   const wt = Bun.JSONC.parse(readFileSync(f, "utf8")) as {
     defaultProfile?: string;
@@ -482,23 +645,35 @@ function terminal(res: Results) {
   const list = wt.profiles?.list ?? [];
   const byName = new Map(list.map((p) => [p.name as string, p]));
   if (m.terminal.default) {
-    const ok = (byName.get(m.terminal.default)?.guid as string | undefined)?.toLowerCase() === wt.defaultProfile?.toLowerCase();
-    res.push(`${ok ? "ok  " : "DIFF"} Windows Terminal defaultProfile = ${m.terminal.default}`);
+    const ok =
+      (
+        byName.get(m.terminal.default)?.guid as string | undefined
+      )?.toLowerCase() === wt.defaultProfile?.toLowerCase();
+    res.push(
+      `${ok ? "ok  " : "DIFF"} Windows Terminal defaultProfile = ${m.terminal.default}`,
+    );
   }
   for (const [name, want] of Object.entries(m.terminal.profile ?? {})) {
     const p = byName.get(name);
     const bad = Object.entries(want).filter(([k, v]) => {
-      const have = p?.[k] ?? (k === "hidden" || k === "elevate" ? false : undefined);
-      return typeof v === "string" && k === "commandline" ? String(have ?? "").toLowerCase() !== expand(v).toLowerCase() : have !== v;
+      const have =
+        p?.[k] ?? (k === "hidden" || k === "elevate" ? false : undefined);
+      return typeof v === "string" && k === "commandline"
+        ? String(have ?? "").toLowerCase() !== expand(v).toLowerCase()
+        : have !== v;
     });
-    res.push(`${p && !bad.length ? "ok  " : "DIFF"} Windows Terminal profil ${name}${p ? bad.map(([k, v]) => ` ${k}≠${v}`).join("") : " absent"}`);
+    res.push(
+      `${p && !bad.length ? "ok  " : "DIFF"} Windows Terminal profil ${name}${p ? bad.map(([k, v]) => ` ${k}≠${v}`).join("") : " absent"}`,
+    );
   }
 }
 
 // Binaires en double ([[duplicate]] du lock) : retirés sans --check.
 function duplicates(res: Results, check: boolean) {
   if (!WIN) return;
-  const t = Bun.TOML.parse(readFileSync(join(SH, "shells.lock.toml"), "utf8")) as {
+  const t = Bun.TOML.parse(
+    readFileSync(join(SH, "shells.lock.toml"), "utf8"),
+  ) as {
     duplicate?: { path: string; why: string; run: string[] }[];
   };
   for (const d of t.duplicate ?? []) {
@@ -507,10 +682,15 @@ function duplicates(res: Results, check: boolean) {
       res.push(`ok   doublon absent : ${p}`);
       continue;
     }
-    res.push(`${check ? "DIFF" : "rm  "} doublon ${p} (${d.why}) : ${d.run.join(" ")}`);
+    res.push(
+      `${check ? "DIFF" : "rm  "} doublon ${p} (${d.why}) : ${d.run.join(" ")}`,
+    );
     if (!check) {
       const r = run(d.run);
-      if (r.exitCode !== 0) res.push(`DIFF échec ${d.run.join(" ")} : ${r.stderr.toString().trim().split("\n")[0]}`);
+      if (r.exitCode !== 0)
+        res.push(
+          `DIFF échec ${d.run.join(" ")} : ${r.stderr.toString().trim().split("\n")[0]}`,
+        );
     }
   }
 }
@@ -522,13 +702,21 @@ function pins(res: Results) {
   for (const v of vars(e, p)) {
     if (v.value.some((x) => "ref" in x)) continue;
     const s = v.value.map((x) => ("lit" in x ? x.lit : HOME)).join("");
-    if (/^(?:[A-Za-z]:\\|\/)/.test(s) && /_HOME$|_DIR$|_INSTALL$|_ROOT$/.test(v.name) && !existsSync(s))
+    if (
+      /^(?:[A-Za-z]:\\|\/)/.test(s) &&
+      /_HOME$|_DIR$|_INSTALL$|_ROOT$/.test(v.name) &&
+      !existsSync(s)
+    )
       res.push(`info ${v.name}=${s} absent`);
   }
 }
 
 // only : restreint les [[link]] déployés à ces shells (ex. ["nu", "fish", "carapace"]).
-export function shells(opts: { check: boolean; genOnly?: boolean; only?: string[] }): Results {
+export function shells(opts: {
+  check: boolean;
+  genOnly?: boolean;
+  only?: string[];
+}): Results {
   const res: Results = [];
   generate(res, opts.check);
   if (opts.genOnly) return res;

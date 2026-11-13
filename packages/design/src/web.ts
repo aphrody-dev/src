@@ -23,9 +23,13 @@ export function tokensCss(): string {
 }
 
 /** M3 type roles (display/headline/title/body/label x large/medium/small). */
-export const TYPE_ROLES = ["display", "headline", "title", "body", "label"].flatMap((r) =>
-  ["large", "medium", "small"].map((s) => `${r}-${s}`),
-);
+export const TYPE_ROLES = [
+  "display",
+  "headline",
+  "title",
+  "body",
+  "label",
+].flatMap((r) => ["large", "medium", "small"].map((s) => `${r}-${s}`));
 
 /** CSS `font` + `letter-spacing` declarations of an M3 type role, from the typescale tokens. */
 export const typescale = (role: string): string =>
@@ -90,11 +94,14 @@ export async function componentsBundle(elements: string[]): Promise<string> {
       {
         name: "aphrody-design-web",
         setup(b) {
-          b.onResolve({ filter: /^@material\/web\// }, (a) => ({ path: Bun.resolveSync(a.path, PKG) }));
+          b.onResolve({ filter: /^@material\/web\// }, (a) => ({
+            path: Bun.resolveSync(a.path, PKG),
+          }));
         },
       },
     ],
   } as Parameters<typeof Bun.build>[0]);
-  if (!r.success) throw new Error(`Material Web bundle: ${r.logs.map(String).join("\n")}`);
+  if (!r.success)
+    throw new Error(`Material Web bundle: ${r.logs.map(String).join("\n")}`);
   return r.outputs[0]!.text();
 }

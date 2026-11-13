@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In the previous module, [some theory behind the critical rendering path](https://web.dev/learn/performance/understanding-the-critical-path.md.txt) was
 explored, and how render-blocking and parser-blocking resources can delay a
 page's initial rendering. Now that you understand some of the theory behind
@@ -31,7 +32,7 @@ finished loading from the network, and the unstyled version of the page is
 immediately replaced with the styled version.
 
 Generally speaking, a FOUC is something you don't normally see, but the concept
-is important to understand so that you know *why* the browser blocks rendering
+is important to understand so that you know _why_ the browser blocks rendering
 of the page until CSS is downloaded and applied to the page. Render blocking
 isn't necessarily undesirable, but you do want to minimize how long it lasts by
 keeping your CSS optimized.
@@ -78,7 +79,7 @@ not discoverable by the preload scanner:
 
 These resource loading patterns are all late-discovered resources, and therefore
 don't benefit from the preload scanner. Avoid them whenever possible. If
-avoiding such patterns *isn't* possible, however, you may be able to use a
+avoiding such patterns _isn't_ possible, however, you may be able to use a
 `preload` hint to avoid resource discovery delays.
 
 > [!NOTE]
@@ -116,7 +117,16 @@ h2 {
 
 ```css
 /* Minified CSS: */
-h1,h2{color:#000}h1{font-size:2em}h2{font-size:1.5em}
+h1,
+h2 {
+  color: #000;
+}
+h1 {
+  font-size: 2em;
+}
+h2 {
+  font-size: 1.5em;
+}
 ```
 
 > [!NOTE]
@@ -137,7 +147,7 @@ needed to render the current page.
 
 To discover unused CSS for the current page, use the [Coverage tool](https://developer.chrome.com/docs/devtools/css/reference/#coverage) in Chrome
 DevTools.
- The coverage tool in Chrome DevTools is useful for detecting CSS (and JavaScript) unused by the current page. It can be used to split CSS files into multiple resources to be loaded by different pages, as opposed to shipping a much larger CSS bundle that can delay rendering of the page.
+The coverage tool in Chrome DevTools is useful for detecting CSS (and JavaScript) unused by the current page. It can be used to split CSS files into multiple resources to be loaded by different pages, as opposed to shipping a much larger CSS bundle that can delay rendering of the page.
 
 Removing [unused CSS](https://developer.chrome.com/en/docs/lighthouse/performance/unused-css-rules/) has a two-fold effect: in addition to reducing download
 time, you're optimizing [render tree](https://web.dev/articles/critical-rendering-path/render-tree-construction.md.txt) construction, as the browser needs to
@@ -152,7 +162,7 @@ While it may seem convenient, you should avoid `@import` declarations in CSS:
 
 ```css
 /* Don't do this: */
-@import url('style.css');
+@import url("style.css");
 ```
 
 Similarly to how the `<link>` element works in HTML, the `@import` declaration
@@ -162,21 +172,21 @@ is part of the HTML response, and therefore discovered much sooner than a CSS
 file downloaded by an `@import` declaration.
 
 The reason for this is that in order for an `@import` declaration to be
-discovered, the CSS file that contains it must *first* be downloaded. This
-results in what is known as a *request chain* which---in the case of CSS---delays
+discovered, the CSS file that contains it must _first_ be downloaded. This
+results in what is known as a _request chain_ which---in the case of CSS---delays
 how long it takes for a page to initially render. Another drawback is that
 style sheets loaded using an `@import` declaration can't be discovered by the
 preload scanner, and therefore become late-discovered render-blocking resources.
 
 ```html
 <!-- Do this instead: -->
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css" />
 ```
 
 In most cases, you can replace the `@import` by using a
 `<link rel="stylesheet">` element. `<link>` elements allow style sheets to be
-downloaded *concurrently* and reduces overall load time, as opposed to `@import`
-declarations, which downloads style sheets *consecutively*.
+downloaded _concurrently_ and reduces overall load time, as opposed to `@import`
+declarations, which downloads style sheets _consecutively_.
 
 > [!NOTE]
 > **Note:** If you need to use `@import`---such as for [cascade
@@ -197,11 +207,22 @@ user's browser cache is not primed. The remaining CSS can be loaded
 <head>
   <title>Page Title</title>
   <!-- ... -->
-  <style>h1,h2{color:#000}h1{font-size:2em}h2{font-size:1.5em}</style>
+  <style>
+    h1,
+    h2 {
+      color: #000;
+    }
+    h1 {
+      font-size: 2em;
+    }
+    h2 {
+      font-size: 1.5em;
+    }
+  </style>
 </head>
 <body>
   <!-- Other page markup... -->
-  <link rel="stylesheet" href="non-critical.css">
+  <link rel="stylesheet" href="non-critical.css" />
 </body>
 ```
 
@@ -238,7 +259,7 @@ and executed.
 parser while scripts (including inline scripts) with `type="module"` are
 deferred automatically. However, `async` and `defer` have some differences that
 are important to understand.
- Sourced from <https://html.spec.whatwg.org/multipage/scripting.html>
+Sourced from <https://html.spec.whatwg.org/multipage/scripting.html>
 
 Scripts loaded with `async` are parsed and executed immediately once downloaded,
 while scripts loaded with `defer` are executed when HTML document parsing is
@@ -279,15 +300,15 @@ process of parsing and compiling JavaScript more quickly.
 Additionally, minification of JavaScript goes one step further than minifying
 other assets, such as CSS. When JavaScript is minified, it isn't only stripped
 of things such as spaces, tabs, and comments, but symbols in the source
-JavaScript are shortened. This process is sometimes known as *uglification*. To
+JavaScript are shortened. This process is sometimes known as _uglification_. To
 see the difference, take the following JavaScript source code:
 
 ```javascript
 // Unuglified JavaScript source code:
-export function injectScript () {
-  const scriptElement = document.createElement('script');
-  scriptElement.src = '/js/scripts.js';
-  scriptElement.type = 'module';
+export function injectScript() {
+  const scriptElement = document.createElement("script");
+  scriptElement.src = "/js/scripts.js";
+  scriptElement.type = "module";
 
   document.body.appendChild(scriptElement);
 }
@@ -298,7 +319,12 @@ something like the following code snippet:
 
 ```javascript
 // Uglified JavaScript production code:
-export function injectScript(){const t=document.createElement("script");t.src="/js/scripts.js",t.type="module",document.body.appendChild(t)}
+export function injectScript() {
+  const t = document.createElement("script");
+  ((t.src = "/js/scripts.js"),
+    (t.type = "module"),
+    document.body.appendChild(t));
+}
 ```
 
 In the preceding snippet, you can see that the human readable variable

@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 A picture is worth 1000 words, and images play an integral part of every page. But they also often account for most of the downloaded bytes. With responsive web design not only can our layouts change based on device characteristics, but images as well.
 
- Pete LePage [X](https://twitter.com/petele) [GitHub](https://github.com/petele) [Mastodon](https://techhub.social/@petele) [Homepage](https://petelepage.com/)
+Pete LePage [X](https://twitter.com/petele) [GitHub](https://github.com/petele) [Mastodon](https://techhub.social/@petele) [Homepage](https://petelepage.com/)
 
 Responsive web design means that not only can our layouts change based on device
 characteristics, but content can change as well. For example, on high
@@ -70,8 +71,11 @@ Because CSS allows content to overflow its container, you may need to use max-
 width: 100% to prevent images and other content from overflowing. For example:
 
 ```css
-img, embed, object, video {
-    max-width: 100%;
+img,
+embed,
+object,
+video {
+  max-width: 100%;
 }
 ```
 
@@ -131,9 +135,11 @@ depending on media queries or image format.
 
 ```html
 <picture>
-  <source media="(min-width: 800px)" srcset="head.jpg, head-2x.jpg 2x">
-  <source media="(min-width: 450px)" srcset="head-small.jpg, head-small-2x.jpg 2x">
-  
+  <source media="(min-width: 800px)" srcset="head.jpg, head-2x.jpg 2x" />
+  <source
+    media="(min-width: 450px)"
+    srcset="head-small.jpg, head-small-2x.jpg 2x"
+  />
 </picture>
 ```
 
@@ -172,13 +178,13 @@ the browser window is. For example, the table below shows which image the
 browser would choose:
 
 | Browser width | Device pixel ratio | Image used | Effective resolution |
-|---|---|---|---|
-| 400px | 1 | `200.jpg` | 1x |
-| 400px | 2 | `400.jpg` | 2x |
-| 320px | 2 | `400.jpg` | 2.5x |
-| 600px | 2 | `800.jpg` | 2.67x |
-| 640px | 3 | `1000.jpg` | 3.125x |
-| 1100px | 1 | `800.png` | 1.45x |
+| ------------- | ------------------ | ---------- | -------------------- |
+| 400px         | 1                  | `200.jpg`  | 1x                   |
+| 400px         | 2                  | `400.jpg`  | 2x                   |
+| 320px         | 2                  | `400.jpg`  | 2.5x                 |
+| 600px         | 2                  | `800.jpg`  | 2.67x                |
+| 640px         | 3                  | `1000.jpg` | 3.125x               |
+| 1100px        | 1                  | `800.png`  | 1.45x                |
 
 #### Account for breakpoints in responsive images
 
@@ -201,7 +207,7 @@ is full width.
 
 ### Make product images expandable
 
- J. Crew's website with expandable product image.
+J. Crew's website with expandable product image.
 
 Customers want to see what they're buying. On retail sites, users expect to be
 able to view high resolution closeups of products to get a better look at
@@ -271,7 +277,6 @@ of color, so the browser has to guess how to fill in the blanks when scaling.
 Below are two versions of the same image: a PNG image on the left and an SVG on
 the right. The SVG looks great at any size, whereas the PNG next to it starts to
 look blurry at larger display sizes.
- 
 
 If you want to reduce the number of file requests your page makes, you can code
 images inline using SVG or Data URI format. If you view the source of this page,
@@ -391,10 +396,7 @@ the characteristics of the device, for example using a 2x image on a 2x display,
 or a 1x image on a 2x device when on a limited bandwidth network.
 
 ```css
-background-image: image-set(
-    url(icon1x.jpg) 1x,
-    url(icon2x.jpg) 2x
-);
+background-image: image-set(url(icon1x.jpg) 1x, url(icon2x.jpg) 2x);
 ```
 
 In addition to loading the correct image, the browser also scales it
@@ -411,14 +413,8 @@ fallback image for when `image-set()` is not supported; for example:
   width: 128px;
   height: 128px;
   background-image: url(icon1x.png);
-  background-image: -webkit-image-set(
-    url(icon1x.png) 1x,
-    url(icon2x.png) 2x
-  );
-  background-image: image-set(
-    url(icon1x.png) 1x,
-    url(icon2x.png) 2x
-  );
+  background-image: -webkit-image-set(url(icon1x.png) 1x, url(icon2x.png) 2x);
+  background-image: image-set(url(icon1x.png) 1x, url(icon2x.png) 2x);
 }
 ```
 
@@ -435,10 +431,8 @@ Media queries can create rules based on the
 making it possible to specify different images for 2x versus 1x displays.
 
 ```css
-@media (min-resolution: 2dppx),
-(-webkit-min-device-pixel-ratio: 2)
-{
-    /* High dpi styles & resources here */
+@media (min-resolution: 2dppx), (-webkit-min-device-pixel-ratio: 2) {
+  /* High dpi styles & resources here */
 }
 ```
 
@@ -456,9 +450,8 @@ doesn't support resolution-specific media queries.
   background-image: url(icon1x.png);
 }
 
-@media (min-resolution: 2dppx), /* Standard syntax */
-(-webkit-min-device-pixel-ratio: 2)  /* Safari & Android Browser */
-{
+@media (min-resolution: 2dppx),
+  /* Standard syntax */ (-webkit-min-device-pixel-ratio: 2) /* Safari & Android Browser */ {
   .sample {
     background-size: contain;
     background-image: url(icon2x.png);
@@ -475,9 +468,9 @@ downloaded and applied to the `body` if the browser width is 500px or greater:
 
 ```css
 @media (min-width: 500px) {
-    body {
+  body {
     background-image: url(bg.png);
-    }
+  }
 }
 ```
 
@@ -523,22 +516,25 @@ raster images:
 - They provide better accessibility with the appropriate attributes.
 
 ```html
-With SVG icons, you can either add icons using inline SVG, like
-this checkmark:
-  <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-       xmlns:xlink="http://www.w3.org/1999/xlink"
-       width="32" height="32" viewBox="0 0 32 32">
-    <path d="M27 4l-15 15-7-7-5 5 12 12 20-20z" fill="#000000"></path>
-  </svg>
-or by using an image tag, like this credit card icon:
-.
+With SVG icons, you can either add icons using inline SVG, like this checkmark:
+<svg
+  version="1.1"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="32"
+  height="32"
+  viewBox="0 0 32 32"
+>
+  <path d="M27 4l-15 15-7-7-5 5 12 12 20-20z" fill="#000000"></path>
+</svg>
+or by using an image tag, like this credit card icon: .
 ```
 
 [Try it](https://googlesamples.github.io/web-fundamentals/fundamentals/design-and-ux/responsive/icon-svg.html)
 
 ### Use icon fonts with caution
 
- [Example of a page that uses FontAwesome for its font icons.](https://googlesamples.github.io/web-fundamentals/fundamentals/design-and-ux/responsive/icon-font.html)
+[Example of a page that uses FontAwesome for its font icons.](https://googlesamples.github.io/web-fundamentals/fundamentals/design-and-ux/responsive/icon-font.html)
 
 Icon fonts are popular, and can be easy to use, but have some drawbacks
 compared to SVG icons:
@@ -550,10 +546,9 @@ compared to SVG icons:
 - Unless properly scoped, they can result in a large file size for only using a small subset of the icons available.
 
 ```html
-With Font Awesome, you can either add icons by using a unicode
-entity, like this HTML5 logo (<span class="awesome">&#xf13b;</span>)
-or by adding special classes to an &lt;i&gt; element like the CSS3
-logo (<i class="fa fa-css3"></i>).
+With Font Awesome, you can either add icons by using a unicode entity, like this
+HTML5 logo (<span class="awesome">&#xf13b;</span>) or by adding special classes
+to an &lt;i&gt; element like the CSS3 logo (<i class="fa fa-css3"></i>).
 ```
 
 [Try it](https://googlesamples.github.io/web-fundamentals/fundamentals/design-and-ux/responsive/icon-font.html)

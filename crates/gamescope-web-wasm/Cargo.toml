@@ -22,11 +22,11 @@ wgpu = { workspace = true, features = ["web", "webgpu"] }
 bytemuck = { workspace = true }
 wasm-bindgen-futures = { workspace = true }
 web-sys = { workspace = true, features = [
-    "Document",
-    "Element",
-    "HtmlCanvasElement",
-    "Window",
-    "console",
-    "Performance",
+  "Document",
+  "Element",
+  "HtmlCanvasElement",
+  "Window",
+  "console",
+  "Performance",
 ] }
 js-sys = { workspace = true }

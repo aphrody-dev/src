@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 HyperText Markup Language, or HTML, is the standard markup language for describing the structure of documents displayed on the web. HTML consists of a series of elements and attributes which are used to mark up all the components of a document to structure it in a meaningful way.
 
 HTML documents are basically a tree of nodes, including HTML elements and text nodes. HTML elements provide the semantics and formatting for documents, including creating paragraphs, lists and tables, and embedding images and form controls. Each element may have multiple attributes specified. Many elements can have content, including other elements and text. Other elements are empty, with the tag and attributes defining their function.
@@ -24,12 +25,14 @@ The closing tag is the same tag as the opening tag, preceded by a slash.
 Elements and tags aren't the exact same thing, though many people use the terms interchangeably. The tag name is the content in the brackets. The tag includes the brackets. In this case, `<h1>`. An "element" is the opening and closing tags, and all the content between those tags, including nested elements.
 
 ```html
-<p>This paragraph has some
+<p>
+  This paragraph has some
   <strong><em>strongly emphasized</em></strong>
-  content</p>
+  content
+</p>
 ```
 
-This paragraph element has other elements *nested* in it. When nesting elements, it's important that they are properly nested. HTML tags should be closed in the reverse order of which they were opened. In the above example, notice how the `<em>` is both opened and closed within the opening and closing `<strong>` tags, and the `<strong>` is both open and closed within the `<p>` tags.
+This paragraph element has other elements _nested_ in it. When nesting elements, it's important that they are properly nested. HTML tags should be closed in the reverse order of which they were opened. In the above example, notice how the `<em>` is both opened and closed within the opening and closing `<strong>` tags, and the `<strong>` is both open and closed within the `<p>` tags.
 
 Browsers do not display the tags. The tags are used to interpret the content of the page.
 
@@ -37,9 +40,9 @@ HTML is very, very forgiving. For example, if we omit the closing `</li>` tags, 
 
 ```html
 <ul>
-  <li>Blendan Smooth
-  <li>Hoover Sukhdeep
-  <li>Toasty McToastface
+  <li>Blendan Smooth</li>
+  <li>Hoover Sukhdeep</li>
+  <li>Toasty McToastface</li>
 </ul>
 ```
 
@@ -67,8 +70,7 @@ Replaced elements are replaced by objects, be it a graphical user interface (UI)
 In this example, the two replaced elements `` and `<input>` are replaced by non-text content: an image and a graphical user interface object, respectively.
 
 ```html
-<input type="range">
-
+<input type="range" />
 ```
 
 Output of the above HTML:
@@ -76,8 +78,7 @@ Output of the above HTML:
 Replaced elements and void elements are often confused. Void elements are all self-closing elements and are represented by one tag. This means there is no such thing as a closing tag for a void element. Optionally, you can include a slash at the end of the tag, which many people find makes markup easier to read. Continuing with this example, we self close the tag with a slash:
 
 ```html
-<input type="range"/>
-
+<input type="range" />
 ```
 
 The slash at the end is old school: it's a way of indicating that the element is self-closing and there will be no matched end or closing tag.
@@ -90,7 +91,7 @@ Most void elements are replaced; but again, not all, as we saw with `base`, `lin
 
 ## Attributes
 
-You may have noticed the `` and `<input`\> examples had more than just the element type in their opening tag. These extra bits of space-separated name/value pairs (though sometimes including a value is optional) are called *attributes*. Attributes are what make HTML so incredibly powerful. We'll be covering hundreds of attributes and attribute values in this series, but here we'll just discuss what they are in general and how to include them.
+You may have noticed the `` and `<input`\> examples had more than just the element type in their opening tag. These extra bits of space-separated name/value pairs (though sometimes including a value is optional) are called _attributes_. Attributes are what make HTML so incredibly powerful. We'll be covering hundreds of attributes and attribute values in this series, but here we'll just discuss what they are in general and how to include them.
 
 Attributes provide information about the element. The attribute, like the rest of the opening tag, won't appear in the content, but they do help define how the content will appear to both your sighted and non-sighted (assistive technologies and search engines) users.
 
@@ -123,7 +124,9 @@ The default appearance of semantic elements is set by user-agent stylesheets. Mo
 The element you choose, and therefore the tags you use, should be appropriate for the content you are displaying, as tags have semantic meaning. The [semantics](https://web.dev/learn/html/semantic-html.md.txt), or `role`, of an element is important to assistive technologies and, in some cases, search engines. HTML should be used to structure content, not to define the content's appearance. Appearance is the realm of CSS. While many elements that alter the appearance of content, such as `<h1>`, `<strong>`, and `<em>`, have a semantic meaning, the appearance can and generally will be changed with author styles.
 
 ```html
-<h1>This header has both <strong>strong</strong> and <em>emphasized</em> content</h1>
+<h1>
+  This header has both <strong>strong</strong> and <em>emphasized</em> content
+</h1>
 ```
 
 ## Element, attributes, and JavaScript

@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)  Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)  Mathias Bynens [X](https://twitter.com/mathias) [GitHub](https://github.com/mathiasbynens) [Homepage](https://mathiasbynens.be/)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+
+Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social) Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/) Mathias Bynens [X](https://twitter.com/mathias) [GitHub](https://github.com/mathiasbynens) [Homepage](https://mathiasbynens.be/) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Browser Support
 
@@ -110,10 +111,10 @@ On fast connections (4G), we reduced Chrome's distance-from-viewport thresholds 
 - The new distance-from-viewport thresholds still means images will probably have loaded by the time a user has scrolled to them.
 
 You can find a comparison between the old versus new distance-from-viewport thresholds for one of our demos on a fast connection (4G) next:
- Comparison of the older versus newer thresholds used for browser-level lazy-loading.
+Comparison of the older versus newer thresholds used for browser-level lazy-loading.
 
 and the new thresholds versus LazySizes (a popular JavaScript lazy loading library):
- Comparison of the thresholds used for lazy-loading in Chrome and LazySizes.
+Comparison of the thresholds used for lazy-loading in Chrome and LazySizes.
 
 ### Give your images dimension attributes
 
@@ -157,8 +158,7 @@ You can also lazy-load images you've defined using the `<picture>` element:
 
 ```html
 <picture>
-  <source media="(min-width: 800px)" srcset="large.jpg 1x, larger.jpg 2x">
-  
+  <source media="(min-width: 800px)" srcset="large.jpg 1x, larger.jpg 2x" />
 </picture>
 ```
 
@@ -179,7 +179,6 @@ which causes them to load more slowly.
 <!-- visible in the viewport -->
 
 <!-- offscreen images -->
-
 ```
 
 ## Graceful degradation
@@ -212,7 +211,7 @@ No, you can only use it with `` tags.
 
 ### Can `loading` work with images in the viewport that aren't immediately visible?
 
-Using `loading="lazy"` *can* prevent images being loaded when they aren't
+Using `loading="lazy"` _can_ prevent images being loaded when they aren't
 visible but are within the [calculated distance](https://web.dev/articles/browser-level-image-lazy-loading.md.txt#distance-from-viewport).
 These images might be behind a carousel or hidden by CSS for certain screen
 sizes. For example, Chrome, Safari, and Firefox don't load images using
@@ -242,7 +241,7 @@ You can use the `loading` property to detect whether a browser supports the
 feature:
 
 ```javascript
-if ('loading' in HTMLImageElement.prototype) {
+if ("loading" in HTMLImageElement.prototype) {
   // supported in browser
 } else {
   // fetch polyfill/third-party library
@@ -254,7 +253,7 @@ JavaScript lazy loading library. You can detect support for the `loading`
 attribute to load lazysizes as a fallback library only when `loading` isn't
 supported. This works as follows:
 
-- Replace `` with `` to avoid an eager load in unsupported browsers. If the `loading` attribute is supported, swap `data-src` for `src`.
+- Replace `with` to avoid an eager load in unsupported browsers. If the `loading` attribute is supported, swap `data-src` for `src`.
 - If `loading` isn't supported, load a fallback from lazysizes and initiate it, using the `lazyload` class to indicate which images to lazy-load:
 
 ```html
@@ -263,16 +262,16 @@ supported. This works as follows:
 <!-- Let's lazy-load the rest of these images -->
 
 <script>
-  if ('loading' in HTMLImageElement.prototype) {
+  if ("loading" in HTMLImageElement.prototype) {
     const images = document.querySelectorAll('img[loading="lazy"]');
-    images.forEach(img => {
+    images.forEach((img) => {
       img.src = img.dataset.src;
     });
   } else {
     // Dynamically import the LazySizes library
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.src =
-      'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js';
+      "https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js";
     document.body.appendChild(script);
   }
 </script>
@@ -318,4 +317,4 @@ letting them pass the
 Browser support for lazy loading images can make it significantly easier for you
 to improve your pages' performance.
 
-Are you noticing any unusual behavior with this feature enabled in Chrome? [File a bug](https://issues.chromium.org/issues/new?component=1456178&title=%5BLazyLoad%5D:&description=Application+Version+(from+%22Chrome+Settings+%3E+About+Chrome%22):+%0DAndroid+Build+Number+(from+%22Android+Settings+%3E+About+Phone/Tablet%22):+%0DDevice:+%0D%0DSteps+to+reproduce:+%0D%0DObserved+behavior:+%0D%0DExpected+behavior:+%0D%0DFrequency:+%0D%3Cnumber+of+times+you+were+able+to+reproduce%3E+%0D%0DAdditional+comments:+%0D&pli=1&template=0)!
+Are you noticing any unusual behavior with this feature enabled in Chrome? [File a bug](<https://issues.chromium.org/issues/new?component=1456178&title=%5BLazyLoad%5D:&description=Application+Version+(from+%22Chrome+Settings+%3E+About+Chrome%22):+%0DAndroid+Build+Number+(from+%22Android+Settings+%3E+About+Phone/Tablet%22):+%0DDevice:+%0D%0DSteps+to+reproduce:+%0D%0DObserved+behavior:+%0D%0DExpected+behavior:+%0D%0DFrequency:+%0D%3Cnumber+of+times+you+were+able+to+reproduce%3E+%0D%0DAdditional+comments:+%0D&pli=1&template=0>)!

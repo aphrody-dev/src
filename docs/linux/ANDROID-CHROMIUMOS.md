@@ -6,14 +6,14 @@ Pas de checkout complet, ni sur le PC ni sur fr1. Seuls les dépôts nécessaire
 
 Script `infra/linux/android/mirror.sh` (garde : arrêt si moins de 60 Go libres), rafraîchi chaque dimanche par `aphrody-linux-mirror.timer` (`infra/linux/systemd/fr1/`, installé par `infra/upstream/install.sh`). Avant : 96 Go libres sur `/` de fr1 (`df`, usine Chromium sur le même disque). Premier passage le 2026-11-13, `/srv/build/mirror` :
 
-| Dépôt | Branches | Taille |
-|---|---|---|
-| android/platform/manifest | main, android-latest-release | 952 Ko |
-| android/kernel/manifest | common-android-mainline, common-android17-6.18, common-android18-7.3 | 260 Ko |
-| android/kernel/build (kleaf) | main-kernel | 5,7 Mo |
-| android/kernel/common | android-mainline, android17-6.18, android18-7.3 | 1,7 Go |
-| chromiumos/manifest | main, stable | 38 Mo |
-| chromiumos/third_party/kernel | chromeos-6.12 | 1,5 Go |
+| Dépôt                         | Branches                                                             | Taille |
+| ----------------------------- | -------------------------------------------------------------------- | ------ |
+| android/platform/manifest     | main, android-latest-release                                         | 952 Ko |
+| android/kernel/manifest       | common-android-mainline, common-android17-6.18, common-android18-7.3 | 260 Ko |
+| android/kernel/build (kleaf)  | main-kernel                                                          | 5,7 Mo |
+| android/kernel/common         | android-mainline, android17-6.18, android18-7.3                      | 1,7 Go |
+| chromiumos/manifest           | main, stable                                                         | 38 Mo  |
+| chromiumos/third_party/kernel | chromeos-6.12                                                        | 1,5 Go |
 
 Après : 92 Go libres. Les versions suivies (branches GKI et ChromeOS les plus récentes, release R) sont dans `infra/linux/patchsets.toml` ; un saut de branche (android19, chromeos-6.18) apparaît dans `ay linux status` et s'ajoute au script.
 

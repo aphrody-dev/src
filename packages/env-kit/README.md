@@ -31,11 +31,11 @@ env-kit exec -- <command> [args...]  # Run any binary with C:\src\.env injected
 
 Encrypted by the OS, one file per secret named after its environment variable (`src/secret-store.ts`):
 
-| Host | Backend | Directory |
-| :--- | :------ | :-------- |
-| Windows | DPAPI current user (`CryptProtectData` via bun:ffi, application entropy) | `%LOCALAPPDATA%\aphrody\secrets\<NAME>.dpapi` |
-| Linux root | `systemd-creds` (host key, TPM2 when present) | `/etc/credstore.encrypted/<NAME>` (read by `LoadCredentialEncrypted=<NAME>`) |
-| Linux user | `systemd-creds --user` (systemd >= 256) | `~/.config/credstore.encrypted/<NAME>` |
+| Host       | Backend                                                                  | Directory                                                                    |
+| :--------- | :----------------------------------------------------------------------- | :--------------------------------------------------------------------------- |
+| Windows    | DPAPI current user (`CryptProtectData` via bun:ffi, application entropy) | `%LOCALAPPDATA%\aphrody\secrets\<NAME>.dpapi`                                |
+| Linux root | `systemd-creds` (host key, TPM2 when present)                            | `/etc/credstore.encrypted/<NAME>` (read by `LoadCredentialEncrypted=<NAME>`) |
+| Linux user | `systemd-creds --user` (systemd >= 256)                                  | `~/.config/credstore.encrypted/<NAME>`                                       |
 
 ```sh
 <provider cli> | ay secret set NAME      # value on stdin only (refused from a terminal)

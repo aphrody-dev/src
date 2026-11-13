@@ -1,1430 +1,1430 @@
 {
- "source": "https://bun.com/llms-full.txt",
- "sha256": "9d0810446ac194bc82f86dc021cd0c433582c1605928d3f5273db31f64481059",
- "fetched": "2026-11-13T02:16:51.452Z",
- "cases": [
-  {
-   "id": "/docs/guides/binary/arraybuffer-to-blob#1",
-   "page": "Convert an ArrayBuffer to a Blob",
-   "url": "https://bun.com/docs/guides/binary/arraybuffer-to-blob",
-   "lang": "ts",
-   "code": "const buf = new ArrayBuffer(64);\nconst blob = new Blob([buf], { type: \"application/octet-stream\" });\n__expect(0, () => (blob.type));\n",
-   "expectations": [
+  "source": "https://bun.com/llms-full.txt",
+  "sha256": "9d0810446ac194bc82f86dc021cd0c433582c1605928d3f5273db31f64481059",
+  "fetched": "2026-11-13T02:16:51.452Z",
+  "cases": [
     {
-     "line": 3,
-     "source": "blob.type; // => \"application/octet-stream\"",
-     "expected": "\"application/octet-stream\"",
-     "mode": "literal"
+      "id": "/docs/guides/binary/arraybuffer-to-blob#1",
+      "page": "Convert an ArrayBuffer to a Blob",
+      "url": "https://bun.com/docs/guides/binary/arraybuffer-to-blob",
+      "lang": "ts",
+      "code": "const buf = new ArrayBuffer(64);\nconst blob = new Blob([buf], { type: \"application/octet-stream\" });\n__expect(0, () => (blob.type));\n",
+      "expectations": [
+        {
+          "line": 3,
+          "source": "blob.type; // => \"application/octet-stream\"",
+          "expected": "\"application/octet-stream\"",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/binary/buffer-to-typedarray#1",
+      "page": "Convert a Buffer to a Uint8Array",
+      "url": "https://bun.com/docs/guides/binary/buffer-to-typedarray",
+      "lang": "ts",
+      "code": "const buf = Buffer.alloc(64);\n__expect(0, () => (buf instanceof Uint8Array));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "buf instanceof Uint8Array; // => true",
+          "expected": "true",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/binary/typedarray-to-arraybuffer#1",
+      "page": "Convert a Uint8Array to an ArrayBuffer",
+      "url": "https://bun.com/docs/guides/binary/typedarray-to-arraybuffer",
+      "lang": "ts",
+      "code": "const arr = new Uint8Array(64);\n__expect(0, () => (arr.buffer));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "arr.buffer; // => ArrayBuffer(64)",
+          "expected": "ArrayBuffer(64)",
+          "mode": "type"
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/binary/typedarray-to-arraybuffer#2",
+      "page": "Convert a Uint8Array to an ArrayBuffer",
+      "url": "https://bun.com/docs/guides/binary/typedarray-to-arraybuffer",
+      "lang": "ts",
+      "code": "const arr = new Uint8Array(new ArrayBuffer(64), 16, 32);\n__expect(0, () => (arr.buffer));\n__expect(1, () => (arr.byteOffset));\n__expect(2, () => (arr.byteLength));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "arr.buffer; // => ArrayBuffer(64)",
+          "expected": "ArrayBuffer(64)",
+          "mode": "type"
+        },
+        {
+          "line": 3,
+          "source": "arr.byteOffset; // => 16",
+          "expected": "16",
+          "mode": "literal"
+        },
+        {
+          "line": 4,
+          "source": "arr.byteLength; // => 32",
+          "expected": "32",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/binary/typedarray-to-blob#1",
+      "page": "Convert a Uint8Array to a Blob",
+      "url": "https://bun.com/docs/guides/binary/typedarray-to-blob",
+      "lang": "ts",
+      "code": "const arr = new Uint8Array([0x68, 0x65, 0x6c, 0x6c, 0x6f]);\nconst blob = new Blob([arr]);\nawait __expect(0, async () => (await blob.text()));\n\n",
+      "expectations": [
+        {
+          "line": 4,
+          "source": "// => \"hello\"",
+          "expected": "\"hello\"",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/runtime/define-constant#1",
+      "page": "Define and replace static globals & constants",
+      "url": "https://bun.com/docs/guides/runtime/define-constant",
+      "lang": "ts",
+      "code": "__expect(0, () => (AWS.ACCESS_KEY));\n",
+      "expectations": [
+        {
+          "line": 1,
+          "source": "console.log(AWS.ACCESS_KEY); // => \"abc\"",
+          "expected": "\"abc\"",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/runtime/import-json5#3",
+      "page": "Import a JSON5 file",
+      "url": "https://bun.com/docs/guides/runtime/import-json5",
+      "lang": "ts",
+      "code": "const data = Bun.JSON5.parse(`{\n  name: 'John Doe',\n  age: 30,\n  hobbies: [\n    'reading',\n    'coding',\n  ],\n}`);\n\n__expect(0, () => (data.name));\n__expect(1, () => (data.hobbies));\n",
+      "expectations": [
+        {
+          "line": 10,
+          "source": "console.log(data.name); // => \"John Doe\"",
+          "expected": "\"John Doe\"",
+          "mode": "literal",
+          "printed": true
+        },
+        {
+          "line": 11,
+          "source": "console.log(data.hobbies); // => [\"reading\", \"coding\"]",
+          "expected": "[\"reading\", \"coding\"]",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/runtime/import-xml#3",
+      "page": "Import an XML file",
+      "url": "https://bun.com/docs/guides/runtime/import-xml",
+      "lang": "ts",
+      "code": "const data = Bun.XML.parse(`\n  <user id=\"7\">\n    <name>John Doe</name>\n    <hobby>reading</hobby>\n    <hobby>coding</hobby>\n  </user>\n`);\n\n__expect(0, () => (data.user.name));\n__expect(1, () => (data.user.hobby));\n__expect(2, () => (data.user[\"@id\"]));\n",
+      "expectations": [
+        {
+          "line": 9,
+          "source": "console.log(data.user.name); // => \"John Doe\"",
+          "expected": "\"John Doe\"",
+          "mode": "literal",
+          "printed": true
+        },
+        {
+          "line": 10,
+          "source": "console.log(data.user.hobby); // => [\"reading\", \"coding\"]",
+          "expected": "[\"reading\", \"coding\"]",
+          "mode": "literal",
+          "printed": true
+        },
+        {
+          "line": 11,
+          "source": "console.log(data.user[\"@id\"]); // => \"7\"",
+          "expected": "\"7\"",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/runtime/import-yaml#4",
+      "page": "Import a YAML file",
+      "url": "https://bun.com/docs/guides/runtime/import-yaml",
+      "lang": "ts",
+      "code": "const yamlString = `\nname: John Doe\nage: 30\nhobbies:\n  - reading\n  - coding\n`;\n\nconst data = Bun.YAML.parse(yamlString);\n__expect(0, () => (data.name));\n__expect(1, () => (data.hobbies));\n",
+      "expectations": [
+        {
+          "line": 10,
+          "source": "console.log(data.name); // => \"John Doe\"",
+          "expected": "\"John Doe\"",
+          "mode": "literal",
+          "printed": true
+        },
+        {
+          "line": 11,
+          "source": "console.log(data.hobbies); // => [\"reading\", \"coding\"]",
+          "expected": "[\"reading\", \"coding\"]",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/util/base64#1",
+      "page": "Encode and decode base64 data",
+      "url": "https://bun.com/docs/guides/util/base64",
+      "lang": "ts",
+      "code": "const bytes = new Uint8Array([98, 117, 110]);\nconst encoded = bytes.toBase64(); __expect(0, () => (encoded));\n\nconst decoded = Uint8Array.fromBase64(encoded);\n\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "const encoded = bytes.toBase64(); // => \"YnVu\"",
+          "expected": "\"YnVu\"",
+          "mode": "literal"
+        },
+        {
+          "line": 5,
+          "source": "// => Uint8Array(3) [ 98, 117, 110 ]",
+          "expected": "Uint8Array(3) [ 98, 117, 110 ]",
+          "mode": "unverifiable"
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/util/base64#2",
+      "page": "Encode and decode base64 data",
+      "url": "https://bun.com/docs/guides/util/base64",
+      "lang": "ts",
+      "code": "const bytes = new TextEncoder().encode(\"hello world\");\nconst encoded = bytes.toBase64(); __expect(0, () => (encoded));\n\nconst decoded = Uint8Array.fromBase64(encoded);\nconst text = new TextDecoder().decode(decoded); __expect(1, () => (text));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "const encoded = bytes.toBase64(); // => \"aGVsbG8gd29ybGQ=\"",
+          "expected": "\"aGVsbG8gd29ybGQ=\"",
+          "mode": "literal"
+        },
+        {
+          "line": 5,
+          "source": "const text = new TextDecoder().decode(decoded); // => \"hello world\"",
+          "expected": "\"hello world\"",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/guides/util/base64#3",
+      "page": "Encode and decode base64 data",
+      "url": "https://bun.com/docs/guides/util/base64",
+      "lang": "ts",
+      "code": "const encoded = Buffer.from(\"hello world\").toBase64();\n\n\nconst bytes = Buffer.from(encoded, \"base64\");\n__expect(1, () => (bytes instanceof Uint8Array));\n\nconst text = bytes.toString(\"utf8\");\n\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "// => \"aGVsbG8gd29ybGQ=\"",
+          "expected": "\"aGVsbG8gd29ybGQ=\"",
+          "mode": "unverifiable"
+        },
+        {
+          "line": 5,
+          "source": "bytes instanceof Uint8Array; // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 8,
+          "source": "// => \"hello world\"",
+          "expected": "\"hello world\"",
+          "mode": "unverifiable"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/binary-data#1",
+      "page": "Binary Data",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "lang": "ts",
+      "code": "const buf = new ArrayBuffer(8);\n__expect(0, () => (buf.byteLength));\n\nconst slice = buf.slice(0, 4); // returns new ArrayBuffer\n__expect(1, () => (slice.byteLength));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "buf.byteLength; // => 8",
+          "expected": "8",
+          "mode": "literal"
+        },
+        {
+          "line": 5,
+          "source": "slice.byteLength; // => 4",
+          "expected": "4",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/binary-data#2",
+      "page": "Binary Data",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "lang": "ts",
+      "code": "const buf = new ArrayBuffer(4);\n// [0b00000000, 0b00000000, 0b00000000, 0b00000000]\n\nconst dv = new DataView(buf);\ndv.setUint8(0, 3); // write value 3 at byte offset 0\n__expect(0, () => (dv.getUint8(0)));\n// [0b00000011, 0b00000000, 0b00000000, 0b00000000]\n",
+      "expectations": [
+        {
+          "line": 6,
+          "source": "dv.getUint8(0); // => 3",
+          "expected": "3",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/binary-data#3",
+      "page": "Binary Data",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "lang": "ts",
+      "code": "const buf = new ArrayBuffer(4);\n// [0b00000000, 0b00000000, 0b00000000, 0b00000000]\n\nconst dv = new DataView(buf);\ndv.setUint8(0, 3); // write value 3 at byte offset 0\ndv.getUint8(0);\n// [0b00000011, 0b00000000, 0b00000000, 0b00000000]\n\ndv.setUint16(1, 513);\n// [0b00000011, 0b00000010, 0b00000001, 0b00000000]\n\n__expect(0, () => (dv.getUint16(1)));\n",
+      "expectations": [
+        {
+          "line": 4,
+          "source": "console.log(dv.getUint16(1)); // => 513",
+          "expected": "513",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/binary-data#4",
+      "page": "Binary Data",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "lang": "ts",
+      "code": "const buf = new ArrayBuffer(4);\n// [0b00000000, 0b00000000, 0b00000000, 0b00000000]\n\nconst dv = new DataView(buf);\ndv.setUint8(0, 3); // write value 3 at byte offset 0\ndv.getUint8(0);\n// [0b00000011, 0b00000000, 0b00000000, 0b00000000]\n\ndv.setUint16(1, 513);\n// [0b00000011, 0b00000010, 0b00000001, 0b00000000]\n\nconsole.log(dv.getUint16(1));\n\n__expect(0, () => (dv.getUint8(1)));\n__expect(1, () => (dv.getUint8(2)));\n",
+      "expectations": [
+        {
+          "line": 1,
+          "source": "console.log(dv.getUint8(1)); // => 2",
+          "expected": "2",
+          "mode": "literal",
+          "printed": true
+        },
+        {
+          "line": 2,
+          "source": "console.log(dv.getUint8(2)); // => 1",
+          "expected": "1",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/binary-data#5",
+      "page": "Binary Data",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "lang": "ts",
+      "code": "// create typed array from ArrayBuffer\nconst buf = new ArrayBuffer(10);\nconst arr = new Uint8Array(buf);\n\narr[0] = 30;\narr[1] = 60;\n\n// all elements are initialized to zero\n__expect(0, () => (arr));\n",
+      "expectations": [
+        {
+          "line": 9,
+          "source": "console.log(arr); // => Uint8Array(10) [ 30, 60, 0, 0, 0, 0, 0, 0, 0, 0 ];",
+          "expected": "Uint8Array(10) [ 30, 60, 0, 0, 0, 0, 0, 0, 0, 0 ];",
+          "mode": "text",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/binary-data#7",
+      "page": "Binary Data",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "lang": "ts",
+      "code": "// from an array of numbers\nconst arr1 = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7]);\n__expect(0, () => (arr1[0]));\n__expect(1, () => (arr1[7]));\n\n// from another typed array\nconst arr2 = new Uint8Array(arr1);\n",
+      "expectations": [
+        {
+          "line": 3,
+          "source": "arr1[0]; // => 0;",
+          "expected": "0;",
+          "mode": "literal"
+        },
+        {
+          "line": 4,
+          "source": "arr1[7]; // => 7;",
+          "expected": "7;",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/binary-data#9",
+      "page": "Binary Data",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "lang": "ts",
+      "code": "const buf = Buffer.from(\"hello world\");\n\n\n__expect(1, () => (buf.length));\nbuf[0];\nbuf.writeUInt8(72, 0);\n\n__expect(4, () => (buf.toString()));\n\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "// => Buffer(11) [ 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100 ]",
+          "expected": "Buffer(11) [ 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100 ]",
+          "mode": "unverifiable"
+        },
+        {
+          "line": 4,
+          "source": "buf.length; // => 11",
+          "expected": "11",
+          "mode": "literal"
+        },
+        {
+          "line": 5,
+          "source": "buf[0]; // => 104, ascii for 'h'",
+          "expected": "104, ascii for 'h'",
+          "mode": "unverifiable"
+        },
+        {
+          "line": 6,
+          "source": "buf.writeUInt8(72, 0); // => ascii for 'H'",
+          "expected": "ascii for 'H'",
+          "mode": "unverifiable"
+        },
+        {
+          "line": 9,
+          "source": "// => Hello world",
+          "expected": "Hello world",
+          "mode": "text",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/binary-data#10",
+      "page": "Binary Data",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "lang": "ts",
+      "code": "const encoder = new TextEncoder();\nconst bytes = encoder.encode(\"hello world\");\n\nconst decoder = new TextDecoder();\nconst text = decoder.decode(bytes);\n\nconst buf = Buffer.from(\"hello world\");\n\nbuf.length;\nbuf[0];\nbuf.writeUInt8(72, 0);\n\nconsole.log(buf.toString());\n\nconst blob = new Blob([\"<html>Hello</html>\"], {\n  type: \"text/html\",\n});\n\n__expect(0, () => (blob.type));\n__expect(1, () => (blob.size));\n",
+      "expectations": [
+        {
+          "line": 5,
+          "source": "blob.type; // => text/html",
+          "expected": "text/html",
+          "mode": "text"
+        },
+        {
+          "line": 6,
+          "source": "blob.size; // => 18",
+          "expected": "18",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/binary-data#11",
+      "page": "Binary Data",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "lang": "ts",
+      "code": "const blob = new Blob([\n  \"<html>\",\n  new Blob([\"<body>\"]),\n  new Uint8Array([104, 101, 108, 108, 111]), // \"hello\" in binary\n  \"</body></html>\",\n]);\n\nawait blob.text();\nawait blob.bytes();\nawait blob.arrayBuffer();\n__expect(3, () => (blob.stream()));\n",
+      "expectations": [
+        {
+          "line": 1,
+          "source": "await blob.text(); // => <html><body>hello</body></html>",
+          "expected": "<html><body>hello</body></html>",
+          "mode": "unverifiable"
+        },
+        {
+          "line": 2,
+          "source": "await blob.bytes(); // => Uint8Array (copies contents)",
+          "expected": "Uint8Array (copies contents)",
+          "mode": "unverifiable"
+        },
+        {
+          "line": 3,
+          "source": "await blob.arrayBuffer(); // => ArrayBuffer (copies contents)",
+          "expected": "ArrayBuffer (copies contents)",
+          "mode": "unverifiable"
+        },
+        {
+          "line": 4,
+          "source": "blob.stream(); // => ReadableStream",
+          "expected": "ReadableStream",
+          "mode": "type"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/cron#3",
+      "page": "Cron",
+      "url": "https://bun.com/docs/runtime/cron",
+      "lang": "ts",
+      "code": "using job = Bun.cron(\"0 * * * *\", () => {});\n\n__expect(0, () => (job.cron));\njob.stop(); // cancel — the handler will not fire again\njob.unref(); // allow the process to exit even while scheduled\njob.ref(); // keep the process alive (default)\n",
+      "expectations": [
+        {
+          "line": 3,
+          "source": "job.cron; // => \"0 * * * *\"",
+          "expected": "\"0 * * * *\"",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/glob#2",
+      "page": "Glob",
+      "url": "https://bun.com/docs/runtime/glob",
+      "lang": "ts",
+      "code": "import { Glob } from \"bun\";\n\nconst glob = new Glob(\"*.ts\");\n\n__expect(0, () => (glob.match(\"index.ts\")));\n__expect(1, () => (glob.match(\"index.js\")));\n",
+      "expectations": [
+        {
+          "line": 5,
+          "source": "glob.match(\"index.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 6,
+          "source": "glob.match(\"index.js\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/glob#3",
+      "page": "Glob",
+      "url": "https://bun.com/docs/runtime/glob",
+      "lang": "ts",
+      "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"???.ts\");\n__expect(0, () => (glob.match(\"foo.ts\")));\n__expect(1, () => (glob.match(\"foobar.ts\")));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "glob.match(\"foo.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 3,
+          "source": "glob.match(\"foobar.ts\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/glob#4",
+      "page": "Glob",
+      "url": "https://bun.com/docs/runtime/glob",
+      "lang": "ts",
+      "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"*.ts\");\n__expect(0, () => (glob.match(\"index.ts\")));\n__expect(1, () => (glob.match(\"src/index.ts\")));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "glob.match(\"index.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 3,
+          "source": "glob.match(\"src/index.ts\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/glob#5",
+      "page": "Glob",
+      "url": "https://bun.com/docs/runtime/glob",
+      "lang": "ts",
+      "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"**/*.ts\");\n__expect(0, () => (glob.match(\"index.ts\")));\n__expect(1, () => (glob.match(\"src/index.ts\")));\n__expect(2, () => (glob.match(\"src/index.js\")));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "glob.match(\"index.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 3,
+          "source": "glob.match(\"src/index.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 4,
+          "source": "glob.match(\"src/index.js\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/glob#6",
+      "page": "Glob",
+      "url": "https://bun.com/docs/runtime/glob",
+      "lang": "ts",
+      "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"ba[rz].ts\");\n__expect(0, () => (glob.match(\"bar.ts\")));\n__expect(1, () => (glob.match(\"baz.ts\")));\n__expect(2, () => (glob.match(\"bat.ts\")));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "glob.match(\"bar.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 3,
+          "source": "glob.match(\"baz.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 4,
+          "source": "glob.match(\"bat.ts\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/glob#7",
+      "page": "Glob",
+      "url": "https://bun.com/docs/runtime/glob",
+      "lang": "ts",
+      "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"ba[a-z][0-9][^4-9].ts\");\n__expect(0, () => (glob.match(\"bar01.ts\")));\n__expect(1, () => (glob.match(\"baz83.ts\")));\n__expect(2, () => (glob.match(\"bat22.ts\")));\n__expect(3, () => (glob.match(\"bat24.ts\")));\n__expect(4, () => (glob.match(\"ba0a8.ts\")));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "glob.match(\"bar01.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 3,
+          "source": "glob.match(\"baz83.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 4,
+          "source": "glob.match(\"bat22.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 5,
+          "source": "glob.match(\"bat24.ts\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        },
+        {
+          "line": 6,
+          "source": "glob.match(\"ba0a8.ts\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/glob#8",
+      "page": "Glob",
+      "url": "https://bun.com/docs/runtime/glob",
+      "lang": "ts",
+      "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"{a,b,c}.ts\");\n__expect(0, () => (glob.match(\"a.ts\")));\n__expect(1, () => (glob.match(\"b.ts\")));\n__expect(2, () => (glob.match(\"c.ts\")));\n__expect(3, () => (glob.match(\"d.ts\")));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "glob.match(\"a.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 3,
+          "source": "glob.match(\"b.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 4,
+          "source": "glob.match(\"c.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 5,
+          "source": "glob.match(\"d.ts\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/glob#9",
+      "page": "Glob",
+      "url": "https://bun.com/docs/runtime/glob",
+      "lang": "ts",
+      "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"!index.ts\");\n__expect(0, () => (glob.match(\"index.ts\")));\n__expect(1, () => (glob.match(\"foo.ts\")));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "glob.match(\"index.ts\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        },
+        {
+          "line": 3,
+          "source": "glob.match(\"foo.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/glob#10",
+      "page": "Glob",
+      "url": "https://bun.com/docs/runtime/glob",
+      "lang": "ts",
+      "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"\\\\!index.ts\");\n__expect(0, () => (glob.match(\"!index.ts\")));\n__expect(1, () => (glob.match(\"index.ts\")));\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "glob.match(\"!index.ts\"); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 3,
+          "source": "glob.match(\"index.ts\"); // => false",
+          "expected": "false",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/hashing#7",
+      "page": "Hashing",
+      "url": "https://bun.com/docs/runtime/hashing",
+      "lang": "ts",
+      "code": "const hasher = new Bun.CryptoHasher(\"sha256\", \"secret-key\");\nhasher.update(\"hello world\");\n__expect(0, () => (hasher.digest(\"hex\")));\n\n",
+      "expectations": [
+        {
+          "line": 4,
+          "source": "// => \"095d5a21fe6d0646db223fdf3de6436bb8dfb2fab0b51677ecf6441fcf5f2a67\"",
+          "expected": "\"095d5a21fe6d0646db223fdf3de6436bb8dfb2fab0b51677ecf6441fcf5f2a67\"",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/hashing#8",
+      "page": "Hashing",
+      "url": "https://bun.com/docs/runtime/hashing",
+      "lang": "ts",
+      "code": "const hasher = new Bun.CryptoHasher(\"sha256\", \"secret-key\");\nhasher.update(\"hello world\");\n\nconst copy = hasher.copy();\ncopy.update(\"!\");\n__expect(0, () => (copy.digest(\"hex\")));\n\n\n__expect(1, () => (hasher.digest(\"hex\")));\n\n",
+      "expectations": [
+        {
+          "line": 7,
+          "source": "// => \"3840176c3d8923f59ac402b7550404b28ab11cb0ef1fa199130a5c37864b5497\"",
+          "expected": "\"3840176c3d8923f59ac402b7550404b28ab11cb0ef1fa199130a5c37864b5497\"",
+          "mode": "literal",
+          "printed": true
+        },
+        {
+          "line": 10,
+          "source": "// => \"095d5a21fe6d0646db223fdf3de6436bb8dfb2fab0b51677ecf6441fcf5f2a67\"",
+          "expected": "\"095d5a21fe6d0646db223fdf3de6436bb8dfb2fab0b51677ecf6441fcf5f2a67\"",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/networking/dns#2",
+      "page": "DNS",
+      "url": "https://bun.com/docs/runtime/networking/dns",
+      "lang": "ts",
+      "code": "import { dns } from \"bun\";\n\nconst stats = dns.getCacheStats();\n__expect(0, () => (stats));\n\n",
+      "expectations": [
+        {
+          "line": 5,
+          "source": "// => { cacheHitsCompleted: 0, cacheHitsInflight: 0, cacheMisses: 0, size: 0, errors: 0, totalCount: 0 }",
+          "expected": "{ cacheHitsCompleted: 0, cacheHitsInflight: 0, cacheMisses: 0, size: 0, errors: 0, totalCount: 0 }",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/shell#2",
+      "page": "Shell",
+      "url": "https://bun.com/docs/runtime/shell",
+      "lang": "js",
+      "code": "import { $ } from \"bun\";\n\n__expect(0, () => ($.escape('$(foo) `bar` \"baz\"')));\n\n",
+      "expectations": [
+        {
+          "line": 4,
+          "source": "// => \"\\$(foo) \\`bar\\` \\\"baz\\\"\"",
+          "expected": "\"\\$(foo) \\`bar\\` \\\"baz\\\"\"",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/sqlite#1",
+      "page": "SQLite",
+      "url": "https://bun.com/docs/runtime/sqlite",
+      "lang": "ts",
+      "code": "import { Database } from \"bun:sqlite\";\n\n\n{\n  using db = new Database(\"mydb.sqlite\");\n  using query = db.query(\"select 'Hello world' as message;\");\n  console.log(query.get());\n}\n\nconst olddb = new Database(\"mydb.sqlite\");\nconst contents = olddb.serialize(); __expect(0, () => (contents));\nconst newdb = Database.deserialize(contents);\n",
+      "expectations": [
+        {
+          "line": 2,
+          "source": "const contents = olddb.serialize(); // => Uint8Array",
+          "expected": "Uint8Array",
+          "mode": "type"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/sqlite#2",
+      "page": "SQLite",
+      "url": "https://bun.com/docs/runtime/sqlite",
+      "lang": "ts",
+      "code": "import { Database } from \"bun:sqlite\";\n\n// setup\nconst query = db.query(\"SELECT $param;\");\n\n__expect(0, () => (query.toString()));\n\nquery.run(42);\n__expect(1, () => (query.toString()));\n\nquery.run(365);\n__expect(2, () => (query.toString()));\n",
+      "expectations": [
+        {
+          "line": 6,
+          "source": "console.log(query.toString()); // => \"SELECT NULL\"",
+          "expected": "\"SELECT NULL\"",
+          "mode": "literal",
+          "printed": true
+        },
+        {
+          "line": 9,
+          "source": "console.log(query.toString()); // => \"SELECT 42\"",
+          "expected": "\"SELECT 42\"",
+          "mode": "literal",
+          "printed": true
+        },
+        {
+          "line": 12,
+          "source": "console.log(query.toString()); // => \"SELECT 365\"",
+          "expected": "\"SELECT 365\"",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/utils#4",
+      "page": "Utils",
+      "url": "https://bun.com/docs/runtime/utils",
+      "lang": "ts",
+      "code": "const a = { entries: [1, 2] };\nconst b = { entries: [1, 2], extra: undefined };\n\n__expect(0, () => (Bun.deepEquals(a, b)));\n__expect(1, () => (Bun.deepEquals(a, b, true)));\n",
+      "expectations": [
+        {
+          "line": 4,
+          "source": "Bun.deepEquals(a, b); // => true",
+          "expected": "true",
+          "mode": "literal"
+        },
+        {
+          "line": 5,
+          "source": "Bun.deepEquals(a, b, true); // => false",
+          "expected": "false",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/utils#5",
+      "page": "Utils",
+      "url": "https://bun.com/docs/runtime/utils",
+      "lang": "ts",
+      "code": "__expect(0, () => (Bun.stringWidth(\"hello\")));\n__expect(1, () => (Bun.stringWidth(\"\\u001b[31mhello\\u001b[0m\")));\n__expect(2, () => (Bun.stringWidth(\"\\u001b[31mhello\\u001b[0m\", { countAnsiEscapeCodes: true })));\n",
+      "expectations": [
+        {
+          "line": 1,
+          "source": "Bun.stringWidth(\"hello\"); // => 5",
+          "expected": "5",
+          "mode": "literal"
+        },
+        {
+          "line": 2,
+          "source": "Bun.stringWidth(\"\\u001b[31mhello\\u001b[0m\"); // => 5",
+          "expected": "5",
+          "mode": "literal"
+        },
+        {
+          "line": 3,
+          "source": "Bun.stringWidth(\"\\u001b[31mhello\\u001b[0m\", { countAnsiEscapeCodes: true }); // => 12",
+          "expected": "12",
+          "mode": "literal"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/utils#6",
+      "page": "Utils",
+      "url": "https://bun.com/docs/runtime/utils",
+      "lang": "ts",
+      "code": "const buf = Buffer.from(\"hello\".repeat(100)); // Buffer extends Uint8Array\nconst compressed = Bun.gzipSync(buf);\n\n__expect(0, () => (buf));\n__expect(1, () => (compressed));\n",
+      "expectations": [
+        {
+          "line": 4,
+          "source": "buf; // => Uint8Array(500)",
+          "expected": "Uint8Array(500)",
+          "mode": "type"
+        },
+        {
+          "line": 5,
+          "source": "compressed; // => Uint8Array(30)",
+          "expected": "Uint8Array(30)",
+          "mode": "type"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/utils#8",
+      "page": "Utils",
+      "url": "https://bun.com/docs/runtime/utils",
+      "lang": "ts",
+      "code": "const buf = Buffer.from(\"hello\".repeat(100));\nconst compressed = Bun.deflateSync(buf);\n\n__expect(0, () => (buf));\n__expect(1, () => (compressed));\n",
+      "expectations": [
+        {
+          "line": 4,
+          "source": "buf; // => Buffer(500)",
+          "expected": "Buffer(500)",
+          "mode": "type"
+        },
+        {
+          "line": 5,
+          "source": "compressed; // => Uint8Array(12)",
+          "expected": "Uint8Array(12)",
+          "mode": "type"
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/utils#12",
+      "page": "Utils",
+      "url": "https://bun.com/docs/runtime/utils",
+      "lang": "ts",
+      "code": "class Foo {\n  [Bun.inspect.custom]() {\n    return \"foo\";\n  }\n}\n\nconst foo = new Foo();\n__expect(0, () => (foo));\n",
+      "expectations": [
+        {
+          "line": 8,
+          "source": "console.log(foo); // => \"foo\"",
+          "expected": "\"foo\"",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
+    },
+    {
+      "id": "/docs/runtime/utils#16",
+      "page": "Utils",
+      "url": "https://bun.com/docs/runtime/utils",
+      "lang": "ts",
+      "code": "const coloredText = \"\\u001b[31mHello\\u001b[0m \\u001b[32mWorld\\u001b[0m\";\nconst plainText = Bun.stripANSI(coloredText);\n__expect(0, () => (plainText));\n\n// Works with various ANSI codes\nconst formatted = \"\\u001b[1m\\u001b[4mBold and underlined\\u001b[0m\";\n__expect(1, () => (Bun.stripANSI(formatted)));\n",
+      "expectations": [
+        {
+          "line": 3,
+          "source": "console.log(plainText); // => \"Hello World\"",
+          "expected": "\"Hello World\"",
+          "mode": "literal",
+          "printed": true
+        },
+        {
+          "line": 7,
+          "source": "console.log(Bun.stripANSI(formatted)); // => \"Bold and underlined\"",
+          "expected": "\"Bold and underlined\"",
+          "mode": "literal",
+          "printed": true
+        }
+      ]
     }
-   ]
-  },
-  {
-   "id": "/docs/guides/binary/buffer-to-typedarray#1",
-   "page": "Convert a Buffer to a Uint8Array",
-   "url": "https://bun.com/docs/guides/binary/buffer-to-typedarray",
-   "lang": "ts",
-   "code": "const buf = Buffer.alloc(64);\n__expect(0, () => (buf instanceof Uint8Array));\n",
-   "expectations": [
+  ],
+  "skipped": [
     {
-     "line": 2,
-     "source": "buf instanceof Uint8Array; // => true",
-     "expected": "true",
-     "mode": "literal"
+      "id": "/docs/bundler/index#1",
+      "url": "https://bun.com/docs/bundler/index",
+      "reason": "bundler on files"
+    },
+    {
+      "id": "/docs/bundler/loaders#1",
+      "url": "https://bun.com/docs/bundler/loaders",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/bundler/loaders#2",
+      "url": "https://bun.com/docs/bundler/loaders",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/bundler/loaders#3",
+      "url": "https://bun.com/docs/bundler/loaders",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/binary/blob-to-string#1",
+      "url": "https://bun.com/docs/guides/binary/blob-to-string",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/binary/buffer-to-string#1",
+      "url": "https://bun.com/docs/guides/binary/buffer-to-string",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/binary/buffer-to-string#2",
+      "url": "https://bun.com/docs/guides/binary/buffer-to-string",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/binary/typedarray-to-string#1",
+      "url": "https://bun.com/docs/guides/binary/typedarray-to-string",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/http/stream-file#1",
+      "url": "https://bun.com/docs/guides/http/stream-file",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/guides/process/spawn#1",
+      "url": "https://bun.com/docs/guides/process/spawn",
+      "reason": "subprocess"
+    },
+    {
+      "id": "/docs/guides/process/spawn-stderr#1",
+      "url": "https://bun.com/docs/guides/process/spawn-stderr",
+      "reason": "subprocess"
+    },
+    {
+      "id": "/docs/guides/process/spawn-stdout#1",
+      "url": "https://bun.com/docs/guides/process/spawn-stdout",
+      "reason": "subprocess"
+    },
+    {
+      "id": "/docs/guides/read-file/json#1",
+      "url": "https://bun.com/docs/guides/read-file/json",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/guides/read-file/stream#1",
+      "url": "https://bun.com/docs/guides/read-file/stream",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/delete-file#1",
+      "url": "https://bun.com/docs/guides/runtime/delete-file",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-json#1",
+      "url": "https://bun.com/docs/guides/runtime/import-json",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-json#2",
+      "url": "https://bun.com/docs/guides/runtime/import-json",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-json5#1",
+      "url": "https://bun.com/docs/guides/runtime/import-json5",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-json5#2",
+      "url": "https://bun.com/docs/guides/runtime/import-json5",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-toml#1",
+      "url": "https://bun.com/docs/guides/runtime/import-toml",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-xml#1",
+      "url": "https://bun.com/docs/guides/runtime/import-xml",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-xml#2",
+      "url": "https://bun.com/docs/guides/runtime/import-xml",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-yaml#1",
+      "url": "https://bun.com/docs/guides/runtime/import-yaml",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-yaml#2",
+      "url": "https://bun.com/docs/guides/runtime/import-yaml",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/import-yaml#3",
+      "url": "https://bun.com/docs/guides/runtime/import-yaml",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/guides/runtime/read-env#1",
+      "url": "https://bun.com/docs/guides/runtime/read-env",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/runtime/read-env#2",
+      "url": "https://bun.com/docs/guides/runtime/read-env",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/runtime/set-env#1",
+      "url": "https://bun.com/docs/guides/runtime/set-env",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/runtime/shell#1",
+      "url": "https://bun.com/docs/guides/runtime/shell",
+      "reason": "subprocess"
+    },
+    {
+      "id": "/docs/guides/runtime/timezone#1",
+      "url": "https://bun.com/docs/guides/runtime/timezone",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/deflate#1",
+      "url": "https://bun.com/docs/guides/util/deflate",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/file-url-to-path#1",
+      "url": "https://bun.com/docs/guides/util/file-url-to-path",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/guides/util/gzip#1",
+      "url": "https://bun.com/docs/guides/util/gzip",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/hash-a-password#1",
+      "url": "https://bun.com/docs/guides/util/hash-a-password",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/hash-a-password#2",
+      "url": "https://bun.com/docs/guides/util/hash-a-password",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/import-meta-dir#1",
+      "url": "https://bun.com/docs/guides/util/import-meta-dir",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/import-meta-file#1",
+      "url": "https://bun.com/docs/guides/util/import-meta-file",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/import-meta-path#1",
+      "url": "https://bun.com/docs/guides/util/import-meta-path",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/javascript-uuid#1",
+      "url": "https://bun.com/docs/guides/util/javascript-uuid",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/javascript-uuid#2",
+      "url": "https://bun.com/docs/guides/util/javascript-uuid",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/path-to-file-url#1",
+      "url": "https://bun.com/docs/guides/util/path-to-file-url",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/guides/util/version#1",
+      "url": "https://bun.com/docs/guides/util/version",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/version#2",
+      "url": "https://bun.com/docs/guides/util/version",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/util/which-path-to-executable-bin#1",
+      "url": "https://bun.com/docs/guides/util/which-path-to-executable-bin",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/guides/write-file/basic#1",
+      "url": "https://bun.com/docs/guides/write-file/basic",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/binary-data#6",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/binary-data#8",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/binary-data#12",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/runtime/binary-data#13",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/runtime/binary-data#14",
+      "url": "https://bun.com/docs/runtime/binary-data",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/child-process#1",
+      "url": "https://bun.com/docs/runtime/child-process",
+      "reason": "subprocess"
+    },
+    {
+      "id": "/docs/runtime/child-process#2",
+      "url": "https://bun.com/docs/runtime/child-process",
+      "reason": "subprocess"
+    },
+    {
+      "id": "/docs/runtime/cookies#1",
+      "url": "https://bun.com/docs/runtime/cookies",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/cookies#2",
+      "url": "https://bun.com/docs/runtime/cookies",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/cron#1",
+      "url": "https://bun.com/docs/runtime/cron",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/cron#2",
+      "url": "https://bun.com/docs/runtime/cron",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/environment-variables#1",
+      "url": "https://bun.com/docs/runtime/environment-variables",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/environment-variables#2",
+      "url": "https://bun.com/docs/runtime/environment-variables",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/environment-variables#3",
+      "url": "https://bun.com/docs/runtime/environment-variables",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/environment-variables#4",
+      "url": "https://bun.com/docs/runtime/environment-variables",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/environment-variables#5",
+      "url": "https://bun.com/docs/runtime/environment-variables",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/file-io#1",
+      "url": "https://bun.com/docs/runtime/file-io",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/runtime/file-system-router#1",
+      "url": "https://bun.com/docs/runtime/file-system-router",
+      "reason": "network URL"
+    },
+    {
+      "id": "/docs/runtime/file-system-router#2",
+      "url": "https://bun.com/docs/runtime/file-system-router",
+      "reason": "network URL"
+    },
+    {
+      "id": "/docs/runtime/file-system-router#3",
+      "url": "https://bun.com/docs/runtime/file-system-router",
+      "reason": "network URL"
+    },
+    {
+      "id": "/docs/runtime/file-types#1",
+      "url": "https://bun.com/docs/runtime/file-types",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/runtime/file-types#2",
+      "url": "https://bun.com/docs/runtime/file-types",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/runtime/file-types#3",
+      "url": "https://bun.com/docs/runtime/file-types",
+      "reason": "imports a file next to the example"
+    },
+    {
+      "id": "/docs/runtime/glob#1",
+      "url": "https://bun.com/docs/runtime/glob",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/hashing#1",
+      "url": "https://bun.com/docs/runtime/hashing",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/hashing#2",
+      "url": "https://bun.com/docs/runtime/hashing",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/hashing#3",
+      "url": "https://bun.com/docs/runtime/hashing",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/hashing#4",
+      "url": "https://bun.com/docs/runtime/hashing",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/hashing#5",
+      "url": "https://bun.com/docs/runtime/hashing",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/hashing#6",
+      "url": "https://bun.com/docs/runtime/hashing",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/image#1",
+      "url": "https://bun.com/docs/runtime/image",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/module-resolution#1",
+      "url": "https://bun.com/docs/runtime/module-resolution",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/runtime/networking/dns#1",
+      "url": "https://bun.com/docs/runtime/networking/dns",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/networking/fetch#1",
+      "url": "https://bun.com/docs/runtime/networking/fetch",
+      "reason": "network"
+    },
+    {
+      "id": "/docs/runtime/shell#1",
+      "url": "https://bun.com/docs/runtime/shell",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/shell#3",
+      "url": "https://bun.com/docs/runtime/shell",
+      "reason": "subprocess"
+    },
+    {
+      "id": "/docs/runtime/utils#1",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/utils#2",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/utils#3",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/utils#7",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/utils#9",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/utils#10",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/utils#11",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/utils#13",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/utils#14",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "network"
+    },
+    {
+      "id": "/docs/runtime/utils#15",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "file next to the example"
+    },
+    {
+      "id": "/docs/runtime/utils#17",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "no checkable result"
+    },
+    {
+      "id": "/docs/runtime/utils#18",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "network"
+    },
+    {
+      "id": "/docs/runtime/utils#19",
+      "url": "https://bun.com/docs/runtime/utils",
+      "reason": "network URL"
+    },
+    {
+      "id": "/docs/runtime/workers#1",
+      "url": "https://bun.com/docs/runtime/workers",
+      "reason": "network URL"
     }
-   ]
-  },
-  {
-   "id": "/docs/guides/binary/typedarray-to-arraybuffer#1",
-   "page": "Convert a Uint8Array to an ArrayBuffer",
-   "url": "https://bun.com/docs/guides/binary/typedarray-to-arraybuffer",
-   "lang": "ts",
-   "code": "const arr = new Uint8Array(64);\n__expect(0, () => (arr.buffer));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "arr.buffer; // => ArrayBuffer(64)",
-     "expected": "ArrayBuffer(64)",
-     "mode": "type"
-    }
-   ]
-  },
-  {
-   "id": "/docs/guides/binary/typedarray-to-arraybuffer#2",
-   "page": "Convert a Uint8Array to an ArrayBuffer",
-   "url": "https://bun.com/docs/guides/binary/typedarray-to-arraybuffer",
-   "lang": "ts",
-   "code": "const arr = new Uint8Array(new ArrayBuffer(64), 16, 32);\n__expect(0, () => (arr.buffer));\n__expect(1, () => (arr.byteOffset));\n__expect(2, () => (arr.byteLength));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "arr.buffer; // => ArrayBuffer(64)",
-     "expected": "ArrayBuffer(64)",
-     "mode": "type"
-    },
-    {
-     "line": 3,
-     "source": "arr.byteOffset; // => 16",
-     "expected": "16",
-     "mode": "literal"
-    },
-    {
-     "line": 4,
-     "source": "arr.byteLength; // => 32",
-     "expected": "32",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/guides/binary/typedarray-to-blob#1",
-   "page": "Convert a Uint8Array to a Blob",
-   "url": "https://bun.com/docs/guides/binary/typedarray-to-blob",
-   "lang": "ts",
-   "code": "const arr = new Uint8Array([0x68, 0x65, 0x6c, 0x6c, 0x6f]);\nconst blob = new Blob([arr]);\nawait __expect(0, async () => (await blob.text()));\n\n",
-   "expectations": [
-    {
-     "line": 4,
-     "source": "// => \"hello\"",
-     "expected": "\"hello\"",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/guides/runtime/define-constant#1",
-   "page": "Define and replace static globals & constants",
-   "url": "https://bun.com/docs/guides/runtime/define-constant",
-   "lang": "ts",
-   "code": "__expect(0, () => (AWS.ACCESS_KEY));\n",
-   "expectations": [
-    {
-     "line": 1,
-     "source": "console.log(AWS.ACCESS_KEY); // => \"abc\"",
-     "expected": "\"abc\"",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/guides/runtime/import-json5#3",
-   "page": "Import a JSON5 file",
-   "url": "https://bun.com/docs/guides/runtime/import-json5",
-   "lang": "ts",
-   "code": "const data = Bun.JSON5.parse(`{\n  name: 'John Doe',\n  age: 30,\n  hobbies: [\n    'reading',\n    'coding',\n  ],\n}`);\n\n__expect(0, () => (data.name));\n__expect(1, () => (data.hobbies));\n",
-   "expectations": [
-    {
-     "line": 10,
-     "source": "console.log(data.name); // => \"John Doe\"",
-     "expected": "\"John Doe\"",
-     "mode": "literal",
-     "printed": true
-    },
-    {
-     "line": 11,
-     "source": "console.log(data.hobbies); // => [\"reading\", \"coding\"]",
-     "expected": "[\"reading\", \"coding\"]",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/guides/runtime/import-xml#3",
-   "page": "Import an XML file",
-   "url": "https://bun.com/docs/guides/runtime/import-xml",
-   "lang": "ts",
-   "code": "const data = Bun.XML.parse(`\n  <user id=\"7\">\n    <name>John Doe</name>\n    <hobby>reading</hobby>\n    <hobby>coding</hobby>\n  </user>\n`);\n\n__expect(0, () => (data.user.name));\n__expect(1, () => (data.user.hobby));\n__expect(2, () => (data.user[\"@id\"]));\n",
-   "expectations": [
-    {
-     "line": 9,
-     "source": "console.log(data.user.name); // => \"John Doe\"",
-     "expected": "\"John Doe\"",
-     "mode": "literal",
-     "printed": true
-    },
-    {
-     "line": 10,
-     "source": "console.log(data.user.hobby); // => [\"reading\", \"coding\"]",
-     "expected": "[\"reading\", \"coding\"]",
-     "mode": "literal",
-     "printed": true
-    },
-    {
-     "line": 11,
-     "source": "console.log(data.user[\"@id\"]); // => \"7\"",
-     "expected": "\"7\"",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/guides/runtime/import-yaml#4",
-   "page": "Import a YAML file",
-   "url": "https://bun.com/docs/guides/runtime/import-yaml",
-   "lang": "ts",
-   "code": "const yamlString = `\nname: John Doe\nage: 30\nhobbies:\n  - reading\n  - coding\n`;\n\nconst data = Bun.YAML.parse(yamlString);\n__expect(0, () => (data.name));\n__expect(1, () => (data.hobbies));\n",
-   "expectations": [
-    {
-     "line": 10,
-     "source": "console.log(data.name); // => \"John Doe\"",
-     "expected": "\"John Doe\"",
-     "mode": "literal",
-     "printed": true
-    },
-    {
-     "line": 11,
-     "source": "console.log(data.hobbies); // => [\"reading\", \"coding\"]",
-     "expected": "[\"reading\", \"coding\"]",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/guides/util/base64#1",
-   "page": "Encode and decode base64 data",
-   "url": "https://bun.com/docs/guides/util/base64",
-   "lang": "ts",
-   "code": "const bytes = new Uint8Array([98, 117, 110]);\nconst encoded = bytes.toBase64(); __expect(0, () => (encoded));\n\nconst decoded = Uint8Array.fromBase64(encoded);\n\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "const encoded = bytes.toBase64(); // => \"YnVu\"",
-     "expected": "\"YnVu\"",
-     "mode": "literal"
-    },
-    {
-     "line": 5,
-     "source": "// => Uint8Array(3) [ 98, 117, 110 ]",
-     "expected": "Uint8Array(3) [ 98, 117, 110 ]",
-     "mode": "unverifiable"
-    }
-   ]
-  },
-  {
-   "id": "/docs/guides/util/base64#2",
-   "page": "Encode and decode base64 data",
-   "url": "https://bun.com/docs/guides/util/base64",
-   "lang": "ts",
-   "code": "const bytes = new TextEncoder().encode(\"hello world\");\nconst encoded = bytes.toBase64(); __expect(0, () => (encoded));\n\nconst decoded = Uint8Array.fromBase64(encoded);\nconst text = new TextDecoder().decode(decoded); __expect(1, () => (text));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "const encoded = bytes.toBase64(); // => \"aGVsbG8gd29ybGQ=\"",
-     "expected": "\"aGVsbG8gd29ybGQ=\"",
-     "mode": "literal"
-    },
-    {
-     "line": 5,
-     "source": "const text = new TextDecoder().decode(decoded); // => \"hello world\"",
-     "expected": "\"hello world\"",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/guides/util/base64#3",
-   "page": "Encode and decode base64 data",
-   "url": "https://bun.com/docs/guides/util/base64",
-   "lang": "ts",
-   "code": "const encoded = Buffer.from(\"hello world\").toBase64();\n\n\nconst bytes = Buffer.from(encoded, \"base64\");\n__expect(1, () => (bytes instanceof Uint8Array));\n\nconst text = bytes.toString(\"utf8\");\n\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "// => \"aGVsbG8gd29ybGQ=\"",
-     "expected": "\"aGVsbG8gd29ybGQ=\"",
-     "mode": "unverifiable"
-    },
-    {
-     "line": 5,
-     "source": "bytes instanceof Uint8Array; // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 8,
-     "source": "// => \"hello world\"",
-     "expected": "\"hello world\"",
-     "mode": "unverifiable"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/binary-data#1",
-   "page": "Binary Data",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "lang": "ts",
-   "code": "const buf = new ArrayBuffer(8);\n__expect(0, () => (buf.byteLength));\n\nconst slice = buf.slice(0, 4); // returns new ArrayBuffer\n__expect(1, () => (slice.byteLength));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "buf.byteLength; // => 8",
-     "expected": "8",
-     "mode": "literal"
-    },
-    {
-     "line": 5,
-     "source": "slice.byteLength; // => 4",
-     "expected": "4",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/binary-data#2",
-   "page": "Binary Data",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "lang": "ts",
-   "code": "const buf = new ArrayBuffer(4);\n// [0b00000000, 0b00000000, 0b00000000, 0b00000000]\n\nconst dv = new DataView(buf);\ndv.setUint8(0, 3); // write value 3 at byte offset 0\n__expect(0, () => (dv.getUint8(0)));\n// [0b00000011, 0b00000000, 0b00000000, 0b00000000]\n",
-   "expectations": [
-    {
-     "line": 6,
-     "source": "dv.getUint8(0); // => 3",
-     "expected": "3",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/binary-data#3",
-   "page": "Binary Data",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "lang": "ts",
-   "code": "const buf = new ArrayBuffer(4);\n// [0b00000000, 0b00000000, 0b00000000, 0b00000000]\n\nconst dv = new DataView(buf);\ndv.setUint8(0, 3); // write value 3 at byte offset 0\ndv.getUint8(0);\n// [0b00000011, 0b00000000, 0b00000000, 0b00000000]\n\ndv.setUint16(1, 513);\n// [0b00000011, 0b00000010, 0b00000001, 0b00000000]\n\n__expect(0, () => (dv.getUint16(1)));\n",
-   "expectations": [
-    {
-     "line": 4,
-     "source": "console.log(dv.getUint16(1)); // => 513",
-     "expected": "513",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/binary-data#4",
-   "page": "Binary Data",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "lang": "ts",
-   "code": "const buf = new ArrayBuffer(4);\n// [0b00000000, 0b00000000, 0b00000000, 0b00000000]\n\nconst dv = new DataView(buf);\ndv.setUint8(0, 3); // write value 3 at byte offset 0\ndv.getUint8(0);\n// [0b00000011, 0b00000000, 0b00000000, 0b00000000]\n\ndv.setUint16(1, 513);\n// [0b00000011, 0b00000010, 0b00000001, 0b00000000]\n\nconsole.log(dv.getUint16(1));\n\n__expect(0, () => (dv.getUint8(1)));\n__expect(1, () => (dv.getUint8(2)));\n",
-   "expectations": [
-    {
-     "line": 1,
-     "source": "console.log(dv.getUint8(1)); // => 2",
-     "expected": "2",
-     "mode": "literal",
-     "printed": true
-    },
-    {
-     "line": 2,
-     "source": "console.log(dv.getUint8(2)); // => 1",
-     "expected": "1",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/binary-data#5",
-   "page": "Binary Data",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "lang": "ts",
-   "code": "// create typed array from ArrayBuffer\nconst buf = new ArrayBuffer(10);\nconst arr = new Uint8Array(buf);\n\narr[0] = 30;\narr[1] = 60;\n\n// all elements are initialized to zero\n__expect(0, () => (arr));\n",
-   "expectations": [
-    {
-     "line": 9,
-     "source": "console.log(arr); // => Uint8Array(10) [ 30, 60, 0, 0, 0, 0, 0, 0, 0, 0 ];",
-     "expected": "Uint8Array(10) [ 30, 60, 0, 0, 0, 0, 0, 0, 0, 0 ];",
-     "mode": "text",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/binary-data#7",
-   "page": "Binary Data",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "lang": "ts",
-   "code": "// from an array of numbers\nconst arr1 = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7]);\n__expect(0, () => (arr1[0]));\n__expect(1, () => (arr1[7]));\n\n// from another typed array\nconst arr2 = new Uint8Array(arr1);\n",
-   "expectations": [
-    {
-     "line": 3,
-     "source": "arr1[0]; // => 0;",
-     "expected": "0;",
-     "mode": "literal"
-    },
-    {
-     "line": 4,
-     "source": "arr1[7]; // => 7;",
-     "expected": "7;",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/binary-data#9",
-   "page": "Binary Data",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "lang": "ts",
-   "code": "const buf = Buffer.from(\"hello world\");\n\n\n__expect(1, () => (buf.length));\nbuf[0];\nbuf.writeUInt8(72, 0);\n\n__expect(4, () => (buf.toString()));\n\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "// => Buffer(11) [ 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100 ]",
-     "expected": "Buffer(11) [ 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100 ]",
-     "mode": "unverifiable"
-    },
-    {
-     "line": 4,
-     "source": "buf.length; // => 11",
-     "expected": "11",
-     "mode": "literal"
-    },
-    {
-     "line": 5,
-     "source": "buf[0]; // => 104, ascii for 'h'",
-     "expected": "104, ascii for 'h'",
-     "mode": "unverifiable"
-    },
-    {
-     "line": 6,
-     "source": "buf.writeUInt8(72, 0); // => ascii for 'H'",
-     "expected": "ascii for 'H'",
-     "mode": "unverifiable"
-    },
-    {
-     "line": 9,
-     "source": "// => Hello world",
-     "expected": "Hello world",
-     "mode": "text",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/binary-data#10",
-   "page": "Binary Data",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "lang": "ts",
-   "code": "const encoder = new TextEncoder();\nconst bytes = encoder.encode(\"hello world\");\n\nconst decoder = new TextDecoder();\nconst text = decoder.decode(bytes);\n\nconst buf = Buffer.from(\"hello world\");\n\nbuf.length;\nbuf[0];\nbuf.writeUInt8(72, 0);\n\nconsole.log(buf.toString());\n\nconst blob = new Blob([\"<html>Hello</html>\"], {\n  type: \"text/html\",\n});\n\n__expect(0, () => (blob.type));\n__expect(1, () => (blob.size));\n",
-   "expectations": [
-    {
-     "line": 5,
-     "source": "blob.type; // => text/html",
-     "expected": "text/html",
-     "mode": "text"
-    },
-    {
-     "line": 6,
-     "source": "blob.size; // => 18",
-     "expected": "18",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/binary-data#11",
-   "page": "Binary Data",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "lang": "ts",
-   "code": "const blob = new Blob([\n  \"<html>\",\n  new Blob([\"<body>\"]),\n  new Uint8Array([104, 101, 108, 108, 111]), // \"hello\" in binary\n  \"</body></html>\",\n]);\n\nawait blob.text();\nawait blob.bytes();\nawait blob.arrayBuffer();\n__expect(3, () => (blob.stream()));\n",
-   "expectations": [
-    {
-     "line": 1,
-     "source": "await blob.text(); // => <html><body>hello</body></html>",
-     "expected": "<html><body>hello</body></html>",
-     "mode": "unverifiable"
-    },
-    {
-     "line": 2,
-     "source": "await blob.bytes(); // => Uint8Array (copies contents)",
-     "expected": "Uint8Array (copies contents)",
-     "mode": "unverifiable"
-    },
-    {
-     "line": 3,
-     "source": "await blob.arrayBuffer(); // => ArrayBuffer (copies contents)",
-     "expected": "ArrayBuffer (copies contents)",
-     "mode": "unverifiable"
-    },
-    {
-     "line": 4,
-     "source": "blob.stream(); // => ReadableStream",
-     "expected": "ReadableStream",
-     "mode": "type"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/cron#3",
-   "page": "Cron",
-   "url": "https://bun.com/docs/runtime/cron",
-   "lang": "ts",
-   "code": "using job = Bun.cron(\"0 * * * *\", () => {});\n\n__expect(0, () => (job.cron));\njob.stop(); // cancel — the handler will not fire again\njob.unref(); // allow the process to exit even while scheduled\njob.ref(); // keep the process alive (default)\n",
-   "expectations": [
-    {
-     "line": 3,
-     "source": "job.cron; // => \"0 * * * *\"",
-     "expected": "\"0 * * * *\"",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/glob#2",
-   "page": "Glob",
-   "url": "https://bun.com/docs/runtime/glob",
-   "lang": "ts",
-   "code": "import { Glob } from \"bun\";\n\nconst glob = new Glob(\"*.ts\");\n\n__expect(0, () => (glob.match(\"index.ts\")));\n__expect(1, () => (glob.match(\"index.js\")));\n",
-   "expectations": [
-    {
-     "line": 5,
-     "source": "glob.match(\"index.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 6,
-     "source": "glob.match(\"index.js\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/glob#3",
-   "page": "Glob",
-   "url": "https://bun.com/docs/runtime/glob",
-   "lang": "ts",
-   "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"???.ts\");\n__expect(0, () => (glob.match(\"foo.ts\")));\n__expect(1, () => (glob.match(\"foobar.ts\")));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "glob.match(\"foo.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 3,
-     "source": "glob.match(\"foobar.ts\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/glob#4",
-   "page": "Glob",
-   "url": "https://bun.com/docs/runtime/glob",
-   "lang": "ts",
-   "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"*.ts\");\n__expect(0, () => (glob.match(\"index.ts\")));\n__expect(1, () => (glob.match(\"src/index.ts\")));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "glob.match(\"index.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 3,
-     "source": "glob.match(\"src/index.ts\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/glob#5",
-   "page": "Glob",
-   "url": "https://bun.com/docs/runtime/glob",
-   "lang": "ts",
-   "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"**/*.ts\");\n__expect(0, () => (glob.match(\"index.ts\")));\n__expect(1, () => (glob.match(\"src/index.ts\")));\n__expect(2, () => (glob.match(\"src/index.js\")));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "glob.match(\"index.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 3,
-     "source": "glob.match(\"src/index.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 4,
-     "source": "glob.match(\"src/index.js\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/glob#6",
-   "page": "Glob",
-   "url": "https://bun.com/docs/runtime/glob",
-   "lang": "ts",
-   "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"ba[rz].ts\");\n__expect(0, () => (glob.match(\"bar.ts\")));\n__expect(1, () => (glob.match(\"baz.ts\")));\n__expect(2, () => (glob.match(\"bat.ts\")));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "glob.match(\"bar.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 3,
-     "source": "glob.match(\"baz.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 4,
-     "source": "glob.match(\"bat.ts\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/glob#7",
-   "page": "Glob",
-   "url": "https://bun.com/docs/runtime/glob",
-   "lang": "ts",
-   "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"ba[a-z][0-9][^4-9].ts\");\n__expect(0, () => (glob.match(\"bar01.ts\")));\n__expect(1, () => (glob.match(\"baz83.ts\")));\n__expect(2, () => (glob.match(\"bat22.ts\")));\n__expect(3, () => (glob.match(\"bat24.ts\")));\n__expect(4, () => (glob.match(\"ba0a8.ts\")));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "glob.match(\"bar01.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 3,
-     "source": "glob.match(\"baz83.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 4,
-     "source": "glob.match(\"bat22.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 5,
-     "source": "glob.match(\"bat24.ts\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    },
-    {
-     "line": 6,
-     "source": "glob.match(\"ba0a8.ts\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/glob#8",
-   "page": "Glob",
-   "url": "https://bun.com/docs/runtime/glob",
-   "lang": "ts",
-   "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"{a,b,c}.ts\");\n__expect(0, () => (glob.match(\"a.ts\")));\n__expect(1, () => (glob.match(\"b.ts\")));\n__expect(2, () => (glob.match(\"c.ts\")));\n__expect(3, () => (glob.match(\"d.ts\")));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "glob.match(\"a.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 3,
-     "source": "glob.match(\"b.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 4,
-     "source": "glob.match(\"c.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 5,
-     "source": "glob.match(\"d.ts\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/glob#9",
-   "page": "Glob",
-   "url": "https://bun.com/docs/runtime/glob",
-   "lang": "ts",
-   "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"!index.ts\");\n__expect(0, () => (glob.match(\"index.ts\")));\n__expect(1, () => (glob.match(\"foo.ts\")));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "glob.match(\"index.ts\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    },
-    {
-     "line": 3,
-     "source": "glob.match(\"foo.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/glob#10",
-   "page": "Glob",
-   "url": "https://bun.com/docs/runtime/glob",
-   "lang": "ts",
-   "code": "const Glob = Bun.Glob;\nconst glob = new Glob(\"\\\\!index.ts\");\n__expect(0, () => (glob.match(\"!index.ts\")));\n__expect(1, () => (glob.match(\"index.ts\")));\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "glob.match(\"!index.ts\"); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 3,
-     "source": "glob.match(\"index.ts\"); // => false",
-     "expected": "false",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/hashing#7",
-   "page": "Hashing",
-   "url": "https://bun.com/docs/runtime/hashing",
-   "lang": "ts",
-   "code": "const hasher = new Bun.CryptoHasher(\"sha256\", \"secret-key\");\nhasher.update(\"hello world\");\n__expect(0, () => (hasher.digest(\"hex\")));\n\n",
-   "expectations": [
-    {
-     "line": 4,
-     "source": "// => \"095d5a21fe6d0646db223fdf3de6436bb8dfb2fab0b51677ecf6441fcf5f2a67\"",
-     "expected": "\"095d5a21fe6d0646db223fdf3de6436bb8dfb2fab0b51677ecf6441fcf5f2a67\"",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/hashing#8",
-   "page": "Hashing",
-   "url": "https://bun.com/docs/runtime/hashing",
-   "lang": "ts",
-   "code": "const hasher = new Bun.CryptoHasher(\"sha256\", \"secret-key\");\nhasher.update(\"hello world\");\n\nconst copy = hasher.copy();\ncopy.update(\"!\");\n__expect(0, () => (copy.digest(\"hex\")));\n\n\n__expect(1, () => (hasher.digest(\"hex\")));\n\n",
-   "expectations": [
-    {
-     "line": 7,
-     "source": "// => \"3840176c3d8923f59ac402b7550404b28ab11cb0ef1fa199130a5c37864b5497\"",
-     "expected": "\"3840176c3d8923f59ac402b7550404b28ab11cb0ef1fa199130a5c37864b5497\"",
-     "mode": "literal",
-     "printed": true
-    },
-    {
-     "line": 10,
-     "source": "// => \"095d5a21fe6d0646db223fdf3de6436bb8dfb2fab0b51677ecf6441fcf5f2a67\"",
-     "expected": "\"095d5a21fe6d0646db223fdf3de6436bb8dfb2fab0b51677ecf6441fcf5f2a67\"",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/networking/dns#2",
-   "page": "DNS",
-   "url": "https://bun.com/docs/runtime/networking/dns",
-   "lang": "ts",
-   "code": "import { dns } from \"bun\";\n\nconst stats = dns.getCacheStats();\n__expect(0, () => (stats));\n\n",
-   "expectations": [
-    {
-     "line": 5,
-     "source": "// => { cacheHitsCompleted: 0, cacheHitsInflight: 0, cacheMisses: 0, size: 0, errors: 0, totalCount: 0 }",
-     "expected": "{ cacheHitsCompleted: 0, cacheHitsInflight: 0, cacheMisses: 0, size: 0, errors: 0, totalCount: 0 }",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/shell#2",
-   "page": "Shell",
-   "url": "https://bun.com/docs/runtime/shell",
-   "lang": "js",
-   "code": "import { $ } from \"bun\";\n\n__expect(0, () => ($.escape('$(foo) `bar` \"baz\"')));\n\n",
-   "expectations": [
-    {
-     "line": 4,
-     "source": "// => \"\\$(foo) \\`bar\\` \\\"baz\\\"\"",
-     "expected": "\"\\$(foo) \\`bar\\` \\\"baz\\\"\"",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/sqlite#1",
-   "page": "SQLite",
-   "url": "https://bun.com/docs/runtime/sqlite",
-   "lang": "ts",
-   "code": "import { Database } from \"bun:sqlite\";\n\n\n{\n  using db = new Database(\"mydb.sqlite\");\n  using query = db.query(\"select 'Hello world' as message;\");\n  console.log(query.get());\n}\n\nconst olddb = new Database(\"mydb.sqlite\");\nconst contents = olddb.serialize(); __expect(0, () => (contents));\nconst newdb = Database.deserialize(contents);\n",
-   "expectations": [
-    {
-     "line": 2,
-     "source": "const contents = olddb.serialize(); // => Uint8Array",
-     "expected": "Uint8Array",
-     "mode": "type"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/sqlite#2",
-   "page": "SQLite",
-   "url": "https://bun.com/docs/runtime/sqlite",
-   "lang": "ts",
-   "code": "import { Database } from \"bun:sqlite\";\n\n// setup\nconst query = db.query(\"SELECT $param;\");\n\n__expect(0, () => (query.toString()));\n\nquery.run(42);\n__expect(1, () => (query.toString()));\n\nquery.run(365);\n__expect(2, () => (query.toString()));\n",
-   "expectations": [
-    {
-     "line": 6,
-     "source": "console.log(query.toString()); // => \"SELECT NULL\"",
-     "expected": "\"SELECT NULL\"",
-     "mode": "literal",
-     "printed": true
-    },
-    {
-     "line": 9,
-     "source": "console.log(query.toString()); // => \"SELECT 42\"",
-     "expected": "\"SELECT 42\"",
-     "mode": "literal",
-     "printed": true
-    },
-    {
-     "line": 12,
-     "source": "console.log(query.toString()); // => \"SELECT 365\"",
-     "expected": "\"SELECT 365\"",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/utils#4",
-   "page": "Utils",
-   "url": "https://bun.com/docs/runtime/utils",
-   "lang": "ts",
-   "code": "const a = { entries: [1, 2] };\nconst b = { entries: [1, 2], extra: undefined };\n\n__expect(0, () => (Bun.deepEquals(a, b)));\n__expect(1, () => (Bun.deepEquals(a, b, true)));\n",
-   "expectations": [
-    {
-     "line": 4,
-     "source": "Bun.deepEquals(a, b); // => true",
-     "expected": "true",
-     "mode": "literal"
-    },
-    {
-     "line": 5,
-     "source": "Bun.deepEquals(a, b, true); // => false",
-     "expected": "false",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/utils#5",
-   "page": "Utils",
-   "url": "https://bun.com/docs/runtime/utils",
-   "lang": "ts",
-   "code": "__expect(0, () => (Bun.stringWidth(\"hello\")));\n__expect(1, () => (Bun.stringWidth(\"\\u001b[31mhello\\u001b[0m\")));\n__expect(2, () => (Bun.stringWidth(\"\\u001b[31mhello\\u001b[0m\", { countAnsiEscapeCodes: true })));\n",
-   "expectations": [
-    {
-     "line": 1,
-     "source": "Bun.stringWidth(\"hello\"); // => 5",
-     "expected": "5",
-     "mode": "literal"
-    },
-    {
-     "line": 2,
-     "source": "Bun.stringWidth(\"\\u001b[31mhello\\u001b[0m\"); // => 5",
-     "expected": "5",
-     "mode": "literal"
-    },
-    {
-     "line": 3,
-     "source": "Bun.stringWidth(\"\\u001b[31mhello\\u001b[0m\", { countAnsiEscapeCodes: true }); // => 12",
-     "expected": "12",
-     "mode": "literal"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/utils#6",
-   "page": "Utils",
-   "url": "https://bun.com/docs/runtime/utils",
-   "lang": "ts",
-   "code": "const buf = Buffer.from(\"hello\".repeat(100)); // Buffer extends Uint8Array\nconst compressed = Bun.gzipSync(buf);\n\n__expect(0, () => (buf));\n__expect(1, () => (compressed));\n",
-   "expectations": [
-    {
-     "line": 4,
-     "source": "buf; // => Uint8Array(500)",
-     "expected": "Uint8Array(500)",
-     "mode": "type"
-    },
-    {
-     "line": 5,
-     "source": "compressed; // => Uint8Array(30)",
-     "expected": "Uint8Array(30)",
-     "mode": "type"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/utils#8",
-   "page": "Utils",
-   "url": "https://bun.com/docs/runtime/utils",
-   "lang": "ts",
-   "code": "const buf = Buffer.from(\"hello\".repeat(100));\nconst compressed = Bun.deflateSync(buf);\n\n__expect(0, () => (buf));\n__expect(1, () => (compressed));\n",
-   "expectations": [
-    {
-     "line": 4,
-     "source": "buf; // => Buffer(500)",
-     "expected": "Buffer(500)",
-     "mode": "type"
-    },
-    {
-     "line": 5,
-     "source": "compressed; // => Uint8Array(12)",
-     "expected": "Uint8Array(12)",
-     "mode": "type"
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/utils#12",
-   "page": "Utils",
-   "url": "https://bun.com/docs/runtime/utils",
-   "lang": "ts",
-   "code": "class Foo {\n  [Bun.inspect.custom]() {\n    return \"foo\";\n  }\n}\n\nconst foo = new Foo();\n__expect(0, () => (foo));\n",
-   "expectations": [
-    {
-     "line": 8,
-     "source": "console.log(foo); // => \"foo\"",
-     "expected": "\"foo\"",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  },
-  {
-   "id": "/docs/runtime/utils#16",
-   "page": "Utils",
-   "url": "https://bun.com/docs/runtime/utils",
-   "lang": "ts",
-   "code": "const coloredText = \"\\u001b[31mHello\\u001b[0m \\u001b[32mWorld\\u001b[0m\";\nconst plainText = Bun.stripANSI(coloredText);\n__expect(0, () => (plainText));\n\n// Works with various ANSI codes\nconst formatted = \"\\u001b[1m\\u001b[4mBold and underlined\\u001b[0m\";\n__expect(1, () => (Bun.stripANSI(formatted)));\n",
-   "expectations": [
-    {
-     "line": 3,
-     "source": "console.log(plainText); // => \"Hello World\"",
-     "expected": "\"Hello World\"",
-     "mode": "literal",
-     "printed": true
-    },
-    {
-     "line": 7,
-     "source": "console.log(Bun.stripANSI(formatted)); // => \"Bold and underlined\"",
-     "expected": "\"Bold and underlined\"",
-     "mode": "literal",
-     "printed": true
-    }
-   ]
-  }
- ],
- "skipped": [
-  {
-   "id": "/docs/bundler/index#1",
-   "url": "https://bun.com/docs/bundler/index",
-   "reason": "bundler on files"
-  },
-  {
-   "id": "/docs/bundler/loaders#1",
-   "url": "https://bun.com/docs/bundler/loaders",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/bundler/loaders#2",
-   "url": "https://bun.com/docs/bundler/loaders",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/bundler/loaders#3",
-   "url": "https://bun.com/docs/bundler/loaders",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/binary/blob-to-string#1",
-   "url": "https://bun.com/docs/guides/binary/blob-to-string",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/binary/buffer-to-string#1",
-   "url": "https://bun.com/docs/guides/binary/buffer-to-string",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/binary/buffer-to-string#2",
-   "url": "https://bun.com/docs/guides/binary/buffer-to-string",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/binary/typedarray-to-string#1",
-   "url": "https://bun.com/docs/guides/binary/typedarray-to-string",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/http/stream-file#1",
-   "url": "https://bun.com/docs/guides/http/stream-file",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/guides/process/spawn#1",
-   "url": "https://bun.com/docs/guides/process/spawn",
-   "reason": "subprocess"
-  },
-  {
-   "id": "/docs/guides/process/spawn-stderr#1",
-   "url": "https://bun.com/docs/guides/process/spawn-stderr",
-   "reason": "subprocess"
-  },
-  {
-   "id": "/docs/guides/process/spawn-stdout#1",
-   "url": "https://bun.com/docs/guides/process/spawn-stdout",
-   "reason": "subprocess"
-  },
-  {
-   "id": "/docs/guides/read-file/json#1",
-   "url": "https://bun.com/docs/guides/read-file/json",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/guides/read-file/stream#1",
-   "url": "https://bun.com/docs/guides/read-file/stream",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/delete-file#1",
-   "url": "https://bun.com/docs/guides/runtime/delete-file",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-json#1",
-   "url": "https://bun.com/docs/guides/runtime/import-json",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-json#2",
-   "url": "https://bun.com/docs/guides/runtime/import-json",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-json5#1",
-   "url": "https://bun.com/docs/guides/runtime/import-json5",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-json5#2",
-   "url": "https://bun.com/docs/guides/runtime/import-json5",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-toml#1",
-   "url": "https://bun.com/docs/guides/runtime/import-toml",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-xml#1",
-   "url": "https://bun.com/docs/guides/runtime/import-xml",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-xml#2",
-   "url": "https://bun.com/docs/guides/runtime/import-xml",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-yaml#1",
-   "url": "https://bun.com/docs/guides/runtime/import-yaml",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-yaml#2",
-   "url": "https://bun.com/docs/guides/runtime/import-yaml",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/import-yaml#3",
-   "url": "https://bun.com/docs/guides/runtime/import-yaml",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/guides/runtime/read-env#1",
-   "url": "https://bun.com/docs/guides/runtime/read-env",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/runtime/read-env#2",
-   "url": "https://bun.com/docs/guides/runtime/read-env",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/runtime/set-env#1",
-   "url": "https://bun.com/docs/guides/runtime/set-env",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/runtime/shell#1",
-   "url": "https://bun.com/docs/guides/runtime/shell",
-   "reason": "subprocess"
-  },
-  {
-   "id": "/docs/guides/runtime/timezone#1",
-   "url": "https://bun.com/docs/guides/runtime/timezone",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/deflate#1",
-   "url": "https://bun.com/docs/guides/util/deflate",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/file-url-to-path#1",
-   "url": "https://bun.com/docs/guides/util/file-url-to-path",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/guides/util/gzip#1",
-   "url": "https://bun.com/docs/guides/util/gzip",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/hash-a-password#1",
-   "url": "https://bun.com/docs/guides/util/hash-a-password",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/hash-a-password#2",
-   "url": "https://bun.com/docs/guides/util/hash-a-password",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/import-meta-dir#1",
-   "url": "https://bun.com/docs/guides/util/import-meta-dir",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/import-meta-file#1",
-   "url": "https://bun.com/docs/guides/util/import-meta-file",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/import-meta-path#1",
-   "url": "https://bun.com/docs/guides/util/import-meta-path",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/javascript-uuid#1",
-   "url": "https://bun.com/docs/guides/util/javascript-uuid",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/javascript-uuid#2",
-   "url": "https://bun.com/docs/guides/util/javascript-uuid",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/path-to-file-url#1",
-   "url": "https://bun.com/docs/guides/util/path-to-file-url",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/guides/util/version#1",
-   "url": "https://bun.com/docs/guides/util/version",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/version#2",
-   "url": "https://bun.com/docs/guides/util/version",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/util/which-path-to-executable-bin#1",
-   "url": "https://bun.com/docs/guides/util/which-path-to-executable-bin",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/guides/write-file/basic#1",
-   "url": "https://bun.com/docs/guides/write-file/basic",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/binary-data#6",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/binary-data#8",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/binary-data#12",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/runtime/binary-data#13",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/runtime/binary-data#14",
-   "url": "https://bun.com/docs/runtime/binary-data",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/child-process#1",
-   "url": "https://bun.com/docs/runtime/child-process",
-   "reason": "subprocess"
-  },
-  {
-   "id": "/docs/runtime/child-process#2",
-   "url": "https://bun.com/docs/runtime/child-process",
-   "reason": "subprocess"
-  },
-  {
-   "id": "/docs/runtime/cookies#1",
-   "url": "https://bun.com/docs/runtime/cookies",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/cookies#2",
-   "url": "https://bun.com/docs/runtime/cookies",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/cron#1",
-   "url": "https://bun.com/docs/runtime/cron",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/cron#2",
-   "url": "https://bun.com/docs/runtime/cron",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/environment-variables#1",
-   "url": "https://bun.com/docs/runtime/environment-variables",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/environment-variables#2",
-   "url": "https://bun.com/docs/runtime/environment-variables",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/environment-variables#3",
-   "url": "https://bun.com/docs/runtime/environment-variables",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/environment-variables#4",
-   "url": "https://bun.com/docs/runtime/environment-variables",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/environment-variables#5",
-   "url": "https://bun.com/docs/runtime/environment-variables",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/file-io#1",
-   "url": "https://bun.com/docs/runtime/file-io",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/runtime/file-system-router#1",
-   "url": "https://bun.com/docs/runtime/file-system-router",
-   "reason": "network URL"
-  },
-  {
-   "id": "/docs/runtime/file-system-router#2",
-   "url": "https://bun.com/docs/runtime/file-system-router",
-   "reason": "network URL"
-  },
-  {
-   "id": "/docs/runtime/file-system-router#3",
-   "url": "https://bun.com/docs/runtime/file-system-router",
-   "reason": "network URL"
-  },
-  {
-   "id": "/docs/runtime/file-types#1",
-   "url": "https://bun.com/docs/runtime/file-types",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/runtime/file-types#2",
-   "url": "https://bun.com/docs/runtime/file-types",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/runtime/file-types#3",
-   "url": "https://bun.com/docs/runtime/file-types",
-   "reason": "imports a file next to the example"
-  },
-  {
-   "id": "/docs/runtime/glob#1",
-   "url": "https://bun.com/docs/runtime/glob",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/hashing#1",
-   "url": "https://bun.com/docs/runtime/hashing",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/hashing#2",
-   "url": "https://bun.com/docs/runtime/hashing",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/hashing#3",
-   "url": "https://bun.com/docs/runtime/hashing",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/hashing#4",
-   "url": "https://bun.com/docs/runtime/hashing",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/hashing#5",
-   "url": "https://bun.com/docs/runtime/hashing",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/hashing#6",
-   "url": "https://bun.com/docs/runtime/hashing",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/image#1",
-   "url": "https://bun.com/docs/runtime/image",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/module-resolution#1",
-   "url": "https://bun.com/docs/runtime/module-resolution",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/runtime/networking/dns#1",
-   "url": "https://bun.com/docs/runtime/networking/dns",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/networking/fetch#1",
-   "url": "https://bun.com/docs/runtime/networking/fetch",
-   "reason": "network"
-  },
-  {
-   "id": "/docs/runtime/shell#1",
-   "url": "https://bun.com/docs/runtime/shell",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/shell#3",
-   "url": "https://bun.com/docs/runtime/shell",
-   "reason": "subprocess"
-  },
-  {
-   "id": "/docs/runtime/utils#1",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/utils#2",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/utils#3",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/utils#7",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/utils#9",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/utils#10",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/utils#11",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/utils#13",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/utils#14",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "network"
-  },
-  {
-   "id": "/docs/runtime/utils#15",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "file next to the example"
-  },
-  {
-   "id": "/docs/runtime/utils#17",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "no checkable result"
-  },
-  {
-   "id": "/docs/runtime/utils#18",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "network"
-  },
-  {
-   "id": "/docs/runtime/utils#19",
-   "url": "https://bun.com/docs/runtime/utils",
-   "reason": "network URL"
-  },
-  {
-   "id": "/docs/runtime/workers#1",
-   "url": "https://bun.com/docs/runtime/workers",
-   "reason": "network URL"
-  }
- ]
+  ]
 }

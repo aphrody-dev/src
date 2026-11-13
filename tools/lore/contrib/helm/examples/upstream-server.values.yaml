@@ -10,7 +10,7 @@
 
 image:
   repository: ghcr.io/epicgames/lore/loreserver
-  tag: ""  # empty = the chart's appVersion
+  tag: "" # empty = the chart's appVersion
 
 topology:
   mode: tiered
@@ -26,7 +26,7 @@ handler:
   persistence:
     # Cache tier — use the fastest local storage class available.
     size: 500Gi
-    storageClass: ""   # set to a fast local/NVMe class if your cluster has one
+    storageClass: "" # set to a fast local/NVMe class if your cluster has one
 
 # The data pod still deploys (it is always part of tiered mode) but is unused when
 # handlers target an external upstream. Keep its footprint small here.
@@ -39,4 +39,4 @@ service:
   type: LoadBalancer
 
 tls:
-  mode: certManager   # requires cert-manager installed in the cluster
+  mode: certManager # requires cert-manager installed in the cluster

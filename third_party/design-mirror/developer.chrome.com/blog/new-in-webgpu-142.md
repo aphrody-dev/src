@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: Oct 22, 2025
@@ -61,7 +62,8 @@ const device = await adapter.requestDevice({
   requiredFeatures: ["primitive-index"],
 });
 
-const fragmentShaderModule = device.createShaderModule({ code: `
+const fragmentShaderModule = device.createShaderModule({
+  code: `
   enable primitive_index;
 
   @fragment
@@ -76,7 +78,7 @@ const fragmentShaderModule = device.createShaderModule({ code: `
 ```
 
 Explore more by checking out the [Primitive Picking sample](https://webgpu.github.io/webgpu-samples/?sample=primitivePicking), and see the [chromestatus entry](https://chromestatus.com/feature/6467722716250112).
- The Primitive Picking sample in "primitive indexes" mode.
+The Primitive Picking sample in "primitive indexes" mode.
 
 ## Dawn updates
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Loading large JavaScript resources impacts page speed significantly. Splitting
 your JavaScript into smaller chunks and only downloading what is necessary for
 a page to function during startup can greatly improve your page's [load
@@ -32,8 +33,8 @@ splitting. This module focuses on the latter of these two techniques.
 
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview/) throws a warning when [JavaScript execution takes longer than 2
 seconds, and fails when it takes more than 3.5 seconds](https://developer.chrome.com/docs/lighthouse/performance/bootup-time/). Excessive JavaScript
-parsing and execution is a potential problem at *any* point in the page
-lifecycle, as it has the potential to increase an interaction's [*input delay*](https://web.dev/articles/optimize-input-delay.md.txt)
+parsing and execution is a potential problem at _any_ point in the page
+lifecycle, as it has the potential to increase an interaction's [_input delay_](https://web.dev/articles/optimize-input-delay.md.txt)
 if the time at which the user interacts with the page coincides with the moment
 the main thread tasks responsible for processing and executing JavaScript are
 running.
@@ -47,7 +48,7 @@ during the initial page load.
 
 The Lighthouse audit that reports the time spent executing each JavaScript file
 that your page requests is useful in that it can help you identify exactly which
-scripts may be candidates for [*code splitting*](https://web.dev/articles/reduce-javascript-payloads-with-code-splitting.md.txt). You can then go further by
+scripts may be candidates for [_code splitting_](https://web.dev/articles/reduce-javascript-payloads-with-code-splitting.md.txt). You can then go further by
 using the [coverage tool](https://developer.chrome.com/docs/devtools/coverage/) in Chrome DevTools to identify exactly which parts of
 a page's JavaScript go unused during page load.
 
@@ -67,13 +68,17 @@ the page lifecycle.
 > `import`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/import) statement, which imports a module immediately and requires that the parent module and all of its dependencies are parsed and executed before it can run.
 
 ```javascript
-document.querySelectorAll('#myForm input').addEventListener('blur', async () => {
-  // Get the form validation named export from the module through destructuring:
-  const { validateForm } = await import('/validate-form.mjs');
+document.querySelectorAll("#myForm input").addEventListener(
+  "blur",
+  async () => {
+    // Get the form validation named export from the module through destructuring:
+    const { validateForm } = await import("/validate-form.mjs");
 
-  // Validate the form:
-  validateForm();
-}, { once: true });
+    // Validate the form:
+    validateForm();
+  },
+  { once: true },
+);
 ```
 
 In the preceding JavaScript snippet, the `validate-form.mjs` module is
@@ -126,7 +131,7 @@ standpoint.
 
 Chromium's V8 JavaScript engine offers a number of optimizations out of the box
 to ensure that your production JavaScript code loads as efficiently as possible.
-One of these optimizations is known as *streaming compilation* which---like the
+One of these optimizations is known as _streaming compilation_ which---like the
 incremental parsing of HTML streamed to the browser---compiles streamed chunks of
 JavaScript as they arrive from the network.
 
@@ -166,16 +171,16 @@ creates a separate chunk for that module:
 /* main.js */
 
 // An application-specific chunk required during the initial page load:
-import myFunction from './my-function.js';
+import myFunction from "./my-function.js";
 
-myFunction('Hello world!');
+myFunction("Hello world!");
 
 // If a specific condition is met, a separate chunk is downloaded on demand,
 // rather than being bundled with the initial chunk:
 if (condition) {
   // Assumes top-level await is available. More info:
   // https://v8.dev/features/top-level-await
-  await import('/form-validation.js');
+  await import("/form-validation.js");
 }
 ```
 
@@ -197,7 +202,7 @@ On the other hand, changing the `SplitChunksPlugin` configuration to specify
 `chunks: initial` ensures that code is split only on initial chunks. These are
 chunks such as those statically imported, or listed in webpack's [`entry`
 property](https://webpack.js.org/concepts/entry-points/). Looking at the preceding example, the resulting chunk would be a
-combination of `form-validation.js` *and* `main.js` in a single script file,
+combination of `form-validation.js` _and_ `main.js` in a single script file,
 resulting in potentially worse initial page load performance.
 
 The options for `SplitChunksPlugin` can also be configured to separate larger
@@ -222,7 +227,7 @@ browser cache. Care must be taken to strike a balance between caching
 efficiency, compression effectiveness, and script evaluation time.
 
 > [!CAUTION]
-> **Caution:** If you disable `SplitChunksPlugin` by specifying `splitChunks: false` in your application's webpack configuration, then `./my-function.js` gets bundled in *both* `main.js` and `form-validation.js`.
+> **Caution:** If you disable `SplitChunksPlugin` by specifying `splitChunks: false` in your application's webpack configuration, then `./my-function.js` gets bundled in _both_ `main.js` and `form-validation.js`.
 
 #### webpack demo
 
@@ -236,7 +241,7 @@ efficiency, compression effectiveness, and script evaluation time.
 Which type of `import` statement is used when performing code
 splitting?
 Dynamic `import()`. Correct! Static `import`. Try again.
-Which type of `import` statement *must* be at the top
+Which type of `import` statement _must_ be at the top
 of a JavaScript module, and in no other location?
 Dynamic `import()`. Try again. Static `import`. Correct!
 When using `SplitChunksPlugin` in webpack, what is the

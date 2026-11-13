@@ -8,16 +8,16 @@ Outil : `mcp__relay__gemini_review` (moteur antigravity, 29,8 s). Objet : commit
 
 ## Défauts retenus et corrigés
 
-| # | Défaut | Correction |
-|---|---|---|
-| 1, 2 | `sharedMcp` ignore sans message un nom non résolu (hors hôte, en-têtes, secrets) | ligne `info ... pas d'entrée [[claude.mcp]] HTTP sans secret` pour Codex et agy |
-| 3, 4, 5 | agy : URL comparée par sous-chaîne, état cherché par regex dans toute la ligne | colonnes NAME TYPE STATUS URL comparées exactement |
-| 12 | tokens de 2 caractères (ui, ux, 3d) supprimés par la recherche | seuil abaissé à 2 caractères |
-| 14 | scores BM25 non comparables entre domaines dans `--brief` | précisé dans la skill : juxtaposition, pas de classement |
-| 18 | LCP 1,2 s et INP 50 ms présentés sans source | marqués objectifs internes, seuils Core Web Vitals cités à côté |
-| 19 | versions three.js et wgpu sans source | source `gh api .../releases/latest` et dates de publication en métadonnées |
-| 20 | `bun x @gltf-transform/cli` non épinglé | épinglé `@4.5.1` (registre npm du 2026-11-13), skill et références |
-| 23 | commandes `gds audit-slop` non vérifiées | exécutée sur la skill humanizer : fonctionne (signale le lexique cité, attendu) |
+| #       | Défaut                                                                           | Correction                                                                      |
+| ------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 1, 2    | `sharedMcp` ignore sans message un nom non résolu (hors hôte, en-têtes, secrets) | ligne `info ... pas d'entrée [[claude.mcp]] HTTP sans secret` pour Codex et agy |
+| 3, 4, 5 | agy : URL comparée par sous-chaîne, état cherché par regex dans toute la ligne   | colonnes NAME TYPE STATUS URL comparées exactement                              |
+| 12      | tokens de 2 caractères (ui, ux, 3d) supprimés par la recherche                   | seuil abaissé à 2 caractères                                                    |
+| 14      | scores BM25 non comparables entre domaines dans `--brief`                        | précisé dans la skill : juxtaposition, pas de classement                        |
+| 18      | LCP 1,2 s et INP 50 ms présentés sans source                                     | marqués objectifs internes, seuils Core Web Vitals cités à côté                 |
+| 19      | versions three.js et wgpu sans source                                            | source `gh api .../releases/latest` et dates de publication en métadonnées      |
+| 20      | `bun x @gltf-transform/cli` non épinglé                                          | épinglé `@4.5.1` (registre npm du 2026-11-13), skill et références              |
+| 23      | commandes `gds audit-slop` non vérifiées                                         | exécutée sur la skill humanizer : fonctionne (signale le lexique cité, attendu) |
 
 ## Défauts écartés
 

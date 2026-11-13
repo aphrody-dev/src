@@ -22,14 +22,17 @@ x-svc: &svc
   deploy:
     resources: { limits: { memory: 1g } }
 
-
 services:
   # ---------------------------------------------------------------- core (prd)
   ai-os-relay:
     <<: *svc
     profiles: [core]
     image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/ai-os:${SRC_TAG:-latest}
-    ports: ["127.0.0.1:${RELAY_HOST_PORT:-28790}:8790", "127.0.0.1:${RELAY_TCP_HOST_PORT:-28791}:8791"]
+    ports:
+      [
+        "127.0.0.1:${RELAY_HOST_PORT:-28790}:8790",
+        "127.0.0.1:${RELAY_TCP_HOST_PORT:-28791}:8791",
+      ]
     volumes: [ai-os-home:/home/bun]
     read_only: false
 
@@ -39,7 +42,13 @@ services:
     image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/ai-os:${SRC_TAG:-latest}
     command: ["bun", "src/cli.ts", "gateway"]
     # AGENT_MODEL=<provider>/<model> (e.g. llama/<gguf name>); echo/echo keeps the gateway up until a model is set.
-    environment: { PORT: "4000", HEALTH_PATH: /health, RELAY_OPENAI_ENDPOINTS: "llama=http://llama:8080", AGENT_MODEL: "${AGENT_MODEL:-echo/echo}" }
+    environment:
+      {
+        PORT: "4000",
+        HEALTH_PATH: /health,
+        RELAY_OPENAI_ENDPOINTS: "llama=http://llama:8080",
+        AGENT_MODEL: "${AGENT_MODEL:-echo/echo}",
+      }
     ports: ["127.0.0.1:${GATEWAY_HOST_PORT:-24000}:4000"]
     volumes: [ai-os-home:/home/bun]
     read_only: false
@@ -75,7 +84,11 @@ services:
     <<: *svc
     profiles: [core]
     image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/loreserver:${SRC_TAG:-latest}
-    ports: ["127.0.0.1:${LORE_HTTP_HOST_PORT:-31339}:41339", "127.0.0.1:${LORE_QUIC_HOST_PORT:-31337}:41337/udp"]
+    ports:
+      [
+        "127.0.0.1:${LORE_HTTP_HOST_PORT:-31339}:41339",
+        "127.0.0.1:${LORE_QUIC_HOST_PORT:-31337}:41337/udp",
+      ]
     volumes: [lore-data:/data]
     deploy: { resources: { limits: { memory: 4g } } }
 
@@ -85,10 +98,27 @@ services:
     <<: *svc
     profiles: [ai]
     image: ghcr.io/ggml-org/llama.cpp:server-b12316@sha256:2103d1f4f2e2e223ad80587dcb39fc15a9f912f29ae1fa9fc1193fe8c1aea82f
-    command: ["--host", "0.0.0.0", "--port", "8080", "-m", "/models/${LLAMA_MODEL:-model.gguf}", "--ctx-size", "${LLAMA_CTX:-8192}", "--jinja"]
+    command:
+      [
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8080",
+        "-m",
+        "/models/${LLAMA_MODEL:-model.gguf}",
+        "--ctx-size",
+        "${LLAMA_CTX:-8192}",
+        "--jinja",
+      ]
     ports: ["127.0.0.1:${LLAMA_HOST_PORT:-28088}:8080"]
     volumes: [llama-models:/models:ro]
-    healthcheck: { test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health"], interval: 30s, timeout: 5s, start_period: 120s }
+    healthcheck:
+      {
+        test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health"],
+        interval: 30s,
+        timeout: 5s,
+        start_period: 120s,
+      }
     deploy: { resources: { limits: { memory: 16g } } }
 
   # ---------------------------------------------------------------- edge (fr2 or prd): stateless, scale with --scale
@@ -96,14 +126,28 @@ services:
     <<: *svc
     profiles: [edge, core]
     image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/r2-site:${SRC_TAG:-latest}
-    environment: { PORT: "8797", S3_BUCKET: aphrody-dist, PREFIX: aphrody, SERVICE: aphrody-downloads, SPA: "0" }
+    environment:
+      {
+        PORT: "8797",
+        S3_BUCKET: aphrody-dist,
+        PREFIX: aphrody,
+        SERVICE: aphrody-downloads,
+        SPA: "0",
+      }
     ports: ["127.0.0.1:${DOWNLOADS_HOST_PORT:-28797}:8797"]
 
   cdn:
     <<: *svc
     profiles: [edge, core]
     image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/r2-site:${SRC_TAG:-latest}
-    environment: { PORT: "8796", S3_BUCKET: aphrody-assets, PREFIX: "", SERVICE: aphrody-cdn, SPA: "0" }
+    environment:
+      {
+        PORT: "8796",
+        S3_BUCKET: aphrody-assets,
+        PREFIX: "",
+        SERVICE: aphrody-cdn,
+        SPA: "0",
+      }
     ports: ["127.0.0.1:${CDN_HOST_PORT:-28796}:8796"]
 
   api-gateway:

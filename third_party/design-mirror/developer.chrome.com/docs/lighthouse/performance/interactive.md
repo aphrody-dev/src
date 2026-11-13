@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!CAUTION]
 > **Caution:** [Time to Interactive (TTI)](https://web.dev/articles/tti) has proved overly sensitive to outlier network requests and long tasks, resulting in high variability in this metric. TTI was [removed as a metric from Lighthouse 10](https://developer.chrome.com/blog/lighthouse-10-0.md.txt#scoring-changes). Newer, alternative, metrics like [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp), [Total Blocking Time (TBT)](https://web.dev/articles/tbt), and [Interaction to Next Paint (INP)](https://web.dev/articles/inp) are usually better metrics to use in place of TTI.
 
@@ -24,7 +25,7 @@ Lighthouse displays TTI in seconds:
 
 ## What TTI measures
 
-TTI measures how long it takes a page to become *fully* interactive.
+TTI measures how long it takes a page to become _fully_ interactive.
 A page is considered fully interactive when:
 
 - The page displays useful content, which is measured by the [First Contentful Paint](https://web.dev/articles/fcp),
@@ -32,7 +33,7 @@ A page is considered fully interactive when:
 - The page responds to user interactions within 50 milliseconds.
 
 > [!NOTE]
-> **Note:** Both [First CPU Idle](https://developer.chrome.com/docs/lighthouse/performance/first-cpu-idle.md.txt) and TTI measure when the page is ready for user input. First CPU Idle occurs when the user can *start* to interact with the page; TTI occurs when the user is *fully* able to interact with the page. See Google's [First Interactive And Consistently Interactive](https://docs.google.com/document/d/1GGiI9-7KeY3TPqS3YT271upUVimo-XiL5mwWorDUD4c/edit) if you're interested in the exact calculation for each metric.
+> **Note:** Both [First CPU Idle](https://developer.chrome.com/docs/lighthouse/performance/first-cpu-idle.md.txt) and TTI measure when the page is ready for user input. First CPU Idle occurs when the user can _start_ to interact with the page; TTI occurs when the user is _fully_ able to interact with the page. See Google's [First Interactive And Consistently Interactive](https://docs.google.com/document/d/1GGiI9-7KeY3TPqS3YT271upUVimo-XiL5mwWorDUD4c/edit) if you're interested in the exact calculation for each metric.
 
 ## How Lighthouse determines your TTI score
 
@@ -45,11 +46,11 @@ If your website's TTI is 2.2 seconds, your TTI score is 99.
 
 This table shows how to interpret your TTI score:
 
-| TTI metric (in seconds) | Color-coding |
-|---|---|
-| 0--3.8 | Green (fast) |
-| 3.9--7.3 | Orange (moderate) |
-| Over 7.3 | Red (slow) |
+| TTI metric (in seconds) | Color-coding      |
+| ----------------------- | ----------------- |
+| 0--3.8                  | Green (fast)      |
+| 3.9--7.3                | Orange (moderate) |
+| Over 7.3                | Red (slow)        |
 
 > [!NOTE]
 > **Note:** See the [Lighthouse performance scoring](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring.md.txt) post to learn how your page's overall performance score is calculated.
@@ -85,7 +86,7 @@ Unless you have a specific reason for focusing on a particular metric, it's
 usually better to focus on improving your overall Performance score.
 
 Use the **Diagnostics** section of your Lighthouse report to determine which improvements will have the most value for your page. The more significant the opportunity, the greater the effect it will have on your Performance score. For example, the following Lighthouse screenshot shows that [eliminating render-blocking resources](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources.md.txt) will yield the biggest improvement:
- Lighthouse: Diagnostics section
+Lighthouse: Diagnostics section
 
 See the [Performance audits](https://developer.chrome.com/docs/lighthouse/performance)
 to learn how to address the opportunities identified in your Lighthouse report.

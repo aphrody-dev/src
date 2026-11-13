@@ -7,13 +7,14 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Fred K Schott [X](https://twitter.com/FredKSchott)  Matthew Phillips [X](https://twitter.com/matthewcp)  Maxi Ferreira [X](https://twitter.com/charca)  Kara Erickson [X](https://twitter.com/karaforthewin)  Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)
+
+Fred K Schott [X](https://twitter.com/FredKSchott) Matthew Phillips [X](https://twitter.com/matthewcp) Maxi Ferreira [X](https://twitter.com/charca) Kara Erickson [X](https://twitter.com/karaforthewin) Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)
 
 Today we would like to share more about Chrome and [Astro](https://astro.build/)'s journey with the [View Transitions API](https://developer.chrome.com/docs/web-platform/view-transitions.md.txt). This includes how the Astro community embraced and experimented with the API early, highlighting the possibilities to the broader community. We're also excited to share more about the new built-in support for View Transitions in Astro 3.0!
 
 ## Background
 
-Seamless transitions between different states of a page, known as *state transitions,* have always been a complex aspect of building seamless, animated experiences on the web. Despite the availability of tools like CSS transitions, CSS animations, and the Web Animation API, creating state transitions has remained a daunting task. One of the challenges is handling interaction on outgoing elements, which can make the transitions more complex.
+Seamless transitions between different states of a page, known as _state transitions,_ have always been a complex aspect of building seamless, animated experiences on the web. Despite the availability of tools like CSS transitions, CSS animations, and the Web Animation API, creating state transitions has remained a daunting task. One of the challenges is handling interaction on outgoing elements, which can make the transitions more complex.
 
 In addition, maintaining reading position and focus for assistive devices is difficult. And, dealing with scroll position differences makes state transitions a cumbersome process. All these factors contribute to the complexity of implementing smooth transitions between various elements on a webpage
 
@@ -37,10 +38,10 @@ Astro was one of those frameworks that leaned into View Transitions early. The r
 Astro had been looking for something like View Transitions for a long time. Astro is a JavaScript web framework that server-renders your UI components to lightweight HTML for faster page load performance. Astro intentionally moves as much work off the client device as possible. Astro websites use native browser page navigation, where other web frameworks might hijack browser navigation with JavaScript client-side routing instead.
 
 This tradeoff created a challenge for the Astro team: How could Astro animate page transitions and provide app-like UI persistence across pages without adopting client-side routing?
- Challenges of animating page transitions with Astro
+Challenges of animating page transitions with Astro
 
 View Transitions were the answer. With View Transitions, Astro could provide the same routing features that JavaScript-heavy SPA web frameworks offered, but without the performance and complexity overhead of client-side routing. Other frameworks approached View Transitions as an optional implementation detail, but for Astro it was something much bigger.
- View Transitions as the answer
+View Transitions as the answer
 
 The next question the Astro team had to answer was, "how?" The team looked to projects like Turbo, Swup, and Livewire for inspiration and even prototyped a few similar approaches inside of Astro.
 
@@ -51,8 +52,8 @@ One of the earliest attempts involved a full-page "smart transition" that would 
 // in Astro via top-level config. Never implemented.
 
 export default defineConfig({
-  router: 'spa'
-})
+  router: "spa",
+});
 ```
 
 Thankfully, the Astro community showed that the View Transitions API was already powerful without the product over-complicating things. After seeing some early demos, the Astro team were sold on the idea of a simple Astro API that could match the browser APIs as closely as possible. Instead of seeing View Transitions as an invisible implementation detail hidden inside of Astro, they could be directly exposed to the developer. Aligning Astro directly with the web platform and reducing overall complexity on the frontend.
@@ -88,7 +89,10 @@ Astro 3.0, finalizes support and unflags the new View Transitions API for everyo
   <p>Slide animation as you navigate to and from the page!</p>
 </main>
 <aside transition:name="my-aside">
-  <p>Animate and morph the matching "my-aside" element across pages automatically!</p>
+  <p>
+    Animate and morph the matching "my-aside" element across pages
+    automatically!
+  </p>
 </aside>
 ```
 
@@ -96,9 +100,13 @@ An unexpected benefit of aligning Astro with the platform APIs is the ability to
 
 ```html
 <video controls="" autoplay="" transition:persist>
-  <source src="https://ia804502.us.archive.org/33/items/GoldenGa1939_3/GoldenGa1939_3_512kb.mp4" type="video/mp4">
+  <source
+    src="https://ia804502.us.archive.org/33/items/GoldenGa1939_3/GoldenGa1939_3_512kb.mp4"
+    type="video/mp4"
+  />
 </video>
 ```
+
 Astro 3.0 supports persisting HTML elements across page navigations. When persisting interactive UI components, their state is also maintained.
 
 Visit demo: [Live](https://astro-records.pages.dev/), [Source](https://github.com/Charca/astro-records)

@@ -40,7 +40,7 @@ ureq.workspace = true
 regex.workspace = true
 uuid.workspace = true
 dotenvy = { workspace = true }
-sys = { version = "0.3.0", path = "../sys" , package = "aphrody-sys" }
+sys = { version = "0.3.0", path = "../sys", package = "aphrody-sys" }
 xtk.workspace = true
 up = { version = "0.3.0", package = "aphrody-up", path = "../up" }
 rt = { version = "0.3.0", package = "aphrody-rt", path = "../rt" }

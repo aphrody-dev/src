@@ -134,7 +134,9 @@ export function aurora(
   const M = Math.max(w, h);
   const th = phase * Math.PI * 2 * loopN;
   const layers = [0, 1, 2].map((i) => {
-    const c = p.dark ? p.blobs[i % 3]! : [p.primary, p.tertiary, p.accent][i % 3]!;
+    const c = p.dark
+      ? p.blobs[i % 3]!
+      : [p.primary, p.tertiary, p.accent][i % 3]!;
     return {
       y0: 0.25 + 0.22 * i + R() * 0.1,
       amp: 0.08 + R() * 0.06,

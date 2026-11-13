@@ -7,13 +7,14 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
 
 Ever since the web became a platform not just for documents but also for apps, some of the most advanced apps have pushed web browsers to their limits. The approach of going "closer to the metal" by interfacing with lower-level languages in order to improve performance is encountered in many higher-level languages. As an example, Java has the [Java Native Interface](https://web.archive.org/web/20080330002620/http://today.java.net/pub/a/today/2006/10/19/invoking-assembly-language-from-java.html). For JavaScript, this lower-level language is WebAssembly. In this article, you will discover what assembly language is, and why it can be useful on the web, then learn how WebAssembly was created via the interim solution of asm.js.
 
 ## Assembly language
 
-Have you ever programmed in assembly language? In computer programming, assembly language, often referred to simply as Assembly and commonly abbreviated as ASM or asm, is *any* low-level programming language with a very strong correspondence between the instructions in the language and the architecture's machine code instructions.
+Have you ever programmed in assembly language? In computer programming, assembly language, often referred to simply as Assembly and commonly abbreviated as ASM or asm, is _any_ low-level programming language with a very strong correspondence between the instructions in the language and the architecture's machine code instructions.
 
 For example, looking at the [Intel® 64 and IA-32 Architectures](https://software.intel.com/en-us/download/intel-64-and-ia-32-architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4) (PDF), the [`MUL`](https://www.felixcloutier.com/x86/mul) instruction (for **mul** tiplication) performs an unsigned multiplication of the first operand (destination operand) and the second operand (source operand), and stores the result in the destination operand. Very simplified, the destination operand is an implied operand located in register `AX`, and the source operand is located in a general-purpose register like `CX`. The result is stored again in register `AX`. Consider the following x86 code example:
 

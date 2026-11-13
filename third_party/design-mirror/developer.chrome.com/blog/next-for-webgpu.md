@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-François Beaufort [GitHub](https://github.com/beaufortfrancois)  Corentin Wallez [X](https://twitter.com/DaKangz) [GitHub](https://github.com/Kangz) [Mastodon](https://mastodon.gamedev.place/@DaKangz)
+
+François Beaufort [GitHub](https://github.com/beaufortfrancois) Corentin Wallez [X](https://twitter.com/DaKangz) [GitHub](https://github.com/Kangz) [Mastodon](https://mastodon.gamedev.place/@DaKangz)
 
 Published: November 21, 2024
 

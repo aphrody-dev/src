@@ -6,29 +6,29 @@ Ce document remplace la première version, qui proposait des décisions déjà p
 
 ## 1. Ce qui existe déjà
 
-| Domaine | État | Lu dans |
-| :--- | :--- | :--- |
-| Décision UI | Décision du propriétaire du 2026-11-13, amendée le jour même : le framework est libre (Bevy UI, egui, iced, WinUI 3, Tauri, GPUI, WebUI et autres) ; critères : qualité de rendu, performance, fonction | `docs/ui/STACK.md` |
-| Design system | Tokens dans `packages/design` ; cœur Rust `crates/aphrody-ui`, avec adaptateurs de layout `to_bevy` et `to_egui` derrière les features optionnelles `bevy` et `egui` | `docs/DESIGN_SYSTEM.md`, `crates/aphrody-ui/Cargo.toml` |
-| Pins moteur et GPU | `[workspace.dependencies]` : bevy 0.20, egui 0.37, wgpu 30.0.1, winit 0.31.0-beta.4, image 0.25.10 | `Cargo.toml` |
-| Domaine média | `crates/tv-core`, `tv-ffmpeg` (wrapper sûr sur `ffmpeg-next` 9.1.0), `tv-cli`, `tv-i18n` | `docs/tv/plan-ecosysteme-c-rust.mdx` |
-| Politique de licences | Liste d'autorisation dans `deny.toml` ; GPL, LGPL, AGPL, licences non OSI et dépôts `NOASSERTION` refusés sans revue enregistrée ; libav* de FFmpeg lié dynamiquement, jamais vendu | `docs/ARCHITECTURE.md`, `deny.toml` |
-| ABI C | `crates/core-capi` (cbindgen, `include/aphrody_core.h`) au-dessus de `crates/core` ; binding Bun dans `packages/core/src/ffi.ts` | `docs/llvm/C-ABI-2026.md` |
-| Graphe de code | `ay graph build` (tree-sitter), recette `just graph <path> <name>`, sortie dans `graphify-out/<name>` (non suivie) | `justfile` |
-| Mise à plat | `ay flat list\|sync\|check` copie les crates feuilles du fork bun dans `crates/bun-flat`, avec commit du fork et licence par module dans `flat.toml` | `crates/bun-flat/flat.toml` |
-| Checkouts épinglés | `third_party/artcraft` (`83aad5eb`), `third_party/ffmpeg` (`46d13a83`), `third_party/storyteller-bevy` (`4ce8b72c`), `third_party/wgpu` (fork aphrody-labs), `third_party/winit` ; dans le lock depuis `4c6bf057` (2026-11-12) | `DEPS`, `src.lock.json` |
-| Forks suivis | 18 bevyengine, 33 storytold et 10 EpicGames dans `third_party/forks.txt` | `docs/epic/TRACKING.md` |
-| Direction | « Epic track (not scheduled) » ; Unreal Engine uniquement via le fork privé | `docs/STACK-ROADMAP.md`, `docs/ARCHITECTURE.md` |
+| Domaine               | État                                                                                                                                                                                                                           | Lu dans                                                 |
+| :-------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------ |
+| Décision UI           | Décision du propriétaire du 2026-11-13, amendée le jour même : le framework est libre (Bevy UI, egui, iced, WinUI 3, Tauri, GPUI, WebUI et autres) ; critères : qualité de rendu, performance, fonction                        | `docs/ui/STACK.md`                                      |
+| Design system         | Tokens dans `packages/design` ; cœur Rust `crates/aphrody-ui`, avec adaptateurs de layout `to_bevy` et `to_egui` derrière les features optionnelles `bevy` et `egui`                                                           | `docs/DESIGN_SYSTEM.md`, `crates/aphrody-ui/Cargo.toml` |
+| Pins moteur et GPU    | `[workspace.dependencies]` : bevy 0.20, egui 0.37, wgpu 30.0.1, winit 0.31.0-beta.4, image 0.25.10                                                                                                                             | `Cargo.toml`                                            |
+| Domaine média         | `crates/tv-core`, `tv-ffmpeg` (wrapper sûr sur `ffmpeg-next` 9.1.0), `tv-cli`, `tv-i18n`                                                                                                                                       | `docs/tv/plan-ecosysteme-c-rust.mdx`                    |
+| Politique de licences | Liste d'autorisation dans `deny.toml` ; GPL, LGPL, AGPL, licences non OSI et dépôts `NOASSERTION` refusés sans revue enregistrée ; libav* de FFmpeg lié dynamiquement, jamais vendu                                            | `docs/ARCHITECTURE.md`, `deny.toml`                     |
+| ABI C                 | `crates/core-capi` (cbindgen, `include/aphrody_core.h`) au-dessus de `crates/core` ; binding Bun dans `packages/core/src/ffi.ts`                                                                                               | `docs/llvm/C-ABI-2026.md`                               |
+| Graphe de code        | `ay graph build` (tree-sitter), recette `just graph <path> <name>`, sortie dans `graphify-out/<name>` (non suivie)                                                                                                             | `justfile`                                              |
+| Mise à plat           | `ay flat list\|sync\|check` copie les crates feuilles du fork bun dans `crates/bun-flat`, avec commit du fork et licence par module dans `flat.toml`                                                                           | `crates/bun-flat/flat.toml`                             |
+| Checkouts épinglés    | `third_party/artcraft` (`83aad5eb`), `third_party/ffmpeg` (`46d13a83`), `third_party/storyteller-bevy` (`4ce8b72c`), `third_party/wgpu` (fork aphrody-labs), `third_party/winit` ; dans le lock depuis `4c6bf057` (2026-11-12) | `DEPS`, `src.lock.json`                                 |
+| Forks suivis          | 18 bevyengine, 33 storytold et 10 EpicGames dans `third_party/forks.txt`                                                                                                                                                       | `docs/epic/TRACKING.md`                                 |
+| Direction             | « Epic track (not scheduled) » ; Unreal Engine uniquement via le fork privé                                                                                                                                                    | `docs/STACK-ROADMAP.md`, `docs/ARCHITECTURE.md`         |
 
 ## 2. Versions qui contraignent une fusion (`gh api`, 2026-11-13)
 
-| Pile | wgpu | winit | UI | Licence |
-| :--- | :--- | :--- | :--- | :--- |
-| workspace src | 30.0.1 | 0.31.0-beta.4 | selon `docs/ui/STACK.md` | MIT OR Apache-2.0 |
-| Bevy v0.20.1 | 30 | 0.30 | bevy_ui | MIT OR Apache-2.0 |
-| Craft Apps | 30.0, via `storytold/egui` | 0.30.13, `storytold/winit` | egui 0.37.0 (fork) | Apache-2.0 |
-| ArtCraft Studio | non lu | non lu | Tauri 2.11.2 et front TypeScript | Apache-2.0 et MIT |
-| `storytold/artcraft-services` | n/a | n/a | n/a | « ArtCraft License (WIP) », fair source, usage personnel privé |
+| Pile                          | wgpu                       | winit                      | UI                               | Licence                                                        |
+| :---------------------------- | :------------------------- | :------------------------- | :------------------------------- | :------------------------------------------------------------- |
+| workspace src                 | 30.0.1                     | 0.31.0-beta.4              | selon `docs/ui/STACK.md`         | MIT OR Apache-2.0                                              |
+| Bevy v0.20.1                  | 30                         | 0.30                       | bevy_ui                          | MIT OR Apache-2.0                                              |
+| Craft Apps                    | 30.0, via `storytold/egui` | 0.30.13, `storytold/winit` | egui 0.37.0 (fork)               | Apache-2.0                                                     |
+| ArtCraft Studio               | non lu                     | non lu                     | Tauri 2.11.2 et front TypeScript | Apache-2.0 et MIT                                              |
+| `storytold/artcraft-services` | n/a                        | n/a                        | n/a                              | « ArtCraft License (WIP) », fair source, usage personnel privé |
 
 Lecture : les trois piles Rust sont sur wgpu 30, un seul wgpu suffit. winit diffère : src épingle 0.31.0-beta.4, Bevy 0.20.1 et le fork egui de Craft utilisent 0.30.x. Aujourd'hui seul `gamescope-cli` dépend de winit ; ajouter `bevy_winit` ou `egui-winit` en introduirait un second.
 
@@ -44,16 +44,16 @@ Lecture : les trois piles Rust sont sur wgpu 30, un seul wgpu suffit. winit diff
 
 Les builds Rust tournent en CI ou sur fr1, jamais sur le poste.
 
-| # | Étape | Contrôle | État |
-| :--- | :--- | :--- | :--- |
-| 1 | Graphe des checkouts existants avec `just graph third_party/<path> <name>` | `GRAPH_REPORT.md` avec nombres de nœuds et d'arêtes | Fait le 2026-11-13 (par ex. libavcodec 29819 / 97225, `artcraft/crates` 34314 / 69018) ; chaque exécution a pris 6 s ou moins |
-| 2 | IR LLVM de ces bibliothèques avec le clang partagé, sur fr1 | fichiers `.bc` depuis un build LGPL configuré | Non démarré |
-| 3 | Couche formats : évaluer `storytold/craft-libs` (Apache-2.0, 114 crates `craft-<name>`) en dépendances git épinglées par `rev`, sans copie | `cargo deny check licenses` passe en CI | Non démarré |
-| 4 | Média : étendre `crates/tv-*` selon `docs/tv` ; ce plan n'ajoute rien | tests de `tv-ffmpeg`, dont `ffmpeg_build_is_lgpl` | Propriété de la session qui maintient `crates/tv-*` |
-| 5 | Moteur : ajouter les crates Bevy une feature à la fois derrière la feature `bevy` de `aphrody-ui` ; trancher winit 0.30 ou 0.31 avant `bevy_winit` | `cargo tree -d` en CI liste un winit et un wgpu | Non démarré |
-| 6 | Mettre à plat les seules crates feuilles à modifier : généraliser `ay flat` à un `flat.toml` par fork ; sources sans licence ou non OSI exclues | `ay flat check --fork third_party/<name>` propre | Fait le 2026-11-13 : un flat.toml par fork (bun, diffutils), contrôle SPDX contre deny.toml |
-| 7 | Captures des Craft Apps depuis des builds de release faits sur fr1, stockées hors de git | fichiers listés dans `docs/games/ARTCRAFT.md` | Non démarré |
-| 8 | Unreal Engine : inchangé, fork privé, interop seule | `docs/epic/RESOURCES.md` | Aucun travail prévu ici |
+| #   | Étape                                                                                                                                              | Contrôle                                            | État                                                                                                                          |
+| :-- | :------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Graphe des checkouts existants avec `just graph third_party/<path> <name>`                                                                         | `GRAPH_REPORT.md` avec nombres de nœuds et d'arêtes | Fait le 2026-11-13 (par ex. libavcodec 29819 / 97225, `artcraft/crates` 34314 / 69018) ; chaque exécution a pris 6 s ou moins |
+| 2   | IR LLVM de ces bibliothèques avec le clang partagé, sur fr1                                                                                        | fichiers `.bc` depuis un build LGPL configuré       | Non démarré                                                                                                                   |
+| 3   | Couche formats : évaluer `storytold/craft-libs` (Apache-2.0, 114 crates `craft-<name>`) en dépendances git épinglées par `rev`, sans copie         | `cargo deny check licenses` passe en CI             | Non démarré                                                                                                                   |
+| 4   | Média : étendre `crates/tv-*` selon `docs/tv` ; ce plan n'ajoute rien                                                                              | tests de `tv-ffmpeg`, dont `ffmpeg_build_is_lgpl`   | Propriété de la session qui maintient `crates/tv-*`                                                                           |
+| 5   | Moteur : ajouter les crates Bevy une feature à la fois derrière la feature `bevy` de `aphrody-ui` ; trancher winit 0.30 ou 0.31 avant `bevy_winit` | `cargo tree -d` en CI liste un winit et un wgpu     | Non démarré                                                                                                                   |
+| 6   | Mettre à plat les seules crates feuilles à modifier : généraliser `ay flat` à un `flat.toml` par fork ; sources sans licence ou non OSI exclues    | `ay flat check --fork third_party/<name>` propre    | Fait le 2026-11-13 : un flat.toml par fork (bun, diffutils), contrôle SPDX contre deny.toml                                   |
+| 7   | Captures des Craft Apps depuis des builds de release faits sur fr1, stockées hors de git                                                           | fichiers listés dans `docs/games/ARTCRAFT.md`       | Non démarré                                                                                                                   |
+| 8   | Unreal Engine : inchangé, fork privé, interop seule                                                                                                | `docs/epic/RESOURCES.md`                            | Aucun travail prévu ici                                                                                                       |
 
 ## 5. Non fait
 

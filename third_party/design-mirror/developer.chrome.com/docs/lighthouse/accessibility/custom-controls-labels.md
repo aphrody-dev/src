@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Custom interactive controls should be focusable. For example, if you use
 JavaScript to turn a `<div>` into a fancy drop-down, that drop-down isn't
 automatically inserted into the correct tab order.

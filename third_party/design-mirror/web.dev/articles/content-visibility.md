@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Improve initial load time by skipping the rendering of offscreen content.
 
- Una Kravets [X](https://twitter.com/una) [GitHub](https://github.com/una) [Bluesky](https://bsky.app/profile/una.im) [Homepage](https://una.im/)  Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)  Vladimir Levin
+Una Kravets [X](https://twitter.com/una) [GitHub](https://github.com/una) [Bluesky](https://bsky.app/profile/una.im) [Homepage](https://una.im/) Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/) Vladimir Levin
 
 Published: August 5, 2020
 
@@ -36,7 +37,7 @@ Browser Support
 
 [Source](https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/content-visibility)
 
- In our article demo, applying `content-visibility: auto` to chunked content areas gives a **7x** rendering performance boost on initial load. Read on to learn more.
+In our article demo, applying `content-visibility: auto` to chunked content areas gives a **7x** rendering performance boost on initial load. Read on to learn more.
 
 ## CSS Containment
 
@@ -116,7 +117,7 @@ In step 2, the browser processes all of the contents looking for things that may
 have changed. It updates the style and layout of any new elements, along with
 the elements that may have shifted as a result of new updates. This is rendering
 work. This takes time.
- An example of a travel blog. See [Demo on Codepen](https://codepen.io/una/pen/rNxEWLo)
+An example of a travel blog. See [Demo on Codepen](https://codepen.io/una/pen/rNxEWLo)
 
 Now consider what happens if you put `content-visibility: auto` on each of the
 individual stories in the blog. The general loop is the same: the browser
@@ -130,13 +131,13 @@ only style and layout the element box itself.
 
 The performance of loading this page would be as if it contained full on-screen
 stories and empty boxes for each of the off-screen stories. This performs much
-better, with *expected reduction of 50% or more* from the rendering cost of
+better, with _expected reduction of 50% or more_ from the rendering cost of
 loading. In our example, we see a boost from a **232ms** rendering time to a
 **30ms** rendering time. That's a **7x** performance boost.
 
 What is the work that you need to do in order to reap these benefits? First, we
 chunk the content into sections:
- Example of chunking content into sections with the `story` class applied, to receive `content-visibility: auto`. See [Demo on Codepen](https://codepen.io/vmpstr/pen/xxZoyMb)
+Example of chunking content into sections with the `story` class applied, to receive `content-visibility: auto`. See [Demo on Codepen](https://codepen.io/vmpstr/pen/xxZoyMb)
 
 Then, we apply the following style rule to the sections:
 
@@ -162,8 +163,8 @@ This might not be ideal, since the size of the scrollbar will shift, being
 reliant on each story having a non-zero height.
 
 Thankfully, CSS provides another property, `contain-intrinsic-size`, which
-effectively specifies the natural size of the element *if the element is
-affected by size containment* . In our example, we are setting it to `1000px` as
+effectively specifies the natural size of the element _if the element is
+affected by size containment_ . In our example, we are setting it to `1000px` as
 an estimate for the height and width of the sections.
 
 This means it will lay out as if it had a single child of "intrinsic-size"

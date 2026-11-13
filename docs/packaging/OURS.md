@@ -1,20 +1,20 @@
 # Ce que C:\src possède déjà (inspecté le 2026-11-12, lecture seule)
 
-| Pièce | Emplacement | Ce qu'elle fait | Correspondance |
-|---|---|---|---|
-| `ay up` | crates/up (lib.rs 455 l., manifest.rs, fetch.rs, install.rs, archive.rs, shim.rs) | installe/MAJ outils de `tools.toml` dans ~/.local/bin ; sources `github`, `url`, `bun`, `installer`, `ubi` ; sha256 ; zip/tar/xz/zstd | ≈ mise/aqua (backends) |
-| tools.toml | racine | 42 outils : 22 `ubi`, 15 `github`, 2 `url`, 2 `bun`, 1 `installer` ; plateformes win/linux/macos x86_64/aarch64 | registre local type aqua |
-| src.lock.json | racine (180 Ko) | clés `toolchains` (agy, bun, cargo, cl.exe, claude, dotnet, gix, go, jj, just, nvcc, rustc, sccache, wck, xwin, zig), 322 `repositories`, `hardware`, `pillars` | lock unifié embryonnaire |
-| packages/machine | winget DSC v3 | `shell.dsc.winget`, export de 161 paquets épinglés (2026-11-12), apply-user.ts | couche Windows (winget) |
-| depot-cipd | crates/depot-cipd | client CIPD compatible luci-go (ensure-file, iid, deploy) | CIPD |
-| depot-cas | crates/depot-cas | store content-addressed, FastCDC à paramètres Lore | cache binaire |
-| depot-vpython | crates/depot-vpython | `ay vpy` : specs vpython sur `uv run` avec lock haché | PyPI/uv |
-| steam-depot | crates/steam-depot | VDF, découverte Steam, Proton | jeux (hors PM générique) |
-| unix-cachyos / unix-distro | crates/ | génère pacman.conf v3, makepkg.conf (`-march=raptorlake` en dur), profils scx_lavd/BORE | pacman/CachyOS |
-| infra/nix/flake.nix | infra/nix | devShell nix (nixos-unstable, 4 systèmes) | nix |
-| vcpkg | apps/rosegriffon/tools/iecode-cpp (vcpkg.json + overlay-ports) | dépendances C++ d'une app | vcpkg |
-| bun | bun.lock, `source = "bun"` | outils JS (wrangler, hostinger-api-mcp) | npm |
-| cargo-binstall | tools.toml (ubi) | binaires de crates | crates.io |
+| Pièce                      | Emplacement                                                                       | Ce qu'elle fait                                                                                                                                                 | Correspondance           |
+| -------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `ay up`                    | crates/up (lib.rs 455 l., manifest.rs, fetch.rs, install.rs, archive.rs, shim.rs) | installe/MAJ outils de `tools.toml` dans ~/.local/bin ; sources `github`, `url`, `bun`, `installer`, `ubi` ; sha256 ; zip/tar/xz/zstd                           | ≈ mise/aqua (backends)   |
+| tools.toml                 | racine                                                                            | 42 outils : 22 `ubi`, 15 `github`, 2 `url`, 2 `bun`, 1 `installer` ; plateformes win/linux/macos x86_64/aarch64                                                 | registre local type aqua |
+| src.lock.json              | racine (180 Ko)                                                                   | clés `toolchains` (agy, bun, cargo, cl.exe, claude, dotnet, gix, go, jj, just, nvcc, rustc, sccache, wck, xwin, zig), 322 `repositories`, `hardware`, `pillars` | lock unifié embryonnaire |
+| packages/machine           | winget DSC v3                                                                     | `shell.dsc.winget`, export de 161 paquets épinglés (2026-11-12), apply-user.ts                                                                                  | couche Windows (winget)  |
+| depot-cipd                 | crates/depot-cipd                                                                 | client CIPD compatible luci-go (ensure-file, iid, deploy)                                                                                                       | CIPD                     |
+| depot-cas                  | crates/depot-cas                                                                  | store content-addressed, FastCDC à paramètres Lore                                                                                                              | cache binaire            |
+| depot-vpython              | crates/depot-vpython                                                              | `ay vpy` : specs vpython sur `uv run` avec lock haché                                                                                                           | PyPI/uv                  |
+| steam-depot                | crates/steam-depot                                                                | VDF, découverte Steam, Proton                                                                                                                                   | jeux (hors PM générique) |
+| unix-cachyos / unix-distro | crates/                                                                           | génère pacman.conf v3, makepkg.conf (`-march=raptorlake` en dur), profils scx_lavd/BORE                                                                         | pacman/CachyOS           |
+| infra/nix/flake.nix        | infra/nix                                                                         | devShell nix (nixos-unstable, 4 systèmes)                                                                                                                       | nix                      |
+| vcpkg                      | apps/rosegriffon/tools/iecode-cpp (vcpkg.json + overlay-ports)                    | dépendances C++ d'une app                                                                                                                                       | vcpkg                    |
+| bun                        | bun.lock, `source = "bun"`                                                        | outils JS (wrangler, hostinger-api-mcp)                                                                                                                         | npm                      |
+| cargo-binstall             | tools.toml (ubi)                                                                  | binaires de crates                                                                                                                                              | crates.io                |
 
 ## Lacunes
 

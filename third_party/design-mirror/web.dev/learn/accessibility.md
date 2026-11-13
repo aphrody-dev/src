@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Carie Fisher [GitHub](https://github.com/cehfisher) [LinkedIn](https://www.linkedin.com/in/cariefisher) [Mastodon](https://mstdn.social/@cariefisher) [Bluesky](https://bsky.app/profile/cariefisher.bsky.social) [Homepage](https://cariefisher.com/)  Alexandra Klepper [GitHub](https://github.com/alexandrascript) [Bluesky](https://bsky.app/profile/alexandrascript.com)
+
+Carie Fisher [GitHub](https://github.com/cehfisher) [LinkedIn](https://www.linkedin.com/in/cariefisher) [Mastodon](https://mstdn.social/@cariefisher) [Bluesky](https://bsky.app/profile/cariefisher.bsky.social) [Homepage](https://cariefisher.com/) Alexandra Klepper [GitHub](https://github.com/alexandrascript) [Bluesky](https://bsky.app/profile/alexandrascript.com)
 
 Digital accessibility, commonly abbreviated a11y, is about designing and
 building websites and web apps that people with disabilities can interact with

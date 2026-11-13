@@ -6,5 +6,10 @@ import { api, cfg, tunnelId } from "./lib.ts";
 const name = Bun.argv[2] ?? "";
 const id = await tunnelId(name);
 if (!id) throw new Error(`unknown tunnel ${name}`);
-if (process.stdout.isTTY) throw new Error("refusing to print a tunnel token to a terminal: pipe it into systemd-creds");
-process.stdout.write(await api<string>("GET", `/accounts/${cfg.account}/cfd_tunnel/${id}/token`));
+if (process.stdout.isTTY)
+  throw new Error(
+    "refusing to print a tunnel token to a terminal: pipe it into systemd-creds",
+  );
+process.stdout.write(
+  await api<string>("GET", `/accounts/${cfg.account}/cfd_tunnel/${id}/token`),
+);

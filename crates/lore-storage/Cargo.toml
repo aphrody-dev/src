@@ -62,10 +62,14 @@ required-features = ["store-stress"]
 
 [dev-dependencies]
 # The shared test temp-directory helper.
-lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
-lore-storage = { path = ".", package = "aphrody-lore-storage",  features = ["test-util"]  }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base", features = [
+  "test-util",
+] }
+lore-storage = { path = ".", package = "aphrody-lore-storage", features = [
+  "test-util",
+] }
 # A session over a stub peer, with no live connection behind it.
-lore-transport = { path = "../lore-transport", package = "aphrody-lore-transport",  features = ["test-util"]  }
+lore-transport = { path = "../lore-transport", package = "aphrody-lore-transport", features = ["test-util"] }
 # A paused clock, so retry back-off takes no real time.
 tokio = { workspace = true, features = ["test-util"] }
 
@@ -74,8 +78,8 @@ tokio = { workspace = true, features = ["test-util"] }
 # constants from the latter, so both are named here rather than relying on another crate in the
 # build enabling it.
 windows-sys = { workspace = true, features = [
-    "Win32_Foundation",
-    "Win32_Storage_FileSystem",
+  "Win32_Foundation",
+  "Win32_Storage_FileSystem",
 ] }
 
 [lints]

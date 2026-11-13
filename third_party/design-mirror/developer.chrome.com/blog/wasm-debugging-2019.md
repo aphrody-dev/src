@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ingvar Stepanyan
 
 > [!NOTE]
@@ -75,7 +76,7 @@ And on the Chrome DevTools side, we'll be evolving integration more over time to
 Stay tuned for future updates!
 
 > [!NOTE]
-> **Note:** *Updated 2020-06-19*: The original blog post used to state that Emscripten doesn't support DWARF yet. This has been fixed since, and Emscripten preserves debug information end-to-end, throughout any transformations and optimisations.
+> **Note:** _Updated 2020-06-19_: The original blog post used to state that Emscripten doesn't support DWARF yet. This has been fixed since, and Emscripten preserves debug information end-to-end, throughout any transformations and optimisations.
 
 ## Download the preview channels
 

@@ -4,7 +4,13 @@
 // SYSTEM_THREAD_INFORMATION 0x50, RTL_PROCESS_MODULE_INFORMATION 0x128).
 // Trame binaire « rapide » (processeurs, compteurs, processus, threads) + objet « lent » (pilotes, pool, espace de noms).
 import { dlopen, ptr } from "bun:ffi";
-export { FRAME, MAGIC, THREAD_STATE, WAIT_REASON, type Slow } from "../../../modules/web/ntsys-format.ts";
+export {
+  FRAME,
+  MAGIC,
+  THREAD_STATE,
+  WAIT_REASON,
+  type Slow,
+} from "../../../modules/web/ntsys-format.ts";
 import { FRAME, MAGIC, type Slow } from "../../../modules/web/ntsys-format.ts";
 
 const STATUS_INFO_LENGTH_MISMATCH = 0xc0000004 | 0;
@@ -12,14 +18,28 @@ const STATUS_BUFFER_TOO_SMALL = 0xc0000023 | 0;
 const STATUS_MORE_ENTRIES = 0x00000105;
 
 const nt = dlopen("ntdll.dll", {
-  NtQuerySystemInformation: { args: ["u32", "ptr", "u32", "ptr"], returns: "i32" },
+  NtQuerySystemInformation: {
+    args: ["u32", "ptr", "u32", "ptr"],
+    returns: "i32",
+  },
   NtOpenDirectoryObject: { args: ["ptr", "u32", "ptr"], returns: "i32" },
-  NtQueryDirectoryObject: { args: ["u64", "ptr", "u32", "u8", "u8", "ptr", "ptr"], returns: "i32" },
+  NtQueryDirectoryObject: {
+    args: ["u64", "ptr", "u32", "u8", "u8", "ptr", "ptr"],
+    returns: "i32",
+  },
   NtQueryObject: { args: ["u64", "u32", "ptr", "u32", "ptr"], returns: "i32" },
   NtClose: { args: ["u64"], returns: "i32" },
 });
 
-const Class = { Basic: 0, Performance: 2, Process: 5, ProcessorPerformance: 8, Module: 11, PoolTag: 22, Interrupt: 23 } as const;
+const Class = {
+  Basic: 0,
+  Performance: 2,
+  Process: 5,
+  ProcessorPerformance: 8,
+  Module: 11,
+  PoolTag: 22,
+  Interrupt: 23,
+} as const;
 const retLen = new Uint32Array(1);
 const bufs = new Map<number, Uint8Array>();
 
@@ -27,13 +47,20 @@ const bufs = new Map<number, Uint8Array>();
 function query(cls: number, initial: number): DataView {
   let b = bufs.get(cls) ?? new Uint8Array(initial);
   for (let i = 0; i < 8; i++) {
-    const st = nt.symbols.NtQuerySystemInformation(cls, b, b.byteLength, retLen);
+    const st = nt.symbols.NtQuerySystemInformation(
+      cls,
+      b,
+      b.byteLength,
+      retLen,
+    );
     if (st === 0) {
       bufs.set(cls, b);
       return new DataView(b.buffer, b.byteOffset, retLen[0] || b.byteLength);
     }
     if (st !== STATUS_INFO_LENGTH_MISMATCH && st !== STATUS_BUFFER_TOO_SMALL)
-      throw new Error(`NtQuerySystemInformation(${cls}) = 0x${(st >>> 0).toString(16)}`);
+      throw new Error(
+        `NtQuerySystemInformation(${cls}) = 0x${(st >>> 0).toString(16)}`,
+      );
     b = new Uint8Array(Math.max(b.byteLength * 2, (retLen[0] ?? 0) + 65536));
   }
   throw new Error(`NtQuerySystemInformation(${cls}) : tampon insuffisant`);
@@ -101,7 +128,13 @@ export function createSampler() {
       if (!next) break;
       off += next;
     }
-    const bytes = 4 * (FRAME.header + FRAME.globals + ncpu * FRAME.cpu + nproc * FRAME.proc + nthread * FRAME.thread);
+    const bytes =
+      4 *
+      (FRAME.header +
+        FRAME.globals +
+        ncpu * FRAME.cpu +
+        nproc * FRAME.proc +
+        nthread * FRAME.thread);
     if (bytes > out.byteLength) out = new ArrayBuffer(bytes * 2);
     const u = new Uint32Array(out, 0, bytes / 4);
     const f = new Float32Array(out, 0, bytes / 4);
@@ -126,7 +159,15 @@ export function createSampler() {
       const dD = dpc - p[3]!;
       const dS = isr - p[4]!;
       const total = dK + dU || 1;
-      const fr = dt ? [dU / total, Math.max(0, dK - dI - dD - dS) / total, dD / total, dS / total, dI / total] : [0, 0, 0, 0, 1];
+      const fr = dt
+        ? [
+            dU / total,
+            Math.max(0, dK - dI - dD - dS) / total,
+            dD / total,
+            dS / total,
+            dI / total,
+          ]
+        : [0, 0, 0, 0, 1];
       for (let k = 0; k < 5; k++) {
         f[c + k] = fr[k]!;
         sum[k]! += fr[k]!;
@@ -146,7 +187,10 @@ export function createSampler() {
     const P = {
       ioRead: Number(perf.getBigInt64(8, true)),
       ioWrite: Number(perf.getBigInt64(16, true)),
-      ioOps: perf.getUint32(32, true) + perf.getUint32(36, true) + perf.getUint32(40, true),
+      ioOps:
+        perf.getUint32(32, true) +
+        perf.getUint32(36, true) +
+        perf.getUint32(40, true),
       avail: perf.getUint32(44, true),
       commit: perf.getUint32(48, true),
       limit: perf.getUint32(52, true),
@@ -196,10 +240,17 @@ export function createSampler() {
       const nth = pv.getUint32(off + 4, true);
       const pid = Number(pv.getBigUint64(off + 80, true));
       const ppid = Number(pv.getBigUint64(off + 88, true));
-      const name = pid === 0 ? "Idle" : ustr(pv, off + 56, base) || (pid === 4 ? "System" : `pid ${pid}`);
-      const cpu = Number(pv.getBigInt64(off + 40, true)) + Number(pv.getBigInt64(off + 48, true));
+      const name =
+        pid === 0
+          ? "Idle"
+          : ustr(pv, off + 56, base) || (pid === 4 ? "System" : `pid ${pid}`);
+      const cpu =
+        Number(pv.getBigInt64(off + 40, true)) +
+        Number(pv.getBigInt64(off + 48, true));
       const io =
-        Number(pv.getBigInt64(off + 232, true)) + Number(pv.getBigInt64(off + 240, true)) + Number(pv.getBigInt64(off + 248, true));
+        Number(pv.getBigInt64(off + 232, true)) +
+        Number(pv.getBigInt64(off + 240, true)) +
+        Number(pv.getBigInt64(off + 248, true));
       const faults = pv.getUint32(off + 128, true);
       const prev = prevProc.get(pid);
       u[pi] = pid;
@@ -209,7 +260,8 @@ export function createSampler() {
       u[pi + 4] = tIndex;
       f[pi + 5] = Number(pv.getBigUint64(off + 144, true)) / 1048576;
       f[pi + 6] = Number(pv.getBigUint64(off + 200, true)) / 1048576;
-      f[pi + 7] = prev && dt100 ? Math.max(0, cpu - prev[0]!) / (dt100 * ncpu) : 0;
+      f[pi + 7] =
+        prev && dt100 ? Math.max(0, cpu - prev[0]!) / (dt100 * ncpu) : 0;
       f[pi + 8] = prev && dt ? Math.max(0, io - prev[1]!) / dt : 0;
       f[pi + 9] = prev && dt ? Math.max(0, (faults - prev[2]!) >>> 0) / dt : 0;
       u[pi + 10] = nameId(name);
@@ -219,7 +271,9 @@ export function createSampler() {
       for (let t = 0; t < nth; t++) {
         const to = off + 256 + t * 80;
         const tid = Number(pv.getBigUint64(to + 48, true));
-        const tcpu = Number(pv.getBigInt64(to, true)) + Number(pv.getBigInt64(to + 8, true));
+        const tcpu =
+          Number(pv.getBigInt64(to, true)) +
+          Number(pv.getBigInt64(to + 8, true));
         const tctx = pv.getUint32(to + 64, true);
         const tp = prevThread.get(tid);
         u[ti] = tid;
@@ -282,7 +336,9 @@ export function createSampler() {
       const next = new Map<string, number>();
       for (let i = 0; i < cnt; i++) {
         const o = 8 + i * 40;
-        const tag = ascii.decode(new Uint8Array(pt.buffer, pt.byteOffset + o, 4)).replace(/[^\x20-\x7e]/g, "?");
+        const tag = ascii
+          .decode(new Uint8Array(pt.buffer, pt.byteOffset + o, 4))
+          .replace(/[^\x20-\x7e]/g, "?");
         const allocs = pt.getUint32(o + 4, true) + pt.getUint32(o + 24, true);
         const paged = Number(pt.getBigUint64(o + 16, true)) / 1048576;
         const nonPaged = Number(pt.getBigUint64(o + 32, true)) / 1048576;
@@ -292,26 +348,43 @@ export function createSampler() {
           tag,
           pagedMB: paged,
           nonPagedMB: nonPaged,
-          allocsPerSec: prev !== undefined && dt ? Math.max(0, allocs - prev) / dt : 0,
+          allocsPerSec:
+            prev !== undefined && dt ? Math.max(0, allocs - prev) / dt : 0,
         });
       }
       prevPool = next;
-      pool = pool.sort((a, b) => b.pagedMB + b.nonPagedMB - (a.pagedMB + a.nonPagedMB)).slice(0, 40);
+      pool = pool
+        .sort((a, b) => b.pagedMB + b.nonPagedMB - (a.pagedMB + a.nonPagedMB))
+        .slice(0, 40);
     } catch {
       pool = [];
     }
 
     return {
       t: new Date().toISOString(),
-      basic: { pageSize, physicalMB: (physPages * pageSize) / 1048576, processors: ncpu, timerResolution: timerRes },
+      basic: {
+        pageSize,
+        physicalMB: (physPages * pageSize) / 1048576,
+        processors: ncpu,
+        timerResolution: timerRes,
+      },
       modules,
       pool,
       objectTypes: objectTypes(),
-      objects: listDirectory("\\").map((e) => ({ ...e, count: e.type === "Directory" ? listDirectory(`\\${e.name}`).length : 0 })),
+      objects: listDirectory("\\").map((e) => ({
+        ...e,
+        count: e.type === "Directory" ? listDirectory(`\\${e.name}`).length : 0,
+      })),
     };
   }
 
-  return { ncpu, fast, slow, names: () => names, namesVersion: () => namesVersion };
+  return {
+    ncpu,
+    fast,
+    slow,
+    names: () => names,
+    namesVersion: () => namesVersion,
+  };
 }
 
 /** Types d'objets du noyau (NtQueryObject(NULL, ObjectTypesInformation = 3)) : OBJECT_TYPE_INFORMATION x64 = 104 octets,
@@ -320,10 +393,18 @@ let typesBuf = new Uint8Array(1 << 16);
 export function objectTypes(): Slow["objectTypes"] {
   const len = new Uint32Array(1);
   for (let i = 0; i < 6; i++) {
-    const st = nt.symbols.NtQueryObject(0n, 3, typesBuf, typesBuf.byteLength, len);
+    const st = nt.symbols.NtQueryObject(
+      0n,
+      3,
+      typesBuf,
+      typesBuf.byteLength,
+      len,
+    );
     if (st === 0) break;
     if (st !== STATUS_INFO_LENGTH_MISMATCH) return [];
-    typesBuf = new Uint8Array(Math.max(typesBuf.byteLength * 2, (len[0] ?? 0) + 4096));
+    typesBuf = new Uint8Array(
+      Math.max(typesBuf.byteLength * 2, (len[0] ?? 0) + 4096),
+    );
   }
   const v = new DataView(typesBuf.buffer);
   const base = ptr(typesBuf);
@@ -357,14 +438,25 @@ export function listDirectory(path: string): { name: string; type: string }[] {
   oa.setBigUint64(16, BigInt(ptr(new Uint8Array(us.buffer))), true);
   oa.setUint32(24, 0x40, true); // OBJ_CASE_INSENSITIVE
   const h = new BigUint64Array(1);
-  if (nt.symbols.NtOpenDirectoryObject(h, 0x0001, new Uint8Array(oa.buffer)) !== 0) return [];
+  if (
+    nt.symbols.NtOpenDirectoryObject(h, 0x0001, new Uint8Array(oa.buffer)) !== 0
+  )
+    return [];
   const out: { name: string; type: string }[] = [];
   const buf = new Uint8Array(1 << 16);
   const ctx = new Uint32Array(1);
   const len = new Uint32Array(1);
   try {
     for (let restart = 1; ; restart = 0) {
-      const st = nt.symbols.NtQueryDirectoryObject(h[0]!, buf, buf.byteLength, 0, restart, ctx, len);
+      const st = nt.symbols.NtQueryDirectoryObject(
+        h[0]!,
+        buf,
+        buf.byteLength,
+        0,
+        restart,
+        ctx,
+        len,
+      );
       if (st !== 0 && st !== STATUS_MORE_ENTRIES) break;
       const v = new DataView(buf.buffer);
       const base = ptr(buf);

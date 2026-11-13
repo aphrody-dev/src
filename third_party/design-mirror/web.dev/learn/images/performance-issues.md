@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 As it stands now, images are the web's biggest assets in terms of both [total transfer size](https://almanac.httparchive.org/en/2022/page-weight#fig-8)
 and [number of requests](https://almanac.httparchive.org/en/2022/page-weight#fig-3) per page. The median webpage's total transfer size is roughly
 [2MB, as of June 2022](https://httparchive.org/reports/page-weight), with images alone accounting for nearly half of that. It's no exaggeration
@@ -58,12 +59,12 @@ to load certain assets before others, instead giving it vital context for the de
 
 ## Measuring the impact of images
 
-When optimizing image assets, *perceived* performance is often more important, and more difficult to measure, than total transfer
+When optimizing image assets, _perceived_ performance is often more important, and more difficult to measure, than total transfer
 size alone.
 
 Web Vitals provide measurable, actionable metrics and guidance for improving users' experience of the web, highlighting problems such
 as slow response time from a web server, rendering issues, and interactivity delays. Core Web Vitals are a subset of these goals, laser-focused
-on the user's direct experience of an individual page---a set of technical measurements that, together, determine how fast an experience *feels* to a user.
+on the user's direct experience of an individual page---a set of technical measurements that, together, determine how fast an experience _feels_ to a user.
 
 ### Cumulative Layout Shift
 
@@ -109,8 +110,8 @@ rendered, with the newly calculated height causing additional layout shifts.
 
 [Starting in 2019](https://caniuse.com/mdn-html_elements_img_aspect_ratio_computed_from_attributes), browser behavior was updated to handle the `width` and `height` attributes differently. Rather than using the values of these
 attributes to determine the fixed, pixel-based size of an `img` element in the layout, these attributes can be thought to represent
-the *aspect ratio* of the image, though the syntax is the same. Modern browsers will divide these values against each other in order to
-determine an `img` element's intrinsic *aspect ratio* prior to the page being rendered, allowing it to reserve the space the image will occupy as the layout is rendered.
+the _aspect ratio_ of the image, though the syntax is the same. Modern browsers will divide these values against each other in order to
+determine an `img` element's intrinsic _aspect ratio_ prior to the page being rendered, allowing it to reserve the space the image will occupy as the layout is rendered.
 
 As a rule, you should always use `height` and `width` attributes on ``, with values matching the intrinsic size of your image source---so
 long as you make sure that you've specified `height: auto` alongside `max-width: 100%` to override the height from the HTML attribute.
@@ -173,7 +174,7 @@ sense for their browsing contexts.
 
 Image assets are the biggest drain on your users' bandwidth---bandwidth taken away from transferring every other asset necessary
 to render a page. Images introduce significant issues in terms of perceived performance, both during and after the surrounding page
-layout has been rendered. In short: image assets do *damage*.
+layout has been rendered. In short: image assets do _damage_.
 
 Daunting as that may be, while "the web would be better off with fewer images" would certainly be true in terms of performance alone,
 it would also do its users a tremendous disservice. Images are a vital part of the web, and you shouldn't compromise on the quality of

@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Kayce Basques [X](https://twitter.com/kaycebasques) [GitHub](https://github.com/kaycebasques)  Sofia Emelianova [GitHub](https://github.com/sofiayem)
+
+Kayce Basques [X](https://twitter.com/kaycebasques) [GitHub](https://github.com/kaycebasques) Sofia Emelianova [GitHub](https://github.com/sofiayem)
 
 This page is a comprehensive reference of accessibility features in Chrome DevTools. It is intended
 for web developers who:
@@ -49,8 +50,6 @@ To audit a page:
 1. Go to the URL that you want to audit.
 2. In DevTools, click the **Lighthouse** panel. DevTools shows you various configuration options.
 
-   
-
    > [!NOTE]
    > **Note:** The screenshots in this section were taken with Chrome 69. In the screenshots, the panel is still named **Audits** but it was [renamed to Lighthouse in Chrome 83](https://developer.chrome.com/blog/new-in-devtools-83.md.txt#lighthouse) You can check what version you're running at `chrome://version`. The **Audits** panel UI will look different in some earlier or later versions of Chrome, but the general workflow is the same.
 
@@ -74,13 +73,9 @@ To audit a page:
 7. Click **Generate Report**. After 10 to 30 seconds, DevTools provides a report. Your report gives you
    various tips on how to improve the page's accessibility.
 
-   
 8. Click an audit to learn more about it.
 
-   
 9. Click **Learn More** to view that audit's documentation.
-
-   
 
 ### See also: aXe extension
 

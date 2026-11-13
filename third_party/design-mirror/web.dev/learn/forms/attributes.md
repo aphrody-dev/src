@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 HTML element attributes can enhance your `<form>` and form controls.
 
 ## Help users fill in form controls
@@ -65,7 +66,7 @@ Use the `value` attribute to show values already completed.
 
 ```html
 <label for="name">Name</label>
-<input value="Hilda" name="name" id="name" type="text">
+<input value="Hilda" name="name" id="name" type="text" />
 ```
 
 There are multiple ways to retrieve the value of a form control in JavaScript.
@@ -96,7 +97,7 @@ The value of the `placeholder` attribute is a hint for what kind of information 
 
 ```html
 <label for="name">Name</label>
-<input type="text" name="name" id="name" placeholder="Karin">
+<input type="text" name="name" id="name" placeholder="Karin" />
 ```
 
 This may confuse users,

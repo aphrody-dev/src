@@ -1,7 +1,13 @@
 // Manifeste de l'App « aphrody » : chaque événement a sa permission, aucune clé refusée par le validateur de GitHub.
 import { describe, expect, test } from "bun:test";
 import { generateKeyPairSync, verify } from "node:crypto";
-import { appJwt, EVENT_PERMISSION, EVENTS, manifest, PERMISSIONS } from "./github-app";
+import {
+  appJwt,
+  EVENT_PERMISSION,
+  EVENTS,
+  manifest,
+  PERMISSIONS,
+} from "./github-app";
 
 describe("manifeste", () => {
   test("chaque événement est couvert par une permission accordée", () => {
@@ -12,11 +18,24 @@ describe("manifeste", () => {
     }
   });
   test("clés refusées par le validateur absentes (2026-11-13)", () => {
-    for (const k of ["email_addresses", "git_ssh_keys", "models", "codespaces", "organization_copilot_seat_management"]) expect(PERMISSIONS[k], k).toBeUndefined();
-    for (const e of ["package", "repository_import", "repository_vulnerability_alert"]) expect(EVENTS).not.toContain(e);
+    for (const k of [
+      "email_addresses",
+      "git_ssh_keys",
+      "models",
+      "codespaces",
+      "organization_copilot_seat_management",
+    ])
+      expect(PERMISSIONS[k], k).toBeUndefined();
+    for (const e of [
+      "package",
+      "repository_import",
+      "repository_vulnerability_alert",
+    ])
+      expect(EVENTS).not.toContain(e);
   });
   test("niveaux valides, metadata en lecture, App publique avec webhook actif", () => {
-    for (const [k, v] of Object.entries(PERMISSIONS)) expect(["read", "write", "admin"], k).toContain(v);
+    for (const [k, v] of Object.entries(PERMISSIONS))
+      expect(["read", "write", "admin"], k).toContain(v);
     expect(PERMISSIONS.metadata).toBe("read");
     expect(PERMISSIONS.workflows).toBe("write");
     const m = manifest();
@@ -28,13 +47,26 @@ describe("manifeste", () => {
 
 describe("JWT", () => {
   test("RS256, iss = client id, exp <= 10 min", () => {
-    const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048, privateKeyEncoding: { type: "pkcs1", format: "pem" }, publicKeyEncoding: { type: "spki", format: "pem" } });
+    const { privateKey, publicKey } = generateKeyPairSync("rsa", {
+      modulusLength: 2048,
+      privateKeyEncoding: { type: "pkcs1", format: "pem" },
+      publicKeyEncoding: { type: "spki", format: "pem" },
+    });
     const jwt = appJwt(privateKey, "Iv23test");
     const [h, b, sig] = jwt.split(".");
     const body = JSON.parse(Buffer.from(b!, "base64url").toString());
-    expect(JSON.parse(Buffer.from(h!, "base64url").toString()).alg).toBe("RS256");
+    expect(JSON.parse(Buffer.from(h!, "base64url").toString()).alg).toBe(
+      "RS256",
+    );
     expect(body.iss).toBe("Iv23test");
     expect(body.exp - body.iat).toBeLessThanOrEqual(600);
-    expect(verify("RSA-SHA256", Buffer.from(`${h}.${b}`), publicKey, Buffer.from(sig!, "base64url"))).toBe(true);
+    expect(
+      verify(
+        "RSA-SHA256",
+        Buffer.from(`${h}.${b}`),
+        publicKey,
+        Buffer.from(sig!, "base64url"),
+      ),
+    ).toBe(true);
   });
 });

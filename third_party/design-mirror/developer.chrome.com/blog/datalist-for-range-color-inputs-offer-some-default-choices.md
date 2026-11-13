@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Eiji Kitamura [X](https://twitter.com/agektmr) [GitHub](https://github.com/agektmr) [Mastodon](https://infosec.exchange/@agektmr) [Bluesky](https://bsky.app/profile/agektmr.com)
 
 Chrome started to support `datalist` for `input[type=text]` in Chrome 20. `datalist` helps developers provide recommended values, while allowing users the liberty to write arbitrary values at the same time. Beginning with Chrome 23, you can use `datalist` for `input[type=range]` and `input[type=color]` as well!
@@ -18,11 +19,11 @@ Chrome started to support `datalist` for `input[type=text]` in Chrome 20. `datal
 ```html
 <input type="range" value="0" min="0" max="100" list="numbers" />
 <datalist id="numbers">
-    <option>10</option>
-    <option>15</option>
-    <option>30</option>
-    <option>50</option>
-    <option>90</option>
+  <option>10</option>
+  <option>15</option>
+  <option>30</option>
+  <option>50</option>
+  <option>90</option>
 </datalist>
 ```
 
@@ -37,11 +38,11 @@ By adding `datalist` to `input[type=color]`, users can now pick a color from dev
 ```html
 <input type="color" value="#000000" list="colors" />
 <datalist id="colors">
-    <option>#ff0000</option>
-    <option>#0000ff</option>
-    <option>#00ff00</option>
-    <option>#ffff00</option>
-    <option>#00ffff</option>
+  <option>#ff0000</option>
+  <option>#0000ff</option>
+  <option>#00ff00</option>
+  <option>#ffff00</option>
+  <option>#00ffff</option>
 </datalist>
 ```
 

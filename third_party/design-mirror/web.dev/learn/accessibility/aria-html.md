@@ -7,12 +7,13 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Most developers are familiar with the standard markup language of the modern
 web, [HyperText Markup Language (HTML)](https://web.dev/learn/html.md.txt).
 However, you may be less familiar with
 [Accessible Rich Internet Applications (ARIA)](https://developer.mozilla.org/docs/Web/Accessibility/ARIA)
 (formally called WAI-ARIA): what it is, how it is used, and when---and
-when *not*---to use it.
+when _not_---to use it.
 
 HTML and ARIA play important roles in making digital products accessible,
 especially when it comes to assistive technology (AT) such as screen readers.
@@ -34,7 +35,7 @@ HTML elements to increase their accessibility. These attributes communicate
 role, state, and property to assistive technologies using accessibility APIs
 found in modern browsers. This communication happens through the accessibility
 tree.
->
+
 > "[WAI-ARIA](https://www.w3.org/WAI/standards-guidelines/aria/),
 > the Accessible Rich Internet Applications Suite, defines a way to make web
 > content and web applications more accessible to people with disabilities. It
@@ -62,13 +63,13 @@ accessible as possible.
 
 The three main features of ARIA are roles, properties, and states/values.
 
-*Roles* define what an element is or does on the page or app.
+_Roles_ define what an element is or does on the page or app.
 
 ```html
 <div role="button">Self-destruct</div>
 ```
 
-*Properties* express characteristics or relationships to an object.
+_Properties_ express characteristics or relationships to an object.
 
 ```html
 <div role="button" aria-describedby="more-info">Self-destruct</div>
@@ -76,7 +77,7 @@ The three main features of ARIA are roles, properties, and states/values.
 <div id="more-info">This page will self-destruct in 10 seconds.</div>
 ```
 
-*States* and *values* define the current conditions or data values associated
+_States_ and _values_ define the current conditions or data values associated
 with the element.
 
 ```html
@@ -84,9 +85,7 @@ with the element.
   Self-destruct
 </div>
 
-<div id="more-info">
-  This page will self-destruct in 10 seconds.
-</div>
+<div id="more-info">This page will self-destruct in 10 seconds.</div>
 ```
 
 While all three elements of ARIA can be used in one line of code, it's not
@@ -136,6 +135,7 @@ Don't: Assign a role.
 ```html
 <a role="button">Submit</a>
 ```
+
 Do: Use the semantic element.
 
 ```html
@@ -154,6 +154,7 @@ Don't: Assign a misleading role.
 ```html
 <h2 role="tab">Heading tab</h2>
 ```
+
 Do: Assign roles correctly.
 
 ```html
@@ -175,13 +176,14 @@ Don't: Add a tabindex.
 ```html
 <span role="button" tabindex="1">Submit</span>
 ```
+
 Do: Set the tabindex to \`0\`.
 
 ```html
 <span role="button" tabindex="0">Submit</span>
 ```
 
-*Of course, if you can, use a real `<button>` element in this case.*
+_Of course, if you can, use a real `<button>` element in this case._
 
 > [!CAUTION]
 > **Caution:** Remember, people with and without visual impairments use keyboard navigation. Don't add unnecessary tab stops to headings and paragraphs, as these can add additional challenges for some users who navigate by keyboard alone.
@@ -200,6 +202,7 @@ Don't: Hide focusable elements
   <button>Submit</button>
 </div>
 ```
+
 Do: Expose focusable elements
 
 ```html
@@ -229,7 +232,7 @@ boots."
 <a href="shoes.html"></a>
 
 <!-- A checkbox input with a label. -->
-<input type="checkbox" id="shoes">
+<input type="checkbox" id="shoes" />
 <label for="shoes">Red leather boots</label>
 ```
 
@@ -260,6 +263,7 @@ Don't: Assign the wrong role.
 ```html
 <a role="heading">Read more</a>
 ```
+
 Do: Use the correct role and an
 extra link description.
 
@@ -267,20 +271,25 @@ extra link description.
 <a aria-label="Read more about some awesome article title">Read More</a>
 ```
 
-*** ** * ** ***
+---
 
 Don't: Add a redundant role.
 
 ```html
-<ul role="list">...</ul>
+<ul role="list">
+  ...
+</ul>
 ```
+
 Do: Reduce redundancy.
 
 ```html
-<ul>...</ul>
+<ul>
+  ...
+</ul>
 ```
 
-*** ** * ** ***
+---
 
 Don't: Miss potential side effects.
 
@@ -290,6 +299,7 @@ Don't: Miss potential side effects.
   ...
 </details>
 ```
+
 Do: Address side effects.
 
 ```html

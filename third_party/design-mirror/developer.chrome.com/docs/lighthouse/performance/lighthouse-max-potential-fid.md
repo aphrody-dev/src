@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!CAUTION]
 > **Caution:** Max Potential First Input Delay was deprecated in Lighthouse 6.0. Moving forward, consider using [Total Blocking Time](https://web.dev/articles/lcp) in the lab and [First Input Delay](https://web.dev/articles/fid) and [Interaction to Next Paint](https://web.dev/articles/inp) in the field.
 
@@ -37,11 +38,11 @@ that your page performs better than 90% of real websites.
 
 This table shows how to interpret your Max Potential FID score:
 
-| Max Potential FID time (in milliseconds) | Color-coding |
-|---|---|
-| 0--130 | Green (fast) |
-| 130-250 | Orange (moderate) |
-| Over 250 | Red (slow) |
+| Max Potential FID time (in milliseconds) | Color-coding      |
+| ---------------------------------------- | ----------------- |
+| 0--130                                   | Green (fast)      |
+| 130-250                                  | Orange (moderate) |
+| Over 250                                 | Red (slow)        |
 
 > [!NOTE]
 > **Note:** See the [Lighthouse performance scoring](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring.md.txt) post to learn how your page's overall performance score is calculated.
@@ -74,7 +75,7 @@ Unless you have a specific reason for focusing on a particular metric, it's
 usually better to focus on improving your overall Performance score.
 
 Use the **Diagnostics** section of your Lighthouse report to determine which improvements will have the most value for your page. The more significant the opportunity, the greater the effect it will have on your Performance score. For example, the following Lighthouse screenshot shows that [eliminating render-blocking resources](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources.md.txt) will yield the biggest improvement:
- Lighthouse: Diagnostics section
+Lighthouse: Diagnostics section
 
 See the [Performance audits](https://developer.chrome.com/docs/lighthouse/performance)
 to learn how to address the opportunities identified in your Lighthouse report.

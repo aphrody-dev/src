@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 CSS-related techniques for optimizing Web Vitals
 
- Katie Hempenius [X](https://twitter.com/katiehempenius)  Una Kravets [X](https://twitter.com/una) [GitHub](https://github.com/una) [Bluesky](https://bsky.app/profile/una.im) [Homepage](https://una.im/)
+Katie Hempenius [X](https://twitter.com/katiehempenius) Una Kravets [X](https://twitter.com/una) [GitHub](https://github.com/una) [Bluesky](https://bsky.app/profile/una.im) [Homepage](https://una.im/)
 
 The way you write your styles and build layouts can have a major impact on [Core
 Web Vitals](https://web.dev/explore/learn-core-web-vitals). This is particularly true for
@@ -104,7 +105,7 @@ Change the `.banner` CSS to use a CSS gradient rather than an image:
 Before:
 
 ```css
-background: url("https://cdn.pixabay.com/photo/2015/07/15/06/14/gradient-845701\_960\_720.jpg")
+background: url("https://cdn.pixabay.com/photo/2015/07/15/06/14/gradient-845701\_960\_720.jpg");
 ```
 
 After:
@@ -146,6 +147,7 @@ After:
 ```html
 
 ```
+
 The image now loads without causing a layout shift.
 
 > [!NOTE]
@@ -174,7 +176,7 @@ Font swapping, while excellent for displaying content to the user quickly, has
 the potential to cause layout shifts. These layout shifts occur when a web font
 and its fallback font take up different amounts of space on the page. Using
 similarly proportioned fonts will minimize the size of these layout shifts.
- In this example, font swapping caused page elements to shift upwards by five pixels.
+In this example, font swapping caused page elements to shift upwards by five pixels.
 
 #### Identify
 
@@ -209,15 +211,18 @@ speed](https://web.dev/articles/preconnect-and-dns-prefetch).
 Remove the following `@import` statement from your stylesheet:
 
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&family=Roboto:wght@300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400&family=Roboto:wght@300&display=swap");
 ```
 
 Add the following `<link>` tags to the `<head>` of the document:
 
 ```html
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap"
+  rel="stylesheet"
+/>
 ```
 
 These link tags instruct the browser to establish an early connection to
@@ -247,7 +252,7 @@ The Lighthouse "Avoid non-composited animations" audit may be helpful for
 identifying non-performant animations.
 
 > [!CAUTION]
-> **Caution:** The Lighthouse "Avoid non-composited animations" audit only identifies non-performant *CSS animations* ; JavaScript-driven animations (for example, using [`setInterval()`](https://developer.mozilla.org/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) to "animate" an element) are bad for performance but will not be flagged by this audit.
+> **Caution:** The Lighthouse "Avoid non-composited animations" audit only identifies non-performant _CSS animations_ ; JavaScript-driven animations (for example, using [`setInterval()`](https://developer.mozilla.org/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) to "animate" an element) are bad for performance but will not be flagged by this audit.
 
 ### Fix
 

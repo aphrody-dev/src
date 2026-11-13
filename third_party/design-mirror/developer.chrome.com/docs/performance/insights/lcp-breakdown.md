@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Connor Clark [X](https://twitter.com/cjamcl) [GitHub](https://github.com/connorjclark)
 
 Published: Oct 8, 2025
@@ -15,12 +16,12 @@ The Largest Contentful Paint (LCP) reports the render time of the largest image,
 
 The subparts are:
 
-| LCP subpart | Explanation |
-|---|---|
-| **[Time to First Byte (TTFB)](https://web.dev/articles/ttfb)** | The time from when the user initiates loading the page until the browser receives the first byte of the HTML document response. |
-| **Resource load delay** | The time between TTFB and when the browser starts loading the LCP resource. If the LCP element doesn't require a resource load to render (for example, if the element is a text node rendered with a system font), this time is 0. |
-| **Resource load duration** | The duration of time it takes to load the LCP resource itself. If the LCP element doesn't require a resource load to render, this time is 0. |
-| **Element render delay** | The time between when the LCP resource finishes loading and the LCP element rendering fully. |
+| LCP subpart                                                    | Explanation                                                                                                                                                                                                                        |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[Time to First Byte (TTFB)](https://web.dev/articles/ttfb)** | The time from when the user initiates loading the page until the browser receives the first byte of the HTML document response.                                                                                                    |
+| **Resource load delay**                                        | The time between TTFB and when the browser starts loading the LCP resource. If the LCP element doesn't require a resource load to render (for example, if the element is a text node rendered with a system font), this time is 0. |
+| **Resource load duration**                                     | The duration of time it takes to load the LCP resource itself. If the LCP element doesn't require a resource load to render, this time is 0.                                                                                       |
+| **Element render delay**                                       | The time between when the LCP resource finishes loading and the LCP element rendering fully.                                                                                                                                       |
 
 LCP subparts
 

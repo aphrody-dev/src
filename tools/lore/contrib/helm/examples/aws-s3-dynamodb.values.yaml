@@ -34,7 +34,7 @@
 
 image:
   repository: ghcr.io/epicgames/lore/loreserver
-  tag: ""  # empty = the chart's appVersion
+  tag: "" # empty = the chart's appVersion
 
 # Single pod, no handler tier — the store is remote (S3 + DynamoDB).
 topology:
@@ -64,7 +64,7 @@ service:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
 
 tls:
-  mode: certManager   # requires cert-manager installed in the cluster
+  mode: certManager # requires cert-manager installed in the cluster
 
 # The chart's ConfigMap sets the local-store paths by default; setting mode="aws"
 # below overrides them (the local sub-config is then ignored). config.extra is raw

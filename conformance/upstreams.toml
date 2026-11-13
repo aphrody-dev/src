@@ -52,12 +52,26 @@ pinned_on = "2026-11-12"
 [[suite]]
 id = "test262"
 upstream = "test262"
-paths = ["test/built-ins", "test/language", "test/annexB", "test/intl402", "harness"]
+paths = [
+  "test/built-ins",
+  "test/language",
+  "test/annexB",
+  "test/intl402",
+  "harness",
+]
 
 [[suite]]
 id = "bun"
 upstream = "bun"
-paths = ["test/js/bun", "test/js/node", "test/js/web", "test/cli", "test/bundler", "test/regression", "test/harness.ts"]
+paths = [
+  "test/js/bun",
+  "test/js/node",
+  "test/js/web",
+  "test/cli",
+  "test/bundler",
+  "test/regression",
+  "test/harness.ts",
+]
 
 [[suite]]
 id = "oxide"
@@ -72,7 +86,12 @@ paths = ["packages/tailwindcss/src"]
 [[suite]]
 id = "tailwind-integrations"
 upstream = "tailwindcss"
-paths = ["integrations/cli", "integrations/postcss", "integrations/vite", "integrations/upgrade"]
+paths = [
+  "integrations/cli",
+  "integrations/postcss",
+  "integrations/vite",
+  "integrations/upgrade",
+]
 
 [[suite]]
 id = "shadcn"
@@ -102,4 +121,19 @@ paths = ["packages/next", "packages/static-build"]
 [[suite]]
 id = "wpt"
 upstream = "wpt"
-paths = ["css/css-flexbox", "css/css-grid", "css/css-box", "css/css-display", "css/css-position", "css/css-sizing", "css/css-text", "css/css-fonts", "css/css-backgrounds", "css/css-color", "css/css-values", "css/css-cascade", "css/css-variables", "css/selectors"]
+paths = [
+  "css/css-flexbox",
+  "css/css-grid",
+  "css/css-box",
+  "css/css-display",
+  "css/css-position",
+  "css/css-sizing",
+  "css/css-text",
+  "css/css-fonts",
+  "css/css-backgrounds",
+  "css/css-color",
+  "css/css-values",
+  "css/css-cascade",
+  "css/css-variables",
+  "css/selectors",
+]

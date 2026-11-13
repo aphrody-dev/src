@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## HDR support with canvas tone mapping mode
@@ -36,7 +37,7 @@ context.configure({
 ```
 
 Explore HDR with WebGPU by checking out the [Particles (HDR) sample](https://webgpu.github.io/webgpu-samples/?sample=particles) and [WebGPU HDR example](https://ccameron-chromium.github.io/webgpu-hdr/example.html), and see the [chromestatus entry](https://chromestatus.com/feature/6196313866895360).
- The Particles (HDR) sample displayed on a HDR screen.
+The Particles (HDR) sample displayed on a HDR screen.
 
 ## Expanded subgroups support
 
@@ -49,25 +50,25 @@ Furthermore, the following subgroup built-ins functions have been added:
 - `subgroupAdd(value)`: Returns the summation of all active invocations `value`s across the subgroup.
 - `subgroupExclusiveAdd(value)`: Returns the exclusive scan summation of all active invocations `value`s across the subgroup.
 - `subgroupMul(value)`: Returns the multiplication of all active invocations `value`s across the subgroup.
-- `subgroupExclusiveMul(value)`: Returns the exclusive scan multiplication of all active invocations `value`s across the subgroup.   
+- `subgroupExclusiveMul(value)`: Returns the exclusive scan multiplication of all active invocations `value`s across the subgroup.
 
 - `subgroupAnd(value)`: Returns the binary AND of all active invocations `value`s across the subgroup.
 - `subgroupOr(value)`: Returns the binary OR of all active invocations `value`s across the subgroup.
-- `subgroupXor(value)`: Returns the binary XOR of all active invocations `value`s across the subgroup.   
+- `subgroupXor(value)`: Returns the binary XOR of all active invocations `value`s across the subgroup.
 
 - `subgroupMin(value)`: Returns the minimal value of all active invocations `value`s across the subgroup.
-- `subgroupMax(value)`: Returns the maximal value of all active invocations `value`s across the subgroup.   
+- `subgroupMax(value)`: Returns the maximal value of all active invocations `value`s across the subgroup.
 
 - `subgroupAll(value)`: Returns true if `value` is true for all active invocations in the subgroup.
-- `subgroupAny(value)`: Returns true if `value` is true for any active invocation in the subgroup.   
+- `subgroupAny(value)`: Returns true if `value` is true for any active invocation in the subgroup.
 
 - `subgroupElect()`: Returns true if this invocation has the lowest `subgroup_invocation_id` among active invocations in the subgroup.
-- `subgroupBroadcastFirst(value)`: Broadcasts `value` from the active invocation with the lowest `subgroup_invocation_id` in the subgroup to all other active invocations.   
+- `subgroupBroadcastFirst(value)`: Broadcasts `value` from the active invocation with the lowest `subgroup_invocation_id` in the subgroup to all other active invocations.
 
 - `subgroupShuffle(value, id)`: Returns `value` from the active invocation whose `subgroup_invocation_id` matches `id`.
 - `subgroupShuffleXor(value, mask)`: Returns `value` from the active invocation whose `subgroup_invocation_id` matches `subgroup_invocation_id ^ mask`. `mask` must be dynamically uniform.
 - `subgroupShuffleUp(value, delta)`: Returns `value` from the active invocation whose `subgroup_invocation_id` matches `subgroup_invocation_id - delta`.
-- `subgroupShuffleDown(value, delta)`: Returns `value` from the active invocation whose `subgroup_invocation_id` matches `subgroup_invocation_id + delta`.   
+- `subgroupShuffleDown(value, delta)`: Returns `value` from the active invocation whose `subgroup_invocation_id` matches `subgroup_invocation_id + delta`.
 
 - `quadBroadcast(value, id)`: Broadcasts `value` from the quad invocation with id equal to `id`. `id` must be a constant-expression.
 - `quadSwapX(value)`: Swaps `value` between invocations in the quad in the X direction.

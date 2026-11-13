@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sérgio Gomes [X](https://twitter.com/sergiomdgomes)
 
 Published: November 23, 2024
@@ -34,8 +35,14 @@ before the browser needs them.
 
 ```html
 <head>
-  <link rel="preload" as="style" href="critical-styles.css">
-  <link rel="preload" as="font" crossorigin type="font/woff2" href="myfont.woff2">
+  <link rel="preload" as="style" href="critical-styles.css" />
+  <link
+    rel="preload"
+    as="font"
+    crossorigin
+    type="font/woff2"
+    href="myfont.woff2"
+  />
 </head>
 ```
 
@@ -122,10 +129,10 @@ of its dependencies, and trust the browser not to fetch the same module twice.
 <head>
   <!-- dog.js imports dog-head.js, which in turn imports
        dog-head-mouth.js, which imports dog-head-mouth-tongue.js. -->
-  <link rel="modulepreload" href="dog-head-mouth-tongue.mjs">
-  <link rel="modulepreload" href="dog-head-mouth.mjs">
-  <link rel="modulepreload" href="dog-head.mjs">
-  <link rel="modulepreload" href="dog.mjs">
+  <link rel="modulepreload" href="dog-head-mouth-tongue.mjs" />
+  <link rel="modulepreload" href="dog-head-mouth.mjs" />
+  <link rel="modulepreload" href="dog-head.mjs" />
+  <link rel="modulepreload" href="dog.mjs" />
 </head>
 ```
 

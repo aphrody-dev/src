@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 WebAssembly thread support has shipped in Chrome 70 under an origin-trial.
 
 Alex Danilo [X](https://twitter.com/alexanderdanilo)
@@ -18,7 +19,7 @@ WebAssembly (Wasm) enables compilation of code written in C++ and other
 languages to run on the web. One very useful feature of native applications
 is the ability to use threads - a primitive for parallel computation. Most C
 and C++ developers would be familiar with
-**[*pthreads*](https://en.wikipedia.org/wiki/POSIX_Threads)** which is a
+**[_pthreads_](https://en.wikipedia.org/wiki/POSIX_Threads)** which is a
 standardized API for thread management in an application.
 
 The [WebAssembly Community Group](https://www.w3.org/community/webassembly/) has
@@ -51,7 +52,7 @@ their shared Wasm memory allows them to work much like they do on native
 platforms. This means that the applications that use Wasm threads are
 responsible for managing access to the shared memory as in any traditional
 threaded application. There are many existing code libraries written in C or C++
-that use ***pthreads***, and those can be compiled to Wasm and run in true
+that use _**pthreads**_, and those can be compiled to Wasm and run in true
 threaded mode, allowing more cores to work on the same data simultaneously.
 
 ## A simple example
@@ -129,7 +130,7 @@ First, you should have the [emscripten SDK](https://github.com/juj/emsdk)
 installed, preferably version 1.38.11 or later. To build our example code with
 [threads enabled](https://kripken.github.io/emscripten-site/docs/porting/pthreads.html)
 for running in the browser, we need to pass a couple of extra flags to the
-[emscripten](http://kripken.github.io/emscripten-site/) ***emcc*** compiler. Our
+[emscripten](http://kripken.github.io/emscripten-site/) _**emcc**_ compiler. Our
 command line looks like this:
 
 ```bash
@@ -160,7 +161,7 @@ URL **`about://flags`** in your browser as shown below:
 
 Next, find the experimental WebAssembly threads setting which looks like this:
 
-Change the setting to ***Enabled*** as shown below, then restart your browser.
+Change the setting to _**Enabled**_ as shown below, then restart your browser.
 
 After the browser has restarted, we can try loading the threaded WebAssembly
 module with a minimal HTML page, containing just this content:
@@ -209,7 +210,7 @@ you must take a
 
 WebAssembly threads are an extremely useful new primitive for porting
 applications to the web. It's now possible to run C and C++ applications and
-libraries which require ***pthreads*** support in the WebAssembly environment.
+libraries which require _**pthreads**_ support in the WebAssembly environment.
 
 We're looking for feedback from developers trying out this feature as it'll help
 inform the standardization process as well as validate its usefulness. The best

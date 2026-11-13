@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Having to re-enter your address for the tenth time is tiring. Browsers, and you,
 as a developer, can help users enter data faster, and avoid re-entering data.
 This module teaches you how autofill works, and how `autocomplete` and other
@@ -26,8 +27,7 @@ How do browsers know what data to autofill? Take a look at an example form
 field to find out.
 
 ```html
-<label for="name">Name</label>
-<input name="name" id="name">
+<label for="name">Name</label> <input name="name" id="name" />
 ```
 
 If you submit this form field, browsers store the value (the data you entered)
@@ -149,7 +149,7 @@ don't want browsers to offer autofill.
 
 ```html
 <label for="one-time-code">One-time code</label>
-<input autocomplete="off" type="text" name="one-time-code" id="one-time-code">
+<input autocomplete="off" type="text" name="one-time-code" id="one-time-code" />
 ```
 
 One place where autofill isn't helpful is when entering one-off, unique values

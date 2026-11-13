@@ -17,7 +17,7 @@ This proposal introduces Lore Enhancement Proposals (LEPs) — a public-facing, 
 
 ## Motivation
 
-Lore tracks design intent in three artifact types today: ADRs in `docs/decisions/` capture narrow architecture decisions made during or after implementation, specs in `docs/specs/` and `context/specs/` describe what the system does, and plans in `context/plans/` sequence the work. None of these covers the moment between *we should change something* and *we have decided what to change*.
+Lore tracks design intent in three artifact types today: ADRs in `docs/decisions/` capture narrow architecture decisions made during or after implementation, specs in `docs/specs/` and `context/specs/` describe what the system does, and plans in `context/plans/` sequence the work. None of these covers the moment between _we should change something_ and _we have decided what to change_.
 
 The gap matters most for changes that touch external surfaces — wire protocol, on-disk format, public APIs — where alignment with internal teams that depend on Lore and with external contributors must happen before code lands. Without a public proposal venue, large changes either start as private design conversations that exclude interested parties or skip the design debate entirely and surface as faits accomplis. ADRs record the outcome but not the alternatives weighed; specs assume the decision; plans sequence the work after the decision lands.
 
@@ -87,11 +87,11 @@ LEPs are public, so the `authors` frontmatter field exposes contributor identifi
 
 **Assumptions** — premises that, if wrong, invalidate the proposal.
 
-- **Assumption:** Maintainers and reviewers engage with LEPs rather than routing significant proposals around them through direct CRs. *Invalidated if:* maintainers consistently approve protocol or format CRs without an accompanying LEP, in which case the venue offers no actual alignment and becomes documentation theatre.
+- **Assumption:** Maintainers and reviewers engage with LEPs rather than routing significant proposals around them through direct CRs. _Invalidated if:_ maintainers consistently approve protocol or format CRs without an accompanying LEP, in which case the venue offers no actual alignment and becomes documentation theatre.
 
 **Risks** — things that could go wrong even if the assumptions hold.
 
-- **Risk:** LEPs become bureaucratic gatekeeping — every change demands one, even when an ADR or direct CR would do. *Mitigation:* the LEP/ADR split keeps narrow architecture decisions on the ADR path, and the skill guidance scopes LEPs to proposals that touch external surfaces or span subsystems, not every change.
+- **Risk:** LEPs become bureaucratic gatekeeping — every change demands one, even when an ADR or direct CR would do. _Mitigation:_ the LEP/ADR split keeps narrow architecture decisions on the ADR path, and the skill guidance scopes LEPs to proposals that touch external surfaces or span subsystems, not every change.
 
 ## Drawbacks
 
@@ -104,19 +104,19 @@ LEPs are public, so the `authors` frontmatter field exposes contributor identifi
 
 Continue using `docs/decisions/` for both narrow architecture decisions and larger proposals, expanding the ADR template's Consequences section as needed to cover compatibility and migration concerns.
 
-*Rejected because:* ADRs explicitly record decisions already made and do not serve as a forum for proposals under debate. Stretching ADRs to cover pre-decision proposals dilutes their meaning, and the ADR template lacks the forcing functions — split Compatibility, Migration Plan, Security and Privacy Considerations, Risks and Assumptions — that protocol and format proposals need.
+_Rejected because:_ ADRs explicitly record decisions already made and do not serve as a forum for proposals under debate. Stretching ADRs to cover pre-decision proposals dilutes their meaning, and the ADR template lacks the forcing functions — split Compatibility, Migration Plan, Security and Privacy Considerations, Risks and Assumptions — that protocol and format proposals need.
 
 ### Adopt a heavyweight PEP/KEP-style process
 
 Introduce a multi-state lifecycle (Draft, Provisional, Accepted, Final, Withdrawn, Superseded), a graduation track (Alpha/Beta/GA), and accompanying governance (Steering Council, FCP machinery, rfcbot-style automation).
 
-*Rejected because:* the governance overhead presupposes a project size and contributor pattern Lore does not have, and the graduation track presupposes a runtime feature-gate model Lore does not run. The lifecycle states beyond Draft/Accepted/Rejected add ceremony without resolving real ambiguity for Lore changes.
+_Rejected because:_ the governance overhead presupposes a project size and contributor pattern Lore does not have, and the graduation track presupposes a runtime feature-gate model Lore does not run. The lifecycle states beyond Draft/Accepted/Rejected add ceremony without resolving real ambiguity for Lore changes.
 
 ### Repurpose `context/rfcs/`
 
 Use the existing empty `context/rfcs/` folder for proposals, alongside `context/specs/` and `context/plans/`, instead of creating `docs/proposals/`.
 
-*Rejected because:* `context/` is not part of the published docs site, so external contributors and downstream consumers would not discover proposals there. `docs/proposals/` sits alongside ADRs and specs in the published navigation and matches the intended audience — public, durable, indexed.
+_Rejected because:_ `context/` is not part of the published docs site, so external contributors and downstream consumers would not discover proposals there. `docs/proposals/` sits alongside ADRs and specs in the published navigation and matches the intended audience — public, durable, indexed.
 
 ## Prior Art
 

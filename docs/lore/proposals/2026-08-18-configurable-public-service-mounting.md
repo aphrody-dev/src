@@ -252,7 +252,7 @@ redaction, and expiry behavior is unchanged.
 **Assumptions**
 
 - **Assumption:** no deployment needs one half of a proto family without the
-  other — *invalidated if:* a deployment wants to drop the legacy `urc.rpc`
+  other — _invalidated if:_ a deployment wants to drop the legacy `urc.rpc`
   surface while keeping `_v1`, or the reverse. One block gates both, so that
   needs a second block rather than a second flag.
 
@@ -261,18 +261,18 @@ redaction, and expiry behavior is unchanged.
 - **Risk:** a configuration that enables only `lock_service` without a lock
   store, or only `notification_service` with a notification plugin, registers
   nothing. This result is indistinguishable from a deliberate all-disabled
-  configuration — *mitigation:* accepted and not load-time checkable. Only the
+  configuration — _mitigation:_ accepted and not load-time checkable. Only the
   router knows the effective set, so neither shape has a load-time check.
   The router's own `warn!` on an empty `registered` reports both.
 - **Risk:** a service added to the router later mounts on a restricted
-  deployment, because a block nobody wrote defaults to enabled — *mitigation:*
+  deployment, because a block nobody wrote defaults to enabled — _mitigation:_
   partial. The effective-set log reports it. Nothing blocks it, which is the
   accepted cost of a denylist.
 - **Risk:** `#[derive(Default)]` reaches `GenericServiceSettings` in a later edit
-  and flips every unnamed service to disabled — *mitigation:* the hand-written
+  and flips every unnamed service to disabled — _mitigation:_ the hand-written
   impl carries a comment saying so, and a unit test asserts an empty
   configuration enables every service.
-- **Risk:** a typo leaves a service mounted in production — *mitigation:* none at
+- **Risk:** a typo leaves a service mounted in production — _mitigation:_ none at
   load time. Unknown keys are ignored, as they are everywhere else in the
   settings tree.
 
@@ -292,7 +292,7 @@ redaction, and expiry behavior is unchanged.
 One key on the existing table, `only_register = ["thin_client"]`, with an absent
 key meaning "mount everything".
 
-*Rejected because:* it introduces a second vocabulary for a decision the server
+_Rejected because:_ it introduces a second vocabulary for a decision the server
 already calls `enabled`. It also composes poorly with the loader. `config`
 replaces arrays instead of merging them, so every layer must restate the full
 list. The environment loader does not parse arrays, so changing the list also
@@ -306,7 +306,7 @@ A single list naming `admin`, `storage`, `replication`, `thin_client` and so on,
 covering the gRPC router, the QUIC ALPN stores, the internal gRPC router, and the
 HTTP listener together.
 
-*Rejected because:* `storage` names both a public gRPC service and two QUIC ALPN
+_Rejected because:_ `storage` names both a public gRPC service and two QUIC ALPN
 protocols, so `services = ["storage"]` alongside `quic.enabled = true` has no
 defined meaning. Every entry except the public gRPC services already has an
 `enabled` flag, so the list would duplicate an existing mechanism and require a
@@ -314,7 +314,7 @@ documented conflict-resolution rule.
 
 ### A separate binary or a cargo feature
 
-*Rejected because:* it doubles the build and release matrix and moves a
+_Rejected because:_ it doubles the build and release matrix and moves a
 deployment decision to compile time. Diagnosing a restricted deployment would
 require identifying its binary. The configured service set and startup log
 identify the deployment directly.

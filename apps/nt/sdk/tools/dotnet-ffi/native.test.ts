@@ -20,23 +20,35 @@ describe.skipIf(!built)("Nt.Interop NativeAOT", () => {
       { k: "prim", ffi: "i32", size: 4 },
       { k: "prim", ffi: "i32", size: 4 },
     ]);
-    expect(byEntry.get("nt_machine_name")?.params[0]?.marker).toBe("Utf16Buffer");
+    expect(byEntry.get("nt_machine_name")?.params[0]?.marker).toBe(
+      "Utf16Buffer",
+    );
     expect(byEntry.get("nt_utf8_length")?.params[0]?.marker).toBe("Utf8");
     expect(byEntry.get("nt_drives")?.params[0]?.ty.k).toBe("fn");
-    expect(m.exports.find((x) => x.method === "DynamicCode")?.entryPoint).toBeNull();
+    expect(
+      m.exports.find((x) => x.method === "DynamicCode")?.entryPoint,
+    ).toBeNull();
     const info = m.structs.find((s) => s.name === "NtSystemInfo")!;
     expect([info.size, info.align]).toEqual([88, 8]);
-    expect(Object.fromEntries(info.fields.map((f) => [f.name, f.offset]))).toMatchObject({
+    expect(
+      Object.fromEntries(info.fields.map((f) => [f.name, f.offset])),
+    ).toMatchObject({
       IsAot: 32,
       TotalMemory: 40,
       DisplayVersion: 56,
     });
-    expect(Object.fromEntries(m.enums.find((e) => e.name === "NtDriveKind")!.members)).toMatchObject({ Fixed: 3, Ram: 6 });
+    expect(
+      Object.fromEntries(
+        m.enums.find((e) => e.name === "NtDriveKind")!.members,
+      ),
+    ).toMatchObject({ Fixed: 3, Ram: 6 });
   });
 
   test("API native : méthode sans EntryPoint absente", () => {
     expect(ctx.api.dynamicCode).toBeUndefined();
-    expect(ctx.b.methods.filter((x) => x.entryPoint).length).toBe(Object.keys(ctx.api).length);
+    expect(ctx.b.methods.filter((x) => x.entryPoint).length).toBe(
+      Object.keys(ctx.api).length,
+    );
   });
 
   sharedChecks("NativeAOT", () => ctx, true);

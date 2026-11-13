@@ -17,17 +17,17 @@ Passive voice is acceptable when the actor is unknown, the actor is irrelevant, 
 
 ## Mood
 
-| Doc type | Default mood |
-| --- | --- |
-| Tutorial | Imperative for steps; indicative for lede and verification |
-| How-To | Imperative for steps; indicative for context |
-| Reference | Indicative for descriptions; imperative inside example commands |
-| Explanation | Indicative |
-| Landing (folder index) | Indicative; mostly noun-phrase headings |
-| Glossary entry | Indicative, third person |
-| Internals | Indicative throughout. Descriptive, not instructional. |
-| ADR | Past tense for Context and Problem Statement; present for Consequences and any rules the decision codifies. |
-| Code-Standard | Imperative for rule statements; indicative for rationale. |
+| Doc type               | Default mood                                                                                                |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Tutorial               | Imperative for steps; indicative for lede and verification                                                  |
+| How-To                 | Imperative for steps; indicative for context                                                                |
+| Reference              | Indicative for descriptions; imperative inside example commands                                             |
+| Explanation            | Indicative                                                                                                  |
+| Landing (folder index) | Indicative; mostly noun-phrase headings                                                                     |
+| Glossary entry         | Indicative, third person                                                                                    |
+| Internals              | Indicative throughout. Descriptive, not instructional.                                                      |
+| ADR                    | Past tense for Context and Problem Statement; present for Consequences and any rules the decision codifies. |
+| Code-Standard          | Imperative for rule statements; indicative for rationale.                                                   |
 
 Never use the subjunctive mood. `Should you wish to publish your branch` becomes `Run lore push to publish your branch`.
 
@@ -45,9 +45,11 @@ Use contractions in body prose throughout Lore docs — every doc type, every fo
 
 ```markdown
 <!-- correct -->
+
 The `--force` flag doesn't bypass branch protection.
 
 <!-- correct -->
+
 You don't need to install anything before starting this tutorial.
 ```
 
@@ -64,15 +66,19 @@ First-person plural (`we`, `our`, `us`) speaks for the Lore project — what the
 
 ```markdown
 <!-- correct, project recommendation -->
+
 We recommend committing small, focused changes.
 
 <!-- correct, project decision and rationale -->
+
 We chose content-addressed fragments to support offline-first workflows.
 
 <!-- correct, what the project provides -->
+
 We ship a Rust API and a C API as the integration surfaces; integrators choose the one that matches their host language.
 
 <!-- correct, project history -->
+
 In v0.5, we added support for sparse clones.
 ```
 
@@ -80,16 +86,19 @@ The exception is the **instructional voice** in Tutorials and How-Tos — never 
 
 ```markdown
 <!-- wrong, instructional -->
+
 In this tutorial, we will create a new branch.
 
 <!-- right -->
+
 This tutorial creates a new branch.
 
 <!-- also right -->
+
 Create a new branch with lore branch.
 ```
 
-**Why.** Lore is open-source and contributed to by a multi-organization community. The maintainer voice is collective, not corporate, and the project speaks for itself in its own docs. The instructional ban exists because a reader following a Tutorial is *the* actor — pretending the writer is alongside them obscures who's doing what.
+**Why.** Lore is open-source and contributed to by a multi-organization community. The maintainer voice is collective, not corporate, and the project speaks for itself in its own docs. The instructional ban exists because a reader following a Tutorial is _the_ actor — pretending the writer is alongside them obscures who's doing what.
 
 Use singular `they` / `them` / `their` for gender-neutral reference. Active voice often eliminates the need for any pronoun — prefer the rewrite when it's clean.
 
@@ -110,30 +119,30 @@ The two tables below cover the load-bearing terms only. They aren't an exhaustiv
 
 Lore-native primitives. Use as written; define inline on first use.
 
-| Term | Meaning |
-| --- | --- |
-| `commit` | The act of recording a snapshot, and the resulting record. Same word as Git, distinct mechanics. |
-| `revision` | An entry in a branch's history. Lore-distinctive — don't collapse into "commit." |
-| `branch` | First-class. Branches in Lore are full citizens, not pointers. |
-| `latest` | The local pointer to the most recent revision on a branch. Lore's analog to Git's `HEAD`, but per-branch and not exposed as a roving pointer. |
-| `working tree` | The on-disk state of a repository instance. |
-| `stage` | The set of changes recorded for the next commit. The verb (`lore stage`) and the noun. |
-| `repository instance` | An addressable copy of a repository on a peer. Created by `lore clone`, or by `lore repository instance clone` from another instance. |
-| `clone` | The act (`lore clone`) and the resulting repository instance; `lore repository instance clone` makes one from an instance already on the machine. Lore-native — not a Git-ism. |
-| `fragment` | Lore's content-addressed unit of storage. |
-| `sync` | Lore's analog to Git's `pull`. |
-| `view filter` | Client-side glob-based path include/exclude, user-defined per instance and changeable in place (`lore clone --view`, `lore sync --view`). Close to a P4 stream view, but per-instance rather than server-side. Closest Git analog: sparse-checkout. |
-| `layer` | A repository mounted at a path inside another repository, tracking current and staged revisions with revision-matching metadata. One of two Lore analogs to a Git submodule. |
-| `link` | A pinned reference to a path in another repository (`--pin <branch-or-revision>`). The other Lore analog to a Git submodule. |
+| Term                  | Meaning                                                                                                                                                                                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `commit`              | The act of recording a snapshot, and the resulting record. Same word as Git, distinct mechanics.                                                                                                                                                    |
+| `revision`            | An entry in a branch's history. Lore-distinctive — don't collapse into "commit."                                                                                                                                                                    |
+| `branch`              | First-class. Branches in Lore are full citizens, not pointers.                                                                                                                                                                                      |
+| `latest`              | The local pointer to the most recent revision on a branch. Lore's analog to Git's `HEAD`, but per-branch and not exposed as a roving pointer.                                                                                                       |
+| `working tree`        | The on-disk state of a repository instance.                                                                                                                                                                                                         |
+| `stage`               | The set of changes recorded for the next commit. The verb (`lore stage`) and the noun.                                                                                                                                                              |
+| `repository instance` | An addressable copy of a repository on a peer. Created by `lore clone`, or by `lore repository instance clone` from another instance.                                                                                                               |
+| `clone`               | The act (`lore clone`) and the resulting repository instance; `lore repository instance clone` makes one from an instance already on the machine. Lore-native — not a Git-ism.                                                                      |
+| `fragment`            | Lore's content-addressed unit of storage.                                                                                                                                                                                                           |
+| `sync`                | Lore's analog to Git's `pull`.                                                                                                                                                                                                                      |
+| `view filter`         | Client-side glob-based path include/exclude, user-defined per instance and changeable in place (`lore clone --view`, `lore sync --view`). Close to a P4 stream view, but per-instance rather than server-side. Closest Git analog: sparse-checkout. |
+| `layer`               | A repository mounted at a path inside another repository, tracking current and staged revisions with revision-matching metadata. One of two Lore analogs to a Git submodule.                                                                        |
+| `link`                | A pinned reference to a path in another repository (`--pin <branch-or-revision>`). The other Lore analog to a Git submodule.                                                                                                                        |
 
 #### Concepts with no Lore analog
 
 Lore doesn't have these. Don't translate — rewrite around the Lore primitive that does the equivalent job, or leave them out.
 
-| Term | Why |
-| --- | --- |
+| Term                          | Why                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------ |
 | `shelve`, `unshelve`, `stash` | No analog. Use a `branch` for in-flight work that needs to be set aside. |
-| `detached HEAD` | Lore's branch + revision model doesn't enter this state. |
+| `detached HEAD`               | Lore's branch + revision model doesn't enter this state.                 |
 
 Vale `Lore.GitIsmSubstitutions` and `Lore.PerforceIsmSubstitutions` rewrite Git and Perforce terms that have a clean 1:1 Lore equivalent (`HEAD` → `latest`, `working copy` → `working tree`, `changelist` → `revision`, `git index` → `stage`, `p4 integrate` → `lore branch merge`, others); `Lore.GitIsmFlagged` and `Lore.PerforceIsmFlagged` flag terms that need writer judgment — either no Lore analog (`detached HEAD`, `git stash`, `refspec`, `depot`, `p4 stream`) or multiple Lore analogs depending on intent (`submodule` → `layer` or `link`). The Vale rules cover a broader set than the tables above — those are the load-bearing terms for writers; the rules are exhaustive.
 
@@ -141,7 +150,7 @@ Vale `Lore.GitIsmSubstitutions` and `Lore.PerforceIsmSubstitutions` rewrite Git 
 
 Don't claim a step is easy. Difficulty is relative — phrases like `simply add`, `easily replaced`, `Just create a folder`, or `all you have to do is` alienate readers who don't find the task simple. The same words have legitimate non-difficulty senses (`just like`, `just a list of`, `breaks easily`) and those are fine.
 
-If a workflow is genuinely hard, explain *why*: `This workflow requires familiarity with three-way merge resolution.`
+If a workflow is genuinely hard, explain _why_: `This workflow requires familiarity with three-way merge resolution.`
 
 Vale `Lore.Difficulty` flags the difficulty-claim register specifically: imperative softeners (`Just <verb>`, `simply <verb>`), passive ease claims (`easily <verb>`, `easily <X>-able`), `all you have to do is`, and bare `obviously`. It doesn't fire on every appearance of `just`/`simply`/`easily`.
 
@@ -153,9 +162,9 @@ Adjectives and adverbs are seldom needed in technical writing. Reach for stronge
 
 Don't use `allow`, `let`, `permit`, or `enable` (in the "lets you do X" sense) when describing what a user can do. The software isn't a gatekeeper.
 
-| Wrong | Right |
-| --- | --- |
-| Lore branches **allow** you to work in parallel. | With Lore branches, **you can** work in parallel. |
+| Wrong                                                                | Right                                                        |
+| -------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Lore branches **allow** you to work in parallel.                     | With Lore branches, **you can** work in parallel.            |
 | Using `lore stage` **lets** you control which changes are committed. | **Use** `lore stage` to control which changes are committed. |
 
 `enable` (paired with `disable`) is correct only when literally turning a feature on or off: `Enable the pre-commit hook to validate changes automatically.`
@@ -168,18 +177,18 @@ Use **setting** for persistent values a user configures once — config-file fie
 
 ### Other terms to avoid
 
-| Avoid | Use |
-| --- | --- |
-| `&` | **and**. Acceptable only inside proper feature names. |
-| `and/or`, `either/or` | Rewrite. *Wrong:* "you can wear jeans `and/or` sweats." *Right:* "you can wear jeans or sweats." *(`Lore.AndOr`)* |
-| `and then`; sentence-starting `then` | Use one or the other, not both. Don't start a sentence with `then` — comma it onto the previous clause, or split. *Wrong:* "Save your work. Then close the editor." *Right:* "Save your work, then close the editor." |
-| `backwards`, `towards`, `whilst` | `backward`, `toward`, `while` (American spelling). *(`Lore.AmericanSpelling`)* |
-| `boolean` (lowercase prose) | `Boolean` (capitalized). *(`Lore.Boolean`)* |
-| `VS`, `vs.`, `VS.` | `vs` (lowercase, no period). *(`Lore.VsAbbrev`)* |
-| `native code` | `unmanaged code` *(`Lore.NativeCode`)* |
-| `blacklist`, `whitelist` | `denylist`, `allowlist` *(`Lore.BlackWhiteList`)* |
-| `drop-down`, `drop down` | `dropdown` *(`Lore.Dropdown`)* |
-| `master`, `slave` *(paired)* | Pick the closest fit and stay consistent: `primary/cluster`, `parent/child`, `primary/secondary`, `main/replica`, `initiator/target`, `requester/responder`, `controller/device`, `host/worker`, `host/proxy`, `leader/follower`. |
+| Avoid                                | Use                                                                                                                                                                                                                               |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `&`                                  | **and**. Acceptable only inside proper feature names.                                                                                                                                                                             |
+| `and/or`, `either/or`                | Rewrite. _Wrong:_ "you can wear jeans `and/or` sweats." _Right:_ "you can wear jeans or sweats." _(`Lore.AndOr`)_                                                                                                                 |
+| `and then`; sentence-starting `then` | Use one or the other, not both. Don't start a sentence with `then` — comma it onto the previous clause, or split. _Wrong:_ "Save your work. Then close the editor." _Right:_ "Save your work, then close the editor."             |
+| `backwards`, `towards`, `whilst`     | `backward`, `toward`, `while` (American spelling). _(`Lore.AmericanSpelling`)_                                                                                                                                                    |
+| `boolean` (lowercase prose)          | `Boolean` (capitalized). _(`Lore.Boolean`)_                                                                                                                                                                                       |
+| `VS`, `vs.`, `VS.`                   | `vs` (lowercase, no period). _(`Lore.VsAbbrev`)_                                                                                                                                                                                  |
+| `native code`                        | `unmanaged code` _(`Lore.NativeCode`)_                                                                                                                                                                                            |
+| `blacklist`, `whitelist`             | `denylist`, `allowlist` _(`Lore.BlackWhiteList`)_                                                                                                                                                                                 |
+| `drop-down`, `drop down`             | `dropdown` _(`Lore.Dropdown`)_                                                                                                                                                                                                    |
+| `master`, `slave` _(paired)_         | Pick the closest fit and stay consistent: `primary/cluster`, `parent/child`, `primary/secondary`, `main/replica`, `initiator/target`, `requester/responder`, `controller/device`, `host/worker`, `host/proxy`, `leader/follower`. |
 
 `affect` (verb, to impact) versus `effect` (noun, the result). Avoid effect-as-verb.
 
@@ -187,13 +196,13 @@ Use **setting** for persistent values a user configures once — config-file fie
 
 Spell them out.
 
-| Avoid | Use |
-| --- | --- |
-| `cf.` | compare |
-| `e.g.` | for example |
+| Avoid  | Use          |
+| ------ | ------------ |
+| `cf.`  | compare      |
+| `e.g.` | for example  |
 | `etc.` | and the rest |
-| `i.e.` | that's |
-| `n.b.` | Note |
+| `i.e.` | that's       |
+| `n.b.` | Note         |
 
 Vale `Lore.LatinAbbrev` enforces.
 
@@ -201,7 +210,7 @@ Vale `Lore.LatinAbbrev` enforces.
 
 Idioms translate badly. When in doubt, ask whether a non-native English reader would parse the phrase literally — if literal parsing changes the meaning, rewrite.
 
-Examples to avoid: *get your feet wet*, *take it for a spin*, *deep dive*, *kill two birds with one stone*, *a piece of cake*.
+Examples to avoid: _get your feet wet_, _take it for a spin_, _deep dive_, _kill two birds with one stone_, _a piece of cake_.
 
 ### Lore-technical exception: `kill`, `die`
 
@@ -223,7 +232,7 @@ The canonical rules:
 - **`lore`** (lowercase, in a code span) when referring to the CLI **binary** or a specific command. Example: `Run lore stage to add files to the next commit.`
 - **Lore CLI** / **Lore Server** / **Lore library** when you need to disambiguate which part of the product you mean. Example: `The Lore CLI is bundled with every release; the Lore Server is shipped separately.` Don't capitalize `library`.
 
-Don't write *the Lore tool*, *the Lore software*, *the Lore application*, *the Lore product*, or *the Lore system* — these are generic qualifiers and `Lore` already covers them. Use one of the three named parts above when you need to be specific, otherwise just write `Lore`. Vale `Lore.ProductNaming` enforces the generic-qualifier ban.
+Don't write _the Lore tool_, _the Lore software_, _the Lore application_, _the Lore product_, or _the Lore system_ — these are generic qualifiers and `Lore` already covers them. Use one of the three named parts above when you need to be specific, otherwise just write `Lore`. Vale `Lore.ProductNaming` enforces the generic-qualifier ban.
 
 ### Category naming
 
@@ -232,7 +241,7 @@ Lore is a **version control system**. Use "version control" — not "revision co
 When the project needs to be named unambiguously, pair the name with the category: **Lore version control**. Use it where a reader first meets the project on a page; plain `Lore` is fine once context is set. Don't repeat the full phrase past its first natural use.
 
 > [!NOTE]
-> **Why.** "Version control" is the standard name for the category and how every peer tool — Git, Mercurial, Perforce — describes itself; "revision control" is a dated synonym. And *lore* is a common English word, so pairing the name with the category keeps the open-source project recognizable.
+> **Why.** "Version control" is the standard name for the category and how every peer tool — Git, Mercurial, Perforce — describes itself; "revision control" is a dated synonym. And _lore_ is a common English word, so pairing the name with the category keeps the open-source project recognizable.
 
 ### Third-party brands
 
@@ -274,17 +283,17 @@ Readers must understand that the link takes them away from the Lore docs and whe
 
 When describing user actions on the rendered docs site or in a generic browser interaction:
 
-| Term | Use |
-| --- | --- |
-| click | Click a button. Don't write `click on` — left-button click is implied. *(`Lore.ClickOn`)* |
-| right-click, double-click | Same rule. Don't write `right-click on` or `double-click on`. *(`Lore.ClickOn`)* |
-| select | Select from a list or menu. |
-| drag | Preferred over `drag and drop`. Drop is implied. |
-| press | Press a key. `Press the Tab key`, not `press Tab` — distinguishes from UI tabs. |
-| open | Open a screen, panel, or menu. |
-| enable, disable | Pair them. Reserved for turning a feature on or off. |
-| expand, collapse | Pair them. Used for nested-content UI areas. |
-| appears, will appear | Use when something shows up on screen. Don't use `displays`. |
+| Term                      | Use                                                                                       |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| click                     | Click a button. Don't write `click on` — left-button click is implied. _(`Lore.ClickOn`)_ |
+| right-click, double-click | Same rule. Don't write `right-click on` or `double-click on`. _(`Lore.ClickOn`)_          |
+| select                    | Select from a list or menu.                                                               |
+| drag                      | Preferred over `drag and drop`. Drop is implied.                                          |
+| press                     | Press a key. `Press the Tab key`, not `press Tab` — distinguishes from UI tabs.           |
+| open                      | Open a screen, panel, or menu.                                                            |
+| enable, disable           | Pair them. Reserved for turning a feature on or off.                                      |
+| expand, collapse          | Pair them. Used for nested-content UI areas.                                              |
+| appears, will appear      | Use when something shows up on screen. Don't use `displays`.                              |
 
 Lore has no graphical client application. Use these terms when describing the rendered docs site, terminal interactions, or generic browser usage.
 

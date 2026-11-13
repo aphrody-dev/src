@@ -4,12 +4,12 @@ Sources : KERNELS.md, CONTAINERS.md, PACKAGE-MANAGERS.md, UNIFIED.md, OURS.md.
 
 ## Noyaux par hôte
 
-| Hôte | Actuel | Décision | Pourquoi |
-|---|---|---|---|
-| prd (Arch, EPYC 9354P, x86-64-v4) | 7.2.11-arch1-1 | `linux-cachyos-server` x86_64_v4 (7.3.3) depuis le dépôt CachyOS v4 ; garder `linux` Arch en entrée de boot de secours | hôte build + conteneurs ; LTO/AutoFDO + v4 ; server meilleur en stress-ng (Phoronix 2026-06-02) |
-| fr2 / cdn (Ubuntu 26.10, KVM Haswell v3) | 7.3.0-9-generic | rester sur `linux-generic` Ubuntu, appliquer 7.3.0-11 | petit VPS : patches sécurité Canonical > gain marginal ; PREEMPT_DYNAMIC déjà là |
-| fr1 / vps (Ubuntu 26.10, KVM v3, 46 Go) | 7.3.0-9-generic | idem fr2 ; réévaluer seulement si migré vers Arch | idem |
-| PC Windows | WSL interdit | sans objet ; pas de noyau Linux local | contrainte utilisateur |
+| Hôte                                     | Actuel          | Décision                                                                                                               | Pourquoi                                                                                        |
+| ---------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| prd (Arch, EPYC 9354P, x86-64-v4)        | 7.2.11-arch1-1  | `linux-cachyos-server` x86_64_v4 (7.3.3) depuis le dépôt CachyOS v4 ; garder `linux` Arch en entrée de boot de secours | hôte build + conteneurs ; LTO/AutoFDO + v4 ; server meilleur en stress-ng (Phoronix 2026-06-02) |
+| fr2 / cdn (Ubuntu 26.10, KVM Haswell v3) | 7.3.0-9-generic | rester sur `linux-generic` Ubuntu, appliquer 7.3.0-11                                                                  | petit VPS : patches sécurité Canonical > gain marginal ; PREEMPT_DYNAMIC déjà là                |
+| fr1 / vps (Ubuntu 26.10, KVM v3, 46 Go)  | 7.3.0-9-generic | idem fr2 ; réévaluer seulement si migré vers Arch                                                                      | idem                                                                                            |
+| PC Windows                               | WSL interdit    | sans objet ; pas de noyau Linux local                                                                                  | contrainte utilisateur                                                                          |
 
 BORE : non retenu (aucun gain mesuré, Phoronix 2026-06-04). Hardened : non (pénalité, io_uring coupé).
 

@@ -17,7 +17,11 @@ export { detectTarget, makeEnv };
 
 type Bindings = Record<string, unknown>;
 
-export async function resolveCtx(target: Target, b: Bindings, waitUntil: Ctx["waitUntil"]): Promise<Ctx> {
+export async function resolveCtx(
+  target: Target,
+  b: Bindings,
+  waitUntil: Ctx["waitUntil"],
+): Promise<Ctx> {
   const env = makeEnv(b);
   const pick = (v?: string) => {
     const [kind = "", ...rest] = (v ?? "").split(":");
@@ -35,7 +39,11 @@ export async function resolveCtx(target: Target, b: Bindings, waitUntil: Ctx["wa
   if (sk === "s3" || sk === "fs" || kk === "redis" || qk === "url") {
     const m = await import("./bun");
     if (sk === "s3")
-      storage = m.s3Storage({ bucket: env.require("S3_BUCKET"), endpoint: env.get("S3_ENDPOINT"), region: env.get("S3_REGION") });
+      storage = m.s3Storage({
+        bucket: env.require("S3_BUCKET"),
+        endpoint: env.get("S3_ENDPOINT"),
+        region: env.get("S3_REGION"),
+      });
     if (sk === "fs") storage = m.fsStorage(sa || env.require("STORAGE_DIR"));
     if (kk === "redis") kv = m.redisKV(env.require("REDIS_URL"));
     if (qk === "url") sql = m.bunSQL(env.require("DATABASE_URL"));
@@ -43,11 +51,16 @@ export async function resolveCtx(target: Target, b: Bindings, waitUntil: Ctx["wa
   return { target, env, storage, kv, sql, waitUntil };
 }
 
-async function cronRoute(app: AppDef, req: Request, ctx: Ctx): Promise<Response | null> {
+async function cronRoute(
+  app: AppDef,
+  req: Request,
+  ctx: Ctx,
+): Promise<Response | null> {
   const m = new URL(req.url).pathname.match(/^\/__cron\/([\w-]+)$/);
   if (!m) return null;
   const secret = ctx.env.get("CRON_SECRET");
-  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) return new Response("forbidden", { status: 403 });
+  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`)
+    return new Response("forbidden", { status: 403 });
   const h = app.crons?.[m[1]!];
   if (!h) return new Response("unknown cron", { status: 404 });
   await h(ctx);
@@ -84,8 +97,13 @@ export function vercel(app: AppDef) {
   return {
     async fetch(req: Request) {
       const pending: Promise<unknown>[] = [];
-      const ctx = await resolveCtx("vercel", {}, (p) => void pending.push(p.catch(() => {})));
-      const res = (await cronRoute(app, req, ctx)) ?? (await app.fetch(req, ctx));
+      const ctx = await resolveCtx(
+        "vercel",
+        {},
+        (p) => void pending.push(p.catch(() => {})),
+      );
+      const res =
+        (await cronRoute(app, req, ctx)) ?? (await app.fetch(req, ctx));
       if (pending.length) await Promise.all(pending);
       return res;
     },
@@ -97,7 +115,11 @@ export function vercel(app: AppDef) {
  * or a single cron run with `--cron <name>` (systemd timer).
  */
 export async function vps(app: AppDef, argv: string[] = Bun.argv) {
-  const ctx = await resolveCtx(detectTarget(), {},(p) => void p.catch((e) => console.error(e)));
+  const ctx = await resolveCtx(
+    detectTarget(),
+    {},
+    (p) => void p.catch((e) => console.error(e)),
+  );
   const i = argv.indexOf("--cron");
   if (i >= 0) {
     const name = argv[i + 1] ?? "";
@@ -109,7 +131,8 @@ export async function vps(app: AppDef, argv: string[] = Bun.argv) {
   return Bun.serve({
     port: Number(ctx.env.get("PORT") ?? 3000),
     hostname: ctx.env.get("HOST") ?? "127.0.0.1",
-    fetch: async (req) => (await cronRoute(app, req, ctx)) ?? app.fetch(req, ctx),
+    fetch: async (req) =>
+      (await cronRoute(app, req, ctx)) ?? app.fetch(req, ctx),
   });
 }
 

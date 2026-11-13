@@ -35,11 +35,22 @@ test("r2-site on vps ctx: index, 206, 404, health", async () => {
   const r = await app.fetch(new Request("http://x/"), ctx);
   expect(r.status).toBe(200);
   expect(await r.text()).toBe("<h1>hi</h1>");
-  const p = await app.fetch(new Request("http://x/a.txt", { headers: { range: "bytes=0-3" } }), ctx);
+  const p = await app.fetch(
+    new Request("http://x/a.txt", { headers: { range: "bytes=0-3" } }),
+    ctx,
+  );
   expect(p.status).toBe(206);
   expect(p.headers.get("content-range")).toBe("bytes 0-3/10");
-  expect((await app.fetch(new Request("http://x/nope.bin"), ctx)).status).toBe(404);
-  expect(((await (await app.fetch(new Request("http://x/health"), ctx)).json()) as { target: string }).target).toBe("vps");
+  expect((await app.fetch(new Request("http://x/nope.bin"), ctx)).status).toBe(
+    404,
+  );
+  expect(
+    (
+      (await (await app.fetch(new Request("http://x/health"), ctx)).json()) as {
+        target: string;
+      }
+    ).target,
+  ).toBe("vps");
   expect(parseRange("bytes=5-")).toEqual({ offset: 5 });
 });
 
@@ -47,18 +58,26 @@ test("cloudflare wrapper: R2 binding + scheduled cron mapping", async () => {
   let ran = "";
   const store = new Map<string, string>([["k", "v"]]);
   const BUCKET = {
-    get: async (k: string) => (store.has(k) ? { body: new Response(store.get(k)).body, size: 1, httpEtag: '"e"' } : null),
+    get: async (k: string) =>
+      store.has(k)
+        ? { body: new Response(store.get(k)).body, size: 1, httpEtag: '"e"' }
+        : null,
     put: async () => {},
     delete: async () => {},
   };
   const w = cloudflare({
     name: "t",
-    fetch: async (_r, ctx) => new Response(await new Response((await ctx.storage!.get("k"))!.body).text()),
+    fetch: async (_r, ctx) =>
+      new Response(
+        await new Response((await ctx.storage!.get("k"))!.body).text(),
+      ),
     crons: { nightly: () => void (ran = "nightly") },
   });
   const env = { STORAGE: "r2:BUCKET", BUCKET, CRONS: "0 3 * * *=nightly" };
   const c = { waitUntil() {} };
-  expect(await (await w.fetch(new Request("http://x/"), env, c)).text()).toBe("v");
+  expect(await (await w.fetch(new Request("http://x/"), env, c)).text()).toBe(
+    "v",
+  );
   await w.scheduled({ cron: "0 3 * * *" }, env, c);
   expect(ran).toBe("nightly");
 });
@@ -67,9 +86,17 @@ test("vercel wrapper: /__cron requires CRON_SECRET", async () => {
   delete process.env.STORAGE;
   process.env.CRON_SECRET = "s";
   let ran = false;
-  const v = vercel({ name: "t", fetch: () => new Response("ok"), crons: { job: () => void (ran = true) } });
+  const v = vercel({
+    name: "t",
+    fetch: () => new Response("ok"),
+    crons: { job: () => void (ran = true) },
+  });
   expect((await v.fetch(new Request("http://x/__cron/job"))).status).toBe(403);
-  const ok = await v.fetch(new Request("http://x/__cron/job", { headers: { authorization: "Bearer s" } }));
+  const ok = await v.fetch(
+    new Request("http://x/__cron/job", {
+      headers: { authorization: "Bearer s" },
+    }),
+  );
   expect(ok.status).toBe(200);
   expect(ran).toBe(true);
 });

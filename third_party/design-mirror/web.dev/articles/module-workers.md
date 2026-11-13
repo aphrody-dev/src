@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Moving heavy lifting into background threads is now easier with JavaScript modules in web workers.
 
- Jason Miller [X](https://twitter.com/_developit) [GitHub](https://github.com/developit) [Homepage](https://jasonformat.com)
+Jason Miller [X](https://twitter.com/_developit) [GitHub](https://github.com/developit) [Homepage](https://jasonformat.com)
 
 JavaScript is single-threaded, which means it can only perform one operation at a time. This is
 intuitive and works well for lots of cases on the web, but can become problematic when we need to
@@ -31,19 +32,19 @@ thread and responds by sending back messages of its own:
 page.js:
 
 ```javascript
-const worker = new Worker('worker.js');
-worker.addEventListener('message', e => {
+const worker = new Worker("worker.js");
+worker.addEventListener("message", (e) => {
   console.log(e.data);
 });
-worker.postMessage('hello');
+worker.postMessage("hello");
 ```
 
 worker.js:
 
 ```javascript
-addEventListener('message', e => {
-  if (e.data === 'hello') {
-    postMessage('world');
+addEventListener("message", (e) => {
+  if (e.data === "hello") {
+    postMessage("world");
   }
 });
 ```
@@ -63,7 +64,7 @@ which exposes a messaging interface as well as a `terminate()` method that immed
 destroys the worker.
 
 ```javascript
-const worker = new Worker('worker.js');
+const worker = new Worker("worker.js");
 ```
 
 An `importScripts()` function is available within web workers for loading additional code, but it
@@ -74,9 +75,9 @@ overwritten by the variables in another.
 worker.js:
 
 ```javascript
-importScripts('greet.js');
+importScripts("greet.js");
 // ^ could block for seconds
-addEventListener('message', e => {
+addEventListener("message", (e) => {
   postMessage(sayHello());
 });
 ```
@@ -86,7 +87,7 @@ greet.js:
 ```javascript
 // global to the whole worker
 function sayHello() {
-  return 'world';
+  return "world";
 }
 ```
 
@@ -105,8 +106,8 @@ modules](https://v8.dev/features/modules) is shipping in Chrome 80, called modul
 execution to match `<script type="module">`.
 
 ```javascript
-const worker = new Worker('worker.js', {
-  type: 'module'
+const worker = new Worker("worker.js", {
+  type: "module",
 });
 ```
 
@@ -126,8 +127,8 @@ since the imported module's exports are returned rather than relying on global v
 worker.js:
 
 ```javascript
-import { sayHello } from './greet.js';
-addEventListener('message', e => {
+import { sayHello } from "./greet.js";
+addEventListener("message", (e) => {
   postMessage(sayHello());
 });
 ```
@@ -135,7 +136,7 @@ addEventListener('message', e => {
 greet.js:
 
 ```javascript
-import greetings from './data.js';
+import greetings from "./data.js";
 export function sayHello() {
   return greetings.hello;
 }
@@ -160,12 +161,12 @@ JavaScript modules, which means they can be preloaded and even pre-parsed using 
 
 ```html
 <!-- preloads worker.js and its dependencies: -->
-<link rel="modulepreload" href="worker.js">
+<link rel="modulepreload" href="worker.js" />
 
 <script>
-  addEventListener('load', () => {
+  addEventListener("load", () => {
     // our worker code is likely already parsed and ready to execute!
-    const worker = new Worker('worker.js', { type: 'module' });
+    const worker = new Worker("worker.js", { type: "module" });
   });
 </script>
 ```
@@ -190,8 +191,8 @@ constructing a shared worker with the `{type:"module"}` option now loads the wor
 module rather than a classic script:
 
 ```javascript
-const worker = new SharedWorker('/worker.js', {
-  type: 'module'
+const worker = new SharedWorker("/worker.js", {
+  type: "module",
 });
 ```
 
@@ -211,8 +212,8 @@ however this change has yet to be implemented in browsers. Once that happens, it
 to instantiate a service worker using a JavaScript module using the following code:
 
 ```javascript
-navigator.serviceWorker.register('/sw.js', {
-  type: 'module'
+navigator.serviceWorker.register("/sw.js", {
+  type: "module",
 });
 ```
 

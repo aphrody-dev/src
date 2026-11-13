@@ -16,11 +16,11 @@ reach for it. Link to the relevant Explanation page for the model.>
 
 ## Options
 
-| Flag         | Argument  | Default | Description           |
-| ------------ | --------- | ------- | --------------------- |
-| `--<flag-1>` | `<value>` | none    | <Short description.>  |
-| `--<flag-2>` | none      | `false` | <Short description.>  |
-| `--<flag-3>` | `<value>` | `auto`  | <Short description.>  |
+| Flag         | Argument  | Default | Description          |
+| ------------ | --------- | ------- | -------------------- |
+| `--<flag-1>` | `<value>` | none    | <Short description.> |
+| `--<flag-2>` | none      | `false` | <Short description.> |
+| `--<flag-3>` | `<value>` | `auto`  | <Short description.> |
 
 ### `--<flag-1>`
 
@@ -55,11 +55,11 @@ with other flags, edge cases.>
 
 ## Exit codes
 
-| Code | Meaning           |
-| ---- | ----------------- |
-| `0`  | Success           |
-| `1`  | <Error category>  |
-| `2`  | <Error category>  |
+| Code | Meaning          |
+| ---- | ---------------- |
+| `0`  | Success          |
+| `1`  | <Error category> |
+| `2`  | <Error category> |
 
 ## See also
 

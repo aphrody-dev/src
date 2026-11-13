@@ -704,10 +704,13 @@ const DENY_OBFUSCATED =
 // Glob pattern (bash rules: a leading * or ? never matches a dot file) matched against secret names.
 function globHitsSecret(tok: string): boolean {
   const name = tok.replaceAll("\\", "/").split("/").pop() ?? "";
-  if (!/[?*[]/.test(name) || name.replace(/[?*[\]]/g, "").length < 2) return false;
+  if (!/[?*[]/.test(name) || name.replace(/[?*[\]]/g, "").length < 2)
+    return false;
   try {
     const g = new Bun.Glob(name);
-    return SECRET_NAMES.some((n) => (n.startsWith(".") && !name.startsWith(".") ? false : g.match(n)));
+    return SECRET_NAMES.some((n) =>
+      n.startsWith(".") && !name.startsWith(".") ? false : g.match(n),
+    );
   } catch {
     return false;
   }
@@ -716,13 +719,20 @@ function globHitsSecret(tok: string): boolean {
 // Bash only: what the lexer cannot judge is refused instead of guessed.
 function obfuscated(seg: string[], cmd: string): boolean {
   let i = 0;
-  while (i < seg.length && (PREFIX.has(seg[i]!.toLowerCase()) || /^[A-Za-z_][A-Za-z0-9_]*=/.test(seg[i]!))) i++;
+  while (
+    i < seg.length &&
+    (PREFIX.has(seg[i]!.toLowerCase()) ||
+      /^[A-Za-z_][A-Za-z0-9_]*=/.test(seg[i]!))
+  )
+    i++;
   const v = seg[i] ?? "";
   // r\m, \rm (not a Windows path such as C:\tools\x.exe), $cmd, r?m, [r]m
   if (/\\/.test(v) && !/[:/]|\\.*\\|\.\w+$/.test(v)) return true;
-  if (/^\$\{?[A-Za-z_][A-Za-z0-9_]*\}?$/.test(v) || /[?*[]/.test(v)) return true;
+  if (/^\$\{?[A-Za-z_][A-Za-z0-9_]*\}?$/.test(v) || /[?*[]/.test(v))
+    return true;
   for (const t of seg.slice(i + 1)) {
-    if (/\\/.test(t) && isSecretPath(` ${t.replace(/\\(.)/g, "$1")}`)) return true;
+    if (/\\/.test(t) && isSecretPath(` ${t.replace(/\\(.)/g, "$1")}`))
+      return true;
     if (globHitsSecret(t)) return true;
   }
   return false;
@@ -782,7 +792,13 @@ function shellVerdict(
     const hs = seg.findIndex((t) => t.startsWith("<<<"));
     if (hs >= 0 && SHELLS.has(verb)) {
       const code = seg[hs] === "<<<" ? (seg[hs + 1] ?? "") : seg[hs]!.slice(3);
-      const v = shellVerdict(code, cwd, remote, verb === "pwsh" || verb === "powershell", depth + 1);
+      const v = shellVerdict(
+        code,
+        cwd,
+        remote,
+        verb === "pwsh" || verb === "powershell",
+        depth + 1,
+      );
       if (v) return v;
     }
     // Redirection targets are writes, not reads: `echo x > .env` is allowed; `< .env` is a read.
@@ -858,8 +874,15 @@ function shellVerdict(
     }
 
     if (verb === "git") {
-      if (args.some((a, k) => /^-c$/.test(a) && /^alias\./i.test(args[k + 1] ?? "")) || args.some((a) => /^-calias\./i.test(a)))
-        return { deny: "NHITL : alias git défini en ligne interdit (git -c alias.*) : écrire la sous-commande en clair." };
+      if (
+        args.some(
+          (a, k) => /^-c$/.test(a) && /^alias\./i.test(args[k + 1] ?? ""),
+        ) ||
+        args.some((a) => /^-calias\./i.test(a))
+      )
+        return {
+          deny: "NHITL : alias git défini en ligne interdit (git -c alias.*) : écrire la sous-commande en clair.",
+        };
       const [sub, sa, dir] = gitSub(args);
       if (sub === "push" && forcePush(sa))
         return {

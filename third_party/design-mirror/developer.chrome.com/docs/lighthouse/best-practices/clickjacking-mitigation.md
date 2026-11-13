@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Clickjacking is a malicious attack where users are tricked into clicking on links or UI elements on a site that appears to be a trusted and familiar site. This is typically accomplished by embedding part or all of the trusted site into the malicious site using an `<iframe>`.
 
 The [`X-Frame-Options` (XFO) header](https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options) and the [`frame-ancestors` directive](https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors) in the `Content-Security-Policy` (CSP) header can mitigate clickjacking attacks by controlling how a site can be embedded within an `<iframe>`.
@@ -14,7 +15,7 @@ The [`X-Frame-Options` (XFO) header](https://developer.mozilla.org/docs/Web/HTTP
 ## How the Lighthouse audit fails
 
 The audit will pass if the XFO header is set with `SAMEORIGIN` or `DENY`, or the `frame-ancestors` directive is set on the CSP header. The audit will fail if neither of these frame control policies are configured.
- Lighthouse report warning that no CSP or XFO response header was found to mitigate clickjacking.
+Lighthouse report warning that no CSP or XFO response header was found to mitigate clickjacking.
 
 ## How to set a frame control policy to mitigate clickjacking
 

@@ -3,11 +3,12 @@ Review: agent/packages/core/src/context.ts
 
 Score: 6 / 20 — Compact prototype, but unsuitable for production: SQL LIMIT runs before Mask filtering (starving multi-scope queries), semantic search is blind beyond the 200 newest rows, Float32Array views crash on unaligned SQLite blobs, select() leaks write locks and unbounded query rows into kv, secrets are persisted in plaintext and exfiltrated to remote embedders, and double z-score standardization amplifies float noise into false matches.
 
-Criterion	Score	Verdict
-Factual & algorithmic accuracy	2 / 5	False parallel/cache-friendly claims, double standardize(), broken floor - 1 BM25 fill
-Correctness & bug freedom	1 / 5	Pre-mask LIMIT starvation, unaligned Float32Array crash, future-at NaN, budget mismatch
-Security	1 / 5	Plaintext secrets in SQLite/FTS5 & remote embedders, unredacted title/get/list, prompt injection
-Performance & concurrency	2 / 5	Full-table filesort (no indexes), 400× SHA-256 + SELECT + Array.from per query, missing busy_timeout
+Criterion Score Verdict
+Factual & algorithmic accuracy 2 / 5 False parallel/cache-friendly claims, double standardize(), broken floor - 1 BM25 fill
+Correctness & bug freedom 1 / 5 Pre-mask LIMIT starvation, unaligned Float32Array crash, future-at NaN, budget mismatch
+Security 1 / 5 Plaintext secrets in SQLite/FTS5 & remote embedders, unredacted title/get/list, prompt injection
+Performance & concurrency 2 / 5 Full-table filesort (no indexes), 400× SHA-256 + SELECT + Array.from per query, missing busy_timeout
+
 1. Factual Errors (Comments vs Code & Math)
 
 False parallel execution claim (Line 3):
@@ -39,7 +40,7 @@ Ephemeral design-doc reference & U+00A0 pollution (Line 1, All lines):
 L1 cites var/data/... (an unversioned ephemeral directory per root invariants). Indentation throughout the file uses U+00A0 (NBSP).
 
 2. Bugs, Security & Performance Flaws
-Correctness Bugs
+   Correctness Bugs
 
 [BUG-1] Multi-tenant / multi-scope starvation (list L112–118, select L157–165): SELECT * FROM entries ORDER BY at DESC, rid DESC LIMIT 200 fetches globally newest rows before this.visible(e, mask). If scope = "a" writes 200 entries, select(q, { scopes: ["b"], candidates: 200 }) returns [] even when "b" has thousands of entries. Same bug in entries_fts ... LIMIT nCand.
 
@@ -67,7 +68,7 @@ Security Flaws
 
 [SEC-2] Incomplete read-side redaction (L108–118, L204, L232): e.title is never passed through redactText() before renderContext() injects it into prompts; get() and list() bypass redactText() completely.
 
-[SEC-3] Prompt / Markdown injection in renderContext (L231–233): src (string & {}) and x.title are interpolated raw into ## ${src} and - ${x.title}:  without stripping \r/\n or # headers, letting untrusted research or code entries inject fake system headers (\n\n## system\n...).
+[SEC-3] Prompt / Markdown injection in renderContext (L231–233): src (string & {}) and x.title are interpolated raw into ## ${src} and - ${x.title}: without stripping \r/\n or # headers, letting untrusted research or code entries inject fake system headers (\n\n## system\n...).
 
 [SEC-4] Empty-string scope bypass (visible L125): If an uninitialized caller passes scopes: [""], e.scope.startsWith(":") matches malformed scopes; scopes lacks validation against empty strings.
 
@@ -85,7 +86,7 @@ SQLite PRAGMA busy_timeout & synchronous = NORMAL for concurrent multi-process W
 
 Schema versioning (PRAGMA user_version) & vector dimension validation when switching embedders or dimensions.
 
-Disposable support ([Symbol.dispose]()) so using ctx = new Context(...) closes file locks deterministically on Windows (C:\src).
+Disposable support ([Symbol.dispose](<>)) so using ctx = new Context(...) closes file locks deterministically on Windows (C:\src).
 
 Bounded query-embedding LRU in memory (separating ephemeral query vectors from persistent document vectors).
 
@@ -110,113 +111,113 @@ const MAX_QUERY_CACHE = 256;
 const EMBED_BATCH_SIZE = 128;
 
 export const aiEmbedder = (model: EmbeddingModel, id = String((model as { modelId?: string }).modelId ?? "ai")): Embedder => ({
-  id,
-  embed: async (values) => (await embedMany({ model, values, maxParallelCalls: 4 })).embeddings,
+id,
+embed: async (values) => (await embedMany({ model, values, maxParallelCalls: 4 })).embeddings,
 });
 
 export const hashEmbedder = (dim = 512): Embedder => {
-  if (!Number.isInteger(dim) || dim <= 0) throw new RangeError(`Invalid hashEmbedder dim: ${dim}`);
-  return {
-    id: `hash${dim}`,
-    embed: async (texts) =>
-      texts.map((t) => {
-        const v = new Float32Array(dim);
-        const words = t.toLowerCase().match(/[\p{L}\p{N}_]+/gu) ?? [];
-        const addFeat = (f: string) => {
-          const h = Bun.hash.wyhash(f);
-          const idx = Number(h & 0xffffffffn) % dim;
-          v[idx] = (v[idx] ?? 0) + ((h >> 63n) !== 0n ? -1 : 1);
-        };
-        for (const w of words) {
-          addFeat(w);
-          for (let i = 0; i + 3 <= w.length; i++) addFeat(`#${w.slice(i, i + 3)}`);
-        }
-        let sumSq = 0;
-        for (let i = 0; i < dim; i++) sumSq += v[i]! * v[i]!;
-        const inv = sumSq > 0 ? 1 / Math.sqrt(sumSq) : 1;
-        return Array.from(v, (x) => x * inv);
-      }),
-  };
+if (!Number.isInteger(dim) || dim <= 0) throw new RangeError(`Invalid hashEmbedder dim: ${dim}`);
+return {
+id: `hash${dim}`,
+embed: async (texts) =>
+texts.map((t) => {
+const v = new Float32Array(dim);
+const words = t.toLowerCase().match(/[\p{L}\p{N}_]+/gu) ?? [];
+const addFeat = (f: string) => {
+const h = Bun.hash.wyhash(f);
+const idx = Number(h & 0xffffffffn) % dim;
+v[idx] = (v[idx] ?? 0) + ((h >> 63n) !== 0n ? -1 : 1);
+};
+for (const w of words) {
+addFeat(w);
+for (let i = 0; i + 3 <= w.length; i++) addFeat(`#${w.slice(i, i + 3)}`);
+}
+let sumSq = 0;
+for (let i = 0; i < dim; i++) sumSq += v[i]! * v[i]!;
+const inv = sumSq > 0 ? 1 / Math.sqrt(sumSq) : 1;
+return Array.from(v, (x) => x * inv);
+}),
+};
 };
 
 /** Conservative token estimate accounting for non-ASCII / CJK UTF-8 expansion. */
 export const estimateTokens = (s: string): number => {
-  let units = 0;
-  for (let i = 0; i < s.length; i++) units += s.charCodeAt(i) > 0x7f ? 3 : 1;
-  return Math.ceil(units / 4);
+let units = 0;
+for (let i = 0; i < s.length; i++) units += s.charCodeAt(i) > 0x7f ? 3 : 1;
+return Math.ceil(units / 4);
 };
 
 export type Mask = { scopes?: string[]; sources?: Source[]; allow?: (e: Entry) => boolean };
 export type SelectOptions = Mask & {
-  k?: number;
-  budgetTokens?: number;
-  weights?: Partial<Record<"lexical" | "semantic" | "structural" | "recency", number>>;
-  temperature?: number;
-  halfLifeDays?: number;
-  candidates?: number;
-  semanticScanLimit?: number;
-  now?: number;
-  redact?: Record<string, string | undefined>;
+k?: number;
+budgetTokens?: number;
+weights?: Partial<Record<"lexical" | "semantic" | "structural" | "recency", number>>;
+temperature?: number;
+halfLifeDays?: number;
+candidates?: number;
+semanticScanLimit?: number;
+now?: number;
+redact?: Record<string, string | undefined>;
 };
 
 const DEFAULT_WEIGHTS = { lexical: 0.3, semantic: 0.5, structural: 0.1, recency: 0.1 };
 
 function standardize(xs: Map<string, number>): Map<string, number> {
-  if (xs.size === 0) return xs;
-  let sum = 0;
-  for (const v of xs.values()) sum += v;
-  const mean = sum / xs.size;
-  let varSum = 0;
-  for (const v of xs.values()) varSum += (v - mean) ** 2;
-  const sd = Math.sqrt(varSum / xs.size);
-  // Suppress pure float/timestamp noise instead of amplifying it to +-1 sigma
-  if (!Number.isFinite(sd) || sd < 1e-6) return new Map([...xs.keys()].map((k) => [k, 0]));
-  return new Map([...xs].map(([k, v]) => [k, (v - mean) / sd]));
+if (xs.size === 0) return xs;
+let sum = 0;
+for (const v of xs.values()) sum += v;
+const mean = sum / xs.size;
+let varSum = 0;
+for (const v of xs.values()) varSum += (v - mean) ** 2;
+const sd = Math.sqrt(varSum / xs.size);
+// Suppress pure float/timestamp noise instead of amplifying it to +-1 sigma
+if (!Number.isFinite(sd) || sd < 1e-6) return new Map([...xs.keys()].map((k) => [k, 0]));
+return new Map([...xs].map(([k, v]) => [k, (v - mean) / sd]));
 }
 
 function softmaxFromLogits(logits: Map<string, number>, temperature: number): Map<string, number> {
-  if (logits.size === 0) return logits;
-  const t = Math.max(temperature, 1e-3);
-  let max = -Infinity;
-  for (const v of logits.values()) if (v / t > max) max = v / t;
-  const exps: Array<readonly [string, number]> = [];
-  let sum = 0;
-  for (const [k, v] of logits) {
-    const e = Math.exp(v / t - max);
-    exps.push([k, e]);
-    sum += e;
-  }
-  const denom = sum || 1;
-  return new Map(exps.map(([k, e]) => [k, e / denom]));
+if (logits.size === 0) return logits;
+const t = Math.max(temperature, 1e-3);
+let max = -Infinity;
+for (const v of logits.values()) if (v / t > max) max = v / t;
+const exps: Array<readonly [string, number]> = [];
+let sum = 0;
+for (const [k, v] of logits) {
+const e = Math.exp(v / t - max);
+exps.push([k, e]);
+sum += e;
+}
+const denom = sum || 1;
+return new Map(exps.map(([k, e]) => [k, e / denom]));
 }
 
 function l2Normalize(vec: readonly number[]): Float32Array {
-  const out = new Float32Array(vec.length);
-  let sumSq = 0;
-  for (let i = 0; i < vec.length; i++) {
-    const x = Number.isFinite(vec[i]) ? vec[i]! : 0;
-    out[i] = x;
-    sumSq += x * x;
-  }
-  if (sumSq > 0) {
-    const inv = 1 / Math.sqrt(sumSq);
-    for (let i = 0; i < out.length; i++) out[i]! *= inv;
-  }
-  return out;
+const out = new Float32Array(vec.length);
+let sumSq = 0;
+for (let i = 0; i < vec.length; i++) {
+const x = Number.isFinite(vec[i]) ? vec[i]! : 0;
+out[i] = x;
+sumSq += x * x;
+}
+if (sumSq > 0) {
+const inv = 1 / Math.sqrt(sumSq);
+for (let i = 0; i < out.length; i++) out[i]! *= inv;
+}
+return out;
 }
 
 function toFloat32View(u8: Uint8Array): Float32Array {
-  if (u8.byteLength === 0 || (u8.byteLength & 3) !== 0) return new Float32Array(0);
-  return (u8.byteOffset & 3) === 0
-    ? new Float32Array(u8.buffer, u8.byteOffset, u8.byteLength >>> 2)
-    : new Float32Array(u8.slice().buffer);
+if (u8.byteLength === 0 || (u8.byteLength & 3) !== 0) return new Float32Array(0);
+return (u8.byteOffset & 3) === 0
+? new Float32Array(u8.buffer, u8.byteOffset, u8.byteLength >>> 2)
+: new Float32Array(u8.slice().buffer);
 }
 
 function dot(a: Float32Array, b: Float32Array): number {
-  const n = Math.min(a.length, b.length);
-  let s = 0;
-  for (let i = 0; i < n; i++) s += a[i]! * b[i]!;
-  return s;
+const n = Math.min(a.length, b.length);
+let s = 0;
+for (let i = 0; i < n; i++) s += a[i]! * b[i]!;
+return s;
 }
 
 const identifiers = (s: string) => new Set((s.match(/[A-Za-z_][A-Za-z0-9_]{2,}/g) ?? []).map((x) => x.toLowerCase()));
@@ -224,48 +225,48 @@ const sanitizeInline = (s: string) => s.replace(/[\r\n#]+/g, " ").replace(/\s+/g
 const hashText = (s: string) => new Bun.CryptoHasher("blake2b256").update(s).digest("hex");
 
 export class Context {
-  readonly db: Database;
-  private readonly queryVecCache = new Map<string, Float32Array>();
+readonly db: Database;
+private readonly queryVecCache = new Map<string, Float32Array>();
 
-  constructor(
-    path: string,
-    readonly embedder: Embedder | undefined = hashEmbedder(),
-    private readonly baseRedact: Record<string, string | undefined> = {},
-  ) {
-    this.db = new Database(path, { create: true });
-    this.db.run("PRAGMA journal_mode = WAL");
-    this.db.run("PRAGMA synchronous = NORMAL");
-    this.db.run("PRAGMA busy_timeout = 5000");
-    this.db.run("PRAGMA foreign_keys = ON");
-    this.db.run(
-      "CREATE TABLE IF NOT EXISTS entries(rid INTEGER PRIMARY KEY, id TEXT UNIQUE NOT NULL, source TEXT NOT NULL, scope TEXT NOT NULL, title TEXT, text TEXT NOT NULL, symbols TEXT, hash TEXT NOT NULL, at INTEGER NOT NULL)",
-    );
-    this.db.run("CREATE INDEX IF NOT EXISTS idx_entries_at ON entries(at DESC, rid DESC)");
-    this.db.run("CREATE INDEX IF NOT EXISTS idx_entries_scope_at ON entries(scope, at DESC, rid DESC)");
-    this.db.run("CREATE INDEX IF NOT EXISTS idx_entries_source_at ON entries(source, at DESC, rid DESC)");
-    this.db.run("CREATE VIRTUAL TABLE IF NOT EXISTS entries_fts USING fts5(title, text, content='entries', content_rowid='rid')");
-    this.db.run(
-      "CREATE TRIGGER IF NOT EXISTS entries_ai AFTER INSERT ON entries BEGIN INSERT INTO entries_fts(rowid, title, text) VALUES (new.rid, new.title, new.text); END",
-    );
-    this.db.run(
-      "CREATE TRIGGER IF NOT EXISTS entries_ad AFTER DELETE ON entries BEGIN INSERT INTO entries_fts(entries_fts, rowid, title, text) VALUES ('delete', old.rid, old.title, old.text); END",
-    );
-    this.db.run(
-      "CREATE TRIGGER IF NOT EXISTS entries_au AFTER UPDATE OF title, text ON entries BEGIN INSERT INTO entries_fts(entries_fts, rowid, title, text) VALUES ('delete', old.rid, old.title, old.text); INSERT INTO entries_fts(rowid, title, text) VALUES (new.rid, new.title, new.text); END",
-    );
-    this.db.run(
-      "CREATE TABLE IF NOT EXISTS entry_vecs(rid INTEGER NOT NULL REFERENCES entries(rid) ON DELETE CASCADE, embedder TEXT NOT NULL, hash TEXT NOT NULL, vec BLOB NOT NULL, PRIMARY KEY(rid, embedder))",
-    );
-  }
+constructor(
+path: string,
+readonly embedder: Embedder | undefined = hashEmbedder(),
+private readonly baseRedact: Record<string, string | undefined> = {},
+) {
+this.db = new Database(path, { create: true });
+this.db.run("PRAGMA journal_mode = WAL");
+this.db.run("PRAGMA synchronous = NORMAL");
+this.db.run("PRAGMA busy_timeout = 5000");
+this.db.run("PRAGMA foreign_keys = ON");
+this.db.run(
+"CREATE TABLE IF NOT EXISTS entries(rid INTEGER PRIMARY KEY, id TEXT UNIQUE NOT NULL, source TEXT NOT NULL, scope TEXT NOT NULL, title TEXT, text TEXT NOT NULL, symbols TEXT, hash TEXT NOT NULL, at INTEGER NOT NULL)",
+);
+this.db.run("CREATE INDEX IF NOT EXISTS idx_entries_at ON entries(at DESC, rid DESC)");
+this.db.run("CREATE INDEX IF NOT EXISTS idx_entries_scope_at ON entries(scope, at DESC, rid DESC)");
+this.db.run("CREATE INDEX IF NOT EXISTS idx_entries_source_at ON entries(source, at DESC, rid DESC)");
+this.db.run("CREATE VIRTUAL TABLE IF NOT EXISTS entries_fts USING fts5(title, text, content='entries', content_rowid='rid')");
+this.db.run(
+"CREATE TRIGGER IF NOT EXISTS entries_ai AFTER INSERT ON entries BEGIN INSERT INTO entries_fts(rowid, title, text) VALUES (new.rid, new.title, new.text); END",
+);
+this.db.run(
+"CREATE TRIGGER IF NOT EXISTS entries_ad AFTER DELETE ON entries BEGIN INSERT INTO entries_fts(entries_fts, rowid, title, text) VALUES ('delete', old.rid, old.title, old.text); END",
+);
+this.db.run(
+"CREATE TRIGGER IF NOT EXISTS entries_au AFTER UPDATE OF title, text ON entries BEGIN INSERT INTO entries_fts(entries_fts, rowid, title, text) VALUES ('delete', old.rid, old.title, old.text); INSERT INTO entries_fts(rowid, title, text) VALUES (new.rid, new.title, new.text); END",
+);
+this.db.run(
+"CREATE TABLE IF NOT EXISTS entry_vecs(rid INTEGER NOT NULL REFERENCES entries(rid) ON DELETE CASCADE, embedder TEXT NOT NULL, hash TEXT NOT NULL, vec BLOB NOT NULL, PRIMARY KEY(rid, embedder))",
+);
+}
 
-  /** Redacts secrets BEFORE persistence and BEFORE remote embedding calls. */
-  async ingest(
-    entries: Omit<Entry, "at">[] | Omit<Entry, "at">,
-    at = Date.now(),
-    redact: Record<string, string | undefined> = this.baseRedact,
-  ) {
-    const rawList = Array.isArray(entries) ? entries : [entries];
-    if (rawList.length === 0) return;
+/** Redacts secrets BEFORE persistence and BEFORE remote embedding calls. */
+async ingest(
+entries: Omit<Entry, "at">[] | Omit<Entry, "at">,
+at = Date.now(),
+redact: Record<string, string | undefined> = this.baseRedact,
+) {
+const rawList = Array.isArray(entries) ? entries : [entries];
+if (rawList.length === 0) return;
 
     const prepared = rawList.map((e) => {
       const title = e.title !== undefined ? redactText(e.title, redact) : undefined;
@@ -314,104 +315,105 @@ export class Context {
         if (blob) putVec.run(item.rid, emb.id, item.hash, blob);
       }
     })();
-  }
 
-  remove(id: string) {
-    this.db.query("DELETE FROM entries WHERE id = ?").run(id);
-  }
+}
 
-  get(id: string, redact: Record<string, string | undefined> = this.baseRedact): Entry | undefined {
-    const r = this.db.query<any, [string]>("SELECT * FROM entries WHERE id = ?").get(id);
-    return r ? this.redactEntry(this.row(r), redact) : undefined;
-  }
+remove(id: string) {
+this.db.query("DELETE FROM entries WHERE id = ?").run(id);
+}
 
-  list(mask: Mask = {}, limit = 1000, redact: Record<string, string | undefined> = this.baseRedact): Entry[] {
-    const { where, params } = this.sqlMask(mask, "entries");
-    const overfetch = mask.allow ? Math.min(limit * 4, 10_000) : limit;
-    const rows = this.db
-      .query<any, any[]>(`SELECT * FROM entries ${where} ORDER BY at DESC, rid DESC LIMIT ?`)
-      .all(...params, overfetch);
-    const out: Entry[] = [];
-    for (const r of rows) {
-      const e = this.row(r);
-      if (this.visible(e, mask)) out.push(this.redactEntry(e, redact));
-      if (out.length >= limit) break;
-    }
-    return out;
-  }
+get(id: string, redact: Record<string, string | undefined> = this.baseRedact): Entry | undefined {
+const r = this.db.query<any, [string]>("SELECT * FROM entries WHERE id = ?").get(id);
+return r ? this.redactEntry(this.row(r), redact) : undefined;
+}
 
-  private row(r: any): Entry {
-    let symbols: string[] | undefined;
-    if (r.symbols) {
-      try {
-        symbols = JSON.parse(r.symbols);
-      } catch {
-        symbols = undefined;
-      }
-    }
-    return { id: r.id, source: r.source, scope: r.scope, title: r.title ?? undefined, text: r.text, symbols, at: r.at };
-  }
+list(mask: Mask = {}, limit = 1000, redact: Record<string, string | undefined> = this.baseRedact): Entry[] {
+const { where, params } = this.sqlMask(mask, "entries");
+const overfetch = mask.allow ? Math.min(limit * 4, 10_000) : limit;
+const rows = this.db
+.query<any, any[]>(`SELECT * FROM entries ${where} ORDER BY at DESC, rid DESC LIMIT ?`)
+.all(...params, overfetch);
+const out: Entry[] = [];
+for (const r of rows) {
+const e = this.row(r);
+if (this.visible(e, mask)) out.push(this.redactEntry(e, redact));
+if (out.length >= limit) break;
+}
+return out;
+}
 
-  private redactEntry(e: Entry, redact: Record<string, string | undefined>): Entry {
-    return {
-      ...e,
-      title: e.title !== undefined ? redactText(e.title, redact) : undefined,
-      text: redactText(e.text, redact),
-    };
-  }
+private row(r: any): Entry {
+let symbols: string[] | undefined;
+if (r.symbols) {
+try {
+symbols = JSON.parse(r.symbols);
+} catch {
+symbols = undefined;
+}
+}
+return { id: r.id, source: r.source, scope: r.scope, title: r.title ?? undefined, text: r.text, symbols, at: r.at };
+}
 
-  private sqlMask(m: Mask, alias: string): { where: string; params: (string | number)[] } {
-    const clauses: string[] = [];
-    const params: (string | number)[] = [];
-    if (m.scopes) {
-      const valid = m.scopes.filter((s) => s.length > 0);
-      if (valid.length === 0) return { where: "WHERE 0", params: [] };
-      if (!valid.includes("*")) {
-        const sub = valid.map(() => `(${alias}.scope = ? OR ${alias}.scope GLOB ?)`).join(" OR ");
-        clauses.push(`(${sub})`);
-        for (const s of valid) params.push(s, `${s.replace(/[*?[\]]/g, "\\$&")}:*`);
-      }
-    }
-    if (m.sources) {
-      if (m.sources.length === 0) return { where: "WHERE 0", params: [] };
-      clauses.push(`${alias}.source IN (${m.sources.map(() => "?").join(",")})`);
-      params.push(...m.sources);
-    }
-    return { where: clauses.length ? `WHERE ${clauses.join(" AND ")}` : "", params };
-  }
+private redactEntry(e: Entry, redact: Record<string, string | undefined>): Entry {
+return {
+...e,
+title: e.title !== undefined ? redactText(e.title, redact) : undefined,
+text: redactText(e.text, redact),
+};
+}
 
-  private visible(e: Entry, m: Mask): boolean {
-    if (m.scopes) {
-      const valid = m.scopes.filter((s) => s.length > 0);
-      if (!valid.some((s) => s === "*" || e.scope === s || e.scope.startsWith(`${s}:`))) return false;
-    }
-    if (m.sources && !m.sources.includes(e.source)) return false;
-    return m.allow ? m.allow(e) : true;
-  }
+private sqlMask(m: Mask, alias: string): { where: string; params: (string | number)[] } {
+const clauses: string[] = [];
+const params: (string | number)[] = [];
+if (m.scopes) {
+const valid = m.scopes.filter((s) => s.length > 0);
+if (valid.length === 0) return { where: "WHERE 0", params: [] };
+if (!valid.includes("*")) {
+const sub = valid.map(() => `(${alias}.scope = ? OR ${alias}.scope GLOB ?)`).join(" OR ");
+clauses.push(`(${sub})`);
+for (const s of valid) params.push(s, `${s.replace(/[*?[\]]/g, "\\$&")}:*`);
+}
+}
+if (m.sources) {
+if (m.sources.length === 0) return { where: "WHERE 0", params: [] };
+clauses.push(`${alias}.source IN (${m.sources.map(() => "?").join(",")})`);
+params.push(...m.sources);
+}
+return { where: clauses.length ? `WHERE ${clauses.join(" AND ")}` : "", params };
+}
 
-  private async queryVector(query: string, redact: Record<string, string | undefined>): Promise<Float32Array> {
-    const emb = this.embedder!;
-    const safeQuery = redactText(query, redact).slice(0, 8000);
-    const key = `${emb.id}:${hashText(safeQuery)}`;
-    const hit = this.queryVecCache.get(key);
-    if (hit) return hit;
-    const [raw] = await emb.embed([safeQuery]);
-    const vec = l2Normalize(raw ?? []);
-    if (this.queryVecCache.size >= MAX_QUERY_CACHE) {
-      const oldest = this.queryVecCache.keys().next().value;
-      if (oldest !== undefined) this.queryVecCache.delete(oldest);
-    }
-    this.queryVecCache.set(key, vec);
-    return vec;
-  }
+private visible(e: Entry, m: Mask): boolean {
+if (m.scopes) {
+const valid = m.scopes.filter((s) => s.length > 0);
+if (!valid.some((s) => s === "*" || e.scope === s || e.scope.startsWith(`${s}:`))) return false;
+}
+if (m.sources && !m.sources.includes(e.source)) return false;
+return m.allow ? m.allow(e) : true;
+}
 
-  async select(query: string, o: SelectOptions = {}): Promise<Scored[]> {
-    const now = o.now ?? Date.now();
-    const w = { ...DEFAULT_WEIGHTS, ...o.weights };
-    const t = Math.max(o.temperature ?? 1, 1e-3);
-    const nCand = o.candidates ?? 200;
-    const semLimit = o.semanticScanLimit ?? 5000;
-    const redact = { ...this.baseRedact, ...o.redact };
+private async queryVector(query: string, redact: Record<string, string | undefined>): Promise<Float32Array> {
+const emb = this.embedder!;
+const safeQuery = redactText(query, redact).slice(0, 8000);
+const key = `${emb.id}:${hashText(safeQuery)}`;
+const hit = this.queryVecCache.get(key);
+if (hit) return hit;
+const [raw] = await emb.embed([safeQuery]);
+const vec = l2Normalize(raw ?? []);
+if (this.queryVecCache.size >= MAX_QUERY_CACHE) {
+const oldest = this.queryVecCache.keys().next().value;
+if (oldest !== undefined) this.queryVecCache.delete(oldest);
+}
+this.queryVecCache.set(key, vec);
+return vec;
+}
+
+async select(query: string, o: SelectOptions = {}): Promise<Scored[]> {
+const now = o.now ?? Date.now();
+const w = { ...DEFAULT_WEIGHTS, ...o.weights };
+const t = Math.max(o.temperature ?? 1, 1e-3);
+const nCand = o.candidates ?? 200;
+const semLimit = o.semanticScanLimit ?? 5000;
+const redact = { ...this.baseRedact, ...o.redact };
 
     const heads: Record<string, Map<string, number>> = {};
     const pool = new Map<string, Entry>();
@@ -535,42 +537,42 @@ export class Context {
       used += s.tokens;
     }
     return out;
-  }
 
-  close() {
-    this.db.close();
-  }
+}
 
-  [Symbol.dispose]() {
-    this.close();
-  }
+close() {
+this.db.close();
+}
+
+[Symbol.dispose](<>) {
+this.close();
+}
 }
 
 function renderLine(x: Pick<Entry, "title" | "text">): string {
-  const title = x.title ? `${sanitizeInline(x.title)}: ` : "";
-  const body = x.text.replace(/\s+/g, " ").trim().slice(0, MAX_RENDER_CHARS);
-  return `- ${title}${body}`;
+const title = x.title ? `${sanitizeInline(x.title)}: ` : "";
+const body = x.text.replace(/\s+/g, " ").trim().slice(0, MAX_RENDER_CHARS);
+return `- ${title}${body}`;
 }
 
 /** Deterministic ordering (source ASC, id ASC) so identical selections maximize LLM prompt-cache hits. */
 export function renderContext(sel: Scored[]): string {
-  if (!sel.length) return "";
-  const by = new Map<string, Scored[]>();
-  for (const s of sel) {
-    const src = sanitizeInline(String(s.source)) || "context";
-    let bucket = by.get(src);
-    if (!bucket) {
-      bucket = [];
-      by.set(src, bucket);
-    }
-    bucket.push(s);
-  }
-  return [...by.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([src, xs]) => {
-      const lines = [...xs].sort((a, b) => a.id.localeCompare(b.id)).map(renderLine);
-      return `## ${src}\n${lines.join("\n")}`;
-    })
-    .join("\n\n");
+if (!sel.length) return "";
+const by = new Map<string, Scored[]>();
+for (const s of sel) {
+const src = sanitizeInline(String(s.source)) || "context";
+let bucket = by.get(src);
+if (!bucket) {
+bucket = [];
+by.set(src, bucket);
 }
-
+bucket.push(s);
+}
+return [...by.entries()]
+.sort(([a], [b]) => a.localeCompare(b))
+.map(([src, xs]) => {
+const lines = [...xs].sort((a, b) => a.id.localeCompare(b.id)).map(renderLine);
+return `## ${src}\n${lines.join("\n")}`;
+})
+.join("\n\n");
+}

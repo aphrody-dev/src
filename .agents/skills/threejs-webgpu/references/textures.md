@@ -18,7 +18,12 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 2);
 
 // Color images must be tagged sRGB or they render too bright and washed out
@@ -56,7 +61,8 @@ TextureLoader's `onProgress` parameter is unsupported and never fires; a `Loadin
 
 ```javascript
 const manager = new THREE.LoadingManager();
-manager.onProgress = (url, loaded, total) => console.log(`${loaded}/${total}: ${url}`);
+manager.onProgress = (url, loaded, total) =>
+  console.log(`${loaded}/${total}: ${url}`);
 const loader = new THREE.TextureLoader(manager);
 ```
 
@@ -217,9 +223,12 @@ Cube maps (the loader tags the result sRGB itself):
 
 ```javascript
 const cubeTexture = new THREE.CubeTextureLoader().load([
-  "px.jpg", "nx.jpg", // +X, -X
-  "py.jpg", "ny.jpg", // +Y, -Y
-  "pz.jpg", "nz.jpg", // +Z, -Z
+  "px.jpg",
+  "nx.jpg", // +X, -X
+  "py.jpg",
+  "ny.jpg", // +Y, -Y
+  "pz.jpg",
+  "nz.jpg", // +Z, -Z
 ]);
 
 scene.background = cubeTexture;
@@ -271,7 +280,9 @@ Do not run a loaded equirect file through PMREMGenerator "for better reflections
 ```javascript
 const renderTarget = new THREE.WebGLRenderTarget(512, 512);
 const rtScene = new THREE.Scene(); // must not contain the mesh that samples the target
-rtScene.add(new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshNormalMaterial())); // unlit, visible without lights
+rtScene.add(
+  new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshNormalMaterial()),
+); // unlit, visible without lights
 
 renderer.setRenderTarget(renderTarget);
 renderer.render(rtScene, camera);
@@ -423,14 +434,22 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111111); // the WebGPU canvas starts transparent
 
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 2);
 
 const map = new THREE.TextureLoader().load("diffuse.jpg");
 map.colorSpace = THREE.SRGBColorSpace;
 map.anisotropy = renderer.getMaxAnisotropy(); // no capabilities object under WebGPU
 
-const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicNodeMaterial());
+const mesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(2, 2),
+  new THREE.MeshBasicNodeMaterial(),
+);
 mesh.material.colorNode = texture(map, uv().mul(0.5).add(0.25)); // custom UV transform in TSL: the center half, zoomed 2x
 scene.add(mesh);
 

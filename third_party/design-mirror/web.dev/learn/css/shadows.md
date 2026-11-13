@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 017: Shadows](https://thecsspodcast.libsyn.com/017-shadows)
 
 Say you've been sent a design to build and in that design there's a picture of a t-shirt,
@@ -23,11 +24,11 @@ CSS has the
 [`text-shadow`](https://developer.mozilla.org/docs/Web/CSS/text-shadow) properties,
 but the picture isn't text, so you can't use `text-shadow`.
 If you use `box-shadow`, the shadow is on the surrounding box,
-*not* around the t-shirt.
+_not_ around the t-shirt.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/YzNrwae?height=600&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen YzNrwae by web-dot-dev on Codepen"></iframe>
 
 Luckily, there is another option: the
-[`drop-shadow()`](https://developer.mozilla.org/docs/Web/CSS/filter-function/drop-shadow()) filter.
+[`drop-shadow()`](<https://developer.mozilla.org/docs/Web/CSS/filter-function/drop-shadow()>) filter.
 This enables you to do exactly what the designer asked for.
 There are plenty of options when it comes to shadows in CSS,
 each designed for a different use case.
@@ -48,7 +49,7 @@ It works on block elements and inline elements.
 
 ```css
 .my-element {
-    box-shadow: 5px 5px 20px 5px #000;
+  box-shadow: 5px 5px 20px 5px #000;
 }
 ```
 
@@ -67,14 +68,15 @@ add an `inset` keyword **before** the other properties.
 ```css
 /* Outer shadow */
 .my-element {
-    box-shadow: 5px 5px 20px 5px #000;
+  box-shadow: 5px 5px 20px 5px #000;
 }
 
 /* Inner shadow */
 .my-element {
-    box-shadow: inset 5px 5px 20px 5px #000;
+  box-shadow: inset 5px 5px 20px 5px #000;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/rNjGevp?height=600&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen rNjGevp by web-dot-dev on Codepen"></iframe>
 
 ### Multiple shadows
@@ -84,11 +86,14 @@ Add a comma separated collection of value sets to achieve this:
 
 ```css
 .my-element {
-  box-shadow: 5px 5px 20px 5px darkslateblue, -5px -5px 20px 5px dodgerblue,
-    inset 0px 0px 10px 2px darkslategray, inset 0px 0px 20px 10px steelblue;
+  box-shadow:
+    5px 5px 20px 5px darkslateblue,
+    -5px -5px 20px 5px dodgerblue,
+    inset 0px 0px 10px 2px darkslategray,
+    inset 0px 0px 20px 10px steelblue;
 }
-
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/abpLNXR?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen abpLNXR by web-dot-dev on Codepen"></iframe>
 
 ### Properties affecting box-shadow
@@ -103,6 +108,7 @@ as if light is pointing at it.
   border-radius: 25px;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/RwKLaXN?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen RwKLaXN by web-dot-dev on Codepen"></iframe>
 
 If your box with `box-shadow` is in a container that has `overflow: hidden`,
@@ -129,6 +135,7 @@ the shadow **won't** break out of that overflow either.
   overflow: hidden;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/BapwzyQ?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen BapwzyQ by web-dot-dev on Codepen"></iframe>
 
 ## Text shadow
@@ -166,6 +173,7 @@ the shadow is visible through it.
   color: rgb(0 0 0 / 70%);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/LYxzRpb?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen LYxzRpb by web-dot-dev on Codepen"></iframe>
 
 ### Multiple shadows
@@ -177,11 +185,13 @@ and you can create some really cool text effects, such as 3D text.
 
 ```css
 .my-element {
-  text-shadow: 1px 1px 0px white,
+  text-shadow:
+    1px 1px 0px white,
     2px 2px 0px firebrick;
   color: darkslategray;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/RwKLGaL?height=500&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen RwKLGaL by web-dot-dev on Codepen"></iframe>
 
 ## Drop shadow
@@ -193,9 +203,10 @@ as in the case in the intro of this module.
 
 ```css
 .my-image {
-  filter: drop-shadow(0px 0px 10px rgba(0 0 0 / 30%))
+  filter: drop-shadow(0px 0px 10px rgba(0 0 0 / 30%));
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/eYgGdvm?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen eYgGdvm by web-dot-dev on Codepen"></iframe>
 
 > [!IMPORTANT]

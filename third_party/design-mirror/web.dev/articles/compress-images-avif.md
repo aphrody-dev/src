@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Jai Krishnan  Wan-Teh Chang  Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+
+Jai Krishnan Wan-Teh Chang Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 We
 [frequently write](https://web.dev/explore/fast#optimize-your-images)
@@ -60,7 +61,7 @@ These include:
 - 5x reduction in memory usage.
 - 6.5x reduction in CPU usage, as shown in the chart below.
 
- Using speed=6, cq-level=18, for 8.1 MP images
+Using speed=6, cq-level=18, for 8.1 MP images
 
 These changes massively reduce the cost of encoding AVIF---
 particularly the most frequently loaded,
@@ -201,19 +202,19 @@ avifenc uses the command-line structure:
 
 The basic parameters for avifenc used in this tutorial are:
 
-| avifenc |   |
-|---|---|
-| --min 0 | Set min quantizer for color to 0 |
-| --max 63 | Set max quantizer for color to 63 |
-| --minalpha 0 | Set min quantizer for alpha to 0 |
-| --maxalpha 63 | Set max quantizer for alpha to 63 |
-| -a end-usage=q | Set the rate control mode to Constant Quality (Q) mode |
-| -a cq-level=Q | Set quantize level for both color and alpha to Q |
-| -a color:cq-level=Q | Set quantize level for color to Q |
-| -a alpha:cq-level=Q | Set quantize level for alpha to Q |
-| -a tune=ssim | Tune for SSIM (default is to tune for PSNR) |
-| --jobs J | Use J worker threads (default: 1) |
-| --speed S | Set encoder speed from 0-10 (slowest-fastest. default: 6) |
+| avifenc             |                                                           |
+| ------------------- | --------------------------------------------------------- |
+| --min 0             | Set min quantizer for color to 0                          |
+| --max 63            | Set max quantizer for color to 63                         |
+| --minalpha 0        | Set min quantizer for alpha to 0                          |
+| --maxalpha 63       | Set max quantizer for alpha to 63                         |
+| -a end-usage=q      | Set the rate control mode to Constant Quality (Q) mode    |
+| -a cq-level=Q       | Set quantize level for both color and alpha to Q          |
+| -a color:cq-level=Q | Set quantize level for color to Q                         |
+| -a alpha:cq-level=Q | Set quantize level for alpha to Q                         |
+| -a tune=ssim        | Tune for SSIM (default is to tune for PSNR)               |
+| --jobs J            | Use J worker threads (default: 1)                         |
+| --speed S           | Set encoder speed from 0-10 (slowest-fastest. default: 6) |
 
 The cq-level option sets the quantize level (0-63) to control the quality for color or alpha.
 
@@ -261,7 +262,7 @@ which speeds up AVIF encoding by roughly 5x.
 
 ## Effects on Largest Contentful Paint (LCP)
 
-Images are a common candidate for the [Largest Contentful Paint (LCP) metric](https://web.dev/articles/lcp.md.txt). One common recommendation for improving the loading speed of LCP images is to ensure that an image is optimized. By reducing a resource's transfer size, you're improving its *resource load time* , which is [one of the four key phases](https://web.dev/articles/optimize-lcp.md.txt#3_reduce_resource_load_time) to target when dealing with LCP candidates that are images.
+Images are a common candidate for the [Largest Contentful Paint (LCP) metric](https://web.dev/articles/lcp.md.txt). One common recommendation for improving the loading speed of LCP images is to ensure that an image is optimized. By reducing a resource's transfer size, you're improving its _resource load time_ , which is [one of the four key phases](https://web.dev/articles/optimize-lcp.md.txt#3_reduce_resource_load_time) to target when dealing with LCP candidates that are images.
 
 [Using an image CDN](https://web.dev/articles/image-cdns.md.txt) is strongly recommended when optimizing images, as it requires much less effort than setting up image optimization pipelines in your website's build process or manually using encoder binaries to optimize images by hand. However, image CDNs may be cost-prohibitive for some projects. If this is the case for you, consider the following when optimizing with the avifenc encoder:
 

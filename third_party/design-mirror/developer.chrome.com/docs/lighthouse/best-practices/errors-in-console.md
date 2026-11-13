@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Most browsers ship with built-in developer tools.
 These developer tools usually include a [console](https://developer.chrome.com/docs/devtools/console.md.txt).
 The console gives you information about the page that's currently running.
@@ -21,7 +22,7 @@ An `Error` message means there's a problem on your page that you need to resolve
 ## How the Lighthouse browser error audit fails
 
 Lighthouse flags all browser errors logged to the console:
- Lighthouse audit showing browser errors in the console.
+Lighthouse audit showing browser errors in the console.
 
 > [!NOTE]
 > **Note:** Each Best Practices audit is weighted equally in the Lighthouse Best Practices Score. Learn more in [The Best Practices
@@ -39,7 +40,7 @@ to help you track down the cause of errors:
 - A link at the top-right of each error shows you the code that caused the error.
 
 For example, this screenshot shows a page with two errors:
- An example of errors in the Chrome DevTools Console.
+An example of errors in the Chrome DevTools Console.
 
 In the example, the first error comes from a web developer from a call to
 [`console.error()`](https://developer.chrome.com/docs/devtools/console/api.md.txt#error).

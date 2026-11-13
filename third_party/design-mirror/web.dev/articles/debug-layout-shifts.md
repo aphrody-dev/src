@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to identify and fix layout shifts.
 
- Katie Hempenius [X](https://twitter.com/katiehempenius)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Katie Hempenius [X](https://twitter.com/katiehempenius) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: Mar 11, 2021, Last updated: Feb 7, 2025
 
@@ -46,10 +47,10 @@ new PerformanceObserver((entryList) => {
   for (const entry of entryList.getEntries()) {
     if (!entry.hadRecentInput) {
       cls += entry.value;
-      console.log('Current CLS value:', cls, entry);
+      console.log("Current CLS value:", cls, entry);
     }
   }
-}).observe({type: 'layout-shift', buffered: true});
+}).observe({ type: "layout-shift", buffered: true });
 ```
 
 When running this script be aware that:
@@ -71,14 +72,16 @@ Each layout shift is reported using the `LayoutShift` interface. The contents of
 an entry look like this:
 
 ```javascript
-duration: 0
-entryType: "layout-shift"
-hadRecentInput: false
-lastInputTime: 0
-name: ""
-sources: (3) [LayoutShiftAttribution, LayoutShiftAttribution, LayoutShiftAttribution]
-startTime: 11317.934999999125
-value: 0.17508567530168798
+duration: 0;
+entryType: "layout-shift";
+hadRecentInput: false;
+lastInputTime: 0;
+name: "";
+sources: (3)[
+  (LayoutShiftAttribution, LayoutShiftAttribution, LayoutShiftAttribution)
+];
+startTime: 11317.934999999125;
+value: 0.17508567530168798;
 ```
 
 The previous entry indicates a layout shift during which three DOM elements changed
@@ -87,13 +90,13 @@ position. The layout shift score of this particular layout shift was `0.175`.
 These are the properties of a `LayoutShift` instance that are most relevant to
 debugging layout shifts:
 
-| Property | Description |
-|---|---|
-| `sources` | The `sources` property lists the DOM elements that moved during the layout shift. This array can contain up to five sources. In the event that there are more than five elements impacted by the layout shift, the five largest (as measured by impact on layout stability) sources of layout shift are reported. This information is reported using the LayoutShiftAttribution interface (explained in more detail below). |
-| `value` | The `value` property reports the [layout shift score](https://web.dev/articles/cls.md.txt#layout_shift_score) for a particular layout shift. |
-| `hadRecentInput` | The `hadRecentInput` property indicates whether a layout shift occurred within 500 milliseconds of user input. |
-| `startTime` | The `startTime` property indicates when a layout shift occurred. `startTime` is indicated in milliseconds and is measured relative to the [time that the page load was initiated](https://www.w3.org/TR/hr-time-2/#sec-time-origin). |
-| `duration` | The `duration` property will always be set to `0`. This property is inherited from the [`PerformanceEntry`](https://developer.mozilla.org/docs/Web/API/PerformanceEntry) interface (the `LayoutShift` interface extends the `PerformanceEntry` interface). However, the concept of duration does not apply to layout shift events, so it is set to `0`. For information on the `PerformanceEntry` interface, refer to the [spec](https://w3c.github.io/performance-timeline/#the-performanceentry-interface). |
+| Property         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sources`        | The `sources` property lists the DOM elements that moved during the layout shift. This array can contain up to five sources. In the event that there are more than five elements impacted by the layout shift, the five largest (as measured by impact on layout stability) sources of layout shift are reported. This information is reported using the LayoutShiftAttribution interface (explained in more detail below).                                                                                   |
+| `value`          | The `value` property reports the [layout shift score](https://web.dev/articles/cls.md.txt#layout_shift_score) for a particular layout shift.                                                                                                                                                                                                                                                                                                                                                                  |
+| `hadRecentInput` | The `hadRecentInput` property indicates whether a layout shift occurred within 500 milliseconds of user input.                                                                                                                                                                                                                                                                                                                                                                                                |
+| `startTime`      | The `startTime` property indicates when a layout shift occurred. `startTime` is indicated in milliseconds and is measured relative to the [time that the page load was initiated](https://www.w3.org/TR/hr-time-2/#sec-time-origin).                                                                                                                                                                                                                                                                          |
+| `duration`       | The `duration` property will always be set to `0`. This property is inherited from the [`PerformanceEntry`](https://developer.mozilla.org/docs/Web/API/PerformanceEntry) interface (the `LayoutShift` interface extends the `PerformanceEntry` interface). However, the concept of duration does not apply to layout shift events, so it is set to `0`. For information on the `PerformanceEntry` interface, refer to the [spec](https://w3c.github.io/performance-timeline/#the-performanceentry-interface). |
 
 #### LayoutShiftAttribution
 
@@ -152,7 +155,7 @@ that the element has shifted out of view.
 > **Caution:** Layout Instability API does not ignore elements that shifted but were not visible due to another element being positioned in front of them. Use `display: none`, `visibility: hidden`, or `opacity: 0` to avoid layout shifts in cases where you need to run layout on some elements before you make them visible to the user.
 
 One of the most important things to understand when interpreting these outputs
-is that elements listed as *sources* are the elements that shifted during the
+is that elements listed as _sources_ are the elements that shifted during the
 layout shift. However, it's possible that these elements are only indirectly
 related to the "root cause" of layout instability. Here are a few examples.
 
@@ -185,10 +188,10 @@ DevTools has a number of tools to help debug layout shifts.
 #### Performance panel
 
 The live metrics view of the [Performance panel](https://developer.chrome.com/docs/devtools/evaluate-performance) lets you interact with the page and monitor the CLS score to identify interactions causing large layout shfts.
- The live metrics view of the Performance Panel allows monitoring of a web page's CLS score while interacting with the page.
+The live metrics view of the Performance Panel allows monitoring of a web page's CLS score while interacting with the page.
 
 Once you can reliable reproduce a layout shift, you can perform a trace to get even more details:
- After recording a new trace in the Performance panel, the **Layout Shifts** track of the results is populated with purple bars displaying a `Layout Shift` clusters. Clicking the diamonds shows an animation of the shift and details in the **Summary** panel.
+After recording a new trace in the Performance panel, the **Layout Shifts** track of the results is populated with purple bars displaying a `Layout Shift` clusters. Clicking the diamonds shows an animation of the shift and details in the **Summary** panel.
 
 Layout shifts are highlighted in the **Layout shifts** track. The purple line groups shifts into shift clusters with the diamonds showing individual shifts in that cluster. The size of the diamond is proportional to the size of the shift allowing you to hone in on the largest shifts.
 
@@ -246,7 +249,7 @@ about root cause. For example, a large downward shift often indicates the
 insertion of a DOM element, whereas a 1 px or 2 px layout shift often indicates
 the application of conflicting CSS styles or the loading and application of a
 web font.
- In this example, font swapping caused page elements to shift upwards by five pixels.
+In this example, font swapping caused page elements to shift upwards by five pixels.
 
 These are some of the specific behaviors that most frequently cause layout shift
 events:

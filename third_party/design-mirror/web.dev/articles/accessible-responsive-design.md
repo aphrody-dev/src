@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Dave Gash  Meggin Kearney  Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)  Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
+
+Dave Gash Meggin Kearney Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk) Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
 We know that it's a good idea to design responsively to provide the best
 multi-device experience, but responsive design also yields a win for
@@ -21,7 +22,7 @@ rearranges itself for the "smaller viewport" (actually for the larger page),
 which is great for desktop users who require screen magnification and for mobile
 screen reader users as well. It's a win-win. Here's the same page magnified to
 400%:
- The Udacity site zoomed to 400%.
+The Udacity site zoomed to 400%.
 
 In fact, just by designing responsively, we're meeting rule [1.4.4 of the WebAIM
 checklist](https://webaim.org/standards/wcag/checklist#sc1.4.4), which states
@@ -34,7 +35,7 @@ your users better access to your content.
 ## Use the viewport meta tag
 
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 ```
 
 Setting `width=device-width` matches the screen's width in device-independent

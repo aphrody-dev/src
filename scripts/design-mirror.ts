@@ -23,7 +23,14 @@ type Site = {
   delay_ms: number;
 };
 type Url = { url: string; section: string; lastmod?: string };
-type Entry = { url: string; path: string; fetched: string; lastmod?: string; sha256: string; bytes: number };
+type Entry = {
+  url: string;
+  path: string;
+  fetched: string;
+  lastmod?: string;
+  sha256: string;
+  bytes: number;
+};
 
 const { values, positionals } = parseArgs({
   args: Bun.argv.slice(2),
@@ -39,15 +46,23 @@ const root = values.root ?? repo;
 const limit = values.limit ? Number(values.limit) : Infinity;
 const UA = "aphrody-design-mirror/1 (+https://github.com/aphrody-labs/src)";
 const today = new Date().toISOString().slice(0, 10);
-const cfg = Bun.TOML.parse(await Bun.file(join(repo, "docs/design/sources.toml")).text()) as { site: Site[] };
-const sites = cfg.site.filter((s) => !values.site || values.site.includes(s.name));
-const sha256 = (s: string) => new Bun.CryptoHasher("sha256").update(s).digest("hex");
+const cfg = Bun.TOML.parse(
+  await Bun.file(join(repo, "docs/design/sources.toml")).text(),
+) as { site: Site[] };
+const sites = cfg.site.filter(
+  (s) => !values.site || values.site.includes(s.name),
+);
+const sha256 = (s: string) =>
+  new Bun.CryptoHasher("sha256").update(s).digest("hex");
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function get(url: string, accept = "*/*"): Promise<Response | undefined> {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const r = await fetch(url, { headers: { "user-agent": UA, accept }, signal: AbortSignal.timeout(60_000) });
+      const r = await fetch(url, {
+        headers: { "user-agent": UA, accept },
+        signal: AbortSignal.timeout(60_000),
+      });
       if (r.status === 429 || r.status >= 500) {
         await sleep(5_000 * (attempt + 1));
         continue;
@@ -73,26 +88,37 @@ async function robots(base: string): Promise<(path: string) => boolean> {
     const key = k.toLowerCase();
     if (key === "user-agent") {
       if (!lastWasAgent) mine = false;
-      if (v === "*" || UA.toLowerCase().startsWith(v.toLowerCase())) mine = true;
+      if (v === "*" || UA.toLowerCase().startsWith(v.toLowerCase()))
+        mine = true;
       lastWasAgent = true;
       continue;
     }
     lastWasAgent = false;
     if (!mine || (key !== "allow" && key !== "disallow") || !v) continue;
     const re = new RegExp(
-      `^${v.replace(/[.+?^{}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*").replace(/\\\$$|\$$/, "$")}`,
+      `^${v
+        .replace(/[.+?^{}()|[\]\\]/g, "\\$&")
+        .replace(/\*/g, ".*")
+        .replace(/\\\$$|\$$/, "$")}`,
     );
     rules.push({ allow: key === "allow", re, len: v.length });
   }
   return (path) => {
     let best: (typeof rules)[number] | undefined;
     for (const r of rules)
-      if (r.re.test(path) && (!best || r.len > best.len || (r.len === best.len && r.allow))) best = r;
+      if (
+        r.re.test(path) &&
+        (!best || r.len > best.len || (r.len === best.len && r.allow))
+      )
+        best = r;
     return !best || best.allow;
   };
 }
 
-async function sitemap(url: string, seen = new Set<string>()): Promise<{ loc: string; lastmod?: string }[]> {
+async function sitemap(
+  url: string,
+  seen = new Set<string>(),
+): Promise<{ loc: string; lastmod?: string }[]> {
   if (seen.has(url)) return [];
   seen.add(url);
   const r = await get(url, "application/xml,text/xml,*/*");
@@ -103,7 +129,9 @@ async function sitemap(url: string, seen = new Set<string>()): Promise<{ loc: st
   const blocks = [...xml.matchAll(/<(url|sitemap)>([\s\S]*?)<\/\1>/g)];
   const out: { loc: string; lastmod?: string }[] = [];
   for (const [, kind, body] of blocks) {
-    const loc = body!.match(/<loc>\s*([^<\s]+)\s*<\/loc>/)?.[1]?.replace(/&amp;/g, "&");
+    const loc = body!
+      .match(/<loc>\s*([^<\s]+)\s*<\/loc>/)?.[1]
+      ?.replace(/&amp;/g, "&");
     const lastmod = body!.match(/<lastmod>\s*([^<\s]+)\s*<\/lastmod>/)?.[1];
     if (!loc) continue;
     if (kind === "sitemap") out.push(...(await sitemap(loc, seen)));
@@ -128,7 +156,12 @@ async function index(site: Site): Promise<Url[]> {
       if (u.origin !== new URL(site.base).origin) continue;
       const p = u.pathname.replace(/\/$/, "") || "/";
       const pq = p + u.search;
-      if (!allowed(u.pathname + u.search) || !inc.some((r) => r.test(pq)) || exc.some((r) => r.test(pq))) continue;
+      if (
+        !allowed(u.pathname + u.search) ||
+        !inc.some((r) => r.test(pq)) ||
+        exc.some((r) => r.test(pq))
+      )
+        continue;
       const url = `${u.origin}${p}${u.search}`;
       byUrl.set(url, { url, section: p.split("/")[1] || "/", lastmod });
     }
@@ -174,7 +207,12 @@ async function mirror(site: Site, urls: Url[]) {
   const dir = join(root, "third_party/design-mirror", site.name);
   const manFile = join(dir, "MANIFEST.json");
   const prev = new Map<string, Entry>(
-    existsSync(manFile) ? ((await Bun.file(manFile).json()).pages as Entry[]).map((e) => [e.url, e]) : [],
+    existsSync(manFile)
+      ? ((await Bun.file(manFile).json()).pages as Entry[]).map((e) => [
+          e.url,
+          e,
+        ])
+      : [],
   );
   const pages: Entry[] = [];
   let fetched = 0;
@@ -211,7 +249,14 @@ async function mirror(site: Site, urls: Url[]) {
       "",
     ].join("\n");
     await Bun.write(join(dir, rel), `${head}${body}\n`);
-    pages.push({ url: u.url, path: rel, fetched: today, lastmod: u.lastmod, sha256: hash, bytes: body.length });
+    pages.push({
+      url: u.url,
+      path: rel,
+      fetched: today,
+      lastmod: u.lastmod,
+      sha256: hash,
+      bytes: body.length,
+    });
     if (++fetched % 25 === 0) console.log(`${site.name}: ${fetched} fetched`);
   }
   pages.sort((a, b) => a.url.localeCompare(b.url));
@@ -232,7 +277,9 @@ async function mirror(site: Site, urls: Url[]) {
       "",
     ].join("\n"),
   );
-  console.log(`${site.name}: ${pages.length} pages mirrored (${fetched} fetched now, ${skipped} skipped)`);
+  console.log(
+    `${site.name}: ${pages.length} pages mirrored (${fetched} fetched now, ${skipped} skipped)`,
+  );
 }
 
 async function check(): Promise<number> {
@@ -244,7 +291,9 @@ async function check(): Promise<number> {
     for (const e of (await Bun.file(manFile).json()).pages as Entry[]) {
       const f = Bun.file(join(dir, e.path));
       const text = (await f.exists()) ? await f.text() : "";
-      const body = text.replace(/^---\n[\s\S]*?\n---\n\n?/, "").replace(/\n$/, "");
+      const body = text
+        .replace(/^---\n[\s\S]*?\n---\n\n?/, "")
+        .replace(/\n$/, "");
       if (sha256(body) !== e.sha256) {
         bad++;
         console.error(`sha256 mismatch: ${site.name}/${e.path}`);
@@ -258,7 +307,9 @@ async function check(): Promise<number> {
 const cmd = positionals[0] ?? "index";
 if (cmd === "check") process.exit(await check());
 if (cmd !== "index" && cmd !== "mirror") {
-  console.error("usage: bun scripts/design-mirror.ts index|mirror|check [--site name]... [--root dir] [--limit n]");
+  console.error(
+    "usage: bun scripts/design-mirror.ts index|mirror|check [--site name]... [--root dir] [--limit n]",
+  );
   process.exit(2);
 }
 await Promise.all(

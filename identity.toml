@@ -7,14 +7,14 @@
 name = "aphrody"
 display = "Aphrody Labs"
 repo = "src"
-repo_org = "lab"      # key of [orgs] owning the repository: github.com/aphrody-labs/src (moved 2026-11-13)
+repo_org = "lab" # key of [orgs] owning the repository: github.com/aphrody-labs/src (moved 2026-11-13)
 
 [cli]
-binary = "ay"            # [[bin]] of crates/ay
-crate = "aphrody"        # package name of crates/ay
+binary = "ay" # [[bin]] of crates/ay
+crate = "aphrody" # package name of crates/ay
 
 [naming]
-npm_scope = "@aphrody"   # every packages/*/package.json#name and the root package
+npm_scope = "@aphrody" # every packages/*/package.json#name and the root package
 crate_prefix = "aphrody-" # crates/<dir> is named <dir> or <crate_prefix><dir> (crates.io collisions, docs/NAMING.md)
 
 # Historical names kept as-is (renaming them is a breaking change for their users).
@@ -25,8 +25,8 @@ xtask = "xtk"
 unix-omarchy = "aphrody-omarchy"
 
 [orgs]
-main = "aphrody-dev"     # main org (published packages, forks of upstream tools)
-lab = "aphrody-labs"     # forks and products (apps/*)
+main = "aphrody-dev" # main org (published packages, forks of upstream tools)
+lab = "aphrody-labs" # forks and products (apps/*)
 
 [domains]
 root = "aphrody.com"
@@ -50,5 +50,5 @@ noreply = "noreply@aphrody.com"
 page = "https://aphrody.com/#contact"
 github = ["aphrody-dev", "aphrody-labs"]
 git_email = "324927936+aphrody-dev@users.noreply.github.com" # commit identity on the PC and the fleet
-x = ""        # handle not claimed yet (draft: var/agents/publish/x-profile.md)
-discord = ""  # invite not created yet (draft: var/agents/publish/discord-profile.md)
+x = "" # handle not claimed yet (draft: var/agents/publish/x-profile.md)
+discord = "" # invite not created yet (draft: var/agents/publish/discord-profile.md)

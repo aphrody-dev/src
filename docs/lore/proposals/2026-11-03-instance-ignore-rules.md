@@ -121,17 +121,17 @@ excludes are reported to event consumers in the process, such as bindings and in
 
 **Assumptions**
 
-- **Assumption:** per-instance rules need only exclusions — *invalidated if:* users need to re-include
+- **Assumption:** per-instance rules need only exclusions — _invalidated if:_ users need to re-include
   something `.loreignore` excludes, for one working tree only.
 
 **Risks**
 
 - **Risk:** a rule hides a new file the user meant to add, which a scanning stage then leaves out of a
-  commit — *mitigation:* the scope is the same as `.loreignore`'s, and changes to tracked files are never
+  commit — _mitigation:_ the scope is the same as `.loreignore`'s, and changes to tracked files are never
   hidden; the user's own rules decide it, and `lore --force stage <path>` stages such a file.
-- **Risk:** a file Lore cannot decode stops every command that loads the instance's filter — *mitigation:* the error
+- **Risk:** a file Lore cannot decode stops every command that loads the instance's filter — _mitigation:_ the error
   names the file, which is the user's own to fix, as a malformed `.loreignore` does today.
-- **Risk:** a user forgets a rule there, and a new file they meant to add is not reported — *mitigation:*
+- **Risk:** a user forgets a rule there, and a new file they meant to add is not reported — _mitigation:_
   accepted; `lore --force stage <path>` stages it, as for any ignored entry.
 
 ## Drawbacks
@@ -143,12 +143,12 @@ excludes are reported to event consumers in the process, such as bindings and in
 
 ### Status quo: a local edit to `.loreignore`
 
-*Rejected because:* the edit is a change to a tracked file, so it shows in every status and is one scanning
+_Rejected because:_ the edit is a change to a tracked file, so it shows in every status and is one scanning
 stage away from a commit that imposes the rules on everyone.
 
 ### Add the rules to `.loreignore`
 
-*Rejected because:* the rules are right for one working tree and wrong for others. On the repository above
+_Rejected because:_ the rules are right for one working tree and wrong for others. On the repository above
 they would hide new files others add in directories where the repository tracks about
 2,000 files.
 
@@ -156,7 +156,7 @@ they would hide new files others add in directories where the repository tracks 
 
 The view (`.lore/view`) is already per instance and never committed.
 
-*Rejected because:* the view decides which tracked paths are materialized and synced, so excluding a
+_Rejected because:_ the view decides which tracked paths are materialized and synced, so excluding a
 directory there also removes the tracked files under it from the working tree. An ignore rule leaves
 tracked content in place.
 
@@ -164,7 +164,7 @@ tracked content in place.
 
 A user-level ignore file, read for every instance, as Git's `core.excludesFile`.
 
-*Rejected because:* the rules describe one tree's build outputs, not the user's habits across repositories.
+_Rejected because:_ the rules describe one tree's build outputs, not the user's habits across repositories.
 A path rule that suits one repository is wrong in another. It could be added later without changing this
 design.
 

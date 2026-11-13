@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Improving accessibility for web pages
 
- Alice Boxhall [X](https://twitter.com/sundress)  Dave Gash  Meggin Kearney  Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
+Alice Boxhall [X](https://twitter.com/sundress) Dave Gash Meggin Kearney Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
 This document set is a text-based version of part of the content covered in the
 [Udacity course on
@@ -37,7 +38,7 @@ HTML to create more accessible and robust interfaces, and how to leverage some
 advanced techniques for creating polished accessible experiences.
 
 You'll also find that many of these techniques will help you create interfaces
-that are more pleasant and easy to use for *all* users, not just for those with
+that are more pleasant and easy to use for _all_ users, not just for those with
 disabilities.
 
 Of course, many developers have only a hazy understanding of what accessibility
@@ -55,7 +56,7 @@ learn about?
 
 Broadly speaking, when we say a site is accessible, we mean that the site's
 content is available, and its functionality can be operated, by literally
-*anyone*. As developers, it's easy to assume that all users can see and use a
+_anyone_. As developers, it's easy to assume that all users can see and use a
 keyboard, mouse, or touch screen, and can interact with your page content the
 same way you do. This can lead to an experience that works well for some people,
 but creates issues that range from simple annoyances to show-stoppers for
@@ -101,7 +102,7 @@ Throughout this guide we'll refer to the [Web Content Accessibility Guidelines
 and best practices put together by accessibility experts to address what
 "accessibility" means in a methodical way.
 
-WCAG is organized around four principles often called by the acronym *POUR*:
+WCAG is organized around four principles often called by the acronym _POUR_:
 
 - **Perceivable**: Can users perceive the content? This helps us keep in mind
   that just because something is perceivable with one sense, such as sight,
@@ -138,15 +139,16 @@ When learning about accessibility, it helps to have an understanding of the
 diverse range of users in the world and the kinds of accessibility topics that
 affect them. To explain further, here's an informative question/answer session
 with Victor Tsaran, a Technical Program Manager at Google, who is totally blind.
- Victor Tsaran
+Victor Tsaran
 
-*** ** * ** ***
+---
 
-> *What do you work on at Google?*
+> _What do you work on at Google?_
 
 Here at Google my job is to help ensure that our products work for all of our
 diverse users, regardless of impairment or ability.
-> *What kinds of impairments do users have?*
+
+> _What kinds of impairments do users have?_
 
 When we think about the kinds of impairments which would make it difficult for
 someone to access our content, many people will immediately picture a blind user
@@ -158,11 +160,12 @@ sites which don't work well with the tools used by blind users to access the
 web. However, there is actually more to accessibility than that. We find it
 useful think of impairments falling into four broad buckets: visual, motor,
 hearing, and cognitive.
-> *Let's go through those one at a time. Can you give some examples of visual impairments?*
+
+> _Let's go through those one at a time. Can you give some examples of visual impairments?_
 
 Visual impairments can be split into a few categories: Users with no vision,
 like me, might use a screen reader, braille, or combination of the two.
- A braille reader
+A braille reader
 
 Now, it's actually pretty unusual to have literally no vision, but still,
 there's a good chance you know or have met at least one person who can't see at
@@ -182,7 +185,7 @@ screen magnifier which zooms in on part of the screen, or they might just use
 their browser zoom to make all the fonts bigger. They might also use
 high-contrast options like an operating system high-contrast mode, a
 high-contrast browser extension or a high-contrast theme for a website.
- High-contrast mode
+High-contrast mode
 
 A lot of users even use a combination of these, like my friend Laura who uses a
 combination of high-contrast mode, browser zoom and text-to-speech.
@@ -200,13 +203,14 @@ Oh, and I shouldn't forget to mention people with poor color vision -
 about 9% of males have some form of color vision deficiency! Plus about 1% of
 females. They may have trouble distinguishing red and green, or yellow and blue.
 Think about that the next time you design form validation.
-> *What about motor impairments?*
+
+> _What about motor impairments?_
 
 Yes, motor impairments, or dexterity impairments. This group ranges all the way
 from those who would prefer not to use a mouse, because perhaps they've had some
 RSI or something and find it painful, to someone who may be physically paralyzed
 and have limited range of motion for certain parts of their body.
- An eye tracking device
+An eye tracking device
 
 Motor impaired users may use a keyboard, switch device, voice control, or even
 an eye-tracking device to interact with their computer.
@@ -218,12 +222,13 @@ lot of situations where a user's mobility is impeded, and by making sure we
 cater for them we improve the experience overall, both for anyone with a
 permanent impairment but also for anyone who temporarily finds that they can't
 use a pointer-based UI.
-> *Great, let's talk about hearing impairments.*
+
+> _Great, let's talk about hearing impairments._
 
 This group can range from the profoundly deaf through to hard-of-hearing. And
 much like eyesight, our hearing tends to degrade with age. Many of us use common
 affordances like hearing aids to help us.
- Screen captions
+Screen captions
 
 For hearing-impaired users we need to make sure that we're not relying on
 sound, so making sure to use things like video captions and transcripts, and
@@ -234,7 +239,8 @@ a situation where someone whose ears work fine would benefit from these
 accommodations as well. A lot of my friends say they love it when videos have
 captions and transcripts because it means that if they're in an open plan office
 and didn't bring their headphones, they can still watch the video!
-> *All right, can you tell us a bit about cognitive impairments?*
+
+> _All right, can you tell us a bit about cognitive impairments?_
 
 There's a range of cognitive conditions like ADD, Dyslexia, and Autism,
 which can mean that people want or need to access things differently. The
@@ -258,20 +264,21 @@ usable experience for everyone, and for some users creating an experience which
 actually excludes them altogether.
 
 In this interview, Victor identified a range of impairments, and placed them
-into four broad categories: *visual* , *motor* , *hearing* , and *cognitive* . He
-also pointed out that each type of impairment might be *situational* ,
-*temporary* , or *permanent*.
+into four broad categories: _visual_ , _motor_ , _hearing_ , and _cognitive_ . He
+also pointed out that each type of impairment might be _situational_ ,
+_temporary_ , or _permanent_.
 
 Let's take a look at some real-world examples of access impairments and see
 where they fall within those categories and types. Note that some impairments
 may fall into more than one category or type.
 
-|   | Situational | Temporary | Permanent |
-| Visual |   | concussion | blindness |
+| | Situational | Temporary | Permanent |
+| Visual | | concussion | blindness |
 | Motor | holding a baby | broken arm, RSI\* | RSI\* |
-| Hearing | noisy office |   |   |
-| Cognitive |   | concussion |   |
-|---|---|---|---|
+| Hearing | noisy office | | |
+
+| Cognitive |     | concussion |     |
+| --------- | --- | ---------- | --- |
 
 Repetitive Strain Injury: e.g., carpal tunnel syndrome, tennis elbow, trigger
 finger

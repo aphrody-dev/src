@@ -8,6 +8,7 @@ description: Safe cross-language loading of .env (Bun, Rust, uv/Python, C/C++, .
 Activate this skill whenever wiring environment variables, API keys, cloud/registry tokens, or editor AI provider configs (`OpenCode`, `Zed`, `Pi`, `Antigravity`).
 
 ## Mandatory Safety Rules
+
 1. **Zero Secret Echo**: Never print raw values from `.env` in terminal output, logs, or commits. Always use `env-kit doctor` for masked status checks.
 2. **Cross-Language Loading**:
    - **Bun / TS**: `bun --env-file=.env run ...` or `import { loadMonorepoEnv } from "packages/env-kit/src/index.ts"`.

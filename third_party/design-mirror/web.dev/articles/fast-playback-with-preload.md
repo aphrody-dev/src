@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 How to accelerate your media playback by actively preloading resources.
 
- François Beaufort [GitHub](https://github.com/beaufortfrancois)
+François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 > [!WARNING]
 > Browsers support for `<link rel="preload" as="video">` has changed since this article was published and is not currently supported in [Chrome](https://bugs.chromium.org/p/chromium/issues/detail?id=977033) nor Safari. See the [support section](https://web.dev/articles/fast-playback-with-preload.md.txt#support) to test support.
@@ -23,14 +24,14 @@ Credits: copyright Blender Foundation \| [www.blender.org](http://www.blender.or
 I'll describe three methods of preloading media files, starting with their pros
 and cons.
 
-|   | It's great... | But... |
-|---|---|---|
-| [Video preload attribute](https://web.dev/articles/fast-playback-with-preload.md.txt#video_preload_attribute) | Simple to use for a unique file hosted on a web server. | Browsers may completely ignore the attribute. |
-| [Video preload attribute](https://web.dev/articles/fast-playback-with-preload.md.txt#video_preload_attribute) | Simple to use for a unique file hosted on a web server. | Resource fetching starts when the HTML document has been completely loaded and parsed. |
-| [Video preload attribute](https://web.dev/articles/fast-playback-with-preload.md.txt#video_preload_attribute) | Simple to use for a unique file hosted on a web server. | Media Source Extensions (MSE) ignore the `preload` attribute on media elements because the app is responsible for providing media to MSE. |
-| [Link preload](https://web.dev/articles/fast-playback-with-preload.md.txt#link_preload) | Forces the browser to make a request for a video resource without blocking the document's `onload` event. | HTTP Range requests are not compatible. |
-| [Link preload](https://web.dev/articles/fast-playback-with-preload.md.txt#link_preload) | Compatible with MSE and file segments. | Should be used only for small media files (\<5 MB) when fetching full resources. |
-| [Manual buffering](https://web.dev/articles/fast-playback-with-preload.md.txt#manual_buffering) | Full control | Complex error handling is the website's responsibility. |
+|                                                                                                               | It's great...                                                                                             | But...                                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| [Video preload attribute](https://web.dev/articles/fast-playback-with-preload.md.txt#video_preload_attribute) | Simple to use for a unique file hosted on a web server.                                                   | Browsers may completely ignore the attribute.                                                                                             |
+| [Video preload attribute](https://web.dev/articles/fast-playback-with-preload.md.txt#video_preload_attribute) | Simple to use for a unique file hosted on a web server.                                                   | Resource fetching starts when the HTML document has been completely loaded and parsed.                                                    |
+| [Video preload attribute](https://web.dev/articles/fast-playback-with-preload.md.txt#video_preload_attribute) | Simple to use for a unique file hosted on a web server.                                                   | Media Source Extensions (MSE) ignore the `preload` attribute on media elements because the app is responsible for providing media to MSE. |
+| [Link preload](https://web.dev/articles/fast-playback-with-preload.md.txt#link_preload)                       | Forces the browser to make a request for a video resource without blocking the document's `onload` event. | HTTP Range requests are not compatible.                                                                                                   |
+| [Link preload](https://web.dev/articles/fast-playback-with-preload.md.txt#link_preload)                       | Compatible with MSE and file segments.                                                                    | Should be used only for small media files (\<5 MB) when fetching full resources.                                                          |
+| [Manual buffering](https://web.dev/articles/fast-playback-with-preload.md.txt#manual_buffering)               | Full control                                                                                              | Complex error handling is the website's responsibility.                                                                                   |
 
 ## Video preload attribute
 
@@ -54,7 +55,7 @@ previously).
 <video id="video" preload="metadata" src="file.mp4" controls></video>
 
 <script>
-  video.addEventListener('loadedmetadata', function() {
+  video.addEventListener("loadedmetadata", function () {
     if (video.buffered.length === 0) return;
 
     const bufferedSeconds = video.buffered.end(0) - video.buffered.start(0);
@@ -71,7 +72,7 @@ further buffering.
 <video id="video" preload="auto" src="file.mp4" controls></video>
 
 <script>
-  video.addEventListener('loadedmetadata', function() {
+  video.addEventListener("loadedmetadata", function () {
     if (video.buffered.length === 0) return;
 
     const bufferedSeconds = video.buffered.end(0) - video.buffered.start(0);
@@ -154,32 +155,34 @@ For the sake of simplicity, let's assume the entire video has been split into
 smaller files like `file_1.webm`, `file_2.webm`, `file_3.webm`, etc.
 
 ```html
-<link rel="preload" as="fetch" href="https://cdn.com/file_1.webm">
+<link rel="preload" as="fetch" href="https://cdn.com/file_1.webm" />
 
 <video id="video" controls></video>
 
 <script>
   const mediaSource = new MediaSource();
   video.src = URL.createObjectURL(mediaSource);
-  mediaSource.addEventListener('sourceopen', sourceOpen, { once: true });
+  mediaSource.addEventListener("sourceopen", sourceOpen, { once: true });
 
   function sourceOpen() {
     URL.revokeObjectURL(video.src);
-    const sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp09.00.10.08"');
+    const sourceBuffer = mediaSource.addSourceBuffer(
+      'video/webm; codecs="vp09.00.10.08"',
+    );
 
     // If video is preloaded already, fetch will return immediately a response
     // from the browser cache (memory cache). Otherwise, it will perform a
     // regular network fetch.
-    fetch('https://cdn.com/file_1.webm')
-    .then(response => response.arrayBuffer())
-    .then(data => {
-      // Append the data into the new sourceBuffer.
-      sourceBuffer.appendBuffer(data);
-      // TODO: Fetch file_2.webm when user starts playing video.
-    })
-    .catch(error => {
-      // TODO: Show "Video is not available" message to user.
-    });
+    fetch("https://cdn.com/file_1.webm")
+      .then((response) => response.arrayBuffer())
+      .then((data) => {
+        // Append the data into the new sourceBuffer.
+        sourceBuffer.appendBuffer(data);
+        // TODO: Fetch file_2.webm when user starts playing video.
+      })
+      .catch((error) => {
+        // TODO: Show "Video is not available" message to user.
+      });
   }
 </script>
 ```
@@ -197,15 +200,15 @@ snippets below:
 
 ```javascript
 function preloadFullVideoSupported() {
-  const link = document.createElement('link');
-  link.as = 'video';
-  return (link.as === 'video');
+  const link = document.createElement("link");
+  link.as = "video";
+  return link.as === "video";
 }
 
 function preloadFirstSegmentSupported() {
-  const link = document.createElement('link');
-  link.as = 'fetch';
-  return (link.as === 'fetch');
+  const link = document.createElement("link");
+  link.as = "fetch";
+  return link.as === "fetch";
 }
 ```
 
@@ -225,19 +228,21 @@ built to handle this for you.
 <script>
   const mediaSource = new MediaSource();
   video.src = URL.createObjectURL(mediaSource);
-  mediaSource.addEventListener('sourceopen', sourceOpen, { once: true });
+  mediaSource.addEventListener("sourceopen", sourceOpen, { once: true });
 
   function sourceOpen() {
     URL.revokeObjectURL(video.src);
-    const sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp09.00.10.08"');
+    const sourceBuffer = mediaSource.addSourceBuffer(
+      'video/webm; codecs="vp09.00.10.08"',
+    );
 
     // Fetch beginning of the video by setting the Range HTTP request header.
-    fetch('file.webm', { headers: { range: 'bytes=0-567139' } })
-    .then(response => response.arrayBuffer())
-    .then(data => {
-      sourceBuffer.appendBuffer(data);
-      sourceBuffer.addEventListener('updateend', updateEnd, { once: true });
-    });
+    fetch("file.webm", { headers: { range: "bytes=0-567139" } })
+      .then((response) => response.arrayBuffer())
+      .then((data) => {
+        sourceBuffer.appendBuffer(data);
+        sourceBuffer.addEventListener("updateend", updateEnd, { once: true });
+      });
   }
 
   function updateEnd() {
@@ -246,17 +251,17 @@ built to handle this for you.
     console.log(`${bufferedSeconds} seconds of video are ready to play.`);
 
     // Fetch the next segment of video when user starts playing the video.
-    video.addEventListener('playing', fetchNextSegment, { once: true });
+    video.addEventListener("playing", fetchNextSegment, { once: true });
   }
 
   function fetchNextSegment() {
-    fetch('file.webm', { headers: { range: 'bytes=567140-1196488' } })
-    .then(response => response.arrayBuffer())
-    .then(data => {
-      const sourceBuffer = mediaSource.sourceBuffers[0];
-      sourceBuffer.appendBuffer(data);
-      // TODO: Fetch further segment and append it.
-    });
+    fetch("file.webm", { headers: { range: "bytes=567140-1196488" } })
+      .then((response) => response.arrayBuffer())
+      .then((data) => {
+        const sourceBuffer = mediaSource.sourceBuffers[0];
+        sourceBuffer.appendBuffer(data);
+        // TODO: Fetch further segment and append it.
+      });
   }
 </script>
 ```
@@ -277,9 +282,8 @@ Disable preload or at least preload a lower resolution video when the
 device is running out of battery.
 
 ```javascript
-if ('getBattery' in navigator) {
-  navigator.getBattery()
-  .then(battery => {
+if ("getBattery" in navigator) {
+  navigator.getBattery().then((battery) => {
     // If battery is charging or battery level is high enough
     if (battery.charging || battery.level > 0.15) {
       // TODO: Preload the first segment of a video.
@@ -306,8 +310,8 @@ their mobile network operator might be charging for the bandwidth, and only star
 automatic playback of previously cached content.
 
 ```javascript
-if ('connection' in navigator) {
-  if (navigator.connection.type == 'cellular') {
+if ("connection" in navigator) {
+  if (navigator.connection.type == "cellular") {
     // TODO: Prompt user before preloading video
   } else {
     // TODO: Preload the first segment of a video.
@@ -335,27 +339,30 @@ the Cache API is also accessible from the `window` object.
 
 ```javascript
 const videoFileUrls = [
-  'bat_video_file_1.webm',
-  'cow_video_file_1.webm',
-  'dog_video_file_1.webm',
-  'fox_video_file_1.webm',
+  "bat_video_file_1.webm",
+  "cow_video_file_1.webm",
+  "dog_video_file_1.webm",
+  "fox_video_file_1.webm",
 ];
 
 // Let's create a video pre-cache and store all first segments of videos inside.
-window.caches.open('video-pre-cache')
-.then(cache => Promise.all(videoFileUrls.map(videoFileUrl => fetchAndCache(videoFileUrl, cache))));
+window.caches
+  .open("video-pre-cache")
+  .then((cache) =>
+    Promise.all(
+      videoFileUrls.map((videoFileUrl) => fetchAndCache(videoFileUrl, cache)),
+    ),
+  );
 
 function fetchAndCache(videoFileUrl, cache) {
   // Check first if video is in the cache.
-  return cache.match(videoFileUrl)
-  .then(cacheResponse => {
+  return cache.match(videoFileUrl).then((cacheResponse) => {
     // Let's return cached response if video is already in the cache.
     if (cacheResponse) {
       return cacheResponse;
     }
     // Otherwise, fetch the video from the network.
-    return fetch(videoFileUrl)
-    .then(networkResponse => {
+    return fetch(videoFileUrl).then((networkResponse) => {
       // Add the response to the cache and return network response in parallel.
       cache.put(videoFileUrl, networkResponse.clone());
       return networkResponse;
@@ -399,25 +406,28 @@ element.
 function onPlayButtonClick(videoFileUrl) {
   video.load(); // Used to be able to play video later.
 
-  window.caches.open('video-pre-cache')
-  .then(cache => fetchAndCache(videoFileUrl, cache)) // Defined above.
-  .then(response => response.arrayBuffer())
-  .then(data => {
-    const mediaSource = new MediaSource();
-    video.src = URL.createObjectURL(mediaSource);
-    mediaSource.addEventListener('sourceopen', sourceOpen, { once: true });
+  window.caches
+    .open("video-pre-cache")
+    .then((cache) => fetchAndCache(videoFileUrl, cache)) // Defined above.
+    .then((response) => response.arrayBuffer())
+    .then((data) => {
+      const mediaSource = new MediaSource();
+      video.src = URL.createObjectURL(mediaSource);
+      mediaSource.addEventListener("sourceopen", sourceOpen, { once: true });
 
-    function sourceOpen() {
-      URL.revokeObjectURL(video.src);
+      function sourceOpen() {
+        URL.revokeObjectURL(video.src);
 
-      const sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp09.00.10.08"');
-      sourceBuffer.appendBuffer(data);
+        const sourceBuffer = mediaSource.addSourceBuffer(
+          'video/webm; codecs="vp09.00.10.08"',
+        );
+        sourceBuffer.appendBuffer(data);
 
-      video.play().then(() => {
-        // TODO: Fetch the rest of the video when user starts playing video.
-      });
-    }
-  });
+        video.play().then(() => {
+          // TODO: Fetch the rest of the video when user starts playing video.
+        });
+      }
+    });
 }
 ```
 

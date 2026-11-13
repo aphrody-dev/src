@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Some animations on web pages can be [handled completely in the compositor stage of the rendering pipeline](https://web.dev/articles/stick-to-compositor-only-properties-and-manage-layer-count).
 
 Non-composited animations require more work and can appear [janky](https://en.wiktionary.org/wiki/jank) (not smooth) on low-end phones or when performance-heavy tasks are running on the main thread.
@@ -16,8 +17,8 @@ Non-composited animations can also increase the [Cumulative Layout Shift](https:
 ## Background
 
 The browser's algorithms for converting HTML, CSS, and JavaScript into pixels are collectively known
-as the *rendering pipeline*.
- The rendering pipeline.
+as the _rendering pipeline_.
+The rendering pipeline.
 
 It's OK if you don't understand what each step of the rendering pipeline means. The key thing to
 understand right now is that at each step of the rendering pipeline the browser uses the result of
@@ -45,7 +46,7 @@ See [Stick to compositor-only properties and manage layer count](https://web.dev
 
 ## Resources
 
-- [Source code for the *Avoid non-composited animations* audit](https://github.com/GoogleChrome/lighthouse/blob/main/core/audits/non-composited-animations.js)
+- [Source code for the _Avoid non-composited animations_ audit](https://github.com/GoogleChrome/lighthouse/blob/main/core/audits/non-composited-animations.js)
 - [Stick to compositor-only properties and manage layer count](https://web.dev/stick-to-compositor-only-properties-and-manage-layer-count/)
 - [High-performance animations](https://web.dev/animations-guide/)
 - [Simplify paint complexity and reduce paint areas](https://web.dev/simplify-paint-complexity-and-reduce-paint-areas/)

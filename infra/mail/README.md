@@ -4,13 +4,13 @@ Production-ready sovereign mail infrastructure for `aphrody.com` powered by **St
 
 ## 1. Canonical Domain Identities & Routing (`aphrody.com`)
 
-| Address | Role | Delivery / Alias Target |
-| :--- | :--- | :--- |
-| `contact@aphrody.com` | Master organization identity across Google Workspace, Cloudflare, GitHub (`aphrody-dev`), GitLab (`aphrody-dev` & `git.aphrody.com`), OVH (`fr1`, `fr2`), Hostinger (`usa`), Vercel, and Supabase. | Primary mailbox + Google Workspace split-delivery (`workspace-copy@aphrody.com` -> `aspmx.l.google.com`). |
-| `noreply@aphrody.com` | Outbound transactional sender (Supabase Auth, GitLab CI notifications, `aphrody.com` transactional JMAP/SMTP). | Outbound DKIM-signed (`s1-ed25519` + `s2-rsa`); inbound auto-rejected or routed to postmaster sink. |
-| `security@aphrody.com` | Security disclosure (`/.well-known/security.txt`), Let's Encrypt ACME expiry notices, GitHub/Cloudflare security alerts. | Rewritten cleanly to `contact@aphrody.com`. |
-| `ai@aphrody.com` | Autonomous NHITL notifications (`ai-os`, `triad`, `pi-opencode`) and bridge to `<ai-google>`. | Rewritten cleanly to `contact@aphrody.com` (with Sieve forward option to `<ai-google>`). |
-| `dmarc@aphrody.com` | DMARC aggregate/forensic (`rua`/`ruf`) + RFC 8460 SMTP TLS-RPT (`_smtp._tls`) report sink. | Dedicated report mailbox in Stalwart RocksDB store. |
+| Address                | Role                                                                                                                                                                                               | Delivery / Alias Target                                                                                   |
+| :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------- |
+| `contact@aphrody.com`  | Master organization identity across Google Workspace, Cloudflare, GitHub (`aphrody-dev`), GitLab (`aphrody-dev` & `git.aphrody.com`), OVH (`fr1`, `fr2`), Hostinger (`usa`), Vercel, and Supabase. | Primary mailbox + Google Workspace split-delivery (`workspace-copy@aphrody.com` -> `aspmx.l.google.com`). |
+| `noreply@aphrody.com`  | Outbound transactional sender (Supabase Auth, GitLab CI notifications, `aphrody.com` transactional JMAP/SMTP).                                                                                     | Outbound DKIM-signed (`s1-ed25519` + `s2-rsa`); inbound auto-rejected or routed to postmaster sink.       |
+| `security@aphrody.com` | Security disclosure (`/.well-known/security.txt`), Let's Encrypt ACME expiry notices, GitHub/Cloudflare security alerts.                                                                           | Rewritten cleanly to `contact@aphrody.com`.                                                               |
+| `ai@aphrody.com`       | Autonomous NHITL notifications (`ai-os`, `triad`, `pi-opencode`) and bridge to `<ai-google>`.                                                                                                      | Rewritten cleanly to `contact@aphrody.com` (with Sieve forward option to `<ai-google>`).                  |
+| `dmarc@aphrody.com`    | DMARC aggregate/forensic (`rua`/`ruf`) + RFC 8460 SMTP TLS-RPT (`_smtp._tls`) report sink.                                                                                                         | Dedicated report mailbox in Stalwart RocksDB store.                                                       |
 
 ## 2. OVH `fr1` / `fr2` Reverse PTR & Network Prerequisites
 
@@ -73,13 +73,13 @@ To allow `contact@aphrody.com` to operate seamlessly across both Google Workspac
 
 Use these exact coordinates across external org platforms:
 
-| Parameter | Value |
-| :--- | :--- |
-| **SMTP Host** | `mail.aphrody.com` |
-| **SMTP Port (Implicit TLS)** | `465` (recommended) or `587` (STARTTLS) |
-| **SMTP Username** | `contact@aphrody.com` (or dedicated app credential `noreply@aphrody.com`) |
-| **SMTP Password** | Stored exclusively in `C:\src\.env` (`SMTP_PASSWORD`) |
-| **JMAP Endpoint** | `https://mail.aphrody.com/jmap` (`Authorization: Bearer $JMAP_API_TOKEN`) |
+| Parameter                    | Value                                                                     |
+| :--------------------------- | :------------------------------------------------------------------------ |
+| **SMTP Host**                | `mail.aphrody.com`                                                        |
+| **SMTP Port (Implicit TLS)** | `465` (recommended) or `587` (STARTTLS)                                   |
+| **SMTP Username**            | `contact@aphrody.com` (or dedicated app credential `noreply@aphrody.com`) |
+| **SMTP Password**            | Stored exclusively in `C:\src\.env` (`SMTP_PASSWORD`)                     |
+| **JMAP Endpoint**            | `https://mail.aphrody.com/jmap` (`Authorization: Bearer $JMAP_API_TOKEN`) |
 
 - **Supabase (`Authentication -> Emails -> SMTP Settings`)**: Enable Custom SMTP -> Sender email `noreply@aphrody.com`, Sender name `Aphrody`, Host `mail.aphrody.com`, Port `465`, Username `noreply@aphrody.com`, Password `$SMTP_PASSWORD`.
 - **GitLab (`git.aphrody.com` `gitlab.rb`)**: `gitlab_rails['smtp_address'] = "mail.aphrody.com"`, `gitlab_rails['smtp_port'] = 465`, `gitlab_rails['smtp_tls'] = true`, `gitlab_rails['gitlab_email_from'] = 'noreply@aphrody.com'`, `gitlab_rails['gitlab_email_reply_to'] = 'contact@aphrody.com'`.

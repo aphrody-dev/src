@@ -4,8 +4,8 @@
 # Each authentik application has its own issuer. Both sign with the same key, so
 # the server finds that key through the first issuer's discovery document.
 jwt_issuer = [
-    "http://localhost:9000/application/o/lore-cli/",
-    "http://localhost:9000/application/o/lore-ci/",
+  "http://localhost:9000/application/o/lore-cli/",
+  "http://localhost:9000/application/o/lore-ci/",
 ]
 jwt_audience = ["https://localhost"]
 # Tier 2: each entry of the exchanged token's `resources` claim is

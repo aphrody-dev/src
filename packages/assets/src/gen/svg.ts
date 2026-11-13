@@ -14,17 +14,15 @@ export function svgMesh(
   const R = rng(seed);
   const W = 1920,
     Hh = 1080;
-  const blobs = p.blobs
-    .slice(0, 6)
-    .map((c, i) => ({
-      c,
-      x: 160 + R() * 1600,
-      y: 100 + R() * 880,
-      r: 380 + R() * 260,
-      dx: (R() - 0.5) * 360,
-      dy: (R() - 0.5) * 240,
-      d: 18 + i * 3,
-    }));
+  const blobs = p.blobs.slice(0, 6).map((c, i) => ({
+    c,
+    x: 160 + R() * 1600,
+    y: 100 + R() * 880,
+    r: 380 + R() * 260,
+    dx: (R() - 0.5) * 360,
+    dy: (R() - 0.5) * 240,
+    d: 18 + i * 3,
+  }));
   let s = head(W, Hh);
   s += `<defs><filter id="b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="110"/></filter></defs>`;
   if (anim === "css")

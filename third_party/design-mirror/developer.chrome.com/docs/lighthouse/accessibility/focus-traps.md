@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Keyboard focus should never be locked or trapped at one particular page element.
 Users should be able to navigate to and from all page elements,
 using only the keyboard.

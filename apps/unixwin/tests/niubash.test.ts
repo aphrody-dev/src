@@ -139,7 +139,7 @@ const MATRIX: [string, string][] = [
     'echo "$LOCALAPPDATA"/Microsoft/Windows/*.dat | head -c 0; echo "$LOCALAPPDATA"/Temp/../Temp',
   ],
   // noms Windows en majuscules comme sous Git for Windows (SystemRoot -> SYSTEMROOT, windir -> WINDIR)
-  ["win-env-upper", "echo \"$SYSTEMROOT|$WINDIR|$COMSPEC|$SYSTEMDRIVE\""],
+  ["win-env-upper", 'echo "$SYSTEMROOT|$WINDIR|$COMSPEC|$SYSTEMDRIVE"'],
   // encodage
   ["utf8-echo", "echo 'é€日本𝄞'"],
   ["utf8-length", "v='é€日'; echo ${#v}"],

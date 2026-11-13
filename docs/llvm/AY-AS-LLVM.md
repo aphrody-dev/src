@@ -13,6 +13,7 @@ ay-<outil> [args]        lien dur/symlink, stem "ay-<outil>"
 ```
 
 Ordre de résolution dans `main` :
+
 1. `up::shim::run_if_shim()` (existe : un `<nom>.shim` à côté gagne toujours).
 2. stem(argv[0]) ∈ table générée → `tool_main` de l'outil.
 3. stem == `identity.cli` (`ay`) → argv[1] = outil ; `ay`/`ay --help` liste les outils.
@@ -31,14 +32,14 @@ Liens : `ay install-links [--dir ~/.local/bin]` crée `ay-<outil>` et alias (lie
 
 ## 2. Couches
 
-| L | Couche | Crates (package → dossier cible) | Dépend de |
-|---|---|---|---|
-| 0 | support | `depot-core` (path, style, ignore, sys, ToolContext, erreurs) ; `sys` → `crates/sys-probe` ; `sovereign-corelib` → `crates/sys-corelib` | std + tiers |
-| 0t | test-support (dev-dep) | nouveau `depot-lit` (harnais RUN/CHECK) | 0 |
-| 1 | formats/clients | `depot-cas`, `depot-treesitter`, `depot-re`, `depot-forge`, `aphrody-remote` → `crates/depot-remote` | 0 |
-| 2 | domaine (libs-outils) | `depot-cipd`, `depot-gclient`, `depot-vpython`, `depot-graph`, `depot-ingest`, `depot-migrate`, `aphrody-up` → `crates/depot-up`, `aphrody-rt` → `crates/depot-rt`, `archguard` → `crates/depot-archguard`, `xtk` → `crates/depot-xtask`, `stack-bench` → `crates/depot-bench` | 0–1, même couche si acyclique et déclaré |
-| 3 | bindings | `ffi` → `crates/depot-capi` (comme `llvm-c`) | 0–2 |
-| 4 | driver | `aphrody` (`crates/ay` → `crates/depot-ay`), bin `ay` | 0–2 (jamais 3) |
+| L   | Couche                 | Crates (package → dossier cible)                                                                                                                                                                                                                                               | Dépend de                                |
+| --- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| 0   | support                | `depot-core` (path, style, ignore, sys, ToolContext, erreurs) ; `sys` → `crates/sys-probe` ; `sovereign-corelib` → `crates/sys-corelib`                                                                                                                                        | std + tiers                              |
+| 0t  | test-support (dev-dep) | nouveau `depot-lit` (harnais RUN/CHECK)                                                                                                                                                                                                                                        | 0                                        |
+| 1   | formats/clients        | `depot-cas`, `depot-treesitter`, `depot-re`, `depot-forge`, `aphrody-remote` → `crates/depot-remote`                                                                                                                                                                           | 0                                        |
+| 2   | domaine (libs-outils)  | `depot-cipd`, `depot-gclient`, `depot-vpython`, `depot-graph`, `depot-ingest`, `depot-migrate`, `aphrody-up` → `crates/depot-up`, `aphrody-rt` → `crates/depot-rt`, `archguard` → `crates/depot-archguard`, `xtk` → `crates/depot-xtask`, `stack-bench` → `crates/depot-bench` | 0–1, même couche si acyclique et déclaré |
+| 3   | bindings               | `ffi` → `crates/depot-capi` (comme `llvm-c`)                                                                                                                                                                                                                                   | 0–2                                      |
+| 4   | driver                 | `aphrody` (`crates/ay` → `crates/depot-ay`), bin `ay`                                                                                                                                                                                                                          | 0–2 (jamais 3)                           |
 
 `depot-cli` disparaît en tant que couche : chaque `commands/<x>.rs` devient le module `tool` de la lib qui possède la logique (ingest → depot-ingest, graph → depot-graph, re/lua/disasm → depot-re, ast/rope → depot-treesitter, forge → depot-forge, migrate → depot-migrate ; worktree/fork/slim/gix/ignore/just/artifacts/info/manifests → depot-core ou une lib `depot-vcs` si depot-core devient trop lourd). Le package `depot-cli` reste comme façade de ré-export le temps d'une release, puis se vide (pas de doublon : déplacement, pas copie).
 
@@ -66,6 +67,7 @@ aliases = ["vpython3"]
 ```
 
 `build.rs` du driver génère dans `OUT_DIR` :
+
 - `tools.rs` : table `&[ToolEntry { name, aliases, about, main: fn }]` + `match` de dispatch, gardée par `#[cfg(feature)]` ;
 - `help.txt` (liste `ay --help`) et `docs/ay/TOOLS.md` régénéré par `ay manifests` (vérifié en CI, jamais édité à la main).
 
@@ -92,30 +94,30 @@ crates/depot-ay/tests/lit/driver/   argv0.test, help.test, unknown-tool.test
 
 ## 5. Migration crate par crate
 
-| Package (inchangé) | Dossier actuel | Dossier cible | Couche | Travail |
-|---|---|---|---|---|
-| depot-core | crates/depot-core | idem | 0 | + `ToolContext`, racine, identity ; sortir moteurs lourds plus tard |
-| sys | crates/sys | crates/sys-probe | 0 | `ay sys` → `sys::tool` |
-| sovereign-corelib | crates/corelib | crates/sys-corelib | 0 | — |
-| depot-cas | idem | idem | 1 | — |
-| depot-treesitter | idem | idem | 1 | reçoit `commands/{ast,rope}` |
-| depot-re | idem | idem | 1 | reçoit `commands/{re,lua}` |
-| depot-forge | idem | idem | 1 | reçoit `commands/forge` |
-| aphrody-remote | crates/remote | crates/depot-remote | 1 | `ay ssh` |
-| depot-cipd | idem | idem | 2 | `tool_main` (cipd) |
-| depot-gclient | idem | idem | 2 | `tool_main` (gclient, fetch, cl, ninja, gn ?) [NV : propriétaire réel de cl/ninja/gn à confirmer] |
-| depot-vpython | idem | idem | 2 | `vpy` + alias `vpython3` |
-| depot-graph | idem | idem | 2 | reçoit `commands/graph` ; supprime `GRAPH_SUBCOMMANDS` |
-| depot-ingest | idem | idem | 2 | reçoit `commands/ingest` |
-| depot-migrate | idem | idem | 2 | reçoit `commands/migrate` |
-| aphrody-up | crates/up | crates/depot-up | 2 | shim + `install-links` |
-| aphrody-rt | crates/rt | crates/depot-rt | 2 | — |
-| archguard | crates/archguard | crates/depot-archguard | 2 | + règle de couches |
-| xtk | crates/xtask | crates/depot-xtask | 2 | doctor, lock, manifests |
-| stack-bench | crates/bench | crates/depot-bench | 2 | cfg(windows) |
-| depot-cli | idem | supprimé après vidage | — | façade transitoire |
-| ffi | crates/ffi | crates/depot-capi | 3 | — |
-| aphrody | crates/ay | crates/depot-ay | 4 | build.rs + tools.toml + dispatch argv0 |
+| Package (inchangé) | Dossier actuel    | Dossier cible          | Couche | Travail                                                                                           |
+| ------------------ | ----------------- | ---------------------- | ------ | ------------------------------------------------------------------------------------------------- |
+| depot-core         | crates/depot-core | idem                   | 0      | + `ToolContext`, racine, identity ; sortir moteurs lourds plus tard                               |
+| sys                | crates/sys        | crates/sys-probe       | 0      | `ay sys` → `sys::tool`                                                                            |
+| sovereign-corelib  | crates/corelib    | crates/sys-corelib     | 0      | —                                                                                                 |
+| depot-cas          | idem              | idem                   | 1      | —                                                                                                 |
+| depot-treesitter   | idem              | idem                   | 1      | reçoit `commands/{ast,rope}`                                                                      |
+| depot-re           | idem              | idem                   | 1      | reçoit `commands/{re,lua}`                                                                        |
+| depot-forge        | idem              | idem                   | 1      | reçoit `commands/forge`                                                                           |
+| aphrody-remote     | crates/remote     | crates/depot-remote    | 1      | `ay ssh`                                                                                          |
+| depot-cipd         | idem              | idem                   | 2      | `tool_main` (cipd)                                                                                |
+| depot-gclient      | idem              | idem                   | 2      | `tool_main` (gclient, fetch, cl, ninja, gn ?) [NV : propriétaire réel de cl/ninja/gn à confirmer] |
+| depot-vpython      | idem              | idem                   | 2      | `vpy` + alias `vpython3`                                                                          |
+| depot-graph        | idem              | idem                   | 2      | reçoit `commands/graph` ; supprime `GRAPH_SUBCOMMANDS`                                            |
+| depot-ingest       | idem              | idem                   | 2      | reçoit `commands/ingest`                                                                          |
+| depot-migrate      | idem              | idem                   | 2      | reçoit `commands/migrate`                                                                         |
+| aphrody-up         | crates/up         | crates/depot-up        | 2      | shim + `install-links`                                                                            |
+| aphrody-rt         | crates/rt         | crates/depot-rt        | 2      | —                                                                                                 |
+| archguard          | crates/archguard  | crates/depot-archguard | 2      | + règle de couches                                                                                |
+| xtk                | crates/xtask      | crates/depot-xtask     | 2      | doctor, lock, manifests                                                                           |
+| stack-bench        | crates/bench      | crates/depot-bench     | 2      | cfg(windows)                                                                                      |
+| depot-cli          | idem              | supprimé après vidage  | —      | façade transitoire                                                                                |
+| ffi                | crates/ffi        | crates/depot-capi      | 3      | —                                                                                                 |
+| aphrody            | crates/ay         | crates/depot-ay        | 4      | build.rs + tools.toml + dispatch argv0                                                            |
 
 Hors périmètre `ay` (inchangés ici) : `aphrody-design-*`, `gamescope-*`, `unix-*`, `ring3-agent`, `dx12-hal`, etc. — leur couche suit ARCHITECTURE.md.
 

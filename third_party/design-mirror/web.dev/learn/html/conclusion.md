@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 If you have been following this course in order, you have made it to the end of
 Learn HTML! You've learned a lot, from the basics of the language, through to
 many of the finer details.

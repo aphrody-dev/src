@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Plaintext protocols, such as HTTP, can be vulnerable to *eavesdropping attacks*,
+
+Plaintext protocols, such as HTTP, can be vulnerable to _eavesdropping attacks_,
 where an attacker is able to read the transmitted content. Transport Layer
 Security (TLS) can encrypt the traffic and make it significantly harder for
 attackers to use this data if captured.
@@ -29,7 +30,7 @@ Browser Support
 
 ## How the Lighthouse audit fails
 
- Lighthouse report warning that no HSTS response header was found.
+Lighthouse report warning that no HSTS response header was found.
 
 The audit flags the following issues with the HSTS header:
 

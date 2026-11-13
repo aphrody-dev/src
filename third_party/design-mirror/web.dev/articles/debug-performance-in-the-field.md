@@ -7,10 +7,11 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to attribute your performance data with debug information
 to help you identify and fix real-user issues with analytics
 
- Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
+Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
 
 Google provides two categories of tools to measure and debug performance:
 
@@ -25,7 +26,7 @@ real users experience---lab tools are often better at helping you identify and f
 issues.
 
 CrUX data is more representative of your page's real performance, but knowing
-your CrUX scores is unlikely to help you figure out *how* to improve your
+your CrUX scores is unlikely to help you figure out _how_ to improve your
 performance.
 
 Lighthouse, on the other hand, will identify issues and make specific
@@ -52,7 +53,7 @@ page---how far they scroll, what they click, and so on---can have a significant
 impact on whether there are layout shifts and which elements are shifting.
 
 Consider the following report from PageSpeed Insights:
- PageSpeed Insights shows both field and lab data where available and these may be different
+PageSpeed Insights shows both field and lab data where available and these may be different
 
 The value reported for CLS from the lab (Lighthouse) compared to the CLS from
 the field (CrUX data) are quite different, and this makes sense if you consider
@@ -81,17 +82,17 @@ that shifted:
 
 ```javascript
 new PerformanceObserver((list) => {
-  for (const {value, startTime, sources} of list.getEntries()) {
+  for (const { value, startTime, sources } of list.getEntries()) {
     // Log the shift amount and other entry info.
-    console.log('Layout shift:', {value, startTime});
+    console.log("Layout shift:", { value, startTime });
     if (sources) {
-      for (const {node, curRect, prevRect} of sources) {
+      for (const { node, curRect, prevRect } of sources) {
         // Log the elements that shifted.
-        console.log('  Shift source:', node, {curRect, prevRect});
+        console.log("  Shift source:", node, { curRect, prevRect });
       }
     }
   }
-}).observe({type: 'layout-shift', buffered: true});
+}).observe({ type: "layout-shift", buffered: true });
 ```
 
 It's probably not practical to measure and send data to your analytics tool for
@@ -116,8 +117,11 @@ function getCLSDebugTarget(entries) {
   });
   if (largestEntry && largestEntry.sources && largestEntry.sources.length) {
     const largestSource = largestEntry.sources.reduce((a, b) => {
-      return a.node && a.previousRect.width * a.previousRect.height >
-          b.previousRect.width * b.previousRect.height ? a : b;
+      return a.node &&
+        a.previousRect.width * a.previousRect.height >
+          b.previousRect.width * b.previousRect.height
+        ? a
+        : b;
     });
     if (largestSource) {
       return largestSource.node;
@@ -182,8 +186,8 @@ new PerformanceObserver((list) => {
   const entries = list.getEntries();
   const lastEntry = entries[entries.length - 1];
 
-  console.log('LCP element:', lastEntry.element);
-}).observe({type: 'largest-contentful-paint', buffered: true});
+  console.log("LCP element:", lastEntry.element);
+}).observe({ type: "largest-contentful-paint", buffered: true });
 ```
 
 > [!CAUTION]
@@ -224,9 +228,9 @@ The following code logs the target element and time of the INP entry.
 
 ```javascript
 function logINPDebugInfo(inpEntry) {
-  console.log('INP target element:', inpEntry.target);
-  console.log('INP interaction type:', inpEntry.name);
-  console.log('INP time:', inpEntry.startTime);
+  console.log("INP target element:", inpEntry.target);
+  console.log("INP interaction type:", inpEntry.name);
+  console.log("INP time:", inpEntry.startTime);
 }
 ```
 
@@ -253,29 +257,29 @@ debug string useful for helping to identify the root cause of performance
 issues.
 
 ```javascript
-import {onCLS, onINP, onLCP} from 'web-vitals/attribution';
+import { onCLS, onINP, onLCP } from "web-vitals/attribution";
 
-function sendToGoogleAnalytics({name, value, id, attribution}) {
+function sendToGoogleAnalytics({ name, value, id, attribution }) {
   const eventParams = {
     metric_value: value,
     metric_id: id,
-  }
+  };
 
   switch (name) {
-    case 'CLS':
+    case "CLS":
       eventParams.debug_target = attribution.largestShiftTarget;
       break;
-    case 'LCP':
+    case "LCP":
       eventParams.debug_target = attribution.element;
       break;
-    case 'INP':
+    case "INP":
       eventParams.debug_target = attribution.interactionTarget;
       break;
   }
 
   // Assumes the global `gtag()` function exists, see:
   // https://developers.google.com/analytics/devguides/collection/ga4
-  gtag('event', name, eventParams);
+  gtag("event", name, eventParams);
 }
 
 onCLS(sendToGoogleAnalytics);
@@ -298,23 +302,27 @@ The `web-vitals` attribution build exposes additional attribution information,
 as shown in the following example for INP:
 
 ```javascript
-import {onCLS, onINP, onLCP} from 'web-vitals/attribution';
+import { onCLS, onINP, onLCP } from "web-vitals/attribution";
 
-function sendToGoogleAnalytics({name, value, id, attribution}) {
+function sendToGoogleAnalytics({ name, value, id, attribution }) {
   const eventParams = {
     metric_value: value,
     metric_id: id,
-  }
+  };
 
   switch (name) {
-    case 'INP':
+    case "INP":
       eventParams.debug_target = attribution.interactionTarget;
       eventParams.debug_type = attribution.interactionType;
       eventParams.debug_time = attribution.interactionTime;
       eventParams.debug_load_state = attribution.loadState;
       eventParams.debug_interaction_delay = Math.round(attribution.inputDelay);
-      eventParams.debug_processing_duration = Math.round(attribution.processingDuration);
-      eventParams.debug_presentation_delay =  Math.round(attribution.presentationDelay);
+      eventParams.debug_processing_duration = Math.round(
+        attribution.processingDuration,
+      );
+      eventParams.debug_presentation_delay = Math.round(
+        attribution.presentationDelay,
+      );
       break;
 
     // Additional metric logic...
@@ -322,7 +330,7 @@ function sendToGoogleAnalytics({name, value, id, attribution}) {
 
   // Assumes the global `gtag()` function exists, see:
   // https://developers.google.com/analytics/devguides/collection/ga4
-  gtag('event', name, eventParams);
+  gtag("event", name, eventParams);
 }
 
 onCLS(sendToGoogleAnalytics);
@@ -358,7 +366,7 @@ any performance metric that's measurable in JavaScript.
 
 If you're an analytics vendor and you're looking to improve your products and
 provide more debugging information to your users, consider some of the
-techniques described here but don't limit yourself to *just* the ideas presented
+techniques described here but don't limit yourself to _just_ the ideas presented
 here. This post is intended to be generally applicable to all analytics tools;
 however, individual analytics tools likely can (and should) capture and report
 even more debug information.

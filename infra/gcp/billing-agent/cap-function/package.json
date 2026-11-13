@@ -2,5 +2,7 @@
   "name": "billing-cap",
   "private": true,
   "main": "index.js",
-  "engines": { "node": ">=24" }
+  "engines": {
+    "node": ">=24"
+  }
 }

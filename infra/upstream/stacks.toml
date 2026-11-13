@@ -20,7 +20,12 @@ rules = "bun"
 runner = "prd"
 # Upstream's own CI, dispatched on an ephemeral PR head before the PR is opened (they run on pull_request
 # and workflow_dispatch in oven-sh/bun; build + test runs on oven's Buildkite once the PR is open).
-lint_workflows = ["format.yml", "lint.yml", "rust-lints.yml", "source-lints.yml"]
+lint_workflows = [
+  "format.yml",
+  "lint.yml",
+  "rust-lints.yml",
+  "source-lints.yml",
+]
 
 
 [stack.chromium]

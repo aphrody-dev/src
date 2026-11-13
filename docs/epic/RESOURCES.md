@@ -5,17 +5,18 @@ Checked 2026-11-13 with `gh api`, Context7 (`/websites/dev_epicgames`) and the w
 ## Epic philosophy (as stated by Epic)
 
 Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-06-17).
+
 - Build once, deploy to traditional platforms, Fortnite or your own ecosystems (UE 6 aim).
 
 ## Engine and languages
 
-| Item | Fact | Source |
-| :--- | :--- | :--- |
+| Item                | Fact                                                                                                                                                                                                                            | Source                                                                                                                             |
+| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------- |
 | Unreal Engine (C++) | Latest stable 5.8 (2026-06-17); last planned UE5 major; the private repo had tag 5.8.4-release when read with an Epic-linked gh login on 2026-11-13 (`gh api graphql` repository.latestRelease), not visible to the CI snapshot | 5.8 release notes (dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes); State of Unreal 2026 page |
-| UE source access | Private `EpicGames/UnrealEngine`; link GitHub account at unrealengine.com/ue4-on-github | `gh api repos/EpicGames/Signup/readme`; `gh api repos/EpicGames/UnrealEngine` returns private |
-| Lore (Rust VCS) | MIT, pre-1.0, v0.13.0 2026-11-06, centralized content-addressed, built into UEFN; docs epicgames.github.io/lore | `gh api repos/EpicGames/lore` |
-| Lore SDKs | lore-js, lore-go, lore-python, lore-dotnet (MIT, no releases yet) | `gh api repos/EpicGames/lore-js` (and lore-go, lore-python, lore-dotnet) |
-| Zen | UE5 local/shared DDC and cook storage server, C++20, xmake; v5.8.27 2026-10-20; no open-source license (GitHub license=null, no LICENSE file, headers say Copyright Epic Games, All Rights Reserved) | `gh api repos/EpicGames/zen` |
+| UE source access    | Private `EpicGames/UnrealEngine`; link GitHub account at unrealengine.com/ue4-on-github                                                                                                                                         | `gh api repos/EpicGames/Signup/readme`; `gh api repos/EpicGames/UnrealEngine` returns private                                      |
+| Lore (Rust VCS)     | MIT, pre-1.0, v0.13.0 2026-11-06, centralized content-addressed, built into UEFN; docs epicgames.github.io/lore                                                                                                                 | `gh api repos/EpicGames/lore`                                                                                                      |
+| Lore SDKs           | lore-js, lore-go, lore-python, lore-dotnet (MIT, no releases yet)                                                                                                                                                               | `gh api repos/EpicGames/lore-js` (and lore-go, lore-python, lore-dotnet)                                                           |
+| Zen                 | UE5 local/shared DDC and cook storage server, C++20, xmake; v5.8.27 2026-10-20; no open-source license (GitHub license=null, no LICENSE file, headers say Copyright Epic Games, All Rights Reserved)                            | `gh api repos/EpicGames/zen`                                                                                                       |
 
 ## Unreal Engine 6 and Verse direction
 

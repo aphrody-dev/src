@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)
 
 Published: March 31, 2014
 
-*Optimizing the critical rendering path* refers to prioritizing the display of
+_Optimizing the critical rendering path_ refers to prioritizing the display of
 content that relates to the current user action.
 
 Delivering a fast web experience requires a lot of work by the browser. Most of

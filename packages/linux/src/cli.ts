@@ -2,11 +2,31 @@
 // `ay linux` and `ay pkg` (docs/linux/OWNERSHIP.md): kernel patchsets, kernel builds off the PC, and the
 // unified package recipes (one recipe -> every distro format).
 
-import { mkdirSync, rmSync, writeFileSync, chmodSync, readFileSync, existsSync } from "node:fs";
+import {
+  mkdirSync,
+  rmSync,
+  writeFileSync,
+  chmodSync,
+  readFileSync,
+  existsSync,
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { tmpdir } from "node:os";
-import { liveStatus, loadPatchsets, writePins, type Live } from "./patchsets.ts";
-import { FORMATS, formatsOf, generate, loadDistros, loadRecipes, matrix, type Format } from "./recipe.ts";
+import {
+  liveStatus,
+  loadPatchsets,
+  writePins,
+  type Live,
+} from "./patchsets.ts";
+import {
+  FORMATS,
+  formatsOf,
+  generate,
+  loadDistros,
+  loadRecipes,
+  matrix,
+  type Format,
+} from "./recipe.ts";
 import { buildEnv, loadKernels, shellEnv } from "./kernel.ts";
 
 const USAGE = `ay linux <commande>
@@ -22,7 +42,13 @@ ay pkg <commande>
   build <recette> --distro <d> [--out dir] construit et teste dans le conteneur de la distro (Linux, CI)
   check                                    génère tout dans un dossier temporaire (validation)`;
 
-export const LINUX_STACKS = ["linux-cachyos", "cachyos-pkgbuilds", "kernel-patches", "liquorix", "scx"];
+export const LINUX_STACKS = [
+  "linux-cachyos",
+  "cachyos-pkgbuilds",
+  "kernel-patches",
+  "liquorix",
+  "scx",
+];
 
 type Opts = { args: string[]; flags: Set<string>; values: Map<string, string> };
 
@@ -31,8 +57,12 @@ export function parse(argv: string[]): Opts {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
     if (!a.startsWith("--")) o.args.push(a);
-    else if (a.includes("=")) o.values.set(a.slice(2, a.indexOf("=")), a.slice(a.indexOf("=") + 1));
-    else if (["--host", "--target", "--out", "--distro", "--group"].includes(a) && i + 1 < argv.length)
+    else if (a.includes("="))
+      o.values.set(a.slice(2, a.indexOf("=")), a.slice(a.indexOf("=") + 1));
+    else if (
+      ["--host", "--target", "--out", "--distro", "--group"].includes(a) &&
+      i + 1 < argv.length
+    )
       o.values.set(a.slice(2), argv[++i]!);
     else o.flags.add(a.slice(2));
   }
@@ -43,7 +73,11 @@ export function repoRoot(): string {
   if (process.env.SRC_ROOT) return resolve(process.env.SRC_ROOT);
   let dir = process.cwd();
   for (;;) {
-    if (existsSync(join(dir, "src.lock.json")) || existsSync(join(dir, "identity.toml"))) return dir;
+    if (
+      existsSync(join(dir, "src.lock.json")) ||
+      existsSync(join(dir, "identity.toml"))
+    )
+      return dir;
     const up = resolve(dir, "..");
     if (up === dir) return process.cwd();
     dir = up;
@@ -51,22 +85,36 @@ export function repoRoot(): string {
 }
 
 function upstream(root: string, args: string[]): number {
-  const r = Bun.spawnSync(["bun", join(root, "packages", "upstream", "src", "cli.ts"), ...args], {
-    stdio: ["inherit", "inherit", "inherit"],
-    env: { ...process.env, SRC_ROOT: root },
-  });
+  const r = Bun.spawnSync(
+    ["bun", join(root, "packages", "upstream", "src", "cli.ts"), ...args],
+    {
+      stdio: ["inherit", "inherit", "inherit"],
+      env: { ...process.env, SRC_ROOT: root },
+    },
+  );
   return r.exitCode ?? 1;
 }
 
 function printLive(list: Live[]) {
   const mark = { ok: "=", behind: "->", excluded: "x", error: "!" } as const;
   for (const p of list) {
-    const right = p.state === "error" ? p.error : p.state === "excluded" ? (p.excluded ?? "archivé en amont") : p.latest;
-    console.log(`${p.group.padEnd(11)} ${p.name.padEnd(26)} ${(p.pinned || "-").padEnd(14)} ${mark[p.state].padEnd(2)} ${right ?? "?"}`);
+    const right =
+      p.state === "error"
+        ? p.error
+        : p.state === "excluded"
+          ? (p.excluded ?? "archivé en amont")
+          : p.latest;
+    console.log(
+      `${p.group.padEnd(11)} ${p.name.padEnd(26)} ${(p.pinned || "-").padEnd(14)} ${mark[p.state].padEnd(2)} ${right ?? "?"}`,
+    );
   }
 }
 
-function writeOut(dir: string, files: Record<string, string | Uint8Array>, modes: Record<string, number>) {
+function writeOut(
+  dir: string,
+  files: Record<string, string | Uint8Array>,
+  modes: Record<string, number>,
+) {
   rmSync(dir, { recursive: true, force: true });
   for (const [p, c] of Object.entries(files)) {
     const f = join(dir, p);
@@ -81,40 +129,69 @@ async function linux(root: string, o: Opts): Promise<number> {
   switch (cmd) {
     case "status": {
       const group = o.values.get("group");
-      const live = await liveStatus(loadPatchsets(root).filter((p) => !group || p.group === group));
+      const live = await liveStatus(
+        loadPatchsets(root).filter((p) => !group || p.group === group),
+      );
       if (o.flags.has("json")) console.log(JSON.stringify(live, null, 2));
       else printLive(live);
       if (o.flags.has("record")) {
         const f = join(root, "var", "linux", "status.json");
         mkdirSync(dirname(f), { recursive: true });
-        writeFileSync(f, JSON.stringify({ at: new Date().toISOString(), live }, null, 2) + "\n");
+        writeFileSync(
+          f,
+          JSON.stringify({ at: new Date().toISOString(), live }, null, 2) +
+            "\n",
+        );
       }
       return live.some((p) => p.state === "error") ? 1 : 0;
     }
     case "sync": {
       const live = await liveStatus(loadPatchsets(root));
-      const moved = live.filter((p) => p.state === "behind" && p.latest).map((p) => ({ name: p.name, latest: p.latest! }));
+      const moved = live
+        .filter((p) => p.state === "behind" && p.latest)
+        .map((p) => ({ name: p.name, latest: p.latest! }));
       for (const m of moved) console.log(`${m.name} -> ${m.latest}`);
-      if (o.flags.has("write")) console.log(`${writePins(root, moved)} épingle(s) écrite(s) dans infra/linux/patchsets.toml`);
-      return upstream(root, ["sync", LINUX_STACKS.join(","), ...(o.flags.has("push") ? ["--push"] : [])]);
+      if (o.flags.has("write"))
+        console.log(
+          `${writePins(root, moved)} épingle(s) écrite(s) dans infra/linux/patchsets.toml`,
+        );
+      return upstream(root, [
+        "sync",
+        LINUX_STACKS.join(","),
+        ...(o.flags.has("push") ? ["--push"] : []),
+      ]);
     }
     case "patch": {
       const sub = o.args[1] ?? "status";
       const rest = o.args.slice(2);
-      if (sub === "status") return upstream(root, ["status", ...(rest.length ? rest : LINUX_STACKS), ...[...o.flags].map((f) => `--${f}`)]);
-      return upstream(root, [sub, ...(rest.length ? rest : [LINUX_STACKS.join(",")]), ...[...o.flags].map((f) => `--${f}`)]);
+      if (sub === "status")
+        return upstream(root, [
+          "status",
+          ...(rest.length ? rest : LINUX_STACKS),
+          ...[...o.flags].map((f) => `--${f}`),
+        ]);
+      return upstream(root, [
+        sub,
+        ...(rest.length ? rest : [LINUX_STACKS.join(",")]),
+        ...[...o.flags].map((f) => `--${f}`),
+      ]);
     }
     case "flavors": {
       const k = loadKernels(root);
       for (const f of k.flavors)
-        console.log(`${f.name.padEnd(14)} ${Object.entries(f.env).map(([n, v]) => `${n}=${v}`).join(" ")}`);
+        console.log(
+          `${f.name.padEnd(14)} ${Object.entries(f.env)
+            .map(([n, v]) => `${n}=${v}`)
+            .join(" ")}`,
+        );
       return 0;
     }
     case "build": {
       const flavor = o.args[1];
       if (!flavor) throw new Error("ay linux build <saveur>");
       const host = (o.values.get("host") ?? "fr1") as "fr1" | "ci";
-      if (host !== "fr1" && host !== "ci") throw new Error("--host fr1 | ci (jamais le PC ni prd)");
+      if (host !== "fr1" && host !== "ci")
+        throw new Error("--host fr1 | ci (jamais le PC ni prd)");
       const env = buildEnv(loadKernels(root), flavor, host);
       if (o.flags.has("env")) {
         // Environment of kernel.sh, for the CI job (written to $GITHUB_ENV).
@@ -122,11 +199,26 @@ async function linux(root: string, o: Opts): Promise<number> {
         return 0;
       }
       if (host === "ci") {
-        const cmd = ["gh", "workflow", "run", "linux-kernel.yml", "-R", "aphrody-labs/src", "-f", `flavor=${flavor}`];
+        const cmd = [
+          "gh",
+          "workflow",
+          "run",
+          "linux-kernel.yml",
+          "-R",
+          "aphrody-labs/src",
+          "-f",
+          `flavor=${flavor}`,
+        ];
         console.log(cmd.join(" "));
-        return o.flags.has("run") ? (Bun.spawnSync(cmd, { stdio: ["inherit", "inherit", "inherit"] }).exitCode ?? 1) : 0;
+        return o.flags.has("run")
+          ? (Bun.spawnSync(cmd, { stdio: ["inherit", "inherit", "inherit"] })
+              .exitCode ?? 1)
+          : 0;
       }
-      const script = readFileSync(join(root, "infra", "linux", "build", "kernel.sh"), "utf8");
+      const script = readFileSync(
+        join(root, "infra", "linux", "build", "kernel.sh"),
+        "utf8",
+      );
       // kernel.sh goes over stdin, then runs detached in a transient user unit (nice 19, idle I/O).
       const remote = `f=$(mktemp -t aphrody-kernel.XXXXXX) && cat > "$f" && ${shellEnv(env)} systemd-run --user --collect --unit=aphrody-kernel-${flavor} --nice=19 -p IOSchedulingClass=idle -E FLAVOR -E IMAGE -E HOST -E LLVM_DIR -E KNOBS sh "$f"`;
       console.log(`ssh vps "${remote}" < infra/linux/build/kernel.sh`);
@@ -135,7 +227,10 @@ async function linux(root: string, o: Opts): Promise<number> {
         stdin: new TextEncoder().encode(script),
         stdio: [undefined, "inherit", "inherit"],
       });
-      if (r.exitCode === 0) console.log(`suivi : ssh vps journalctl --user -fu aphrody-kernel-${flavor}`);
+      if (r.exitCode === 0)
+        console.log(
+          `suivi : ssh vps journalctl --user -fu aphrody-kernel-${flavor}`,
+        );
       return r.exitCode ?? 1;
     }
     default:
@@ -144,13 +239,23 @@ async function linux(root: string, o: Opts): Promise<number> {
   }
 }
 
-function genAll(root: string, name: string, targets: Format[] | undefined, out: string): string[] {
-  const recipes = loadRecipes(root).filter((r) => name === "all" || r.name === name);
-  if (!recipes.length) throw new Error(`recette « ${name} » introuvable dans infra/pkg/recipes`);
+function genAll(
+  root: string,
+  name: string,
+  targets: Format[] | undefined,
+  out: string,
+): string[] {
+  const recipes = loadRecipes(root).filter(
+    (r) => name === "all" || r.name === name,
+  );
+  if (!recipes.length)
+    throw new Error(`recette « ${name} » introuvable dans infra/pkg/recipes`);
   const distros = loadDistros(root);
   const done: string[] = [];
   for (const r of recipes)
-    for (const f of formatsOf(r).filter((f) => !targets || targets.includes(f))) {
+    for (const f of formatsOf(r).filter(
+      (f) => !targets || targets.includes(f),
+    )) {
       const d = distros.find((x) => x.format === f);
       const g = generate(root, r, f, d);
       writeOut(join(out, r.name, f), g.files, g.modes);
@@ -163,20 +268,34 @@ async function pkg(root: string, o: Opts): Promise<number> {
   const cmd = o.args[0];
   switch (cmd) {
     case "list": {
-      for (const r of loadRecipes(root)) console.log(`${r.name.padEnd(22)} ${r.version}-${r.release}  ${formatsOf(r).join(" ")}`);
+      for (const r of loadRecipes(root))
+        console.log(
+          `${r.name.padEnd(22)} ${r.version}-${r.release}  ${formatsOf(r).join(" ")}`,
+        );
       return 0;
     }
     case "matrix": {
-      const m = matrix(loadRecipes(root), loadDistros(root), !o.flags.has("all"));
+      const m = matrix(
+        loadRecipes(root),
+        loadDistros(root),
+        !o.flags.has("all"),
+      );
       if (o.flags.has("json")) console.log(JSON.stringify({ include: m }));
-      else for (const x of m) console.log(`${x.recipe.padEnd(22)} ${x.distro.padEnd(9)} ${x.format}`);
+      else
+        for (const x of m)
+          console.log(
+            `${x.recipe.padEnd(22)} ${x.distro.padEnd(9)} ${x.format}`,
+          );
       return 0;
     }
     case "gen": {
       const t = o.values.get("target")?.split(",") as Format[] | undefined;
-      for (const f of t ?? []) if (!FORMATS.includes(f)) throw new Error(`cible ${f} : ${FORMATS.join(", ")}`);
+      for (const f of t ?? [])
+        if (!FORMATS.includes(f))
+          throw new Error(`cible ${f} : ${FORMATS.join(", ")}`);
       const out = resolve(o.values.get("out") ?? join(root, "var", "pkg"));
-      for (const x of genAll(root, o.args[1] ?? "all", t, out)) console.log(`${x} -> ${join(out, x)}`);
+      for (const x of genAll(root, o.args[1] ?? "all", t, out))
+        console.log(`${x} -> ${join(out, x)}`);
       return 0;
     }
     case "check": {
@@ -193,20 +312,38 @@ async function pkg(root: string, o: Opts): Promise<number> {
       const name = o.args[1];
       const dn = o.values.get("distro");
       if (!name || !dn) throw new Error("ay pkg build <recette> --distro <d>");
-      if (process.platform !== "linux") throw new Error("ay pkg build : Linux seulement (CI ubuntu-latest) ; rien ne se construit sur le PC");
+      if (process.platform !== "linux")
+        throw new Error(
+          "ay pkg build : Linux seulement (CI ubuntu-latest) ; rien ne se construit sur le PC",
+        );
       const d = loadDistros(root).find((x) => x.name === dn);
-      if (!d) throw new Error(`distro « ${dn} » absente de infra/pkg/distros.toml`);
+      if (!d)
+        throw new Error(`distro « ${dn} » absente de infra/pkg/distros.toml`);
       const r = loadRecipes(root).find((x) => x.name === name);
       if (!r) throw new Error(`recette « ${name} » introuvable`);
-      const dir = resolve(o.values.get("out") ?? join(root, "var", "pkg", name, d.name));
+      const dir = resolve(
+        o.values.get("out") ?? join(root, "var", "pkg", name, d.name),
+      );
       const g = generate(root, r, d.format, d);
       writeOut(dir, g.files, g.modes);
       const cmd =
         d.format === "docker" || !d.image
           ? ["sh", join(dir, "build.sh")]
-          : ["docker", "run", "--rm", "-v", `${dir}:/w`, d.image, "sh", "/w/build.sh"];
+          : [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              `${dir}:/w`,
+              d.image,
+              "sh",
+              "/w/build.sh",
+            ];
       console.log(cmd.join(" "));
-      return Bun.spawnSync(cmd, { stdio: ["inherit", "inherit", "inherit"] }).exitCode ?? 1;
+      return (
+        Bun.spawnSync(cmd, { stdio: ["inherit", "inherit", "inherit"] })
+          .exitCode ?? 1
+      );
     }
     default:
       console.error(USAGE);
@@ -229,7 +366,9 @@ if (import.meta.main) {
   try {
     process.exitCode = await main(process.argv.slice(2));
   } catch (e) {
-    console.error(`ay ${process.argv[2] === "pkg" ? "pkg" : "linux"}: ${(e as Error).message}`);
+    console.error(
+      `ay ${process.argv[2] === "pkg" ? "pkg" : "linux"}: ${(e as Error).message}`,
+    );
     process.exitCode = 1;
   }
 }

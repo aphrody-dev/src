@@ -57,12 +57,12 @@ libc = { workspace = true }
 
 [target.'cfg(target_family = "windows")'.dependencies]
 windows-sys = { workspace = true, features = [
-    "Win32_Foundation",
-    "Win32_Security",
-    "Win32_Security_Authorization",
-    "Win32_Storage_FileSystem",
-    "Win32_System_SystemServices",
-    "Win32_System_Threading",
+  "Win32_Foundation",
+  "Win32_Security",
+  "Win32_Security_Authorization",
+  "Win32_Storage_FileSystem",
+  "Win32_System_SystemServices",
+  "Win32_System_Threading",
 ] }
 
 [dev-dependencies]
@@ -70,8 +70,12 @@ axum = { workspace = true }
 ctor = { workspace = true }
 dtor = { workspace = true }
 libc = { workspace = true }
-lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
-lore-transport = { path = ".", package = "aphrody-lore-transport",  features = ["test-util"]  }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base", features = [
+  "test-util",
+] }
+lore-transport = { path = ".", package = "aphrody-lore-transport", features = [
+  "test-util",
+] }
 
 [features]
 trace_log = ["lore-base/trace_log"]

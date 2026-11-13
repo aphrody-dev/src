@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 010: Flexbox](https://thecsspodcast.libsyn.com/010-flexbox)
 
 A design pattern that can be tricky in responsive design is a sidebar that sits inline with some
@@ -169,7 +170,7 @@ The start of the cross axis is **cross-start** and the end **cross-end**.
 
 The initial value of the `flex-wrap` property is `nowrap`.
 This means that if there is not enough space in the container the items will overflow.
- Once they hit min-content size flex items will start to overflow their container
+Once they hit min-content size flex items will start to overflow their container
 
 Items displaying using the initial values will shrink as small as they can,
 down to the `min-content` size before overflow happens.
@@ -182,6 +183,7 @@ To cause the items to wrap add `flex-wrap: wrap` to the flex container.
   flex-wrap: wrap;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/WNRGdNZ?height=601&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen WNRGdNZ by web-dot-dev on Codepen"></iframe>
 
 When a flex container wraps it creates multiple **flex lines**.
@@ -232,7 +234,7 @@ This sets the properties to:
 - `flex-basis: auto`: items have a base size of `auto`.
 
 Using `flex: auto` will mean that items end up different sizes,
-as the space that is shared between the items is shared out *after* each item is laid out as
+as the space that is shared between the items is shared out _after_ each item is laid out as
 max-content size.
 So a large item will gain more space.
 To force all of the items to be a consistent size and ignore the size of the content change

@@ -1,1255 +1,1255 @@
 {
- "site": "developer.chrome.com",
- "generated": "2026-11-13",
- "mode": "mirror",
- "license": "CC-BY-4.0 (texte), Apache-2.0 (exemples de code)",
- "license_evidence": "pied de page de chaque page : « Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License »",
- "robots": "https://developer.chrome.com/robots.txt",
- "count": 248,
- "sections": {
-  "blog": 94,
-  "docs": 154
- },
- "urls": [
-  {
-   "url": "https://developer.chrome.com/blog/accessible-carousel",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:40+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/aligning-input-events",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/astro-view-transitions",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/chromium-accessibility-performance",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/crux-2017-12",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/crux-2018-01",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/crux-2025-02",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/crux-ad-metrics",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/crux-dashboard-deprecation",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/crux-navigation-types",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/crux-rank-magnitude",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/datalist-for-range-color-inputs-offer-some-default-choices",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/element-scoped-view-transitions",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/faster-wasm-debugging",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/final-soft-navigations-origin-trial",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/first-input-delay-in-crux",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/from-web-sql-to-sqlite-wasm",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/full-accessibility-tree",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/google-ai-mode-view-transitions-case-study",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/hotpath-with-wasm",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/inp-tools-2022",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/inputdevicecapabilities",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/integrating-input-type-file-with-the-filesystem-api",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/io24-webassembly-webgpu-1",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/io24-webassembly-webgpu-2",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/live-web-audio-input-enabled",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:40+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/loaf-has-shipped",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-113",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-114",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-115",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-116",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-117",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-118",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-119",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-120",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-121",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-122",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-123",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-124",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-125",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-126",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-127",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-128",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-129",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-130",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-131",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-132",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-133",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-134",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-135",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-136",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:40+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-137",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-138",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-139",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-140",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:08+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-141",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-142",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:15+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-143",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-144",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-145",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-146",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-147-148",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-149-150",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-151-152",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-153-154",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-in-webgpu-155-156",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/new-soft-navigations-origin-trial",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/next-for-webgpu",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:04+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/notification-permission-data-in-crux",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/optimizing-lcp-using-signed-exchanges",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/prerender-until-script-origin-trial",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/quick-faqs-on-input-type-date-in-google-chrome",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/scoped-view-transitions-feedback",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:15+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/scroll-driven-animations-video-course",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:40+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/search-speculation-rules",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/spa-view-transitions-land",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/speculation-rules-improvements",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/sqlite-wasm-in-the-browser-backed-by-the-origin-private-file-system",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/taking-advantage-of-gpu-acceleration-in-the-2d-canvas",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:40+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/video-accessibility-gemini-competition",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/view-transitions-case-studies",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/view-transitions-in-2025",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/view-transitions-misconceptions",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/view-transitions-update-io24",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/wasm-debugging-2019",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/wasm-debugging-2020",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/wasm-module-sharing-restricted-to-same-origin",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/wasmgc",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/web-audio-live-audio-input-now-on-android",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/web-vitals-extension",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:15+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/web-vitals-extension-merged",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/webassembly-jspi-origin-trial",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/webgpu-io2023",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/blog/webgpu-release",
-   "section": "blog",
-   "lastmod": "2026-11-11T16:59:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux",
-   "section": "docs",
-   "lastmod": "2025-12-17T09:39:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/api",
-   "section": "docs",
-   "lastmod": "2026-11-11T15:44:10+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/bigquery",
-   "section": "docs",
-   "lastmod": "2026-10-13T18:02:02+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/dashboard",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:15+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/feedback",
-   "section": "docs",
-   "lastmod": "2025-07-25T03:15:47+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/guides",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/guides/bigquery",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/guides/crux-api",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/guides/history-api",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/guides/looker-studio-dashboard",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/guides/pagespeed-insights",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/history-api",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:08+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/methodology",
-   "section": "docs",
-   "lastmod": "2026-09-15T16:04:03+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/methodology/dimensions",
-   "section": "docs",
-   "lastmod": "2025-07-25T03:15:47+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/methodology/metrics",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/methodology/tools",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/release-notes",
-   "section": "docs",
-   "lastmod": "2026-11-11T15:44:10+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/crux/vis",
-   "section": "docs",
-   "lastmod": "2026-09-15T16:04:03+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/accessibility/contrast",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/accessibility/focus",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/accessibility/navigation",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/accessibility/reference",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/lighthouse",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance-insights",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance-monitor",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance/annotations",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance/extension",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance/nodejs",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance/overview",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance/reference",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance/save-trace",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:04+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance/selector-stats",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:29+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/devtools/performance/timeline-reference",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/custom-control-roles",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:29+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/custom-controls-labels",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:15+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/focus-traps",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/focusable-controls",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/interactive-element-affordance",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:29+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/logical-tab-order",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/managed-focus",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:40+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/offscreen-content-hidden",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/scoring",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/use-landmarks",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/accessibility/visual-order-follows-dom",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/appcache-manifest",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:04+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/baseline-features",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/charset",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/clickjacking-mitigation",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/csp-xss",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/deprecations",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/doctype",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/external-anchors-use-rel-noopener",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/geolocation-on-start",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/image-aspect-ratio",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/is-on-https",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/js-libraries",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/no-document-write",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/no-vulnerable-libraries",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/notification-on-start",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/redirects-http",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/trusted-types-xss",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/uses-passive-event-listeners",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/viewport",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/bf-cache",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/bootup-time",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/dom-size",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/efficient-animated-content",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/estimated-input-latency",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:29+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:29+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/first-cpu-idle",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:08+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:29+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/font-display",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/interactive",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/mainthread-work-breakdown",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/non-composited-animations",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:40+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/offscreen-images",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/performance-scoring",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/redirects",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/resource-summary",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/server-response-time",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/speed-index",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/third-party-facades",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/third-party-summary",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:29+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/unminified-css",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/unminified-javascript",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:15+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/unused-javascript",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/user-timings",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-long-cache-ttl",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:04+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preload",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-responsive-images",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-text-compression",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-webp-images",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/canonical",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/font-size",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/hreflang",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:12+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/http-status-code",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:08+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/is-crawlable",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/link-text",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/meta-description",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:08+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/plugins",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/structured-data",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/lighthouse/seo/tap-targets",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance",
-   "section": "docs",
-   "lastmod": "2025-10-07T17:45:45+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights",
-   "section": "docs",
-   "lastmod": "2026-04-07T07:28:39+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/cache",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:08+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/charset",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/cls-culprit",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:29+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/document-latency",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:19+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/dom-size",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:25+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/duplicated-javascript",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/font-display",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/forced-reflow",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/image-delivery",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/inp-breakdown",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:08+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/lcp-breakdown",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/lcp-discovery",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/legacy-javascript",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:57+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/modern-http",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/network-dependency-tree",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/render-blocking",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:08+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/slow-css-selector",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/third-parties",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/performance/insights/viewport",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/bfcache-ccns",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:29+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/bfcache-notrestoredreasons",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:43+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/long-animation-frames",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/prerender-pages",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/view-transitions",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:32+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/view-transitions/cross-document",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/view-transitions/same-document",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:53+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/webgpu",
-   "section": "docs",
-   "lastmod": "2024-12-16T17:17:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/webgpu/build-app",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/webgpu/colab-headless",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:08+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/webgpu/developer-features",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:22+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:36+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/webgpu/news",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:49+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/webgpu/overview",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:00+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:58:46+00:00"
-  },
-  {
-   "url": "https://developer.chrome.com/docs/web-platform/webgpu/webgpu-ecosystem",
-   "section": "docs",
-   "lastmod": "2026-11-11T16:59:33+00:00"
-  }
- ]
+  "site": "developer.chrome.com",
+  "generated": "2026-11-13",
+  "mode": "mirror",
+  "license": "CC-BY-4.0 (texte), Apache-2.0 (exemples de code)",
+  "license_evidence": "pied de page de chaque page : « Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License »",
+  "robots": "https://developer.chrome.com/robots.txt",
+  "count": 248,
+  "sections": {
+    "blog": 94,
+    "docs": 154
+  },
+  "urls": [
+    {
+      "url": "https://developer.chrome.com/blog/accessible-carousel",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:40+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/aligning-input-events",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/astro-view-transitions",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/chromium-accessibility-performance",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/crux-2017-12",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/crux-2018-01",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/crux-2025-02",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/crux-ad-metrics",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/crux-dashboard-deprecation",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/crux-navigation-types",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/crux-rank-magnitude",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/datalist-for-range-color-inputs-offer-some-default-choices",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/element-scoped-view-transitions",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/faster-wasm-debugging",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/final-soft-navigations-origin-trial",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/first-input-delay-in-crux",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/from-web-sql-to-sqlite-wasm",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/full-accessibility-tree",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/google-ai-mode-view-transitions-case-study",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/hotpath-with-wasm",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/inp-tools-2022",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/inputdevicecapabilities",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/integrating-input-type-file-with-the-filesystem-api",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/io24-webassembly-webgpu-1",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/io24-webassembly-webgpu-2",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/live-web-audio-input-enabled",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:40+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/loaf-has-shipped",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-113",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-114",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-115",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-116",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-117",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-118",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-119",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-120",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-121",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-122",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-123",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-124",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-125",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-126",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-127",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-128",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-129",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-130",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-131",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-132",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-133",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-134",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-135",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-136",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:40+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-137",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-138",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-139",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-140",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:08+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-141",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-142",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:15+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-143",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-144",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-145",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-146",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-147-148",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-149-150",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-151-152",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-153-154",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-in-webgpu-155-156",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/new-soft-navigations-origin-trial",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/next-for-webgpu",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:04+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/notification-permission-data-in-crux",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/optimizing-lcp-using-signed-exchanges",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/prerender-until-script-origin-trial",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/quick-faqs-on-input-type-date-in-google-chrome",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/scoped-view-transitions-feedback",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:15+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/scroll-driven-animations-video-course",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:40+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/search-speculation-rules",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/spa-view-transitions-land",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/speculation-rules-improvements",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/sqlite-wasm-in-the-browser-backed-by-the-origin-private-file-system",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/taking-advantage-of-gpu-acceleration-in-the-2d-canvas",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:40+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/video-accessibility-gemini-competition",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/view-transitions-case-studies",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/view-transitions-in-2025",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/view-transitions-misconceptions",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/view-transitions-update-io24",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/wasm-debugging-2019",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/wasm-debugging-2020",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/wasm-module-sharing-restricted-to-same-origin",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/wasmgc",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/web-audio-live-audio-input-now-on-android",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/web-vitals-extension",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:15+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/web-vitals-extension-merged",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/webassembly-jspi-origin-trial",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/webgpu-io2023",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/blog/webgpu-release",
+      "section": "blog",
+      "lastmod": "2026-11-11T16:59:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux",
+      "section": "docs",
+      "lastmod": "2025-12-17T09:39:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/api",
+      "section": "docs",
+      "lastmod": "2026-11-11T15:44:10+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/bigquery",
+      "section": "docs",
+      "lastmod": "2026-10-13T18:02:02+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/dashboard",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:15+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/feedback",
+      "section": "docs",
+      "lastmod": "2025-07-25T03:15:47+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/guides",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/guides/bigquery",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/guides/crux-api",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/guides/history-api",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/guides/looker-studio-dashboard",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/guides/pagespeed-insights",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/history-api",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:08+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/methodology",
+      "section": "docs",
+      "lastmod": "2026-09-15T16:04:03+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/methodology/dimensions",
+      "section": "docs",
+      "lastmod": "2025-07-25T03:15:47+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/methodology/metrics",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/methodology/tools",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/release-notes",
+      "section": "docs",
+      "lastmod": "2026-11-11T15:44:10+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/crux/vis",
+      "section": "docs",
+      "lastmod": "2026-09-15T16:04:03+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/accessibility/contrast",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/accessibility/focus",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/accessibility/navigation",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/accessibility/reference",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/lighthouse",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance-insights",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance-monitor",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance/annotations",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance/extension",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance/nodejs",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance/overview",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance/reference",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance/save-trace",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:04+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance/selector-stats",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:29+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/devtools/performance/timeline-reference",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/custom-control-roles",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:29+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/custom-controls-labels",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:15+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/focus-traps",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/focusable-controls",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/interactive-element-affordance",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:29+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/logical-tab-order",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/managed-focus",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:40+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/offscreen-content-hidden",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/scoring",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/use-landmarks",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/visual-order-follows-dom",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/appcache-manifest",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:04+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/baseline-features",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/charset",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/clickjacking-mitigation",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/csp-xss",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/deprecations",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/doctype",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/external-anchors-use-rel-noopener",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/geolocation-on-start",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/image-aspect-ratio",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/is-on-https",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/js-libraries",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/no-document-write",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/no-vulnerable-libraries",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/notification-on-start",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/redirects-http",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/trusted-types-xss",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/uses-passive-event-listeners",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/best-practices/viewport",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/bf-cache",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/bootup-time",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/dom-size",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/efficient-animated-content",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/estimated-input-latency",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:29+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:29+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/first-cpu-idle",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:08+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:29+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/font-display",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/interactive",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/mainthread-work-breakdown",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/non-composited-animations",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:40+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/offscreen-images",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/performance-scoring",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/redirects",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/resource-summary",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/server-response-time",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/speed-index",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/third-party-facades",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/third-party-summary",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:29+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/unminified-css",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/unminified-javascript",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:15+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/unused-javascript",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/user-timings",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-long-cache-ttl",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:04+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preload",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-responsive-images",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-text-compression",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/uses-webp-images",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/canonical",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/font-size",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/hreflang",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:12+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/http-status-code",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:08+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/is-crawlable",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/link-text",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/meta-description",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:08+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/plugins",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/structured-data",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/lighthouse/seo/tap-targets",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance",
+      "section": "docs",
+      "lastmod": "2025-10-07T17:45:45+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights",
+      "section": "docs",
+      "lastmod": "2026-04-07T07:28:39+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/cache",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:08+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/charset",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/cls-culprit",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:29+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/document-latency",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:19+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/dom-size",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:25+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/duplicated-javascript",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/font-display",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/forced-reflow",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/image-delivery",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/inp-breakdown",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:08+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/lcp-breakdown",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/lcp-discovery",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/legacy-javascript",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:57+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/modern-http",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/network-dependency-tree",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/render-blocking",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:08+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/slow-css-selector",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/third-parties",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/performance/insights/viewport",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/bfcache-ccns",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:29+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/bfcache-notrestoredreasons",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:43+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/long-animation-frames",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/prerender-pages",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/view-transitions",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:32+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/view-transitions/cross-document",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/view-transitions/same-document",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:53+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/webgpu",
+      "section": "docs",
+      "lastmod": "2024-12-16T17:17:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/webgpu/build-app",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/webgpu/colab-headless",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:08+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/webgpu/developer-features",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:22+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:36+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/webgpu/news",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:49+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/webgpu/overview",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:00+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:58:46+00:00"
+    },
+    {
+      "url": "https://developer.chrome.com/docs/web-platform/webgpu/webgpu-ecosystem",
+      "section": "docs",
+      "lastmod": "2026-11-11T16:59:33+00:00"
+    }
+  ]
 }

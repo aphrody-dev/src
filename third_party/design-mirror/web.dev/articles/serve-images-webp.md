@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Katie Hempenius [X](https://twitter.com/katiehempenius)
 
 ## Why should you care?
@@ -77,14 +78,14 @@ a Node script. This script will convert the files in the `images` directory and
 save them in the `compressed_images` directory.
 
 ```javascript
-const imagemin = require('imagemin');
-const imageminWebp = require('imagemin-webp');
+const imagemin = require("imagemin");
+const imageminWebp = require("imagemin-webp");
 
-imagemin(['images/*'], {
-  destination: 'compressed_images',
-  plugins: [imageminWebp({quality: 50})]
+imagemin(["images/*"], {
+  destination: "compressed_images",
+  plugins: [imageminWebp({ quality: 50 })],
 }).then(() => {
-  console.log('Done!');
+  console.log("Done!");
 });
 ```
 
@@ -104,9 +105,8 @@ serve WebP to newer browsers and a fallback image to older browsers:
 
 ```html
 <picture>
-  <source type="image/webp" srcset="flower.webp">
-  <source type="image/jpeg" srcset="flower.jpg">
-  
+  <source type="image/webp" srcset="flower.webp" />
+  <source type="image/jpeg" srcset="flower.jpg" />
 </picture>
 ```
 
@@ -131,14 +131,13 @@ The browser uses the first listed source that's in a format it supports. If the 
 
 ### ``
 
-The `` tag is what makes this code work on browsers
+The ``tag is what makes this code work on browsers
 that don't support the `<picture>` tag.
 If a browser does not support the `<picture>` tag, it will
-ignore the tags it doesn't support. Thus, it only "sees" the
-`` tag and loads that image.
+ignore the tags it doesn't support. Thus, it only "sees" the`` tag and loads that image.
 
 > [!TIP]
-> **Tip:** The `` tag should always be included, and it should always be listed last, after all `<source>` tags. The resource specified by the `` tag should be in a universally supported format (e.g. JPEG), so it can be used as a fallback.
+> **Tip:** The ``tag should always be included, and it should always be listed last, after all `<source>` tags. The resource specified by the`` tag should be in a universally supported format (e.g. JPEG), so it can be used as a fallback.
 
 ### Reading the HTTP `Accept` header
 

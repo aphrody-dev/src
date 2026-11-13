@@ -22,9 +22,11 @@ Activate this skill when auditing `agy` transcripts (`transcript.jsonl`), config
    ```
 
 ## Antigravity `hooks.json` Contract Invariants
+
 - `PreToolUse` (`pre-tool-guard.ts`): Returns `{"decision":"allow"}` or `{"decision":"deny","reason":"..."}`. Blocks `C:\Windows\System32` mutations, raw `.env` git staging, and raw token commits.
 - `PostToolUse` (`post-tool-tracker.ts`): Logs turn events to `var/knowledge.sqlite` (`live_turn_events`) in `< 15ms` and returns `{}`.
 - `Stop` (`stop-session-reviewer.ts`): Audits the active turn in `< 40ms`, appends to `continuous-review-stream.jsonl`, and returns `{"decision":"stop"}` (or `{"decision":"continue","reason":"..."}` strictly when `terminationReason === "NO_TOOL_CALL"`, `executionNum <= 1`, and a critical safety violation occurred).
 
 ## Progressive Disclosure Reference
+
 - Transcript JSONL schema and SQLite incremental indexing columns: see [`references/transcript-schema-and-hooks.md`](./references/transcript-schema-and-hooks.md).

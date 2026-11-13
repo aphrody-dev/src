@@ -6,14 +6,14 @@ Document de référence unique. Remplace `docs/ROOT-ARCHITECTURE.md` et `docs/CO
 
 Inspiré de NT (HAL sous l'Executive, sous les sous-systèmes) et des components Chromium (base en bas, embedders en haut).
 
-| Couche | Rôle (analogue) | Contenu actuel |
-|---|---|---|
-| L0 toolchain | compilateurs, pins (LLVM partagé, rustc nightly, bun 1.4.4) | `rust-toolchain.toml`, `tools/`, `third_party/` (hors graphe first-party) |
-| L1 base | `//base` : primitives portables, sans `cfg(target_os)` ni windows-rs, sans service | `crates/core`, `depot-core`, `depot-cas`, `lore-base`, `lore-io`, `lore-error-set(-macro)`, `lore-macro`, `aphrody-design-shared`, `aphrody-design-tokens`, `gamescope-core`, `tv-core`, `tv-i18n` |
-| L2 plateforme | HAL : Windows, Linux, Cloudflare, Vercel, réseau, C ABI de base | `sys`, `net`, `core-capi`, `dx12-hal` (D3D12, DirectComposition, C ABI `dx12_hal_*`), `unix-*`, `remote`, `lore-credential`, `lore-fuse`, `steam-depot`, `gamescope-wgsl`, `smithay-wayland-wire`, `hypr-tiler`, `cosmic-compat`, `tv-ffmpeg` (FFmpeg libav* en liaison dynamique) ; `packages/core` (bun:ffi sur core-capi), `ffi-bridge` (bun:ffi sur dx12-hal), `net`, `machine`, `runtime-adapter` ; `infra/*` |
-| L3 services | Executive : VCS, build, design, web | `crates/*` par défaut : `lore*` (stockage, révision, transport, serveur, backends aws/hashicorp), `depot-*` (gclient, cipd, vpython, re, graph...), `xtask`, `up`, `rt`, `archguard`, `corelib`, `factory`, `conformance`, `bench`, `next`, `react`, `ui`, design ; C ABI de services `ffi`, `lore-capi` ; `packages/*` par défaut |
-| L4 agent | sous-système agent | `packages/ai-os` (core, llm, relay, research, gateway, tui ; ses sous-dossiers sont des sous-couches), `crates/agent-context`, `crates/agent-py`, `crates/ring3-agent`, `plugins/` |
-| L5 surfaces | embedders (`//chrome`) | CLIs : `ay` (dont `ay conformance`, ex-`aphrody-cli`), `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli`, `tv-cli` ; `ai-os` (CLI `src/cli.ts`, gateway, tui) ; `apps/*` (dont `apps/nt`) |
+| Couche        | Rôle (analogue)                                                                    | Contenu actuel                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| L0 toolchain  | compilateurs, pins (LLVM partagé, rustc nightly, bun 1.4.4)                        | `rust-toolchain.toml`, `tools/`, `third_party/` (hors graphe first-party)                                                                                                                                                                                                                                                                                                                                          |
+| L1 base       | `//base` : primitives portables, sans `cfg(target_os)` ni windows-rs, sans service | `crates/core`, `depot-core`, `depot-cas`, `lore-base`, `lore-io`, `lore-error-set(-macro)`, `lore-macro`, `aphrody-design-shared`, `aphrody-design-tokens`, `gamescope-core`, `tv-core`, `tv-i18n`                                                                                                                                                                                                                 |
+| L2 plateforme | HAL : Windows, Linux, Cloudflare, Vercel, réseau, C ABI de base                    | `sys`, `net`, `core-capi`, `dx12-hal` (D3D12, DirectComposition, C ABI `dx12_hal_*`), `unix-*`, `remote`, `lore-credential`, `lore-fuse`, `steam-depot`, `gamescope-wgsl`, `smithay-wayland-wire`, `hypr-tiler`, `cosmic-compat`, `tv-ffmpeg` (FFmpeg libav* en liaison dynamique) ; `packages/core` (bun:ffi sur core-capi), `ffi-bridge` (bun:ffi sur dx12-hal), `net`, `machine`, `runtime-adapter` ; `infra/*` |
+| L3 services   | Executive : VCS, build, design, web                                                | `crates/*` par défaut : `lore*` (stockage, révision, transport, serveur, backends aws/hashicorp), `depot-*` (gclient, cipd, vpython, re, graph...), `xtask`, `up`, `rt`, `archguard`, `corelib`, `factory`, `conformance`, `bench`, `next`, `react`, `ui`, design ; C ABI de services `ffi`, `lore-capi` ; `packages/*` par défaut                                                                                 |
+| L4 agent      | sous-système agent                                                                 | `packages/ai-os` (core, llm, relay, research, gateway, tui ; ses sous-dossiers sont des sous-couches), `crates/agent-context`, `crates/agent-py`, `crates/ring3-agent`, `plugins/`                                                                                                                                                                                                                                 |
+| L5 surfaces   | embedders (`//chrome`)                                                             | CLIs : `ay` (dont `ay conformance`, ex-`aphrody-cli`), `depot-cli`, `lore-client`, `gamescope-cli`, `wslg-cli`, `tv-cli` ; `ai-os` (CLI `src/cli.ts`, gateway, tui) ; `apps/*` (dont `apps/nt`)                                                                                                                                                                                                                    |
 
 La liste exacte vient de `just checkdeps --graph` ; ce tableau est un résumé.
 
@@ -32,6 +32,7 @@ Placement des C ABI : une C ABI de base va en L2 (frontière plateforme : `core-
 Arêtes invisibles dans les manifestes (bun:ffi `dlopen`, pyo3) : déclarées par `use chemin` dans le `DEPS.rules` du consommateur (`packages/core` : `use crates/core-capi`) ; elles entrent dans les couches, les cycles et `just affected`.
 
 Mise en application :
+
 - `DEPS.rules` par répertoire (`layer = N`, `+`, `!`, `-`, `use`), hérité vers le bas ; format maison adapté de `buildtools/checkdeps` de Chromium (préfixes et héritage repris, `layer` et `use` ajoutés). Les lignes `sous/dossier: directive` d'un parent couvrent les sous-modules où src n'écrit pas (`agent/`, `apps/*` ; règles dans `/DEPS.rules`).
 - Arêtes lues dans les manifestes : dépendances `path` / `workspace = true` de Cargo, `@aphrody/*` / `workspace:` / `file:` de package.json.
 - Gate : `bun scripts/checkdeps.ts` (`just checkdeps`, étape CI « Layered dependency gate », inclus dans `just check`). Archguard ARCH-017 garde les frontières de domaine (voir checkdeps-002).
@@ -71,11 +72,11 @@ Rangés le 2026-11-13 : `deploy.toml` -> `infra/deploy.toml` (flotte, hébergeme
 
 ## 5. Bibliothèque commune (core)
 
-| Pilier | Où | Rôle |
-|---|---|---|
-| tree-sitter | `crates/core` (`aphrody-core`, L1) | parse multi-langage, symboles/appels/imports, requêtes, index, BLAKE3 |
-| LLVM | `crates/core-capi` (cdylib, L2) | C ABI `core_*`, construite en release avec rustc + clang sur le LLVM partagé ; la LTO inter-langages s'arrête à la cdylib (Rust + C de tree-sitter), jamais à travers bun:ffi |
-| bun:ffi | `packages/core` (`@aphrody/core`, L2) | `dlopen` typé, `CString` + `core_free`, `JSCallback`, store `bun:sqlite` |
+| Pilier      | Où                                    | Rôle                                                                                                                                                                          |
+| ----------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tree-sitter | `crates/core` (`aphrody-core`, L1)    | parse multi-langage, symboles/appels/imports, requêtes, index, BLAKE3                                                                                                         |
+| LLVM        | `crates/core-capi` (cdylib, L2)       | C ABI `core_*`, construite en release avec rustc + clang sur le LLVM partagé ; la LTO inter-langages s'arrête à la cdylib (Rust + C de tree-sitter), jamais à travers bun:ffi |
+| bun:ffi     | `packages/core` (`@aphrody/core`, L2) | `dlopen` typé, `CString` + `core_free`, `JSCallback`, store `bun:sqlite`                                                                                                      |
 
 C ABI (`core_abi_version() == 1`) : `core_free`, `core_languages`, `core_parse_json`, `core_query_json`, `core_blake3_hex`, `core_index_json`, `core_index_each`. Sorties JSON, erreurs `{"error": ...}`. En-tête : `cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h`. On ajoute des symboles sans en casser ; un changement incompatible incrémente `core_abi_version`. `@aphrody/core` ouvre la bibliothèque en deux temps : résoudre `core_abi_version` seul, refuser si la version diffère, puis seulement lier le reste de la table (TICKET abi-001 si ce n'est pas encore le cas).
 
@@ -101,23 +102,21 @@ Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/co
 
 ## 8. Dette connue (tickets)
 
-| Ticket | Constat | Correction |
-|---|---|---|
-| checkdeps-001 | soldé le 2026-11-13 : l'entrée CLI est `packages/ai-os/src/cli.ts`, hors de `src/core` ; ai-os est une seule unité L4 | — |
-| checkdeps-002 | ARCH-017 d'archguard double checkdeps pour les couches mais porte aussi les frontières de domaine | traduire ces frontières en règles `-` (ex. L3 services système sans `dx12-hal`/`steam-depot`, agent sans `next`/`react`) avant de retirer ARCH-017 et d'appeler checkdeps depuis `ay arch check` |
-| checkdeps-003 | `apps/rosegriffon` : cycle `rg-db` <-> `rg-types`, vu par un passage manuel de checkdeps à profondeur 3 (hors gate src) | à corriger dans le dépôt rosegriffon, par son propre gate |
-| checkdeps-004 | soldé le 2026-11-13 : chaque `pyproject.toml` à `[project]` est une unité `uv` (arêtes `[tool.uv.sources]`) ; `just test-affected` lance `uv run pytest` sur les unités touchées. `apps/nt` n'a aucune arête de build vers `crates/*` ou `infra/*` (aucune référence dans ses .csproj, CMake ou TS), rien à déclarer | — |
-| nt-001 | soldé le 2026-11-13 : la DLL GPU partagée est la crate L2 `crates/dx12-hal` (cdylib `dx12_hal.dll`, C ABI `dx12_hal_*` en Rust sur windows-rs, à la place de `native_nt_gpu` en C++) ; sa liaison bun:ffi `packages/ffi-bridge/src/dx12-hal.ts` (paquet L2, `use crates/dx12-hal`) sert `unix-distro.ts` (hors produit, reste dans le paquet) et `apps/nt` (`/api/gpu` de `sdk/tools/host/server.ts`, dépendance `file:` vue par checkdeps) ; `infra/winnt-sdk` supprimé (l'hôte .NET cède la place à la coque WinUI 3 de `apps/nt`, la DispatcherQueue à `wslg_cli::host`) ; `infra/ffi-bridge` devenu `packages/ffi-bridge` (ARCH-006 n'admet plus que `infra/mesh-vn`) | — |
-| dx12-001 | soldé le 2026-11-13 : `crates/dx12-winui-core` scindé ; `crates/dx12-hal` (L2, `cfg(windows)`, vide sur Linux) garde D3D12, fences, textures partagées par handle NT, DirectComposition et une C ABI `dx12_hal_*` (cdylib `dx12_hal.dll`, JSON, `dx12_hal_abi_version() == 1`) ; la DispatcherQueue WinUI 3 part dans l'hôte `wslg-cli` (L5, `wslg_cli::host`) | — |
-| pin-001 | soldé le 2026-11-13 : `src.lock.json` est le seul pin des dépôts ; `ay manifests` en dérive DEPS et .gitmodules, `ay manifests --check` signale toute dérive (fichier ou gitlink différent du verrou) ; `.repo/` et la génération de MAINTAINERS retirés ; les crates restent épinglées par Cargo.lock (vendored-sources = copie hors ligne de Cargo.lock, pas un second pin) | dérive restante signalée par le gate : `apps/rosegriffon` (gitlink ff692b5 vs verrou f5d61f9) à résoudre par `ay lock` côté propriétaire du produit |
-| toolchain-001 | cranelift (dev) incompatible avec la LTO LLVM et limité sur windows-msvc | cranelift seulement en dev hors cdylib ; trancher clang-cl vs cl.exe (conflit ouvert) |
-| taskgraph-001 | cache distant R2 pour sccache non configuré | backend S3 de sccache vers R2 sur les runners, après lecture de la doc sccache |
+| Ticket        | Constat                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Correction                                                                                                                                                                                       |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| checkdeps-001 | soldé le 2026-11-13 : l'entrée CLI est `packages/ai-os/src/cli.ts`, hors de `src/core` ; ai-os est une seule unité L4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | —                                                                                                                                                                                                |
+| checkdeps-002 | ARCH-017 d'archguard double checkdeps pour les couches mais porte aussi les frontières de domaine                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | traduire ces frontières en règles `-` (ex. L3 services système sans `dx12-hal`/`steam-depot`, agent sans `next`/`react`) avant de retirer ARCH-017 et d'appeler checkdeps depuis `ay arch check` |
+| checkdeps-003 | `apps/rosegriffon` : cycle `rg-db` <-> `rg-types`, vu par un passage manuel de checkdeps à profondeur 3 (hors gate src)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | à corriger dans le dépôt rosegriffon, par son propre gate                                                                                                                                        |
+| checkdeps-004 | soldé le 2026-11-13 : chaque `pyproject.toml` à `[project]` est une unité `uv` (arêtes `[tool.uv.sources]`) ; `just test-affected` lance `uv run pytest` sur les unités touchées. `apps/nt` n'a aucune arête de build vers `crates/*` ou `infra/*` (aucune référence dans ses .csproj, CMake ou TS), rien à déclarer                                                                                                                                                                                                                                                                                                                                                      | —                                                                                                                                                                                                |
+| nt-001        | soldé le 2026-11-13 : la DLL GPU partagée est la crate L2 `crates/dx12-hal` (cdylib `dx12_hal.dll`, C ABI `dx12_hal_*` en Rust sur windows-rs, à la place de `native_nt_gpu` en C++) ; sa liaison bun:ffi `packages/ffi-bridge/src/dx12-hal.ts` (paquet L2, `use crates/dx12-hal`) sert `unix-distro.ts` (hors produit, reste dans le paquet) et `apps/nt` (`/api/gpu` de `sdk/tools/host/server.ts`, dépendance `file:` vue par checkdeps) ; `infra/winnt-sdk` supprimé (l'hôte .NET cède la place à la coque WinUI 3 de `apps/nt`, la DispatcherQueue à `wslg_cli::host`) ; `infra/ffi-bridge` devenu `packages/ffi-bridge` (ARCH-006 n'admet plus que `infra/mesh-vn`) | —                                                                                                                                                                                                |
+| dx12-001      | soldé le 2026-11-13 : `crates/dx12-winui-core` scindé ; `crates/dx12-hal` (L2, `cfg(windows)`, vide sur Linux) garde D3D12, fences, textures partagées par handle NT, DirectComposition et une C ABI `dx12_hal_*` (cdylib `dx12_hal.dll`, JSON, `dx12_hal_abi_version() == 1`) ; la DispatcherQueue WinUI 3 part dans l'hôte `wslg-cli` (L5, `wslg_cli::host`)                                                                                                                                                                                                                                                                                                            | —                                                                                                                                                                                                |
+| pin-001       | soldé le 2026-11-13 : `src.lock.json` est le seul pin des dépôts ; `ay manifests` en dérive DEPS et .gitmodules, `ay manifests --check` signale toute dérive (fichier ou gitlink différent du verrou) ; `.repo/` et la génération de MAINTAINERS retirés ; les crates restent épinglées par Cargo.lock (vendored-sources = copie hors ligne de Cargo.lock, pas un second pin)                                                                                                                                                                                                                                                                                             | dérive restante signalée par le gate : `apps/rosegriffon` (gitlink ff692b5 vs verrou f5d61f9) à résoudre par `ay lock` côté propriétaire du produit                                              |
+| toolchain-001 | cranelift (dev) incompatible avec la LTO LLVM et limité sur windows-msvc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | cranelift seulement en dev hors cdylib ; trancher clang-cl vs cl.exe (conflit ouvert)                                                                                                            |
+| taskgraph-001 | cache distant R2 pour sccache non configuré                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | backend S3 de sccache vers R2 sur les runners, après lecture de la doc sccache                                                                                                                   |
 
 ## Annexe A : architecture produit web (labs v0, ex-ROOT-ARCHITECTURE.md)
 
 Chemins d'origine : `crates/cli` de labs est devenu `ay conformance` (crates/conformance) ; `vendor/` est devenu des forks `aphrody-labs` épinglés par commit (§11).
-
-
 
 Status: v0 architecture. Implemented: conformance harness skeleton, Lore absorbed. Versions read from crates.io on 2026-11-12.
 
@@ -133,6 +132,7 @@ Aphrody Labs (`aphrody-labs/labs`, private) is the lab of Aphrody, as Vercel Lab
 - Epic side: Unreal Engine through the private fork `aphrody-labs/UnrealEngine` (EULA: private, licensees only, never in a public repository). Followed upstreams: lore and its SDKs, zen, PixelStreamingInfrastructure, raddebugger, UnrealEngine.
 
 Decisions:
+
 - JS engine: V8 built from source at the `v8_revision` of the Chromium checkout in `C:src` (today V8 16.0.25, commit `e4e354fb`), through the fork `aphrody-labs/rusty_v8`; `deno_core` from the fork `aphrody-labs/deno` (`libs/core`; `denoland/deno_core` is archived). No WebKit/JavaScriptCore. Fallbacks: `boa_engine`, then `rquickjs`. See [ENGINE-DECISION.md](ENGINE-DECISION.md).
 - Renderer: Blitz (stylo + taffy + parley + vello) behind the `render` feature, off by default. Chromium `headless_shell` (local checkout) is the out-of-process oracle for layout and the Google web platform, never linked into the binary (Blink is LGPL).
 - Toolchain: oxc + rolldown + lightningcss. swc is not used.
@@ -173,6 +173,7 @@ Decisions:
 ```
 
 Rules:
+
 - A layer depends only on the layers below it. `cli` is the only crate that depends on everything.
 - L1 to L5 hold no framework-specific knowledge. Next.js semantics live only in `next` and `rsc`.
 - `renderer` is independent of the JS engine at v0. It renders HTML and CSS that the server produced.
@@ -181,31 +182,31 @@ Rules:
 
 One root workspace (`Cargo.toml`, `resolver = "3"`, `edition = "2024"`). Members are flat at `crates/<dir>`. Package names are `aphrody-<dir>`, except the binary, which is `aphrody`. The owner already publishes about 190 older `aphrody-*` crates; directory names were chosen so that no new package reuses one of them (`renderer`, `js` and `webapi` instead of the taken `aphrody-render`, `aphrody-engine` and `aphrody-web`). Check each new name on crates.io before adding a crate. Every external version is pinned once in `[workspace.dependencies]`, and members use `dep.workspace = true`.
 
-| Dir | Package | Layer | Responsibility | Key deps | Bun subsystem studied (lines, from targets survey) |
-|---|---|---|---|---|---|
-| `cli` | `aphrody` | top | argument parsing, command dispatch | clap | `runtime` cli parts |
-| `base` | `aphrody-base` | L0 | error types, path utils, string interning, tracing init | tracing | `bun_core` 33150, `paths` 7258 |
-| `io` | `aphrody-io` | L1 | async fs, process spawn, file watching, shell | tokio, notify, ignore | `io` 11797, `spawn` 4696, `watcher` 2568, `shell_parser` 5873 |
-| `net` | `aphrody-net` | L1 | HTTP/1.1, HTTP/2, HTTP/3 server and client, TLS, WebSocket | hyper, hyper-util, axum, tower, rustls, reqwest, quinn, h3 | `http` 18740, `uws` 1701 |
-| `renderer` | `aphrody-renderer` | L1 | headless and windowed HTML/CSS rendering, screenshots, WPT reftests | blitz-dom, blitz-html, blitz-paint, anyrender, stylo, taffy, parley, vello, vello_cpu, wgpu, winit | none (Bun has no renderer) |
-| `js` | `aphrody-js` | L2 | `Engine` trait: realms, modules, microtasks, host ops; backends `v8`, `boa`, `quickjs` (features) | v8, boa_engine, rquickjs | `jsc` 55638 (C++ heavy) |
-| `runtime` | `aphrody-runtime` | L3 | deno_core JsRuntime host, ESM and CJS loader, startup snapshot, event loop, permissions | deno_core | `runtime` 363594, `event_loop` 2619 |
-| `webapi` | `aphrody-webapi` | L3 | fetch, Request/Response, streams, URL, TextEncoder, WebCrypto, timers, WebSocket | net, runtime | `http_jsc` 6417 |
-| `node` | `aphrody-node` | L3 | `node:*` builtins (fs, path, buffer, stream, http, crypto, child_process, worker_threads, async_hooks) | io, net, runtime | `node_path` 3059 |
-| `bunapi` | `aphrody-bunapi` | L3 | Bun-compatible globals (`Bun.serve`, `Bun.file`, `Bun.spawn`, `bun:test` surface) for the Bun suite | runtime, net, io | `runtime` (API surface) |
-| `transpile` | `aphrody-transpile` | L4 | parse, transform (TS, JSX, decorators, React Refresh), codegen, minify, source maps | oxc | `js_parser` 51577, `js_printer` 9641, `sourcemap` 4712 |
-| `resolve` | `aphrody-resolve` | L4 | Node/ESM resolution, `exports`/`imports`, tsconfig paths, conditions | oxc_resolver | `resolver` 19793 |
-| `bundle` | `aphrody-bundle` | L4 | graph build, code splitting, server/client/edge environments, HMR graph | rolldown, transpile, resolve, css | `bundler` 61628 |
-| `pm` | `aphrody-pm` | L4 | npm registry client, semver, lockfile (reads `bun.lock`, `package-lock.json`, `pnpm-lock.yaml`), tarball cache, linker | net, io, sha2, zstd | `install` 106179, `semver` 4211, `tar` 4721 |
-| `test` | `aphrody-test` | L4 | test runner, `expect`, snapshots, mocks, Jest/Vitest/bun:test surface | runtime | `runtime` test runner parts |
-| `css` | `aphrody-css` | L5 | CSS parse, transform, minify, CSS modules, bundling | lightningcss | `css` 61193 |
-| `tailwind-oxide` | `aphrody-tailwind-oxide` | L5 | candidate scanner (upstream `crates/oxide`, MIT, upstream code with notice kept) | ignore | none |
-| `tailwind` | `aphrody-tailwind` | L5 | Tailwind v4 compiler (section 7) | css, tailwind-oxide | none |
-| `rsc` | `aphrody-rsc` | L6 | Flight wire format, client/server reference manifests, server action ids | bundle | none |
-| `next` | `aphrody-next` | L6 | App Router: route tree, layouts, metadata, caching, middleware/proxy, server actions, image and font | rsc, bundle, runtime, net | `router` 1772 |
-| `registry` | `aphrody-registry` | L6 | shadcn-schema registry client and server, `components.json`, `add` | net, serde_json | none |
-| `deploy` | `aphrody-deploy` | L6 | Build Output API v3 writer, `serve` for it, OCI image, provider adapters | bundle, net | `standalone_graph` 7889 (single-file exe idea) |
-| `conformance` | `aphrody-conformance` | tool | fetch pinned upstreams, run the 11 suites, emit JSON results | io, net | none |
+| Dir              | Package                  | Layer | Responsibility                                                                                                         | Key deps                                                                                           | Bun subsystem studied (lines, from targets survey)            |
+| ---------------- | ------------------------ | ----- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `cli`            | `aphrody`                | top   | argument parsing, command dispatch                                                                                     | clap                                                                                               | `runtime` cli parts                                           |
+| `base`           | `aphrody-base`           | L0    | error types, path utils, string interning, tracing init                                                                | tracing                                                                                            | `bun_core` 33150, `paths` 7258                                |
+| `io`             | `aphrody-io`             | L1    | async fs, process spawn, file watching, shell                                                                          | tokio, notify, ignore                                                                              | `io` 11797, `spawn` 4696, `watcher` 2568, `shell_parser` 5873 |
+| `net`            | `aphrody-net`            | L1    | HTTP/1.1, HTTP/2, HTTP/3 server and client, TLS, WebSocket                                                             | hyper, hyper-util, axum, tower, rustls, reqwest, quinn, h3                                         | `http` 18740, `uws` 1701                                      |
+| `renderer`       | `aphrody-renderer`       | L1    | headless and windowed HTML/CSS rendering, screenshots, WPT reftests                                                    | blitz-dom, blitz-html, blitz-paint, anyrender, stylo, taffy, parley, vello, vello_cpu, wgpu, winit | none (Bun has no renderer)                                    |
+| `js`             | `aphrody-js`             | L2    | `Engine` trait: realms, modules, microtasks, host ops; backends `v8`, `boa`, `quickjs` (features)                      | v8, boa_engine, rquickjs                                                                           | `jsc` 55638 (C++ heavy)                                       |
+| `runtime`        | `aphrody-runtime`        | L3    | deno_core JsRuntime host, ESM and CJS loader, startup snapshot, event loop, permissions                                | deno_core                                                                                          | `runtime` 363594, `event_loop` 2619                           |
+| `webapi`         | `aphrody-webapi`         | L3    | fetch, Request/Response, streams, URL, TextEncoder, WebCrypto, timers, WebSocket                                       | net, runtime                                                                                       | `http_jsc` 6417                                               |
+| `node`           | `aphrody-node`           | L3    | `node:*` builtins (fs, path, buffer, stream, http, crypto, child_process, worker_threads, async_hooks)                 | io, net, runtime                                                                                   | `node_path` 3059                                              |
+| `bunapi`         | `aphrody-bunapi`         | L3    | Bun-compatible globals (`Bun.serve`, `Bun.file`, `Bun.spawn`, `bun:test` surface) for the Bun suite                    | runtime, net, io                                                                                   | `runtime` (API surface)                                       |
+| `transpile`      | `aphrody-transpile`      | L4    | parse, transform (TS, JSX, decorators, React Refresh), codegen, minify, source maps                                    | oxc                                                                                                | `js_parser` 51577, `js_printer` 9641, `sourcemap` 4712        |
+| `resolve`        | `aphrody-resolve`        | L4    | Node/ESM resolution, `exports`/`imports`, tsconfig paths, conditions                                                   | oxc_resolver                                                                                       | `resolver` 19793                                              |
+| `bundle`         | `aphrody-bundle`         | L4    | graph build, code splitting, server/client/edge environments, HMR graph                                                | rolldown, transpile, resolve, css                                                                  | `bundler` 61628                                               |
+| `pm`             | `aphrody-pm`             | L4    | npm registry client, semver, lockfile (reads `bun.lock`, `package-lock.json`, `pnpm-lock.yaml`), tarball cache, linker | net, io, sha2, zstd                                                                                | `install` 106179, `semver` 4211, `tar` 4721                   |
+| `test`           | `aphrody-test`           | L4    | test runner, `expect`, snapshots, mocks, Jest/Vitest/bun:test surface                                                  | runtime                                                                                            | `runtime` test runner parts                                   |
+| `css`            | `aphrody-css`            | L5    | CSS parse, transform, minify, CSS modules, bundling                                                                    | lightningcss                                                                                       | `css` 61193                                                   |
+| `tailwind-oxide` | `aphrody-tailwind-oxide` | L5    | candidate scanner (upstream `crates/oxide`, MIT, upstream code with notice kept)                                       | ignore                                                                                             | none                                                          |
+| `tailwind`       | `aphrody-tailwind`       | L5    | Tailwind v4 compiler (section 7)                                                                                       | css, tailwind-oxide                                                                                | none                                                          |
+| `rsc`            | `aphrody-rsc`            | L6    | Flight wire format, client/server reference manifests, server action ids                                               | bundle                                                                                             | none                                                          |
+| `next`           | `aphrody-next`           | L6    | App Router: route tree, layouts, metadata, caching, middleware/proxy, server actions, image and font                   | rsc, bundle, runtime, net                                                                          | `router` 1772                                                 |
+| `registry`       | `aphrody-registry`       | L6    | shadcn-schema registry client and server, `components.json`, `add`                                                     | net, serde_json                                                                                    | none                                                          |
+| `deploy`         | `aphrody-deploy`         | L6    | Build Output API v3 writer, `serve` for it, OCI image, provider adapters                                               | bundle, net                                                                                        | `standalone_graph` 7889 (single-file exe idea)                |
+| `conformance`    | `aphrody-conformance`    | tool  | fetch pinned upstreams, run the 11 suites, emit JSON results                                                           | io, net                                                                                            | none                                                          |
 
 Bun line counts give a rough idea of scope. They are not a design input: Bun's crates mirror a Zig-to-Rust port, and this codebase does not follow its structure.
 
@@ -213,53 +214,54 @@ Bun line counts give a rough idea of scope. They are not a design input: Bun's c
 
 All versions are pinned exactly (`=x.y.z`) in the root `Cargo.toml`. License and MSRV come from crates.io version metadata.
 
-| Crate | Version | License | rust-version | Role |
-|---|---|---|---|---|
-| deno_core | 0.413.0 | MIT | n/a | JS runtime host (ops, module loader, snapshots) |
-| v8 | 152.2.0 | MIT (bindings; V8 is BSD-3-Clause, ICU is Unicode-3.0) | n/a | V8 engine |
-| boa_engine | 0.22.0 | Unlicense OR MIT | 1.91.0 | pure-Rust engine for wasm32 and fallback |
-| rquickjs | 0.14.0 | MIT (QuickJS: MIT) | 1.87 | small-footprint fallback |
-| oxc | 0.158.0 | MIT | **1.97.0** | parser, transformer, codegen, minifier |
-| oxc_resolver | 11.24.3 | MIT | 1.95.0 | module resolution |
-| rolldown | 1.3.2 | MIT | n/a | bundler core |
-| lightningcss | 1.0.0-alpha.72 | MPL-2.0 | n/a | CSS engine (unmodified) |
-| blitz-dom | 0.2.4 | MIT OR Apache-2.0 | 1.86.0 | DOM and style integration |
-| blitz-html | 0.2.0 | MIT OR Apache-2.0 | 1.86.0 | HTML to DOM |
-| blitz-paint | 0.2.1 | MIT OR Apache-2.0 | 1.86.0 | painting |
-| anyrender | 0.14.0 | MIT OR Apache-2.0 | n/a | render backend abstraction |
-| stylo | 0.24.0 | MPL-2.0 | n/a | CSS cascade and computed style (unmodified) |
-| selectors | 0.43.0 | MPL-2.0 | n/a | selector matching (unmodified) |
-| cssparser | 0.38.0 | MPL-2.0 | 1.85 | CSS tokenizer (unmodified) |
-| html5ever | 0.40.1 | MIT OR Apache-2.0 | 1.85 | HTML parser |
-| taffy | 0.15.1 | MIT | 1.71 | block, flex and grid layout |
-| parley | 0.12.0 | Apache-2.0 OR MIT | 1.88 | text layout |
-| fontique | 0.13.0 | Apache-2.0 OR MIT | 1.88 | font enumeration and fallback |
-| vello | 0.12.0 | Apache-2.0 OR MIT | 1.89 | GPU 2D rendering |
-| vello_cpu | 0.4.0 | Apache-2.0 OR MIT | 1.89 | CPU rasterizer for deterministic headless screenshots and WPT reftests |
-| wgpu | 30.0.1 | MIT OR Apache-2.0 | 1.87.0 | GPU API (Vulkan, Metal, DX12, WebGPU) |
-| winit | 0.30.13 | Apache-2.0 | 1.70.0 | windowing (preview window only) |
-| tokio | 1.54.1 | MIT | 1.85 | async runtime |
-| hyper | 1.12.0 | MIT | 1.63 | HTTP/1 and HTTP/2 |
-| hyper-util | 0.1.21 | MIT | 1.85 | hyper glue |
-| axum | 0.8.9 | MIT | 1.80 | internal dev-server routes |
-| tower | 0.5.3 | MIT | 1.64.0 | middleware |
-| rustls | 0.23.46 | Apache-2.0 OR ISC OR MIT | 1.71 | TLS |
-| reqwest | 0.13.5 | MIT OR Apache-2.0 | 1.85.0 | outbound HTTP (registry, deploy APIs) |
-| quinn | 0.11.12 | MIT OR Apache-2.0 | 1.85 | QUIC |
-| h3 | 0.0.8 | MIT | 1.70 | HTTP/3 (experimental) |
-| url | 2.5.8 | MIT OR Apache-2.0 | 1.63 | WHATWG URL |
-| bytes | 1.12.1 | MIT | 1.57 | buffers |
-| tracing | 0.1.44 | MIT | 1.65.0 | diagnostics |
-| clap | 4.6.7 | MIT OR Apache-2.0 | 1.85 | CLI |
-| serde / serde_json | 1.0.229 / 1.0.154 | MIT OR Apache-2.0 | 1.56 / 1.71 | serialization |
-| toml | 1.2.1 | MIT OR Apache-2.0 | 1.85 | config files |
-| sha2 | 0.11.1 | MIT OR Apache-2.0 | 1.88 | integrity hashes |
-| zstd | 0.14.3 | BSD-3-Clause (links C libzstd, BSD) | 1.64 | cache compression |
-| ignore | 0.4.34 | Unlicense OR MIT | 1.88 | gitignore-aware walking |
-| notify | 8.2.2 | CC0-1.0 | 1.88 | file watching |
-| servo (optional, feature `servo`) | 0.8.0 | MPL-2.0 | 1.88.0 | full engine backend; off by default |
+| Crate                             | Version           | License                                                | rust-version | Role                                                                   |
+| --------------------------------- | ----------------- | ------------------------------------------------------ | ------------ | ---------------------------------------------------------------------- |
+| deno_core                         | 0.413.0           | MIT                                                    | n/a          | JS runtime host (ops, module loader, snapshots)                        |
+| v8                                | 152.2.0           | MIT (bindings; V8 is BSD-3-Clause, ICU is Unicode-3.0) | n/a          | V8 engine                                                              |
+| boa_engine                        | 0.22.0            | Unlicense OR MIT                                       | 1.91.0       | pure-Rust engine for wasm32 and fallback                               |
+| rquickjs                          | 0.14.0            | MIT (QuickJS: MIT)                                     | 1.87         | small-footprint fallback                                               |
+| oxc                               | 0.158.0           | MIT                                                    | **1.97.0**   | parser, transformer, codegen, minifier                                 |
+| oxc_resolver                      | 11.24.3           | MIT                                                    | 1.95.0       | module resolution                                                      |
+| rolldown                          | 1.3.2             | MIT                                                    | n/a          | bundler core                                                           |
+| lightningcss                      | 1.0.0-alpha.72    | MPL-2.0                                                | n/a          | CSS engine (unmodified)                                                |
+| blitz-dom                         | 0.2.4             | MIT OR Apache-2.0                                      | 1.86.0       | DOM and style integration                                              |
+| blitz-html                        | 0.2.0             | MIT OR Apache-2.0                                      | 1.86.0       | HTML to DOM                                                            |
+| blitz-paint                       | 0.2.1             | MIT OR Apache-2.0                                      | 1.86.0       | painting                                                               |
+| anyrender                         | 0.14.0            | MIT OR Apache-2.0                                      | n/a          | render backend abstraction                                             |
+| stylo                             | 0.24.0            | MPL-2.0                                                | n/a          | CSS cascade and computed style (unmodified)                            |
+| selectors                         | 0.43.0            | MPL-2.0                                                | n/a          | selector matching (unmodified)                                         |
+| cssparser                         | 0.38.0            | MPL-2.0                                                | 1.85         | CSS tokenizer (unmodified)                                             |
+| html5ever                         | 0.40.1            | MIT OR Apache-2.0                                      | 1.85         | HTML parser                                                            |
+| taffy                             | 0.15.1            | MIT                                                    | 1.71         | block, flex and grid layout                                            |
+| parley                            | 0.12.0            | Apache-2.0 OR MIT                                      | 1.88         | text layout                                                            |
+| fontique                          | 0.13.0            | Apache-2.0 OR MIT                                      | 1.88         | font enumeration and fallback                                          |
+| vello                             | 0.12.0            | Apache-2.0 OR MIT                                      | 1.89         | GPU 2D rendering                                                       |
+| vello_cpu                         | 0.4.0             | Apache-2.0 OR MIT                                      | 1.89         | CPU rasterizer for deterministic headless screenshots and WPT reftests |
+| wgpu                              | 30.0.1            | MIT OR Apache-2.0                                      | 1.87.0       | GPU API (Vulkan, Metal, DX12, WebGPU)                                  |
+| winit                             | 0.30.13           | Apache-2.0                                             | 1.70.0       | windowing (preview window only)                                        |
+| tokio                             | 1.54.1            | MIT                                                    | 1.85         | async runtime                                                          |
+| hyper                             | 1.12.0            | MIT                                                    | 1.63         | HTTP/1 and HTTP/2                                                      |
+| hyper-util                        | 0.1.21            | MIT                                                    | 1.85         | hyper glue                                                             |
+| axum                              | 0.8.9             | MIT                                                    | 1.80         | internal dev-server routes                                             |
+| tower                             | 0.5.3             | MIT                                                    | 1.64.0       | middleware                                                             |
+| rustls                            | 0.23.46           | Apache-2.0 OR ISC OR MIT                               | 1.71         | TLS                                                                    |
+| reqwest                           | 0.13.5            | MIT OR Apache-2.0                                      | 1.85.0       | outbound HTTP (registry, deploy APIs)                                  |
+| quinn                             | 0.11.12           | MIT OR Apache-2.0                                      | 1.85         | QUIC                                                                   |
+| h3                                | 0.0.8             | MIT                                                    | 1.70         | HTTP/3 (experimental)                                                  |
+| url                               | 2.5.8             | MIT OR Apache-2.0                                      | 1.63         | WHATWG URL                                                             |
+| bytes                             | 1.12.1            | MIT                                                    | 1.57         | buffers                                                                |
+| tracing                           | 0.1.44            | MIT                                                    | 1.65.0       | diagnostics                                                            |
+| clap                              | 4.6.7             | MIT OR Apache-2.0                                      | 1.85         | CLI                                                                    |
+| serde / serde_json                | 1.0.229 / 1.0.154 | MIT OR Apache-2.0                                      | 1.56 / 1.71  | serialization                                                          |
+| toml                              | 1.2.1             | MIT OR Apache-2.0                                      | 1.85         | config files                                                           |
+| sha2                              | 0.11.1            | MIT OR Apache-2.0                                      | 1.88         | integrity hashes                                                       |
+| zstd                              | 0.14.3            | BSD-3-Clause (links C libzstd, BSD)                    | 1.64         | cache compression                                                      |
+| ignore                            | 0.4.34            | Unlicense OR MIT                                       | 1.88         | gitignore-aware walking                                                |
+| notify                            | 8.2.2             | CC0-1.0                                                | 1.88         | file watching                                                          |
+| servo (optional, feature `servo`) | 0.8.0             | MPL-2.0                                                | 1.88.0       | full engine backend; off by default                                    |
 
 Not used, with the reason:
+
 - swc_core 84.0.3: overlaps with oxc.
 - rspack_core 0.103.2: webpack API surface is not a goal.
 - tailwind-rs, railwind, tailwind-css: stale (last releases 2022 to 2023 per `crates.tsv`) and not v4.
@@ -288,6 +290,7 @@ fs watcher (io/notify) --changed paths--> module graph (bundle, incremental)
       v
 tailwind scanner (oxide) --candidates--> tailwind compiler --> css (lightningcss) --> HMR CSS update
 ```
+
 - One process, with a tokio multi-thread runtime for I/O. JS executes on dedicated isolate threads: one server isolate per environment, plus a worker pool for parallel route rendering.
 - Modules are transpiled lazily, on first request, and cached by content hash in `.aphrody/cache` (zstd).
 - HMR has two paths: client modules use React Refresh boundaries, and server modules invalidate the Flight payload, which the client refetches with `router.refresh()` semantics.
@@ -302,6 +305,7 @@ next.config.* (evaluated in runtime) --> route discovery (app/, pages/)
   --> prerender: execute static routes in runtime --> HTML + .rsc payloads
   --> deploy: write .vercel/output (Build Output API v3) + .next-compatible manifests
 ```
+
 - `build` is deterministic: the same inputs and lockfile produce byte-identical output. CI checks this with a two-build hash comparison.
 - `build --target <vercel|node|static|oci>` selects the output adapter. The default is `vercel`, which is BOA v3.
 
@@ -313,6 +317,7 @@ next.config.* (evaluated in runtime) --> route discovery (app/, pages/)
    |-- functions/*.func   loaded into runtime isolates (pooled), handler per route
    |-- *.prerender-config ISR: stale-while-revalidate with an on-disk cache
 ```
+
 - `serve` runs the same artifact Vercel would run, so local and remote behavior match. This is also how the Build Output v3 suite runs in CI without network access.
 
 #### 5.4 `aphrody deploy`
@@ -323,6 +328,7 @@ build --target vercel  -->  .vercel/output
   --> provider = oci:    single static binary + output dir --> OCI image (no Dockerfile needed)
   --> provider = static: static/ only (routes that need functions are rejected at build time)
 ```
+
 - Credentials are read only from the environment or the OS keychain, never from the repo.
 
 ### 6. Next.js App Router and RSC/Flight design
@@ -332,6 +338,7 @@ Next.js-compatible means that an existing project runs unmodified with `aphrody 
 What stays JavaScript: React, react-dom and the `next/*` client and server runtime modules come from npm (MIT) and execute in V8. Their behavior is not reimplemented. What becomes Rust is everything Next.js normally does in its Node-side build and server: config loading, route-tree building, bundling (Turbopack/webpack roles), manifests, the server request pipeline, the cache, and static generation.
 
 Components:
+
 1. **Route tree** (`next`). It scans `app/` for `page`, `layout`, `template`, `loading`, `error`, `not-found`, `route`, `default`, parallel `@slot`, intercepting `(..)` and groups `(group)`, and `pages/` for legacy routes. It produces the same route manifests (`app-paths-manifest.json`, `routes-manifest.json`, `prerender-manifest.json`, `middleware-manifest.json`) because the Next.js runtime and the deploy adapter read them.
 2. **Environments** (`bundle`). Each environment is a separate rolldown build with its own conditions: `react-server` for RSC, `node`/`edge` for SSR, and `browser` for the client. Directives (`"use client"`, `"use server"`, `"use cache"`) are detected in the oxc AST:
    - `"use client"` modules are replaced in the RSC graph by client-reference stubs (`registerClientReference(id, export)`).
@@ -383,19 +390,20 @@ candidates --(candidate parser)--> {variants[], utility, value, modifier, import
     <bundled handler + chunks>
   functions/<path>.prerender-config.json   { "expiration", "group", "bypassToken", "fallback", "allowQuery" }
 ```
+
 - Function bundles are plain ESM/CJS that runs on Vercel's Node and Edge runtimes, so deploying needs no custom runtime. The same bundles run on the aphrody runtime under `aphrody serve`. One artifact serves both.
 - Route phases (`filesystem`, `handle: miss`, `rewrite`, `hit`, `error`) are generated from `routes-manifest.json`, following the order of the upstream Next.js deployment adapter (`packages/next/src/build/adapter/`, verified at `vercel/next.js@3642b242`).
 - An `oci` adapter packages the `serve` binary with `.vercel/output` into one image, for self-hosting.
 
 ### 10. Targets
 
-| Target | Engine | Notes |
-|---|---|---|
-| x86_64-pc-windows-msvc | v8 | prebuilt rusty_v8 static lib |
-| x86_64/aarch64-unknown-linux-gnu | v8 | prebuilt rusty_v8 static lib |
+| Target                            | Engine                 | Notes                                                                                                                                                    |
+| --------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| x86_64-pc-windows-msvc            | v8                     | prebuilt rusty_v8 static lib                                                                                                                             |
+| x86_64/aarch64-unknown-linux-gnu  | v8                     | prebuilt rusty_v8 static lib                                                                                                                             |
 | x86_64/aarch64-unknown-linux-musl | v8 from source, or boa | no prebuilt rusty_v8 musl archive is assumed; CI builds V8 with `V8_FROM_SOURCE=1` and caches the result. Fallback artifact uses `--features engine-boa` |
-| aarch64/x86_64-apple-darwin | v8 | prebuilt rusty_v8 static lib |
-| wasm32-unknown-unknown | boa | toolchain crates (transpile, css, tailwind, rsc, registry) plus a boa-backed runtime subset; renderer via wgpu WebGPU. No V8, no net server |
+| aarch64/x86_64-apple-darwin       | v8                     | prebuilt rusty_v8 static lib                                                                                                                             |
+| wasm32-unknown-unknown            | boa                    | toolchain crates (transpile, css, tailwind, rsc, registry) plus a boa-backed runtime subset; renderer via wgpu WebGPU. No V8, no net server              |
 
 `cargo check --workspace` runs on `x86_64-unknown-linux-gnu` (prd) and `x86_64-pc-windows-msvc` (CI); the Windows-host crates of the WSLg stack are empty on Linux (see §6).
 

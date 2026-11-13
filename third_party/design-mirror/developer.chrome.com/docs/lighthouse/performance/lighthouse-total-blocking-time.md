@@ -7,17 +7,18 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Total Blocking Time (TBT) is one of the metrics tracked in the **Performance** section
 of the Lighthouse report. Each metric captures some aspect of page load speed.
 
 The Lighthouse report displays TBT in milliseconds:
- The Lighthouse Total Blocking Time audit
+The Lighthouse Total Blocking Time audit
 
 ## What TBT measures
 
 TBT measures the total amount of time that a page is blocked from responding to user input,
 such as mouse clicks, screen taps, or keyboard presses. The sum is calculated by adding
-the *blocking portion* of all [long tasks](https://web.dev/long-tasks-devtools/) between [First Contentful Paint](https://web.dev/fcp/) and [Time to Interactive](https://web.dev/interactive/).
+the _blocking portion_ of all [long tasks](https://web.dev/long-tasks-devtools/) between [First Contentful Paint](https://web.dev/fcp/) and [Time to Interactive](https://web.dev/interactive/).
 Any task that executes for more than 50 ms is a long task. The amount of time after
 50 ms is the blocking portion. For example, if Lighthouse detects a 70 ms long task,
 the blocking portion would be 20 ms.
@@ -30,21 +31,21 @@ to learn how Lighthouse score thresholds are set.
 
 This table shows how to interpret your TBT score on mobile:
 
-| TBT time (in milliseconds) | Color-coding |
-|---|---|
-| 0--200 | Green (fast) |
-| 200-600 | Orange (moderate) |
-| Over 600 | Red (slow) |
+| TBT time (in milliseconds) | Color-coding      |
+| -------------------------- | ----------------- |
+| 0--200                     | Green (fast)      |
+| 200-600                    | Orange (moderate) |
+| Over 600                   | Red (slow)        |
 
 Lighthouse mobile TBT thresholds
 
 This table shows how to interpret your TBT score on desktop:
 
-| TBT time (in milliseconds) | Color-coding |
-|---|---|
-| 0--150 | Green (fast) |
-| 150-350 | Orange (moderate) |
-| Over 350 | Red (slow) |
+| TBT time (in milliseconds) | Color-coding      |
+| -------------------------- | ----------------- |
+| 0--150                     | Green (fast)      |
+| 150-350                    | Orange (moderate) |
+| Over 350                   | Red (slow)        |
 
 Lighthouse desktop TBT thresholds
 
@@ -70,7 +71,7 @@ Unless you have a specific reason for focusing on a particular metric, it's
 usually better to focus on improving your overall Performance score.
 
 Use the **Diagnostics** section of your Lighthouse report to determine which improvements will have the most value for your page. The more significant the opportunity, the greater the effect it will have on your Performance score. For example, the following Lighthouse screenshot shows that [eliminating render-blocking resources](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources.md.txt) will yield the biggest improvement:
- Lighthouse: Diagnostics section
+Lighthouse: Diagnostics section
 
 See the [Performance audits](https://developer.chrome.com/docs/lighthouse/performance)
 to learn how to address the opportunities identified in your Lighthouse report.

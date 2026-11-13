@@ -23,7 +23,7 @@ Before getting started, you'll need:
 
 ### 1. Install Lore and start a local server
 
-Follow [Install the Lore CLI](../how-to/install-lore-cli.md), then the *Run from the binary* section of [Deploy a local Lore Server](../how-to/deploy-local-lore-server.md).
+Follow [Install the Lore CLI](../how-to/install-lore-cli.md), then the _Run from the binary_ section of [Deploy a local Lore Server](../how-to/deploy-local-lore-server.md).
 
 Keep the server's configuration file, certificate files, and store outside your Unreal Engine project. Add these settings to `config/local.toml`:
 
@@ -172,13 +172,13 @@ After submitting, the editor reports **All Saved** and **At Latest**.
 
 ## Troubleshooting
 
-| Symptom | What to check |
-| --- | --- |
-| **Lore is missing from the provider list** | Enable the Lore plugin in **Edit > Plugins** and restart the editor. |
-| **The editor can't find a repository** | Create or clone the repository in the folder containing the `.uproject` file. |
-| **The server is unavailable** | Check that it's running and that the health check returns `200 OK`. |
-| **The wrong CLI version runs** | Check which Lore installation your tools use. |
-| **Generated files appear in the submission** | Check `.loreignore`. Ignore rules don't remove files already tracked. |
+| Symptom                                      | What to check                                                                 |
+| -------------------------------------------- | ----------------------------------------------------------------------------- |
+| **Lore is missing from the provider list**   | Enable the Lore plugin in **Edit > Plugins** and restart the editor.          |
+| **The editor can't find a repository**       | Create or clone the repository in the folder containing the `.uproject` file. |
+| **The server is unavailable**                | Check that it's running and that the health check returns `200 OK`.           |
+| **The wrong CLI version runs**               | Check which Lore installation your tools use.                                 |
+| **Generated files appear in the submission** | Check `.loreignore`. Ignore rules don't remove files already tracked.         |
 
 ## See also
 

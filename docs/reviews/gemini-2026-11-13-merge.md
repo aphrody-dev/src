@@ -11,6 +11,7 @@ Chat : https://gemini.google.com/app/8325bf746a99c899. Entrée : docs/ARCHITECTU
 ## Verdict brut
 
 Gemini said
+
 1. Note : 12,5 / 20
 
 L'ossature cible est solide (modèle L0–L5 inspiré de NT/Chromium, checkdeps avec directive use pour dlopen, séparation C ABI L2/L3 avec versionnage core_abi_version, deny.toml et suites de conformité hors arbre). En revanche, la triple fusion du 2026-11-13 laisse passer une erreur juridique majeure de licence LGPL en couche L1, une racine de dépôt public polluée (dont un .env), des doublons directs de l'amont et plusieurs contradictions frontales entre docs/ARCHITECTURE.md et l'arbre réel.
@@ -69,7 +70,7 @@ Corriger le découpage L1/L2 : scinder dx12-winui-core en primitive GPU L2 (dx12
 
 Aplatir tools/, plugins/ et infra/ dans les workspaces : rapatrier tout le code compilé/TS de tools/{factory,lore,bench-mcp}, infra/{ffi-bridge,cshared,cmd,internal} et plugins/labs vers crates/* et packages/*, pour ne garder dans tools/ et infra/ que les pins binaires L0 et la configuration déclarative.
 
-Câbler apps/nt et Python dans checkdeps et just test-affected : déclarer dans /DEPS.rules toutes les arêtes apps/nt: use ... (crates/dx12-*, infra/winnt-sdk, infra/vcpkg, packages/*) et étendre scripts/checkdeps.ts + just test-affected à pyproject.toml (uv run pytest) ainsi qu'au déclenchement des tests .NET 11/C++23 de apps/nt.
+Câbler apps/nt et Python dans checkdeps et just test-affected : déclarer dans /DEPS.rules toutes les arêtes apps/nt: use ... (crates/dx12-_, infra/winnt-sdk, infra/vcpkg, packages/_) et étendre scripts/checkdeps.ts + just test-affected à pyproject.toml (uv run pytest) ainsi qu'au déclenchement des tests .NET 11/C++23 de apps/nt.
 
 Unifier les manifestes externes (pin-001) et trancher la politique de patchs : faire de src.lock.json l'unique source générant DEPS et .gitmodules (ay manifests --check en gate CI), et aligner §4 sur §11 en interdisant toute modification directe sous third_party/ hors patchs Cargo/vcpkg tracés dans third_party/patches/ (zéro MPL-2.0).
 

@@ -69,9 +69,24 @@ ssh = ["agent@prd-mesh", "agent@prd", "agent@10.200.77.5", "agent@72.60.186.43"]
 
 [hosts.fr1]
 # Factory (12 cores / 45 GB): every heavy role, plus review/design/sre.
-roles = ["coder", "reviewer", "tester", "linter", "designer", "build", "chromium", "training", "sre"]
+roles = [
+  "coder",
+  "reviewer",
+  "tester",
+  "linter",
+  "designer",
+  "build",
+  "chromium",
+  "training",
+  "sre",
+]
 src = "/home/agent/agents/src"
-ssh = ["agent@fr1-mesh", "agent@fr1", "agent@10.200.77.1", "agent@51.77.147.152"]
+ssh = [
+  "agent@fr1-mesh",
+  "agent@fr1",
+  "agent@10.200.77.1",
+  "agent@51.77.147.152",
+]
 
 [hosts.fr2]
 # Edge/proxy/CDN host, 11 GB RAM: minimal, sre only.

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 HTML5 elements such as `main`, `nav`, and `aside` act as landmarks,
 or special regions on the page to which
 screen readers and other assistive technologies can jump.
@@ -47,10 +48,10 @@ to visualize your page structure and catch sections that aren't contained in lan
 
 - Use landmark elements to define major sections of your page instead of relying on generic elements like `<div>` or `<span>`.
 - Use landmarks to convey the structure of your page. For example, the `<main>` element should include all content directly related to the page's main idea, so there should only be one per page. See [MDN's summary of content sectioning elements](https://developer.mozilla.org/docs/Web/HTML/Element#content_sectioning) to learn how to use each landmark.
-- Use landmarks judiciously. Having too many landmarks can actually make navigation *more* difficult for assistive technology users because it prevents them from easily skipping to a desired piece of content.
+- Use landmarks judiciously. Having too many landmarks can actually make navigation _more_ difficult for assistive technology users because it prevents them from easily skipping to a desired piece of content.
 
 > [!NOTE]
-> **Note:** If you find that your page has, for example, four `<nav>` elements or ten `<aside>` elements, that may suggest a need to simplify your user interface or content structure, which will likely benefit *all* users.
+> **Note:** If you find that your page has, for example, four `<nav>` elements or ten `<aside>` elements, that may suggest a need to simplify your user interface or content structure, which will likely benefit _all_ users.
 
 See the [Headings and landmarks](https://web.dev/headings-and-landmarks) post
 for more information.

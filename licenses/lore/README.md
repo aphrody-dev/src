@@ -1,4 +1,5 @@
 <!-- markdownlint-disable MD033 MD041 -->
+
 <a id="readme-top"></a>
 
 <div align="center">
@@ -104,20 +105,19 @@ Lore is a centralized, content-addressed version control system that represents 
 - **Centralized service with caching** — A service-backed architecture uses caching in front of durable storage to scale throughput for large teams and repositories.
 - **Lightweight branches and fast switching** — Branches are lightweight mutable references, so creating and switching branches is low-overhead without duplication of underlying data.
 
-
 <sub><a href="#readme-top">(back to top)</a></sub>
 
 ## Lore's repositories
 
 Lore spans a family of repositories: the core library, server, and CLI in this repository, plus a software development kit (SDK) for each supported language.
 
-| Repository | Description | Link |
-| --- | --- | --- |
-| **Lore Library, Server & CLI** | The core Lore library, the Lore Server, and the Lore CLI. You are here. | [View on GitHub](https://github.com/EpicGames/lore) |
-| **JavaScript SDK** | The JavaScript binding for the Lore API. | [View on GitHub](https://github.com/EpicGames/lore-js) |
-| **Python SDK** | The Python binding for the Lore API. | [View on GitHub](https://github.com/EpicGames/lore-python) |
-| **C# SDK** | The C# binding for the Lore API. | [View on GitHub](https://github.com/EpicGames/lore-dotnet) |
-| **Go SDK** | The Go binding for the Lore API. | [View on GitHub](https://github.com/EpicGames/lore-go) |
+| Repository                     | Description                                                             | Link                                                       |
+| ------------------------------ | ----------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **Lore Library, Server & CLI** | The core Lore library, the Lore Server, and the Lore CLI. You are here. | [View on GitHub](https://github.com/EpicGames/lore)        |
+| **JavaScript SDK**             | The JavaScript binding for the Lore API.                                | [View on GitHub](https://github.com/EpicGames/lore-js)     |
+| **Python SDK**                 | The Python binding for the Lore API.                                    | [View on GitHub](https://github.com/EpicGames/lore-python) |
+| **C# SDK**                     | The C# binding for the Lore API.                                        | [View on GitHub](https://github.com/EpicGames/lore-dotnet) |
+| **Go SDK**                     | The Go binding for the Lore API.                                        | [View on GitHub](https://github.com/EpicGames/lore-go)     |
 
 <sub><a href="#readme-top">(back to top)</a></sub>
 

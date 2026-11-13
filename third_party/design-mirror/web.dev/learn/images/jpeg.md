@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 JPEG is the most common type of image used on the web, and with good reason: for decades, JPEG has almost invariably been the right choice for
 encoding photographs. The use case is right there in the name: JPEG stands for "Joint Photographic Experts Group," the committee responsible
 for first issuing the standard in 1992. You'll see the file extension for a JPEG as either .jpg or .jpeg, though the latter is rare in modern usage.
 
-While lossless compression passively compresses image data as best it can, JPEG's *lossy* compression looks for opportunities to make the compression
+While lossless compression passively compresses image data as best it can, JPEG's _lossy_ compression looks for opportunities to make the compression
 more efficient with tiny, often imperceptible alterations to the image data. JPEG encodes image data as eight-by-eight blocks of pixels and describes the
 blocks---not the individual pixels inside them---algorithmically.
 
@@ -20,6 +21,7 @@ In practice, this use of blocks rather than pixels means JPEG is well suited to 
 gradients that make up a real world photograph.
 
 Describing even a very simple single-pixel gradient using GIF-style encoding would be extremely verbose:
+
 > Row one, columns one through nine are #00CC00. Row one, column ten is #00BB00. Row one, column eleven is #00AA00. Row one, column twelve is #009900. Row one, column thirteen is #008800. Row one, column fourteen is #007700. Row one, column fifteen is #006600. Row one, column sixteen is #005500.
 
 Describing a gradient using JPEG-style encoding is much, much more efficient:
@@ -27,7 +29,7 @@ Describing a gradient using JPEG-style encoding is much, much more efficient:
 > Block one is #00CC00. Block two is a gradient from #00CC00 to #005500.
 
 Where JPEG really shines is in quantizing the level of "high frequency" detail in an image, often imperceptibly. As a result,
-saving an image as a JPEG usually means reducing the quality of that image in ways that are measurable, but not necessarily *visible* .
+saving an image as a JPEG usually means reducing the quality of that image in ways that are measurable, but not necessarily _visible_ .
 [As you've learned](https://web.dev/learn/images/gif.md.txt), GIF-style palette quantization is a relatively simple operation: reducing the number of colors in an image results in
 smaller files, but in a way that can be easy to spot with the human eye.
 
@@ -37,7 +39,7 @@ throw away details we weren't likely to see in the first place, so it can sneak 
 
 The human psycho-visual system does a great deal to "compress" the images you're constantly taking in. When I glance outside at my tiny garden,
 I can immediately process a huge amount of information: for example, individual brightly-colored flowers stand out. I register right away that the
-soil is a dusty gray, and the leaves are drooping---my plants need water. What I do *see* , but don't fully *process*, are the exact shape, size, angle,
+soil is a dusty gray, and the leaves are drooping---my plants need water. What I do _see_ , but don't fully _process_, are the exact shape, size, angle,
 and shade of green for any of the individual dropping leaves. I can actively look for that level of detail of course, but it would simply be too much
 information to take in passively, and to no real benefit. So my psycho-visual system does a little quantization of its own, distilling that information
 to "the leaves are drooping."
@@ -48,7 +50,7 @@ lossless compression alone.
 
 For example, JPEG takes advantage of one of our major psycho-visual weaknesses: our eyes are more sensitive to differences in brightness
 than differences in hue. Prior to applying any compression, JPEG uses a process called "discrete cosine transformation" to split the image into
-separate frequencies---"layers," in a manner of speaking---representing *luminance* (brightness) and *chrominance* (color), or "luma" and "chroma."
+separate frequencies---"layers," in a manner of speaking---representing _luminance_ (brightness) and _chrominance_ (color), or "luma" and "chroma."
 
 The luma layer is minimally compressed, discarding only small details that aren't likely noticeable to the human eye.
 
@@ -72,10 +74,10 @@ top-to-bottom---with each scan increasing the quality of the image. The entire i
 and grows clearer as the transfer continues.
 
 It seems like a strictly technical difference on paper, but there's a huge perceptual benefit: by delivering a full-size version of
-the image right away instead of empty space, PJPEG can *feel* faster than a baseline JPEG to the end user. In addition, except for the smallest images,
+the image right away instead of empty space, PJPEG can _feel_ faster than a baseline JPEG to the end user. In addition, except for the smallest images,
 encoding an image as PJPEG almost always means a smaller file size compared to a baseline JPEG---not by much, but every byte helps.
 
-There is one tiny trade-off, however: decoding PJPEG is more complex on the client side, which means putting a *little* more strain on the
+There is one tiny trade-off, however: decoding PJPEG is more complex on the client side, which means putting a _little_ more strain on the
 browser---and a device's hardware---during rendering. That rendering overhead is difficult to quantify in exact terms, but it's very minor
 and unlikely to be noticeable except for with severely underpowered devices. It's a trade-off worth making and, all told, progressive is a
 sensible default approach whenever encoding an image as JPEG.
@@ -101,14 +103,14 @@ To convert your source image to a progressive JPEG, tick the box labeled "progre
 Some of these configuration options are almost certainly a deeper dive than the average web project will require, but they can
 provide you with a closer look at how the things you've learned about JPEG encoding impact file size and quality in real world use cases.
 
-There is not much to it in practical terms, despite how complicated we now know JPEG to be internally. Squoosh is just one of *countless*
+There is not much to it in practical terms, despite how complicated we now know JPEG to be internally. Squoosh is just one of _countless_
 methods of saving optimized JPEGs, all of which use a similar method of determining the compression level: a single integer between 0 and 100.
 
 Determining the ideal level of compression for your images is a finesse game, given that all the complexity of JPEG encoding
-is being distilled down to a single integer, especially when so much hinges on the *content* of an image. Like thinking about
+is being distilled down to a single integer, especially when so much hinges on the _content_ of an image. Like thinking about
 blinking or breathing, considering JPEG compression settings changes how we perceive them.
 
-Looking back outside now, after writing all this, my psycho-visual processing has become more manual---*now* I'm looking at
+Looking back outside now, after writing all this, my psycho-visual processing has become more manual---_now_ I'm looking at
 the individual leaves, even though the picture itself---so to speak---hasn't changed. That makes configuring JPEG compression a
 little fraught: you know exactly what kinds of visual defects to look for. By thinking about image compression in the first
 place, you're focusing on individual leaves---we're primed to spot slight blurring and the occasional compression artifact.
@@ -121,4 +123,4 @@ images where you know artifacts will appear first. For users, faint artifacts bl
 psycho-visual systems usually gloss over. In fact, even with an understanding of the tricks JPEG tries to play, you wouldn't
 notice those same artifacts while browsing the web unless you went looking for them. For that reason, it's almost always a safe
 bet to nudge JPEG compression just a little lower than you think might be noticeable---especially when that image is going to be displayed
-*smaller* than its intrinsic size due to direct styling, or constraints set by the surrounding layout.
+_smaller_ than its intrinsic size due to direct styling, or constraints set by the surrounding layout.

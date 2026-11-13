@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Katie Hempenius [X](https://twitter.com/katiehempenius)
 
 Serving desktop-sized images to mobile devices can use 2--4x more data than
@@ -48,15 +49,15 @@ To use sharp as a Node script, save this code as a separate script in your
 project, then run it to convert your images:
 
 ```javascript
-const sharp = require('sharp');
-const fs = require('fs');
-const directory = './images';
+const sharp = require("sharp");
+const fs = require("fs");
+const directory = "./images";
 
-fs.readdirSync(directory).forEach(file => {
+fs.readdirSync(directory).forEach((file) => {
   sharp(`${directory}/${file}`)
     .resize(200, 100) // width, height
     .toFile(`${directory}/${file}-small.jpg`);
-  });
+});
 ```
 
 ### ImageMagick
@@ -100,8 +101,8 @@ When you specify multiple image versions, the browser chooses the best one to
 use:
 
 | **Before** | **After** |
-|---|---|
-| \ | \ |
+| ---------- | --------- |
+| \          | \         |
 
 The `` tag's
 [`src`](https://developer.mozilla.org/docs/Web/HTML/Element/img#attr-src),
@@ -154,7 +155,7 @@ were introduced at the same time, so every browser supports either both
 attributes or neither.)
 
 > [!TIP]
-> You can specify slot width using a variety of units. The following are all valid sizes:  
+> You can specify slot width using a variety of units. The following are all valid sizes:
 >
 > - `100px`
 > - `33vw`

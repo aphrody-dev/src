@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Even branding can be responsive.
 You can adjust the presentation of your website to match the user's preference.
 But first, here's how to extend your website's branding to include the browser itself.
@@ -17,13 +18,13 @@ Some browsers allow you to suggest a theme color based on your website's palette
 The browser's interface adapts to your suggested color. Add the color in a `meta` element named `theme-color` in the `head` of your pages.
 
 ```html
-<meta name="theme-color" content="#00D494">
+<meta name="theme-color" content="#00D494" />
 ```
 
 > [!NOTE]
 > **Note:** It feels a little strange to put styling information like this in HTML rather than CSS, but this allows the browser to update its interface as soon as the page is loading rather than waiting for the CSS.
 
-   Three websites are viewed in the Safari browser. Each one has its own theme color that extends into the browser interface.
+Three websites are viewed in the Safari browser. Each one has its own theme color that extends into the browser interface.
 
 You can update the value of `theme-color` using JavaScript. But use this power wisely.
 It can be overwhelming for users if their browser's color scheme changes too often.
@@ -35,7 +36,7 @@ This is a JSON file with metadata about your website.
 Link to the manifest file from the `head` of your documents. Use a `link` element with a `rel` value of `manifest`.
 
 ```html
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/manifest.json" />
 ```
 
 In the manifest file, list your metadata using key/value pairs.
@@ -66,13 +67,22 @@ You can access this preference in a media feature called `prefers-color-scheme`.
   // Styles for a dark theme.
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/wvrwLgN?height=400&amp;theme-id=dark&amp;default-tab=css%2C%20result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen wvrwLgN by web-dot-dev on Codepen"></iframe>
 
 Specify theme colors with the `prefers-color-scheme` media feature within the `meta` element.
 
 ```html
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta
+  name="theme-color"
+  content="#ffffff"
+  media="(prefers-color-scheme: light)"
+/>
+<meta
+  name="theme-color"
+  content="#000000"
+  media="(prefers-color-scheme: dark)"
+/>
 ```
 
 You can also use the `prefers-color-scheme` media feature inside SVG.
@@ -144,6 +154,7 @@ button {
   color: var(--page-color);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/qBPWzrj?height=440&amp;theme-id=dark&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen qBPWzrj by web-dot-dev on Codepen"></iframe>
 
 See [building a color scheme](https://web.dev/articles/building/a-color-scheme.md.txt) for more advanced examples of theming with custom properties.
@@ -166,10 +177,11 @@ If you want to tone down the brightness of your photographic images when display
 ```css
 @media (prefers-color-scheme: dark) {
   img {
-    filter: brightness(.8) contrast(1.2);
+    filter: brightness(0.8) contrast(1.2);
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/PoJYrpy?height=600&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen PoJYrpy by web-dot-dev on Codepen"></iframe>   The effect is subtle, but you can tone down the brightness of images in dark mode.
 
 For some images, you might want to swap them out completely in dark mode.
@@ -178,10 +190,10 @@ Use the `<picture>` element containing a `<source>` element with the `prefers-co
 
 ```html
 <picture>
-  <source srcset="darkimage.png" media="(prefers-color-scheme: dark)">
-  
+  <source srcset="darkimage.png" media="(prefers-color-scheme: dark)" />
 </picture>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/MWEgMmw?height=600&amp;theme-id=dark&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen MWEgMmw by web-dot-dev on Codepen"></iframe>  Two versions of the same map, one for light mode and one for dark mode.
 
 ## Forms
@@ -206,8 +218,9 @@ html {
 You can also use HTML. Add this in the `head` of your documents:
 
 ```html
-<meta name="supported-color-schemes" content="light dark">
+<meta name="supported-color-schemes" content="light dark" />
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/dyVbBWZ?height=400&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen dyVbBWZ by web-dot-dev on Codepen"></iframe>
 
 Use the [`accent-color`](https://web.dev/articles/accent-color.md.txt) property in CSS to style checkboxes, radio buttons, and some other form fields.
@@ -256,6 +269,7 @@ body {
   color: var(--ink-color);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/WNZeqjB?height=400&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen WNZeqjB by web-dot-dev on Codepen"></iframe>
 
 > [!NOTE]

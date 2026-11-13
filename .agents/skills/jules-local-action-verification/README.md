@@ -68,7 +68,8 @@ flowchart TD
 Once the skill has set up the repository, Jules can verify CI locally whenever it's given a coding task. The skill itself is no longer needed — everything Jules needs is in the repo.
 
 ### Example Flow
-1. Jules receives: *"Refactor lib/utils.js and verify CI"*
+
+1. Jules receives: _"Refactor lib/utils.js and verify CI"_
 2. Jules reads `AGENTS.md` → sees "Local CI Verification" instructions
 3. Jules runs `bash scripts/act/run-act.sh "push -j test"`
 4. CI passes → Jules pushes / opens PR

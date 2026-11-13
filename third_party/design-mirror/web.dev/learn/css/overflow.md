@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 034: Overflow](https://thecsspodcast.libsyn.com/034-overflow)
 
 When content extends beyond its parent, there are many options for how you can handle it. You can scroll to add additional space, clip the overflowing edges, indicate the cut-off with an ellipsis, and so much more. Overflow is especially important to consider when developing for phone applications and multiple screen sizes.
@@ -21,11 +22,12 @@ Use the [`text-overflow`](https://developer.mozilla.org/docs/Web/CSS/text-overfl
 
 ```css
 p {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/rNwQXyN?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen rNwQXyN by web-dot-dev on Codepen">
 </iframe>
 
@@ -75,19 +77,19 @@ If two keywords are specified, the first applies to `overflow-x` and the second 
 Take a closer look at the [values and keywords](https://developer.mozilla.org/docs/Web/CSS/overflow#values) available for the `overflow` properties.
 
 `overflow: visible` (default)
-:   Without setting the property, `overflow: visible` is the default value for the web. This ensures that content is never unintentionally hidden and follows the core tenets of "never hide content" or "safe layouts of precise layouts".
+: Without setting the property, `overflow: visible` is the default value for the web. This ensures that content is never unintentionally hidden and follows the core tenets of "never hide content" or "safe layouts of precise layouts".
 
 `overflow: hidden`
-:   With `overflow: hidden` content is clipped in the specified direction, and no scrollbars are provided to show it.
+: With `overflow: hidden` content is clipped in the specified direction, and no scrollbars are provided to show it.
 
 `overflow: scroll`
-:   `overflow: scroll` enables scrollbars to allow users to scroll through content. Even if content isn't overflowing, scrollbars will be present. This is a great way to reduce future layout shift if a container may be scrollable in the future based, for example, on resize, and visually prepare the user for scrollable areas.
+: `overflow: scroll` enables scrollbars to allow users to scroll through content. Even if content isn't overflowing, scrollbars will be present. This is a great way to reduce future layout shift if a container may be scrollable in the future based, for example, on resize, and visually prepare the user for scrollable areas.
 
 `overflow: clip`
-:   Like `overflow: hidden`, the content with `overflow: clip` is clipped to the element's padding box. The difference between `clip` and `hidden` is that the `clip` keyword also forbids all scrolling, including programmatic scrolling.
+: Like `overflow: hidden`, the content with `overflow: clip` is clipped to the element's padding box. The difference between `clip` and `hidden` is that the `clip` keyword also forbids all scrolling, including programmatic scrolling.
 
 `overflow: auto`
-:   Finally, the value most commonly used, `overflow: auto`. This respects the user's preferences and shows scrollbars if needed, but hides them by default, and gives responsibility for scrolling to the user and browser.
+: Finally, the value most commonly used, `overflow: auto`. This respects the user's preferences and shows scrollbars if needed, but hides them by default, and gives responsibility for scrolling to the user and browser.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/gORZaaa?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen gORZaaa by web-dot-dev on Codepen">
 </iframe>
 
@@ -106,7 +108,7 @@ To allow a scrolling box to accept focus add `tabindex="0"`, a name with the [`a
 
 ```html
 <div tabindex="0" role="region" aria-labelledby="id-of-descriptive-text">
-    content
+  content
 </div>
 ```
 
@@ -120,7 +122,7 @@ In [Using CSS to Enforce Accessibility](https://adrianroselli.com/2021/06/using-
 }
 
 [role][aria-labelledby][tabindex]:focus {
-  outline: .1em solid blue;
+  outline: 0.1em solid blue;
 }
 ```
 
@@ -133,8 +135,8 @@ Scrollbars take up space within the padding box and can compete for space if `in
 
 You may notice that some scrollers have a pull-to-refresh behavior and other special behaviors, especially when developing for mobile and hybrid applications. This scroll behavior happens on the root scroller. There is only ever one root scroller on a page. By default, the [documentElement](https://developer.mozilla.org/docs/Web/API/Document/documentElement) is the page's root scroller, however, by changing which element is the root scroller, the special behaviors can be applied to scrollers other than the documentElement, we call this new scroller the implicit root scroller.
 
-To create a root scroller, you can use something called *scroller promotion* by positioning a container as fixed, ensuring it covers the entire viewport and is z-index on top with a scroller. Experience a root scroller versus a nested implicit scroller [here](https://cdpn.io/web-dot-dev/debug/dyzPzwz).
-The video shows a root scroller with bounce behavior and new styling features,   
+To create a root scroller, you can use something called _scroller promotion_ by positioning a container as fixed, ensuring it covers the entire viewport and is z-index on top with a scroller. Experience a root scroller versus a nested implicit scroller [here](https://cdpn.io/web-dot-dev/debug/dyzPzwz).
+The video shows a root scroller with bounce behavior and new styling features,  
 compared to scrolling an implicit scroller with no enhanced scroll behavior.
 
 ### Styling your scrollbar
@@ -167,6 +169,7 @@ This is especially useful when used with [prefers-reduced-motion](https://develo
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/oNwJgae?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen oNwJgae by web-dot-dev on Codepen"></iframe>
 
 ### overscroll-behavior
@@ -198,7 +201,7 @@ You can also define how strict scroll snapping should be. The default strictness
 
 ```css
 .scroll-container {
-    scroll-snap-type: block mandatory;
+  scroll-snap-type: block mandatory;
 }
 ```
 

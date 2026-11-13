@@ -4,16 +4,16 @@ How `ay`, the toolchain around it, and published wasm/CDN assets are installed a
 the workstation and on the three hosts (`usa` production, `fr1` builds and storage, `fr2` CDN, cron
 and sync; see `docs/INFRA_MATRIX.md`).
 
-| Piece | Where | Command |
-|---|---|---|
-| `ay` releases | `dist-workspace.toml`, `.github/workflows/release.yml` | tag `v<version>` |
-| `ay` self-update | `crates/ay/src/self_update.rs` (axoupdater) | `ay self-update [--check] [--version X]` |
-| Toolchain manifest | `tools.toml` | `ay up --list` |
-| Toolchain installer | `crates/up` (`aphrody-up`) | `ay up`, `ay up --check`, `ay up <tool>...` |
-| Provider wiring | `crates/up/src/setup.rs` | `ay up --setup` |
-| Workstation bootstrap | `crates/up/src/bootstrap.rs`, `[[file]]` / `[[link]]` / `[[step]]` in `tools.toml` | `ay up --bootstrap` |
-| Host schedule | `infra/generated/systemd/ay-up.{service,timer}` | daily, user units |
-| Asset manifests | `crates/up/src/assets.rs` | `ay up --assets <dir> [--release <label>]` |
+| Piece                 | Where                                                                              | Command                                     |
+| --------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------- |
+| `ay` releases         | `dist-workspace.toml`, `.github/workflows/release.yml`                             | tag `v<version>`                            |
+| `ay` self-update      | `crates/ay/src/self_update.rs` (axoupdater)                                        | `ay self-update [--check] [--version X]`    |
+| Toolchain manifest    | `tools.toml`                                                                       | `ay up --list`                              |
+| Toolchain installer   | `crates/up` (`aphrody-up`)                                                         | `ay up`, `ay up --check`, `ay up <tool>...` |
+| Provider wiring       | `crates/up/src/setup.rs`                                                           | `ay up --setup`                             |
+| Workstation bootstrap | `crates/up/src/bootstrap.rs`, `[[file]]` / `[[link]]` / `[[step]]` in `tools.toml` | `ay up --bootstrap`                         |
+| Host schedule         | `infra/generated/systemd/ay-up.{service,timer}`                                    | daily, user units                           |
+| Asset manifests       | `crates/up/src/assets.rs`                                                          | `ay up --assets <dir> [--release <label>]`  |
 
 ## 1. Releasing `ay` (dist)
 
@@ -78,13 +78,13 @@ release through the GitHub API with the token.
 `tools.toml` lists every tool with a pinned version, the executables it provides, a version probe
 and one source:
 
-| Source | Used for | Install |
-|---|---|---|
-| `github` | ay, bun, gh, ovhcloud, coreutils, ripgrep, just, cargo-zigbuild, dist | release asset per platform, executables copied into `bin_dir` |
-| `url` | gcloud, zig | direct archive; `layout = "tree"` unpacks under `tools_dir/<name>/<version>` and links `bin` entries into `bin_dir` |
-| `bun` | wrangler, hostinger-api-mcp | `bun add --global <package>@<version>` (Bun's own `~/.bun`) |
-| `installer` | rustup | `rustup-init -y --no-modify-path --default-toolchain none`; an existing rustup runs `rustup self update` |
-| `ubi` | fd, dust, bat, delta, sd, hyperfine, tokei, watchexec, zoxide, eza, xh, yq, jj, sccache, uv, caddy, cloudflared, rclone, cargo-binstall, cargo-nextest, gitoxide | the `ubi` crate picks the asset for the OS/arch at the pinned tag and installs the executable into `bin_dir`; `matching.<os>` breaks ties (`msvc`, `max-pure`) |
+| Source      | Used for                                                                                                                                                         | Install                                                                                                                                                        |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `github`    | ay, bun, gh, ovhcloud, coreutils, ripgrep, just, cargo-zigbuild, dist                                                                                            | release asset per platform, executables copied into `bin_dir`                                                                                                  |
+| `url`       | gcloud, zig                                                                                                                                                      | direct archive; `layout = "tree"` unpacks under `tools_dir/<name>/<version>` and links `bin` entries into `bin_dir`                                            |
+| `bun`       | wrangler, hostinger-api-mcp                                                                                                                                      | `bun add --global <package>@<version>` (Bun's own `~/.bun`)                                                                                                    |
+| `installer` | rustup                                                                                                                                                           | `rustup-init -y --no-modify-path --default-toolchain none`; an existing rustup runs `rustup self update`                                                       |
+| `ubi`       | fd, dust, bat, delta, sd, hyperfine, tokei, watchexec, zoxide, eza, xh, yq, jj, sccache, uv, caddy, cloudflared, rclone, cargo-binstall, cargo-nextest, gitoxide | the `ubi` crate picks the asset for the OS/arch at the pinned tag and installs the executable into `bin_dir`; `matching.<os>` breaks ties (`msvc`, `max-pure`) |
 
 Two installers coexist on purpose. `github` / `url` entries name the exact asset per platform and
 verify sha256; they cover the tools that matter for builds, deploys and the hosts. `ubi` entries
@@ -136,20 +136,20 @@ performed has a declarative equivalent in `tools.toml`, applied by `ay up --boot
 then the items below, then `ay doctor`). `ay up --check` lists the items with their state (`ok`,
 `differs`, `missing`) without counting them in the exit code.
 
-| install.ps1 / install.sh step | `ay up` equivalent |
-|---|---|
-| `Ensure-Tool` sccache, just, jj, cargo-binstall, cargo-nextest, gix (winget / cargo binstall) | `[[tool]]` entries (`ubi` or `github`), no compile |
-| `~/.local/bin` on the user PATH | the dist installer adds it on first install; `ay up` writes nowhere else |
-| write `~/.cargo/config.toml` (sccache wrapper, `ay` alias, target-cpu=native) | `[[file]] cargo-config` per OS, created only when missing |
-| write the jj config (`%APPDATA%/jj`, `~/.config/jj`) | `[[file]] jj-config` at `{config}/jj/config.toml` |
-| clone missing repositories from `src.lock.json` | built in: missing `repositories` entries with an https/ssh URL are cloned `--depth=1 --filter=blob:none` |
-| `cargo install --path crates/ay` | the `ay` tool entry (dist release), then `ay self-update` |
-| `go build ./cmd/src-deploy` | `[[step]] src-deploy` (runs when `infra/go.mod` exists and the binary is missing) |
-| `bun build --compile packages/ai-triad` | `[[step]] triad` |
-| `frg.cmd` / bash `frg` shim | `[[step]] frg`: an AOT `bun build --compile` binary instead of a shim |
-| `.claude/skills` junction or symlink | `[[link]] claude-skills` (junction on Windows, symlink elsewhere) |
-| `ay doctor` | run at the end of `--bootstrap` |
-| `cargo build --release` in `crates/rust-stack` | dropped: it is a root workspace member (`cargo build -p rust-stack`) |
+| install.ps1 / install.sh step                                                                 | `ay up` equivalent                                                                                       |
+| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `Ensure-Tool` sccache, just, jj, cargo-binstall, cargo-nextest, gix (winget / cargo binstall) | `[[tool]]` entries (`ubi` or `github`), no compile                                                       |
+| `~/.local/bin` on the user PATH                                                               | the dist installer adds it on first install; `ay up` writes nowhere else                                 |
+| write `~/.cargo/config.toml` (sccache wrapper, `ay` alias, target-cpu=native)                 | `[[file]] cargo-config` per OS, created only when missing                                                |
+| write the jj config (`%APPDATA%/jj`, `~/.config/jj`)                                          | `[[file]] jj-config` at `{config}/jj/config.toml`                                                        |
+| clone missing repositories from `src.lock.json`                                               | built in: missing `repositories` entries with an https/ssh URL are cloned `--depth=1 --filter=blob:none` |
+| `cargo install --path crates/ay`                                                              | the `ay` tool entry (dist release), then `ay self-update`                                                |
+| `go build ./cmd/src-deploy`                                                                   | `[[step]] src-deploy` (runs when `infra/go.mod` exists and the binary is missing)                        |
+| `bun build --compile packages/ai-triad`                                                       | `[[step]] triad`                                                                                         |
+| `frg.cmd` / bash `frg` shim                                                                   | `[[step]] frg`: an AOT `bun build --compile` binary instead of a shim                                    |
+| `.claude/skills` junction or symlink                                                          | `[[link]] claude-skills` (junction on Windows, symlink elsewhere)                                        |
+| `ay doctor`                                                                                   | run at the end of `--bootstrap`                                                                          |
+| `cargo build --release` in `crates/rust-stack`                                                | dropped: it is a root workspace member (`cargo build -p rust-stack`)                                     |
 
 Steps run with `RUSTC_WRAPPER` empty: building through sccache crashes rustc on the workstation
 (the same reason `just install-ay` needs `RUSTC_WRAPPER=` today).
@@ -182,13 +182,13 @@ Non-interactive provider wiring. Credentials are read from the process environme
 reach child processes through their environment or stdin, and every printed line is scrubbed of
 credential values.
 
-| Provider | Needs | Check | Wiring |
-|---|---|---|---|
-| GitHub | `GH_TOKEN` or `GITHUB_TOKEN` | `gh auth status` against stored credentials | if not logged in, `gh auth login --with-token` from stdin |
-| Cloudflare | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | `wrangler whoami` with both in its environment | env only (wrangler reads them per run) |
-| Google Cloud | an active gcloud account | `gcloud config get-value account` | if none and `GOOGLE_APPLICATION_CREDENTIALS` is a file, `gcloud auth activate-service-account` |
-| OVHcloud | `~/.ovh.conf` | `ovhcloud account get` | none (created by `ovhcloud login`) |
-| Hostinger | `HOSTINGER_API_TOKEN` | `GET https://developers.hostinger.com/api/vps/v1/virtual-machines` returns 200 | none |
+| Provider     | Needs                                           | Check                                                                          | Wiring                                                                                         |
+| ------------ | ----------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| GitHub       | `GH_TOKEN` or `GITHUB_TOKEN`                    | `gh auth status` against stored credentials                                    | if not logged in, `gh auth login --with-token` from stdin                                      |
+| Cloudflare   | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | `wrangler whoami` with both in its environment                                 | env only (wrangler reads them per run)                                                         |
+| Google Cloud | an active gcloud account                        | `gcloud config get-value account`                                              | if none and `GOOGLE_APPLICATION_CREDENTIALS` is a file, `gcloud auth activate-service-account` |
+| OVHcloud     | `~/.ovh.conf`                                   | `ovhcloud account get`                                                         | none (created by `ovhcloud login`)                                                             |
+| Hostinger    | `HOSTINGER_API_TOKEN`                           | `GET https://developers.hostinger.com/api/vps/v1/virtual-machines` returns 200 | none                                                                                           |
 
 The table shows the provider, which credential names were found, `ok`/`FAIL` and a masked detail
 (`a***@domain` for accounts). Exit 1 when any provider fails.
@@ -215,11 +215,11 @@ Each run (daily, randomized within an hour, catching up after downtime): `ay sel
 binary, so a new `ay` release is how new tool pins reach hosts. A host with a checkout can follow
 the repository instead by setting `SRC_ROOT=/home/ubuntu/src` in `~/.config/ay/env`.
 
-| Host | User | Notes |
-|---|---|---|
-| `usa` (`ssh prd`) | root | production; `ay up --setup` with `HOSTINGER_API_TOKEN` checks the API |
-| `fr1` (`ssh vps`) | ubuntu | builds: rustup, zig, cargo-zigbuild, dist matter most |
-| `fr2` (`ssh cdn`) | ubuntu | CDN, cron and sync: wrangler and gcloud matter most |
+| Host              | User   | Notes                                                                 |
+| ----------------- | ------ | --------------------------------------------------------------------- |
+| `usa` (`ssh prd`) | root   | production; `ay up --setup` with `HOSTINGER_API_TOKEN` checks the API |
+| `fr1` (`ssh vps`) | ubuntu | builds: rustup, zig, cargo-zigbuild, dist matter most                 |
+| `fr2` (`ssh cdn`) | ubuntu | CDN, cron and sync: wrangler and gcloud matter most                   |
 
 The aarch64 Linux `cargo-zigbuild` asset is a glibc build; the hosts are x86_64 Ubuntu.
 

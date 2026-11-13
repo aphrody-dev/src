@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Introduction to semantics and assistive technology
 
- Alice Boxhall [X](https://twitter.com/sundress)  Dave Gash  Meggin Kearney
+Alice Boxhall [X](https://twitter.com/sundress) Dave Gash Meggin Kearney
 
 You've seen how to make a site accessible to users who can't use a mouse or
 pointing device --- whether due to physical impairment, a technology issue,
@@ -23,7 +24,7 @@ accessibility factors, such as how to build websites to support [users like
 Victor Tsaran](https://web.dev/articles/accessibility#understanding_users_diversity),
 who can't see the screen.
 
-First, we'll get some background on *assistive technology*, the general term for
+First, we'll get some background on _assistive technology_, the general term for
 tools like screen readers that help users with impairments that can keep them
 from accessing information.
 
@@ -36,7 +37,7 @@ earlier.
 
 ## Assistive technology
 
-*Assistive technology* is an umbrella term for devices, software, and tools that
+_Assistive technology_ is an umbrella term for devices, software, and tools that
 help any person with a disability complete a task. In the broadest sense this
 could be something low-tech like a crutch for walking or a magnifying glass for
 reading, or something high-tech like a robotic arm or image recognition software
@@ -65,15 +66,15 @@ braille display, with a screen magnifier, via voice control, using a switch
 device, or with some other form of assistive technology that adapts the page's
 default interface to create a more specific interface that they can use.
 
-Many of these assistive technologies rely on *programmatically expressed
-semantics* to create an accessible user experience, and that's what most of this
+Many of these assistive technologies rely on _programmatically expressed
+semantics_ to create an accessible user experience, and that's what most of this
 lesson is about. But before we can explain programmatically expressed semantics,
-we need to talk a bit about *affordances*.
+we need to talk a bit about _affordances_.
 
 ## Affordances
 
 When we use a man-made tool or device, we typically look to its form and design
-to give us an idea of what it does and how it works. An *affordance* is any
+to give us an idea of what it does and how it works. An _affordance_ is any
 object that offers, or affords, its user the opportunity to perform an action.
 The better the affordance is designed, the more obvious or intuitive its use.
 
@@ -83,7 +84,7 @@ teapot before.
 
 That's because the affordance is similar to those you have seen on many other
 objects -- watering pots, beverage pitchers, coffee mugs, and so on. You
-probably *could* pick up the pot by the spout, but your experience with similar
+probably _could_ pick up the pot by the spout, but your experience with similar
 affordances tells you the handle is the better option.
 
 In graphical user interfaces, affordances represent actions we can take, but
@@ -100,18 +101,18 @@ For example, you might paraphrase the use of some common form elements
 - Text field --- "I can type something into this area."
 - Dropdown --- "I can open this element to display my options."
 
-You are able to draw conclusions about these elements *only because you can see
-them*. Naturally, someone who can't see the visual clues provided by an element
+You are able to draw conclusions about these elements _only because you can see
+them_. Naturally, someone who can't see the visual clues provided by an element
 can't comprehend its meaning or intuitively grasp the value of the affordance.
 So we must make sure that the information is expressed flexibly enough to be
 accessed by assistive technology that can construct an alternative interface to
 suit its user's needs.
 
-This non-visual exposure of an affordance's use is called its *semantics*.
+This non-visual exposure of an affordance's use is called its _semantics_.
 
 ## Screen readers
 
-One popular type of assistive technology is the *screen reader*, a program that
+One popular type of assistive technology is the _screen reader_, a program that
 enables visually impaired people to use computers by reading screen text aloud
 in a generated voice. The user can control what is read by moving the cursor to
 a relevant area with the keyboard.
@@ -122,8 +123,8 @@ to explain how, as a blind person, he accesses the web using a the built-in
 screen reader on OS X, called VoiceOver. See [this
 video](https://www.youtube.com/watch?v=QW_dUs9D1oQ) of Victor using VoiceOver.
 
-Now, it's your turn to try using a screen reader. Here is a page with *ChromeVox
-Lite*, a minimal but functioning screen reader written in JavaScript. The screen
+Now, it's your turn to try using a screen reader. Here is a page with _ChromeVox
+Lite_, a minimal but functioning screen reader written in JavaScript. The screen
 is purposefully blurred to simulate a low-vision experience and force the user
 to complete the task with a screen reader. Of course, you'll need to use the
 Chrome browser for this exercise.
@@ -145,10 +146,10 @@ Notice how the screen reader tells you some information about each interface
 element. You should expect a well-designed reader to tell you all, or at least
 most, of the following information about the elements it encounters.
 
-- The element's *role* or type, if it is specified (it should be).
-- The element's *name*, if it has one (it should).
-- The element's *value*, if it has one (it may or may not).
-- The element's *state*, e.g., whether it is enabled or disabled (if applicable).
+- The element's _role_ or type, if it is specified (it should be).
+- The element's _name_, if it has one (it should).
+- The element's _value_, if it has one (it may or may not).
+- The element's _state_, e.g., whether it is enabled or disabled (if applicable).
 
 The screen reader is able to construct this alternate UI because the native
 elements contain built-in accessibility metadata. Just as the rendering engine

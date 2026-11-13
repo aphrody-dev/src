@@ -36,22 +36,22 @@ owner member of the URI ---- local: 127.0.0.1:<lb_port+10000> nginx shard (cache
 
 ## Placement (deploy.toml)
 
-| service | members | lb_port | cache | check |
-|---|---|---|---|---|
-| downloads (r2-site) | fr1, fr2, prd | 19797 | micro | `/` not 5xx |
-| cdn (r2-site) | fr1, fr2, prd | 19796 | micro | `/` 200 |
-| api-gateway | fr1, fr2, prd | 19081 | micro | `/` 200 |
-| mig-test | prd | 19780 | honor | `/` 200 |
-| aphrody (aphrody.com, *.aphrody.com) | prd green 23000, blue 13000 as backup | 19300 | honor | `/` 2xx/3xx |
-| ai-os (gateway) | prd green 24000, blue 14000 as backup | 19400 | off | `/health` 200 |
-| ssh-prd (tcp, Tunnel ingress) | prd:22 | 19022 | n/a | connect |
-| depot | prd | 19182 | off | `/health` 2xx/4xx |
-| commons | prd | 19766 | off | `/health` 200 |
-| relay (agent-relay broker) | prd | 19889 | off | `/health` 200 |
-| nativelink / nativelink-cas (tcp) | fr1 | 19051 / 19061 | n/a | connect |
-| ssh (tcp, pinned) | fr1, fr2, prd | `<member>-mesh` | n/a | n/a |
-| bench | fr1, fr2, prd | 19990 | off | `/bench/health` |
-| postgres, redis (stateful) | prd primary, no standby | not exposed | n/a | n/a |
+| service                              | members                               | lb_port         | cache | check             |
+| ------------------------------------ | ------------------------------------- | --------------- | ----- | ----------------- |
+| downloads (r2-site)                  | fr1, fr2, prd                         | 19797           | micro | `/` not 5xx       |
+| cdn (r2-site)                        | fr1, fr2, prd                         | 19796           | micro | `/` 200           |
+| api-gateway                          | fr1, fr2, prd                         | 19081           | micro | `/` 200           |
+| mig-test                             | prd                                   | 19780           | honor | `/` 200           |
+| aphrody (aphrody.com, *.aphrody.com) | prd green 23000, blue 13000 as backup | 19300           | honor | `/` 2xx/3xx       |
+| ai-os (gateway)                      | prd green 24000, blue 14000 as backup | 19400           | off   | `/health` 200     |
+| ssh-prd (tcp, Tunnel ingress)        | prd:22                                | 19022           | n/a   | connect           |
+| depot                                | prd                                   | 19182           | off   | `/health` 2xx/4xx |
+| commons                              | prd                                   | 19766           | off   | `/health` 200     |
+| relay (agent-relay broker)           | prd                                   | 19889           | off   | `/health` 200     |
+| nativelink / nativelink-cas (tcp)    | fr1                                   | 19051 / 19061   | n/a   | connect           |
+| ssh (tcp, pinned)                    | fr1, fr2, prd                         | `<member>-mesh` | n/a   | n/a               |
+| bench                                | fr1, fr2, prd                         | 19990           | off   | `/bench/health`   |
+| postgres, redis (stateful)           | prd primary, no standby               | not exposed     | n/a   | n/a               |
 
 The replicas on fr1/fr2 use `/etc/aphrody/cluster-edge.env` (only the 4 `S3_*` keys, copied from prd without being displayed).
 Without it, fr2 answered 500. The health checks kept it out of the pool, which is the intended behaviour.
@@ -97,17 +97,18 @@ connector reaches the right origin.
 - Idempotency: 10 concurrent POSTs with the same key -> **1 MISS + 9 HIT**.
 - Mesh vs WireGuard (new connection, 1 KiB object; throughput on 64 MiB):
 
-| pair | mesh total (TCP / TLS) | mesh MB/s | WG total | WG MB/s |
-|---|---|---|---|---|
-| fr1->fr2 | 42 ms (11 / 28) | 163 | 23 ms | 116 |
-| fr1->prd | 28 ms (7 / 20) | 87 | 241 ms (outlier) | 91 |
-| fr2->fr1 | 43 ms (11 / 31) | 178 | 22 ms | 136 |
-| fr2->prd | 62 ms (9 / 52) | 90 | 14 ms | 102 |
-| prd->fr1 | 52 ms (14 / 33) | 80 | 20 ms | 74 |
-| prd->fr2 | 23 ms (6 / 16) | 92 | 17 ms | 62 |
+| pair     | mesh total (TCP / TLS) | mesh MB/s | WG total         | WG MB/s |
+| -------- | ---------------------- | --------- | ---------------- | ------- |
+| fr1->fr2 | 42 ms (11 / 28)        | 163       | 23 ms            | 116     |
+| fr1->prd | 28 ms (7 / 20)         | 87        | 241 ms (outlier) | 91      |
+| fr2->fr1 | 43 ms (11 / 31)        | 178       | 22 ms            | 136     |
+| fr2->prd | 62 ms (9 / 52)         | 90        | 14 ms            | 102     |
+| prd->fr1 | 52 ms (14 / 33)        | 80        | 20 ms            | 74      |
+| prd->fr2 | 23 ms (6 / 16)         | 92        | 17 ms            | 62      |
 
-  Throughput is equal or better than WireGuard. A cold connection costs the TLS 1.3 handshake (+1 RTT + crypto), which the HAProxy
-  pools then amortise (keep-alive, `http-reuse`). ssh over the mesh: the 6 pairs are OK, 250-550 ms per full ssh session.
+Throughput is equal or better than WireGuard. A cold connection costs the TLS 1.3 handshake (+1 RTT + crypto), which the HAProxy
+pools then amortise (keep-alive, `http-reuse`). ssh over the mesh: the 6 pairs are OK, 250-550 ms per full ssh session.
+
 - Duplicate-request ratio. **Before** (prd `access.log`, 278,507 requests, 12/11 06:56 -> 13/11 02:32): **28.6 %** of requests
   repeat the same method+path within 1 s (37.9 % within 10 s). Each of them reached the origin.
   **After** (shards, second run 2026-11-13 ~03:25 UTC): fr1 98.9 %, fr2 98.7 %, prd **50.7 %** (1,285 requests, real aphrody.com traffic
@@ -123,18 +124,18 @@ member) | `infra/cluster/pki.sh client <host> <user>` (ssh client cert) | stats:
 
 ## Rollback (one line per change)
 
-| change | rollback |
-|---|---|
-| HAProxy + nginx shards + ssh mesh + nginx Restart drop-in on a member | `just cluster-down <member>` |
-| mig-prd replica on fr1/fr2 | `ssh <m> sudo systemctl disable --now cloudflared-mig-prd` |
-| blue/green pools | set `active` back, or drop `bluegreen` from deploy.toml + `just cluster-deploy prd` |
-| edge replicas on fr1 | `ssh fr1 'cd /srv/aphrody-src && sudo docker compose -f compose.yaml -f compose.capped.yaml --profile edge down'` |
-| fr2 replicas with R2 env | `ssh fr2 'cd /srv/aphrody-src && sudo env SRC_TAG=smoke docker compose --profile edge up -d'` |
-| HAProxy package | `ssh prd pacman -R --noconfirm haproxy`; `ssh fr1 sudo apt-get purge -y haproxy` (same on fr2) |
-| R2 env on fr1/fr2 | `ssh <m> sudo rm /etc/aphrody/cluster-edge.env` |
-| mesh certificates | `ssh <m> 'sudo rm -rf /etc/aphrody-cluster/tls ~/.config/aphrody-cluster'` |
-| fleet.toml / orch/fleet.ts (`-mesh` targets) | `git revert <commit>` |
-| mig-prd ingress to lb_ports (edge agent) | point the ingress back at the old origins (`docs/infra/FR2-CLOUDFLARE.md`) |
+| change                                                                | rollback                                                                                                          |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| HAProxy + nginx shards + ssh mesh + nginx Restart drop-in on a member | `just cluster-down <member>`                                                                                      |
+| mig-prd replica on fr1/fr2                                            | `ssh <m> sudo systemctl disable --now cloudflared-mig-prd`                                                        |
+| blue/green pools                                                      | set `active` back, or drop `bluegreen` from deploy.toml + `just cluster-deploy prd`                               |
+| edge replicas on fr1                                                  | `ssh fr1 'cd /srv/aphrody-src && sudo docker compose -f compose.yaml -f compose.capped.yaml --profile edge down'` |
+| fr2 replicas with R2 env                                              | `ssh fr2 'cd /srv/aphrody-src && sudo env SRC_TAG=smoke docker compose --profile edge up -d'`                     |
+| HAProxy package                                                       | `ssh prd pacman -R --noconfirm haproxy`; `ssh fr1 sudo apt-get purge -y haproxy` (same on fr2)                    |
+| R2 env on fr1/fr2                                                     | `ssh <m> sudo rm /etc/aphrody/cluster-edge.env`                                                                   |
+| mesh certificates                                                     | `ssh <m> 'sudo rm -rf /etc/aphrody-cluster/tls ~/.config/aphrody-cluster'`                                        |
+| fleet.toml / orch/fleet.ts (`-mesh` targets)                          | `git revert <commit>`                                                                                             |
+| mig-prd ingress to lb_ports (edge agent)                              | point the ingress back at the old origins (`docs/infra/FR2-CLOUDFLARE.md`)                                        |
 
 ## Limits
 

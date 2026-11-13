@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: Jul 20, 2023, Last updated: Oct 22, 2025
@@ -31,7 +32,7 @@ you to build platform-specific applications by providing a consistent interface
 across different platforms.
 
 In this document, you'll learn how to write a small C++ app using WebGPU that runs both on the web and specific platforms. Spoiler alert, you'll get the same red triangle that appears in a browser window and a desktop window with minimal adjustments to your codebase.
- The same triangle powered by WebGPU in a browser window and a desktop window.
+The same triangle powered by WebGPU in a browser window and a desktop window.
 
 ## How does it work?
 
@@ -130,7 +131,7 @@ int main() {
 ```
 
 Rebuilding the app and running it as before now results in an empty window. You're making progress!
- An empty window.
+An empty window.
 
 ### Get GPU device
 
@@ -315,7 +316,7 @@ void Render() {
 ```
 
 Rebuilding the app with CMake and running it now results in the long-awaited red triangle in a window! Take a break---you deserve it.
- A red triangle in a desktop window.
+A red triangle in a desktop window.
 
 ## Compile to WebAssembly
 
@@ -393,7 +394,8 @@ $ emcmake cmake -B build-web && cmake --build build-web
 # Start a HTTP server.
 $ npx http-server
 ```
- A red triangle in a browser window.
+
+A red triangle in a browser window.
 
 ## What's next
 

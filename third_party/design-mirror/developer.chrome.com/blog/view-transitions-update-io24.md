@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
 
 Published: May 16, 2024
@@ -73,7 +74,10 @@ This is an MPA with cross-document navigations, hosted on the same origin. By us
 window.addEventListener("pagereveal", async (e) => {
   if (e.viewTransition) {
     // Determine animation type based on the old/new history entries
-    const transitionClass = determineTransitionClass(navigation.activation.from, navigation.currentEntry);
+    const transitionClass = determineTransitionClass(
+      navigation.activation.from,
+      navigation.currentEntry,
+    );
     document.documentElement.dataset.transition = transitionClass;
 
     // Cleanup after transition ran
@@ -87,7 +91,7 @@ window.addEventListener("pagereveal", async (e) => {
 
 For more information on how to activate and customize cross-document view transitions, see [our cross-document view transitions documentation](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document.md.txt).
 
-*** ** * ** ***
+---
 
 ## View transitions improvements
 
@@ -180,7 +184,7 @@ html:active-view-transition-type(forwards) {
 
 To find out more about view transition types refer to the dedicated documentation [for same-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/same-document.md.txt#view-transition-types) and [cross-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document.md.txt#view-transition-types).
 
-*** ** * ** ***
+---
 
 ## Feedback
 

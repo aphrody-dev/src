@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Alba Silvente Fuentes is a Google Developer Expert, we talked to her about making coding and community-building human.
 
- Monika Janota
+Monika Janota
 
 **Monika:** What products are you working with? What's your professional focus, and what tools make your day-to-day work easy and efficient?
 

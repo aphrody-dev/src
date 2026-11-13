@@ -3,16 +3,17 @@ Review: docs/infra/CLOUDFLARE-ONE.md
 
 Score: 7 / 20 — Thorough live socket/WireGuard inventory, but the target architecture builds an unnecessary double-Cloudflare hairpin through fr2, hardcodes the legacy WireGuard IP (10.200.77.5) into its own replacement, ships a silently broken rollback command, and falsely marks SSH Infrastructure Access as target-ready.
 
-Criterion	Score	Verdict
-Factual & protocol accuracy	2 / 6	Port overflow (129030), missing sshd CA + WARP Split Tunnel rules, false client-IP claim, broken sed
-Network & architectural design	1 / 5	Double-Cloudflare hairpin via fr2, replacement coupled to WG IP 10.200.77.5, duplicate cloudflared
-Security & repo hygiene	2 / 5	Active unknown WG peer left connected, mig-test left public, missing Service Auth, live IPs/UUIDs in Git
-Completeness & operational safety	2 / 4	Good service accounting table, but manual /etc drift (no IaC), untested QUIC load, broken rollback
+Criterion Score Verdict
+Factual & protocol accuracy 2 / 6 Port overflow (129030), missing sshd CA + WARP Split Tunnel rules, false client-IP claim, broken sed
+Network & architectural design 1 / 5 Double-Cloudflare hairpin via fr2, replacement coupled to WG IP 10.200.77.5, duplicate cloudflared
+Security & repo hygiene 2 / 5 Active unknown WG peer left connected, mig-test left public, missing Service Auth, live IPs/UUIDs in Git
+Completeness & operational safety 2 / 4 Good service accounting table, but manual /etc drift (no IaC), untested QUIC load, broken rollback
+
 1. Factual Errors
 
 Silent no-op rollback command caused by U+00A0 (NBSP) (Rollback):
 
-The one-liner 's|^    server 127.0.0.1:18797;.*|    server 10.200.77.5:8797;|' contains alternating non-breaking spaces (U+00A0) after ^ and |. Because sed exits 0 when 0 lines match, && sudo nginx -t && sudo systemctl reload nginx succeeds while modifying nothing in /etc/nginx/sites/downloads.aphrody.com.conf, leaving production broken during an outage.
+The one-liner 's|^ server 127.0.0.1:18797;.*| server 10.200.77.5:8797;|' contains alternating non-breaking spaces (U+00A0) after ^ and |. Because sed exits 0 when 0 lines match, && sudo nginx -t && sudo systemctl reload nginx succeeds while modifying nothing in /etc/nginx/sites/downloads.aphrody.com.conf, leaving production broken during an outage.
 
 16-bit TCP port overflow in 127.0.0.1:1<port> scheme (Pilot plan & Assumptions):
 
@@ -87,14 +88,15 @@ Secret / topology redaction: Raw public endpoint IPs, internal ports, admin emai
 IdP & MFA pinning on mig-owner-only: Email-only rules allow one-time PIN fallback unless restricted to a specific IdP + hardware-key/MFA authentication method (amr).
 
 4. Concrete Fixes
-Fix 1 — Eliminate fr2 hairpin & decouple from 10.200.77.5
+   Fix 1 — Eliminate fr2 hairpin & decouple from 10.200.77.5
 
 Use a dedicated loopback/dummy subnet (10.200.79.5/32 on lo) for WARP/SSH infrastructure routing so it neither collides with live WireGuard (10.200.77.0/24) on the PC nor disappears when WireGuard is removed. Point public aphrody.com hostnames directly to the tunnel at cutover (or use Unix sockets + stripped CDN-Loop if fr2 must stay temporarily):
 
 Bash
-# Sur prd : IP stable hors interface WireGuard (à persister via systemd-networkd / netplan)
-sudo ip addr add 10.200.79.5/32 dev lo
 
+# Sur prd : IP stable hors interface WireGuard (à persister via systemd-networkd / netplan)
+
+sudo ip addr add 10.200.79.5/32 dev lo
 
 If fr2 must temporarily relay an upstream before DNS cutover, replace TCP 1<port> with Unix sockets, dynamic DNS resolution, and CDN-Loop stripping in /etc/nginx/conf.d/mig-tunnel.conf:
 
@@ -102,14 +104,14 @@ Nginx
 resolver 1.1.1.1 1.0.0.1 valid=60s ipv6=off;
 
 server {
-    listen unix:/run/nginx-mig-downloads.sock;
-    location / {
-        set $cf_target "mig-downloads.aphrody.com";
-        proxy_pass https://$cf_target;
-        proxy_ssl_server_name on;
-        proxy_ssl_name $cf_target;
-        proxy_ssl_verify on;
-        proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+listen unix:/run/nginx-mig-downloads.sock;
+location / {
+set $cf_target "mig-downloads.aphrody.com";
+proxy_pass https://$cf_target;
+proxy_ssl_server_name on;
+proxy_ssl_name $cf_target;
+proxy_ssl_verify on;
+proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
 
         # Évite la détection de boucle Cloudflare même-zone (HTTP 520 / Error 1000)
         proxy_set_header Host $cf_target;
@@ -118,6 +120,7 @@ server {
         proxy_set_header CF-Ray "";
         proxy_set_header X-Original-Client-IP $http_cf_connecting_ip;
     }
+
 }
 
 Fix 2 — Complete mig-prd-ssh setup on prd and Cloudflare Zero Trust
@@ -132,24 +135,25 @@ CASignatureAlgorithms ecdsa-sha2-nistp256,ssh-ed25519,rsa-sha2-512
 EOF
 sudo sshd -t && sudo systemctl reload ssh
 
-
 Update Tunnel CIDR route & Infra Target mig-prd from 10.200.77.5/32 to 10.200.79.5/32.
 
 In Zero Trust Settings → WARP Client → Device settings → Split Tunnels (Exclude): replace 10.0.0.0/8 excluding 10.200.79.0/24 (or switch to Include mode adding 10.200.79.5/32), and enable Settings → Network → Proxy (TCP).
 
 Fix 3 — Immediate security cleanup (fr1 WireGuard & mig-test)
 Bash
+
 # 1. Sur fr1 : révoquer immédiatement le pair actif inconnu (.10), .4 et le pair sans AllowedIPs
+
 sudo wg set wg1 peer <PUBKEY_PEER_10> remove
 sudo wg set wg1 peer <PUBKEY_PEER_4> remove
 sudo wg set wg1 peer <PUBKEY_PEER_NONE> remove
 
 # 2. Supprimer l'exposition publique de test mig-test.aphrody.com et fermer 0.0.0.0:8780 sur prd
-sudo ufw deny in on eth0 to any port 8780 proto tcp
 
+sudo ufw deny in on eth0 to any port 8780 proto tcp
 
 Add a Service Auth policy (using a Cloudflare Access Service Token) to mig-prd-admin before cutting over any CLI/daemon consumers of gpu-depot (:8182) or commons-relay (:8766).
 
 Fix 4 — Exact replacement for broken paths, Pilot plan, and Rollback in docs/infra/CLOUDFLARE-ONE.md
 
-Strip all U+00A0 characters from the file, replace C:\src-merge\ with repo-relative paths (docs/infra/FLEET.md, 
+Strip all U+00A0 characters from the file, replace C:\src-merge\ with repo-relative paths (docs/infra/FLEET.md,

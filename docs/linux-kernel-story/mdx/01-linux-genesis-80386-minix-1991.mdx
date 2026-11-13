@@ -11,12 +11,14 @@ order: 1
 ## 1. Context: Helsinki, January 1991
 
 In early 1991, Linus Benedict Torvalds, a 21-year-old computer science student at the University of Helsinki, purchased his first personal computer:
+
 - **Processor**: Intel 80386DX at 33 MHz (with full 32-bit registers, MMU, and protected mode support).
 - **RAM**: 4 Megabytes.
 - **Storage**: 40 Megabyte Conner hard drive.
 - **Operating System installed**: MS-DOS, quickly upgraded to Andrew S. Tanenbaum's MINIX for educational experimentation.
 
-MINIX was a microkernel-based teaching operating system created to accompany Tanenbaum's seminal textbook *Operating Systems: Design and Implementation*. While MINIX was educational and functional, it possessed strict pedagogical limitations:
+MINIX was a microkernel-based teaching operating system created to accompany Tanenbaum's seminal textbook _Operating Systems: Design and Implementation_. While MINIX was educational and functional, it possessed strict pedagogical limitations:
+
 1. Licensing restricted commercial and non-academic modifications.
 2. The design favored microkernel purity over POSIX pragmatism and raw hardware exploitation.
 3. Tanenbaum intentionally kept the system small and simple to fit student curricula, declining to accept feature expansions like virtual memory paging or raw task switching optimizations.
@@ -47,12 +49,14 @@ Linus wanted a terminal emulator to dial into the University of Helsinki's DEC M
 ## 2. Exploiting the 80386 Hardware
 
 Unlike the 8086/80286, the 80386 offered:
+
 - Full 32-bit linear address space (4 GB flat addressability).
 - Paged Memory Management Unit (PMMU) supporting 4 KB page frames.
 - 4 privilege rings (Ring 0 for Kernel, Ring 3 for User applications).
 - Hardware Task State Segment (TSS) switching via `ljmp` to a TSS selector.
 
 Linus wrote two threads of execution in assembly and C:
+
 - Thread A read characters from the keyboard and wrote them to the serial modem port.
 - Thread B read characters from the modem port and wrote them to the video display buffer.
 
@@ -103,6 +107,7 @@ will support anything other than AT-harddisks, as that's all I have :-(.
 Linux 0.01 was released on the Helsinki University FTP server (`nic.funet.fi`) under `/pub/OS/Linux` on September 17, 1991. The entire source tree was approximately 10,239 lines of C and assembly.
 
 ### 4.1 Source Code Tree Layout
+
 ```
 linux-0.01/
 |-- Makefile
@@ -207,11 +212,15 @@ Process A (Parent)                         Process B (Child)
 ```
 
 ### 5.1 Physical Page Tracker (`mm/memory.c`)
+
 Physical memory was tracked through an array of 16-bit words (`unsigned short`):
+
 ```c
 static unsigned short mem_map [ PAGING_PAGES ] = {0,};
 ```
+
 Every 4 KB page above 1 MB (below 1 MB was reserved for kernel code, data, BIOS, and buffer cache) had an entry in `mem_map`:
+
 - `0`: Free page frame.
 - `1`: Allocated to a single process.
 - `>1`: Shared read-only across multiple processes via COW.
@@ -221,6 +230,7 @@ Every 4 KB page above 1 MB (below 1 MB was reserved for kernel code, data, BIOS,
 When `sys_fork()` was invoked, Linus did not duplicate the physical memory of the process. Instead, `copy_page_tables()` duplicated the page directory and page table entries, clearing the `R/W` bit (making them read-only) and incrementing the count in `mem_map[]`.
 
 When either parent or child attempted to write to the shared page:
+
 1. The 80386 MMU detected a write violation on a read-only page.
 2. The CPU placed the faulting linear address into register `CR2` and triggered Interrupt 14.
 3. `mm/page.s` intercepted vector 14 and called `do_no_page()` or `do_wp_page()`.
@@ -274,6 +284,7 @@ void schedule(void)
 ```
 
 ### Characteristics:
+
 - **Maximum Tasks**: `NR_TASKS` was defined as `64`.
 - **Preemption**: Timer tick (100 Hz, `HZ=100`) decremented `current->counter`. When `counter` reached `0`, `schedule()` was invoked.
 - **Dynamic Priority Boosting**: If all runnable tasks exhausted their quantum (`c == 0`), every task in the system (including blocked/sleeping tasks) had its counter replenished:
@@ -285,6 +296,7 @@ void schedule(void)
 ## 7. The First Root Filesystem and Bash Port
 
 Linux 0.01 required:
+
 - An already installed MINIX partition to boot, partition the disk, and provide binaries.
 - GCC 1.40 and GNU Bash 1.08.
 

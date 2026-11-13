@@ -16,22 +16,47 @@ const k32 = dlopen("kernel32.dll", {
   GetProcAddress: { args: ["ptr", "ptr"], returns: "ptr" },
   GetLastError: { args: [], returns: "u32" },
 });
-const nt = dlopen("ntdll.dll", { NtQueryInformationProcess: { args: ["ptr", "u32", "ptr", "u32", "ptr"], returns: "i32" } });
+const nt = dlopen("ntdll.dll", {
+  NtQueryInformationProcess: {
+    args: ["ptr", "u32", "ptr", "u32", "ptr"],
+    returns: "i32",
+  },
+});
 
-export type ApiSet = { name: string; hashed: string; hosts: { importer: string; host: string }[]; sealed: boolean };
+export type ApiSet = {
+  name: string;
+  hashed: string;
+  hosts: { importer: string; host: string }[];
+  sealed: boolean;
+};
 
 /** Schéma API Set du processus courant (copie du schéma chargé par le noyau au démarrage). */
-export function apiSetSchema(): { version: number; count: number; sets: ApiSet[] } {
+export function apiSetSchema(): {
+  version: number;
+  count: number;
+  sets: ApiSet[];
+} {
   const pbi = new BigUint64Array(6); // PROCESS_BASIC_INFORMATION (48 octets) : PebBaseAddress à +8
-  const st = nt.symbols.NtQueryInformationProcess(-1 as never, 0, ptr(pbi), 48, null);
-  if (st !== 0) throw new Error(`NtQueryInformationProcess 0x${(st >>> 0).toString(16)}`);
+  const st = nt.symbols.NtQueryInformationProcess(
+    -1 as never,
+    0,
+    ptr(pbi),
+    48,
+    null,
+  );
+  if (st !== 0)
+    throw new Error(`NtQueryInformationProcess 0x${(st >>> 0).toString(16)}`);
   const peb = Number(pbi[1]);
   const map = read.ptr(peb as never, 0x68); // PEB->ApiSetMap (x64)
   const head = new DataView(toArrayBuffer(map as never, 0, 28));
   const version = head.getUint32(0, true);
-  if (version !== 6) throw new Error(`API_SET_NAMESPACE version ${version} (attendu 6)`);
-  const v = new DataView(toArrayBuffer(map as never, 0, head.getUint32(4, true)));
-  const str = (o: number, n: number) => Buffer.from(v.buffer, v.byteOffset + o, n).toString("utf16le");
+  if (version !== 6)
+    throw new Error(`API_SET_NAMESPACE version ${version} (attendu 6)`);
+  const v = new DataView(
+    toArrayBuffer(map as never, 0, head.getUint32(4, true)),
+  );
+  const str = (o: number, n: number) =>
+    Buffer.from(v.buffer, v.byteOffset + o, n).toString("utf16le");
   const count = v.getUint32(12, true);
   const entries = v.getUint32(16, true);
   const sets: ApiSet[] = [];
@@ -47,7 +72,12 @@ export function apiSetSchema(): { version: number; count: number; sets: ApiSet[]
         host: str(v.getUint32(x + 12, true), v.getUint32(x + 16, true)),
       });
     }
-    sets.push({ name, hashed: name.slice(0, v.getUint32(e + 12, true) / 2), hosts, sealed: Boolean(v.getUint32(e, true) & 1) });
+    sets.push({
+      name,
+      hashed: name.slice(0, v.getUint32(e + 12, true) / 2),
+      hosts,
+      sealed: Boolean(v.getUint32(e, true) & 1),
+    });
   }
   return { version, count, sets };
 }
@@ -60,7 +90,10 @@ export function apiSetResolver(sets: ApiSet[]) {
     if (!/^(api|ext)-/.test(n)) return { host: dll };
     const s = byHash.get(n.slice(0, n.lastIndexOf("-")));
     if (!s) return { set: n, host: "" };
-    return { set: s.name, host: (s.hosts.find((h) => !h.importer) ?? s.hosts.at(-1))?.host ?? "" };
+    return {
+      set: s.name,
+      host: (s.hosts.find((h) => !h.importer) ?? s.hosts.at(-1))?.host ?? "",
+    };
   };
 }
 
@@ -68,20 +101,30 @@ export function apiSetResolver(sets: ApiSet[]) {
 const DONT_RESOLVE = 0x1;
 const SEARCH_SYSTEM32 = 0x800;
 export type LoaderReq =
-  { kind: "loader"; items: [string, string][] } | { kind: "activate"; classes: string[] } | { kind: "undecorate"; names: string[] };
+  | { kind: "loader"; items: [string, string][] }
+  | { kind: "activate"; classes: string[] }
+  | { kind: "undecorate"; names: string[] };
 
 function loader(items: [string, string][]): [boolean, string][] {
   const mods = new Map<string, number>();
   return items.map(([dll, entry]) => {
     let h = mods.get(dll);
     if (h === undefined) {
-      h = Number(k32.symbols.LoadLibraryExW(ptr(w(dll)), null, DONT_RESOLVE | SEARCH_SYSTEM32) ?? 0);
+      h = Number(
+        k32.symbols.LoadLibraryExW(
+          ptr(w(dll)),
+          null,
+          DONT_RESOLVE | SEARCH_SYSTEM32,
+        ) ?? 0,
+      );
       if (!h) h = -Number(k32.symbols.GetLastError());
       mods.set(dll, h);
     }
     if (h <= 0) return [false, `LoadLibraryExW ${-h}`];
     const p = k32.symbols.GetProcAddress(h as never, ptr(a(entry)));
-    return p ? [true, ""] : [false, `GetProcAddress ${k32.symbols.GetLastError()}`];
+    return p
+      ? [true, ""]
+      : [false, `GetProcAddress ${k32.symbols.GetLastError()}`];
   });
 }
 
@@ -94,17 +137,28 @@ function activate(classes: string[]): [boolean, string][] {
   });
   rt.symbols.RoInitialize(1); // RO_INIT_MULTITHREADED
   // IID_IActivationFactory {00000035-0000-0000-C000-000000000046}
-  const iid = new Uint8Array([0x35, 0, 0, 0, 0, 0, 0, 0, 0xc0, 0, 0, 0, 0, 0, 0, 0x46]);
+  const iid = new Uint8Array([
+    0x35, 0, 0, 0, 0, 0, 0, 0, 0xc0, 0, 0, 0, 0, 0, 0, 0x46,
+  ]);
   const out = new BigUint64Array(1);
   const hs = new BigUint64Array(1);
   return classes.map((c) => {
     const s = Buffer.from(c, "utf16le");
     rt.symbols.WindowsCreateString(ptr(s), c.length, ptr(hs));
-    const hr = rt.symbols.RoGetActivationFactory(Number(hs[0]) as never, ptr(iid), ptr(out)) >>> 0;
+    const hr =
+      rt.symbols.RoGetActivationFactory(
+        Number(hs[0]) as never,
+        ptr(iid),
+        ptr(out),
+      ) >>> 0;
     rt.symbols.WindowsDeleteString(Number(hs[0]) as never);
     if (hr === 0 && out[0]) {
       const vtbl = read.ptr(Number(out[0]) as never, 0);
-      CFunction({ ptr: read.ptr(vtbl as never, 16) as never, args: ["ptr"], returns: "u32" })(Number(out[0]));
+      CFunction({
+        ptr: read.ptr(vtbl as never, 16) as never,
+        args: ["ptr"],
+        returns: "u32",
+      })(Number(out[0]));
       out[0] = 0n;
     }
     return [hr === 0, hr ? `0x${hr.toString(16)}` : ""];
@@ -112,10 +166,20 @@ function activate(classes: string[]): [boolean, string][] {
 }
 
 function undecorate(names: string[]): string[] {
-  const dbg = dlopen("dbghelp.dll", { UnDecorateSymbolName: { args: ["ptr", "ptr", "u32", "u32"], returns: "u32" } });
+  const dbg = dlopen("dbghelp.dll", {
+    UnDecorateSymbolName: {
+      args: ["ptr", "ptr", "u32", "u32"],
+      returns: "u32",
+    },
+  });
   const buf = Buffer.alloc(4096);
   return names.map((n) => {
-    const len = dbg.symbols.UnDecorateSymbolName(ptr(a(n)), ptr(buf), buf.length, 0); // UNDNAME_COMPLETE
+    const len = dbg.symbols.UnDecorateSymbolName(
+      ptr(a(n)),
+      ptr(buf),
+      buf.length,
+      0,
+    ); // UNDNAME_COMPLETE
     return len ? buf.toString("latin1", 0, len) : n;
   });
 }
@@ -127,7 +191,10 @@ export async function child<R>(req: LoaderReq): Promise<R> {
   const qi = `${dir}/msindex-${id}.in.json`;
   const qo = `${dir}/msindex-${id}.out.json`;
   await Bun.write(qi, JSON.stringify(req));
-  const p = Bun.spawn([process.execPath, import.meta.path, qi, qo], { stdout: "inherit", stderr: "pipe" });
+  const p = Bun.spawn([process.execPath, import.meta.path, qi, qo], {
+    stdout: "inherit",
+    stderr: "pipe",
+  });
   const code = await p.exited;
   const res = (await Bun.file(qo).exists()) ? await Bun.file(qo).json() : null;
   await Promise.all([
@@ -136,39 +203,75 @@ export async function child<R>(req: LoaderReq): Promise<R> {
       .delete()
       .catch(() => {}),
   ]);
-  if (code !== 0 || !res) throw new Error(`processus de preuve ${req.kind} : code ${code} ${await new Response(p.stderr).text()}`);
+  if (code !== 0 || !res)
+    throw new Error(
+      `processus de preuve ${req.kind} : code ${code} ${await new Response(p.stderr).text()}`,
+    );
   return res as R;
 }
 
 if (import.meta.main) {
   const [qi, qo] = process.argv.slice(2);
   const req = (await Bun.file(qi!).json()) as LoaderReq;
-  const res = req.kind === "loader" ? loader(req.items) : req.kind === "activate" ? activate(req.classes) : undecorate(req.names);
+  const res =
+    req.kind === "loader"
+      ? loader(req.items)
+      : req.kind === "activate"
+        ? activate(req.classes)
+        : undecorate(req.names);
   await Bun.write(qo!, JSON.stringify(res));
 }
 
 /** Valeur REG_SZ de HKLM (chaîne vide si absente). */
 export function hklmString(path: string, value: string): string {
-  const adv = dlopen("advapi32.dll", { RegGetValueW: { args: ["ptr", "ptr", "ptr", "u32", "ptr", "ptr", "ptr"], returns: "i32" } });
+  const adv = dlopen("advapi32.dll", {
+    RegGetValueW: {
+      args: ["ptr", "ptr", "ptr", "u32", "ptr", "ptr", "ptr"],
+      returns: "i32",
+    },
+  });
   const data = Buffer.alloc(2048);
   const len = new Uint32Array([data.length]);
-  const st = adv.symbols.RegGetValueW(0x80000002 as never, ptr(w(path)), ptr(w(value)), 0x2, null, ptr(data), ptr(len));
+  const st = adv.symbols.RegGetValueW(
+    0x80000002 as never,
+    ptr(w(path)),
+    ptr(w(value)),
+    0x2,
+    null,
+    ptr(data),
+    ptr(len),
+  );
   return st === 0 ? data.toString("utf16le", 0, Math.max(0, len[0]! - 2)) : "";
 }
 
 /** Registre WinRT du système : classe -> { DllPath, ActivationType (0 = en processus, 1 = hors processus) }. */
 export function winrtRegistry(): Map<string, { dll: string; type: number }> {
   const adv = dlopen("advapi32.dll", {
-    RegOpenKeyExW: { args: ["ptr", "ptr", "u32", "u32", "ptr"], returns: "i32" },
-    RegEnumKeyExW: { args: ["ptr", "u32", "ptr", "ptr", "ptr", "ptr", "ptr", "ptr"], returns: "i32" },
-    RegGetValueW: { args: ["ptr", "ptr", "ptr", "u32", "ptr", "ptr", "ptr"], returns: "i32" },
+    RegOpenKeyExW: {
+      args: ["ptr", "ptr", "u32", "u32", "ptr"],
+      returns: "i32",
+    },
+    RegEnumKeyExW: {
+      args: ["ptr", "u32", "ptr", "ptr", "ptr", "ptr", "ptr", "ptr"],
+      returns: "i32",
+    },
+    RegGetValueW: {
+      args: ["ptr", "ptr", "ptr", "u32", "ptr", "ptr", "ptr"],
+      returns: "i32",
+    },
     RegCloseKey: { args: ["ptr"], returns: "i32" },
   });
   const HKLM = 0x80000002;
   const hk = new BigUint64Array(1);
   const out = new Map<string, { dll: string; type: number }>();
   if (
-    adv.symbols.RegOpenKeyExW(HKLM as never, ptr(w("SOFTWARE\\Microsoft\\WindowsRuntime\\ActivatableClassId")), 0, 0x20019, ptr(hk)) !== 0
+    adv.symbols.RegOpenKeyExW(
+      HKLM as never,
+      ptr(w("SOFTWARE\\Microsoft\\WindowsRuntime\\ActivatableClassId")),
+      0,
+      0x20019,
+      ptr(hk),
+    ) !== 0
   )
     return out;
   const key = Number(hk[0]);
@@ -179,13 +282,45 @@ export function winrtRegistry(): Map<string, { dll: string; type: number }> {
   const dw = new Uint32Array(1);
   for (let i = 0; ; i++) {
     len[0] = 512;
-    if (adv.symbols.RegEnumKeyExW(key as never, i, ptr(name), ptr(len), null, null, null, null) !== 0) break;
+    if (
+      adv.symbols.RegEnumKeyExW(
+        key as never,
+        i,
+        ptr(name),
+        ptr(len),
+        null,
+        null,
+        null,
+        null,
+      ) !== 0
+    )
+      break;
     const cls = name.toString("utf16le", 0, len[0]! * 2);
     dlen[0] = data.length;
-    const okPath = adv.symbols.RegGetValueW(key as never, ptr(w(cls)), ptr(w("DllPath")), 0x2, null, ptr(data), ptr(dlen)) === 0; // RRF_RT_REG_SZ (REG_EXPAND_SZ développé)
+    const okPath =
+      adv.symbols.RegGetValueW(
+        key as never,
+        ptr(w(cls)),
+        ptr(w("DllPath")),
+        0x2,
+        null,
+        ptr(data),
+        ptr(dlen),
+      ) === 0; // RRF_RT_REG_SZ (REG_EXPAND_SZ développé)
     dlen[0] = 4;
-    adv.symbols.RegGetValueW(key as never, ptr(w(cls)), ptr(w("ActivationType")), 0x10, null, ptr(dw), ptr(dlen)); // REG_DWORD
-    out.set(cls, { dll: okPath ? data.toString("utf16le").replace(/\0[\s\S]*$/, "") : "", type: dw[0]! });
+    adv.symbols.RegGetValueW(
+      key as never,
+      ptr(w(cls)),
+      ptr(w("ActivationType")),
+      0x10,
+      null,
+      ptr(dw),
+      ptr(dlen),
+    ); // REG_DWORD
+    out.set(cls, {
+      dll: okPath ? data.toString("utf16le").replace(/\0[\s\S]*$/, "") : "",
+      type: dw[0]!,
+    });
     dw[0] = 0;
   }
   adv.symbols.RegCloseKey(key as never);

@@ -139,10 +139,14 @@ export function generateMarkdownReport(matrix: ParityMatrix): string {
   lines.push("```");
   lines.push("Or in code:");
   lines.push("```ts");
-  lines.push('import "C:/src/packages/bun-parity/dist/chromium-parity-preload.ts";');
+  lines.push(
+    'import "C:/src/packages/bun-parity/dist/chromium-parity-preload.ts";',
+  );
   lines.push("```");
   lines.push("");
-  lines.push("### Artifact 2: Rust Crate Patch Queue for C:\\src\\third_party\\bun");
+  lines.push(
+    "### Artifact 2: Rust Crate Patch Queue for C:\\src\\third_party\\bun",
+  );
   lines.push("Clean unified git patches ready for upstream compilation:");
   lines.push(
     "- `patches/0001-mime-chromium-types.patch`: Augments Bun's internal MIME lookup table with `.wgsl`, `.jxl`, `.bunaot`, `.opus`.",

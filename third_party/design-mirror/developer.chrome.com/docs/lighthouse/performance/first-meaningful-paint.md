@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** This audit has been removed as of Lighthouse 13. For more information see [What's new in Lighthouse 13](https://developer.chrome.com/blog/lighthouse-13-0.md.txt). Moving forward, consider using [Largest Contentful Paint](https://web.dev/articles/lcp) instead.
 
@@ -32,7 +33,7 @@ when the first bit of content rendered on the page includes the content above th
 However, these metrics can differ when, for example,
 there's content above the fold within an iframe.
 FMP registers when the content within the iframe is visible to the user,
-while FCP *doesn't* include iframe content.
+while FCP _doesn't_ include iframe content.
 
 ## How Lighthouse determines your FMP score
 
@@ -50,11 +51,11 @@ The FCP score would be 99, but the FMP score would be 75.
 
 This table shows how to interpret your FMP score:
 
-| FMP metric (in seconds) | Color-coding | FMP score (FCP HTTP Archive percentile) |
-|---|---|---|
-| 0--2 | Green (fast) | 75--100 |
-| 2--4 | Orange (moderate) | 50--74 |
-| Over 4 | Red (slow) | 0--49 |
+| FMP metric (in seconds) | Color-coding      | FMP score (FCP HTTP Archive percentile) |
+| ----------------------- | ----------------- | --------------------------------------- |
+| 0--2                    | Green (fast)      | 75--100                                 |
+| 2--4                    | Orange (moderate) | 50--74                                  |
+| Over 4                  | Red (slow)        | 0--49                                   |
 
 > [!NOTE]
 > **Note:** See the [Lighthouse performance scoring](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring.md.txt) post to learn how your page's overall performance score is calculated.
@@ -82,7 +83,7 @@ Unless you have a specific reason for focusing on a particular metric, it's
 usually better to focus on improving your overall Performance score.
 
 Use the **Diagnostics** section of your Lighthouse report to determine which improvements will have the most value for your page. The more significant the opportunity, the greater the effect it will have on your Performance score. For example, the following Lighthouse screenshot shows that [eliminating render-blocking resources](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources.md.txt) will yield the biggest improvement:
- Lighthouse: Diagnostics section
+Lighthouse: Diagnostics section
 
 See the [Performance audits](https://developer.chrome.com/docs/lighthouse/performance)
 to learn how to address the opportunities identified in your Lighthouse report.

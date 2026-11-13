@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 001: The Box Model](https://thecsspodcast.libsyn.com/-the-css-podcast-box-model-episode-1)
 
 Say you have this bit of HTML:
@@ -90,7 +91,7 @@ behavior, and it usually provides much more flexibility than extrinsic sizing.
 ## The areas of the box model
 
 Boxes are made up of distinct box model areas that all do a specific job.
- The four main areas of the box model: content box, padding box, border box and margin box.
+The four main areas of the box model: content box, padding box, border box and margin box.
 
 The **content box** is the area that the content lives in. The content can
 control the size of its parent, so this is usually the most variably sized area.
@@ -205,11 +206,11 @@ You can change this by specifying `border-box` sizing:
 
 This alternative box model tells CSS to apply the `width` to the border box
 instead of the content box. This means our `border` and `padding` get
-*pushed in* , so when you set `.my-box` to be `200px` wide, it actually renders
+_pushed in_ , so when you set `.my-box` to be `200px` wide, it actually renders
 at `200px` wide.
 
 Check out how this works in the following interactive demo. When you toggle the
-`box-sizing` value, the blue area shows which CSS is being applied *inside* the
+`box-sizing` value, the blue area shows which CSS is being applied _inside_ the
 box.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/oNBvVpM?height=650&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe> Compare the effects of content-box and border-box sizing.
 

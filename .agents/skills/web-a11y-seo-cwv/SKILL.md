@@ -7,11 +7,11 @@ description: Normative src requirements for accessibility (WCAG 2.2 AA), technic
 
 Three specs are authoritative (sources web.dev, developer.chrome.com and w3.org/TR/WCAG22 read on 2026-11-13, stable ids, RFC 2119 levels):
 
-| Spec | Files | Id prefix |
-|---|---|---|
-| Accessibility | `docs/design/specs/a11y/web.md` + `.json` | `web.a11y.*` |
-| SEO | `docs/design/specs/seo/web.md` + `.json` | `web.seo.*` |
-| Performance | `docs/design/specs/perf/core-web-vitals.md` + `.json` | `web.cwv.*` |
+| Spec          | Files                                                 | Id prefix    |
+| ------------- | ----------------------------------------------------- | ------------ |
+| Accessibility | `docs/design/specs/a11y/web.md` + `.json`             | `web.a11y.*` |
+| SEO           | `docs/design/specs/seo/web.md` + `.json`              | `web.seo.*`  |
+| Performance   | `docs/design/specs/perf/core-web-vitals.md` + `.json` | `web.cwv.*`  |
 
 The JSON (schema `docs/design/specs/spec.schema.json`) is machine-readable: cite the rule id in reviews, commits and tests. Mirrored source texts: `third_party/design-mirror/{web.dev,developer.chrome.com}` (field `sources[].mirror`).
 

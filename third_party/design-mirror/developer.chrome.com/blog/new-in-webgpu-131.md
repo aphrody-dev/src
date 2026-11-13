@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## Clip distances in WGSL
@@ -31,7 +32,8 @@ const device = await adapter.requestDevice({
   requiredFeatures: ["clip-distances"],
 });
 
-const vertexShaderModule = device.createShaderModule({ code: `
+const vertexShaderModule = device.createShaderModule({
+  code: `
   enable clip_distances;
 
   struct VertexOut {
@@ -106,8 +108,14 @@ const device = await adapter.requestDevice({
 
 // Draw call have vertexCount, instanceCount, firstVertex, and firstInstance parameters.
 const drawData = new Uint32Array([
-  3, 1, 0, 0, // First draw call
-  3, 1, 3, 0, // Second draw call
+  3,
+  1,
+  0,
+  0, // First draw call
+  3,
+  1,
+  3,
+  0, // Second draw call
 ]);
 // Create a buffer to store the draw calls.
 const drawBuffer = device.createBuffer({

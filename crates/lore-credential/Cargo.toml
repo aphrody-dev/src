@@ -29,8 +29,10 @@ url = { workspace = true }
 [dev-dependencies]
 ctor = { workspace = true }
 dtor = { workspace = true }
-lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
-lore-credential = { path = ".", package = "aphrody-lore-credential",  features = ["test-util"]  }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base", features = [
+  "test-util",
+] }
+lore-credential = { path = ".", package = "aphrody-lore-credential", features = ["test-util"] }
 
 [features]
 test-util = []
@@ -48,10 +50,10 @@ linux-keyutils-keyring-store = { workspace = true }
 [target.'cfg(target_family = "windows")'.dependencies]
 windows-native-keyring-store = { workspace = true }
 windows-sys = { workspace = true, features = [
-    "Win32_Foundation",
-    "Win32_Security",
-    "Win32_Security_Authorization",
-    "Win32_Storage_FileSystem",
+  "Win32_Foundation",
+  "Win32_Security",
+  "Win32_Security_Authorization",
+  "Win32_Storage_FileSystem",
 ] }
 
 [lints]

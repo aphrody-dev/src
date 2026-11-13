@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Creating and designing accessible content is more than just choosing an
 easy-to-read font. Even with accessible font families, people with low vision,
 cognitive, language, and learning disabilities may struggle to process the text
@@ -103,6 +104,7 @@ Don't
 ```text
 h2 {font-size: 16px;}
 ```
+
 Do
 
 ```text
@@ -113,7 +115,7 @@ Since you cannot predict what every user's needs are, when adding fonts to your
 websites and web applications, be sure to consider the following guidelines:
 
 - Base font sizes should be defined with a relative value (%, rem, or em) to allow for resizing.
-- Limit the number of typeface variations like color, **bold** , ALL CAPS, and *italics* to increase readability. Instead, use methods to emphasize words in your copy, such as asterisks, dashes, or highlighting an individual word.
+- Limit the number of typeface variations like color, **bold** , ALL CAPS, and _italics_ to increase readability. Instead, use methods to emphasize words in your copy, such as asterisks, dashes, or highlighting an individual word.
 - Use markup instead of text on images whenever possible. Screen readers cannot read embedded text on images (without extra code added), and embedded text can also become pixelated when magnified by low-vision users.
 
 ## Structure and layout

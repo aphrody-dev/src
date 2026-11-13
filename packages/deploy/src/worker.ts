@@ -1,7 +1,8 @@
 // aphrody.app platform Worker.
 //   aphrody.app /, /labs              public pages (projects, labs)
 //   aphrody.app /dashboard[...]        Cloudflare Access + JWT check: projects, deployments, logs, promote/rollback
-//   aphrody.app /api/...               JSON API; reads public, writes and logs need the deploy token or Access
+//   aphrody.app /api/...               JSON API; public reads are reduced (name, domains, sha7, state, date),
+//                                      details, writes, logs and insights need the deploy token or Access
 //   <project>-<sha>.aphrody.app        preview of one deployment
 //   <domain of a project>              production of that project (zone aphrody.app)
 //   any other *.aphrody.app host       passed through untouched to its origin (tunnel, R2, other Workers)
@@ -111,6 +112,9 @@ const FALLBACK: Registry = {
 };
 let regCache: { at: number; r: Registry } | null = null;
 
+/** Public form of a commit id: 7 hex digits, enough to tell deployments apart. */
+const short = (sha: string | undefined) => (sha ? sha.slice(0, 7) : null);
+
 async function registry(env: Env, fresh = false): Promise<Registry> {
   if (!fresh && regCache && Date.now() - regCache.at < 10_000)
     return regCache.r;
@@ -201,11 +205,21 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
     return json({ status: "ok", service: "aphrody-deploy" });
   if (seg[0] === "projects" && seg.length === 1 && method === "GET") {
     const v = await views(env, reg);
+    if (await authorize(req, env))
+      return json(
+        v.map(({ project, state, latest }) => ({
+          ...project,
+          production: state?.production ?? null,
+          latest,
+        })),
+      );
     return json(
       v.map(({ project, state, latest }) => ({
-        ...project,
-        production: state?.production ?? null,
-        latest,
+        name: project.name,
+        domains: project.domains,
+        production: short(state?.production),
+        state: latest?.state ?? null,
+        date: latest ? (latest.readyAt ?? latest.createdAt) : null,
       })),
     );
   }
@@ -237,20 +251,39 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
   // GET /api/projects/<p>/deployments
   if (seg[2] === "deployments" && seg.length === 3 && method === "GET") {
     const s = await readState(env.BUCKET, p, true);
+    const list = await deployments(env, p, s);
+    if (await authorize(req, env))
+      return json({
+        production: s?.production ?? null,
+        history: s?.history ?? [],
+        deployments: list,
+      });
     return json({
-      production: s?.production ?? null,
-      history: s?.history ?? [],
-      deployments: await deployments(env, p, s),
+      name: p,
+      domains: project.domains,
+      production: short(s?.production),
+      deployments: list.map((d) => ({
+        sha: short(d.sha),
+        state: d.state,
+        date: d.readyAt ?? d.createdAt,
+      })),
     });
   }
   const a = await authorize(req, env);
   if (!a) return json({ error: "unauthorized" }, 401);
 
-  // GET /api/projects/<p>/insights?days=7: analytics and speed insights (Durable Object Insights)
+  // GET /api/projects/<p>/insights?days=7&by=route|deployment: analytics and speed insights
+  // (Durable Object Insights); `by` adds page views and p75 per metric for each route or deployment.
   if (seg[2] === "insights" && seg.length === 3 && method === "GET") {
     const days = Number(url.searchParams.get("days") ?? 7);
+    const by = url.searchParams.get("by");
+    if (by && by !== "route" && by !== "deployment")
+      return json({ error: "by must be route or deployment" }, 400);
     return json(
-      (await insightsSummary(env, p, days)) ?? { error: "insights not bound" },
+      (await insightsSummary(env, p, {
+        days,
+        by: (by ?? undefined) as "route" | "deployment" | undefined,
+      })) ?? { error: "insights not bound" },
     );
   }
   // GET|PUT /api/projects/<p>/config: edge config (JSON object, read by deployments at /_aphrody/config)
@@ -384,7 +417,7 @@ async function dash(req: Request, env: Env, url: URL): Promise<Response> {
         reg,
         await views(env, reg),
         a.by,
-        await insightsSummary(env, PLATFORM, 7).catch(() => null),
+        await insightsSummary(env, PLATFORM, { days: 7 }).catch(() => null),
       ),
     );
   const project = reg.projects.find((x) => x.name === seg[0]);
@@ -417,7 +450,7 @@ async function dash(req: Request, env: Env, url: URL): Promise<Response> {
   const s = await readState(env.BUCKET, project.name, true);
   const [deps, ins, cfg] = await Promise.all([
     deployments(env, project.name, s),
-    insightsSummary(env, project.name, 7).catch(() => null),
+    insightsSummary(env, project.name, { days: 7 }).catch(() => null),
     readConfig(env.BUCKET, project.name, true),
   ]);
   return html(projectPage(reg, project, s, deps, ins, cfg));

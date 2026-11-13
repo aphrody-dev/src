@@ -26,28 +26,30 @@ Pick this path for a normal install from a published release.
     <!-- tabs:start -->
 
     <!-- tab -->
-    **macOS / Linux**
 
-    ```bash
-    curl -fsSL https://raw.githubusercontent.com/EpicGames/lore/main/scripts/install.sh | bash
-    ```
+   **macOS / Linux**
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/EpicGames/lore/main/scripts/install.sh | bash
+   ```
 
     <!-- tab -->
-    **Windows**
 
-    ```powershell
-    irm https://raw.githubusercontent.com/EpicGames/lore/main/scripts/install.ps1 | iex
-    ```
+   **Windows**
 
-    Or install with [Scoop](https://scoop.sh):
+   ```powershell
+   irm https://raw.githubusercontent.com/EpicGames/lore/main/scripts/install.ps1 | iex
+   ```
 
-    ```powershell
-    scoop install lore
-    ```
+   Or install with [Scoop](https://scoop.sh):
+
+   ```powershell
+   scoop install lore
+   ```
 
     <!-- tabs:end -->
 
-    The installer downloads the binary for your platform and adds it to your PATH. Open a new terminal session for the PATH change to take effect.
+   The installer downloads the binary for your platform and adds it to your PATH. Open a new terminal session for the PATH change to take effect.
 
 ### Build from source and install
 
@@ -55,81 +57,83 @@ Pick this path to run a CLI built from your own checkout.
 
 1. **Build the binary.**
 
-    From the Lore repository root:
+   From the Lore repository root:
 
-    ```bash
-    cargo build --release -p lore-client --bin lore
-    ```
+   ```bash
+   cargo build --release -p lore-client --bin lore
+   ```
 
-    The compiled binary lands at `target/release/lore` (`target\release\lore.exe` on Windows). The first build compiles from source and may take several minutes.
+   The compiled binary lands at `target/release/lore` (`target\release\lore.exe` on Windows). The first build compiles from source and may take several minutes.
 
 2. **Stamp a build version (optional).**
 
-    A binary built from source reports its version as `<version>+local`, for example `0.10.1-nightly+local`. To give it a build name of your own, write the name into the binary:
+   A binary built from source reports its version as `<version>+local`, for example `0.10.1-nightly+local`. To give it a build name of your own, write the name into the binary:
 
-    ```bash
-    cargo run --release -p lore-base --bin lore-stamp -- --build my-build target/release/lore
-    ```
+   ```bash
+   cargo run --release -p lore-base --bin lore-stamp -- --build my-build target/release/lore
+   ```
 
-    The binary then reports `0.10.1-nightly+my-build`. A build name holds letters, digits, and punctuation such as `.`, `-`, and `_`, but no spaces or slashes. On Windows, name `target\release\lore.exe`.
+   The binary then reports `0.10.1-nightly+my-build`. A build name holds letters, digits, and punctuation such as `.`, `-`, and `_`, but no spaces or slashes. On Windows, name `target\release\lore.exe`.
 
 3. **Put `lore` on your PATH.**
 
-    Move the compiled binary into a directory on your PATH so you can run `lore` from any directory.
+   Move the compiled binary into a directory on your PATH so you can run `lore` from any directory.
 
     <!-- tabs:start -->
 
     <!-- tab -->
-    **macOS / Linux**
 
-    Using `/usr/local/bin` (no PATH changes needed):
+   **macOS / Linux**
 
-    ```bash
-    sudo cp target/release/lore /usr/local/bin/lore
-    ```
+   Using `/usr/local/bin` (no PATH changes needed):
 
-    Using `~/bin` instead (no `sudo` required):
+   ```bash
+   sudo cp target/release/lore /usr/local/bin/lore
+   ```
 
-    ```bash
-    mkdir -p ~/bin
-    cp target/release/lore ~/bin/lore
-    ```
+   Using `~/bin` instead (no `sudo` required):
 
-    If you used `~/bin`, add it to your PATH. For zsh (the default on macOS):
+   ```bash
+   mkdir -p ~/bin
+   cp target/release/lore ~/bin/lore
+   ```
 
-    ```bash
-    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
-    source ~/.zshrc
-    ```
+   If you used `~/bin`, add it to your PATH. For zsh (the default on macOS):
 
-    For bash:
+   ```bash
+   echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
+   source ~/.zshrc
+   ```
 
-    ```bash
-    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
-    source ~/.bashrc
-    ```
+   For bash:
+
+   ```bash
+   echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+   source ~/.bashrc
+   ```
 
     <!-- tab -->
-    **Windows (PowerShell)**
 
-    Copy the executable into a directory you control, for example `%USERPROFILE%\bin`:
+   **Windows (PowerShell)**
 
-    ```powershell
-    New-Item -ItemType Directory -Force "$env:USERPROFILE\bin"
-    Copy-Item target\release\lore.exe "$env:USERPROFILE\bin\lore.exe"
-    ```
+   Copy the executable into a directory you control, for example `%USERPROFILE%\bin`:
 
-    Add that directory to your PATH:
+   ```powershell
+   New-Item -ItemType Directory -Force "$env:USERPROFILE\bin"
+   Copy-Item target\release\lore.exe "$env:USERPROFILE\bin\lore.exe"
+   ```
 
-    ```powershell
-    [Environment]::SetEnvironmentVariable(
-      "Path",
-      [Environment]::GetEnvironmentVariable("Path", "User") + ";$env:USERPROFILE\bin",
-      "User"
-    )
-    ```
+   Add that directory to your PATH:
 
-    Open a new terminal afterward. An existing terminal won't reflect the PATH change.
+   ```powershell
+   [Environment]::SetEnvironmentVariable(
+     "Path",
+     [Environment]::GetEnvironmentVariable("Path", "User") + ";$env:USERPROFILE\bin",
+     "User"
+   )
+   ```
+
+   Open a new terminal afterward. An existing terminal won't reflect the PATH change.
 
     <!-- tabs:end -->
 
@@ -140,6 +144,7 @@ The `lore completions` command generates and installs shell completions for `lor
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **zsh**
 
 ```bash
@@ -149,6 +154,7 @@ lore completions zsh ~/.zsh/completions
 Make sure the target directory is on your `fpath`, then restart your shell.
 
 <!-- tab -->
+
 **bash**
 
 ```bash
@@ -158,6 +164,7 @@ lore completions bash > ~/.local/share/bash-completion/completions/lore
 Restart your shell to load the completions.
 
 <!-- tab -->
+
 **PowerShell**
 
 ```powershell

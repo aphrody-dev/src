@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Nishu Goel is a renowned web engineer from India, Google Developer Expert for Angular and web technologies. She told us about her community involvement, career plans and the best ways to learn web development.
 
- Monika Janota
+Monika Janota
 
 Nishu Goel is a renowned web engineer from India, Google Developer Expert for Angular and web technologies, Microsoft Most Valuable Professional. She's the author of [Step by Step Angular Routing](https://www.amazon.com/Step-Angular-Routing-Nishu-Goel/dp/9388511662) (BPB, 2019) and [A Hands-on Guide to Angular](https://www.educative.io/courses/a-hands-on-guide-to-angular) (Educative, 2021) as well as the author of Web Almanac 2021 JavaScript chapter. Nishu currently works at epilot GmbH as a full stack engineer. She told us about her community involvement, career plans and the best ways to learn web development.
 

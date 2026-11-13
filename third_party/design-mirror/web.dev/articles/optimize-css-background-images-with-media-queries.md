@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Demián Renzulli [X](https://twitter.com/drenzulli) [GitHub](https://github.com/demianrenzulli)
 
 > [!CAUTION]
@@ -40,7 +41,8 @@ You can see the styles that control the background image in [style.css](https://
 body {
   background-position: center center;
   background-attachment: fixed;
-  background-repeat: no-repeat; background-size: cover;
+  background-repeat: no-repeat;
+  background-size: cover;
   background-image: url(images/background-desktop.jpg);
 }
 ```
@@ -71,12 +73,12 @@ The following steps can be used to apply media queries to [the site](https://use
 
 - In `style.css` remove the line that contains the background image URL:
 
-    body {
-      background-position: center center;
-      background-attachment: fixed;
-      background-repeat: no-repeat; background-size: cover;
-      background-image: url(images/background-desktop.jpg);
-    }
+  body {
+  background-position: center center;
+  background-attachment: fixed;
+  background-repeat: no-repeat; background-size: cover;
+  background-image: url(images/background-desktop.jpg);
+  }
 
 - Next, create a breakpoint for each screen width, based on the common dimensions in pixels that mobile, tablet, and desktop screens usually have:
 
@@ -84,9 +86,9 @@ For mobile:
 
 ```css
 @media (max-width: 480px) {
-    body {
-        background-image: url(images/background-mobile.jpg);
-    }
+  body {
+    background-image: url(images/background-mobile.jpg);
+  }
 }
 ```
 
@@ -94,9 +96,9 @@ For tablets:
 
 ```css
 @media (min-width: 481px) and (max-width: 1024px) {
-    body {
-        background-image: url(images/background-tablet.jpg);
-    }
+  body {
+    background-image: url(images/background-tablet.jpg);
+  }
 }
 ```
 
@@ -104,9 +106,9 @@ For desktop devices:
 
 ```css
 @media (min-width: 1025px) {
-    body {
-        background-image: url(images/background-desktop.jpg);
-   }
+  body {
+    background-image: url(images/background-desktop.jpg);
+  }
 }
 ```
 
@@ -136,7 +138,7 @@ The size of the new mobile background is **67% smaller** than the desktop one.
 
 Elements with CSS background images are considered a candidate for [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt), however, CSS background images [are not discoverable by the browser preload scanner](https://web.dev/articles/preload-scanner.md.txt#css_background_images), which means you could be delaying your site's LCP if you're not careful.
 
-The first option you should consider is whether your LCP candidate image could work in an `` element with `srcset` and `sizes` attributes for responsiveness. The browser preload scanner *will* discover `` elements, and send requests for them while the parser is blocked on rendering.
+The first option you should consider is whether your LCP candidate image could work in an ``element with `srcset` and `sizes` attributes for responsiveness. The browser preload scanner *will* discover`` elements, and send requests for them while the parser is blocked on rendering.
 
 If you can't (or don't want to) avoid using a CSS background image, the second option would be to [preload responsive images](https://web.dev/articles/preload-responsive-images.md.txt) to ensure you preload the right image for the proper viewport size. The `<link>` elements `media`, `imagesrcset`, and `imagesizes` attributes hint to the browser that a given resource hint only applies in certain viewport conditions, avoiding multiple wasted preloads when you only want to load the one resource that's a fit for the current viewport.
 

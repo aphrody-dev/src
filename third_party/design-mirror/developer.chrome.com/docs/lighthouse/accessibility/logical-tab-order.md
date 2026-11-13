@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Many different users rely on the keyboard to navigate applications,
 from users with temporary and permanent motor impairments
 to users who use keyboard shortcuts to be more efficient and productive.

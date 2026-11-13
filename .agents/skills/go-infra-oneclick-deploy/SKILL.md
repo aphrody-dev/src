@@ -25,10 +25,13 @@ Activate this skill when packaging OCI v1.1 container images without a Docker da
    ```
 
 ## Regional Egress Invariant
+
 Node roles come from `infra/deploy.toml` (`[nodes.*].role`), never from this skill:
+
 - `usa` (`ssh prd`) hosts all production backends (`role = "production"`, `allow_non_google_workloads = true`).
 - `fr2` (`ssh cdn`) is the proxy, vhost and CDN edge.
 - `fr1` (`ssh vps`) builds Chromium and LLVM only; nothing is deployed there.
 
 ## Progressive Disclosure Reference
+
 - OCI v1.1 layout details, R2 `AWS4-HMAC-SHA256` signing, and `infra_go.dll` C-shared exports: see [`references/oci-fleet-and-ffi.md`](./references/oci-fleet-and-ffi.md).

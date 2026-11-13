@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 006: Color Part One](https://thecsspodcast.libsyn.com/006-color-part-1-usage)
 
 Color is an important part of any website and in CSS there are many options for
@@ -112,7 +113,7 @@ White is the exact opposite: `rgb(255 255 255)` or `rgb(100% 100% 100%)`.
 
 An alpha is set in `rgb()` in one of two ways.
 Either add a `/` **after** the red, green and blue parameters,
-or use the [`rgba()`](https://web.dev/%3Chttps://developer.mozilla.org/docs/Web/CSS/color_value/rgba()%3E) function.
+or use the [`rgba()`](<https://web.dev/%3Chttps://developer.mozilla.org/docs/Web/CSS/color_value/rgba()%3E>) function.
 The alpha can be defined with a percentage or a decimal between 0 and 1.
 For example, to set a 50% alpha black in modern browsers, write: `rgb(0 0 0 / 50%)` or `rgb(0 0 0 / 0.5)`.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/dyNomWW?height=430&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen dyNomWW by web-dot-dev on Codepen"></iframe>
@@ -138,7 +139,7 @@ A fully desaturated color (with a saturation of `0%`) will appear grayscale.
 And finally, lightness is the parameter which describes the scale from white to black of added light.
 A lightness of `100%` will always give you white.
 
-Using the [`hsl()`](https://web.dev/%3Chttps://developer.mozilla.org/docs/Web/CSS/color_value/hsl()%3E) color function,
+Using the [`hsl()`](<https://web.dev/%3Chttps://developer.mozilla.org/docs/Web/CSS/color_value/hsl()%3E>) color function,
 you define a true black by writing `hsl(0 0% 0%)`, or even `hsl(0deg 0% 0%)`.
 This is because the hue parameter defines the degree on the color wheel,
 which if you use the number type, is **0-360** .
@@ -158,8 +159,8 @@ Both saturation and lightness are defined with percentages.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/poRJLQo?height=430&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen poRJLQo by web-dot-dev on Codepen"></iframe>
 
 Alpha is defined in `hsl()`,
-in the same way as `rgb()` by adding a `/` after the hue, saturation and lightness parameters *or* by using the
-[`hsla()`](https://web.dev/%3Chttps://developer.mozilla.org/docs/Web/CSS/color_value/hsla()%3E) function.
+in the same way as `rgb()` by adding a `/` after the hue, saturation and lightness parameters _or_ by using the
+[`hsla()`](<https://web.dev/%3Chttps://developer.mozilla.org/docs/Web/CSS/color_value/hsla()%3E>) function.
 The alpha can be defined with a percentage or a decimal between 0 and 1.
 For example, to set a 50% alpha black, use: `hsl(0 0% 0% / 50%)` or `hsl(0 0% 0% / 0.5)`.
 Using the `hsla()` function, write: `hsla(0, 0%, 0%, 50%)` or `hsla(0, 0%, 0%, 0.5)`.
@@ -235,7 +236,7 @@ saturation, while keeping the hue and lightness.
 
 ```css
 h1 {
-  color: oklab(75% 0.1 0.1)
+  color: oklab(75% 0.1 0.1);
 }
 ```
 
@@ -260,7 +261,7 @@ light or saturated a color appears.
 
 ```css
 h1 {
-  color: oklch(80% 0.1 200)
+  color: oklch(80% 0.1 200);
 }
 ```
 

@@ -2,4 +2,11 @@
    (FILL, GRAD, opsz, wght) des icônes de [symbols] dans assets/brand/brand.toml, généré par `ay brand build`.
    Usage : <md-icon>terminal</md-icon> ou <span class="material-symbols-rounded">terminal</span>. */
 @import "../../../assets/brand/gen/symbols/symbols.css";
-md-icon { font-family: "Material Symbols Rounded"; font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
+md-icon {
+  font-family: "Material Symbols Rounded";
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}

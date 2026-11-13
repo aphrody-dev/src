@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 HTTP caching can speed up your page load time on repeat visits.
 
 When a browser requests a resource,
 the server providing the resource can tell the browser
-how long it should temporarily store or *cache* the resource.
+how long it should temporarily store or _cache_ the resource.
 For any subsequent request for that resource,
 the browser uses its local copy rather than getting it from the network.
 
@@ -89,7 +90,7 @@ check its HTTP header data:
 1. Click the URL of the request, under the **Name** column of the Requests table.
 2. Click the **Headers** tab.
 
- Inspecting the `Cache-Control` header via the **Headers** tab.
+Inspecting the `Cache-Control` header via the **Headers** tab.
 
 ## Stack-specific guidance
 

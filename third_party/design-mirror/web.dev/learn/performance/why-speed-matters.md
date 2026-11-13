@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Consumers increasingly rely on the web to access digital content and services.
 If you look at your website's analytics, you can probably see this story playing
 out in your own data. Consumers are also more demanding than they've ever been,
@@ -20,7 +21,6 @@ factors in how successful online ventures can be.
 
 ## Performance is about retaining users
 
->
 > Thanks to the collaboration with Google and the introduction of LCP as the
 > main KPI for page performance, it was possible to significantly improve the
 > customer experience of our ecommerce.
@@ -41,14 +41,14 @@ consider:
 - [How Renault improved its bounce and conversion rates by measuring and
   optimizing Largest Contentful Paint](https://web.dev/case-studies/renault)
 
-Studies have also shown the *negative* impact that poor performance can have on
+Studies have also shown the _negative_ impact that poor performance can have on
 business outcomes. As an example, [the BBC found they lost an additional 10% of
 users for every additional second their site took to load](https://www.creativebloq.com/features/how-the-bbc-builds-websites-that-scale). If you care about
 retaining users, then you should be focusing on performance!
 
 ## Performance is about improving conversions
 
-While *retaining* users is crucial to improving conversions, performance can
+While _retaining_ users is crucial to improving conversions, performance can
 also have a material effect on whether your website's users follow through. Slow
 sites have a negative impact on revenue, and fast sites are shown to increase
 conversion rates and improve business outcomes, as these select case studies can
@@ -77,7 +77,7 @@ to appear. Until this happens, there's no user experience to speak of. This lack
 of an experience is fleeting on fast connections. On slower connections,
 however, users are forced to wait. Users may experience more challenges as page
 resources slowly trickle in.
- A comparison of page load on a very slow connection (top) versus a faster connection (bottom).
+A comparison of page load on a very slow connection (top) versus a faster connection (bottom).
 
 Performance is a foundational aspect of good user experiences. When sites ship
 lots of code, browsers must use megabytes of the user's data plan to download

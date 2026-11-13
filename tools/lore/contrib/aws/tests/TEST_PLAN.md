@@ -8,15 +8,15 @@ Run these steps to confirm the example works end-to-end before merging.
 
 ## Overview
 
-| Phase | Validates |
-|-------|-----------|
-| [0 — Build Image](#phase-0-build-and-push-container-image) | Server container image built and available |
-| [1 — Deploy](#phase-1-deploy) | Infrastructure deploys successfully |
-| [2 — Health](#phase-2-infrastructure-health) | Both servers running and responding |
+| Phase                                                       | Validates                                                   |
+| ----------------------------------------------------------- | ----------------------------------------------------------- |
+| [0 — Build Image](#phase-0-build-and-push-container-image)  | Server container image built and available                  |
+| [1 — Deploy](#phase-1-deploy)                               | Infrastructure deploys successfully                         |
+| [2 — Health](#phase-2-infrastructure-health)                | Both servers running and responding                         |
 | [3 — Primary](#phase-3-primary-server-data-path-write-tier) | Push and clone work through the primary with data integrity |
-| [4 — Edge](#phase-4-edge--full-client-workflow) | All client operations work through the edge end-to-end |
-| [5 — Resources](#phase-5-aws-resource-validation) | AWS resources correctly configured and populated |
-| [6 — Teardown](#phase-6-destroy) | All resources removed cleanly |
+| [4 — Edge](#phase-4-edge--full-client-workflow)             | All client operations work through the edge end-to-end      |
+| [5 — Resources](#phase-5-aws-resource-validation)           | AWS resources correctly configured and populated            |
+| [6 — Teardown](#phase-6-destroy)                            | All resources removed cleanly                               |
 
 ## Prerequisites
 
@@ -536,6 +536,7 @@ done
 ```
 
 **Expected:**
+
 - `*-fragments`: items (fragment associations)
 - `*-fragment-state`: items (fragment state, one row per hash)
 - `*-mutable`: items (branch pointers)

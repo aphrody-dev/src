@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** This audit has moved into the [Document request latency](https://developer.chrome.com/docs/performance/insights/document-latency.md.txt) insight as of Lighthouse 13. For more information see [What's new in Lighthouse 13](https://developer.chrome.com/blog/lighthouse-13-0.md.txt).
 
@@ -77,7 +78,7 @@ Click the Network tab.
 4. Click the **Headers** tab.
 5. Check the `content-encoding` header in the **Response Headers** section.
 
- The `content-encoding` response header.
+The `content-encoding` response header.
 
 To compare the compressed and decompressed sizes of a response:
 

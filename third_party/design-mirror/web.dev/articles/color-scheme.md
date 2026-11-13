@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
 
 The `color-scheme` CSS property and the corresponding meta tag
@@ -55,8 +56,8 @@ Browser Support
 ### The user agent stylesheet
 
 Before I continue, let me briefly describe what a user agent stylesheet is.
-Most of the time, you can think of the word *user agent* (UA)
-as a fancy way to say *browser* .
+Most of the time, you can think of the word _user agent_ (UA)
+as a fancy way to say _browser_ .
 The UA stylesheet determines the default look and feel of a page.
 As the name suggests, a UA stylesheet is something that depends on the UA in question.
 You can have a look at
@@ -96,7 +97,7 @@ input:matches([type="password"], [type="search"]) {
 
 You may notice some non-standard values for the `color` and `background-color` properties.
 Neither `text` nor `-apple-system-control-background` are valid CSS colors.
-They are WebKit-internal *semantic* colors.
+They are WebKit-internal _semantic_ colors.
 
 Turns out, CSS has standardized semantic system colors.
 They are specified in
@@ -124,7 +125,7 @@ The UA stylesheet then assigns the following CSS only once, and covers both ligh
 */
 body {
   color: CanvasText;
-  background-color: Canvas
+  background-color: Canvas;
 }
 ```
 
@@ -144,10 +145,10 @@ that affects user interface (UI) things such as the default colors of form contr
 and scroll bars, as well as the used values of the CSS system colors.
 The following values are supported:
 
-- *`normal`* Indicates that the element is not aware of color schemes at all,
+- _`normal`_ Indicates that the element is not aware of color schemes at all,
   and so the element should be rendered with the browser's default color scheme.
 
-- *`[ light | dark ]+`* Indicates that the element is aware of and can handle
+- _`[ light | dark ]+`_ Indicates that the element is aware of and can handle
   the listed color schemes, and expresses an ordered preference between them.
 
 > [!NOTE]
@@ -183,7 +184,7 @@ and should also affect the viewport's scroll bars.
 
 Honoring the `color-scheme` CSS property requires the CSS to be first downloaded
 (if it's referenced with `<link rel="stylesheet">`) and to be parsed.
-To aid user agents in rendering the page background with the chosen color scheme *immediately* ,
+To aid user agents in rendering the page background with the chosen color scheme _immediately_ ,
 a `color-scheme` value can also be provided in a
 [`<meta name="color-scheme">`](https://html.spec.whatwg.org/multipage/semantics.html#meta-color-scheme)
 element.
@@ -193,7 +194,7 @@ element.
   The page supports both dark and light color schemes,
   and the page author prefers dark.
 -->
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="dark light" />
 ```
 
 ## Combine `color-scheme` and `prefers-color-scheme`
@@ -229,7 +230,7 @@ To make this clearer, assume the following page:
 
 ```html
 <head>
-  <meta name="color-scheme" content="dark light">
+  <meta name="color-scheme" content="dark light" />
   <style>
     fieldset {
       background-color: gainsboro;
@@ -242,9 +243,7 @@ To make this clearer, assume the following page:
   </style>
 </head>
 <body>
-  <p>
-    Lorem ipsum dolor sit amet, legere ancillae ne vis.
-  </p>
+  <p>Lorem ipsum dolor sit amet, legere ancillae ne vis.</p>
   <form>
     <fieldset>
       <legend>Lorem ipsum</legend>
@@ -265,38 +264,38 @@ with a preference for a dark theme.
 
 Depending on whether the operating system is set to dark or light mode,
 the whole page appears light on dark, or the other way around, based on the user agent stylesheet.
-There is *no* additional developer-provided CSS involved to change the paragraph text
+There is _no_ additional developer-provided CSS involved to change the paragraph text
 or the background color of the page.
 
 Note how the `<fieldset>` element's `background-color` changes
 based on whether dark mode is enabled, following the rules
 in the developer-provided inline stylesheet on the page.
 It is either `gainsboro` or `darkslategray`.
- **Light mode:** Styles specified by the developer and the user agent. The text is black and the background is white as per the user agent stylesheet. The `<fieldset>` element's `background-color` is `gainsboro` as per the inlined developer stylesheet.  **Dark mode:** Styles specified by the developer and the user agent. The text is white and the background is black as per the user agent stylesheet. The `<fieldset>` element's `background-color` is `darkslategray` as per the inlined developer stylesheet.
+**Light mode:** Styles specified by the developer and the user agent. The text is black and the background is white as per the user agent stylesheet. The `<fieldset>` element's `background-color` is `gainsboro` as per the inlined developer stylesheet. **Dark mode:** Styles specified by the developer and the user agent. The text is white and the background is black as per the user agent stylesheet. The `<fieldset>` element's `background-color` is `darkslategray` as per the inlined developer stylesheet.
 
 The `<button>` element's appearance is controlled by the user agent stylesheet.
 Its `color` is set to the
 [`ButtonText`](https://drafts.csswg.org/css-color/#valdef-system-color-buttontext)
 system color, and its `background-color` and the four `border-color`s are set to the system color
 [`ButtonFace`](https://drafts.csswg.org/css-color/#valdef-system-color-buttonface).
- **Light mode:** The `background-color` and the various `border-color`s are set to the [ButtonFace](https://drafts.csswg.org/css-color/#valdef-system-color-buttonface) system color.
+**Light mode:** The `background-color` and the various `border-color`s are set to the [ButtonFace](https://drafts.csswg.org/css-color/#valdef-system-color-buttonface) system color.
 
 Now note how the `<button>` element's `border-color` changes.
-The *computed* value for the `border-top-color` and the `border-bottom-color`
+The _computed_ value for the `border-top-color` and the `border-bottom-color`
 switches from `rgba(0, 0, 0, 0.847)` (blackish) to `rgba(255, 255, 255, 0.847)` (whitish),
 since the user agent updates `ButtonFace` dynamically based on the color scheme.
 The same applies for the `<button>` element's `color`
 that is set to the corresponding system color `ButtonText`.
- **Light mode:** The computed values of the `border-top-color` and the `border-bottom-color` that are both set to `ButtonFace` in the user agent stylesheet are now `rgba(0, 0, 0, 0.847)`.  **Dark mode:** The computed values of the `border-top-color` and the `border-bottom-color` that are both set to `ButtonFace` in the user agent stylesheet are now `rgba(255, 255, 255, 0.847)`.
+**Light mode:** The computed values of the `border-top-color` and the `border-bottom-color` that are both set to `ButtonFace` in the user agent stylesheet are now `rgba(0, 0, 0, 0.847)`. **Dark mode:** The computed values of the `border-top-color` and the `border-bottom-color` that are both set to `ButtonFace` in the user agent stylesheet are now `rgba(255, 255, 255, 0.847)`.
 
 ## Demo
 
 You can see the effects of `color-scheme` applied to a large number of HTML elements
 in a [demo on Glitch](https://color-scheme-demo.glitch.me/).
-The demo *deliberately* shows the WCAG AA and WCAG AAA
+The demo _deliberately_ shows the WCAG AA and WCAG AAA
 [violation](https://webaim.org/resources/contrastchecker/?fcolor=0000EE&bcolor=000000)
 with the link colors mentioned in the warning.
- The [demo](https://color-scheme-demo.glitch.me/) toggled to `color-scheme: light`.  The [demo](https://color-scheme-demo.glitch.me/) toggled to `color-scheme: dark`. Note the WCAG AA and WCAG AAA [violation](https://webaim.org/resources/contrastchecker/?fcolor=0000EE&bcolor=000000) with the link colors.
+The [demo](https://color-scheme-demo.glitch.me/) toggled to `color-scheme: light`. The [demo](https://color-scheme-demo.glitch.me/) toggled to `color-scheme: dark`. Note the WCAG AA and WCAG AAA [violation](https://webaim.org/resources/contrastchecker/?fcolor=0000EE&bcolor=000000) with the link colors.
 
 ## Acknowledgements
 

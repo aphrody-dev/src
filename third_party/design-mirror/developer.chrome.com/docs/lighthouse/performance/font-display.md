@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** This audit has moved into the [Font display](https://developer.chrome.com/docs/performance/insights/font-display.md.txt) insight as of Lighthouse 13. For more information see [What's new in Lighthouse 13](https://developer.chrome.com/blog/lighthouse-13-0.md.txt).
 
@@ -36,12 +37,14 @@ how a font is displayed when used inside a `font-face` style. The following
 
 ```css
 @font-face {
-  font-family: 'Pacifico';
+  font-family: "Pacifico";
   font-style: normal;
   font-weight: 400;
-  src: local('Pacifico Regular'), local('Pacifico-Regular'),
+  src:
+    local("Pacifico Regular"),
+    local("Pacifico-Regular"),
     url(https://fonts.gstatic.com/s/pacifico/v12/FwZY7-Qmy14u9lezJ-6H6MmBp0u-.woff2)
-      format('woff2');
+      format("woff2");
   font-display: swap;
 }
 ```

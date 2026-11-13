@@ -2,13 +2,13 @@
 
 Base retenue : fork `aphrody-labs/brush` de `reubeno/brush` (MIT, v0.4.0 du 2026-05-03, HEAD `f550117d8e` du 2026-11-12) + userland Rust (uutils, rg, fd, sd, jaq, xh). Aucune alternative ne passe le critère « bash.exe natif qui source le snapshot » (voir MATRIX.md). Oils OSH : meilleure compat, mais pas de Windows natif ; port écarté (coût). Plan détaillé : PLAN.md.
 
-| Jalon | Contenu | Critère de sortie vérifiable |
-|---|---|---|
-| S0 Base | fork, CI Windows, install reproductible pinnée | `just shell-install` sur machine vierge produit `bash.exe` + hardlinks ; `CLAUDE_CODE_GIT_BASH_PATH` reconnu (`claude --debug` sans warning) |
-| S1 Bloqueurs Windows | #1359 pipes >4096, #1317 PATHEXT, #1295 quoting, #1251 cd relatif | test : `yes x \| head -c 100000 \| wc -c` = 100000 ; `npx --version` OK ; tests de quoting `"a b" 'c"d'` vers .exe ; 4 PR envoyées upstream |
-| S2 Snapshot | #1086/#1397 alias, #1580 `declare -f`, `shopt` complet | replay de 20 snapshots Claude réels : 0 erreur, `declare -f` aller-retour identique octet pour octet |
-| S3 Chemins | shim `cygpath` (Rust), `/c/x` ↔ `C:\x`, `/dev/null`, `/tmp` | suite de 50 cas de chemins verte ; aucun MSYS sur PATH |
-| S4 Jobs/signaux | job object par commande, Ctrl+C → 130, traps #1540/#1268, `<(...)` #1662/#1294 | timeout Claude tue l'arbre (0 orphelin via `tasklist`) ; `trap -p` conforme |
-| S5 Conformance | suite brush-vs-bash portée sous Windows (oracle = résultats Linux enregistrés) | taux de réussite Windows ≥ 95 % du taux Linux, publié en CI |
-| S6 Quotidien | starship, atuin, carapace (budget snapshot), WT profil | snapshot < 60 000 octets mesuré en CI ; démarrage < 20 ms (hyperfine) |
-| S7 Upstream | tout patch générique remonté ; fork réduit aux shims Windows | diff fork/upstream < 500 lignes hors CI |
+| Jalon                | Contenu                                                                        | Critère de sortie vérifiable                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| S0 Base              | fork, CI Windows, install reproductible pinnée                                 | `just shell-install` sur machine vierge produit `bash.exe` + hardlinks ; `CLAUDE_CODE_GIT_BASH_PATH` reconnu (`claude --debug` sans warning) |
+| S1 Bloqueurs Windows | #1359 pipes >4096, #1317 PATHEXT, #1295 quoting, #1251 cd relatif              | test : `yes x \| head -c 100000 \| wc -c` = 100000 ; `npx --version` OK ; tests de quoting `"a b" 'c"d'` vers .exe ; 4 PR envoyées upstream  |
+| S2 Snapshot          | #1086/#1397 alias, #1580 `declare -f`, `shopt` complet                         | replay de 20 snapshots Claude réels : 0 erreur, `declare -f` aller-retour identique octet pour octet                                         |
+| S3 Chemins           | shim `cygpath` (Rust), `/c/x` ↔ `C:\x`, `/dev/null`, `/tmp`                    | suite de 50 cas de chemins verte ; aucun MSYS sur PATH                                                                                       |
+| S4 Jobs/signaux      | job object par commande, Ctrl+C → 130, traps #1540/#1268, `<(...)` #1662/#1294 | timeout Claude tue l'arbre (0 orphelin via `tasklist`) ; `trap -p` conforme                                                                  |
+| S5 Conformance       | suite brush-vs-bash portée sous Windows (oracle = résultats Linux enregistrés) | taux de réussite Windows ≥ 95 % du taux Linux, publié en CI                                                                                  |
+| S6 Quotidien         | starship, atuin, carapace (budget snapshot), WT profil                         | snapshot < 60 000 octets mesuré en CI ; démarrage < 20 ms (hyperfine)                                                                        |
+| S7 Upstream          | tout patch générique remonté ; fork réduit aux shims Windows                   | diff fork/upstream < 500 lignes hors CI                                                                                                      |

@@ -22,7 +22,13 @@ describe("Depot Native Rust FFI Bridge (depot_ffi.dll)", () => {
   it("calls ffiGixStatus to retrieve repository telemetry", () => {
     const status = ffiGixStatus(SRC_ROOT);
     expect(status).not.toBeNull();
-    expect(status.branch).toBe(Bun.spawnSync(["git", "rev-parse", "--abbrev-ref", "HEAD"], { cwd: SRC_ROOT }).stdout.toString().trim());
+    expect(status.branch).toBe(
+      Bun.spawnSync(["git", "rev-parse", "--abbrev-ref", "HEAD"], {
+        cwd: SRC_ROOT,
+      })
+        .stdout.toString()
+        .trim(),
+    );
     expect(status.tracked_entry_count).toBeGreaterThan(0);
   });
 
@@ -34,14 +40,19 @@ describe("Depot Native Rust FFI Bridge (depot_ffi.dll)", () => {
   });
 
   // Served by @aphrody/core (aphrody_core_capi), skipped where that library is not built.
-  it.skipIf(!loadCore())("calls ffiTreeSitterSymbols to extract AST symbols", () => {
-    const code = "pub struct SovereignEngine;\npub fn run_engine() {}\n";
-    const ast = ffiTreeSitterSymbols("engine.rs", code);
-    expect(ast).not.toBeNull();
-    expect(ast.language).toBe("rust");
-    expect(ast.symbols.some((s: any) => s.name === "SovereignEngine")).toBe(true);
-    expect(ast.symbols.some((s: any) => s.name === "run_engine")).toBe(true);
-  });
+  it.skipIf(!loadCore())(
+    "calls ffiTreeSitterSymbols to extract AST symbols",
+    () => {
+      const code = "pub struct SovereignEngine;\npub fn run_engine() {}\n";
+      const ast = ffiTreeSitterSymbols("engine.rs", code);
+      expect(ast).not.toBeNull();
+      expect(ast.language).toBe("rust");
+      expect(ast.symbols.some((s: any) => s.name === "SovereignEngine")).toBe(
+        true,
+      );
+      expect(ast.symbols.some((s: any) => s.name === "run_engine")).toBe(true);
+    },
+  );
 
   it("calls ffiIngestCodebase to ingest code into JSON digest", () => {
     const res = ffiIngestCodebase(srcPath("crates", "depot-core"), 1000, true);
@@ -51,7 +62,12 @@ describe("Depot Native Rust FFI Bridge (depot_ffi.dll)", () => {
   });
 
   it("calls ffiGraphQuery to query symbol knowledge graph", () => {
-    const queryRes = ffiGraphQuery(srcPath("crates", "depot-core"), "GixEngine", false, 500);
+    const queryRes = ffiGraphQuery(
+      srcPath("crates", "depot-core"),
+      "GixEngine",
+      false,
+      500,
+    );
     expect(queryRes).not.toBeNull();
     expect(queryRes.term).toBe("GixEngine");
     expect(queryRes.context).toContain("GixEngine");
@@ -59,21 +75,77 @@ describe("Depot Native Rust FFI Bridge (depot_ffi.dll)", () => {
 
   it("calls ffiReAuditBytes and ffiLuaTranscode for Lua 5.2 native bytecode", () => {
     const chunk = new Uint8Array([
-      0x1b, 0x4c, 0x75, 0x61, 0x52, 0x00, 0x01, 0x04, 0x08, 0x04, 0x08, 0x00,
-      0x19, 0x93, 0x0d, 0x0a, 0x1a, 0x0a,
-      0, 0, 0, 0, // line
-      0, 0, 0, 0, // last line
-      0, 1, 2, // params, vararg, stack
-      1, 0, 0, 0, // 1 instruction
-      31, 0, 0, 1, // RETURN
-      0, 0, 0, 0, // 0 constants
-      0, 0, 0, 0, // 0 protos
-      1, 0, 0, 0, // 1 upvalue
-      1, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, // 0-len source
-      0, 0, 0, 0, // 0 lineinfo
-      0, 0, 0, 0, // 0 locvars
-      0, 0, 0, 0, // 0 upval names
+      0x1b,
+      0x4c,
+      0x75,
+      0x61,
+      0x52,
+      0x00,
+      0x01,
+      0x04,
+      0x08,
+      0x04,
+      0x08,
+      0x00,
+      0x19,
+      0x93,
+      0x0d,
+      0x0a,
+      0x1a,
+      0x0a,
+      0,
+      0,
+      0,
+      0, // line
+      0,
+      0,
+      0,
+      0, // last line
+      0,
+      1,
+      2, // params, vararg, stack
+      1,
+      0,
+      0,
+      0, // 1 instruction
+      31,
+      0,
+      0,
+      1, // RETURN
+      0,
+      0,
+      0,
+      0, // 0 constants
+      0,
+      0,
+      0,
+      0, // 0 protos
+      1,
+      0,
+      0,
+      0, // 1 upvalue
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0, // 0-len source
+      0,
+      0,
+      0,
+      0, // 0 lineinfo
+      0,
+      0,
+      0,
+      0, // 0 locvars
+      0,
+      0,
+      0,
+      0, // 0 upval names
     ]);
 
     const audit = ffiReAuditBytes("test.luac", chunk);

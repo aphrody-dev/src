@@ -11,16 +11,16 @@ Règle : **une toolchain = celle du canal Chromium suivi**, publiée sur R2 par 
 
 ## 2. Qui compile quoi avec quoi
 
-| Composant | Compilateur / éditeur de liens | LTO | Notes |
-|---|---|---|---|
-| Chromium, V8, Dawn, Skia | clang/clang-cl + lld de Chromium | ThinLTO (official build) | déjà le cas (args/labs_agent.gn) |
-| Rust (src) | rustc de Chromium (ou nightly appariée, `rustc -vV`) + lld | `-Clinker-plugin-lto`, thin ; fat pour `min` | Windows : clang-cl + lld-link, `AR=llvm-lib` (lib.exe plante sur les .obj LTO) [V doc rustc] |
-| C / C++ (src, vcpkg) | clang-cl / clang via triplet custom `VCPKG_CHAINLOAD_TOOLCHAIN_FILE` → toolchain.cmake LLVM | `-flto=thin` | [V learn.microsoft.com/vcpkg/users/triplets] |
-| LiberNT / ReactOS | clang-cl (cible PE) au lieu de RosBE GCC/MinGW | à mesurer | ReactOS a un support clang partiel [NV] |
+| Composant                          | Compilateur / éditeur de liens                                                                                                                                              | LTO                                                                                                                     | Notes                                                                                                                                                         |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Chromium, V8, Dawn, Skia           | clang/clang-cl + lld de Chromium                                                                                                                                            | ThinLTO (official build)                                                                                                | déjà le cas (args/labs_agent.gn)                                                                                                                              |
+| Rust (src)                         | rustc de Chromium (ou nightly appariée, `rustc -vV`) + lld                                                                                                                  | `-Clinker-plugin-lto`, thin ; fat pour `min`                                                                            | Windows : clang-cl + lld-link, `AR=llvm-lib` (lib.exe plante sur les .obj LTO) [V doc rustc]                                                                  |
+| C / C++ (src, vcpkg)               | clang-cl / clang via triplet custom `VCPKG_CHAINLOAD_TOOLCHAIN_FILE` → toolchain.cmake LLVM                                                                                 | `-flto=thin`                                                                                                            | [V learn.microsoft.com/vcpkg/users/triplets]                                                                                                                  |
+| LiberNT / ReactOS                  | clang-cl (cible PE) au lieu de RosBE GCC/MinGW                                                                                                                              | à mesurer                                                                                                               | ReactOS a un support clang partiel [NV]                                                                                                                       |
 | bun (réécrit en Rust, plus de Zig) | scripts TS + ninja ; CMake 3.30.5 seulement pour les deps ; Rust nightly-2026-09-15, LLVM 23.1.1 (clang et rustc sur le même majeur) [V oven-sh/bun ccb3611f2a, 2026-11-12] | ThinLTO cross-language bun+JSC+Rust par défaut en release ; PGO C++/Rust + orderfile, PGO indisponible sous Windows [V] | écart : Chromium 157 = LLVM 24, bun = LLVM 23. Deux toolchains tant que bun n'est pas porté sur 24 (à tester sur prd). Détails : docs/bun/AOT-LTO-FFI-2026.md |
-| node-api (N-API) addons | clang-cl + lld ; ABI C stable | thin entre l'addon et les libs C/Rust | via napi-rs pour Rust [NV] |
-| .NET 10/11 | NativeAOT (ILCompiler) ; lien natif link.exe ou lld-link [NV] | pas de LTO IL↔LLVM | interop : `[LibraryImport]` vers les libs C ABI ; node-api-dotnet pour le pont JS [NV] |
-| Go, Zig, Python | Zig = LLVM (zig cc) ; Go = son propre backend (cgo via clang) ; Python = extensions via clang | Zig oui ; Go non | séparés par langage, liens uniquement via ABI C |
+| node-api (N-API) addons            | clang-cl + lld ; ABI C stable                                                                                                                                               | thin entre l'addon et les libs C/Rust                                                                                   | via napi-rs pour Rust [NV]                                                                                                                                    |
+| .NET 10/11                         | NativeAOT (ILCompiler) ; lien natif link.exe ou lld-link [NV]                                                                                                               | pas de LTO IL↔LLVM                                                                                                      | interop : `[LibraryImport]` vers les libs C ABI ; node-api-dotnet pour le pont JS [NV]                                                                        |
+| Go, Zig, Python                    | Zig = LLVM (zig cc) ; Go = son propre backend (cgo via clang) ; Python = extensions via clang                                                                               | Zig oui ; Go non                                                                                                        | séparés par langage, liens uniquement via ABI C                                                                                                               |
 
 Conflit ouvert (à trancher par le propriétaire) : nt utilise MSVC (« full msv » : D3D12, NativeAOT, CMake VS 2026). clang-cl reste compatible ABI MSVC (mêmes en-têtes et STL) : une migration progressive est possible, une par cible.
 
@@ -37,17 +37,18 @@ crates/      Rust uniquement            packages/   TypeScript (bun) uniquement
 native/c/    C pur                      native/cpp/ C++23
 dotnet/      C# .NET 10/11              go/  zig/  python/
 ```
+
 Pas de fichier d'un langage dans le dossier d'un autre, sauf build.rs et les bindings générés (dans `gen/`, ignorés par git).
 
 ## 5. Purge automatique (`ay prune`, CI)
 
-| Langage | Mort / inutilisé détecté par |
-|---|---|
-| Rust | `cargo machete` / `cargo udeps` (deps), `-Wunused` + `dead_code` en `deny`, crates sans dépendant ni bin → signalés |
-| TS | bun (imports inutilisés) + analyse des exports non référencés (style knip) [NV : choisir un outil compatible bun] |
-| C/C++ | clang `-Wunused*`, `--gc-sections` / `/OPT:REF` + rapport du linker (symboles retirés) |
-| .NET | analyseurs IDE0051/IDE0052, trimming NativeAOT (rapport) |
-| Tous | couverture réelle (llvm-cov, profils PGO) : tout code jamais exécuté par les tests ni par les profils de prod passe en revue de suppression |
+| Langage | Mort / inutilisé détecté par                                                                                                                |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rust    | `cargo machete` / `cargo udeps` (deps), `-Wunused` + `dead_code` en `deny`, crates sans dépendant ni bin → signalés                         |
+| TS      | bun (imports inutilisés) + analyse des exports non référencés (style knip) [NV : choisir un outil compatible bun]                           |
+| C/C++   | clang `-Wunused*`, `--gc-sections` / `/OPT:REF` + rapport du linker (symboles retirés)                                                      |
+| .NET    | analyseurs IDE0051/IDE0052, trimming NativeAOT (rapport)                                                                                    |
+| Tous    | couverture réelle (llvm-cov, profils PGO) : tout code jamais exécuté par les tests ni par les profils de prod passe en revue de suppression |
 
 Règles : crates et packages « minces » (une fonction de réexport, ou moins de N lignes sans logique) fusionnés dans leur parent ; doublons détectés par hash d'AST tree-sitter (`ay graph dup`) ; legacy (aucun appel en 90 jours de profils) proposé à la suppression. `ay prune --apply` ouvre une PR, jamais de suppression silencieuse.
 
@@ -74,12 +75,12 @@ Fichiers : `infra/vcpkg/triplets/x64-linux-llvm.cmake`, `x64-windows-llvm.cmake`
 
 Validation sur fr2 (Ubuntu 26.10, 6 cœurs, `nice`, `VCPKG_MAX_CONCURRENCY=4`) [V] :
 
-| Élément | Résultat |
-| --- | --- |
-| vcpkg | fork aphrody-labs/vcpkg `177e817` (shallow), outil 2026-10-29 |
-| clang | 23.1.6 (apt.llvm.org `llvm-toolchain-resolute-23` ; la distro n'a que 22.1.8, pas de dépôt apt.llvm.org pour 26.10) |
-| rustc | nightly 1.102.0 (3ef0c22cd 2026-11-11), LLVM 23.1.5 ; même majeure que clang, LTO croisé OK |
-| zlib 1.3.2#3, zstd 1.5.7, fmt | build OK en 23 s ; libz.a 15 objets, libzstd.a 37, libfmt.a 2 : tous `LLVM IR bitcode` (`file`), producteur `LLVM23.1.6` (`llvm-bcanalyzer -dump`) |
+| Élément                                | Résultat                                                                                                                                                                         |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| vcpkg                                  | fork aphrody-labs/vcpkg `177e817` (shallow), outil 2026-10-29                                                                                                                    |
+| clang                                  | 23.1.6 (apt.llvm.org `llvm-toolchain-resolute-23` ; la distro n'a que 22.1.8, pas de dépôt apt.llvm.org pour 26.10)                                                              |
+| rustc                                  | nightly 1.102.0 (3ef0c22cd 2026-11-11), LLVM 23.1.5 ; même majeure que clang, LTO croisé OK                                                                                      |
+| zlib 1.3.2#3, zstd 1.5.7, fmt          | build OK en 23 s ; libz.a 15 objets, libzstd.a 37, libfmt.a 2 : tous `LLVM IR bitcode` (`file`), producteur `LLVM23.1.6` (`llvm-bcanalyzer -dump`)                               |
 | Rust `-Clinker-plugin-lto` + libzstd.a | `rustc -Clinker-plugin-lto -Clinker=clang -Clink-arg=-fuse-ld=lld -l static=zstd` : lien OK, aller-retour compress/decompress OK, aucun avertissement après correction du triple |
 
 Notes : installés sur fr2 et laissés en place : `clang-23 lld-23 llvm-23` (apt.llvm.org, `/etc/apt/sources.list.d/llvm23.list`), `zip`, rustup nightly minimal (la toolchain `stable` de fr2 est cassée : « missing manifest »). Arbre de travail et cache binaire vcpkg supprimés (~460 Mo).

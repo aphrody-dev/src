@@ -7,13 +7,14 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 With over 100 HTML elements and the ability to create custom elements, there are
 infinite ways to mark up your content. But, some ways---notably
-*semantically*---are better than others.
+_semantically_---are better than others.
 
-*Semantic* means "relating to meaning". Writing semantic HTML means using HTML elements to structure your content based on each element's meaning, not its appearance.
+_Semantic_ means "relating to meaning". Writing semantic HTML means using HTML elements to structure your content based on each element's meaning, not its appearance.
 
-This series hasn't covered many HTML elements yet, but even without knowing HTML, the following two code snippets show how semantic markup can give content context. Both use a word count instead of *ipsum lorem* to save some scrolling---use your imagination to expand "thirty words" into 30 words:
+This series hasn't covered many HTML elements yet, but even without knowing HTML, the following two code snippets show how semantic markup can give content context. Both use a word count instead of _ipsum lorem_ to save some scrolling---use your imagination to expand "thirty words" into 30 words:
 
 The first code snippet uses `<div>` and `<span>`, two elements with no semantic value.
 
@@ -43,7 +44,7 @@ The first code snippet uses `<div>` and `<span>`, two elements with no semantic 
   </div>
 </div>
 <div>
-   <span>five words</span>
+  <span>five words</span>
 </div>
 ```
 
@@ -95,13 +96,13 @@ As the browser parses the content received, it builds the document object model 
 > **Tip:** Take the [Learn Accessibility course](https://web.dev/learn/accessibility.md.txt) to gain more expertise in making your content accessible.
 
 Let's compare how both of these document structures are rendered in the Firefox accessibility panel:
- Figure 1. A list of nodes which are all links or text.  Figure 2. A list of nodes with clear landmarks.
+Figure 1. A list of nodes which are all links or text. Figure 2. A list of nodes with clear landmarks.
 
 In figure 2, there are four landmark roles in the second code block. It uses semantic landmarks conveniently named `<header>`, `<main>`, `<footer>`, and `<nav>` for "navigation."
 Landmarks provide structure to web content and helps indicate important sections of content so that they're keyboard-navigable for screen reader users.
 
 The `<header>` and `<footer>` are landmarks, with the roles of `banner` and `contentinfo` respectively, when they are not nested in other landmarks. Chrome's AOM shows this as follows:
- Figure 3. The first code snippet.  Figure 4. The second code snippet.
+Figure 3. The first code snippet. Figure 4. The second code snippet.
 
 Looking at Chrome developer tools, you'll note a significant difference between the accessibility object model when using semantic elements versus when you don't.
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Most images are part of your content, but icons are part of your user interface.
 They should scale and adapt in the same way that the text of your UI scales and adapts.
 
@@ -23,6 +24,7 @@ PNGs (and JPGs, WebP, and AVIF) are bitmap images. Bitmap images store informati
 ```html
 
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/YzrKoWY?height=360&amp;theme-id=dark&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen YzrKoWY by web-dot-dev on Codepen"></iframe>
 
 XML is used to write the instructions in an SVG file. This is a markup language, like HTML.
@@ -43,20 +45,27 @@ You can even put SVG inside HTML.
 
 ```html
 <figure>
-  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="-21 -21 42 42" width="100" height="100">
+  <svg
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-21 -21 42 42"
+    width="100"
+    height="100"
+  >
     <title>Smiling face</title>
-    <circle r="20" fill="yellow" stroke="black"/>
-    <ellipse rx="2.5" ry="4" cx="-6" cy="-7" fill="black"/>
-    <ellipse rx="2.5" ry="4" cx="6" cy="-7" fill="black"/>
-    <path stroke="black" d="M -12,5 A 13.5,13.5,0 0,0 12,5 A 13,13,0 0,1 -12,5"/>
+    <circle r="20" fill="yellow" stroke="black" />
+    <ellipse rx="2.5" ry="4" cx="-6" cy="-7" fill="black" />
+    <ellipse rx="2.5" ry="4" cx="6" cy="-7" fill="black" />
+    <path
+      stroke="black"
+      d="M -12,5 A 13.5,13.5,0 0,0 12,5 A 13,13,0 0,1 -12,5"
+    />
   </svg>
-  <figcaption>
-  A description of the image.
-  </figcaption>
+  <figcaption>A description of the image.</figcaption>
 </figure>
 ```
 
-If you embed an SVG like that, that's one less request that the browser needs to make. There'll be no wait for the image to download because it arrives with the HTML ...*in* the HTML! Also, as you'll soon find out, embedding SVGs like this gives you more control over styling them too.
+If you embed an SVG like that, that's one less request that the browser needs to make. There'll be no wait for the image to download because it arrives with the HTML ..._in_ the HTML! Also, as you'll soon find out, embedding SVGs like this gives you more control over styling them too.
 
 ## Icons and text
 
@@ -68,19 +77,15 @@ If you have a button or a link with text and an icon inside it, the icon is pres
 > **Note:** An empty `alt` attribute is not the same as a missing `alt` attribute. Always provide an `alt` attribute even if an image is presentational and the `alt` attribute has no content.
 
 ```html
-<button>
-
-Menu
-</button>
+<button>Menu</button>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/qBPWzam?height=200&amp;theme-id=dark&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen qBPWzam by web-dot-dev on Codepen"></iframe>
 
 Because CSS is for presentation, you could put the icon in your CSS as a background image.
 
 ```html
-<button class="menu">
-Menu
-</button>
+<button class="menu">Menu</button>
 ```
 
 ```css
@@ -92,20 +97,28 @@ Menu
   padding-inline-start: 2em;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/gOGYNwj?height=200&amp;theme-id=dark&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen gOGYNwj by web-dot-dev on Codepen"></iframe>
 
 If you put the SVG inside your HTML, use the `aria-hidden` attribute to hide it from assistive technology.
 
 ```html
 <button class="menu">
-  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80" width="16" height="16">
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 100 80"
+    width="16"
+    height="16"
+  >
     <rect width="100" height="20" />
-    <rect y="30" width="100" height="20"/>
-    <rect y="60" width="100" height="20"/>
+    <rect y="30" width="100" height="20" />
+    <rect y="60" width="100" height="20" />
   </svg>
   Menu
 </button>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/bGobPwz?height=200&amp;theme-id=dark&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen bGobPwz by web-dot-dev on Codepen"></iframe>
 
 > [!NOTE]
@@ -123,32 +136,37 @@ If you use an `img` element, the icon gets its accessible name from the `alt` at
 > **Note:** Usually the `alt` attribute describes the contents of the image ("Three horizontal lines.") but with standalone icons, the `alt` attribute describes the meaning of the image ("Menu").
 
 ```html
-<button>
-
-</button>
+<button></button>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/MWEgMbY?height=200&amp;theme-id=dark&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen MWEgMbY by web-dot-dev on Codepen"></iframe>
 
 Another option is to put the accessible name on the link or button itself and declare that the image is presentational. Use the `aria-label` attribute to provide the accessible name.
 
 ```html
-<button aria-label="Menu">
-
-</button>
+<button aria-label="Menu"></button>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VwMZJmr?height=200&amp;theme-id=dark&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VwMZJmr by web-dot-dev on Codepen"></iframe>
 
 If you put the SVG inside your HTML, use the `aria-label` attribute on the link or button to give it an accessible name and use the `aria-hidden` attribute on the icon.
 
 ```html
 <button aria-label="Menu">
-  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80" width="16" height="16">
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 100 80"
+    width="16"
+    height="16"
+  >
     <rect width="100" height="20" />
-    <rect y="30" width="100" height="20"/>
-    <rect y="60" width="100" height="20"/>
+    <rect y="30" width="100" height="20" />
+    <rect y="60" width="100" height="20" />
   </svg>
 </button>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/OJxLebB?height=200&amp;theme-id=dark&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen OJxLebB by web-dot-dev on Codepen"></iframe>
 
 ## Styling icons
@@ -159,7 +177,7 @@ In the following example, the `rect` elements inside the SVG have a `fill` value
 
 ```css
 button {
- color: blue;
+  color: blue;
 }
 button rect {
   fill: blue;
@@ -178,6 +196,7 @@ button:focus rect {
   fill: red;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/rNGBEje?height=200&amp;theme-id=dark&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen rNGBEje by web-dot-dev on Codepen"></iframe>
 
 ## Resources

@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sharing a WebAssembly module between same-site environments will be restricted to just same-origin.
 
- Eiji Kitamura [X](https://twitter.com/agektmr) [GitHub](https://github.com/agektmr) [Mastodon](https://infosec.exchange/@agektmr) [Bluesky](https://bsky.app/profile/agektmr.com)
+Eiji Kitamura [X](https://twitter.com/agektmr) [GitHub](https://github.com/agektmr) [Mastodon](https://infosec.exchange/@agektmr) [Bluesky](https://bsky.app/profile/agektmr.com)
 
 Sharing a WebAssembly (Wasm) module between [same-site but cross-origin](https://web.dev/articles/same-site-same-origin) environments will be
 deprecated to allow [agent clusters](https://html.spec.whatwg.org/multipage/origin.html#origin-keyed-agent-clusters)
@@ -30,8 +31,14 @@ Wasm module on `https://iframe.site.example`:
 
 ```javascript
 (async () => {
-  const instance = await WebAssembly.instantiateStreaming(fetch('./add.wasm'), {});
-  iframe.contentWindow.postMessage(instance.module, `https://main.site.example`);
+  const instance = await WebAssembly.instantiateStreaming(
+    fetch("./add.wasm"),
+    {},
+  );
+  iframe.contentWindow.postMessage(
+    instance.module,
+    `https://main.site.example`,
+  );
 })();
 ```
 
@@ -45,7 +52,7 @@ Chrome has been internally handling different documents, tabs, and frames on
 site-keyed agent clusters. This means the same-site documents are handled within
 the same process (how exactly this works varies per browser). Recently, Chrome
 started to handle them in more fine grained units: origins. We call it
-*origin-keyed agent clusters*. However, because doing so is resource expensive,
+_origin-keyed agent clusters_. However, because doing so is resource expensive,
 origin-keyed agent clusters were applied only to limited websites heuristically.
 
 The plan is to make all agent clusters origin-keyed by default. In order to

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Boris Smus [X](https://twitter.com/borismus) [Homepage](https://smus.com/)
 
 Displays with high pixel density are quickly becoming the norm. Content
@@ -62,7 +63,6 @@ forward. For example, this Chrome logo has a natural size of 256x256. On
 a Retina display, you can see the line aliasing at diagonals and curves,
 which looks chunky and bad, especially when compared to crisply rendered
 text:
- 
 
 **Natural dimensions: `256x256px`, asset size: `31 kB`, format: `PNG`**
 
@@ -72,7 +72,6 @@ idea, since saving logos and other graphics in a lossy format tends to
 introduce artifacts. In this case, I've exaggerated the problem by using
 a very high compression, but notice the banding on the gradients, the
 speckles on white backgrounds and the messy lines:
- 
 
 **Natural dimensions: `512x512px`, asset size: `13 kB`, format: `JPEG`**
 
@@ -85,7 +84,6 @@ your visitors will see!
 
 Here is the Chrome logo in all its glory, sized down to half its natural
 dimensions for 2x displays:
- 
 
 **Natural dimensions: `512x512px`, asset size: `83 kB`, format: `PNG`**
 
@@ -106,7 +104,6 @@ colors, the Chrome logo included. To do this optimization, you can use a
 tool such as <http://pngquant.org/>. You can see a bit of banding here,
 but this file is just 13 kB, which is a whopping 6x size saving
 compared to the original 512x512 PNG.
- 
 
 **Natural dimensions: `512x512px`, asset size: `13 kB`, format: `PNG,
 8-bit palette`**

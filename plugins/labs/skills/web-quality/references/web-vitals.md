@@ -8,12 +8,12 @@ Metric: `name, value, rating ('good'|'needs-improvement'|'poor'), delta, id, ent
 
 ReportOpts: `reportAllChanges?`, `reportSoftNavs?` (SPA soft navigations), `generateTarget?(el)` (custom selector). INP: `durationThreshold?`, `includeProcessedEventEntries?`. LCP attribution: `resourceBufferSize?`.
 
-| Metric | Attribution fields |
-|---|---|
-| LCP | target, url, timeToFirstByte, resourceLoadDelay, resourceLoadDuration, elementRenderDelay, lcpResourceEntry, lcpEntry, navigationEntry |
-| INP | interactionTarget, interactionTime, interactionType (pointer/keyboard), nextPaintTime, inputDelay, processingDuration, presentationDelay, loadState, longAnimationFrameEntries, longestScript{entry, subpart, intersectingDuration}, totalScriptDuration, totalStyleAndLayoutDuration, totalPaintDuration, totalUnattributedDuration, processedEventEntries |
-| CLS | largestShiftTarget, largestShiftTime, largestShiftValue, largestShiftEntry, largestShiftSource, loadState |
-| FCP | timeToFirstByte, firstByteToFCP, loadState, fcpEntry, navigationEntry |
-| TTFB | waitingDuration, cacheDuration, dnsDuration, connectionDuration, requestDuration, navigationEntry |
+| Metric | Attribution fields                                                                                                                                                                                                                                                                                                                                          |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| LCP    | target, url, timeToFirstByte, resourceLoadDelay, resourceLoadDuration, elementRenderDelay, lcpResourceEntry, lcpEntry, navigationEntry                                                                                                                                                                                                                      |
+| INP    | interactionTarget, interactionTime, interactionType (pointer/keyboard), nextPaintTime, inputDelay, processingDuration, presentationDelay, loadState, longAnimationFrameEntries, longestScript{entry, subpart, intersectingDuration}, totalScriptDuration, totalStyleAndLayoutDuration, totalPaintDuration, totalUnattributedDuration, processedEventEntries |
+| CLS    | largestShiftTarget, largestShiftTime, largestShiftValue, largestShiftEntry, largestShiftSource, loadState                                                                                                                                                                                                                                                   |
+| FCP    | timeToFirstByte, firstByteToFCP, loadState, fcpEntry, navigationEntry                                                                                                                                                                                                                                                                                       |
+| TTFB   | waitingDuration, cacheDuration, dnsDuration, connectionDuration, requestDuration, navigationEntry                                                                                                                                                                                                                                                           |
 
 Rules: call each `on*` once per page; send with `navigator.sendBeacon`; use `delta` when the analytics backend sums values; put the attribution target in a debug dimension (README GA4 example).

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Similar to how your text editor provides `<h1>` to `<h6>` headings, along with a plethora of ways to format sections of text
 in meaningful and visual ways, HTML provides a very similar set of semantic and non-semantic elements to make meaning of prose.
 
@@ -28,8 +29,12 @@ Some user agent stylesheets included the following selectors (or similar) to sty
 
 ```css
 /* Legacy UA stylesheet behavior (now removed from browsers and the HTML spec) */
-h2, :is(article, aside, nav, section) h1 {}
-h3, :is(article, aside, nav, section) :is(article, aside, nav, section) h1 {}
+h2,
+:is(article, aside, nav, section) h1 {
+}
+h3,
+:is(article, aside, nav, section) :is(article, aside, nav, section) h1 {
+}
 ```
 
 However, the Accessibility Object Model (AOM) and screen readers never modified heading levels based on nesting; a nested `<h1>` was always reported as "heading, level 1". This created a mismatch where nested headings appeared visually smaller while remaining top-level headings to assistive technologies.
@@ -47,8 +52,9 @@ The #about section has a heading and a few paragraphs:
 This section is not a landmark as it doesn't have an accessible name. To turn this into a `region`, which is a landmark role, you can use `aria-labelledby` to provide the accessible name:
 
 ```html
-<section id="about"  aria-labelledby="about_heading">
-<h2 id="about_heading">What you'll learn</h2>
+<section id="about" aria-labelledby="about_heading">
+  <h2 id="about_heading">What you'll learn</h2>
+</section>
 ```
 
 Only create landmarks if and when appropriate. Having too many landmarks can quickly become disorienting for screen reader users.
@@ -97,8 +103,12 @@ In the `#teachers` section, HAL is quoted as saying, "I'm sorry , but I'm afraid
 The inline quotation element, `<q>`, adds language-appropriate quotes. The user-agent default styles include open-quote and close-quote generated content:
 
 ```css
-q::before {content: open-quote;}
-q::after {content: close-quote;}
+q::before {
+  content: open-quote;
+}
+q::after {
+  content: close-quote;
+}
 ```
 
 The `lang` attribute is included to let the browser know that, while base language of the page was defined as English in the `<html lang="en-US">` opening tag, this paragraph of text is in a different language. This helps voice controls such as Siri, Alexa, and voiceOver use French pronunciation. It also informs the browser what type of quotes to render.
@@ -118,17 +128,26 @@ But, if needed, every single character, including emoji, has an encoded equivale
 If you take a look at ToastyMcToastface's workshop review (not included in the code sample above), there are some unusual text characters:
 
 ```html
-<blockquote>Learning with Hal and Eve exceeded all of my wildest fantasies. All they did was stick a USB in. They promised that it was a brand new USB, so we know there were no viruses on it. The Russians had nothing to do with it. This has no̶̼͖ţ̘h̝̰̩͈̗i̙̪n͏̩̙͍̱̫̜̟g̢̣ͅ ̗̰͓̲̞̀t͙̀o̟̖͖̹̕ ͓̼͎̝͖̭dó̪̠͕̜ ͍̱͎͚̯̟́w̮̲̹͕͈̟͞ìth̢ ̰̳̯̮͇</blockquote>
+<blockquote>
+  Learning with Hal and Eve exceeded all of my wildest fantasies. All they did
+  was stick a USB in. They promised that it was a brand new USB, so we know
+  there were no viruses on it. The Russians had nothing to do with it. This has
+  no̶̼͖ţ̘h̝̰̩͈̗i̙̪n͏̩̙͍̱̫̜̟g̢̣ͅ ̗̰͓̲̞̀t͙̀o̟̖͖̹̕ ͓̼͎̝͖̭dó̪̠͕̜ ͍̱͎͚̯̟́w̮̲̹͕͈̟͞ìth̢ ̰̳̯̮͇
+</blockquote>
 ```
 
 The last sentence in this blockquote can also be written as:
 
 ```html
-This has no&#x336;&#x33C;&#x356;&tcedil;&#x318;h&#x31D;&#x330;&#x329;&#x348;&#x317;i&#x319;&#x32A;n&#x34F;&#x329;&#x319;
-&#x34D;&#x331;&#x32B;&#x31C;&#x31F;g&#x322;&#x323;&#x345; &#x317;&#x330;&#x353;&#x332;&#x31E;&#x300;t&#x359;&#x300;o&#x31F;
-&#x316;&#x356;&#x339;&#x315; &#x353;&#x33C;&#x34E;&#x31D;&#x356;&#x32D;d&oacute;&#x32A;&#x320;&#x355;&#x31C; &#x34D;&#x331;
-&#x34E;&#x35A;&#x32F;&#x31F;&#x301;w&#x32E;&#x332;&#x339;&#x355;&#x348;&#x31F;&#x35E;&igrave;th&#x322; &#x330;&#x333;
-&#x32F;&#x32E;&#x347;
+This has
+no&#x336;&#x33C;&#x356;&tcedil;&#x318;h&#x31D;&#x330;&#x329;&#x348;&#x317;i&#x319;&#x32A;n&#x34F;&#x329;&#x319;
+&#x34D;&#x331;&#x32B;&#x31C;&#x31F;g&#x322;&#x323;&#x345;
+&#x317;&#x330;&#x353;&#x332;&#x31E;&#x300;t&#x359;&#x300;o&#x31F;
+&#x316;&#x356;&#x339;&#x315;
+&#x353;&#x33C;&#x34E;&#x31D;&#x356;&#x32D;d&oacute;&#x32A;&#x320;&#x355;&#x31C;
+&#x34D;&#x331;
+&#x34E;&#x35A;&#x32F;&#x31F;&#x301;w&#x32E;&#x332;&#x339;&#x355;&#x348;&#x31F;&#x35E;&igrave;th&#x322;
+&#x330;&#x333; &#x32F;&#x32E;&#x347;
 ```
 
 There are a few unescaped characters and a few named character references in this code mess. Because the character set is UTF-8,

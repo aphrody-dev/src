@@ -54,14 +54,14 @@ A walk compares name hashes and never needs the names themselves, so each block 
 
 Some data matters only while a block is in memory: what writers check each other against, what saving and sweeping need to know. A block carries it beside its records, the store never sees it, and it's rebuilt from nothing when the block loads again:
 
-| Data | Purpose |
-| --- | --- |
-| **Dirty flag and edit sequence** | Whether the block holds edits the store lacks, and whether an edit landed after saving took the block's image. |
-| **Chain change counts** | A weighted count of the changes to each directory's chain, which lookups are checked against. |
-| **Chain logs** | For a directory a VFS listing watches, a ring of its recent chain changes, which the listing replays instead of rebuilding itself. |
-| **Pending clears** | One bit per directory that settling is about to clean. |
-| **Registration** | Whether the State holds the block for the next time it saves. |
-| **Sweep flag** | Whether the block may hold a detached or leaked slot, so sweeping reads only the blocks that may hold one. |
+| Data                             | Purpose                                                                                                                            |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Dirty flag and edit sequence** | Whether the block holds edits the store lacks, and whether an edit landed after saving took the block's image.                     |
+| **Chain change counts**          | A weighted count of the changes to each directory's chain, which lookups are checked against.                                      |
+| **Chain logs**                   | For a directory a VFS listing watches, a ring of its recent chain changes, which the listing replays instead of rebuilding itself. |
+| **Pending clears**               | One bit per directory that settling is about to clean.                                                                             |
+| **Registration**                 | Whether the State holds the block for the next time it saves.                                                                      |
+| **Sweep flag**                   | Whether the block may hold a detached or leaked slot, so sweeping reads only the blocks that may hold one.                         |
 
 Because counts and logs start over when a block is loaded again, every count or log position a caller keeps (`ChainMark`, `Absent`) carries the block it was read from, and a check compares the block's identity as well as the number.
 
@@ -87,12 +87,12 @@ Other callers don't need that guarantee at every moment. A command, staging or a
 
 ### The tiers
 
-| Tier | Entry points | Callers | Guarantee |
-| --- | --- | --- | --- |
-| **Served** | `State::served()` | VFS requests on a State a provider serves | Every operation keeps the served chain rule, so dirty flags are consistent at every moment and after any cancellation. |
-| **Swap** | `State::swap()` | The provider switching a served State to another revision in place | Its caller publishes only clean copies from the other revision and detaches only clean nodes, empty directories and local files at their recorded place, none of which can break the served chain rule, so in place of the rule the tier refuses only a copy that isn't clean and a parent flagged `Discarded`. |
-| **Unserved** | Methods on `State` | The C API's verbs, staging, committing, the filesystem scan and the other commands | Flags the parent and its ancestors dirty before detaching or reattaching a node. Moving a node leaves flagging both parents to its caller, which flags them after moving it, or before for the C API's move verb; adding a node leaves flagging to its caller, which also keeps each added name distinct, but for the C API's add verb, which flags them itself before publishing. |
-| **Discard** | `State::node_discard_pending` | The C API's delete verb, detaching a subtree the same handle added | Flags nothing, since adding the subtree's root flagged its parent already. |
+| Tier         | Entry points                  | Callers                                                                            | Guarantee                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------ | ----------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Served**   | `State::served()`             | VFS requests on a State a provider serves                                          | Every operation keeps the served chain rule, so dirty flags are consistent at every moment and after any cancellation.                                                                                                                                                                                                                                                             |
+| **Swap**     | `State::swap()`               | The provider switching a served State to another revision in place                 | Its caller publishes only clean copies from the other revision and detaches only clean nodes, empty directories and local files at their recorded place, none of which can break the served chain rule, so in place of the rule the tier refuses only a copy that isn't clean and a parent flagged `Discarded`.                                                                    |
+| **Unserved** | Methods on `State`            | The C API's verbs, staging, committing, the filesystem scan and the other commands | Flags the parent and its ancestors dirty before detaching or reattaching a node. Moving a node leaves flagging both parents to its caller, which flags them after moving it, or before for the C API's move verb; adding a node leaves flagging to its caller, which also keeps each added name distinct, but for the C API's add verb, which flags them itself before publishing. |
+| **Discard**  | `State::node_discard_pending` | The C API's delete verb, detaching a subtree the same handle added                 | Flags nothing, since adding the subtree's root flagged its parent already.                                                                                                                                                                                                                                                                                                         |
 
 Saving a State is no tier: it runs no node operation, and no writer runs beside it.
 

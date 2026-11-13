@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Text on the web automatically wraps at the edge of the screen so that it doesn't
 overflow. Images, on the other hand, have an intrinsic size. If an image is
 wider than the screen, the image overflows and the user has to scroll
@@ -53,7 +54,7 @@ iframe {
 
 With this rule in place, browsers automatically scale down images to fit on the
 screen.
- Constraining your image lets users see all of it without scrolling.
+Constraining your image lets users see all of it without scrolling.
 
 Adding a [`block-size`](https://developer.mozilla.org/docs/Web/CSS/block-size)
 value of `auto` means the browser preserves your images' aspect ratio as it
@@ -73,7 +74,7 @@ property to preserve your site's design:
 
 Unfortunately, this often means the browser has to squash or stretch the image
 to make it fit in the intended space.
- Changing the image's aspect ratio makes it appear squashed or stretched.
+Changing the image's aspect ratio makes it appear squashed or stretched.
 
 To prevent squashing and stretching, use the
 [`object-fit`](https://developer.mozilla.org/docs/Web/CSS/object-fit) property.
@@ -107,7 +108,7 @@ aspect ratio, cropping the image if needed.
       object-fit: cover;
     }
 
-  The same image with two different values for \`object-fit\` applied. The first has an \`object-fit\` value of \`contain\`. The second has an \`object-fit\` value of \`cover\`.
+The same image with two different values for \`object-fit\` applied. The first has an \`object-fit\` value of \`contain\`. The second has an \`object-fit\` value of \`cover\`.
 
 You can change the position of the image crop using the
 [object-position](https://developer.mozilla.org/docs/Web/CSS/object-position)
@@ -131,7 +132,7 @@ Browser Support
       object-position: top center;
     }
 
- You can set `object-position` to crop only one side of your image.
+You can set `object-position` to crop only one side of your image.
 
 ## Deliver your images
 
@@ -146,8 +147,6 @@ attributes. Even if the image is rendered at a different size because of your
 can set aside the right amount of space. This prevents your other content from
 jumping around when the image loads.
 
-    
-
 The first video shows a layout without defined image dimensions. Notice how the text jumps when the images load. In the second video, image dimensions have been provided, so the browser leaves space for the image and text doesn't jump around when the image loads.
 
 ### Hints for loading
@@ -158,23 +157,17 @@ of `lazy`. The browser won't load lazy images until the user has scrolled far
 down enough that the image is about to come into view. If the user never
 scrolls, the image never loads.
 
-    
-
 Lazy loaded images wait to load until the user is about to scroll to them.
 
 For a hero image above the fold, don't use `loading`. If your site automatically
 applies the `loading="lazy"` attribute, you can usually set `loading` to the
 default value of `eager` to prevent images from being lazy loaded:
 
-    
-
 ### Fetch Priority
 
 For important images-such as the [LCP](https://web.dev/articles/lcp.md.txt) image, you can further
 prioritize the loading using [Fetch Priority](https://web.dev/articles/fetch-priority.md.txt) by
 setting the `fetchpriority` attribute to `high`:
-
-    
 
 This tells the browser to fetch the image right away and at high priority,
 instead of waiting until the browser has finished its layout and would fetch
@@ -195,7 +188,7 @@ time. For really important images, you can combine this preloading with the
 `fetchpriority` attribute:
 
 ```html
-<link rel="preload" href="hero.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="hero.jpg" as="image" fetchpriority="high" />
 ```
 
 Again, use these attributes sparingly to avoid overriding the browser's
@@ -207,7 +200,12 @@ based on [srcset](https://web.dev/learn/design/responsive-images.md.txt#srcset),
 For example:
 
 ```html
-<link rel="preload" imagesrcset="hero_sm.jpg 1x hero_med.jpg 2x hero_lg.jpg 3x" as="image" fetchpriority="high">
+<link
+  rel="preload"
+  imagesrcset="hero_sm.jpg 1x hero_med.jpg 2x hero_lg.jpg 3x"
+  as="image"
+  fetchpriority="high"
+/>
 ```
 
 By excluding the `href` fallback, you can make sure browsers without `srcset`
@@ -232,12 +230,10 @@ attribute to tell the browser these sizes exist and when to use them.
 
 You can define a `srcset` using a comma-separated list of values. Each value is
 the URL of an image, followed by a space, followed by some metadata about the
-image, called a *descriptor*.
+image, called a _descriptor_.
 
 In this example, the metadata describes the width of each image using the `w`
 unit. One `w` is the width of one pixel.
-
-    
 
 The `srcset` attribute complements the `src` attribute instead of replacing it.
 You still need to have a valid `src` attribute, but the browser can replace its
@@ -257,8 +253,6 @@ widths.
 
 > [!NOTE]
 > **Note:** It feels strange to have CSS media queries inside an HTML element. It spoils the separation of presentation and structure. But it's the only way to provide the necessary sizing information quickly enough to be effective.
-
-    
 
 In this example, you're telling the browser that in a viewport with a width over
 `66em`, it should display the image no wider than one third of the screen
@@ -281,13 +275,11 @@ single-column layout on a narrower screen.
 You can also use descriptors to provide an alternate version of images to
 show on high-density displays, to keep images looking sharp at the higher
 resolutions they provide.
- Images with lower pixel densities can look fuzzy.
+Images with lower pixel densities can look fuzzy.
 
 Use the density descriptor to describe the pixel density of the image in
 relation to the image in the `src` attribute. The density descriptor is a number
 followed by the letter x, as in `1x` or `2x`.
-
-    
 
 If `small-image.png` is 300 by 200 pixels in size, and `medium-image.png` is
 600 by 400 pixels, then `medium-image.png` can have `2x` after it in the
@@ -297,7 +289,7 @@ You don't have to use whole numbers. If another version of the image is 450 by
 300 pixels in size, you can describe it with `1.5x`.
 
 > [!NOTE]
-> **Note:** You can use *either* width descriptors *or* density descriptors, but not both together.
+> **Note:** You can use _either_ width descriptors _or_ density descriptors, but not both together.
 
 ## Presentational images
 
@@ -306,8 +298,6 @@ with a description of the image for screen readers and search engines.
 
 If you embed an image that's decorative, without any meaningful
 content, you can use an empty `alt` attribute.
-
-    
 
 You must always include the `alt` attribute, even if it's empty.
 An empty `alt` attribute tells a screen reader that the image is
@@ -330,7 +320,7 @@ element {
 ```
 
 You can specify multiple image candidates using the
-[`image-set`](https://developer.mozilla.org/docs/Web/CSS/image/image-set())
+[`image-set`](<https://developer.mozilla.org/docs/Web/CSS/image/image-set()>)
 function for `background-image`.
 
 The `image-set` function in CSS works a lot like the `srcset` attribute in HTML.

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 <iframe src="https:///frame/learn/css/popover-and-dialog/index_76d3d94ec159048016d62789a639cca432cc7f10dc84f5e68e01d2f0b49280a9.frame" class="framebox inherit-locale " allow="clipboard-write https://" allowfullscreen is-upgraded></iframe>
 
 A popover is any element with a `popover` attribute, and is useful for a wide range of interactive patterns, including tooltips, alerts, toasts and more.
@@ -113,13 +114,13 @@ It's important to note that the content outside a popover is not inert-you can s
 Say you want to layout your popover content using CSS Grids. You add `[popover]{ display: grid }`, and suddenly all your popovers are visible. This is because popovers are hidden using `display: none`. You can use the `:popover-open` pseudo class to apply styles only when the popover is open.
 
 ```css
-[popover]{
-/* Don't do this! All popovers will be visible.  */
+[popover] {
+  /* Don't do this! All popovers will be visible.  */
   display: grid;
 }
 
 [popover]:popover-open {
-/*  This will only affect open popovers. */
+  /*  This will only affect open popovers. */
   display: grid;
 }
 ```

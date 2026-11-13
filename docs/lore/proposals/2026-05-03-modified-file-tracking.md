@@ -230,23 +230,23 @@ local-only and never leaves the client machine.
 **Assumptions**
 
 - **Assumption:** Bit 3 of `NodeFlags` (V1) and bit 15 of `NodeFlagsV2` (V2) are unused in all deployed clients.
-  *Invalidated if:* a deployed client uses these bits for an undocumented purpose. The V1 bit is explicitly named
+  _Invalidated if:_ a deployed client uses these bits for an undocumented purpose. The V1 bit is explicitly named
   `Unused1` in the current codebase.
 
 - **Assumption:** External applications (IDEs, file watchers) can detect filesystem changes with sufficient accuracy
-  to make the `file dirty` API useful without content verification. *Invalidated if:* OS-level change notifications
+  to make the `file dirty` API useful without content verification. _Invalidated if:_ OS-level change notifications
   are unreliable enough that dirty state becomes chronically stale, defeating the purpose of avoiding full scans.
 
 **Risks**
 
 - **Risk:** Shared action bits between Dirty and Staged mean that a `file dirty` call can alter the action type
   previously set by a stage operation. For example, staging a modify and then marking the file as dirty-deleted changes
-  the staged action to delete. *Mitigation:* This is the documented "latest action wins" semantic. The action reflects
+  the staged action to delete. _Mitigation:_ This is the documented "latest action wins" semantic. The action reflects
   current filesystem reality, not historical intent. Users who stage a file and then delete it on disk should expect
   the action to reflect the deletion.
 
 - **Risk:** Scan with `scan_dirty` mode modifies the staged state during a read-oriented operation (`lore status`).
-  If the scan is interrupted (crash, signal), the staged state may be partially updated. *Mitigation:* The staged
+  If the scan is interrupted (crash, signal), the staged state may be partially updated. _Mitigation:_ The staged
   anchor is updated atomically after the full scan completes. A crash during the scan leaves the previous anchor
   intact. Partial dirty state from `file dirty` calls (which persist immediately) is no worse than partial staged
   state from an interrupted `lore stage`.
@@ -269,7 +269,7 @@ local-only and never leaves the client machine.
 Store dirty state in a separate anchor (`anchor-dirty`) with its own serialized state, independent of the staged
 anchor.
 
-*Rejected because:* This doubles the serialization/deserialization cost on every status call (two state trees to load
+_Rejected because:_ This doubles the serialization/deserialization cost on every status call (two state trees to load
 and diff). The staged anchor already handles state persistence, and dirty flags fit naturally as additional bits on the
 same nodes. The single-anchor model avoids synchronization between two state trees and reuses all existing infrastructure.
 
@@ -277,7 +277,7 @@ same nodes. The single-anchor model avoids synchronization between two state tre
 
 Store dirty paths in a separate flat data structure (hash set or sorted list) outside the merkle tree.
 
-*Rejected because:* This loses integration with the tree traversal and diff infrastructure. Path-based lookup cannot
+_Rejected because:_ This loses integration with the tree traversal and diff infrastructure. Path-based lookup cannot
 leverage the merkle tree's hierarchical structure for efficient subtree operations (is any file under this directory
 dirty?). It would also require reconciling the flat set with the tree on every status call, adding complexity without
 performance benefit.
@@ -287,7 +287,7 @@ performance benefit.
 Have the `file dirty` API read and hash file content to verify the file actually changed, rather than trusting the
 caller or checking only existence.
 
-*Rejected because:* Content hashing defeats the purpose of a lightweight notification path. The caller (IDE, file
+_Rejected because:_ Content hashing defeats the purpose of a lightweight notification path. The caller (IDE, file
 watcher) already knows the file changed. Reading and hashing the file re-introduces the I/O cost that the dirty
 tracking API is designed to avoid. The `--scan` flag provides content-aware verification when the user wants it.
 

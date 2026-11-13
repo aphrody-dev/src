@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Design and build websites and web apps that people with disabilities can
 interact with in a meaningful and equivalent way. Read about the business and
 legal impact of these choices.
@@ -67,10 +68,10 @@ degree that causes problems not fixable by usual means, such as glasses or
 medication. Visual impairment can be due to disease, trauma, or congenital or
 degenerative conditions.
 
-- *Examples*: B/blindness, low vision, color blindness
-- *Prevalence* : 253 million people have visual impairment worldwide. 36 million are blind, 217 million have moderate to severe visual impairment (MSVI), according to [Community eye health volume 30](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5820628/), and 1 in 12 men and 1 in 200 women are colorblind, according to [Colour Blind Awareness](https://www.colourblindawareness.org/colour-blindness/).
-- *Tools*: Screen reader software, screen magnification tools, Braille output devices.
-- *Pain points*: Digital products that don't work with screen reader software, mobile websites and apps without pinch to zoom, complex graphs and charts differentiated by colors alone, color contrasts that make it difficult to read text on the screen.
+- _Examples_: B/blindness, low vision, color blindness
+- _Prevalence_ : 253 million people have visual impairment worldwide. 36 million are blind, 217 million have moderate to severe visual impairment (MSVI), according to [Community eye health volume 30](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5820628/), and 1 in 12 men and 1 in 200 women are colorblind, according to [Colour Blind Awareness](https://www.colourblindawareness.org/colour-blindness/).
+- _Tools_: Screen reader software, screen magnification tools, Braille output devices.
+- _Pain points_: Digital products that don't work with screen reader software, mobile websites and apps without pinch to zoom, complex graphs and charts differentiated by colors alone, color contrasts that make it difficult to read text on the screen.
 
 > [!IMPORTANT]
 > **Key Point:** Use lowercase when referring to a vision-loss condition or to a person who is blind, who prefers lowercase. Capitalize for those who capitalize Blind when describing themselves.
@@ -89,10 +90,10 @@ disabilities. This type of disability includes upper or lower limb loss or
 disability, manual dexterity, and disability in coordination with different
 organs of the body.
 
-- *Examples*: Arthritis, paralysis, amputees, seizure disorders.
-- *Prevalence* : [1 in 7 people have mobility issues](https://www.cdc.gov/media/releases/2018/p0816-disability.html#:%7E:text=One%20in%204%20U.S.%20adults,affects%201%20in%207%20adults).
-- *Tools*: Adaptive switches, eye tracking devices, mouth and head sticks, and speech input.
-- *Pain points*: Elements that are only designed to work with the use of a mouse.
+- _Examples_: Arthritis, paralysis, amputees, seizure disorders.
+- _Prevalence_ : [1 in 7 people have mobility issues](https://www.cdc.gov/media/releases/2018/p0816-disability.html#:%7E:text=One%20in%204%20U.S.%20adults,affects%201%20in%207%20adults).
+- _Tools_: Adaptive switches, eye tracking devices, mouth and head sticks, and speech input.
+- _Pain points_: Elements that are only designed to work with the use of a mouse.
 
 > "Accessibility isn't just for people with disabilities. I had elbow
 > surgery, and it temporarily changed how I managed my daily digital
@@ -106,10 +107,10 @@ is a full or partial decrease in the ability to detect or understand sounds.
 Hearing impairments are caused by a wide range of biological and environmental
 factors.
 
-- *Examples*: D/deafness, hard of hearing (HoH), hearing impaired (HI)
-- *Prevalence* : Globally, over 1.5 billion people have a low to medium level of hearing loss, while it is estimated that 66 million people have a [significant level of hearing loss](https://www.who.int/health-topics/hearing-loss#tab=tab_1).
-- *Tools*: hearing aids, captions, transcripts, and sign language.
-- *Pain points*: Audio content without text transcript and video without synchronized captions.
+- _Examples_: D/deafness, hard of hearing (HoH), hearing impaired (HI)
+- _Prevalence_ : Globally, over 1.5 billion people have a low to medium level of hearing loss, while it is estimated that 66 million people have a [significant level of hearing loss](https://www.who.int/health-topics/hearing-loss#tab=tab_1).
+- _Tools_: hearing aids, captions, transcripts, and sign language.
+- _Pain points_: Audio content without text transcript and video without synchronized captions.
 
 > [!IMPORTANT]
 > **Key Point:** Use lowercase when referring to a hearing-loss condition or to a deaf person who prefers lowercase. Capitalize for those who identify as members of the Deaf community or when they capitalize Deaf when describing themselves.
@@ -132,10 +133,10 @@ deficits too mild to properly qualify as intellectual disability, specific
 conditions, and problems acquired later in life through acquired brain injuries
 or neurodegenerative diseases like dementia.
 
-- *Examples*: Down's syndrome, A/autism, ADHD, dyslexia, aphasia.
-- *Prevalence*: Varies by condition.
-- *Tools*: Screen readers, text highlighting, text prediction, abstractive summarization tools.
-- *Pain points*: Busy interfaces that make it overly complicated to focus on the task at hand, big walls of words with little whitespace, justified text, and small or hard-to-read fonts
+- _Examples_: Down's syndrome, A/autism, ADHD, dyslexia, aphasia.
+- _Prevalence_: Varies by condition.
+- _Tools_: Screen readers, text highlighting, text prediction, abstractive summarization tools.
+- _Pain points_: Busy interfaces that make it overly complicated to focus on the task at hand, big walls of words with little whitespace, justified text, and small or hard-to-read fonts
 
 > [!IMPORTANT]
 > **Key Point:** Use lowercase when referring to autism as a disorder or to an autistic person who prefers lowercase. Capitalize for those who capitalize Autism or Autistic when describing themselves.
@@ -162,12 +163,12 @@ result. [Vestibular disorders](https://vestibular.org/article/diagnosis-treatmen
 can also result from or be worsened by genetic or environmental conditions or
 occur for unknown reasons.
 
-- *Examples*: Epilepsy, vertigo, dizziness, labyrinthitis, balance, and eye movement disorders.
-- *Prevalence* : 50 million people worldwide have epilepsy, according to the [World Health Organization (WHO)](https://www.who.int/health-topics/epilepsy). 1.8 million adults worldwide have bilateral vestibular hypofunction (BVH), according to [Johns Hopkins Medicine](https://www.hopkinsmedicine.org/news/newsroom/news-releases/implant-improves-balance-movement-and-quality-of-life-for-people-with-inner-ear-disorder).
-- *Tools* : Operating system settings to reduce motion. In Windows, this setting is framed positively as **Show animation** , and is turned off. On Android, the setting **Remove animations** is turned on.
-- *Pain points*: Videos that autoplay, extreme flashing or strobing of visual content, parallax effects, or scroll-triggered animations.
+- _Examples_: Epilepsy, vertigo, dizziness, labyrinthitis, balance, and eye movement disorders.
+- _Prevalence_ : 50 million people worldwide have epilepsy, according to the [World Health Organization (WHO)](https://www.who.int/health-topics/epilepsy). 1.8 million adults worldwide have bilateral vestibular hypofunction (BVH), according to [Johns Hopkins Medicine](https://www.hopkinsmedicine.org/news/newsroom/news-releases/implant-improves-balance-movement-and-quality-of-life-for-people-with-inner-ear-disorder).
+- _Tools_ : Operating system settings to reduce motion. In Windows, this setting is framed positively as **Show animation** , and is turned off. On Android, the setting **Remove animations** is turned on.
+- _Pain points_: Videos that autoplay, extreme flashing or strobing of visual content, parallax effects, or scroll-triggered animations.
 
-> "I *really* dislike the superfluous animation that plagues iOS
+> "I _really_ dislike the superfluous animation that plagues iOS
 > transitions between apps, so I turn it off. Downside: I'm denied most of
 > the thoughtfully executed motion design on the web because there's no
 > "some motion is fine" middle ground."
@@ -179,10 +180,10 @@ A [speech disorder](https://www.pennmedicine.org/for-patients-and-visitors/patie
 is a condition in which a person has problems creating or forming the speech
 sounds needed to communicate with others.
 
-- *Examples*: Muscular or cognitive issues that impede speech, such as apraxia, dysarthria, or stuttering.
-- *Prevalence* : 18.5 million individuals have a speech, voice, or language disorder, according to the [National Institute on Deafness and Other Communication Disorders (NIDCD)](https://www.nidcd.nih.gov/health/statistics/quick-statistics-voice-speech-language)
-- *Tools*: Augmentative and alternative communication (AAC) and speech-generating devices.
-- *Pain points*: Voice-activated technology such as smart home devices and apps.
+- _Examples_: Muscular or cognitive issues that impede speech, such as apraxia, dysarthria, or stuttering.
+- _Prevalence_ : 18.5 million individuals have a speech, voice, or language disorder, according to the [National Institute on Deafness and Other Communication Disorders (NIDCD)](https://www.nidcd.nih.gov/health/statistics/quick-statistics-voice-speech-language)
+- _Tools_: Augmentative and alternative communication (AAC) and speech-generating devices.
+- _Pain points_: Voice-activated technology such as smart home devices and apps.
 
 > "My son has a lisp due to dyspraxia. He will say "seep" rather than
 > "sheep" or "fower" rather than "flower". It is sweet, but he gets so
@@ -204,12 +205,12 @@ While the number of people with disabilities worldwide is large, it's important
 to remember that these numbers aren't inclusive of everyone that benefits from
 accessible digital spaces. This includes:
 
-- *Temporarily disabled*. It may mean someone has a broken wrist or is cognitively impaired due to medication.
-- *Situationally disabled*. For example, someone experiencing glare on a device screen or being unable to play the audio on a video in a public setting.
-- *Mildly disabled*. A person needing eyeglasses to see a screen or captions to understand audio.
-- *Non-native speakers*. If a person is not fluent in the language on the screen, they may need more time to read content on a slide on a carousel/slideshow.
-- *Older people with age-related diminishing senses*. It could be a person needing reading glasses or bifocals to read small print or requiring a larger target size for buttons on their touch device due to an age-related hand tremor.
-- *Search engine optimization (SEO) bots*. SEO bots do not have senses like sight and hearing and navigate by keyboard only. Your websites are crawled more effectively when your site is accessible.
+- _Temporarily disabled_. It may mean someone has a broken wrist or is cognitively impaired due to medication.
+- _Situationally disabled_. For example, someone experiencing glare on a device screen or being unable to play the audio on a video in a public setting.
+- _Mildly disabled_. A person needing eyeglasses to see a screen or captions to understand audio.
+- _Non-native speakers_. If a person is not fluent in the language on the screen, they may need more time to read content on a slide on a carousel/slideshow.
+- _Older people with age-related diminishing senses_. It could be a person needing reading glasses or bifocals to read small print or requiring a larger target size for buttons on their touch device due to an age-related hand tremor.
+- _Search engine optimization (SEO) bots_. SEO bots do not have senses like sight and hearing and navigate by keyboard only. Your websites are crawled more effectively when your site is accessible.
 
 ## Business impact
 

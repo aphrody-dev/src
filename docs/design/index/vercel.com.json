@@ -1,991 +1,991 @@
 {
- "site": "vercel.com",
- "generated": "2026-11-13",
- "mode": "index",
- "license": "Vercel Terms of Service (propriétaire)",
- "license_evidence": "https://vercel.com/legal/terms : Vercel conserve tous les droits sur les Services et leur documentation",
- "robots": "https://vercel.com/robots.txt",
- "count": 195,
- "sections": {
-  "docs": 112,
-  "geist": 81,
-  "products": 2
- },
- "urls": [
-  {
-   "url": "https://vercel.com/docs/analytics",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/accessing-metrics-with-vercel-cli",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/custom-events",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/filtering",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/limits-and-pricing",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/package",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/privacy-policy",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/quickstart",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/redacting-sensitive-data",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/troubleshooting",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/using-web-analytics",
-   "section": "docs",
-   "lastmod": "2026-11-10T15:06:45.510Z"
-  },
-  {
-   "url": "https://vercel.com/docs/analytics/web-analytics-api",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/caching",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/caching/cache-control-headers",
-   "section": "docs",
-   "lastmod": "2026-11-10T11:06:25.687Z"
-  },
-  {
-   "url": "https://vercel.com/docs/caching/cache-status",
-   "section": "docs",
-   "lastmod": "2026-11-10T11:06:25.687Z"
-  },
-  {
-   "url": "https://vercel.com/docs/caching/cdn-cache",
-   "section": "docs",
-   "lastmod": "2026-11-12T15:07:06.707Z"
-  },
-  {
-   "url": "https://vercel.com/docs/caching/cdn-cache/debug-cache-issues",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/caching/cdn-cache/purge",
-   "section": "docs",
-   "lastmod": "2026-11-08T18:07:24.468Z"
-  },
-  {
-   "url": "https://vercel.com/docs/cdn",
-   "section": "docs",
-   "lastmod": "2026-11-10T05:07:20.571Z"
-  },
-  {
-   "url": "https://vercel.com/docs/cdn-security",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/cdn-security/encryption",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/cdn-security/security-headers",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks",
-   "section": "docs",
-   "lastmod": "2026-11-07T11:05:26.081Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/agents",
-   "section": "docs",
-   "lastmod": "2026-11-12T13:07:13.855Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/agents/eve",
-   "section": "docs",
-   "lastmod": "2026-11-12T13:07:13.855Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/agents/flue",
-   "section": "docs",
-   "lastmod": "2026-11-12T13:07:13.855Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/agents/mastra",
-   "section": "docs",
-   "lastmod": "2026-11-12T13:07:13.855Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend",
-   "section": "docs",
-   "lastmod": "2026-11-07T11:05:26.081Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/celery",
-   "section": "docs",
-   "lastmod": "2026-11-08T08:08:40.949Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/dramatiq",
-   "section": "docs",
-   "lastmod": "2026-11-08T08:08:40.949Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/elysia",
-   "section": "docs",
-   "lastmod": "2026-10-22T04:12:50.788Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/express",
-   "section": "docs",
-   "lastmod": "2026-10-22T04:12:50.788Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/fastapi",
-   "section": "docs",
-   "lastmod": "2026-10-27T00:29:13.184Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/fastify",
-   "section": "docs",
-   "lastmod": "2026-10-22T04:12:50.788Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/flask",
-   "section": "docs",
-   "lastmod": "2026-10-22T04:12:50.788Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/hono",
-   "section": "docs",
-   "lastmod": "2026-10-22T04:12:50.788Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/koa",
-   "section": "docs",
-   "lastmod": "2026-10-22T04:12:50.788Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/nestjs",
-   "section": "docs",
-   "lastmod": "2026-11-08T08:08:40.949Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/backend/nitro",
-   "section": "docs",
-   "lastmod": "2026-10-22T04:12:50.788Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/frontend",
-   "section": "docs",
-   "lastmod": "2026-10-31T12:09:18.805Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/frontend/astro",
-   "section": "docs",
-   "lastmod": "2026-11-09T15:07:27.646Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/frontend/create-react-app",
-   "section": "docs",
-   "lastmod": "2026-11-09T15:07:27.646Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/frontend/gatsby",
-   "section": "docs",
-   "lastmod": "2026-11-09T15:07:27.646Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/frontend/react-router",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/frontend/vite",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/full-stack",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/full-stack/django",
-   "section": "docs",
-   "lastmod": "2026-11-08T08:08:40.949Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/full-stack/nextjs",
-   "section": "docs",
-   "lastmod": "2026-11-10T06:11:37.784Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/full-stack/nuxt",
-   "section": "docs",
-   "lastmod": "2026-11-10T06:11:37.784Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/full-stack/remix",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/full-stack/sveltekit",
-   "section": "docs",
-   "lastmod": "2026-11-09T20:06:56.336Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/full-stack/tanstack-start",
-   "section": "docs",
-   "lastmod": "2026-10-22T06:19:07.337Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/full-stack/vite-with-nitro",
-   "section": "docs",
-   "lastmod": "2026-10-29T01:08:51.602Z"
-  },
-  {
-   "url": "https://vercel.com/docs/frameworks/more-frameworks",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions",
-   "section": "docs",
-   "lastmod": "2026-11-10T05:07:20.571Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/concurrency-scaling",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/configuring-functions",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/configuring-functions/advanced-configuration",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/configuring-functions/duration",
-   "section": "docs",
-   "lastmod": "2026-11-12T10:07:16.363Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/configuring-functions/memory",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/configuring-functions/region",
-   "section": "docs",
-   "lastmod": "2026-11-08T06:11:17.564Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/configuring-functions/runtime",
-   "section": "docs",
-   "lastmod": "2026-10-22T09:12:31.546Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/debug-slow-functions",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/functions-api-reference",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/functions-api-reference/vercel-functions-package",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/functions-api-reference/vercel-sdk-python",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/limitations",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/logs",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/quickstart",
-   "section": "docs",
-   "lastmod": "2026-11-08T03:08:59.747Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/bun",
-   "section": "docs",
-   "lastmod": "2026-11-08T02:09:38.329Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/container",
-   "section": "docs",
-   "lastmod": "2026-11-05T14:07:54.222Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/edge",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/go",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/node-js",
-   "section": "docs",
-   "lastmod": "2026-11-08T02:09:38.329Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/node-js/advanced-node-configuration",
-   "section": "docs",
-   "lastmod": "2026-10-29T23:07:35.299Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/node-js/node-js-versions",
-   "section": "docs",
-   "lastmod": "2026-10-29T23:07:35.299Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/python",
-   "section": "docs",
-   "lastmod": "2026-10-27T00:29:13.184Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/python/api-directory",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/python/python-version",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/ruby",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/rust",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/runtimes/wasm",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/streaming-functions",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/usage-and-pricing",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/usage-and-pricing/legacy-pricing",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/functions/websockets",
-   "section": "docs",
-   "lastmod": "2026-10-20T15:11:05.257Z"
-  },
-  {
-   "url": "https://vercel.com/docs/image-optimization",
-   "section": "docs",
-   "lastmod": "2026-10-29T01:08:51.602Z"
-  },
-  {
-   "url": "https://vercel.com/docs/image-optimization/legacy-pricing",
-   "section": "docs",
-   "lastmod": "2026-11-12T22:06:57.283Z"
-  },
-  {
-   "url": "https://vercel.com/docs/image-optimization/limits-and-pricing",
-   "section": "docs",
-   "lastmod": "2026-11-12T22:06:57.283Z"
-  },
-  {
-   "url": "https://vercel.com/docs/image-optimization/managing-image-optimization-costs",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/image-optimization/quickstart",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/incremental-static-regeneration",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/incremental-static-regeneration/limits-and-pricing",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/incremental-static-regeneration/quickstart",
-   "section": "docs",
-   "lastmod": "2026-11-10T10:07:40.722Z"
-  },
-  {
-   "url": "https://vercel.com/docs/incremental-static-regeneration/request-collapsing",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/observability",
-   "section": "docs",
-   "lastmod": "2026-11-10T05:07:20.571Z"
-  },
-  {
-   "url": "https://vercel.com/docs/observability/custom-metrics",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/observability/debug-production-errors",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/observability/insights",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/observability/observability-plus",
-   "section": "docs",
-   "lastmod": "2026-10-16T13:11:39.319Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights",
-   "section": "docs",
-   "lastmod": "2026-11-10T15:06:45.510Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/accessing-metrics-with-vercel-cli",
-   "section": "docs",
-   "lastmod": "2026-11-08T09:06:45.503Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/api",
-   "section": "docs",
-   "lastmod": "2026-11-09T04:09:08.893Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/limits-and-pricing",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/managing-usage",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/metrics",
-   "section": "docs",
-   "lastmod": "2026-11-09T15:07:27.646Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/package",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/privacy-policy",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/quickstart",
-   "section": "docs",
-   "lastmod": "2026-10-15T16:12:07.478Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/troubleshooting",
-   "section": "docs",
-   "lastmod": "2026-11-08T08:08:40.949Z"
-  },
-  {
-   "url": "https://vercel.com/docs/speed-insights/using-speed-insights",
-   "section": "docs",
-   "lastmod": "2026-11-09T15:07:27.646Z"
-  },
-  {
-   "url": "https://vercel.com/geist/address-input",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/avatar",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/badge",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/banner",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/book",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/brands",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/breadcrumbs",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/browser",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/button",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/calendar",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/checkbox",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/choicebox",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/clearable-input",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/code",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/code-block",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/collapse",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/colors",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/combobox",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/command-menu",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/context-card",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/context-menu",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/copy-button",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/description",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/destructive-action-modal",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/destructive-confirmation-input",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/dots-menu",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/drawer",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/empty-state",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/entity",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/error",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/error-card",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/feedback",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/fieldset",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/file-tree",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/filter-params",
-   "section": "geist",
-   "lastmod": "2026-11-12T20:07:07.544Z"
-  },
-  {
-   "url": "https://vercel.com/geist/gauge",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/grid",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/input",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/introduction",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/json-view",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/keyboard-input",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/label",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/load-more-button",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/loading-dots",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/materials",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/menu",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/middle-truncate",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/modal",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/multi-select",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/note",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/pagination",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/phone",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/pie-gauge",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/progress",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/project-banner",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/radio",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/relative-time-card",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/scroller",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/search-input",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/select",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/separator",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/sheet",
-   "section": "geist",
-   "lastmod": "2026-11-11T15:09:56.641Z"
-  },
-  {
-   "url": "https://vercel.com/geist/show-more",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/skeleton",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/slider",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/snippet",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/spinner",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/split-button",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/status-dot",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/switch",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/table",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/tabs",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/terminal",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/text-with-copy-button",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/textarea",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/theme-switcher",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/toast",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/toggle",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/tooltip",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/typography",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/geist/video",
-   "section": "geist",
-   "lastmod": "2026-10-31T19:04:51.073Z"
-  },
-  {
-   "url": "https://vercel.com/products/observability",
-   "section": "products",
-   "lastmod": "2026-10-09T23:11:03.539Z"
-  },
-  {
-   "url": "https://vercel.com/products/previews",
-   "section": "products",
-   "lastmod": "2026-10-24T00:28:22.230Z"
-  }
- ]
+  "site": "vercel.com",
+  "generated": "2026-11-13",
+  "mode": "index",
+  "license": "Vercel Terms of Service (propriétaire)",
+  "license_evidence": "https://vercel.com/legal/terms : Vercel conserve tous les droits sur les Services et leur documentation",
+  "robots": "https://vercel.com/robots.txt",
+  "count": 195,
+  "sections": {
+    "docs": 112,
+    "geist": 81,
+    "products": 2
+  },
+  "urls": [
+    {
+      "url": "https://vercel.com/docs/analytics",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/accessing-metrics-with-vercel-cli",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/custom-events",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/filtering",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/limits-and-pricing",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/package",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/privacy-policy",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/quickstart",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/redacting-sensitive-data",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/troubleshooting",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/using-web-analytics",
+      "section": "docs",
+      "lastmod": "2026-11-10T15:06:45.510Z"
+    },
+    {
+      "url": "https://vercel.com/docs/analytics/web-analytics-api",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/caching",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/caching/cache-control-headers",
+      "section": "docs",
+      "lastmod": "2026-11-10T11:06:25.687Z"
+    },
+    {
+      "url": "https://vercel.com/docs/caching/cache-status",
+      "section": "docs",
+      "lastmod": "2026-11-10T11:06:25.687Z"
+    },
+    {
+      "url": "https://vercel.com/docs/caching/cdn-cache",
+      "section": "docs",
+      "lastmod": "2026-11-12T15:07:06.707Z"
+    },
+    {
+      "url": "https://vercel.com/docs/caching/cdn-cache/debug-cache-issues",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/caching/cdn-cache/purge",
+      "section": "docs",
+      "lastmod": "2026-11-08T18:07:24.468Z"
+    },
+    {
+      "url": "https://vercel.com/docs/cdn",
+      "section": "docs",
+      "lastmod": "2026-11-10T05:07:20.571Z"
+    },
+    {
+      "url": "https://vercel.com/docs/cdn-security",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/cdn-security/encryption",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/cdn-security/security-headers",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks",
+      "section": "docs",
+      "lastmod": "2026-11-07T11:05:26.081Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/agents",
+      "section": "docs",
+      "lastmod": "2026-11-12T13:07:13.855Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/agents/eve",
+      "section": "docs",
+      "lastmod": "2026-11-12T13:07:13.855Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/agents/flue",
+      "section": "docs",
+      "lastmod": "2026-11-12T13:07:13.855Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/agents/mastra",
+      "section": "docs",
+      "lastmod": "2026-11-12T13:07:13.855Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend",
+      "section": "docs",
+      "lastmod": "2026-11-07T11:05:26.081Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/celery",
+      "section": "docs",
+      "lastmod": "2026-11-08T08:08:40.949Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/dramatiq",
+      "section": "docs",
+      "lastmod": "2026-11-08T08:08:40.949Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/elysia",
+      "section": "docs",
+      "lastmod": "2026-10-22T04:12:50.788Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/express",
+      "section": "docs",
+      "lastmod": "2026-10-22T04:12:50.788Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/fastapi",
+      "section": "docs",
+      "lastmod": "2026-10-27T00:29:13.184Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/fastify",
+      "section": "docs",
+      "lastmod": "2026-10-22T04:12:50.788Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/flask",
+      "section": "docs",
+      "lastmod": "2026-10-22T04:12:50.788Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/hono",
+      "section": "docs",
+      "lastmod": "2026-10-22T04:12:50.788Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/koa",
+      "section": "docs",
+      "lastmod": "2026-10-22T04:12:50.788Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/nestjs",
+      "section": "docs",
+      "lastmod": "2026-11-08T08:08:40.949Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/backend/nitro",
+      "section": "docs",
+      "lastmod": "2026-10-22T04:12:50.788Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/frontend",
+      "section": "docs",
+      "lastmod": "2026-10-31T12:09:18.805Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/frontend/astro",
+      "section": "docs",
+      "lastmod": "2026-11-09T15:07:27.646Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/frontend/create-react-app",
+      "section": "docs",
+      "lastmod": "2026-11-09T15:07:27.646Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/frontend/gatsby",
+      "section": "docs",
+      "lastmod": "2026-11-09T15:07:27.646Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/frontend/react-router",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/frontend/vite",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/full-stack",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/full-stack/django",
+      "section": "docs",
+      "lastmod": "2026-11-08T08:08:40.949Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/full-stack/nextjs",
+      "section": "docs",
+      "lastmod": "2026-11-10T06:11:37.784Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/full-stack/nuxt",
+      "section": "docs",
+      "lastmod": "2026-11-10T06:11:37.784Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/full-stack/remix",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/full-stack/sveltekit",
+      "section": "docs",
+      "lastmod": "2026-11-09T20:06:56.336Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/full-stack/tanstack-start",
+      "section": "docs",
+      "lastmod": "2026-10-22T06:19:07.337Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/full-stack/vite-with-nitro",
+      "section": "docs",
+      "lastmod": "2026-10-29T01:08:51.602Z"
+    },
+    {
+      "url": "https://vercel.com/docs/frameworks/more-frameworks",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions",
+      "section": "docs",
+      "lastmod": "2026-11-10T05:07:20.571Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/concurrency-scaling",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/configuring-functions",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/configuring-functions/advanced-configuration",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/configuring-functions/duration",
+      "section": "docs",
+      "lastmod": "2026-11-12T10:07:16.363Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/configuring-functions/memory",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/configuring-functions/region",
+      "section": "docs",
+      "lastmod": "2026-11-08T06:11:17.564Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/configuring-functions/runtime",
+      "section": "docs",
+      "lastmod": "2026-10-22T09:12:31.546Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/debug-slow-functions",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/functions-api-reference",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/functions-api-reference/vercel-functions-package",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/functions-api-reference/vercel-sdk-python",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/limitations",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/logs",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/quickstart",
+      "section": "docs",
+      "lastmod": "2026-11-08T03:08:59.747Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/bun",
+      "section": "docs",
+      "lastmod": "2026-11-08T02:09:38.329Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/container",
+      "section": "docs",
+      "lastmod": "2026-11-05T14:07:54.222Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/edge",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/go",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/node-js",
+      "section": "docs",
+      "lastmod": "2026-11-08T02:09:38.329Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/node-js/advanced-node-configuration",
+      "section": "docs",
+      "lastmod": "2026-10-29T23:07:35.299Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/node-js/node-js-versions",
+      "section": "docs",
+      "lastmod": "2026-10-29T23:07:35.299Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/python",
+      "section": "docs",
+      "lastmod": "2026-10-27T00:29:13.184Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/python/api-directory",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/python/python-version",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/ruby",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/rust",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/runtimes/wasm",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/streaming-functions",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/usage-and-pricing",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/usage-and-pricing/legacy-pricing",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/functions/websockets",
+      "section": "docs",
+      "lastmod": "2026-10-20T15:11:05.257Z"
+    },
+    {
+      "url": "https://vercel.com/docs/image-optimization",
+      "section": "docs",
+      "lastmod": "2026-10-29T01:08:51.602Z"
+    },
+    {
+      "url": "https://vercel.com/docs/image-optimization/legacy-pricing",
+      "section": "docs",
+      "lastmod": "2026-11-12T22:06:57.283Z"
+    },
+    {
+      "url": "https://vercel.com/docs/image-optimization/limits-and-pricing",
+      "section": "docs",
+      "lastmod": "2026-11-12T22:06:57.283Z"
+    },
+    {
+      "url": "https://vercel.com/docs/image-optimization/managing-image-optimization-costs",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/image-optimization/quickstart",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/incremental-static-regeneration",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/incremental-static-regeneration/limits-and-pricing",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/incremental-static-regeneration/quickstart",
+      "section": "docs",
+      "lastmod": "2026-11-10T10:07:40.722Z"
+    },
+    {
+      "url": "https://vercel.com/docs/incremental-static-regeneration/request-collapsing",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/observability",
+      "section": "docs",
+      "lastmod": "2026-11-10T05:07:20.571Z"
+    },
+    {
+      "url": "https://vercel.com/docs/observability/custom-metrics",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/observability/debug-production-errors",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/observability/insights",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/observability/observability-plus",
+      "section": "docs",
+      "lastmod": "2026-10-16T13:11:39.319Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights",
+      "section": "docs",
+      "lastmod": "2026-11-10T15:06:45.510Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/accessing-metrics-with-vercel-cli",
+      "section": "docs",
+      "lastmod": "2026-11-08T09:06:45.503Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/api",
+      "section": "docs",
+      "lastmod": "2026-11-09T04:09:08.893Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/limits-and-pricing",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/managing-usage",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/metrics",
+      "section": "docs",
+      "lastmod": "2026-11-09T15:07:27.646Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/package",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/privacy-policy",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/quickstart",
+      "section": "docs",
+      "lastmod": "2026-10-15T16:12:07.478Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/troubleshooting",
+      "section": "docs",
+      "lastmod": "2026-11-08T08:08:40.949Z"
+    },
+    {
+      "url": "https://vercel.com/docs/speed-insights/using-speed-insights",
+      "section": "docs",
+      "lastmod": "2026-11-09T15:07:27.646Z"
+    },
+    {
+      "url": "https://vercel.com/geist/address-input",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/avatar",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/badge",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/banner",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/book",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/brands",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/breadcrumbs",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/browser",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/button",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/calendar",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/checkbox",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/choicebox",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/clearable-input",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/code",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/code-block",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/collapse",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/colors",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/combobox",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/command-menu",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/context-card",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/context-menu",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/copy-button",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/description",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/destructive-action-modal",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/destructive-confirmation-input",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/dots-menu",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/drawer",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/empty-state",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/entity",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/error",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/error-card",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/feedback",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/fieldset",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/file-tree",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/filter-params",
+      "section": "geist",
+      "lastmod": "2026-11-12T20:07:07.544Z"
+    },
+    {
+      "url": "https://vercel.com/geist/gauge",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/grid",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/input",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/introduction",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/json-view",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/keyboard-input",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/label",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/load-more-button",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/loading-dots",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/materials",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/menu",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/middle-truncate",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/modal",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/multi-select",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/note",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/pagination",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/phone",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/pie-gauge",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/progress",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/project-banner",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/radio",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/relative-time-card",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/scroller",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/search-input",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/select",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/separator",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/sheet",
+      "section": "geist",
+      "lastmod": "2026-11-11T15:09:56.641Z"
+    },
+    {
+      "url": "https://vercel.com/geist/show-more",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/skeleton",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/slider",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/snippet",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/spinner",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/split-button",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/status-dot",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/switch",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/table",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/tabs",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/terminal",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/text-with-copy-button",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/textarea",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/theme-switcher",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/toast",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/toggle",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/tooltip",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/typography",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/geist/video",
+      "section": "geist",
+      "lastmod": "2026-10-31T19:04:51.073Z"
+    },
+    {
+      "url": "https://vercel.com/products/observability",
+      "section": "products",
+      "lastmod": "2026-10-09T23:11:03.539Z"
+    },
+    {
+      "url": "https://vercel.com/products/previews",
+      "section": "products",
+      "lastmod": "2026-10-24T00:28:22.230Z"
+    }
+  ]
 }

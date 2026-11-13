@@ -158,10 +158,35 @@ value = "main only"
 font_file = "gen-cache/MaterialSymbolsRounded.ttf"
 codepoints_file = "gen-cache/MaterialSymbolsRounded.codepoints"
 names = [
-  "apps", "arrow_back", "auto_awesome", "bolt", "check", "close", "code", "conversion_path",
-  "dashboard", "desktop_windows", "devices", "download", "hub", "layers", "local_fire_department",
-  "menu", "neurology", "palette", "play_arrow", "refresh", "rocket_launch", "search", "settings",
-  "speed", "sports_soccer", "storefront", "terminal", "tune", "view_quilt",
+  "apps",
+  "arrow_back",
+  "auto_awesome",
+  "bolt",
+  "check",
+  "close",
+  "code",
+  "conversion_path",
+  "dashboard",
+  "desktop_windows",
+  "devices",
+  "download",
+  "hub",
+  "layers",
+  "local_fire_department",
+  "menu",
+  "neurology",
+  "palette",
+  "play_arrow",
+  "refresh",
+  "rocket_launch",
+  "search",
+  "settings",
+  "speed",
+  "sports_soccer",
+  "storefront",
+  "terminal",
+  "tune",
+  "view_quilt",
 ]
 
 # Web fonts: SIL OFL 1.1 only, no Reserved Font Name (fetch.ts checks OFL.txt), from google/fonts at
@@ -244,6 +269,19 @@ id = "aphrody-app"
 url = "https://aphrody.app/"
 widths = [640, 1280, 1920]
 video = true
+
+# Stills already taken by the site agent (docs/proofs), reused as is (file = path from the root).
+[[capture]]
+id = "aphrody-com"
+url = "https://aphrody.com/"
+file = "docs/proofs/sites-2026-11-13/after/aphrody.com.png"
+widths = [640, 1280]
+
+[[capture]]
+id = "yolo"
+url = "https://yolo.aphrody.com/"
+file = "docs/proofs/sites-2026-11-13/after/yolo.aphrody.app.png"
+widths = [640, 1280]
 
 [[capture]]
 id = "nt"

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ilmari Heikkinen [X](https://twitter.com/ilmarihei) [Homepage](http://fhtr.org/)
 
 The 2D canvas in Chrome got some hardware acceleration love back in February. The acceleration makes drawing 2D sprites really fast, as the implementation is using the GPU to do drawImage.

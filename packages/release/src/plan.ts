@@ -20,16 +20,30 @@ export interface OwnerRules {
   release?: { approve_new?: string[]; approved_by?: string; date?: string };
 }
 
-export const key = (i: Pick<Item, "registry" | "name">) => `${i.registry}:${i.name}`;
+export const key = (i: Pick<Item, "registry" | "name">) =>
+  `${i.registry}:${i.name}`;
 
 /** New packages need an explicit owner entry; new versions of existing packages do not. */
-export function gate(items: Item[], rules: OwnerRules | null): { blocked: string[]; reason: string | null } {
+export function gate(
+  items: Item[],
+  rules: OwnerRules | null,
+): { blocked: string[]; reason: string | null } {
   const fresh = items.filter((i) => i.isNew && !i.published).map(key);
   if (!fresh.length) return { blocked: [], reason: null };
-  if (!rules) return { blocked: fresh, reason: ".agents/owner-rules.json absent: new packages stop at the dry-run" };
+  if (!rules)
+    return {
+      blocked: fresh,
+      reason:
+        ".agents/owner-rules.json absent: new packages stop at the dry-run",
+    };
   const ok = new Set(rules.release?.approve_new ?? []);
   const blocked = fresh.filter((k) => !ok.has(k));
-  return { blocked, reason: blocked.length ? "not listed in .agents/owner-rules.json release.approve_new" : null };
+  return {
+    blocked,
+    reason: blocked.length
+      ? "not listed in .agents/owner-rules.json release.approve_new"
+      : null,
+  };
 }
 
 export interface PortSpec {
@@ -52,7 +66,11 @@ export interface PortSource {
 const cmakeId = (port: string) => port.replace(/[^A-Za-z0-9_]/g, "_");
 
 /** Files of ports/<port>/: vcpkg.json, portfile.cmake (cargo build of the C ABI crate), CMake config, usage. */
-export function portFiles(p: PortSpec, version: string, src: PortSource): Record<string, string> {
+export function portFiles(
+  p: PortSpec,
+  version: string,
+  src: PortSource,
+): Record<string, string> {
   const [ns, short] = p.target.split("::") as [string, string];
   const manifest = {
     name: p.port,
@@ -140,23 +158,46 @@ export interface VersionEntry {
 }
 
 /** versions/<l>-/<port>.json: newest first, an existing (version, port-version) is replaced, not duplicated. */
-export function versionsFile(prev: { versions: VersionEntry[] } | null, e: VersionEntry): { versions: VersionEntry[] } {
-  const rest = (prev?.versions ?? []).filter((v) => !(v.version === e.version && v["port-version"] === e["port-version"]));
+export function versionsFile(
+  prev: { versions: VersionEntry[] } | null,
+  e: VersionEntry,
+): { versions: VersionEntry[] } {
+  const rest = (prev?.versions ?? []).filter(
+    (v) =>
+      !(v.version === e.version && v["port-version"] === e["port-version"]),
+  );
   return { versions: [e, ...rest] };
 }
 
-export type Baseline = Record<string, Record<string, { baseline: string; "port-version": number }>>;
+export type Baseline = Record<
+  string,
+  Record<string, { baseline: string; "port-version": number }>
+>;
 
-export function baseline(prev: Baseline | null, port: string, version: string, portVersion = 0): Baseline {
+export function baseline(
+  prev: Baseline | null,
+  port: string,
+  version: string,
+  portVersion = 0,
+): Baseline {
   const b: Baseline = { default: {}, ...(prev ?? {}) };
-  b.default = { ...b.default, [port]: { baseline: version, "port-version": portVersion } };
+  b.default = {
+    ...b.default,
+    [port]: { baseline: version, "port-version": portVersion },
+  };
   return b;
 }
 
-export const versionsPath = (port: string) => `versions/${port[0]}-/${port}.json`;
+export const versionsPath = (port: string) =>
+  `versions/${port[0]}-/${port}.json`;
 
 /** pyproject.toml for a PyO3 crate without one (maturin backend, abi3 wheel). */
-export function pyproject(dist: string, version: string, description: string, repo: string): string {
+export function pyproject(
+  dist: string,
+  version: string,
+  description: string,
+  repo: string,
+): string {
   return `[build-system]
 requires = ["maturin>=1.16,<2"]
 build-backend = "maturin"

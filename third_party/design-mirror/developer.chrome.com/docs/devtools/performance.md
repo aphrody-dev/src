@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Kayce Basques [X](https://twitter.com/kaycebasques) [GitHub](https://github.com/kaycebasques)
 
 > [!NOTE]
@@ -29,9 +30,8 @@ In this tutorial, we will use the **Performance** panel to find a performance bo
    The page shows a bunch of little blue squares moving up and down.
 
    `https://googlechrome.github.io/devtools-samples/jank/`
-3. Press <kbd>Command</kbd>+<kbd>Option</kbd>+<kbd>I</kbd> (Mac) or <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> (Windows, Linux) to open DevTools.
 
-   
+3. Press <kbd>Command</kbd>+<kbd>Option</kbd>+<kbd>I</kbd> (Mac) or <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> (Windows, Linux) to open DevTools.
 
    > [!NOTE]
    > **Note** : For the rest of the screenshots, DevTools is [undocked to a separate window](https://developer.mozilla.org/docs/Web/API/window/requestAnimationFrame) so that you can see its contents better.
@@ -46,8 +46,6 @@ CPU Throttling to simulate how your page performs on mobile devices.
 3. Click **Capture Settings** . DevTools reveals settings related to how it captures performance metrics.
 4. For **CPU** , select **4x slowdown**. DevTools throttles your CPU so that it's 4 times slower
    than usual.
-
-   
 
    > [!NOTE]
    > **Note** : When testing other pages, if you want to ensure that they work well on low-end mobile devices, set CPU Throttling to **20x slowdown**. This demo doesn't work well with 20x slowdown, so it just uses 4x slowdown for instructional purposes.
@@ -78,13 +76,10 @@ un-optimized version.
    . DevTools captures
    performance metrics as the page runs.
 
-   
 2. Wait a few seconds.
 
 3. Click **Stop** . DevTools stops recording, processes the data, then displays the results in the
    **Performance** panel.
-
-   
 
 Wow, that's an overwhelming amount of data. Don't worry, it'll make more sense shortly.
 
@@ -101,22 +96,17 @@ happy when animations run at 60 FPS.
 1. Look at the **FPS** chart. Whenever you see a red bar above **FPS**, it means that the framerate
    dropped so low that it's probably harming the user experience.
 
-   
 2. Below the **FPS** chart you see the **CPU** chart. The colors in the **CPU** chart correspond to
    the colors in the **Summary** tab, at the bottom of the **Performance** panel. The fact that the
    **CPU** chart is full of color means that the CPU was maxed out during the recording. Whenever
    you see the CPU maxed out for long periods, it's a cue to find ways to do less work.
 
-   
 3. Hover your mouse over the **FPS** , **CPU** , or **NET** charts. DevTools shows a screenshot of
    the page at that point in time. Move your mouse left and right to replay the recording. This is
    called scrubbing, and it's useful for manually analyzing the progression of animations.
 
-   
 4. In the **Frames** section, hover your mouse over one of the green squares. DevTools shows you
    the FPS for that particular frame. Each frame is probably well below the target of 60 FPS.
-
-   
 
 Of course, with this demo, it's pretty obvious that the page is not performing well. But in real
 scenarios, it may not be so clear, so having all of these tools to make measurements comes in handy.
@@ -130,7 +120,6 @@ Another handy tool is the **FPS meter**, which provides real-time estimates for 
 3. In the **Rendering** panel, enable **Show Rendering stats**. A new overlay appears in the top-right of your
    viewport.
 
-   
 4. Disable the **FPS Meter** and press <kbd>Escape</kbd> to close the **Rendering** panel. You won't be using it in this tutorial.
 
 ### Find the bottleneck
@@ -142,19 +131,15 @@ to answer is: why?
    The page spent most of its time rendering. Since performance is the art of doing less work, your
    goal is to reduce the amount of time spent doing rendering work.
 
-   
 2. Expand the **Main** section. DevTools shows you a flame chart of activity on the main thread,
    over time. The x-axis represents the recording, over time. Each bar represents an event. A wider
    bar means that event took longer. The y-axis represents the call stack. When you see events
    stacked on top of each other, it means the upper events caused the lower events.
 
-   
 3. There's a lot of data in the recording. Zoom in on a single **Animation Frame Fired** event by
    clicking, holding, and dragging your mouse over the **Overview** , which is the section that
    includes the **FPS** , **CPU** , and **NET** charts. The **Main** section and **Summary** tab only
    display information for the selected portion of the recording.
-
-   
 
    > [!TIP]
    > **Tip:** You can also use <kbd>WASD</kbd> to navigate the recording. Focus the **Main** section by clicking its background or selecting an event, then press <kbd>W</kbd> to zoom in, <kbd>S</kbd> to zoom out, <kbd>A</kbd> to scroll left, or <kbd>D</kbd> to scroll right.
@@ -167,8 +152,6 @@ to answer is: why?
    initiated the **Animation Frame Fired** event. Also note the **app.update @** link. Clicking that
    jumps you to the relevant line in the source code.
 
-   
-
    > [!NOTE]
    > **Note**: After selecting an event, use the arrow keys to select the events next to it.
 
@@ -179,8 +162,6 @@ to answer is: why?
 
 7. In the **Summary** tab, click the link next to **app.update @** under **Animation Frame Requested**. DevTools takes you
    to the line of code that forced the layout.
-
-   
 
    > [!NOTE]
    > **Note** : The problem with this code is that, in each animation frame, it changes the style for each square, and then queries the position of each square on the page. Because the styles changed, the browser doesn't know if each square's position changed, so it has to re-layout the square in order to compute its position. See [Avoid forced synchronous layouts](https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) to learn more.

@@ -154,7 +154,12 @@ export function getMaterialCssVariables(
  * Material Symbols Rounded (Apache-2.0): the [symbols] subset of assets/brand/brand.toml, optimized by
  * `ay brand build` (assets/brand/gen/symbols/symbols.json, also cdn.aphrody.com/brand/v1). No inline copy.
  */
-type SymbolEntry = { codepoint: string; viewBox: string; outline: string; fill: string };
+type SymbolEntry = {
+  codepoint: string;
+  viewBox: string;
+  outline: string;
+  fill: string;
+};
 const SYMBOLS = symbolsJson as Record<string, SymbolEntry>;
 export const MATERIAL_SYMBOLS: Record<string, string> = Object.fromEntries(
   Object.entries(SYMBOLS).map(([name, s]) => [name, s.outline]),

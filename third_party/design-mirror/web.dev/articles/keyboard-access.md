@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
 Many different users rely on the keyboard to navigate applications---from users
@@ -60,6 +61,7 @@ Don't
 <button>Peach</button>
 <button>Coconut</button>
 ```
+
 The kiwi button is floated, which creates an illogical focus order. Do
 
 ```html
@@ -67,6 +69,7 @@ The kiwi button is floated, which creates an illogical focus order. Do
 <button>Coconut</button>
 <button>Kiwi</button>
 ```
+
 Order your HTML in the way you want the tab order to appear.
 
 Be careful when changing the visual position of elements using CSS to avoid

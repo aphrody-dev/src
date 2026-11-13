@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Make generating highly performant image sources a seamless part of your
 development process.
 
@@ -15,11 +16,11 @@ markup that powers [responsive images](https://web.dev/learn/images/responsive-i
 discovered a number of ways for a client browser to communicate its needs to a server, and a server to respond in kind.
 Responsive image markup (`srcset` and `sizes`, in particular) manage to describe a shocking amount of information in relatively
 few characters. For better or worse, that brevity is by design: making these syntaxes less terse, and so easier for developers
-to parse, could have made them more difficult for a *browser* to parse. The more complexity added to a string, the more
+to parse, could have made them more difficult for a _browser_ to parse. The more complexity added to a string, the more
 potential there is for parser errors, or unintentional differences in behavior from one browser to another.
 
 However, the same trait that can make these subjects feel so intimidating can also provide you with solutions: a syntax easily
-*read* by machines is a syntax more easily *written* by them. You've almost certainly encountered many examples of automated
+_read_ by machines is a syntax more easily _written_ by them. You've almost certainly encountered many examples of automated
 image encoding and compression as a user of the web: any image uploaded to the web through social media platforms, content
 management systems (CMS), and even email clients will almost invariably pass through a system that resizes, re-encodes,
 and compresses them.
@@ -77,8 +78,8 @@ illustrate, let's take a relatively simple use case: a directory in your project
 meant to be used on a public-facing website.
 
 First, you'll need to ensure consistent, efficient encoding for these images. As you've learned in the previous modules,
-WebP is an efficient default for photographic images in terms of both quality and file size. WebP is *well* supported,
-but not *universally* supported, so you'll also want to include a fallback in the form of a progressive JPEG. Then,
+WebP is an efficient default for photographic images in terms of both quality and file size. WebP is _well_ supported,
+but not _universally_ supported, so you'll also want to include a fallback in the form of a progressive JPEG. Then,
 in order to make use of the `srcset` attribute for efficient delivery of these assets, you'll need to produce multiple
 alternate sizes for each encoding.
 
@@ -90,20 +91,24 @@ shorthand you learned about in [Image Formats and Compression](https://web.dev/l
 ready to be referenced in the `src` attributes of your user-facing `img` elements while leaving your original files intact.
 
 ```javascript
-const { src, dest } = require('gulp');
-const respimg = require('gulp-responsive');
+const { src, dest } = require("gulp");
+const respimg = require("gulp-responsive");
 
-exports.webp = function() {
-  return src('./src-img/*')
-    .pipe(respimg({
-      '*': [{
-        quality: 70,
-        format: ['webp', 'jpeg'],
-        progressive: true
-      }]
-  }))
-  .pipe(dest('./img/'));
-}
+exports.webp = function () {
+  return src("./src-img/*")
+    .pipe(
+      respimg({
+        "*": [
+          {
+            quality: 70,
+            format: ["webp", "jpeg"],
+            progressive: true,
+          },
+        ],
+      }),
+    )
+    .pipe(dest("./img/"));
+};
 ```
 
 With a process like this in place, no harm would be done to a production environment if someone on the project inadvertently
@@ -117,34 +122,37 @@ In order to output multiple files, you pass along multiple configuration objects
 a `width` key and a value in pixels:
 
 ```javascript
-const { src, dest } = require('gulp');
-const respimg = require('gulp-responsive');
+const { src, dest } = require("gulp");
+const respimg = require("gulp-responsive");
 
-exports.default = function() {
-  return src('./src-img/*')
-    .pipe(respimg({
-    '*': [{
+exports.default = function () {
+  return src("./src-img/*")
+    .pipe(
+      respimg({
+        "*": [
+          {
             width: 1000,
-            format: ['jpeg', 'webp'],
+            format: ["jpeg", "webp"],
             progressive: true,
-            rename: { suffix: '-1000' }
-            },
-            {
+            rename: { suffix: "-1000" },
+          },
+          {
             width: 800,
-            format: ['jpeg', 'webp'],
+            format: ["jpeg", "webp"],
             progressive: true,
-            rename: { suffix: '-800' }
-            },
-            {
+            rename: { suffix: "-800" },
+          },
+          {
             width: 400,
-            format: ['jpeg', 'webp'],
+            format: ["jpeg", "webp"],
             progressive: true,
-            rename: { suffix: '-400' },
-        }]
-        })
+            rename: { suffix: "-400" },
+          },
+        ],
+      }),
     )
-    .pipe(dest('./img/'));
-}
+    .pipe(dest("./img/"));
+};
 ```
 
 In the case of the example above, the original image (monarch.png) was more than 3.3MB. The largest file generated by
@@ -166,7 +174,7 @@ Of course, you'll want to carefully examine the results for visible compression 
 for additional savings. Since this task is non-destructive, these settings can be changed easily.
 
 All told, in exchange for the few kilobytes you could carve away with careful manual micro-optimization, you gain a process
-that is not only efficient, but *resilient*---a tool that seamlessly applies your knowledge of high-performance image assets
+that is not only efficient, but _resilient_---a tool that seamlessly applies your knowledge of high-performance image assets
 to an entire project, without any manual intervention.
 
 ### Responsive image markup in practice
@@ -189,8 +197,14 @@ or JPEG fallback pattern. In this case, you'll be using the `type` attribute in 
 
 ```html
 <picture>
-  <source type="image/webp" srcset="filename-1000.webp 1000w, filename-800.webp 800w, filename-400.webp 400w">
-  
+  <source
+    type="image/webp"
+    srcset="
+      filename-1000.webp 1000w,
+      filename-800.webp   800w,
+      filename-400.webp   400w
+    "
+  />
 </picture>
 ```
 
@@ -203,13 +217,19 @@ still need a fallback, or we could run the risk of a broken image in especially 
 `<source>`, and `srcset` are all ignored in these browsers, we'll want to specify a default source in the inner ``'s
 `src` attribute.
 
-Because scaling an image downwards is *visually* seamless and JPEG encoding is universally supported, the largest JPEG is
+Because scaling an image downwards is _visually_ seamless and JPEG encoding is universally supported, the largest JPEG is
 a sensible choice.
 
 ```html
 <picture>
-  <source type="image/webp" srcset="filename-1000.webp 1000w, filename-800.webp 800w, filename-400.webp 400w">
-  
+  <source
+    type="image/webp"
+    srcset="
+      filename-1000.webp 1000w,
+      filename-800.webp   800w,
+      filename-400.webp   400w
+    "
+  />
 </picture>
 ```
 
@@ -236,7 +256,7 @@ will provide you with tailored `sizes` attributes that you can copy and paste in
 than one written by hand:
 
 Though image requests initiated by server-rendered markup happen too quickly for JavaScript to generate a client-side `sizes` attribute,
-the same reasoning doesn't apply if those requests are *initiated* client-side. The [Lazysizes](https://github.com/aFarkas/lazysizes) project,
+the same reasoning doesn't apply if those requests are _initiated_ client-side. The [Lazysizes](https://github.com/aFarkas/lazysizes) project,
 for example, allows you to fully defer image requests until after the layout has been established, allowing JavaScript to generate
 our `sizes` values for us---a huge convenience for you, and a guarantee of the most efficient possible requests for your users.
 Keep in mind, however, that this approach does mean sacrificing the reliability of server-rendered markup and the speed

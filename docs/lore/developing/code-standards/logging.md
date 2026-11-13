@@ -15,14 +15,14 @@ The codebase uses two distinct logging systems:
 
 Defined in `lore-base/src/log/mod.rs`:
 
-| Level | Value | Use case |
-| --- | --- | --- |
-| `None` | 0 | Disabled |
-| `Trace` | 1 | Detailed diagnostics (compile-time gated) |
-| `Debug` | 2 | Debug information |
-| `Info` | 3 | General information (default) |
-| `Warn` | 4 | Potential issues |
-| `Error` | 5 | Error conditions |
+| Level   | Value | Use case                                  |
+| ------- | ----- | ----------------------------------------- |
+| `None`  | 0     | Disabled                                  |
+| `Trace` | 1     | Detailed diagnostics (compile-time gated) |
+| `Debug` | 2     | Debug information                         |
+| `Info`  | 3     | General information (default)             |
+| `Warn`  | 4     | Potential issues                          |
+| `Error` | 5     | Error conditions                          |
 
 ---
 
@@ -80,13 +80,13 @@ lore_error!("Failed to connect: {}", error);
 
 Defined in `lore/src/log.rs` via `LoreLogConfig`:
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `file` | 0 | Enable file logging |
-| `file_rolling` | 0 | Enable daily rotation |
-| `level` | Info | Minimum log level |
-| `file_max_size` | 10MB | Max file size |
-| `file_max_count` | 8 | Max rotated files |
+| Field            | Default | Description           |
+| ---------------- | ------- | --------------------- |
+| `file`           | 0       | Enable file logging   |
+| `file_rolling`   | 0       | Enable daily rotation |
+| `level`          | Info    | Minimum log level     |
+| `file_max_size`  | 10MB    | Max file size         |
+| `file_max_count` | 8       | Max rotated files     |
 
 **Default log paths:**
 
@@ -130,8 +130,8 @@ Defined in `lore/src/log.rs` via `LoreLogConfig`:
 
 ## 6. Key files
 
-| File | Purpose |
-| --- | --- |
-| `lore-base/src/log/mod.rs` | `LoreLogLevel`, Lore macros |
-| `lore/src/log.rs` | `LoreLogConfig`, file rotation |
-| `lore-server/src/grpc/tower/tracing.rs` | Request span creation |
+| File                                    | Purpose                        |
+| --------------------------------------- | ------------------------------ |
+| `lore-base/src/log/mod.rs`              | `LoreLogLevel`, Lore macros    |
+| `lore/src/log.rs`                       | `LoreLogConfig`, file rotation |
+| `lore-server/src/grpc/tower/tracing.rs` | Request span creation          |

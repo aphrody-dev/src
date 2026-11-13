@@ -7,16 +7,17 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 A step-by-step guide on how to break down LCP and identify key areas to improve.
 
- Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: April 30, 2020, Last updated: March 31, 2025
 
 [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt) is one of the three [Core Web Vitals](https://web.dev/articles/vitals.md.txt#core_web_vitals) metrics, and it represents how quickly the main content of a web page is loaded. Specifically, LCP measures the time from when the user initiates loading the page until the largest image or text block is rendered within the viewport.
 
 To provide a good user experience, **sites should strive to have an LCP of 2.5 seconds or less for at least 75% of page visits.**
- A good LCP value is 2.5 seconds or less.
+A good LCP value is 2.5 seconds or less.
 
 A number of factors can affect how quickly the browser can load and render a web page, and delays across any of them can have a significant impact on LCP.
 
@@ -33,14 +34,14 @@ LCP data based on real users can be surfaced from Real User Monitoring (RUM) too
 ### Using Chrome DevTools CrUX LCP data
 
 The Performance panel of Chrome DevTools shows your local LCP experience next to the page or origin's CrUX LCP in the [live metrics view](https://developer.chrome.com/docs/devtools/performance/overview#live-metrics), and in the [Insights](https://developer.chrome.com/docs/devtools/performance/reference#insights) of a performance trace including a breakdown of the LCP subpart timings (that we will explain shortly).
- Local and field LCP in the Chrome DevTools Performance panel live metrics and trace views.
+Local and field LCP in the Chrome DevTools Performance panel live metrics and trace views.
 
 By layering field data onto the Performance panel, you can assess whether a page has any real-user LCP issues and adapt your local environment settings to better reproduce and debug those issues.
 
 ### Using PageSpeed Insights CrUX LCP data
 
 [PageSpeed Insights](https://pagespeed.web.dev/) provides access to CrUX data in the top section labeled **Discover what your real users are experiencing** . More detailed lab-based data is available in the bottom section labeled **Diagnose performance issues**. If CrUX data is available for your website, always concentrate on the real user data first.
- CrUX data shown in PageSpeed Insights.
+CrUX data shown in PageSpeed Insights.
 
 > [!NOTE]
 > **Note:** Where CrUX does not provide data (for example, a page with insufficient traffic to get page-level data), CrUX should be supplemented with RUM data collected using JavaScript APIs running on the web page. This can also provide much more data than CrUX can expose as a public dataset. Later in this guide we will explain how to collect this data using JavaScript.
@@ -53,7 +54,7 @@ PageSpeed Insights shows up to four different CrUX data:
 - **Desktop** data for the whole **Origin**
 
 You can toggle these in the controls at the top and top right-hand side of this section. If a URL doesn't have enough data to be shown at the URL level, but does have data for the origin, PageSpeed Insights always shows the origin data.
- When PageSpeed Insights doesn't have URL-level data, it shows origin-level data.
+When PageSpeed Insights doesn't have URL-level data, it shows origin-level data.
 
 The LCP for the whole origin may be very different to an individual page's LCP depending on how the LCP is loaded on that page compared to other pages on that origin. It can also be affected by how visitors navigate to these pages. Home pages tend to be visted by new users and so may often be loaded "cold", without any cached content and so are often the slowest pages on a website.
 
@@ -78,10 +79,10 @@ A large delta between FCP and LCP indicates that the LCP resource is either not 
 The Lighthouse section of PageSpeed Insights offers some guidance to improving LCP, but first you should check if the LCP given is broadly in agreement with real user data provided by CrUX. If Lighthouse and CrUX disagree, then CrUX likely provides a more accurate picture of your user experience. Make sure your CrUX data is for your page, not the full origin, before you act on it.
 
 If both Lighthouse and CrUX show LCP values that need improvement, the Lighthouse section can provide valuable guidance on ways to improve LCP. Use the LCP filter to only show audits relevant to LCP as follows:
- Lighthouse diagnostics and suggestions for improving LCP.
+Lighthouse diagnostics and suggestions for improving LCP.
 
 As well as the **Opportunities** to improve, there is **Diagnostic** information that may provide more information to help diagnose the issue. The **Largest Contentful Paint element** diagnostic shows a useful breakdown of the various timings that made up the LCP:
- Lighthouse's breakdown of LCP elements.
+Lighthouse's breakdown of LCP elements.
 
 LCP resource types and subparts are also [available in CrUX](https://developer.chrome.com/blog/crux-2025-02).
 
@@ -108,34 +109,34 @@ While other requests on the page can affect LCP, these two requests---specifical
 To identify the LCP resource, you can use developer tools (such as PageSpeed Insights discussed before, [Chrome DevTools](https://developer.chrome.com/docs/devtools), or [WebPageTest](https://webpagetest.org/)) to determine the [LCP element](https://web.dev/articles/lcp.md.txt#what_elements_are_considered). From there you can match the URL (again, if applicable) loaded by the element on a [network waterfall](https://developer.chrome.com/docs/devtools/network/reference) of all resources loaded by the page.
 
 For example, the following visualization shows these resources highlighted on a network waterfall diagram from a typical page load, where the LCP element requires an image request to render.
- A waterfall diagram showing the loading times for a webpage's HTML and the resources the LCP needs.
+A waterfall diagram showing the loading times for a webpage's HTML and the resources the LCP needs.
 
 For a well-optimized page, you want your LCP resource request to start loading as early as it can, and you want the LCP element to render as quickly as possible after the LCP resource finishes loading. To help visualize whether or not a particular page is following this principle, you can break down the total LCP time into the following subparts:
 
 [Time to First Byte (TTFB)](https://web.dev/articles/ttfb.md.txt)
-:   The time from when the user initiates loading the page until the browser
-    receives the first byte of the HTML document response.
+: The time from when the user initiates loading the page until the browser
+receives the first byte of the HTML document response.
 
 Resource load delay
-:   The time between TTFB and when the browser starts loading the LCP resource. If
-    the LCP element doesn't require a resource load to render (for example, if the
-    element is a text node rendered with a system font), this time is 0.
+: The time between TTFB and when the browser starts loading the LCP resource. If
+the LCP element doesn't require a resource load to render (for example, if the
+element is a text node rendered with a system font), this time is 0.
 
 Resource load duration
-:   The duration of time it takes to load the LCP resource itself. If the LCP
-    element doesn't require a resource load to render, this time is 0.
+: The duration of time it takes to load the LCP resource itself. If the LCP
+element doesn't require a resource load to render, this time is 0.
 
 Element render delay
-:   The time between when the LCP resource finishes loading and the LCP element
-    rendering fully.
- The same waterfall diagram, with the four LCP subparts overlaid on the timeline.
+: The time between when the LCP resource finishes loading and the LCP element
+rendering fully.
+The same waterfall diagram, with the four LCP subparts overlaid on the timeline.
 
 Every single page can have its LCP value broken down into these four subparts. There is no overlap or gap between them. Collectively, they add up to the full LCP time.
 
 When optimizing LCP, it's helpful to try to optimize these subparts individually. But it's also important to keep in mind that you need to optimize all of them. In some cases, an optimization applied to one part won't improve LCP, it will just shift the time saved to another part.
 
 For example, in the earlier network waterfall, if you reduced the file size of our image by compressing it more or switching to a more optimal format (such as AVIF or WebP), that would reduce the **resource load duration** , but it wouldn't actually improve LCP because the time would just shift to the **element render delay** subpart:
- Shortening the resource load duration increases the element render delay without reducing LCP.
+Shortening the resource load duration increases the element render delay without reducing LCP.
 
 The reason this happens is because, on this page, the LCP element is hidden until the JavaScript code finishes loading, and then everything is revealed at once.
 
@@ -147,20 +148,20 @@ In order to optimize each subpart of LCP, it's important to understand what the 
 
 Of the four subparts, two have the word "delay" in their names. That is a clue that you want to get these times as close to zero as possible. The other two parts involve network requests, which by their very nature take time.
 
-| LCP subpart | % of LCP |
-|---|---|
-| Time to first byte | \~40% |
-| Resource load delay | \<10% |
-| Resource load duration | \~40% |
-| Element render delay | \<10% |
-| **TOTAL** | **100%** |
+| LCP subpart            | % of LCP |
+| ---------------------- | -------- |
+| Time to first byte     | \~40%    |
+| Resource load delay    | \<10%    |
+| Resource load duration | \~40%    |
+| Element render delay   | \<10%    |
+| **TOTAL**              | **100%** |
 
 Note that these time breakdowns are guidelines, not strict rules. If the LCP times on your pages are consistently within 2.5 seconds, then it doesn't really matter what the relative proportions are. But if you're spending a lot of unnecessary time in either of the "delay" portions, then it will be very difficult to constantly hit the [2.5 second target](https://web.dev/articles/lcp.md.txt#what_is_a_good_lcp_score).
 
 A good way to think about the breakdown of LCP time is:
 
 - The **vast majority** of the LCP time should be spent loading the HTML document and LCP source.
-- Any time before LCP where one of these two resources is *not* loading is **an opportunity to improve**.
+- Any time before LCP where one of these two resources is _not_ loading is **an opportunity to improve**.
 
 > [!WARNING]
 > **Warning:** Given the [2.5 second target](https://web.dev/articles/lcp.md.txt#what_is_a_good_lcp_score) for LCP, it may be tempting to try to convert these percentages into absolute numbers, but that is not recommended. These subparts are only meaningful relative to each other, so it's best to always measure them that way.
@@ -171,12 +172,12 @@ Now that you understand how each of the LCP subpart times should break down on a
 
 The next four sections will present recommendations and best practices for how to optimize each part. They're presented in order, starting with the optimizations that are likely to have the biggest impact.
 
-### 1. Eliminate *resource load delay*
+### 1. Eliminate _resource load delay_
 
-The goal in this step is to ensure the LCP resource starts loading as early as possible. While in theory the earliest a resource *could* start loading is immediately after TTFB, in practice there is always some delay before browsers actually start loading resources.
+The goal in this step is to ensure the LCP resource starts loading as early as possible. While in theory the earliest a resource _could_ start loading is immediately after TTFB, in practice there is always some delay before browsers actually start loading resources.
 
 A good rule of thumb is that your LCP resource should start loading at the same time as the first resource loaded by that page. Or, to put that another way, if the LCP resource starts loading later than the first resource, then there's opportunity for improvement.
- On this page, the LCP resource starts loading well after the style sheet that loads first. There's room for improvement here.
+On this page, the LCP resource starts loading well after the style sheet that loads first. There's room for improvement here.
 
 Generally speaking, there are two factors that affect how quickly an LCP resource can be loading:
 
@@ -203,10 +204,16 @@ To eliminate unnecessary resource load delay, your LCP resource should be discov
 
 ```html
 <!-- Load the stylesheet that will reference the LCP image. -->
-<link rel="stylesheet" href="/path/to/styles.css">
+<link rel="stylesheet" href="/path/to/styles.css" />
 
 <!-- Preload the LCP image with a high fetchpriority so it starts loading with the stylesheet. -->
-<link rel="preload" fetchpriority="high" as="image" href="/path/to/hero-image.webp" type="image/webp">
+<link
+  rel="preload"
+  fetchpriority="high"
+  as="image"
+  href="/path/to/hero-image.webp"
+  type="image/webp"
+/>
 ```
 
 > [!WARNING]
@@ -214,7 +221,7 @@ To eliminate unnecessary resource load delay, your LCP resource should be discov
 
 #### Optimize the priority the resource is given
 
-Even if the LCP resource is discoverable from the HTML markup, it *still* may not start loading as early as the first resource. This can happen if the browser preload scanner's priority heuristics don't recognize that the resource is important, or if it determines that other resources are more important.
+Even if the LCP resource is discoverable from the HTML markup, it _still_ may not start loading as early as the first resource. This can happen if the browser preload scanner's priority heuristics don't recognize that the resource is important, or if it determines that other resources are more important.
 
 For example, you can delay your LCP image using HTML if you set [`loading="lazy"`](https://web.dev/articles/browser-level-image-lazy-loading.md.txt) on your `` element. Using lazy loading means that the resource won't be loaded until after layout confirms the image is in the viewport and so may begin loading later than it otherwise would.
 
@@ -238,16 +245,16 @@ You can also lower the priority of images that might be early in the document re
 Deprioritizing certain resources can afford more bandwidth to resources that need it more---but be careful. Always check resource priority in DevTools and test changes with lab and field tools.
 
 After you have optimized your LCP resource priority and discovery time, your network waterfall should look like this (with the LCP resource starting at the same time as the first resource):
- The LCP resource now starts loading at the same time as the style sheet.
+The LCP resource now starts loading at the same time as the style sheet.
 
 > [!IMPORTANT]
 > **Key point:** Another reason your LCP resource may not start loading as early as possible---even when it's discoverable from the HTML source---is if it's hosted on a different origin, as these requests require the browser to connect to that origin before the resource can start loading. When possible, it's a good idea to host critical resources on the same origin as your HTML document resource because then those resources can save time by reusing the existing connection (more on this point later).
 
-### 2. Eliminate *element render delay*
+### 2. Eliminate _element render delay_
 
-The goal in this step is to ensure the LCP element can render *immediately* after its resource has finished loading, no matter when that happens.
+The goal in this step is to ensure the LCP element can render _immediately_ after its resource has finished loading, no matter when that happens.
 
-The primary reason the LCP element *wouldn't* be able to render immediately after its resource finishes loading is if rendering is [blocked](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources) for some other reason:
+The primary reason the LCP element _wouldn't_ be able to render immediately after its resource finishes loading is if rendering is [blocked](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources) for some other reason:
 
 - Rendering of the entire page is blocked due to stylesheets or synchronous scripts in the `<head>` that are still loading.
 - The LCP resource has finished loading, but the LCP element has not yet been added to the DOM (it's waiting for some JavaScript code to load).
@@ -259,7 +266,7 @@ The following sections explain how to address the most common causes of unnecess
 #### Reduce or inline render-blocking stylesheets
 
 Style sheets loaded from the HTML markup will block rendering of all content that follows them, which is good, since you generally don't want to render unstyled HTML. However, if the style sheet is so large that it takes significantly longer to load than the LCP resource, then it will prevent the LCP element from rendering---even after its resource has finished loading, as shown in this example:
- The image and the style sheet start loading at the same time, but the image can't render until the style sheet is ready.
+The image and the style sheet start loading at the same time, but the image can't render until the style sheet is ready.
 
 To fix this, your options are to either:
 
@@ -288,6 +295,7 @@ Don't
   <script src="/path/to/main.js"></script>
 </head>
 ```
+
 Do
 
 ```html
@@ -318,7 +326,7 @@ Even if you've followed the advice from earlier, and your JavaScript code is not
 
 The most common reason this happens is when pages load large JavaScript files, which need to be parsed and executed on the browser's main thread. This means that, even if your image resource is fully downloaded, it may still have to wait until an unrelated script finishes executing before it can render.
 
-All browsers today render images on the main thread, which means anything that blocks the main thread can also lead to unnecessary *element render delay*.
+All browsers today render images on the main thread, which means anything that blocks the main thread can also lead to unnecessary _element render delay_.
 
 ### 3. Reduce resource load duration
 
@@ -352,19 +360,19 @@ In addition to reducing the size of a resource, you can also reduce the load tim
 
 #### Reduce contention for network bandwidth
 
-Even if you've reduced the size of your resource and the distance it has to travel, a resource can still take a long time to load if you're loading many other resources at the same time. This problem is known as *network contention*.
+Even if you've reduced the size of your resource and the distance it has to travel, a resource can still take a long time to load if you're loading many other resources at the same time. This problem is known as _network contention_.
 
 If you've given your LCP resource a [high `fetchpriority`](https://web.dev/articles/fetch-priority.md.txt) and [started loading it as soon as possible](https://web.dev/articles/optimize-lcp.md.txt#1_eliminate_resource_load_delay) then the browser will do its best to prevent lower-priority resources from competing with it. However, if you're loading many resources with high `fetchpriority`, or if you're just loading a lot of resources in general, then it could affect how quickly the LCP resource loads.
 
 #### Eliminate the network time entirely
 
-The best way to reduce resource load duration is to eliminate the network entirely from the process. If you serve your resources with an [efficient cache-control policy](https://developer.chrome.com/docs/lighthouse/performance/uses-long-cache-ttl), then visitors who request those resources a second time will have them served from the cache---bringing the *resource load duration* to essentially zero!
+The best way to reduce resource load duration is to eliminate the network entirely from the process. If you serve your resources with an [efficient cache-control policy](https://developer.chrome.com/docs/lighthouse/performance/uses-long-cache-ttl), then visitors who request those resources a second time will have them served from the cache---bringing the _resource load duration_ to essentially zero!
 
 If your LCP resource is a web font, in addition to [reducing web font size](https://web.dev/articles/reduce-webfont-size.md.txt), you should also consider whether you need to block rendering on the web font resource load. If you set a [`font-display`](https://developer.mozilla.org/docs/Web/CSS/@font-face/font-display) value of anything other than `auto` or `block`, then text will [always be visible during load](https://developer.chrome.com/docs/lighthouse/performance/font-display), and LCP won't be blocked on an additional network request.
 
 Finally, if your LCP resource is small, it may make sense to inline the resources as a [data URL](https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs), which will also eliminate the additional network request. However, using data URLs [comes with caveats](https://calendar.perfplanet.com/2018/performance-anti-patterns-base64-encoding/) because then the resources cannot be cached and in some cases can lead to longer render delays because of the additional [decode cost](https://www.catchpoint.com/blog/data-uri).
 
-### 4. Reduce *time to first byte*
+### 4. Reduce _time to first byte_
 
 The goal of this step is to deliver the initial HTML as quickly as possible. This step is listed last because it's often the one developers have the least control over. However, it's also one of the most important steps because it directly affects every step that comes after it. Nothing can happen on the frontend until the backend delivers that first byte of content, so anything you can do to speed up your TTFB will improve every other load metric as well.
 

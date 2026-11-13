@@ -28,7 +28,9 @@ describe("Chromium vs Bun Parity Suite", () => {
     });
 
     test("scheduler.postTask executes and returns result", async () => {
-      const result = await (globalThis as any).scheduler.postTask(() => "chromium-parity");
+      const result = await (globalThis as any).scheduler.postTask(
+        () => "chromium-parity",
+      );
       expect(result).toBe("chromium-parity");
     });
 
@@ -38,8 +40,12 @@ describe("Chromium vs Bun Parity Suite", () => {
 
       // Post background first, then user-visible, then user-blocking
       const p1 = s.postTask(() => order.push("bg"), { priority: "background" });
-      const p2 = s.postTask(() => order.push("uv"), { priority: "user-visible" });
-      const p3 = s.postTask(() => order.push("ub"), { priority: "user-blocking" });
+      const p2 = s.postTask(() => order.push("uv"), {
+        priority: "user-visible",
+      });
+      const p3 = s.postTask(() => order.push("ub"), {
+        priority: "user-blocking",
+      });
 
       await Promise.all([p1, p2, p3]);
       expect(order).toEqual(["ub", "uv", "bg"]);
@@ -97,17 +103,25 @@ describe("Chromium vs Bun Parity Suite", () => {
     test("shared lock concurrent execution", async () => {
       const trace: string[] = [];
 
-      const p1 = navigator.locks.request("shared-res", { mode: "shared" }, async () => {
-        trace.push("start-s1");
-        await Bun.sleep(10);
-        trace.push("end-s1");
-      });
+      const p1 = navigator.locks.request(
+        "shared-res",
+        { mode: "shared" },
+        async () => {
+          trace.push("start-s1");
+          await Bun.sleep(10);
+          trace.push("end-s1");
+        },
+      );
 
-      const p2 = navigator.locks.request("shared-res", { mode: "shared" }, async () => {
-        trace.push("start-s2");
-        await Bun.sleep(10);
-        trace.push("end-s2");
-      });
+      const p2 = navigator.locks.request(
+        "shared-res",
+        { mode: "shared" },
+        async () => {
+          trace.push("start-s2");
+          await Bun.sleep(10);
+          trace.push("end-s2");
+        },
+      );
 
       await Promise.all([p1, p2]);
       // Both start before first ends
@@ -118,10 +132,14 @@ describe("Chromium vs Bun Parity Suite", () => {
     test("ifAvailable returns null when lock is held", async () => {
       let innerRan = false;
       await navigator.locks.request("held-resource", async () => {
-        await navigator.locks.request("held-resource", { ifAvailable: true }, async (lock) => {
-          expect(lock).toBeNull();
-          innerRan = true;
-        });
+        await navigator.locks.request(
+          "held-resource",
+          { ifAvailable: true },
+          async (lock) => {
+            expect(lock).toBeNull();
+            innerRan = true;
+          },
+        );
       });
       expect(innerRan).toBe(true);
     });
@@ -166,7 +184,10 @@ describe("Chromium vs Bun Parity Suite", () => {
       const bodyData = JSON.stringify({ message: "cached in sqlite" });
 
       const response = new Response(bodyData, {
-        headers: { "Content-Type": "application/json", "X-Cache-Test": "sqlite-backed" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Cache-Test": "sqlite-backed",
+        },
       });
 
       await cache.put(testUrl, response);
@@ -260,7 +281,8 @@ describe("Chromium vs Bun Parity Suite", () => {
 
     test("BunChromiumDNS.resolveHTTPS parses Type 65 ALPN data", async () => {
       try {
-        const httpsRecords = await BunChromiumDNS.resolveHTTPS("cloudflare.com");
+        const httpsRecords =
+          await BunChromiumDNS.resolveHTTPS("cloudflare.com");
         expect(Array.isArray(httpsRecords)).toBe(true);
         if (httpsRecords.length > 0) {
           expect(httpsRecords[0].alpn.length).toBeGreaterThan(0);

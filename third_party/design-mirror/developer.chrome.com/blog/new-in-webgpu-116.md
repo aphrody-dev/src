@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## WebCodecs integration
@@ -62,7 +63,7 @@ The default maximum level of detail (`lodMaxClamp`) used when sampling a texture
 A message is displayed in the DevTools JavaScript console to remind developers when they are using WebGPU on an unsupported platform. See [change chromium:4589369](https://chromium-review.googlesource.com/c/chromium/src/+/4589369).
 
 Buffer validation error messages are instantly shown in DevTools JavaScript console when [`getMappedRange()`](https://developer.mozilla.org/docs/Web/API/GPUBuffer/getMappedRange) fails without forcing developers to send commands to the queue. See [change chromium:4597950](https://chromium-review.googlesource.com/c/chromium/src/+/4597950).
- Buffer validation error message in DevTools JavaScript console.
+Buffer validation error message in DevTools JavaScript console.
 
 ## Dawn updates
 

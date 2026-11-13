@@ -1,0 +1,236 @@
+# Factory pipeline config: shenron-chat-v2 (first pipeline of tools/factory).
+# No secrets here: the MCP endpoint is public and read-only; anything private comes from
+# /etc/aphrody/secrets.env on the fleet.
+
+[model]
+alias = "shenron-chat-v2"
+base_hf = "Qwen/Qwen3.5-0.8B"
+base_rev = "2fc06364715b967f1860aea9cf38778875588b17"
+base_gguf_repo = "unsloth/Qwen3.5-0.8B-GGUF"
+base_gguf_rev = "6ab461498e2023f6e3c1baea90a8f0fe38ab64d0"
+base_gguf_file = "Qwen3.5-0.8B-Q4_K_M.gguf"
+quant = "Q4_K_M"
+
+[mcp]
+url = "https://dragonballfr.com/mcp"
+result_chars = 900
+
+[sources]
+# Paths relative to the shenron checkout shipped to the trainer.
+code_roots = [
+  "packages/api/src",
+  "packages/db/src",
+  "packages/config/src",
+  "crates/shenron-mcp/src",
+  "apps/server/src",
+]
+db_schema = "packages/db/src/full-schema.ts"
+max_code_pairs = 500
+max_db_pairs = 150
+
+[train]
+lora_r = 16
+lora_alpha = 32
+epochs = 2
+lr = 2e-4
+max_len = 1536
+distractors = 7
+eval_frac = 0.12
+threads = 6
+seed = 7
+
+[serve]
+port = 8799
+ctx = 16384
+threads = 4
+
+# Entity seeds for the question templates (public Dragon Ball canon, no user data).
+[seeds]
+characters = [
+  "Goku",
+  "Vegeta",
+  "Gohan",
+  "Piccolo",
+  "Freezer",
+  "Cell",
+  "Boo",
+  "Bulma",
+  "Trunks",
+  "Krilin",
+  "Broly",
+  "Beerus",
+  "Whis",
+  "Jiren",
+  "Satan",
+  "C-18",
+  "Tenshinhan",
+  "Yamcha",
+  "Raditz",
+  "Nappa",
+  "Zamasu",
+  "Goten",
+  "Videl",
+  "Kaio Shin",
+  "Dabura",
+  "Ginyu",
+  "Baba",
+  "Tortue Géniale",
+  "Shenron",
+  "Pan",
+]
+topics = [
+  "Super Saiyan",
+  "Kamehameha",
+  "boules de cristal",
+  "Namek",
+  "Tournoi du Pouvoir",
+  "Fusion",
+  "Genkidama",
+  "Capsule Corp",
+  "Saiyans",
+  "Ruban Rouge",
+  "Hyperbolic Time Chamber",
+  "Ultra Instinct",
+  "Androïdes",
+  "Planète Vegeta",
+]
+databooks = [
+  "Daizenshuu",
+  "Chōzenshū",
+  "Dragon Ball Forever",
+  "Super Exciting Guide",
+  "Dragon Ball Landmark",
+]
+
+# One or more French prompt templates per tool; {c} character, {t} topic, {d} databook, {n} number.
+# args uses the same placeholders; tools not listed are still offered as distractors.
+[[tasks]]
+tool = "dragonball.wiki_search"
+prompts = [
+  "Cherche {c} dans le wiki.",
+  "Que dit le wiki sur {t} ?",
+  "Fiche wiki de {c} ?",
+]
+args = { query = "{c|t}" }
+[[tasks]]
+tool = "dragonball.rag_ask"
+prompts = [
+  "Qui est {c} exactement ?",
+  "Explique-moi {t} avec des sources.",
+  "Quel est le rôle de {c} dans Dragon Ball Z ?",
+]
+args = { question = "{prompt}" }
+[[tasks]]
+tool = "dragonball.canon_check"
+prompts = [
+  "Est-ce canon que {c} maîtrise le {t} ?",
+  "Vérifie si {c} et {t} c'est canon.",
+  "{t} est canon dans le manga ?",
+]
+args = { question = "{prompt}" }
+[[tasks]]
+tool = "dragonball.manga_search"
+prompts = [
+  "Dans quel chapitre du manga apparaît {c} ?",
+  "Trouve les passages du manga sur {t}.",
+  "Cherche {c} dans le manga.",
+]
+args = { query = "{c|t}" }
+[[tasks]]
+tool = "dragonball.manga_chapter"
+prompts = [
+  "Donne-moi le chapitre {n} du manga.",
+  "Ouvre le chapitre {n}.",
+  "Résumé du chapitre {n} ?",
+]
+args = { chapterId = "{n}" }
+[[tasks]]
+tool = "dragonball.databooks_search"
+prompts = [
+  "Quels databooks parlent de {c} ?",
+  "Cherche {t} dans les guides officiels.",
+  "Liste les databooks sur {t}.",
+]
+args = { q = "{c|t}" }
+[[tasks]]
+tool = "dragonball.databooks_plates"
+prompts = [
+  "Montre les planches du {d} sur {c}.",
+  "Planches de databook avec {c} ?",
+]
+args = { q = "{c}" }
+[[tasks]]
+tool = "dragonball.lexicon_search"
+prompts = [
+  "Comment s'écrit {c} en japonais ?",
+  "Traduction japonaise de {t} ?",
+  "Nom original de {c} ?",
+]
+args = { query = "{c|t}" }
+[[tasks]]
+tool = "dragonball.timeline"
+prompts = [
+  "Donne la chronologie de Dragon Ball.",
+  "Chronologie des événements de Dragon Ball Z ?",
+  "Frise chronologique de la saga ?",
+]
+args = {}
+[[tasks]]
+tool = "dragonball.news"
+prompts = [
+  "Quelles sont les dernières actus Dragon Ball ?",
+  "Quoi de neuf sur Dragon Ball ?",
+  "Les {n} dernières news ?",
+]
+args = {}
+[[tasks]]
+tool = "dragonball.sources_search"
+prompts = ["Quelles sources citent {c} ?", "Sources officielles sur {t} ?"]
+args = { query = "{c|t}" }
+[[tasks]]
+tool = "dragonball.wiki_events"
+prompts = [
+  "Quels événements impliquent {c} ?",
+  "Événements du wiki autour de {t} ?",
+]
+args = { q = "{c|t}" }
+[[tasks]]
+tool = "dragonball.bot_leaderboard"
+prompts = ["Classement du bot Discord ?", "Top {n} du leaderboard ?"]
+args = {}
+[[tasks]]
+tool = "dragonball.bot_commands"
+prompts = [
+  "Quelles commandes a le bot Shenron ?",
+  "Liste des commandes Discord du bot ?",
+]
+args = {}
+[[tasks]]
+tool = "dragonball.data_coverage"
+prompts = [
+  "Quelle est la couverture des données du site ?",
+  "Combien de données sont indexées ?",
+]
+args = {}
+[[tasks]]
+tool = "dragonball.manga_catalog"
+prompts = [
+  "Catalogue du manga disponible ?",
+  "Quelles séries manga sont disponibles ?",
+]
+args = {}
+[[tasks]]
+tool = "dragonball.wiki_categories"
+prompts = ["Quelles catégories a le wiki ?", "Liste des catégories du wiki."]
+args = {}
+[[tasks]]
+tool = "dbfr_databooks"
+prompts = [
+  "Liste les databooks de dragonballfr.com sur {c}.",
+  "Catalogue des databooks {d} ?",
+]
+args = { q = "{c|d}" }
+[[tasks]]
+tool = "dragonball.rag_search"
+prompts = ["Recherche des passages sur {t}.", "Passages sourcés sur {c} ?"]
+args = { query = "{c|t}" }

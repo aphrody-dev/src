@@ -1,7 +1,7 @@
 [package]
 name = "aphrody-env"
 version = "0.1.0"
-edition = "2024"
+edition.workspace = true
 description = "Zero-dependency Rust 2024 loader and SecretString redaction guard for C:/src/.env"
 license = "MIT"
 

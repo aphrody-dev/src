@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 So far in this course, you've learned about the individual, business, and
 legal aspects of digital accessibility, and the basics of digital accessibility
 conformance. You have explored specific topics related to inclusive design and
@@ -37,7 +38,7 @@ for general information on accessibility audits, conformance types/levels,
 [WCAG](https://web.dev/learn/accessibility/glossary.md.txt#wcag), and
 [POUR](https://web.dev/learn/accessibility/glossary.md.txt#pour).
 
-As you now know, accessibility conformance is *not* the full story when it
+As you now know, accessibility conformance is _not_ the full story when it
 comes to supporting people with disabilities. But, it's a good starting point
 as it provides a metric you can test against. We encourage you to take the
 following actions in addition to conformance testing, to help you build more
@@ -132,7 +133,7 @@ Learn more about
 navigate to the Lighthouse tab. Clear all of the category options except for
 "Accessibility." Keep the mode as the default and choose the device type you're
 running the tests on.
- Medical Mystery Club website, with the Lighthouse report DevTools panel open.
+Medical Mystery Club website, with the Lighthouse report DevTools panel open.
 
 ### Step 4
 
@@ -152,7 +153,7 @@ list of additional items to check manually.
 > [!NOTE]
 > **Note:** The automated Lighthouse tests were run in December 2022. Due to changes in the codebase, browsers, assistive technology, accessibility standards, or rulesets, your test results may vary.
 
- The Medical Mysteries Club website received a 62 for the Lighthouse score in our December 2022 test.
+The Medical Mysteries Club website received a 62 for the Lighthouse score in our December 2022 test.
 
 ### Step 5
 
@@ -172,7 +173,8 @@ In our demo, the newsletter subscribe button fails:
 ```html
 <button role="list" type="submit" tabindex="1">Subscribe</button>
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 The "subscribe" button next to the input field has an incorrect ARIA role
 applied to it. In this case, the role can be removed completely.
@@ -189,16 +191,28 @@ elements from being available to users of assistive technologies like screen
 readers. [Learn more about `aria-hidden` rules](https://dequeuniversity.com/rules/axe/4.4/aria-hidden-focus).
 
 ```html
-<input type="email" placeholder="Enter your e-mail address" aria-hidden="true" tabindex="-1" required>
+<input
+  type="email"
+  placeholder="Enter your e-mail address"
+  aria-hidden="true"
+  tabindex="-1"
+  required
+/>
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 The input field had an `aria-hidden="true"` attribute applied to it. Adding
 this attribute hides the element (and everything nested under it) from
 assistive tech.
 
 ```html
-<input type="email" placeholder="Enter your e-mail address" tabindex="-1" required>
+<input
+  type="email"
+  placeholder="Enter your e-mail address"
+  tabindex="-1"
+  required
+/>
 ```
 
 In this case, you should remove this attribute from the input to allow people
@@ -215,7 +229,8 @@ users who rely on screen readers.
 ```html
 <button role="list" type="submit" tabindex="1">Subscribe</button>
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 When you remove the inaccurate ARIA role from the button element in
 [issue 1](https://web.dev/learn/accessibility/test-automated.md.txt#aria-roles), the word "Subscribe" becomes the accessible button
@@ -234,11 +249,10 @@ an empty alt attribute. [Learn more about image alternative text
 rules](https://dequeuniversity.com/rules/axe/4.4/image-alt).
 
 ```html
-<a href="index.html">
-  
-</a>
+<a href="index.html"> </a>
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 Since the logo image is also a link, you know from the
 [image module](https://web.dev/learn/accessibility/images.md.txt) that it's called an actionable
@@ -248,9 +262,7 @@ your AT users will know this, and you may decide not to add this additional
 contextual information to your image description.
 
 ```html
-<a href="index.html">
-  
-</a>
+<a href="index.html"> </a>
 ```
 
 #### Issue 5: Link text
@@ -261,9 +273,12 @@ navigation experience for screen reader users.
 [Learn more about link text rules](https://dequeuniversity.com/rules/axe/4.4/link-name).
 
 ```html
-<a href="#!"><svg><path>...</path></svg></a>
+<a href="#!"
+  ><svg><path>...</path></svg></a
+>
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 All of the actionable images on the page must include information about where
 the link sends users. One method to remedy this issue is to add alternative
@@ -298,7 +313,7 @@ Low-contrast text is difficult or impossible for many users to read.
 [Learn more about color contrast rules](https://dequeuniversity.com/rules/axe/4.4/color-contrast).
 
 Two examples were reported.
- Medical Mysteries Club has a color hex value of `#01aa9d` and the background hex value of `#ffffff`. The color contrast ratio is 2.9:1.  Mermaid syndrome has a text hex value of `#7c7c7c`, while the background's hex color is `#ffffff`. The color contrast ratio is 4.2:1.  **Let's fix it.**
+Medical Mysteries Club has a color hex value of `#01aa9d` and the background hex value of `#ffffff`. The color contrast ratio is 2.9:1. Mermaid syndrome has a text hex value of `#7c7c7c`, while the background's hex color is `#ffffff`. The color contrast ratio is 4.2:1. **Let's fix it.**
 
 There are many color contrast issues detected on the web page. As you learned in
 the [color and contrast](https://web.dev/learn/accessibility/color-contrast.md.txt) module,
@@ -319,7 +334,7 @@ aesthetics.
 All the gray text on the white background also fails for color contrast, except
 for the two largest headings on the page. This text must be darkened to meet
 the 4.5:1 color contrast requirements.
- The club name, Medical Mysteries Club, has been given a color value of `#008576` and the background remains `#ffffff`. The updated color contrast ratio is 4.5:1. Click the image to view full-size.  Mermaid syndrome now has a color value of `#767676` and the background remains `#ffffff`. The color contrast ratio is 4.5:1.
+The club name, Medical Mysteries Club, has been given a color value of `#008576` and the background remains `#ffffff`. The updated color contrast ratio is 4.5:1. Click the image to view full-size. Mermaid syndrome now has a color value of `#767676` and the background remains `#ffffff`. The color contrast ratio is 4.5:1.
 
 #### Issue 7: list structure
 
@@ -338,7 +353,8 @@ Screen readers require list items (`<li>`) to be contained within a parent
   <li><a href="#">Subscribe</a></li>
 </div>
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 We used a CSS class in this demo to simulate the unordered list instead of
 using a `<ul>` tag. When we wrote this code improperly, we removed the inherent
@@ -365,7 +381,8 @@ creates frustrating experiences for users who rely on assistive technologies.
 ```html
 <button type="submit" tabindex="1">Subscribe</button>
 ```
- **Let's fix it.**
+
+**Let's fix it.**
 
 Unless there is a specific reason to disrupt the natural tabbing order on a web
 page, there is no need to have a positive integer on a tabindex attribute. To
@@ -381,7 +398,7 @@ remove the attribute altogether.
 Now that you've fixed all the automated accessibility issues, open up a new
 debug mode page. Run the Lighthouse accessibility audit again. Your score
 should be much better than on the first run.
- The lighthouse score is now 100, which means you addressed all Lighthouse issues.
+The lighthouse score is now 100, which means you addressed all Lighthouse issues.
 
 We've applied all of these automated accessibility updates to a new
 [CodePen](https://codepen.io/web-dot-dev/pen/PoBZgrW).

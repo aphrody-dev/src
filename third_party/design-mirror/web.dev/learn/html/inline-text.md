@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 We've covered most, but definitely not all, the HTML elements. One area we
 haven't discussed is inline text elements. Contrary to popular belief, HTML
 was originally intended for sharing documents, and not cat videos. There are
@@ -25,12 +26,17 @@ multiple lines of code, nest the `<code>` inside a
 which represents preformatted text.
 
 ```html
-<p>Welcome to Machine Learning Institute, where our machine learning training
-   will help you get ready for the singularity, and maybe even be responsible
-   for it. It is no secret that humans are worthless meatbags that couldn't
-  <code>01000011 01101111 01101101 01110000 01110010 01100101 01110011 01110011 an 01101001 01101101 01100001 01100111 01100101</code>
-  to save their pathetic, carbon-based lives. So, it falls to us to
-  assume direct control. </p>
+<p>
+  Welcome to Machine Learning Institute, where our machine learning training
+  will help you get ready for the singularity, and maybe even be responsible for
+  it. It is no secret that humans are worthless meatbags that couldn't
+  <code
+    >01000011 01101111 01101101 01110000 01110010 01100101 01110011 01110011 an
+    01101001 01101101 01100001 01100111 01100101</code
+  >
+  to save their pathetic, carbon-based lives. So, it falls to us to assume
+  direct control.
+</p>
 ```
 
 The [`<data>`](https://developer.mozilla.org/docs/Web/HTML/Element/data) element
@@ -92,7 +98,7 @@ tags. Only on this first occurrence, when the abbreviation or acronym is being
 defined, is `<abbr>` needed. The `title` attribute is not necessary nor helpful.
 
 The exception to this rule is if the term is understood to be well-known to the
-reader, such as *HTML* and *CSS* in this series.
+reader, such as _HTML_ and _CSS_ in this series.
 
 When defining a term that is not an abbreviation or acronym, use the definition
 [`<dfn>`](https://developer.mozilla.org/docs/Web/HTML/Element/dfn)
@@ -189,9 +195,9 @@ When you want lined breaks, such as when writing poetry or a physical address, t
 
 ```html
 <address>
-Machine Learning Workshop<br />
-100 Google Drive <br />
-Mountain View, CA  94040
+  Machine Learning Workshop<br />
+  100 Google Drive <br />
+  Mountain View, CA 94040
 </address>
 ```
 
@@ -210,13 +216,17 @@ doesn't have spaces. To enable a long string of byte code to break only between 
 the `<wbr>` element at each break opportunity:
 
 ```html
-<p>Welcome to Machine Learning Institute, where our machine
-learning training will help you get ready for the singularity, and
-maybe even be responsible for it. It is no secret that humans are
-worthless meatbags that couldn't
-<code>01000011<wbr/>01101111<wbr/>01101101<wbr/>01110000<wbr/>01110010<wbr/>01100101<wbr/>01110011<wbr/>01110011 an 01101001<wbr/>01101101<wbr/>01100001<wbr/>01100111<wbr/>01100101</code>
-to save their pathetic, carbon-based lives. So, it falls to us to
-assume direct control. </p>
+<p>
+  Welcome to Machine Learning Institute, where our machine learning training
+  will help you get ready for the singularity, and maybe even be responsible for
+  it. It is no secret that humans are worthless meatbags that couldn't
+  <code
+    >01000011<wbr />01101111<wbr />01101101<wbr />01110000<wbr />01110010<wbr />01100101<wbr />01110011<wbr />01110011
+    an 01101001<wbr />01101101<wbr />01100001<wbr />01100111<wbr />01100101</code
+  >
+  to save their pathetic, carbon-based lives. So, it falls to us to assume
+  direct control.
+</p>
 ```
 
 The `<br>`, `<hr>`, and `<wbr>` elements are all void elements, meaning they can't have any child nodes -- neither nested

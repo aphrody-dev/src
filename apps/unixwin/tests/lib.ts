@@ -77,4 +77,3 @@ export const bashRef = (
   script: string,
   opts: Parameters<typeof spawn>[1] = {},
 ) => spawn([BASH_REF!, "--norc", "--noprofile", "-c", script], opts);
-

@@ -41,11 +41,11 @@ bubblewrap = exit, never a silent unsandboxed run), `excludedCommands: []`, writ
 
 Measured (Linux 7.3, bubblewrap, the mechanism WSL2 uses; `test/launcher.test.ts`, skipped without bwrap):
 
-| Probe                                    | Unsandboxed          | Sandboxed                          |
-| ---------------------------------------- | -------------------- | ---------------------------------- |
-| `bun -e rmSync(<file outside the roots>)` | file deleted         | file kept (read-only filesystem)   |
-| `cat $(printf .en; printf v)`            | prints the secret    | `Permission denied`, nothing printed |
-| `bun -e`, `git init`/`commit`, `just`    | work                 | work (write roots allow them)      |
+| Probe                                     | Unsandboxed       | Sandboxed                            |
+| ----------------------------------------- | ----------------- | ------------------------------------ |
+| `bun -e rmSync(<file outside the roots>)` | file deleted      | file kept (read-only filesystem)     |
+| `cat $(printf .en; printf v)`             | prints the secret | `Permission denied`, nothing printed |
+| `bun -e`, `git init`/`commit`, `just`     | work              | work (write roots allow them)        |
 
 Not measured: no Windows or WSL2 host was available to this run, so the end-to-end `wsl.exe` launch, `/mnt/c`
 (drvfs) behavior of the bind mounts, and `just`/`bun test` timings under WSL2 are untested. First task on the PC:

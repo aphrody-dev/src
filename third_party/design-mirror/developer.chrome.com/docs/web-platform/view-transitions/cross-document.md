@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
 
-When a view transition occurs between two different documents it is called a *cross-document view transition*. This is typically the case in multi-page applications (MPA). Cross-document view transitions are supported in Chrome from Chrome 126.
+When a view transition occurs between two different documents it is called a _cross-document view transition_. This is typically the case in multi-page applications (MPA). Cross-document view transitions are supported in Chrome from Chrome 126.
 
 Browser Support
 
@@ -41,19 +42,19 @@ Both these conditions are explained later in this document.
 > [!NOTE]
 > **Note:** In Chrome 126, cross-document view transitions are limited to main frame navigations only. In a future release, cross-document view transitions will also be enabled for navigations occurring in iframes.
 
-*** ** * ** ***
+---
 
 ## Cross-document view transitions are limited to same-origin navigations
 
 Cross-document view transitions are limited to **same-origin navigations** only. A navigation is considered to be same-origin if the origin of both participating pages is the same.
 
 The origin of a page is a combination of the used scheme, hostname, and port, as [detailed on web.dev](https://web.dev/articles/same-site-same-origin).
- An example URL with the scheme, hostname, and port highlighted. Combined, they form the origin.
+An example URL with the scheme, hostname, and port highlighted. Combined, they form the origin.
 
 For example, you can have a cross-document view transition when navigating from `developer.chrome.com` to `developer.chrome.com/blog`, as those are same-origin.
 You can't have that transition when navigating from `developer.chrome.com` to `www.chrome.com`, as those are cross-origin and same-site.
 
-*** ** * ** ***
+---
 
 ## Cross-document view transitions are opt-in
 
@@ -90,7 +91,7 @@ Recording of the [Stack Navigator demo](https://view-transitions.chrome.dev/stac
 > [!NOTE]
 > **Note:** The forwards and backwards transitions are customized with `pagereveal`, which is covered in the next section.
 
-*** ** * ** ***
+---
 
 ## Customize cross-document view transitions
 
@@ -123,29 +124,29 @@ These two events get fired for every same-origin cross-document navigation regar
 - The `pageswap` event fires before the last frame of a page is rendered. You can use this to do some last-minute changes on the outgoing page, right before the old snapshots get taken.
 - The `pagereveal` event fires on a page after it has been initialized or reactivated but before the first rendering opportunity. With it, you can customize the new page before the new snapshots get taken.
 
-For example, you can use these events to quickly set or change some `view-transition-name` values or pass data from one document to another by writing and reading data from [`sessionStorage`](https://developer.mozilla.org/docs/Web/API/Window/sessionStorage) to customize the view transition *before* it actually runs.
+For example, you can use these events to quickly set or change some `view-transition-name` values or pass data from one document to another by writing and reading data from [`sessionStorage`](https://developer.mozilla.org/docs/Web/API/Window/sessionStorage) to customize the view transition _before_ it actually runs.
 
 ```javascript
 let lastClickX, lastClickY;
-document.addEventListener('click', (event) => {
-  if (event.target.tagName.toLowerCase() === 'a') return;
+document.addEventListener("click", (event) => {
+  if (event.target.tagName.toLowerCase() === "a") return;
   lastClickX = event.clientX;
   lastClickY = event.clientY;
 });
 
 // Write position to storage on old page
-window.addEventListener('pageswap', (event) => {
+window.addEventListener("pageswap", (event) => {
   if (event.viewTransition && lastClick) {
-    sessionStorage.setItem('lastClickX', lastClickX);
-    sessionStorage.setItem('lastClickY', lastClickY);
+    sessionStorage.setItem("lastClickX", lastClickX);
+    sessionStorage.setItem("lastClickY", lastClickY);
   }
 });
 
 // Read position from storage on new page
-window.addEventListener('pagereveal', (event) => {
+window.addEventListener("pagereveal", (event) => {
   if (event.viewTransition) {
-    lastClickX = sessionStorage.getItem('lastClickX');
-    lastClickY = sessionStorage.getItem('lastClickY');
+    lastClickX = sessionStorage.getItem("lastClickX");
+    lastClickY = sessionStorage.getItem("lastClickY");
   }
 });
 ```
@@ -163,14 +164,14 @@ window.addEventListener("pagereveal", async (e) => {
 ```
 
 > [!IMPORTANT]
-> **Important:** The `pagereveal` event listener needs to execute before the first rendering opportunity. Therefore you must register the listener in a classic parser-blocking script in the `<head>` *(not a module, not async, not defer)* . Using an asynchronous script--be it a module or regular `<script async>`--in the `<head>` can be used but then you must manually mark it as [render-blocking](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document.md.txt#render-blocking) by adding `blocking=render` to the `<script>` tag.
+> **Important:** The `pagereveal` event listener needs to execute before the first rendering opportunity. Therefore you must register the listener in a classic parser-blocking script in the `<head>` _(not a module, not async, not defer)_ . Using an asynchronous script--be it a module or regular `<script async>`--in the `<head>` can be used but then you must manually mark it as [render-blocking](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document.md.txt#render-blocking) by adding `blocking=render` to the `<script>` tag.
 
 The `ViewTransition` object in `pageswap` and `pagereveal` are two different objects. They also handle [the various promises](https://developer.chrome.com/docs/web-platform/view-transitions.md.txt#api-reference) differently:
 
 - `pageswap`: Once the document is hidden, the old `ViewTransition` object is skipped. When that happens, `viewTransition.ready` rejects and `viewTransition.finished` resolves.
 - `pagereveal`: The `updateCallBack` promise is already resolved at this point. You can use the `viewTransition.ready` and `viewTransition.finished` promises.
 
-*** ** * ** ***
+---
 
 ### Navigation activation information
 
@@ -205,7 +206,7 @@ The code is as follows:
 
 ```javascript
 // OLD PAGE LOGIC
-window.addEventListener('pageswap', async (e) => {
+window.addEventListener("pageswap", async (e) => {
   if (e.viewTransition) {
     const targetUrl = new URL(e.activation.entry.url);
 
@@ -214,20 +215,24 @@ window.addEventListener('pageswap', async (e) => {
       const profile = extractProfileNameFromUrl(targetUrl);
 
       // Set view-transition-name values on the clicked row
-      document.querySelector(`#${profile} span`).style.viewTransitionName = 'name';
-      document.querySelector(`#${profile} img`).style.viewTransitionName = 'avatar';
+      document.querySelector(`#${profile} span`).style.viewTransitionName =
+        "name";
+      document.querySelector(`#${profile} img`).style.viewTransitionName =
+        "avatar";
 
       // Remove view-transition-names after snapshots have been taken
       // (this to deal with BFCache)
       await e.viewTransition.finished;
-      document.querySelector(`#${profile} span`).style.viewTransitionName = 'none';
-      document.querySelector(`#${profile} img`).style.viewTransitionName = 'none';
+      document.querySelector(`#${profile} span`).style.viewTransitionName =
+        "none";
+      document.querySelector(`#${profile} img`).style.viewTransitionName =
+        "none";
     }
   }
 });
 
 // NEW PAGE LOGIC
-window.addEventListener('pagereveal', async (e) => {
+window.addEventListener("pagereveal", async (e) => {
   if (e.viewTransition) {
     const fromURL = new URL(navigation.activation.from.url);
     const currentURL = new URL(navigation.activation.entry.url);
@@ -237,14 +242,18 @@ window.addEventListener('pagereveal', async (e) => {
       const profile = extractProfileNameFromUrl(currentURL);
 
       // Set view-transition-name values on the elements in the list
-      document.querySelector(`#${profile} span`).style.viewTransitionName = 'name';
-      document.querySelector(`#${profile} img`).style.viewTransitionName = 'avatar';
+      document.querySelector(`#${profile} span`).style.viewTransitionName =
+        "name";
+      document.querySelector(`#${profile} img`).style.viewTransitionName =
+        "avatar";
 
       // Remove names after snapshots have been taken
       // so that we're ready for the next navigation
       await e.viewTransition.ready;
-      document.querySelector(`#${profile} span`).style.viewTransitionName = 'none';
-      document.querySelector(`#${profile} img`).style.viewTransitionName = 'none';
+      document.querySelector(`#${profile} span`).style.viewTransitionName =
+        "none";
+      document.querySelector(`#${profile} img`).style.viewTransitionName =
+        "none";
     }
   }
 });
@@ -263,16 +272,16 @@ const setTemporaryViewTransitionNames = async (entries, vtPromise) => {
   await vtPromise;
 
   for (const [$el, name] of entries) {
-    $el.style.viewTransitionName = '';
+    $el.style.viewTransitionName = "";
   }
-}
+};
 ```
 
 The previous code can now be simplified as follows:
 
 ```javascript
 // OLD PAGE LOGIC
-window.addEventListener('pageswap', async (e) => {
+window.addEventListener("pageswap", async (e) => {
   if (e.viewTransition) {
     const targetUrl = new URL(e.activation.entry.url);
 
@@ -282,16 +291,19 @@ window.addEventListener('pageswap', async (e) => {
 
       // Set view-transition-name values on the clicked row
       // Clean up after the page got replaced
-      setTemporaryViewTransitionNames([
-        [document.querySelector(`#${profile} span`), 'name'],
-        [document.querySelector(`#${profile} img`), 'avatar'],
-      ], e.viewTransition.finished);
+      setTemporaryViewTransitionNames(
+        [
+          [document.querySelector(`#${profile} span`), "name"],
+          [document.querySelector(`#${profile} img`), "avatar"],
+        ],
+        e.viewTransition.finished,
+      );
     }
   }
 });
 
 // NEW PAGE LOGIC
-window.addEventListener('pagereveal', async (e) => {
+window.addEventListener("pagereveal", async (e) => {
   if (e.viewTransition) {
     const fromURL = new URL(navigation.activation.from.url);
     const currentURL = new URL(navigation.activation.entry.url);
@@ -302,16 +314,19 @@ window.addEventListener('pagereveal', async (e) => {
 
       // Set view-transition-name values on the elements in the list
       // Clean up after the snapshots have been taken
-      setTemporaryViewTransitionNames([
-        [document.querySelector(`#${profile} span`), 'name'],
-        [document.querySelector(`#${profile} img`), 'avatar'],
-      ], e.viewTransition.ready);
+      setTemporaryViewTransitionNames(
+        [
+          [document.querySelector(`#${profile} span`), "name"],
+          [document.querySelector(`#${profile} img`), "avatar"],
+        ],
+        e.viewTransition.ready,
+      );
     }
   }
 });
 ```
 
-*** ** * ** ***
+---
 
 ### Wait for content to load with render blocking
 
@@ -327,7 +342,7 @@ In some cases, you may want to hold off the first render of a page until a certa
 In the `<head>`, define one or more element IDs that need to be present before the page gets its first render, using the following meta tag.
 
 ```html
-<link rel="expect" blocking="render" href="#section1">
+<link rel="expect" blocking="render" href="#section1" />
 ```
 
 This meta tag means that the element should be present in the DOM, not that the content should be loaded. For example with images, the mere presence of the `` tag with the specified `id` in the DOM tree is enough for the condition to evaluate to true. The image itself could still be loading.
@@ -337,7 +352,7 @@ Before you go all-in on render blocking be aware that incremental rendering is a
 > [!NOTE]
 > **Note:** For best effect of cross-page view transitions in general you need fast loading pages. For this you can consider [prerendering, using the Speculation Rules API](https://developer.chrome.com/docs/web-platform/prerender-pages.md.txt).
 
-*** ** * ** ***
+---
 
 ## View transition types in cross-document view transitions
 
@@ -359,7 +374,10 @@ To set the types on the fly, use the `pageswap` and `pagereveal` events to manip
 ```javascript
 window.addEventListener("pagereveal", async (e) => {
   if (e.viewTransition) {
-    const transitionType = determineTransitionType(navigation.activation.from, navigation.activation.entry);
+    const transitionType = determineTransitionType(
+      navigation.activation.from,
+      navigation.activation.entry,
+    );
     e.viewTransition.types.add(transitionType);
   }
 });
@@ -445,13 +463,13 @@ const determineTransitionType = (fromNavigationEntry, toNavigationEntry) => {
     const destinationPageIndex = extractPageIndexFromPath(destinationPathname);
 
     if (currentPageIndex > destinationPageIndex) {
-      return 'backwards';
+      return "backwards";
     }
     if (currentPageIndex < destinationPageIndex) {
-      return 'forwards';
+      return "forwards";
     }
 
-    return 'unknown';
+    return "unknown";
   }
 };
 ```

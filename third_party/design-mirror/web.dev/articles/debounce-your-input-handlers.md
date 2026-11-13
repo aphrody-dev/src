@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Input handlers are a potential cause of performance problems in your apps, as they can block frames from completing, and can cause additional and unnecessary layout work.
 
 Paul Lewis [X](https://twitter.com/aerotwist) [Homepage](https://aerotwist.com/)
@@ -33,27 +34,25 @@ In short, you should make sure that any input handlers you run should execute qu
 
 Input handlers, like those for scroll and touch, are scheduled to run just before any `requestAnimationFrame` callbacks.
 
-If you make a visual change inside one of those handlers, then at the start of the `requestAnimationFrame`, there will be style changes pending. If you *then* read visual properties at the start of the requestAnimationFrame callback, as the advice in "[Avoid large, complex layouts and layout thrashing](https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing.md.txt)" suggests, you will trigger a forced synchronous layout!
+If you make a visual change inside one of those handlers, then at the start of the `requestAnimationFrame`, there will be style changes pending. If you _then_ read visual properties at the start of the requestAnimationFrame callback, as the advice in "[Avoid large, complex layouts and layout thrashing](https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing.md.txt)" suggests, you will trigger a forced synchronous layout!
 
 ## Debounce your scroll handlers
 
 The solution to both of the problems above is the same: you should always debounce visual changes to the next `requestAnimationFrame` callback:
 
 ```javascript
-function onScroll (evt) {
+function onScroll(evt) {
+  // Store the scroll value for laterz.
+  lastScrollY = window.scrollY;
 
-    // Store the scroll value for laterz.
-    lastScrollY = window.scrollY;
+  // Prevent multiple rAF callbacks.
+  if (scheduledAnimationFrame) return;
 
-    // Prevent multiple rAF callbacks.
-    if (scheduledAnimationFrame)
-    return;
-
-    scheduledAnimationFrame = true;
-    requestAnimationFrame(readAndUpdatePage);
+  scheduledAnimationFrame = true;
+  requestAnimationFrame(readAndUpdatePage);
 }
 
-window.addEventListener('scroll', onScroll);
+window.addEventListener("scroll", onScroll);
 ```
 
 Doing this also has the added benefit of keeping your input handlers light, which is awesome because now you're not blocking things like scrolling or touch on computationally expensive code!

@@ -14,7 +14,7 @@ discussion: https://web.lore.internal.epicgames.net/epic/Lore/change-request/111
 
 ## Summary
 
-Lore records every checkout of a repository, called an *instance*, in a registry kept in the repository's mutable store.
+Lore records every checkout of a repository, called an _instance_, in a registry kept in the repository's mutable store.
 This proposal adds `lore repository instance move <target>` and `lore repository instance delete`. Each command changes
 the instance on disk, or its virtual mount for an SWFS instance, and keeps the registry consistent with the result. Both
 commands support the global `--dry-run` flag, which runs the same validation without changing anything. They hold the
@@ -134,17 +134,18 @@ A step that is still refused when the attempts are spent fails with the same err
    call names none. The command cleans the result, so a `..` names the directory it reaches, and every later step uses
    that cleaned absolute path.
 2. **Validate**, in dry-run and real mode alike:
-    - The target doesn't exist, where a symbolic link that leads nowhere counts as existing, and isn't inside the
-      instance. The nearest of the directories above it that exists is a directory that doesn't lead into the instance
-      through a symbolic link. A directory above it that can't be checked or resolved fails the move.
-    - On Windows, the caller's working directory is not inside the instance. Windows refuses to rename a directory that
-      is any process's working directory, so the command fails with an explanation.
-    - The instance's config loads, and the shared store it names, if any, resolves.
-    - For an SWFS instance, the service is running, holds the instance mounted at its current path, and does not already
-      hold a mount at the target.
+   - The target doesn't exist, where a symbolic link that leads nowhere counts as existing, and isn't inside the
+     instance. The nearest of the directories above it that exists is a directory that doesn't lead into the instance
+     through a symbolic link. A directory above it that can't be checked or resolved fails the move.
+   - On Windows, the caller's working directory is not inside the instance. Windows refuses to rename a directory that
+     is any process's working directory, so the command fails with an explanation.
+   - The instance's config loads, and the shared store it names, if any, resolves.
+   - For an SWFS instance, the service is running, holds the instance mounted at its current path, and does not already
+     hold a mount at the target.
 
    A target that fails the first check, or that the service already holds a mount at, is refused with
    `InvalidArguments`.
+
 3. **Create the parents.** Once every check has passed, the command creates the directories above the target that
    don't exist. A dry run creates none.
 4. **Move.** A regular instance's directory is renamed, retrying while its files are in use (see
@@ -372,49 +373,49 @@ from the immutable store. That blob stays until store garbage collection, as whe
 **Assumptions**
 
 - **Assumption:** A rename within one volume is a single atomic operation, so a move either happens or does not. —
-  *invalidated if:* a supported platform or filesystem completes a rename partially.
+  _invalidated if:_ a supported platform or filesystem completes a rename partially.
 - **Assumption:** `NoStore` access leaves no file open under the instance directory after the command reads its
-  config. — *invalidated if:* a later change to the `NoStore` path holds a handle, which would make the rename and
+  config. — _invalidated if:_ a later change to the `NoStore` path holds a handle, which would make the rename and
   delete fail on Windows.
 - **Assumption:** The SWFS library releases a mount path when `swfsClose` returns, so a new mount at another path can
-  start immediately. — *invalidated if:* SWFS releases the path asynchronously and the new mount races it.
+  start immediately. — _invalidated if:_ SWFS releases the path asynchronously and the new mount races it.
 - **Assumption:** Running `update-path` on an instance at its new location replaces its registered path and retires any
-  registration at that path. — *invalidated if:* a registration at the new path can survive the update.
+  registration at that path. — _invalidated if:_ a registration at the new path can survive the update.
 
 **Risks**
 
 - **Risk:** Linux schedules the disk without regard to the thread's lowered priority. Only the BFQ and mq-deadline I/O
   schedulers support I/O priorities ([I/O priorities](https://docs.kernel.org/block/ioprio.html)), so a disk with
   another scheduler ignores it. The kernel also issues much of a removal's metadata writing from its own threads. —
-  *mitigation:* accepted. The removal still frees the path early; only macOS is measured.
-- **Risk:** A crash between the rename and the registration leaves the registry naming the old path. — *mitigation:*
+  _mitigation:_ accepted. The removal still frees the path early; only macOS is measured.
+- **Risk:** A crash between the rename and the registration leaves the registry naming the old path. — _mitigation:_
   `lore repository update-path` in the new location, or `instance prune`, repairs it. The error messages for the
   failures the commands can detect say so.
-- **Risk:** A failed delete leaves files and no registration. — *mitigation:* the error names the directory to delete by
+- **Risk:** A failed delete leaves files and no registration. — _mitigation:_ the error names the directory to delete by
   hand: the sibling, or the directory itself where the rename was not possible, which for SWFS is the external
   directory. The command accepts the leftover files.
 - **Risk:** Another reader has the instance's files open when the rename or delete runs, and Windows refuses it. —
-  *mitigation:* the step is retried with backoff for about fifteen seconds, longer than the default store keep-alive.
+  _mitigation:_ the step is retried with backoff for about fifteen seconds, longer than the default store keep-alive.
   A reader that holds the files longer, such as a long sync, still fails the step, with the same instruction as any
   other failure.
 - **Risk:** A permission problem on Windows reports access denied, as an open file does, so a move or delete that can
-  never succeed is reported only after the retries are spent. — *mitigation:* accepted. The delay is bounded, and only
+  never succeed is reported only after the retries are spent. — _mitigation:_ accepted. The delay is bounded, and only
   a step that would fail anyway pays it.
 - **Risk:** A second process opens the instance in the gap between deregistration and deletion, and registers it
-  again. — *mitigation:* the rename aside narrows the gap for a regular instance, and `instance prune` retires the
+  again. — _mitigation:_ the rename aside narrows the gap for a regular instance, and `instance prune` retires the
   registration once the path is gone. Accepted for an SWFS instance, which has no directory at its path to rename, and
   where the rename is not possible.
 - **Risk:** A crash or a failed delete leaves `<name>.deleting-<instance ID>` beside the instance's old path. —
-  *mitigation:* the instance is already deregistered, and the directory is plain files the user deletes by hand. The
+  _mitigation:_ the instance is already deregistered, and the directory is plain files the user deletes by hand. The
   error of a failed delete names it; after a crash, the name beside the old path says what it is.
 - **Risk:** A crafted `.lore/instance` file makes a command treat a checkout as another SWFS instance. —
-  *mitigation:* both commands require the service to hold the directory's path as a mount of the instance the file
+  _mitigation:_ both commands require the service to hold the directory's path as a mount of the instance the file
   names before they act on an SWFS instance, and fail otherwise. See Security Considerations.
 - **Risk:** Opening the instance at its new location, or to deregister it, connects to the remote and can run
-  housekeeping such as a mutable-store upgrade, which a move or delete would not otherwise do. — *mitigation:* accepted.
+  housekeeping such as a mutable-store upgrade, which a move or delete would not otherwise do. — _mitigation:_ accepted.
   `update-path` already behaves this way. The dry run opens nothing of this kind.
 - **Risk:** The rollback after a failed registration is hard to trigger with a real failure, so the success path would
-  exercise it far less than the rest. — *mitigation:* the step that records a path is a parameter of the move, so unit
+  exercise it far less than the rest. — _mitigation:_ the step that records a path is a parameter of the move, so unit
   tests force each rollback outcome: the source registration restored, the restore failing, and the move back failing.
 
 ## Drawbacks
@@ -431,7 +432,7 @@ from the immutable store. That blob stays until store garbage collection, as whe
 
 Keep the status quo: tell users to move the directory and run `update-path`, or to delete it and run `instance prune`.
 
-*Rejected because:* it cannot work for SWFS instances, which have no directory to move or delete. It also gives no
+_Rejected because:_ it cannot work for SWFS instances, which have no directory to move or delete. It also gives no
 validation before the change and leaves a deleted instance in `instance list` until someone prunes.
 
 ### Hold the lock and stores, and run the file step afterwards
@@ -439,21 +440,21 @@ validation before the change and leaves a deleted instance in `instance list` un
 Run the commands as ordinary write commands, then release the repository and run a deferred step. A write-call variant
 would take the lock, run the command, flush and drop the repository, and then run the step the command returned.
 
-*Rejected because:* it adds a new variant to the call framework, a way to wait for every store and lock to close, and a
+_Rejected because:_ it adds a new variant to the call framework, a way to wait for every store and lock to close, and a
 pending-operation type for each command. `NoStore` access gives the same result with no framework change.
 
 ### Write the registration before moving
 
 Update the registry first, then rename the directory or remount.
 
-*Rejected because:* a move that fails afterwards leaves `instance list` naming a path that holds nothing, with nothing
+_Rejected because:_ a move that fails afterwards leaves `instance list` naming a path that holds nothing, with nothing
 to undo it. Writing the registration last leaves the instance registered where it is.
 
 ### Delete the files and let `instance prune` clean up
 
 Make delete a plain directory removal and rely on a later prune to retire the registration.
 
-*Rejected because:* the deleted instance would stay listed until someone runs prune, and prune keeps an SWFS instance's
+_Rejected because:_ the deleted instance would stay listed until someone runs prune, and prune keeps an SWFS instance's
 external directory while the SWFS configuration remains.
 
 ### Rename aside before deregistering
@@ -461,7 +462,7 @@ external directory while the SWFS configuration remains.
 Rename the directory first, then open it at the renamed path to remove its registration, which would close the gap
 for a regular instance.
 
-*Rejected because:* it changes the files before the registration step. A deregistration that fails, such as when the
+_Rejected because:_ it changes the files before the registration step. A deregistration that fails, such as when the
 instance cannot be opened, would have to rename the directory back, and a rename back that fails leaves the instance
 registered at a path that holds nothing, the state this proposal orders its steps to avoid.
 
@@ -469,7 +470,7 @@ registered at a path that holds nothing, the state this proposal orders its step
 
 The behaviour before this amendment.
 
-*Rejected because:* the path stays occupied for the whole removal, minutes for a large instance, and the removal
+_Rejected because:_ the path stays occupied for the whole removal, minutes for a large instance, and the removal
 competes with interactive programs for the disk throughout.
 
 ### Require the target's parent to exist
@@ -477,7 +478,7 @@ competes with interactive programs for the disk throughout.
 The behaviour before the amendment that creates the target's parents: the move refused a target whose parent didn't
 exist.
 
-*Rejected because:* moving an instance into a new directory took a `mkdir` first, for a step the command can take and
+_Rejected because:_ moving an instance into a new directory took a `mkdir` first, for a step the command can take and
 undo itself. The command creates the directories only once every check has passed, so a refused move or a dry run
 creates nothing.
 
@@ -485,7 +486,7 @@ creates nothing.
 
 Rename aside, then remove the files in the background after the command returns.
 
-*Rejected because:* a caller could not tell when the space comes back or whether the removal failed, and a process
+_Rejected because:_ a caller could not tell when the space comes back or whether the removal failed, and a process
 that exits, such as the CLI, would stop the removal part way.
 
 ## Prior Art

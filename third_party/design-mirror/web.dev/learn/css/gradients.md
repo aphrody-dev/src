@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 021: Gradients](https://thecsspodcast.libsyn.com/021-gradients)
 
 Imagine you've got a site to build and at the top,
@@ -17,7 +18,7 @@ How do you do this?
 
 You might initially think that you're going to need to export an image from your design tool for this,
 but you can use a
-[`linear-gradient`](https://developer.mozilla.org/docs/Web/CSS/linear-gradient())
+[`linear-gradient`](<https://developer.mozilla.org/docs/Web/CSS/linear-gradient()>)
 instead.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/XWpzdoV?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen XWpzdoV by web-dot-dev on Codepen"></iframe>
 
@@ -28,7 +29,7 @@ right up to impressive artwork by mixing and repeating multiple gradients.
 
 ## Linear gradient
 
-The [`linear-gradient()`](https://developer.mozilla.org/docs/Web/CSS/linear-gradient())
+The [`linear-gradient()`](<https://developer.mozilla.org/docs/Web/CSS/linear-gradient()>)
 function generates an image of one or more colors, progressively.
 It takes multiple arguments, but in its simplest configuration,
 you can pass in one or more colors like this and it will automatically split them evenly,
@@ -36,9 +37,10 @@ while blending them.
 
 ```css
 .my-element {
-    background: linear-gradient(black, white);
+  background: linear-gradient(black, white);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/mdRqPoZ?height=400&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen mdRqPoZ by web-dot-dev on Codepen"></iframe>
 
 Although it's valid CSS to use only one color in gradient functions, this will
@@ -46,7 +48,7 @@ only produce a solid color:
 
 ```css
 .my-element {
-    background: linear-gradient(red);
+  background: linear-gradient(red);
 }
 ```
 
@@ -58,9 +60,10 @@ you would specify the angle as `to right` as the first argument.
 
 ```css
 .my-element {
-    background: linear-gradient(to right, black, white);
+  background: linear-gradient(to right, black, white);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zYNPqXW?height=400&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zYNPqXW by web-dot-dev on Codepen"></iframe>
 
 A color stop value defined where a color stops and mixes with its neighbors.
@@ -69,9 +72,10 @@ at 30% of the size of the gradient changing to a lighter red: it looks like this
 
 ```css
 .my-element {
-    background: linear-gradient(45deg, darkred 30%, crimson);
+  background: linear-gradient(45deg, darkred 30%, crimson);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/NWdwNZr?height=400&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen NWdwNZr by web-dot-dev on Codepen"></iframe>
 
 You can add as many colors and color stops as you like in a `linear-gradient()`,
@@ -81,7 +85,7 @@ and you can layer gradients on top of each other by separating each gradient wit
 ## Radial gradient
 
 To create a gradient that radiates in a circular fashion, the
-[`radial-gradient()`](https://developer.mozilla.org/docs/Web/CSS/radial-gradient())
+[`radial-gradient()`](<https://developer.mozilla.org/docs/Web/CSS/radial-gradient()>)
 function steps in to help.
 It's similar to `linear-gradient()`,
 but instead of specifying an angle, you optionally specify a position and ending shape.
@@ -90,9 +94,10 @@ and select either a circle or ellipse, depending on the size of the box.
 
 ```css
 .my-element {
-    background: radial-gradient(white, black);
+  background: radial-gradient(white, black);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/LYxOZEq?height=400&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen LYxOZEq by web-dot-dev on Codepen"></iframe>
 
 The gradient's position is similar to `background-position` using keywords and/or number values.
@@ -116,12 +121,13 @@ and goes around in a 360 degree circle.
 
 ```css
 .my-element {
-    background: conic-gradient(white, black);
+  background: conic-gradient(white, black);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/qBRVNXG?height=400&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen qBRVNXG by web-dot-dev on Codepen"></iframe>
 
-The [`conic-gradient()`](https://developer.mozilla.org/docs/Web/CSS/conic-gradient())
+The [`conic-gradient()`](<https://developer.mozilla.org/docs/Web/CSS/conic-gradient()>)
 function accepts position and angle arguments.
 
 By default, the angle is 0 degrees which starts at the top, in the center.
@@ -142,9 +148,9 @@ A good use case for this capability, with conic gradients is rendering pie chart
 
 Each type of gradient has a repeating type, too.
 These are
-[`repeating-linear-gradient()`](https://developer.mozilla.org/docs/Web/CSS/repeating-linear-gradient()),
-[`repeating-radial-gradient()`](https://developer.mozilla.org/docs/Web/CSS/repeating-radial-gradient()) and
-[`repeating-conic-gradient()`](https://developer.mozilla.org/docs/Web/CSS/repeating-conic-gradient()).
+[`repeating-linear-gradient()`](<https://developer.mozilla.org/docs/Web/CSS/repeating-linear-gradient()>),
+[`repeating-radial-gradient()`](<https://developer.mozilla.org/docs/Web/CSS/repeating-radial-gradient()>) and
+[`repeating-conic-gradient()`](<https://developer.mozilla.org/docs/Web/CSS/repeating-conic-gradient()>).
 They are similar to the non-repeating functions and take the same arguments.
 The difference is that if the defined gradient can be repeated to fill the box,
 based on both of their sizes, it will.
@@ -164,8 +170,8 @@ you can create a striped background with a `repeating-linear-gradient` by settin
     white 60px
   );
 }
-
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/ExZbgdy?height=400&amp;theme-id=light&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen ExZbgdy by web-dot-dev on Codepen"></iframe>
 
 You can also mix gradient functions on `background` properties,
@@ -200,6 +206,7 @@ You can also use the `increasing` or `decreasing` keywords with cylindrical colo
   background: linear-gradient(in oklch decreasing hue, deeppink, yellow);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JodBNEy?height=400&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JodBNEy by web-dot-dev on Codepen"></iframe>
 
 In addition to customizing interpolation, cylindrical color spaces (HSL, HWB, LCH, and OKLCH) offer the `shorter` (default) or `longer` keywords to specify if the gradient line should take the **long** way around the color wheel or the **short** way between the two colors.
@@ -209,6 +216,7 @@ In addition to customizing interpolation, cylindrical color spaces (HSL, HWB, LC
   background: linear-gradient(in oklch longer hue, deeppink, yellow);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/vEBZyvz?height=400&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen vEBZyvz by web-dot-dev on Codepen"></iframe>
 
 ## Resources
@@ -220,6 +228,6 @@ In addition to customizing interpolation, cylindrical color spaces (HSL, HWB, LC
 ### Check your understanding
 
 Test your knowledge of gradients
-What is the *minimum* number of colors required to create a gradient?
+What is the _minimum_ number of colors required to create a gradient?
 1 Correct! 2 Try again! 3 Try again! 4 Try again! Elements can have multiple gradients as a background?
 True The `background-image` property allows many gradients, just separate them with a comma. False Oh, but they can!

@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 How to measure Web Vitals with your current analytics tool.
 
- Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
+Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
 
 Having the ability to measure and report on the real-world performance of your
 pages is critical for diagnosing and improving performance over time. Without
@@ -48,10 +49,10 @@ Measuring custom metrics or events in an analytics tool is generally a
 three-step process:
 
 1. [Define or
-   register](https://support.google.com/analytics/answer/2709829?ref_topic=2709827) the custom metric in your tool's admin (if required). *(Note: not all
-   analytics providers require custom metrics to be defined ahead of time.)*
+   register](https://support.google.com/analytics/answer/2709829?ref_topic=2709827) the custom metric in your tool's admin (if required). _(Note: not all
+   analytics providers require custom metrics to be defined ahead of time.)_
 2. Compute the value of the metric in your frontend JavaScript code.
-3. Send the metric value to your analytics backend, ensuring the name or ID matches what was defined in step 1 *(again, if required)*.
+3. Send the metric value to your analytics backend, ensuring the name or ID matches what was defined in step 1 _(again, if required)_.
 
 For steps 1 and 3, you can refer to your analytics tool's documentation for
 instructions. For step 2 you can use the
@@ -62,13 +63,13 @@ The following code sample shows how easy it can be to track these metrics in
 code and send them to an analytics service.
 
 ```javascript
-import {onCLS, onINP, onLCP} from 'web-vitals';
+import { onCLS, onINP, onLCP } from "web-vitals";
 
-function sendToAnalytics({name, value, id}) {
-  const body = JSON.stringify({name, value, id});
+function sendToAnalytics({ name, value, id }) {
+  const body = JSON.stringify({ name, value, id });
   // Use `navigator.sendBeacon()` if available, falling back to `fetch()`.
-  (navigator.sendBeacon && navigator.sendBeacon('/analytics', body)) ||
-      fetch('/analytics', {body, method: 'POST', keepalive: true});
+  (navigator.sendBeacon && navigator.sendBeacon("/analytics", body)) ||
+    fetch("/analytics", { body, method: "POST", keepalive: true });
 }
 
 onCLS(sendToAnalytics);
@@ -94,7 +95,7 @@ sessions to impact the average in a way that suggests there's a problem.
 Whenever possible, rely on percentiles instead of averages. Percentiles across a
 distribution for a given performance metric better describe the full range of
 user experiences for your website. This allows you to focus on subsets of
-*actual* experiences, which will give you more insight than a single value ever
+_actual_ experiences, which will give you more insight than a single value ever
 could.
 
 ## Ensure you can report a distribution
@@ -221,7 +222,7 @@ designed to support asynchronous and deferred script loading (via the
 there's no need to rush to get your scripts loaded early.
 
 In the event that you're measuring a metric that cannot be computed later in the
-page load timeline, you should inline *only* the code that needs to run early
+page load timeline, you should inline _only_ the code that needs to run early
 into the `<head>` of your document (so it's not a [render-blocking
 request](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources)) and defer the rest. Do not load all your
 analytics early just because a single metric requires it.

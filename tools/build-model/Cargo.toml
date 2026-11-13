@@ -1,16 +1,13 @@
 [package]
 name = "build-model"
 version = "0.1.0"
-edition = "2024"
+edition.workspace = true
 publish = false
 description = "Work/span model of a ninja/siso build: DAG from `siso query graph`, measured weights from siso_metrics.json, Graham/Brent bounds, list-scheduling simulation, bootstrap."
 
-# Standalone: not a member of the C:\labs workspace.
-[workspace]
+# Member of the root workspace (explicit entry in the root Cargo.toml).
 
 [dependencies]
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+serde = { workspace = true }
+serde_json = { workspace = true }
 
-[profile.release]
-debug = false

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
 Screen readers have commands to quickly jump between headings or to specific
@@ -20,7 +21,7 @@ improve the navigation experience on your site for users of assistive technologi
 
 ## Use headings to outline the page
 
-Use `h1`-`h6` elements to create a *structural* outline for your page. The goal is
+Use `h1`-`h6` elements to create a _structural_ outline for your page. The goal is
 to create a skeleton or scaffold of the page such that anyone navigating by
 headings can form a mental picture.
 
@@ -52,12 +53,12 @@ headlines:
 The section heading, "IN THE NEWS", could be an `h2`, and the supporting
 headlines could both be `h3` elements.
 
-Because the `font-size` for "IN THE NEWS" is *smaller* than the headline, it may
+Because the `font-size` for "IN THE NEWS" is _smaller_ than the headline, it may
 be tempting to make the headline for the first story an `h2` and to make
 "IN THE NEWS" an `h3`. While that may match the browser's default styling,
 it would break the outline conveyed to a screen reader user!
 
-Though it may seem counterintuitive, it does not matter if *visually* the
+Though it may seem counterintuitive, it does not matter if _visually_ the
 `h3` and `h4` elements are larger than their `h2` or `h1` counterparts.
 What matters is the outline conveyed by the elements and elements' ordering.
 
@@ -71,9 +72,8 @@ HTML5 elements such as `main`, `nav`, and `aside` act as **landmarks**, or
 special regions on the page to which a screen reader can jump.
 
 Use landmark tags to define major sections of your page, instead of relying on
-`div`s. Be careful not to go overboard because having *too many* landmarks can be
-overwhelming. For example, stick to just one `main` element instead of 3 or
-4.
+`div`s. Be careful not to go overboard because having _too many_ landmarks can be
+overwhelming. For example, stick to just one `main` element instead of 3 or 4.
 
 Lighthouse recommends manually auditing your site to check that "HTML5 landmark
 elements are used to improve navigation." You can use this [list of landmark
@@ -94,9 +94,7 @@ it and bypass repetitive navigation.
 <!-- index.html -->
 <a class="skip-link" href="#main">Skip to main</a>
 ...
-<main id="main">
-  [Main content]
-</main>
+<main id="main">[Main content]</main>
 ```
 
 ```css

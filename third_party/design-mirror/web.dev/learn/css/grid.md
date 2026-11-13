@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 011: Grid](https://thecsspodcast.libsyn.com/011-grid)
 
 A really common layout in web design is a header, sidebar, body and footer layout.
@@ -110,10 +111,10 @@ two row tracks and a 10 pixel gap between the tracks as follows.
 
 ```css
 .container {
-    display: grid;
-    grid-template-columns: 5em 100px 30%;
-    grid-template-rows: 200px auto;
-    gap: 10px;
+  display: grid;
+  grid-template-columns: 5em 100px 30%;
+  grid-template-rows: 200px auto;
+  gap: 10px;
 }
 ```
 
@@ -136,7 +137,7 @@ Open the [demo](https://codepen.io/web-dot-dev/full/NWdbrzr) in Chrome.
 Inspect the element with the grey background, which has an ID of `container`.
 Highlight the grid by selecting the grid badge in the DOM, next to the `.container` element.
 Inside the Layout tab under **Overlay display settings** , select **Show line numbers** in the drop-down to see the line numbers on your grid.
- A grid highlighted in Chrome DevTools showing line numbers, cells and tracks.
+A grid highlighted in Chrome DevTools showing line numbers, cells and tracks.
 
 ### Intrinsic sizing keywords
 
@@ -161,7 +162,7 @@ keyword has the opposite effect.
 The track will become as wide enough for all of the content to display in one long unbroken string.
 This might cause overflows as the string won't wrap.
 
-The [`fit-content()`](https://developer.mozilla.org/docs/Web/CSS/fit-content())
+The [`fit-content()`](<https://developer.mozilla.org/docs/Web/CSS/fit-content()>)
 function acts like `max-content` at first.
 However, once the track reaches the size that you pass into the function,
 the content starts to wrap.
@@ -218,7 +219,7 @@ This function means that you can set a minimum and a maximum size for a track.
 This can be quite useful.
 If we take the previous example of the `fr` unit which distributes remaining space,
 it could be written out using
-[`minmax()`](https://developer.mozilla.org/docs/Web/CSS/minmax()) as `minmax(auto, 1fr)`.
+[`minmax()`](<https://developer.mozilla.org/docs/Web/CSS/minmax()>) as `minmax(auto, 1fr)`.
 Grid looks at the intrinsic size of the content,
 then distributes available space after giving the content enough room.
 This means that you might not get tracks that each have an equal share
@@ -247,30 +248,21 @@ you could use the following CSS.
 
 ```css
 .container {
-    display: grid;
-    grid-template-columns:
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr),
-      minmax(0,1fr);
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr), minmax(0, 1fr), minmax(0, 1fr), minmax(0, 1fr),
+    minmax(0, 1fr), minmax(0, 1fr), minmax(0, 1fr), minmax(0, 1fr),
+    minmax(0, 1fr), minmax(0, 1fr), minmax(0, 1fr), minmax(0, 1fr);
 }
 ```
 
 Or, you could write it out using
-[`repeat()`](https://developer.mozilla.org/docs/Web/CSS/repeat()):
+[`repeat()`](<https://developer.mozilla.org/docs/Web/CSS/repeat()>):
 
 ```css
 .container {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0,1fr));
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 ```
 
@@ -280,8 +272,8 @@ You can also have some regular tracks and a repeating section.
 
 ```css
 .container {
-    display: grid;
-    grid-template-columns: 200px repeat(2, 1fr 2fr) 200px; /*creates 6 tracks*/
+  display: grid;
+  grid-template-columns: 200px repeat(2, 1fr 2fr) 200px; /*creates 6 tracks*/
 }
 ```
 
@@ -346,7 +338,7 @@ Use the `span` keyword plus the number of lines to span as a value for `grid-col
 
 ```css
 .item {
-    grid-column-end: span 2; /* will span two lines, therefore covering two tracks */
+  grid-column-end: span 2; /* will span two lines, therefore covering two tracks */
 }
 ```
 
@@ -356,7 +348,7 @@ You can also specify the same thing using the shorthand `grid-column`:
 
 ```css
 .item {
-    grid-column: auto / span 2;
+  grid-column: auto / span 2;
 }
 ```
 
@@ -405,16 +397,16 @@ To place your item set the start and end lines of the grid area that it should b
 
 ```css
 .container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 200px 100px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 200px 100px);
 }
 
 .item {
-    grid-column-start: 1; /* start at column line 1 */
-    grid-column-end: 4; /* end at column line 4 */
-    grid-row-start: 2; /*start at row line 2 */
-    grid-row-end: 4; /* end at row line 4 */
+  grid-column-start: 1; /* start at column line 1 */
+  grid-column-end: 4; /* end at column line 4 */
+  grid-row-start: 2; /*start at row line 2 */
+  grid-row-end: 4; /* end at row line 4 */
 }
 ```
 
@@ -479,8 +471,8 @@ To create all implicit rows at a minimum size of `10em` and a maximum size of `a
 
 ```css
 .container {
-    display: grid;
-    grid-auto-rows: minmax(10em, auto);
+  display: grid;
+  grid-auto-rows: minmax(10em, auto);
 }
 ```
 
@@ -491,8 +483,8 @@ the third 100px, and so on.
 
 ```css
 .container {
-    display: grid;
-    grid-auto-columns: 100px 200px;
+  display: grid;
+  grid-auto-columns: 100px 200px;
 }
 ```
 
@@ -506,21 +498,21 @@ Once you have named lines they can be used instead of the numbers.
 
 ```css
 .container {
-    display: grid;
-    grid-template-columns:
-      [main-start aside-start] 1fr
-      [aside-end content-start] 2fr
-      [content-end main-end]; /* a two column layout */
+  display: grid;
+  grid-template-columns:
+    [main-start aside-start] 1fr
+    [aside-end content-start] 2fr
+    [content-end main-end]; /* a two column layout */
 }
 
 .sidebar {
-    grid-column: aside-start / aside-end;
-    /* placed between line 1 and 2*/
+  grid-column: aside-start / aside-end;
+  /* placed between line 1 and 2*/
 }
 
 footer {
-    grid-column: main-start / main-end;
-    /* right across the layout from line 1 to line 3*/
+  grid-column: main-start / main-end;
+  /* right across the layout from line 1 to line 3*/
 }
 ```
 
@@ -535,19 +527,19 @@ To start, give the direct children of your grid container a name using the
 
 ```css
 header {
-    grid-area: header;
+  grid-area: header;
 }
 
 .sidebar {
-    grid-area: sidebar;
+  grid-area: sidebar;
 }
 
 .content {
-    grid-area: content;
+  grid-area: content;
 }
 
 footer {
-    grid-area: footer;
+  grid-area: footer;
 }
 ```
 
@@ -560,12 +552,12 @@ Each row is defined within quotes.
 
 ```css
 .container {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    grid-template-areas:
-        "header header header header"
-        "sidebar content content content"
-        "sidebar footer footer footer";
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas:
+    "header header header header"
+    "sidebar content content content"
+    "sidebar footer footer footer";
 }
 ```
 
@@ -583,12 +575,12 @@ For example to leave the very first cell on the grid empty I could add a series 
 
 ```css
 .container {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    grid-template-areas:
-        "....... header header header"
-        "sidebar content content content"
-        "sidebar footer footer footer";
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas:
+    "....... header header header"
+    "sidebar content content content"
+    "sidebar footer footer footer";
 }
 ```
 
@@ -627,11 +619,11 @@ Column sizing is added after a `/`.
 
 ```css
 .container {
-    display: grid;
-    grid-template:
-      "head head head" minmax(150px, auto)
-      "sidebar content content" auto
-      "sidebar footer footer" auto / 1fr 1fr 1fr;
+  display: grid;
+  grid-template:
+    "head head head" minmax(150px, auto)
+    "sidebar content content" auto
+    "sidebar footer footer" auto / 1fr 1fr 1fr;
 }
 ```
 
@@ -663,8 +655,8 @@ for example:
 
 ```css
 .container {
-    display: grid;
-    grid: repeat(2, 80px) / auto-flow  120px;
+  display: grid;
+  grid: repeat(2, 80px) / auto-flow 120px;
 }
 ```
 

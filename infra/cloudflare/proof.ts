@@ -13,20 +13,36 @@ const md = Bun.argv.includes("--md");
 const record = Bun.argv.includes("--record");
 const expFile = Bun.file(join(import.meta.dir, "expected-status.json"));
 // expected-status.json: host -> status, or { status, why } when the status is a known non-service (502 parity, Worker 404).
-const prior: Record<string, number | { status: number; why: string }> = (await expFile.exists()) ? await expFile.json() : {};
-const expected: Record<string, number> = Object.fromEntries(Object.entries(prior).map(([k, v]) => [k, typeof v === "number" ? v : v.status]));
-const accept = new Set(Bun.argv.flatMap((a, i) => (Bun.argv[i - 1] === "--accept" ? a.split(",") : [])));
+const prior: Record<string, number | { status: number; why: string }> =
+  (await expFile.exists()) ? await expFile.json() : {};
+const expected: Record<string, number> = Object.fromEntries(
+  Object.entries(prior).map(([k, v]) => [
+    k,
+    typeof v === "number" ? v : v.status,
+  ]),
+);
+const accept = new Set(
+  Bun.argv.flatMap((a, i) =>
+    Bun.argv[i - 1] === "--accept" ? a.split(",") : [],
+  ),
+);
 const seen: Record<string, number> = {};
 type Row = { check: string; target: string; ok: boolean; evidence: string };
 const rows: Row[] = [];
-const add = (check: string, target: string, ok: boolean, evidence: string) => rows.push({ check, target, ok, evidence });
+const add = (check: string, target: string, ok: boolean, evidence: string) =>
+  rows.push({ check, target, ok, evidence });
 
 async function doh(name: string, type = "A"): Promise<string[]> {
   // ~75 lookups run in parallel: the resolver sometimes refuses a connection, so retry before failing the run.
   let r: Response | undefined;
   for (let i = 0; i < 4 && !r; i++) {
-    r = await fetch(`https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`, { headers: { accept: "application/dns-json" } })
-      .then((x) => (x.ok ? x : Promise.reject(new Error(`DoH HTTP ${x.status}`))))
+    r = await fetch(
+      `https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`,
+      { headers: { accept: "application/dns-json" } },
+    )
+      .then((x) =>
+        x.ok ? x : Promise.reject(new Error(`DoH HTTP ${x.status}`)),
+      )
       .catch(async (e) => {
         if (i === 3) throw e;
         await Bun.sleep(500 * (i + 1));
@@ -34,70 +50,151 @@ async function doh(name: string, type = "A"): Promise<string[]> {
       });
   }
   if (!r) throw new Error(`DoH ${name}: no answer`);
-  return (((await r.json()) as any).Answer ?? []).filter((a: any) => a.type === (type === "A" ? 1 : 28)).map((a: any) => a.data);
+  return (((await r.json()) as any).Answer ?? [])
+    .filter((a: any) => a.type === (type === "A" ? 1 : 28))
+    .map((a: any) => a.data);
 }
 function issuer(host: string): Promise<string> {
   return new Promise((res) => {
-    const s = connect({ host, port: 443, servername: host, timeout: 8000 }, () => {
-      const c = s.getPeerCertificate();
-      res(`${c.issuer?.O ?? "?"} ${c.issuer?.CN ?? ""}`.trim());
-      s.end();
-    });
+    const s = connect(
+      { host, port: 443, servername: host, timeout: 8000 },
+      () => {
+        const c = s.getPeerCertificate();
+        res(`${c.issuer?.O ?? "?"} ${c.issuer?.CN ?? ""}`.trim());
+        s.end();
+      },
+    );
     s.on("error", (e) => res(`error ${e.message}`));
     s.on("timeout", () => (s.destroy(), res("timeout")));
   });
 }
 async function head(url: string, init: RequestInit = {}) {
-  const r = await fetch(url, { redirect: "manual", ...init, signal: AbortSignal.timeout(15000) }).catch((e) => ({ status: 0, headers: new Headers(), err: String(e) }) as any);
+  const r = await fetch(url, {
+    redirect: "manual",
+    ...init,
+    signal: AbortSignal.timeout(15000),
+  }).catch(
+    (e) => ({ status: 0, headers: new Headers(), err: String(e) }) as any,
+  );
   return { status: r.status as number, h: r.headers as Headers };
 }
 function tcpOpen(ip: string, port: number): Promise<boolean> {
   return new Promise((res) => {
-    Bun.connect({ hostname: ip, port, socket: { open: (s) => (s.end(), res(true)), data() {}, error: () => res(false), connectError: () => res(false) } }).catch(() => res(false));
+    Bun.connect({
+      hostname: ip,
+      port,
+      socket: {
+        open: (s) => (s.end(), res(true)),
+        data() {},
+        error: () => res(false),
+        connectError: () => res(false),
+      },
+    }).catch(() => res(false));
     setTimeout(() => res(false), 5000);
   });
 }
 const sh = (host: string, cmd: string) => {
-  const p = Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=15", host, cmd], { timeout: 60000 });
+  const p = Bun.spawnSync(
+    ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=15", host, cmd],
+    { timeout: 60000 },
+  );
   return p.stdout.toString().trim();
 };
 
 // 1. every managed hostname: DNS at Cloudflare (never fr2), HTTP through the edge, cf-ray, expected status.
 //    502 is accepted only where the prd backend is known absent (aphrody-app :3010) or a Worker reports it (webos).
-const expect502 = (h: string) => h.endsWith(".aphrody.app") || /^(fig|play|docs|photos|sound|design|art|calendar|sheets|slides|maps|pdf|cad|os)\.aphrody\.com$/.test(h);
+const expect502 = (h: string) =>
+  h.endsWith(".aphrody.app") ||
+  /^(fig|play|docs|photos|sound|design|art|calendar|sheets|slides|maps|pdf|cad|os)\.aphrody\.com$/.test(
+    h,
+  );
 const hosts = Object.values(cfg.dns).flatMap((z) => Object.keys(z));
-const extra = ["mig-depot.aphrody.com", "mig-commons.aphrody.com", "www.aphrody.com", "aphrody.app", "www.aphrody.app", "api.aphrody.com", "cdn.aphrody.com", "downloads.aphrody.com", "creator.aphrody.com", "mig-test.aphrody.com"];
-await Promise.all([...hosts, ...extra].map(async (h) => {
-  const a = await doh(h);
-  const onFr2 = a.some((ip) => FR2.includes(ip));
-  const { status, h: hd } = await head(`https://${h}/`);
-  const ray = hd.get("cf-ray") ?? "";
-  const access = (hd.get("location") ?? "").includes("cloudflareaccess.com");
-  seen[h] = status;
-  const frozen = expected[h];
-  const okStatus = frozen !== undefined ? status === frozen : h.startsWith("ssh-") ? access : status > 0 && (status < 500 || (status === 502 && expect502(h)));
-  add("edge", h, !onFr2 && !!ray && okStatus, `A ${a.slice(0, 2).join(",")} | ${status} | server ${hd.get("server")} | cf-ray ${ray.slice(-3)} | cache ${hd.get("cf-cache-status") ?? "-"}${access ? " | Access 302" : ""}${frozen !== undefined ? ` | expected ${frozen}` : " | not frozen"}`);
-}));
+const extra = [
+  "mig-depot.aphrody.com",
+  "mig-commons.aphrody.com",
+  "www.aphrody.com",
+  "aphrody.app",
+  "www.aphrody.app",
+  "api.aphrody.com",
+  "cdn.aphrody.com",
+  "downloads.aphrody.com",
+  "creator.aphrody.com",
+  "mig-test.aphrody.com",
+];
+await Promise.all(
+  [...hosts, ...extra].map(async (h) => {
+    const a = await doh(h);
+    const onFr2 = a.some((ip) => FR2.includes(ip));
+    const { status, h: hd } = await head(`https://${h}/`);
+    const ray = hd.get("cf-ray") ?? "";
+    const access = (hd.get("location") ?? "").includes("cloudflareaccess.com");
+    seen[h] = status;
+    const frozen = expected[h];
+    const okStatus =
+      frozen !== undefined
+        ? status === frozen
+        : h.startsWith("ssh-")
+          ? access
+          : status > 0 && (status < 500 || (status === 502 && expect502(h)));
+    add(
+      "edge",
+      h,
+      !onFr2 && !!ray && okStatus,
+      `A ${a.slice(0, 2).join(",")} | ${status} | server ${hd.get("server")} | cf-ray ${ray.slice(-3)} | cache ${hd.get("cf-cache-status") ?? "-"}${access ? " | Access 302" : ""}${frozen !== undefined ? ` | expected ${frozen}` : " | not frozen"}`,
+    );
+  }),
+);
 
 // 2. TLS issuer at the edge (Cloudflare-managed universal certificate).
-for (const h of ["aphrody.com", "admin.aphrody.com", "api.aphrody.app", "ssh-prd.aphrody.com", "dbfr.aphrody.com"]) {
+for (const h of [
+  "aphrody.com",
+  "admin.aphrody.com",
+  "api.aphrody.app",
+  "ssh-prd.aphrody.com",
+  "dbfr.aphrody.com",
+]) {
   const i = await issuer(h);
   add("tls", h, !i.startsWith("error") && i !== "timeout", i);
 }
 
 // 3. tunnels: healthy, connectors on the expected host.
 for (const [name, t] of Object.entries(cfg.tunnels)) {
-  const tun = await api<any>("GET", `/accounts/${cfg.account}/cfd_tunnel/${t.id}`);
-  const conns = await api<any[]>("GET", `/accounts/${cfg.account}/cfd_tunnel/${t.id}/connections`);
+  const tun = await api<any>(
+    "GET",
+    `/accounts/${cfg.account}/cfd_tunnel/${t.id}`,
+  );
+  const conns = await api<any[]>(
+    "GET",
+    `/accounts/${cfg.account}/cfd_tunnel/${t.id}/connections`,
+  );
   const n = conns.reduce((s, c) => s + (c.conns?.length ?? 0), 0);
-  const colos = [...new Set(conns.flatMap((c) => c.conns.map((x: any) => x.colo_name)))].join(",");
-  add("tunnel", `${name} (${t.host})`, tun.status === "healthy" && n >= 2, `${tun.status}, ${n} conns, ${colos}, cloudflared ${conns[0]?.version ?? "?"}`);
+  const colos = [
+    ...new Set(conns.flatMap((c) => c.conns.map((x: any) => x.colo_name))),
+  ].join(",");
+  add(
+    "tunnel",
+    `${name} (${t.host})`,
+    tun.status === "healthy" && n >= 2,
+    `${tun.status}, ${n} conns, ${colos}, cloudflared ${conns[0]?.version ?? "?"}`,
+  );
 }
 
 // 4. Access: protected apps redirect to the Access login.
-for (const h of [...new Set([...cfg.access.apps.map((a) => a.domain), "mig-depot.aphrody.com", "mig-commons.aphrody.com"])]) {
+for (const h of [
+  ...new Set([
+    ...cfg.access.apps.map((a) => a.domain),
+    "mig-depot.aphrody.com",
+    "mig-commons.aphrody.com",
+  ]),
+]) {
   const { status, h: hd } = await head(`https://${h}/`);
-  add("access", h, status === 302 && (hd.get("location") ?? "").includes("cloudflareaccess.com"), `${status} -> ${(hd.get("location") ?? "").split("?")[0]}`);
+  add(
+    "access",
+    h,
+    status === 302 &&
+      (hd.get("location") ?? "").includes("cloudflareaccess.com"),
+    `${status} -> ${(hd.get("location") ?? "").split("?")[0]}`,
+  );
 }
 
 // 4b. /api on the apex: the Worker owns aphrody.com/*; /api must be answered at the edge with its frozen status.
@@ -106,117 +203,350 @@ for (const h of [...new Set([...cfg.access.apps.map((a) => a.domain), "mig-depot
   const { status, h: hd } = await head(u);
   seen[u] = status;
   const frozen = expected[u];
-  add("api-route", u, hd.get("server") === "cloudflare" && (frozen === undefined ? status > 0 : status === frozen), `${status} server ${hd.get("server")} cf-ray ${(hd.get("cf-ray") ?? "").slice(-3)}${frozen !== undefined ? ` | expected ${frozen}` : " | not frozen"}`);
+  add(
+    "api-route",
+    u,
+    hd.get("server") === "cloudflare" &&
+      (frozen === undefined ? status > 0 : status === frozen),
+    `${status} server ${hd.get("server")} cf-ray ${(hd.get("cf-ray") ?? "").slice(-3)}${frozen !== undefined ? ` | expected ${frozen}` : " | not frozen"}`,
+  );
 }
 
 // 5. origin lock-down: from here (internet) 80/443 of fr2 filtered, 22 open (break-glass); from prd (fleet) 443 open.
 for (const p of [80, 443]) {
   const open = await tcpOpen(FR2[0], p);
-  add("origin-closed", `fr2 ${FR2[0]}:${p} from internet`, !open, open ? "OPEN" : "filtered (timeout)");
+  add(
+    "origin-closed",
+    `fr2 ${FR2[0]}:${p} from internet`,
+    !open,
+    open ? "OPEN" : "filtered (timeout)",
+  );
 }
-add("origin-ssh", `fr2 ${FR2[0]}:22 from internet`, await tcpOpen(FR2[0], 22), "open (break-glass, keys only)");
+add(
+  "origin-ssh",
+  `fr2 ${FR2[0]}:22 from internet`,
+  await tcpOpen(FR2[0], 22),
+  "open (break-glass, keys only)",
+);
 // IPv6: no non-fleet v6 vantage here; check the live ruleset instead (family inet, tcp+udp 80/443, final drop).
 const rs = sh("fr2", "sudo nft list table inet fr2_edge");
-add("origin-v6", "fr2 nft inet fr2_edge (v4+v6, tcp+udp)", /l4proto \{ tcp, udp \} th dport \{ 80, 443 \} jump web/.test(rs) && /ip6 saddr @cf6 accept/.test(rs) && /counter packets \d+ bytes \d+ drop/.test(rs), (rs.match(/counter packets \d+/)?.[0] ?? "ruleset missing") + " dropped");
-const fleet = sh("prd", "curl -s -o /dev/null -w '%{http_code}' --resolve api.aphrody.com:443:51.255.162.6 https://api.aphrody.com/v1/health");
-add("origin-fleet", "prd -> fr2:443 (fleet-health)", fleet === "200", `HTTP ${fleet}`);
+add(
+  "origin-v6",
+  "fr2 nft inet fr2_edge (v4+v6, tcp+udp)",
+  /l4proto \{ tcp, udp \} th dport \{ 80, 443 \} jump web/.test(rs) &&
+    /ip6 saddr @cf6 accept/.test(rs) &&
+    /counter packets \d+ bytes \d+ drop/.test(rs),
+  (rs.match(/counter packets \d+/)?.[0] ?? "ruleset missing") + " dropped",
+);
+const fleet = sh(
+  "prd",
+  "curl -s -o /dev/null -w '%{http_code}' --resolve api.aphrody.com:443:51.255.162.6 https://api.aphrody.com/v1/health",
+);
+add(
+  "origin-fleet",
+  "prd -> fr2:443 (fleet-health)",
+  fleet === "200",
+  `HTTP ${fleet}`,
+);
 // Custom AOP on dbfr: Cloudflare edge IPs are not fleet, so a public 200 means the edge presented the zone certificate;
 // the nginx wiring (CA + optional verify + deny) and the fleet-only snippet of the Worker-served vhosts are checked live.
 {
   const pub = await head("https://dbfr.aphrody.com/");
-  const conf = sh("fr2", "sudo grep -c -e aop_deny -e ssl_client_certificate /etc/nginx/conf.d/fleet-api.conf; sudo grep -l fleet-only.inc /etc/nginx/sites/*.conf | wc -l");
+  const conf = sh(
+    "fr2",
+    "sudo grep -c -e aop_deny -e ssl_client_certificate /etc/nginx/conf.d/fleet-api.conf; sudo grep -l fleet-only.inc /etc/nginx/sites/*.conf | wc -l",
+  );
   const [wired, fleetOnly] = conf.split(/\s+/).map(Number);
-  add("origin-aop", "dbfr.aphrody.com (per-hostname AOP)", pub.status === 200 && wired >= 2, `public ${pub.status} via edge cert, nginx directives ${wired}`);
-  add("origin-aop", "api/cdn/creator/downloads (fleet-only vhosts)", fleetOnly === 4, `${fleetOnly}/4 vhosts include fleet-only.inc`);
+  add(
+    "origin-aop",
+    "dbfr.aphrody.com (per-hostname AOP)",
+    pub.status === 200 && wired >= 2,
+    `public ${pub.status} via edge cert, nginx directives ${wired}`,
+  );
+  add(
+    "origin-aop",
+    "api/cdn/creator/downloads (fleet-only vhosts)",
+    fleetOnly === 4,
+    `${fleetOnly}/4 vhosts include fleet-only.inc`,
+  );
 }
-const wg = sh("fr2", "sudo wg show wg1 latest-handshakes | awk '{print $2}' | sort -n | tail -1");
+const wg = sh(
+  "fr2",
+  "sudo wg show wg1 latest-handshakes | awk '{print $2}' | sort -n | tail -1",
+);
 const age = Math.round(Date.now() / 1000 - Number(wg));
-add("wireguard", "fr2 wg1 (hub forwarding kept)", age < 300, `latest handshake ${age}s ago, ip_forward ${sh("fr2", "sysctl -n net.ipv4.ip_forward")}`);
+add(
+  "wireguard",
+  "fr2 wg1 (hub forwarding kept)",
+  age < 300,
+  `latest handshake ${age}s ago, ip_forward ${sh("fr2", "sysctl -n net.ipv4.ip_forward")}`,
+);
 
 // 6. WAF: probe paths blocked at the edge.
-for (const u of ["https://aphrody.com/.env", "https://aphrody.app/wp-login.php"]) {
+for (const u of [
+  "https://aphrody.com/.env",
+  "https://aphrody.app/wp-login.php",
+]) {
   const { status, h: hd } = await head(u);
-  add("waf", u, status === 403 && hd.get("server") === "cloudflare", `${status} cf-ray ${(hd.get("cf-ray") ?? "").slice(-3)}`);
+  add(
+    "waf",
+    u,
+    status === 403 && hd.get("server") === "cloudflare",
+    `${status} cf-ray ${(hd.get("cf-ray") ?? "").slice(-3)}`,
+  );
 }
 
 // 7. cache: second request is a HIT.
 await head("https://aphrody.com/");
 const c2 = await head("https://aphrody.com/");
 // aphrody.com is served from its aphrody.app deployment in R2 through the zone Cache API (x-aphrody-cache).
-const hit = c2.h.get("cf-cache-status") === "HIT" || c2.h.get("x-aphrody-cache") === "hit";
-add("cache", "https://aphrody.com/ (2nd request)", hit, `cf-cache-status ${c2.h.get("cf-cache-status")} | x-aphrody-cache ${c2.h.get("x-aphrody-cache")}`);
+const hit =
+  c2.h.get("cf-cache-status") === "HIT" ||
+  c2.h.get("x-aphrody-cache") === "hit";
+add(
+  "cache",
+  "https://aphrody.com/ (2nd request)",
+  hit,
+  `cf-cache-status ${c2.h.get("cf-cache-status")} | x-aphrody-cache ${c2.h.get("x-aphrody-cache")}`,
+);
 
 // 8. agents: ssh through Access with the service token (no WARP), both directions.
-const viaAccess = (from: string, to: string, user: string) => sh(from,
-  `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; export TUNNEL_SERVICE_TOKEN_ID=$CF_ACCESS_CLIENT_ID TUNNEL_SERVICE_TOKEN_SECRET=$CF_ACCESS_CLIENT_SECRET; timeout 40 ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/root/.ssh/known_hosts_access -o ProxyCommand="cloudflared access ssh --hostname %h" ${user}@${to} hostname 2>/dev/null'`);
+const viaAccess = (from: string, to: string, user: string) =>
+  sh(
+    from,
+    `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; export TUNNEL_SERVICE_TOKEN_ID=$CF_ACCESS_CLIENT_ID TUNNEL_SERVICE_TOKEN_SECRET=$CF_ACCESS_CLIENT_SECRET; timeout 40 ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/root/.ssh/known_hosts_access -o ProxyCommand="cloudflared access ssh --hostname %h" ${user}@${to} hostname 2>/dev/null'`,
+  );
 // One token per host and per direction: the reverse use of each token must be refused.
-for (const [from, to, user] of [["fr2", "ssh-prd.aphrody.com", "root"], ["prd", "ssh-fr2.aphrody.com", "ubuntu"]]) {
+for (const [from, to, user] of [
+  ["fr2", "ssh-prd.aphrody.com", "root"],
+  ["prd", "ssh-fr2.aphrody.com", "ubuntu"],
+]) {
   const out = viaAccess(from, to, user);
-  add("access-ssh", `${from} -> ${to} (service token)`, out.length > 0, out ? `hostname=${out}` : "FAILED");
+  add(
+    "access-ssh",
+    `${from} -> ${to} (service token)`,
+    out.length > 0,
+    out ? `hostname=${out}` : "FAILED",
+  );
 }
 // A 403 alone could be a dead token: each refusal is paired with the same host's successful access-ssh above.
-const viaOk = new Map(rows.filter((r) => r.check === "access-ssh").map((r) => [r.target.split(" ")[0], r.ok]));
-for (const [from, to] of [["fr2", "ssh-fr2.aphrody.com"], ["prd", "ssh-prd.aphrody.com"]]) {
-  const code = sh(from, `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; printf "CF-Access-Client-Id: %s\nCF-Access-Client-Secret: %s\n" "$CF_ACCESS_CLIENT_ID" "$CF_ACCESS_CLIENT_SECRET" | curl -H @- -s -o /dev/null -w "%{http_code}" https://${to}/'`);
-  add("access-scope", `${from} token -> ${to} (must be refused)`, code === "403" && viaOk.get(from) === true, `HTTP ${code} (token presented, refused; same token accepted on its own app: ${viaOk.get(from) ? "yes" : "NO"})`);
+const viaOk = new Map(
+  rows
+    .filter((r) => r.check === "access-ssh")
+    .map((r) => [r.target.split(" ")[0], r.ok]),
+);
+for (const [from, to] of [
+  ["fr2", "ssh-fr2.aphrody.com"],
+  ["prd", "ssh-prd.aphrody.com"],
+]) {
+  const code = sh(
+    from,
+    `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; printf "CF-Access-Client-Id: %s\nCF-Access-Client-Secret: %s\n" "$CF_ACCESS_CLIENT_ID" "$CF_ACCESS_CLIENT_SECRET" | curl -H @- -s -o /dev/null -w "%{http_code}" https://${to}/'`,
+  );
+  add(
+    "access-scope",
+    `${from} token -> ${to} (must be refused)`,
+    code === "403" && viaOk.get(from) === true,
+    `HTTP ${code} (token presented, refused; same token accepted on its own app: ${viaOk.get(from) ? "yes" : "NO"})`,
+  );
 }
 for (const from of ["fr2", "prd"]) {
-  const code = sh(from, `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; printf "CF-Access-Client-Id: %s\nCF-Access-Client-Secret: %s\n" "$CF_ACCESS_CLIENT_ID" "$CF_ACCESS_CLIENT_SECRET" | curl -H @- -s -o /dev/null -w "%{http_code}" https://admin.aphrody.com/'`);
-  add("access-scope", `${from} token -> admin.aphrody.com (owner only)`, code === "403" && viaOk.get(from) === true, `HTTP ${code} (token presented, refused; same token accepted on its own app: ${viaOk.get(from) ? "yes" : "NO"})`);
+  const code = sh(
+    from,
+    `sudo bash -c 'set -a; . /etc/aphrody/secrets.env; set +a; printf "CF-Access-Client-Id: %s\nCF-Access-Client-Secret: %s\n" "$CF_ACCESS_CLIENT_ID" "$CF_ACCESS_CLIENT_SECRET" | curl -H @- -s -o /dev/null -w "%{http_code}" https://admin.aphrody.com/'`,
+  );
+  add(
+    "access-scope",
+    `${from} token -> admin.aphrody.com (owner only)`,
+    code === "403" && viaOk.get(from) === true,
+    `HTTP ${code} (token presented, refused; same token accepted on its own app: ${viaOk.get(from) ? "yes" : "NO"})`,
+  );
 }
 
 // 9. credentials: the shared token is gone, every fleet token has more than 30 days left (alert before expiry).
 {
-  const st = await api<any[]>("GET", `/accounts/${cfg.account}/access/service_tokens`);
-  for (const name of cfg.access.retire_tokens ?? []) add("credential", `Access token ${name} retired`, !st.some((t) => t.name === name), st.some((t) => t.name === name) ? "STILL PRESENT" : "absent");
-  const soon = (d?: string) => !!d && Date.parse(d) - Date.now() < 30 * 86400_000;
+  const st = await api<any[]>(
+    "GET",
+    `/accounts/${cfg.account}/access/service_tokens`,
+  );
+  for (const name of cfg.access.retire_tokens ?? [])
+    add(
+      "credential",
+      `Access token ${name} retired`,
+      !st.some((t) => t.name === name),
+      st.some((t) => t.name === name) ? "STILL PRESENT" : "absent",
+    );
+  const soon = (d?: string) =>
+    !!d && Date.parse(d) - Date.now() < 30 * 86400_000;
   for (const s2 of cfg.access.service_tokens) {
     const t = st.find((x) => x.name === s2.name);
-    add("credential", `Access token ${s2.name}`, !!t && !soon(t.expires_at), t ? `expires ${t.expires_at}` : "MISSING");
+    add(
+      "credential",
+      `Access token ${s2.name}`,
+      !!t && !soon(t.expires_at),
+      t ? `expires ${t.expires_at}` : "MISSING",
+    );
   }
   const zid = (await api<any[]>("GET", "/zones?name=aphrody.com"))[0]?.id;
   // Read with CF_PROOF_TOKEN (proof-ssl-read: SSL and Certificates Read on aphrody.com only): the account token has no SSL scope.
-  const aop = zid && Bun.env.CF_PROOF_TOKEN ? await fetch(`https://api.cloudflare.com/client/v4/zones/${zid}/origin_tls_client_auth/hostnames/certificates`, { headers: { authorization: `Bearer ${Bun.env.CF_PROOF_TOKEN}` } }).then(async (r) => ((await r.json()) as any).result ?? null).catch(() => null) : null;
-  const bound = zid && Bun.env.CF_PROOF_TOKEN ? await fetch(`https://api.cloudflare.com/client/v4/zones/${zid}/origin_tls_client_auth/hostnames/dbfr.aphrody.com`, { headers: { authorization: `Bearer ${Bun.env.CF_PROOF_TOKEN}` } }).then(async (r) => ((await r.json()) as any).result?.cert_id).catch(() => undefined) : undefined;
+  const aop =
+    zid && Bun.env.CF_PROOF_TOKEN
+      ? await fetch(
+          `https://api.cloudflare.com/client/v4/zones/${zid}/origin_tls_client_auth/hostnames/certificates`,
+          { headers: { authorization: `Bearer ${Bun.env.CF_PROOF_TOKEN}` } },
+        )
+          .then(async (r) => ((await r.json()) as any).result ?? null)
+          .catch(() => null)
+      : null;
+  const bound =
+    zid && Bun.env.CF_PROOF_TOKEN
+      ? await fetch(
+          `https://api.cloudflare.com/client/v4/zones/${zid}/origin_tls_client_auth/hostnames/dbfr.aphrody.com`,
+          { headers: { authorization: `Bearer ${Bun.env.CF_PROOF_TOKEN}` } },
+        )
+          .then(async (r) => ((await r.json()) as any).result?.cert_id)
+          .catch(() => undefined)
+      : undefined;
   const cert = (aop ?? []).find((x: any) => x.id === bound);
-  add("credential", "AOP client certificate bound to dbfr", !!cert && cert.status === "active" && !soon(cert.expires_on), !Bun.env.CF_PROOF_TOKEN ? "CF_PROOF_TOKEN absent" : aop === null ? "not readable" : cert ? `${cert.status}, expires ${cert.expires_on}` : "NONE bound");
-  const at = await api<any[]>("GET", `/accounts/${cfg.account}/tokens?per_page=100`);
+  add(
+    "credential",
+    "AOP client certificate bound to dbfr",
+    !!cert && cert.status === "active" && !soon(cert.expires_on),
+    !Bun.env.CF_PROOF_TOKEN
+      ? "CF_PROOF_TOKEN absent"
+      : aop === null
+        ? "not readable"
+        : cert
+          ? `${cert.status}, expires ${cert.expires_on}`
+          : "NONE bound",
+  );
+  const at = await api<any[]>(
+    "GET",
+    `/accounts/${cfg.account}/tokens?per_page=100`,
+  );
   for (const h of ["fr2", "prd"]) {
     const t = at.find((x) => x.name === `fleet-${h}-dns`);
-    add("credential", `API token fleet-${h}-dns`, !!t && t.status === "active" && !soon(t.expires_on), t ? `${t.status}, expires ${t.expires_on}` : "MISSING");
+    add(
+      "credential",
+      `API token fleet-${h}-dns`,
+      !!t && t.status === "active" && !soon(t.expires_on),
+      t ? `${t.status}, expires ${t.expires_on}` : "MISSING",
+    );
   }
 }
 
 // 10. aphrody.com (holding page from docs/ALPHABET.md) and aphrody.app (deployment platform, packages/deploy).
 {
   const page = async (u: string) => {
-    const r = await fetch(u, { redirect: "manual", signal: AbortSignal.timeout(15000) }).catch(() => null);
-    return { status: r?.status ?? 0, h: r?.headers ?? new Headers(), body: r ? await r.text() : "" };
+    const r = await fetch(u, {
+      redirect: "manual",
+      signal: AbortSignal.timeout(15000),
+    }).catch(() => null);
+    return {
+      status: r?.status ?? 0,
+      h: r?.headers ?? new Headers(),
+      body: r ? await r.text() : "",
+    };
   };
   const com = await page("https://aphrody.com/");
-  add("holding", "https://aphrody.com/", com.status === 200 && com.body.includes("<h2>Noyau</h2>") && com.body.includes("<h2>Paris</h2>") && (com.h.get("x-aphrody-deploy") ?? "").startsWith("aphrody@"), `${com.status} | deploy ${com.h.get("x-aphrody-deploy")} | noyau ${com.body.includes("<h2>Noyau</h2>")}`);
+  add(
+    "holding",
+    "https://aphrody.com/",
+    com.status === 200 &&
+      com.body.includes("<h2>Noyau</h2>") &&
+      com.body.includes("<h2>Paris</h2>") &&
+      (com.h.get("x-aphrody-deploy") ?? "").startsWith("aphrody@"),
+    `${com.status} | deploy ${com.h.get("x-aphrody-deploy")} | noyau ${com.body.includes("<h2>Noyau</h2>")}`,
+  );
   const app = await page("https://aphrody.app/");
-  add("platform", "https://aphrody.app/", app.status === 200 && app.body.includes("Déployer le monorepo"), `${app.status} | ${app.body.match(/<title>([^<]*)/)?.[1]}`);
+  add(
+    "platform",
+    "https://aphrody.app/",
+    app.status === 200 && app.body.includes("Déployer le monorepo"),
+    `${app.status} | ${app.body.match(/<title>([^<]*)/)?.[1]}`,
+  );
   const labs = await page("https://aphrody.app/labs");
-  add("platform", "https://aphrody.app/labs", labs.status === 200 && (labs.body.match(/<article/g)?.length ?? 0) > 0, `${labs.status} | ${labs.body.match(/<article/g)?.length ?? 0} cards`);
+  add(
+    "platform",
+    "https://aphrody.app/labs",
+    labs.status === 200 && (labs.body.match(/<article/g)?.length ?? 0) > 0,
+    `${labs.status} | ${labs.body.match(/<article/g)?.length ?? 0} cards`,
+  );
   const dash = await head("https://aphrody.app/dashboard");
-  add("access", "https://aphrody.app/dashboard", dash.status === 302 && (dash.h.get("location") ?? "").includes("cloudflareaccess.com"), `${dash.status} -> ${(dash.h.get("location") ?? "").split("?")[0]}`);
+  add(
+    "access",
+    "https://aphrody.app/dashboard",
+    dash.status === 302 &&
+      (dash.h.get("location") ?? "").includes("cloudflareaccess.com"),
+    `${dash.status} -> ${(dash.h.get("location") ?? "").split("?")[0]}`,
+  );
   // A push on main deploys the projects it touches at its head: the last commit touching a project must be an
   // ancestor of a ready deployment whose preview answers with that sha.
-  const reg = Bun.TOML.parse(await Bun.file(join(import.meta.dir, "..", "..", "packages", "deploy", "projects.toml")).text()) as any;
+  const reg = Bun.TOML.parse(
+    await Bun.file(
+      join(import.meta.dir, "..", "..", "packages", "deploy", "projects.toml"),
+    ).text(),
+  ) as any;
   for (const [name, p] of Object.entries<any>(reg.project ?? {})) {
-    const paths = (p.watch ?? [p.path]).map((g: string) => g.replace(/\/\*\*$/, ""));
-    const want = Bun.spawnSync(["git", "log", "-1", "--format=%H", "origin/main", "--", ...paths]).stdout.toString().trim();
-    const d = (await fetch(`https://aphrody.app/api/projects/${name}/deployments`).then((r) => r.json()).catch(() => null)) as any;
-    const rec = d?.deployments?.find((x: any) => x.state === "ready" && Bun.spawnSync(["git", "merge-base", "--is-ancestor", want, x.sha]).exitCode === 0);
-    const pv = rec ? await head(`https://${name}-${rec.sha.slice(0, 7)}.aphrody.app/`) : { status: 0, h: new Headers() };
-    add("deploy-push", `${name} (last change ${want.slice(0, 7)})`, rec?.state === "ready" && pv.status === 200 && pv.h.get("x-aphrody-deploy") === `${name}@${rec.sha.slice(0, 12)}`, rec ? `${rec.sha.slice(0, 7)} ${rec.state} | preview ${pv.status} ${pv.h.get("x-aphrody-deploy")} | prod ${d.production?.slice(0, 7)} | run ${rec.run ?? "-"}` : `no deployment for the last commit touching ${name}`);
+    const paths = (p.watch ?? [p.path]).map((g: string) =>
+      g.replace(/\/\*\*$/, ""),
+    );
+    const want = Bun.spawnSync([
+      "git",
+      "log",
+      "-1",
+      "--format=%H",
+      "origin/main",
+      "--",
+      ...paths,
+    ])
+      .stdout.toString()
+      .trim();
+    const d = (await fetch(
+      `https://aphrody.app/api/projects/${name}/deployments`,
+    )
+      .then((r) => r.json())
+      .catch(() => null)) as any;
+    const rec = d?.deployments?.find(
+      (x: any) =>
+        x.state === "ready" &&
+        Bun.spawnSync(["git", "merge-base", "--is-ancestor", want, x.sha])
+          .exitCode === 0,
+    );
+    const pv = rec
+      ? await head(`https://${name}-${rec.sha.slice(0, 7)}.aphrody.app/`)
+      : { status: 0, h: new Headers() };
+    add(
+      "deploy-push",
+      `${name} (last change ${want.slice(0, 7)})`,
+      rec?.state === "ready" &&
+        pv.status === 200 &&
+        pv.h.get("x-aphrody-deploy") === `${name}@${rec.sha.slice(0, 12)}`,
+      rec
+        ? `${rec.sha.slice(0, 7)} ${rec.state} | preview ${pv.status} ${pv.h.get("x-aphrody-deploy")} | prod ${d.production?.slice(0, 7)} | run ${rec.run ?? "-"}`
+        : `no deployment for the last commit touching ${name}`,
+    );
   }
   // Rollback drill on yolo (non-critical): previous production, verify served, promote back, verify served.
   const tok = Bun.env.APHRODY_DEPLOY_TOKEN;
-  const served = async () => (await head("https://yolo.aphrody.app/")).h.get("x-aphrody-deploy") ?? "";
-  const post = (path: string, body: unknown) => fetch(`https://aphrody.app/api/projects/yolo/${path}`, { method: "POST", headers: { authorization: `Bearer ${tok}`, "content-type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json()) as Promise<any>;
-  if (!tok) add("rollback", "yolo (drill)", false, "APHRODY_DEPLOY_TOKEN absent (env-kit exec -- just cf-proof)");
+  const served = async () =>
+    (await head("https://yolo.aphrody.app/")).h.get("x-aphrody-deploy") ?? "";
+  const post = (path: string, body: unknown) =>
+    fetch(`https://aphrody.app/api/projects/yolo/${path}`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${tok}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }).then((r) => r.json()) as Promise<any>;
+  if (!tok)
+    add(
+      "rollback",
+      "yolo (drill)",
+      false,
+      "APHRODY_DEPLOY_TOKEN absent (env-kit exec -- just cf-proof)",
+    );
   else {
     const rb = await post("rollback", {});
     await Bun.sleep(6000);
@@ -224,7 +554,17 @@ for (const from of ["fr2", "prd"]) {
     const back = rb.ok ? await post("promote", { sha: rb.previous }) : null;
     await Bun.sleep(6000);
     const restored = await served();
-    add("rollback", "yolo (drill)", !!rb.ok && after === `yolo@${rb.sha.slice(0, 12)}` && !!back?.ok && restored === `yolo@${rb.previous.slice(0, 12)}`, rb.ok ? `${rb.previous.slice(0, 7)} -> ${rb.sha.slice(0, 7)} served ${after} ; back -> ${restored}` : `refused: ${rb.error}`);
+    add(
+      "rollback",
+      "yolo (drill)",
+      !!rb.ok &&
+        after === `yolo@${rb.sha.slice(0, 12)}` &&
+        !!back?.ok &&
+        restored === `yolo@${rb.previous.slice(0, 12)}`,
+      rb.ok
+        ? `${rb.previous.slice(0, 7)} -> ${rb.sha.slice(0, 7)} served ${after} ; back -> ${restored}`
+        : `refused: ${rb.error}`,
+    );
   }
 }
 
@@ -232,38 +572,96 @@ for (const from of ["fr2", "prd"]) {
 // certificates are limited to principals files (only the owner user has one), and that user exists. A real certificate
 // login needs the owner's browser session: reported as not proven, not as a failure.
 {
-  const apps2 = await api<any[]>("GET", `/accounts/${cfg.account}/access/apps?per_page=100`);
-  for (const [name, host] of [["fr2-ssh", "fr2"], ["prd-ssh", "prd"]]) {
+  const apps2 = await api<any[]>(
+    "GET",
+    `/accounts/${cfg.account}/access/apps?per_page=100`,
+  );
+  for (const [name, host] of [
+    ["fr2-ssh", "fr2"],
+    ["prd-ssh", "prd"],
+  ]) {
     const app = apps2.find((x) => x.name === name);
-    const ca = app ? await api<any>("GET", `/accounts/${cfg.account}/access/apps/${app.id}/ca`).catch(() => null) : null;
-    const want = String(ca?.public_key ?? "").trim().split(" ").slice(0, 2).join(" ");
-    const live = sh(host, [
-      'f=$(sudo sshd -T 2>/dev/null | grep -i "^trustedusercakeys " | cut -d" " -f2)',
-      'echo "MODE $(stat -c "%U %a" "$f")"; echo "KEYS $(grep -c . "$f")"; sudo cat "$f"',
-      'echo "APF $(sudo sshd -T 2>/dev/null | grep -i "^authorizedprincipalsfile " | cut -d" " -f2)"',
-      'for u in contact root ubuntu; do echo "EFF $u $(sudo sshd -T -C user=$u,host=x,addr=127.0.0.1 2>/dev/null | grep -i -E "^(trustedusercakeys|authorizedprincipalsfile) " | cut -d" " -f2 | tr "\n" " ")$(test -e /etc/ssh/access-principals/$u && echo P)"; done',
-      'echo "PRINC $(ls /etc/ssh/access-principals | tr "\\n" " ")"',
-      "id -u contact >/dev/null 2>&1 && echo USER_OK",
-    ].join("; "));
-    const ok = !!want && live.includes(want) && live.includes("MODE root 644") && live.includes("KEYS 1")
-      && live.includes("APF /etc/ssh/access-principals/%u") && /PRINC contact \n/.test(live + "\n") && live.includes("USER_OK")
-      && /^EFF contact \/etc\/ssh\/ca-access\.pub \/etc\/ssh\/access-principals\/%u P$/m.test(live)
-      && /^EFF root \/etc\/ssh\/ca-access\.pub \/etc\/ssh\/access-principals\/%u $/m.test(live)
-      && /^EFF ubuntu \/etc\/ssh\/ca-access\.pub \/etc\/ssh\/access-principals\/%u $/m.test(live);
-    add("ssh-ca", `${name} CA trusted by sshd on ${host}`, ok, ok ? `${want.split(" ")[0]} ...${want.slice(-12)}, sole CA, root 644, principals: contact only; certificate login not proven (owner browser session)` : live.replace(/\n/g, " | ").slice(0, 200) || "MISSING");
+    const ca = app
+      ? await api<any>(
+          "GET",
+          `/accounts/${cfg.account}/access/apps/${app.id}/ca`,
+        ).catch(() => null)
+      : null;
+    const want = String(ca?.public_key ?? "")
+      .trim()
+      .split(" ")
+      .slice(0, 2)
+      .join(" ");
+    const live = sh(
+      host,
+      [
+        'f=$(sudo sshd -T 2>/dev/null | grep -i "^trustedusercakeys " | cut -d" " -f2)',
+        'echo "MODE $(stat -c "%U %a" "$f")"; echo "KEYS $(grep -c . "$f")"; sudo cat "$f"',
+        'echo "APF $(sudo sshd -T 2>/dev/null | grep -i "^authorizedprincipalsfile " | cut -d" " -f2)"',
+        'for u in contact root ubuntu; do echo "EFF $u $(sudo sshd -T -C user=$u,host=x,addr=127.0.0.1 2>/dev/null | grep -i -E "^(trustedusercakeys|authorizedprincipalsfile) " | cut -d" " -f2 | tr "\n" " ")$(test -e /etc/ssh/access-principals/$u && echo P)"; done',
+        'echo "PRINC $(ls /etc/ssh/access-principals | tr "\\n" " ")"',
+        "id -u contact >/dev/null 2>&1 && echo USER_OK",
+      ].join("; "),
+    );
+    const ok =
+      !!want &&
+      live.includes(want) &&
+      live.includes("MODE root 644") &&
+      live.includes("KEYS 1") &&
+      live.includes("APF /etc/ssh/access-principals/%u") &&
+      /PRINC contact \n/.test(live + "\n") &&
+      live.includes("USER_OK") &&
+      /^EFF contact \/etc\/ssh\/ca-access\.pub \/etc\/ssh\/access-principals\/%u P$/m.test(
+        live,
+      ) &&
+      /^EFF root \/etc\/ssh\/ca-access\.pub \/etc\/ssh\/access-principals\/%u $/m.test(
+        live,
+      ) &&
+      /^EFF ubuntu \/etc\/ssh\/ca-access\.pub \/etc\/ssh\/access-principals\/%u $/m.test(
+        live,
+      );
+    add(
+      "ssh-ca",
+      `${name} CA trusted by sshd on ${host}`,
+      ok,
+      ok
+        ? `${want.split(" ")[0]} ...${want.slice(-12)}, sole CA, root 644, principals: contact only; certificate login not proven (owner browser session)`
+        : live.replace(/\n/g, " | ").slice(0, 200) || "MISSING",
+    );
   }
 }
 
 // 9b'. who can get a certificate: every policy of the ssh apps must include only the exact owner email.
 {
-  const apps3 = await api<any[]>("GET", `/accounts/${cfg.account}/access/apps?per_page=100`);
+  const apps3 = await api<any[]>(
+    "GET",
+    `/accounts/${cfg.account}/access/apps?per_page=100`,
+  );
   for (const name of ["fr2-ssh", "prd-ssh"]) {
     const app = apps3.find((x) => x.name === name);
-    const pols = app ? await Promise.all((app.policies ?? []).map((p: any) => api<any>("GET", `/accounts/${cfg.account}/access/policies/${p.id}`).catch(() => p))) : [];
+    const pols = app
+      ? await Promise.all(
+          (app.policies ?? []).map((p: any) =>
+            api<any>(
+              "GET",
+              `/accounts/${cfg.account}/access/policies/${p.id}`,
+            ).catch(() => p),
+          ),
+        )
+      : [];
     const ident = pols.filter((p: any) => p.decision !== "non_identity");
-    const emails = ident.flatMap((p: any) => (p.include ?? []).map((x: any) => x.email?.email ?? JSON.stringify(x)));
-    const ok = ident.length > 0 && emails.every((e: string) => e === "contact@aphrody.com");
-    add("access-policy", `${name} identity policies`, ok, `${ident.length} identity polic${ident.length > 1 ? "ies" : "y"}: ${emails.join(", ") || "none"}; service tokens: ${pols.length - ident.length}`);
+    const emails = ident.flatMap((p: any) =>
+      (p.include ?? []).map((x: any) => x.email?.email ?? JSON.stringify(x)),
+    );
+    const ok =
+      ident.length > 0 &&
+      emails.every((e: string) => e === "contact@aphrody.com");
+    add(
+      "access-policy",
+      `${name} identity policies`,
+      ok,
+      `${ident.length} identity polic${ident.length > 1 ? "ies" : "y"}: ${emails.join(", ") || "none"}; service tokens: ${pols.length - ident.length}`,
+    );
   }
 }
 
@@ -273,13 +671,37 @@ for (const from of ["fr2", "prd"]) {
 // Ready = 7 days on all three, at least 150 probes each, and the OVH KVM console tested (/etc/fleet/kvm-console-tested
 // on fr2, written once by the owner). The check fails only if probing stops; readiness is reported in the evidence.
 {
-  const DAY = 86400, GAP = 2 * 3600, now = Date.now() / 1000;
+  const DAY = 86400,
+    GAP = 2 * 3600,
+    now = Date.now() / 1000;
   const parts: string[] = [];
-  let fresh = true, ready = true;
-  for (const [h, label] of [["fr2", "fr2"], ["prd", "prd"], ["vps", "fr1"]]) {
-    const rowsH = sh(h, "sudo cat /var/lib/fleet-ssh22/probes.jsonl 2>/dev/null").split("\n").filter(Boolean)
-      .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean) as { ts: number; access: boolean | null; mesh: boolean }[];
-    let start = rowsH[0]?.ts ?? now, fails = 0;
+  let fresh = true,
+    ready = true;
+  for (const [h, label] of [
+    ["fr2", "fr2"],
+    ["prd", "prd"],
+    ["vps", "fr1"],
+  ]) {
+    const rowsH = sh(
+      h,
+      "sudo cat /var/lib/fleet-ssh22/probes.jsonl 2>/dev/null",
+    )
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => {
+        try {
+          return JSON.parse(l);
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean) as {
+      ts: number;
+      access: boolean | null;
+      mesh: boolean;
+    }[];
+    let start = rowsH[0]?.ts ?? now,
+      fails = 0;
     rowsH.forEach((r, i) => {
       const bad = r.access === false || !r.mesh;
       if (bad) fails++;
@@ -290,44 +712,92 @@ for (const from of ["fr2", "prd"]) {
     const days = Math.floor((now - start) / DAY);
     if (!last || now - last.ts > GAP) fresh = false;
     if (days < 7 || rowsH.length < 150) ready = false;
-    parts.push(`${label}: ${rowsH.length} probes, ${fails} failed, ${days}/7 d green, last ${last ? Math.round((now - last.ts) / 60) + " min ago" : "never"}`);
+    parts.push(
+      `${label}: ${rowsH.length} probes, ${fails} failed, ${days}/7 d green, last ${last ? Math.round((now - last.ts) / 60) + " min ago" : "never"}`,
+    );
   }
   // Owner attestations on fr2, each an ISO date on the first line, valid 30 days: OVH KVM console, browser terminal.
   const att = (f: string) => {
     const v = sh("fr2", `head -1 /etc/fleet/${f} 2>/dev/null`).trim();
     const t = Date.parse(v);
-    return Number.isFinite(t) && now - t / 1000 < 30 * DAY ? v : v ? `stale or invalid (${v.slice(0, 20)})` : "";
+    return Number.isFinite(t) && now - t / 1000 < 30 * DAY
+      ? v
+      : v
+        ? `stale or invalid (${v.slice(0, 20)})`
+        : "";
   };
-  const kvmA = att("kvm-console-tested"), browserA = att("browser-ssh-tested");
-  const kvm = kvmA && !kvmA.startsWith("stale") ? `${kvmA}; browser terminal tested: ${browserA || "no"}` : "";
+  const kvmA = att("kvm-console-tested"),
+    browserA = att("browser-ssh-tested");
+  const kvm =
+    kvmA && !kvmA.startsWith("stale")
+      ? `${kvmA}; browser terminal tested: ${browserA || "no"}`
+      : "";
   if (!kvm || !browserA || browserA.startsWith("stale")) ready = false;
   const due = new Date() >= new Date("2026-11-20T00:00:00Z");
-  add("ssh22-close", "fr2 public 22 closing criteria", fresh, `${parts.join("; ")}; KVM console tested: ${kvm || "no"}; ${ready ? (due ? "READY: close 22" : "ready, not due") : "not ready"}`);
+  add(
+    "ssh22-close",
+    "fr2 public 22 closing criteria",
+    fresh,
+    `${parts.join("; ")}; KVM console tested: ${kvm || "no"}; ${ready ? (due ? "READY: close 22" : "ready, not due") : "not ready"}`,
+  );
 }
 
 if (record) {
-  const other = rows.filter((r) => !r.ok && r.check !== "edge" && r.check !== "api-route");
+  const other = rows.filter(
+    (r) => !r.ok && r.check !== "edge" && r.check !== "api-route",
+  );
   if (other.length) {
-    console.error(`--record refused: ${other.length} non-status check(s) failing (${other.map((r) => r.check + " " + r.target).join("; ")})`);
+    console.error(
+      `--record refused: ${other.length} non-status check(s) failing (${other.map((r) => r.check + " " + r.target).join("; ")})`,
+    );
     process.exit(1);
   }
-  const drift = Object.entries(seen).filter(([h, st]) => expected[h] !== undefined && expected[h] !== st && !accept.has(h));
+  const drift = Object.entries(seen).filter(
+    ([h, st]) =>
+      expected[h] !== undefined && expected[h] !== st && !accept.has(h),
+  );
   if (drift.length) {
-    console.error(`--record refused: frozen status changed for ${drift.map(([h, st]) => `${h} ${expected[h]} -> ${st}`).join(", ")} (re-run with --accept <host,...> after review)`);
+    console.error(
+      `--record refused: frozen status changed for ${drift.map(([h, st]) => `${h} ${expected[h]} -> ${st}`).join(", ")} (re-run with --accept <host,...> after review)`,
+    );
     process.exit(1);
   }
-  await Bun.write(expFile, JSON.stringify(Object.fromEntries(Object.entries(seen).sort().map(([h, st]) => {
-    const old = prior[h];
-    return [h, typeof old === "object" && old.status === st ? old : st];
-  })), null, 2) + "\n");
-  console.error(`recorded ${Object.keys(seen).length} expected statuses: review \`git diff infra/cloudflare/expected-status.json\` before committing`);
+  await Bun.write(
+    expFile,
+    JSON.stringify(
+      Object.fromEntries(
+        Object.entries(seen)
+          .sort()
+          .map(([h, st]) => {
+            const old = prior[h];
+            return [h, typeof old === "object" && old.status === st ? old : st];
+          }),
+      ),
+      null,
+      2,
+    ) + "\n",
+  );
+  console.error(
+    `recorded ${Object.keys(seen).length} expected statuses: review \`git diff infra/cloudflare/expected-status.json\` before committing`,
+  );
 }
-rows.sort((a, b) => a.check.localeCompare(b.check) || a.target.localeCompare(b.target));
+rows.sort(
+  (a, b) => a.check.localeCompare(b.check) || a.target.localeCompare(b.target),
+);
 const bad = rows.filter((r) => !r.ok);
 if (md) {
-  console.log(`Run ${new Date().toISOString()} from ${(await (await fetch("https://1.1.1.1/cdn-cgi/trace")).text()).match(/ip=(.*)/)?.[1]?.replace(/\d+$/, "x")}\n`);
+  console.log(
+    `Run ${new Date().toISOString()} from ${(await (await fetch("https://1.1.1.1/cdn-cgi/trace")).text()).match(/ip=(.*)/)?.[1]?.replace(/\d+$/, "x")}\n`,
+  );
   console.log("| Check | Target | OK | Evidence |\n|---|---|---|---|");
-  for (const r of rows) console.log(`| ${r.check} | ${r.target} | ${r.ok ? "yes" : "**NO**"} | ${r.evidence.replaceAll("|", "/")} |`);
-} else for (const r of rows) console.log(`${r.ok ? "ok  " : "FAIL"} ${r.check.padEnd(13)} ${r.target.padEnd(44)} ${r.evidence}`);
+  for (const r of rows)
+    console.log(
+      `| ${r.check} | ${r.target} | ${r.ok ? "yes" : "**NO**"} | ${r.evidence.replaceAll("|", "/")} |`,
+    );
+} else
+  for (const r of rows)
+    console.log(
+      `${r.ok ? "ok  " : "FAIL"} ${r.check.padEnd(13)} ${r.target.padEnd(44)} ${r.evidence}`,
+    );
 console.log(`\n${rows.length - bad.length}/${rows.length} checks ok`);
 process.exit(bad.length ? 1 : 0);

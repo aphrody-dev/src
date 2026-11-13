@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Designers can adjust their designs to accommodate users.
 The clearest example of this is the form factor of a user's device; its width,
 the device aspect ratio, and other aspects. Using media queries, designers can respond to these different form factors.
@@ -40,8 +41,8 @@ You can use the `@media` at-rule in your stylesheet like that,
 or you can make a separate stylesheet and use the `media` attribute on a `link` element:
 
 ```html
-<link rel="stylesheet" href="global.css">
-<link rel="stylesheet" href="print.css" media="print">
+<link rel="stylesheet" href="global.css" />
+<link rel="stylesheet" href="print.css" media="print" />
 ```
 
 If you don't specify any media type for your CSS,
@@ -56,39 +57,39 @@ body {
 
 ```css
 @media all {
-   body {
-     color: black;
-     background-color: white;
-   }
+  body {
+    color: black;
+    background-color: white;
+  }
 }
 ```
 
 These two lines of HTML are also equivalent:
 
 ```html
-<link rel="stylesheet" href="global.css">
+<link rel="stylesheet" href="global.css" />
 ```
 
 ```html
-<link rel="stylesheet" href="global.css" media="all">
+<link rel="stylesheet" href="global.css" media="all" />
 ```
 
 ### Query conditions
 
 You can add conditions to media types. These are called media queries.
 The CSS is applied only if the media type matches and the condition is also true.
-These conditions are called *media features*.
+These conditions are called _media features_.
 
 This is the syntax for media queries:
 
 ```css
-@media type and (feature)
+@media type and (feature);
 ```
 
 You can use media queries on a `link` element if your styles are in a separate stylesheet:
 
 ```html
-<link rel="stylesheet" href="specific.css" media="type and (feature)">
+<link rel="stylesheet" href="specific.css" media="type and (feature)" />
 ```
 
 Say you want to apply different styles depending on whether the browser window is in landscape mode
@@ -98,44 +99,53 @@ There's a media feature called `orientation` you can use to test that:
 
 ```css
 @media all and (orientation: landscape) {
-   /* Styles for landscape mode. */
+  /* Styles for landscape mode. */
 }
 
 @media all and (orientation: portrait) {
-   /* Styles for portrait mode. */
+  /* Styles for portrait mode. */
 }
 ```
 
 Or if you prefer to have separate stylesheets:
 
 ```html
-<link rel="stylesheet" href="landscape.css" media="all and (orientation: landscape)">
-<link rel="stylesheet" href="portrait.css" media="all and (orientation: portrait)">
+<link
+  rel="stylesheet"
+  href="landscape.css"
+  media="all and (orientation: landscape)"
+/>
+<link
+  rel="stylesheet"
+  href="portrait.css"
+  media="all and (orientation: portrait)"
+/>
 ```
 
 In this case the media type is `all`. Because that's the default value, you can leave it out if you want:
 
 ```css
 @media (orientation: landscape) {
-   /* Styles for landscape mode. */
+  /* Styles for landscape mode. */
 }
 
 @media (orientation: portrait) {
-   /* Styles for portrait mode. */
+  /* Styles for portrait mode. */
 }
 ```
 
 Or using separate stylesheets:
 
 ```html
-<link rel="stylesheet" href="landscape.css" media="(orientation: landscape)">
-<link rel="stylesheet" href="portrait.css" media="(orientation: portrait)">
+<link rel="stylesheet" href="landscape.css" media="(orientation: landscape)" />
+<link rel="stylesheet" href="portrait.css" media="(orientation: portrait)" />
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/qBXVowV?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen qBXVowV by web-dot-dev on Codepen">
 </iframe>
 
-While using separate stylesheets for different media *types* ---like `print`---might be okay,
-it's probably not a good idea to use a separate stylesheet for every media *query* . Use `@media` at-rules instead.
+While using separate stylesheets for different media _types_ ---like `print`---might be okay,
+it's probably not a good idea to use a separate stylesheet for every media _query_ . Use `@media` at-rules instead.
 
 ## Adjust styles based on viewport size
 
@@ -191,6 +201,7 @@ This can also be written using range syntax.
   /* Styles for viewports wider than 50em and narrower than 60em. */
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/GRvOxaw?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen GRvOxaw by web-dot-dev on Codepen">
 </iframe>
 
@@ -211,6 +222,7 @@ Using the `column-count` property, the text is divided into two columns from tha
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/oNeodgd?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen oNeodgd by web-dot-dev on Codepen">
 </iframe>
 
@@ -233,6 +245,7 @@ Those breakpoints were chosen based on the amount of content.
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JjyOvdM?height=1000&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JjyOvdM by web-dot-dev on Codepen">
 </iframe>
 
@@ -246,6 +259,7 @@ You can also use the `or` and `not` keywords to express more complex situations 
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/gbazxdP?height=1000&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen gbazxdP by web-dot-dev on Codepen">
 </iframe>
 
@@ -261,5 +275,5 @@ Media queries only exist for screen size?
 true Try again! Media queries for things like print, dark and light system preference, and many more. false 🎉 Screens are the only place web content is consumed or displayed?
 true Try again! A website may be printed onto paper, crawled by search engine spiders, read aloud by screen reader technologies, or even read to users by bots using an assistant. false 🎉 The default media type is?
 `screen` Try again! `screen` is not the default type. `none` Try again! `none` is not a valid media type. `all` 🎉 `some` Try again! `some` is not a valid media type. `landscape` Try again! `landscape` is not a valid media type. What would you use to prevent the browser from scaling a design on mobile?
-`width: 100%` Try again! `font-size: 200%` Try again! `<meta name="viewport" content="width=device-width, initial-scale=1">` 🎉 Media Queries Try again! HTML5 Try again! Which media query applies when the browser window is *above* `720px`.
+`width: 100%` Try again! `font-size: 200%` Try again! `<meta name="viewport" content="width=device-width, initial-scale=1">` 🎉 Media Queries Try again! HTML5 Try again! Which media query applies when the browser window is _above_ `720px`.
 `@media (width: 720px)` Try again! This media query is only when the browser window is equal to `720px`. `@media (max-width: 720px)` Try again! This media query is for when the browser window is below `720px`. `@media (min-width: 720px)` 🎉 You can read this as the browser window is at least `720px`. `@media (clamp-width: 720px)` Try again! `clamp-width` is not a valid media query feature condition.

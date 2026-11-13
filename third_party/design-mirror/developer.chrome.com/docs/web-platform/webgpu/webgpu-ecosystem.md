@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-François Beaufort [GitHub](https://github.com/beaufortfrancois)  Corentin Wallez [X](https://twitter.com/DaKangz) [GitHub](https://github.com/Kangz) [Mastodon](https://mastodon.gamedev.place/@DaKangz)
+
+François Beaufort [GitHub](https://github.com/beaufortfrancois) Corentin Wallez [X](https://twitter.com/DaKangz) [GitHub](https://github.com/Kangz) [Mastodon](https://mastodon.gamedev.place/@DaKangz)
 
 Published: November 9, 2023, Last updated: September 16, 2025
 
@@ -30,7 +31,7 @@ You can also run your JavaScript WebGPU code outside the browser with the Node.j
 A similar ecosystem exists for Rust with [wgpu](https://wgpu.rs/), Firefox's implementation of WebGPU. Wgpu can be directly integrated into Rust applications, which can then be ported to the web using [web-sys](https://crates.io/crates/web-sys). Additionally, the Deno JavaScript runtime supports WebGPU through wgpu. See [wgpu alliance with Deno](https://gfx-rs.github.io/2021/09/16/deno-webgpu.html) blog post.
 
 This establishes a parallel ecosystem between Rust and C++ as shown in the following diagram.
- WebGPU ecosystem in 2023.
+WebGPU ecosystem in 2023.
 
 ## Emerging horizons
 

@@ -10,12 +10,12 @@ classifiers = ["Private :: Do Not Upload"]
 # Raise the bound together with a grpcio that ships wheels for the next release.
 requires-python = ">=3.13,<3.15"
 dependencies = [
-    "cryptography>=44.0.0",
-    "grpcio>=1.81.0",
-    "pytest>=9.1.1",
-    "pytest-json-ctrf>=0.3.6",
-    "pytest-timeout>=2.4.0",
-    "pytest-xdist>=3.8.0",
+  "cryptography>=44.0.0",
+  "grpcio>=1.81.0",
+  "pytest>=9.1.1",
+  "pytest-json-ctrf>=0.3.6",
+  "pytest-timeout>=2.4.0",
+  "pytest-xdist>=3.8.0",
 ]
 
 [dependency-groups]
@@ -42,10 +42,10 @@ log_level = "INFO"
 # basetemps, which now costs nothing because each run empties its own. Per-test
 # tmp_path directories are handled by a fixture in scripts/test/conftest.py.
 markers = [
-    "smoke: marks as smoke test",
-    "slow: marks as a slow running test",
-    "swfs: marks tests that need the EpicVFS driver (Windows only); deselect with 'not swfs'",
-    "requires_instrumented_lore: marks tests that need an instrumented build",
+  "smoke: marks as smoke test",
+  "slow: marks as a slow running test",
+  "swfs: marks tests that need the EpicVFS driver (Windows only); deselect with 'not swfs'",
+  "requires_instrumented_lore: marks tests that need an instrumented build",
 ]
 # A test that hangs used to take the whole run with it. Nothing in this suite
 # bounds how long a lore command may take - the helper calls `subprocess.run`

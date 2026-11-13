@@ -23,7 +23,11 @@ const { values, positionals } = parseArgs({
 });
 
 const [cmd = "index", arg] = positionals;
-const root = resolve(cmd === "users" ? "." : (arg ?? process.env.SRC_ROOT ?? join(import.meta.dir, "..", "..", "..")));
+const root = resolve(
+  cmd === "users"
+    ? "."
+    : (arg ?? process.env.SRC_ROOT ?? join(import.meta.dir, "..", "..", "..")),
+);
 const dbPath = values.db ?? join(root, "var", "index", "core.db");
 mkdirSync(dirname(dbPath), { recursive: true });
 const db = openStore(dbPath);
@@ -31,11 +35,15 @@ const db = openStore(dbPath);
 if (cmd === "index") {
   const core = loadCore();
   if (!core) {
-    console.error("aphrody_core_capi introuvable : cargo build -p aphrody-core-capi --release (sur prd)");
+    console.error(
+      "aphrody_core_capi introuvable : cargo build -p aphrody-core-capi --release (sur prd)",
+    );
     process.exit(2);
   }
   const t0 = performance.now();
-  const batch: Parameters<typeof writeFiles>[1] extends Iterable<infer T> ? T[] : never = [];
+  const batch: Parameters<typeof writeFiles>[1] extends Iterable<infer T>
+    ? T[]
+    : never = [];
   const stats = indexEach(
     root,
     (f) => {
@@ -46,16 +54,28 @@ if (cmd === "index") {
   );
   writeFiles(db, batch);
   const totalMs = Math.round(performance.now() - t0);
-  db.prepare("INSERT OR REPLACE INTO meta VALUES ('root', ?), ('stats', ?), ('indexed_at', ?)").run(
+  db.prepare(
+    "INSERT OR REPLACE INTO meta VALUES ('root', ?), ('stats', ?), ('indexed_at', ?)",
+  ).run(
     root,
     JSON.stringify({ ...stats, total_ms: totalMs }),
     new Date().toISOString(),
   );
-  const summary = { root, lib: core.path, ...stats, total_ms: totalMs, classes: classification(db).slice(0, 200) };
-  await Bun.write(values.json ?? join(dirname(dbPath), "index.json"), JSON.stringify(summary, null, 1));
+  const summary = {
+    root,
+    lib: core.path,
+    ...stats,
+    total_ms: totalMs,
+    classes: classification(db).slice(0, 200),
+  };
+  await Bun.write(
+    values.json ?? join(dirname(dbPath), "index.json"),
+    JSON.stringify(summary, null, 1),
+  );
   console.log(JSON.stringify({ ...stats, total_ms: totalMs, db: dbPath }));
 } else if (cmd === "gen") {
-  for (const r of await generate(db, root)) console.log(`${r.skill}: ${r.cited} fichiers testés -> ${r.skillPath}`);
+  for (const r of await generate(db, root))
+    console.log(`${r.skill}: ${r.cited} fichiers testés -> ${r.skillPath}`);
 } else if (cmd === "users") {
   if (!arg) throw new Error("usage: users <needle>");
   for (const p of usersOf(db, arg)) console.log(p);

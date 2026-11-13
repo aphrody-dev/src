@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 This course breaks down the fundamentals of CSS into clear, digestible pieces.
 Over the next few modules, you'll learn how the core aspects of CSS work and how
 to use them effectively in your projects. Use the menu pane by the "Learn CSS"

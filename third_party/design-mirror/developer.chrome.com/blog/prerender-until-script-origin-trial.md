@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)  Lingqi Chi [GitHub](https://github.com/Clqsin45)
+
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com) Lingqi Chi [GitHub](https://github.com/Clqsin45)
 
 Published: January 23, 2026
 
@@ -147,7 +148,6 @@ Finally, prior blocking scripts will pause the parser and so prevent the inline 
 
 ```javascript
 <script>...</script>
-
 ```
 
 This is especially relevant for inline script handlers that use previously defined code, which will continue to work as expected:

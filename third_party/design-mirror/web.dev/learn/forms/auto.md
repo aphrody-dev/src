@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 After learning about the
 [form element](https://web.dev/learn/forms/form-element.md.txt) and how to make a form
 [interactive](https://web.dev/learn/forms/form-fields.md.txt),
@@ -51,8 +52,7 @@ Let's see what you can do to help browsers offer the correct autofill options.
 As you learned, browsers can identify the data type by looking at the attributes of a form control.
 
 ```html
-<label for="email">Email</label>
-<input type="email" name="email" id="email">
+<label for="email">Email</label> <input type="email" name="email" id="email" />
 ```
 
 Do you have a field where users should enter their email address?

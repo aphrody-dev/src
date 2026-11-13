@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 012: Logical Properties](https://thecsspodcast.libsyn.com/012-logical-properties)
 
 A really common user interface pattern is a text label with a supporting inline icon.
@@ -28,7 +29,7 @@ They help you build a more resilient, inclusive front-end.
 The physical properties of top, right, bottom, and left refer to the physical dimensions of the viewport.
 You can think of these like a compass rose on a map.
 Logical properties, on the other hand,
-refer to the edges of a box as they relate to the *flow of content*.
+refer to the edges of a box as they relate to the _flow of content_.
 Therefore, they can change if the text direction or writing mode changes.
 This is a big shift from directional styles,
 and it gives us a lot more flexibility when styling our interfaces.
@@ -60,7 +61,7 @@ For example, `margin-top` is applied to the physical top of the element.
 With logical properties, `margin-top` becomes `margin-block-start`.
 This means that regardless of language and text direction,
 the **block flow** has appropriate margin rules.
-<iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/ZELeBzM?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen ZELeBzM by web-dot-dev on Codepen"></iframe> 
+<iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/ZELeBzM?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen ZELeBzM by web-dot-dev on Codepen"></iframe>
 
 ## Sizing
 
@@ -112,6 +113,7 @@ p {
   text-align: end;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/QWdpdwo?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen QWdpdwo by web-dot-dev on Codepen"></iframe>
 
 ## Spacing and positioning
@@ -184,7 +186,7 @@ Or, you could use logical properties like this:
 }
 ```
 
-The `end-end` in `border-end-end-radius` is the block end *and* inline end.
+The `end-end` in `border-end-end-radius` is the block end _and_ inline end.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/yLgMgby?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen yLgMgby by web-dot-dev on Codepen"></iframe>
 
 ## Units

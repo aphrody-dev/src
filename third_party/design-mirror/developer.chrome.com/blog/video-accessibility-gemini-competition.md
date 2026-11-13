@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Alexandra Klepper [GitHub](https://github.com/alexandrascript) [Bluesky](https://bsky.app/profile/alexandrascript.com)
 
 Published: November 21, 2024
@@ -33,7 +34,7 @@ Manual annotation of videos to offer addition details for this audience takes
 too much time, and is often neglected. ViddyScribe used Gemini to help create a
 custom solution that scales beyond adding some arbitrary frame descriptions to
 a text file.
- The ViddyScribe app allows users to use a sample video or upload their own (100MB and 2 minutes long) to generate audio descriptions with Gemini.
+The ViddyScribe app allows users to use a sample video or upload their own (100MB and 2 minutes long) to generate audio descriptions with Gemini.
 
 ViddyScribe used [prompt engineering](https://web.dev/articles/practical-prompt-engineering)
 to get the best results, curating the question language and style for Gemini 1.5

@@ -77,7 +77,11 @@ export function loadStacks(
     const doc = Bun.TOML.parse(readFileSync(f, "utf8")) as {
       stack?: Record<string, Omit<StackConfig, "name">>;
     };
-    return Object.entries(doc.stack ?? {}).map(([name, s]) => ({ name, ...(group ? { group } : {}), ...s }));
+    return Object.entries(doc.stack ?? {}).map(([name, s]) => ({
+      name,
+      ...(group ? { group } : {}),
+      ...s,
+    }));
   };
   const dropins = join(dirname(file), "stacks.d");
   return [

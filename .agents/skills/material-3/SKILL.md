@@ -7,12 +7,12 @@ description: Material Design 3 rules (including M3 Expressive) normalized for th
 
 Rewritten specs (m3.material.io is proprietary: no sentence or image reused; factual values verified on 2026-11-13, tokens taken from material-web and androidx under Apache-2.0):
 
-| Domain | Human-readable | Machine |
-|---|---|---|
-| Tokens (color, type, shape, elevation, states, spacing, width classes) | `docs/design/specs/tokens/material-3.md` | `.json` |
-| Motion (Expressive springs, easing, durations) | `docs/design/specs/motion/material-3.md` | `.json` |
-| Components (variants, anatomy, states, dp measurements, a11y) | `docs/design/specs/components/material-3.md` | `.json` |
-| Accessibility | `docs/design/specs/a11y/material-3.md` | `.json` |
+| Domain                                                                 | Human-readable                               | Machine |
+| ---------------------------------------------------------------------- | -------------------------------------------- | ------- |
+| Tokens (color, type, shape, elevation, states, spacing, width classes) | `docs/design/specs/tokens/material-3.md`     | `.json` |
+| Motion (Expressive springs, easing, durations)                         | `docs/design/specs/motion/material-3.md`     | `.json` |
+| Components (variants, anatomy, states, dp measurements, a11y)          | `docs/design/specs/components/material-3.md` | `.json` |
+| Accessibility                                                          | `docs/design/specs/a11y/material-3.md`       | `.json` |
 
 Schema: `docs/design/specs/spec.schema.json`. Index of source pages: `docs/design/index/m3.material.io.json`. Each rule has a stable id (`m3.<domain>.<name>`) to cite in review.
 

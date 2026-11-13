@@ -8,7 +8,7 @@ ssh = ""
 caches = [
   { name = "bun", path = ".bun/install/cache", cap_mb = 3072, gc = "bun" },
   { name = "src-node_modules", path = "C:/src/node_modules" },
-  { name = "src-target", path = "C:/src/target", cap_mb = 0, gc = "rm" },  # the PC never compiles
+  { name = "src-target", path = "C:/src/target", cap_mb = 0, gc = "rm" }, # the PC never compiles
   { name = "cargo-registry", path = ".cargo/registry" },
   { name = "cargo-git", path = ".cargo/git" },
   { name = "rustup", path = ".rustup" },
@@ -57,7 +57,7 @@ caches = [
 [sync]
 from = "fr1"
 to = "fr2"
-mesh = "ubuntu@10.200.77.3"   # fr2 on wg1, reached from fr1
+mesh = "ubuntu@10.200.77.3" # fr2 on wg1, reached from fr1
 dest = "/var/cache/aphrody/replica/fr1"
 r2 = "r2:aphrody-archive/cache/fr1"
 zstd_level = 19

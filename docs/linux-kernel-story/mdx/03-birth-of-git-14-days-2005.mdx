@@ -11,11 +11,13 @@ order: 3
 ## 1. The Pre-Git Era: Tarballs, Patches, and BitKeeper (1991–2005)
 
 From 1991 to 2002, the Linux kernel was maintained primarily via:
+
 - Compressed source tarballs released on `kernel.org`.
 - Patch files sent across the Linux Kernel Mailing List (`LKML`).
 - Linus Torvalds personally reading patches, evaluating diffs, and applying them using Larry Wall's `patch` utility.
 
 By 2002, the sheer volume of contributors broke this manual workflow. Linux was receiving hundreds of patches per day from IBM, Intel, Red Hat, SUSE, and independent hackers. Centralized systems of the era—CVS and Subversion (SVN)—were fundamentally flawed for kernel development:
+
 - **Centralized Lock-in**: Commits required an active network connection to a central master server.
 - **Branching and Merging Disaster**: Branching was slow; merging branches in CVS often resulted in corrupted trees.
 - **Zero Scalability**: An operation like checking file history or switching branches across 15,000 files took minutes.
@@ -50,13 +52,15 @@ In early 2005, Andrew "Tridge" Tridgell (famous creator of Samba) analyzed the n
 Larry McVoy claimed this violated the reverse-engineering clause of the BitKeeper license. In April 2005, BitMover announced the termination of free BitKeeper licenses for Linux kernel development.
 
 The Linux kernel was left without a version control system. Existing open-source alternatives were evaluated:
+
 - **Subversion**: Centralized, slow, branching was broken.
 - **CVS**: Obsolete, lacked atomic commits.
 - **Monotone**: Distributed and cryptographically sound, but took over 30 seconds to apply a single patch, completely non-viable for a tree with 25,000 commits.
 - **Arch**: Complex, poor ergonomics.
 
 Linus famously declared:
-> *"I can write a better version control system in two weeks than anything that currently exists."*
+
+> _"I can write a better version control system in two weeks than anything that currently exists."_
 
 ---
 
@@ -72,15 +76,15 @@ Linus isolated himself in his home office in Beaverton, Oregon, in early April 2
 
 ## 4. The 14-Day Timeline (April 3 – April 18, 2005)
 
-| Date | Milestone |
-| :--- | :--- |
-| **April 3, 2005** | Linus begins writing code in C. First primitives: object store for blobs. |
-| **April 6, 2005** | Linus announces project `git` to LKML. Initial version consists of low-level tools (`read-cache`, `write-tree`, `commit-tree`, `cat-file`). |
-| **April 7, 2005** | Git self-hosts: the Git source code itself is committed and tracked using Git. |
-| **April 8, 2005** | First merge between two distinct branches demonstrated using `git-merge-base`. |
-| **April 12, 2005** | Performance tuning: Linus achieves sub-second tree operations across the Linux kernel codebase. |
-| **April 16, 2005** | Linus publishes the first Linux kernel release candidate (`v2.6.12-rc2`) managed completely with Git. |
-| **April 18, 2005** | Junio C. Hamano joins the project, contributing merge algorithms (`git-merge-resolve`) and later becoming the lead maintainer. |
+| Date               | Milestone                                                                                                                                   |
+| :----------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| **April 3, 2005**  | Linus begins writing code in C. First primitives: object store for blobs.                                                                   |
+| **April 6, 2005**  | Linus announces project `git` to LKML. Initial version consists of low-level tools (`read-cache`, `write-tree`, `commit-tree`, `cat-file`). |
+| **April 7, 2005**  | Git self-hosts: the Git source code itself is committed and tracked using Git.                                                              |
+| **April 8, 2005**  | First merge between two distinct branches demonstrated using `git-merge-base`.                                                              |
+| **April 12, 2005** | Performance tuning: Linus achieves sub-second tree operations across the Linux kernel codebase.                                             |
+| **April 16, 2005** | Linus publishes the first Linux kernel release candidate (`v2.6.12-rc2`) managed completely with Git.                                       |
+| **April 18, 2005** | Junio C. Hamano joins the project, contributing merge algorithms (`git-merge-resolve`) and later becoming the lead maintainer.              |
 
 ---
 
@@ -124,18 +128,21 @@ Git is not a delta-based version control system; it is a **content-addressable f
 ```
 
 ### 5.1 The Four Core Object Types
+
 1. **Blob**: Raw byte content of a file. Filenames, permissions, and timestamps are not stored here.
 2. **Tree**: Equivalent to a Unix directory. Maps filenames and file mode bits (`100644`, `100755`, `040000`) to SHA-1 hashes of blobs or subtrees.
 3. **Commit**: Contains a pointer to a root tree object, parent commit SHA-1s, author/committer identities, timestamps, and the commit message.
 4. **Tag**: An annotated object pointing directly to a specific commit, carrying a GPG signature.
 
 ### 5.2 Storage Format on Disk
+
 Every object is stored under `.git/objects/xx/yyyy...` where `xx` is the first 2 hex digits of the 40-character SHA-1 hash, and `yyyy...` is the remaining 38 characters:
 
 $$\text{Object Header} = \text{"<type> <size>\0"}$$
 $$\text{Storage on Disk} = \text{zlib\_deflate}(\text{Object Header} + \text{Raw Payload})$$
 
 Because objects are keyed by the hash of their content:
+
 - Git performs automatic deduplication across branches and directories.
 - Any modification to a single character changes the blob SHA-1, which cascades up and changes the tree SHA-1, which changes the commit SHA-1. History is cryptographically unforgeable.
 
@@ -144,11 +151,13 @@ Because objects are keyed by the hash of their content:
 ## 6. Packfiles and the Index: Engineering for Extreme Speed
 
 Linus understood that loose objects would exhaust file inodes on POSIX filesystems. Git introduced **Packfiles** (`.pack` and `.idx`):
+
 - Multiple loose objects are combined into a single packfile.
 - Objects are delta-compressed against similar blobs (even across different files and revisions).
 - A binary search index file (`.idx`) allows $O(\log N)$ random access to any object inside a multi-gigabyte packfile using `mmap()`.
 
 ### 6.1 The Staging Area (The Index)
+
 The `.git/index` is a flat, binary cache containing sorted entries of pathnames, stat information (`ctime`, `mtime`, `dev`, `ino`, `size`), and the corresponding blob SHA-1.
 When you run `git status`, Git performs a `stat()` syscall on files. If `size` and `mtime` match the index, Git knows without reading the file from disk that it is unmodified. This allows Git to scan hundreds of thousands of files in milliseconds.
 
@@ -157,6 +166,7 @@ When you run `git status`, Git performs a `stat()` syscall on files. If `size` a
 ## 7. The Legacy of Git
 
 Git did not merely save Linux kernel development; it redefined global software engineering:
+
 - Distributed collaboration eliminated the bottleneck of central code gatekeepers.
 - It enabled GitHub, GitLab, and the open-source revolution of the 2010s and 2020s.
 - Today, Git manages millions of repositories worldwide, powering software across every operating system, server, and cloud provider on Earth.

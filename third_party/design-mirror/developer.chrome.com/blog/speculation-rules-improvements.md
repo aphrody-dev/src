@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 The Chrome team has been working on some exciting updates to the [Speculation Rules API](https://developer.chrome.com/docs/web-platform/prerender-pages.md.txt) used to improve navigation performance by prefetching or even prerendering future navigations. These additional improvements are now all available from Chrome 122 (with some features available from earlier versions).
@@ -23,37 +24,39 @@ Previously, the Speculation Rules API worked by specifying a list of URLs to pre
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [
-    {
-      "source": "list",
-      "urls": ["next.html", "next2.html"]
-    }
-  ]
-}
+  {
+    "prerender": [
+      {
+        "source": "list",
+        "urls": ["next.html", "next2.html"]
+      }
+    ]
+  }
 </script>
 ```
 
 The speculation rules were semi-dynamic in that new speculation rule scripts could be added, and old scripts removed to discard those speculations (note that updating the `urls` list of an existing speculation rules script does not trigger a change in speculations). However, it still left the choice of URLs up to the site, either by sending them from the server at page request time, or by dynamically creating this list through client-side JavaScript.
 
-*List rules* remain as an option for simpler use cases (where the next navigation is from a small set of obvious ones), or more advanced use cases (where the list of URLs are dynamically calculated based on whatever heuristics the site owner wants to use, and then inserted into the page).
+_List rules_ remain as an option for simpler use cases (where the next navigation is from a small set of obvious ones), or more advanced use cases (where the list of URLs are dynamically calculated based on whatever heuristics the site owner wants to use, and then inserted into the page).
 
-As an alternative, we're excited to offer a new option for automatic link finding using *document rules* . This works by sourcing URLs from the document itself based on a `where` condition. This can be based on the links themselves:
+As an alternative, we're excited to offer a new option for automatic link finding using _document rules_ . This works by sourcing URLs from the document itself based on a `where` condition. This can be based on the links themselves:
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "source": "document",
-    "where": {
-      "and": [
-        { "href_matches": "/*" },
-        { "not": {"href_matches": "/logout/*"}}
-      ]
-    },
-    "eagerness": "moderate"
-  }]
-}
+  {
+    "prerender": [
+      {
+        "source": "document",
+        "where": {
+          "and": [
+            { "href_matches": "/*" },
+            { "not": { "href_matches": "/logout/*" } }
+          ]
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
 </script>
 ```
 
@@ -64,18 +67,20 @@ CSS selectors can also be used as an alternative, or in conjunction with, href m
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "source": "document",
-    "where": {
-      "and": [
-        { "selector_matches": ".prerender" },
-        { "not": {"selector_matches": ".do-not-prerender"}}
-      ]
-    },
-    "eagerness": "moderate"
-  }]
-}
+  {
+    "prerender": [
+      {
+        "source": "document",
+        "where": {
+          "and": [
+            { "selector_matches": ".prerender" },
+            { "not": { "selector_matches": ".do-not-prerender" } }
+          ]
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
 </script>
 ```
 
@@ -89,7 +94,7 @@ With any kind of speculation, there is a trade off between [precision and recall
 
 On the other hand, only prerendering once a user has clicked a link prevents waste, but at the cost of a much reduced lead time. This means its unlikely to have completed prerendering before the browser switches to that page.
 
-The `eagerness` setting allows you to define when speculations should run, separating *when* to speculate from which URLs to perform speculations on. The `eagerness` setting is available for both `list` and `document` source rules, and has four settings, for which Chrome has the following heuristics:
+The `eagerness` setting allows you to define when speculations should run, separating _when_ to speculate from which URLs to perform speculations on. The `eagerness` setting is available for both `list` and `document` source rules, and has four settings, for which Chrome has the following heuristics:
 
 - **`immediate`:** This is used to speculate as soon as possible, that is, as soon as the speculation rules are observed.
 - **`eager`:** This currently behaves identically to the `immediate` setting, but in future, we are looking to place this somewhere between `immediate` and `moderate`.
@@ -109,15 +114,17 @@ The `moderate` option is a middle ground, and many sites could benefit from the 
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "source": "document",
-    "where": {
-      "href_matches": "/*"
-    },
-    "eagerness": "moderate"
-  }]
-}
+  {
+    "prerender": [
+      {
+        "source": "document",
+        "where": {
+          "href_matches": "/*"
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
 </script>
 ```
 
@@ -125,14 +132,14 @@ The `moderate` option is a middle ground, and many sites could benefit from the 
 
 Even with the choice of `eagerness`, Chrome has limits in place to prevent overuse of this API:
 
-| `eagerness` | Prefetch | Prerender |
-|---|---|---|
-| `immediate` / `eager` | 50 | 10 |
-| `moderate` / `conservative` | 2 (FIFO) | 2 (FIFO) |
+| `eagerness`                 | Prefetch | Prerender |
+| --------------------------- | -------- | --------- |
+| `immediate` / `eager`       | 50       | 10        |
+| `moderate` / `conservative` | 2 (FIFO) | 2 (FIFO)  |
 
 Speculation limits in Chrome
 
-The `moderate` and `conservative` settings---which depend on user interaction---work in a [First In, First Out (FIFO) manner](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)). After reaching the limit, a new speculation will cause the oldest speculation to be canceled and replaced by the newer one to conserve memory.
+The `moderate` and `conservative` settings---which depend on user interaction---work in a [First In, First Out (FIFO) manner](<https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)>). After reaching the limit, a new speculation will cause the oldest speculation to be canceled and replaced by the newer one to conserve memory.
 
 The fact that `moderate` and `conservative` speculations are triggered by users allows us to use a more modest threshold of 2 to conserve memory. The `immediate` and `eager` settings are not triggered by a user action and so have a higher limit as it is not possible for the browser to know which are needed and when they are needed.
 
@@ -156,24 +163,28 @@ Chrome 122 makes the `source` key optional since this can be inferred from the p
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "source": "document",
-    "where": { "href_matches": "/*" },
-    "eagerness": "moderate"
-  }]
-}
+  {
+    "prerender": [
+      {
+        "source": "document",
+        "where": { "href_matches": "/*" },
+        "eagerness": "moderate"
+      }
+    ]
+  }
 </script>
 ```
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "where": { "href_matches": "/*" },
-    "eagerness": "moderate"
-  }]
-}
+  {
+    "prerender": [
+      {
+        "where": { "href_matches": "/*" },
+        "eagerness": "moderate"
+      }
+    ]
+  }
 </script>
 ```
 
@@ -209,7 +220,7 @@ We also support the new `No-Vary-Search` proposal to further improve cache reuse
 
 #### `No-Vary-Search` support
 
-When prefetching or prerendering a page, certain URL parameters (technically known as *search parameters*) may be unimportant to the page actually delivered by the server, and only used by client side JavaScript.
+When prefetching or prerendering a page, certain URL parameters (technically known as _search parameters_) may be unimportant to the page actually delivered by the server, and only used by client side JavaScript.
 
 For example, [UTM parameters](https://en.wikipedia.org/wiki/UTM_parameters) are used by Google Analytics for campaign measurement, but usually do not result in different pages being delivered from the server. This means that `page1.html?utm_content=123` and `page1.html?utm_content=456` will deliver the same page from the server, so the same page can be reused from the cache.
 
@@ -221,12 +232,14 @@ Speculation rules support using `expects_no_vary_search` to indicate where a `No
 
 ```html
 <script type="speculationrules">
-{
-  "prefetch": [{
-    "urls": ["/products"],
-    "expects_no_vary_search": "params=(\"id\")"
-  }]
-}
+  {
+    "prefetch": [
+      {
+        "urls": ["/products"],
+        "expects_no_vary_search": "params=(\"id\")"
+      }
+    ]
+  }
 </script>
 
 <a href="/products?id=123">Product 123</a>
@@ -240,7 +253,7 @@ However, if the user clicks on any of the links before the prefetch has complete
 ## Demo
 
 We have created a demo at <https://chrome.dev/speculative-loading/common-fruits.html> which can be used to see document rules with a `moderate` eagerness setting in action:
- Speculation rules demo
+Speculation rules demo
 
 Open DevTools, click the **Application** panel. Then, in the **Background services** section, click **Speculative loads** , then the **Speculations** pane, and sort by the **Status** column.
 
@@ -261,7 +274,7 @@ We're also working hard [to standardize the API](https://github.com/WICG/nav-spe
 The [WordPress Core Performance team](https://make.wordpress.org/performance/) (including developers from Google), created a [Speculation Rules plugin](https://wordpress.org/plugins/speculation-rules/). This plugin allows a simple one-click addition of document rules support to any WordPress site. This plugin is also available to install through the [WordPress Performance Lab](https://wordpress.org/plugins/performance-lab/) plugin, which you should also consider installing as it will keep you up to date on related performance plugins from the team.
 
 Two groups of settings are available: the **Speculation mode** and the **Eagerness** setting:
- WordPress Speculation Rules plugin
+WordPress Speculation Rules plugin
 
 For more complicated setups---for example, to exclude certain URLs from being prefetched or prerendered---read [the documentation](https://wordpress.org/plugins/speculation-rules/#how%20can%20i%20prevent%20certain%20urls%20from%20being%20prefetched%20and%20prerendered%3F).
 
@@ -289,4 +302,4 @@ We look forward to further adoption of the Speculation Rules API throughout 2024
 
 ## Acknowledgements
 
-*Thumbnail by [Robbie Down](https://unsplash.com/@robbiedown) on [Unsplash](https://unsplash.com/photos/person-holding-clear-glass-ball-ssuwtAadz2E)*
+_Thumbnail by [Robbie Down](https://unsplash.com/@robbiedown) on [Unsplash](https://unsplash.com/photos/person-holding-clear-glass-ball-ssuwtAadz2E)_

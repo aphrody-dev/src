@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Interactive elements, including [form controls](https://web.dev/learn/html/forms.md.txt),
 [links](https://web.dev/learn/html/links.md.txt), and buttons, are by default focusable and tabbable.
 Tabbable elements are part of the document's sequential focus navigation order.
@@ -82,9 +83,15 @@ On this page, the share button, `<share-action>`, is a
 element into the keyboard default tabbing order:
 
 ```html
-<share-action authors="@front-end.social/@estellevw" data-action="click"
-  data-category="web.dev" data-icon="share" data-label="share, mastodon"
-  role="button" tabindex="0">
+<share-action
+  authors="@front-end.social/@estellevw"
+  data-action="click"
+  data-category="web.dev"
+  data-icon="share"
+  data-label="share, mastodon"
+  role="button"
+  tabindex="0"
+>
   <svg aria-label="share" role="img" xmlns="http://www.w3.org/2000/svg">
     <use href="#shareIcon" />
   </svg>
@@ -99,7 +106,7 @@ Additionally, the [local navigation](https://web.dev/learn/html/navigation.md.tx
 has a custom element with a negative `tabindex` value:
 
 ```html
-<web-navigation-drawer type="standard" tabindex="-1">
+<web-navigation-drawer type="standard" tabindex="-1"></web-navigation-drawer>
 ```
 
 A `tabindex` attribute with a negative value makes the element focusable, but

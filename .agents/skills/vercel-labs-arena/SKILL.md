@@ -8,6 +8,7 @@ description: Reference and workflow for third_party/labs (auto-updated submodule
 Activate this skill whenever working with `vercel/*` or `vercel-labs/*` standards (`SKILL.md`, `json-render`, `portless`, `vercel/ai` streams, `turborepo`, `agent-browser`, `scriptc`) or benchmarking `src` modules against upstream Vercel implementations.
 
 ## Key Commands
+
 - Sync all shallow `vercel/*` and `vercel-labs/*` submodules to latest upstream HEAD:
   ```powershell
   bun run --cwd third_party/labs src/cli.ts sync

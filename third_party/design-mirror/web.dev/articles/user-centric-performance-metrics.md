@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
 
 We've all heard how important performance is. But when we talk about performance, and about making websites "fast", what specifically do we mean?
@@ -14,11 +15,11 @@ We've all heard how important performance is. But when we talk about performance
 The truth is that performance is relative:
 
 - A site might be fast for one user (on a fast network with a powerful device) but slow for another user (on a slow network with a low-end device).
-- Two sites may finish loading in the exact same amount of time, yet one may *seem* to load faster (if it loads content progressively rather than waiting until the end to display anything).
-- A site might *appear* to load quickly but then respond slowly (or not at all) to user interaction.
+- Two sites may finish loading in the exact same amount of time, yet one may _seem_ to load faster (if it loads content progressively rather than waiting until the end to display anything).
+- A site might _appear_ to load quickly but then respond slowly (or not at all) to user interaction.
 
 When talking about performance, it's important to be precise and to refer to
-performance in terms of *metrics*. Objective criteria that can be quantitatively
+performance in terms of _metrics_. Objective criteria that can be quantitatively
 measured, but it's also important to make sure the metrics you're measuring are
 useful.
 
@@ -75,12 +76,12 @@ Given all these types of performance metrics, it's hopefully clear that no singl
 
 ## Important metrics to measure
 
-- **[First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt):** measures the time from when the page starts loading to when any part of the page's content is rendered on the screen. *([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))*
-- **[Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt):** measures the time from when the page starts loading to when the largest text block or image element is rendered on the screen. *([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))*
-- **[Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt)** : measures the latency of every tap, click, or keyboard interaction made with the page, and---based on the number of interactions---selects the worst interaction latency of the page (or close to the highest) as a single, representative value to describe a page's overall responsiveness. *([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))*
-- **[Total Blocking Time (TBT)](https://web.dev/articles/tbt.md.txt):** measures the total amount of time between FCP and TTI where the main thread was blocked for long enough to prevent input responsiveness. *([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab))*
-- **[Cumulative Layout Shift (CLS)](https://web.dev/articles/cls.md.txt):** measures the cumulative score of all unexpected layout shifts that occur between when the page starts loading and when its [lifecycle state](https://developer.chrome.com/blog/page-lifecycle-api) changes to hidden. *([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))*
-- **[Time to First Byte (TTFB)](https://web.dev/articles/ttfb.md.txt)** : measures the time it takes for the network to respond to a user request with the first byte of a resource. *([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))*
+- **[First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt):** measures the time from when the page starts loading to when any part of the page's content is rendered on the screen. _([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))_
+- **[Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt):** measures the time from when the page starts loading to when the largest text block or image element is rendered on the screen. _([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))_
+- **[Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt)** : measures the latency of every tap, click, or keyboard interaction made with the page, and---based on the number of interactions---selects the worst interaction latency of the page (or close to the highest) as a single, representative value to describe a page's overall responsiveness. _([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))_
+- **[Total Blocking Time (TBT)](https://web.dev/articles/tbt.md.txt):** measures the total amount of time between FCP and TTI where the main thread was blocked for long enough to prevent input responsiveness. _([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab))_
+- **[Cumulative Layout Shift (CLS)](https://web.dev/articles/cls.md.txt):** measures the cumulative score of all unexpected layout shifts that occur between when the page starts loading and when its [lifecycle state](https://developer.chrome.com/blog/page-lifecycle-api) changes to hidden. _([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))_
+- **[Time to First Byte (TTFB)](https://web.dev/articles/ttfb.md.txt)** : measures the time it takes for the network to respond to a user request with the first byte of a resource. _([lab](https://web.dev/articles/user-centric-performance-metrics.md.txt#lab), [field](https://web.dev/articles/user-centric-performance-metrics.md.txt#field))_
 
 In some cases, new metrics will be introduced to cover missing areas, but in other cases the best metrics are ones specifically tailored to your site.
 

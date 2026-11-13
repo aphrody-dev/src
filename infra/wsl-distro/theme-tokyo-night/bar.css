@@ -11,13 +11,14 @@
 @define-color warning #e0af68;
 @define-color success #9ece6a;
 
-window#waybar, .omarchy-bar {
-    background-color: @background;
-    color: @foreground;
-    border-bottom: 1px solid @lighter_background;
+window#waybar,
+.omarchy-bar {
+  background-color: @background;
+  color: @foreground;
+  border-bottom: 1px solid @lighter_background;
 }
 
 #workspaces button.active {
-    color: @accent;
-    background-color: @selection;
+  color: @accent;
+  background-color: @selection;
 }

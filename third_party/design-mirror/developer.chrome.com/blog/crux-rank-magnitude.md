@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Johannes Henkel [X](https://twitter.com/powdercloud) [GitHub](https://github.com/powdercloud) [Mastodon](https://mastodon.social/@powdercloud)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+
+Johannes Henkel [X](https://twitter.com/powdercloud) [GitHub](https://github.com/powdercloud) [Mastodon](https://mastodon.social/@powdercloud) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Starting with the [February 2021 dataset](https://developer.chrome.com/docs/crux/release-notes.md.txt#202101), we're adding an experimental metric to the [CrUX report in BigQuery](https://developer.chrome.com/docs/crux/bigquery.md.txt) which distinguishes the popularity of origins by orders of magnitude: The top 1k origins, top 10k, top 100k, top 1M, ...
 
@@ -26,12 +27,12 @@ ORDER BY
 ```
 
 | Row | rank_magnitude | num_origins |
-|---|---|---|
-| 1 | 1,000 | 1,000 |
-| 2 | 10,000 | 9,000 |
-| 3 | 100,000 | 90,000 |
-| 4 | 1,000,000 | 900,000 |
-| 15 | 10,000,000 | 7,264,371 |
+| --- | -------------- | ----------- |
+| 1   | 1,000          | 1,000       |
+| 2   | 10,000         | 9,000       |
+| 3   | 100,000        | 90,000      |
+| 4   | 1,000,000      | 900,000     |
+| 15  | 10,000,000     | 7,264,371   |
 
 For the February 2021 global data set, we get 5 buckets. As expected, in row 1,
 we see that there are 1000 origins with rank magnitude 1000 - the 1k most
@@ -73,12 +74,12 @@ specify experimental.popularity.rank \<= 10000. We do this for 10k, 100k, and so
 on:
 
 | Rank magnitude of origins | Percentage of FCP \< 1s, averaged over origins |
-|---|---|
-| 1.000 | 53.6% |
-| 10,000 | 49.6% |
-| 100,000 | 45.9% |
-| 1,000,000 | 43.2% |
-| 10,000,000 | 39.9% |
+| ------------------------- | ---------------------------------------------- |
+| 1.000                     | 53.6%                                          |
+| 10,000                    | 49.6%                                          |
+| 100,000                   | 45.9%                                          |
+| 1,000,000                 | 43.2%                                          |
+| 10,000,000                | 39.9%                                          |
 
 This indicates that a faster user experience on the web is correlated with being more popular.
 
@@ -97,16 +98,16 @@ ORDER BY
 ```
 
 | Row | rank_magnitude | num_origins |
-|---|---|---|
-| 1 | 1,000 | 1,000 |
-| 2 | 5,000 | 4,000 |
-| 3 | 10,000 | 5,000 |
-| 4 | 50,000 | 40,000 |
-| 5 | 100,000 | 50,000 |
-| 6 | 500,000 | 400,000 |
-| 7 | 1,000,000 | 500,000 |
-| 8 | 5,000,000 | 4,000,000 |
-| 9 | 10,000,000 | 5,000,000 |
-| 10 | 50,000,000 | 7,637,195 |
+| --- | -------------- | ----------- |
+| 1   | 1,000          | 1,000       |
+| 2   | 5,000          | 4,000       |
+| 3   | 10,000         | 5,000       |
+| 4   | 50,000         | 40,000      |
+| 5   | 100,000        | 50,000      |
+| 6   | 500,000        | 400,000     |
+| 7   | 1,000,000      | 500,000     |
+| 8   | 5,000,000      | 4,000,000   |
+| 9   | 10,000,000     | 5,000,000   |
+| 10  | 50,000,000     | 7,637,195   |
 
 Learn more about [using CrUX on BigQuery](https://developer.chrome.com/docs/crux/bigquery.md.txt) and [browse the CrUX Cookbook](https://github.com/GoogleChrome/CrUX/tree/main/sql) for more example queries. Share your queries if you like, and let us know what you find.

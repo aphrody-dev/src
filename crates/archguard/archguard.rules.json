@@ -41,7 +41,13 @@
     "linux": {
       "maintainers_file": "MAINTAINERS",
       "patch_series_file": "docs/patches/series",
-      "canonical_status": ["Supported", "Maintained", "Odd Fixes", "Orphan", "Obsolete"],
+      "canonical_status": [
+        "Supported",
+        "Maintained",
+        "Odd Fixes",
+        "Orphan",
+        "Obsolete"
+      ],
       "verify_patterns_on_disk": true
     },
     "bun": {
@@ -52,10 +58,26 @@
     },
     "graph": {
       "layers": [
-        { "level": 0, "name": "Layer 0: Native Kernel & Primitives", "path": "crates/unix-*" },
-        { "level": 1, "name": "Layer 1: Systems & Infra Foundations", "paths": ["crates/*", "infra/*"] },
-        { "level": 2, "name": "Layer 2: Sovereign Polyglot Packages", "path": "packages/*" },
-        { "level": 3, "name": "Layer 3: User Applications & Tools", "paths": ["apps/*", "tools/*"] }
+        {
+          "level": 0,
+          "name": "Layer 0: Native Kernel & Primitives",
+          "path": "crates/unix-*"
+        },
+        {
+          "level": 1,
+          "name": "Layer 1: Systems & Infra Foundations",
+          "paths": ["crates/*", "infra/*"]
+        },
+        {
+          "level": 2,
+          "name": "Layer 2: Sovereign Polyglot Packages",
+          "path": "packages/*"
+        },
+        {
+          "level": 3,
+          "name": "Layer 3: User Applications & Tools",
+          "paths": ["apps/*", "tools/*"]
+        }
       ],
       "enforce_monotonicity": true,
       "enforce_acyclic": true
@@ -66,15 +88,54 @@
       "path": "crates",
       "required_manifest": "Cargo.toml",
       "required_edition": "2024",
-      "forbidden_extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".cts", ".mts", ".py", ".pyc", ".go"],
-      "forbidden_files": ["package.json", "tsconfig.json", "bun.lock", "bun.lockb", "package-lock.json", "pnpm-lock.yaml", "yarn.lock", "go.mod", "go.sum", "pyproject.toml", "requirements.txt"]
+      "forbidden_extensions": [
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".cjs",
+        ".cts",
+        ".mts",
+        ".py",
+        ".pyc",
+        ".go"
+      ],
+      "forbidden_files": [
+        "package.json",
+        "tsconfig.json",
+        "bun.lock",
+        "bun.lockb",
+        "package-lock.json",
+        "pnpm-lock.yaml",
+        "yarn.lock",
+        "go.mod",
+        "go.sum",
+        "pyproject.toml",
+        "requirements.txt"
+      ]
     },
     "packages": {
       "path": "packages",
       "required_manifest": "package.json",
       "required_scope_prefix": "@aphrody/",
-      "forbidden_root_files": ["Cargo.toml", "go.mod", "package-lock.json", "pnpm-lock.yaml", "yarn.lock", ".env"],
-      "allowed_native_subdirs": ["crates", "native", "rust-core", "rust-desktop", "loaders", "zig", "python"],
+      "forbidden_root_files": [
+        "Cargo.toml",
+        "go.mod",
+        "package-lock.json",
+        "pnpm-lock.yaml",
+        "yarn.lock",
+        ".env"
+      ],
+      "allowed_native_subdirs": [
+        "crates",
+        "native",
+        "rust-core",
+        "rust-desktop",
+        "loaders",
+        "zig",
+        "python"
+      ],
       "zero_npm_deps_enforced": true
     },
     "apps": {
@@ -96,22 +157,90 @@
     }
   },
   "rules": [
-    { "id": "ARCH-001", "category": "crate-domain-purity", "severity": "error" },
-    { "id": "ARCH-002", "category": "crate-manifest-edition", "severity": "warn" },
-    { "id": "ARCH-003", "category": "package-domain-purity", "severity": "error" },
-    { "id": "ARCH-004", "category": "app-contract-purity", "severity": "error" },
-    { "id": "ARCH-005", "category": "root-topology-junctions", "severity": "error" },
-    { "id": "ARCH-006", "category": "infra-domain-purity", "severity": "error" },
-    { "id": "ARCH-007", "category": "host-userspace-boundary", "severity": "error" },
-    { "id": "ARCH-008", "category": "secret-vault-hygiene", "severity": "error" },
-    { "id": "ARCH-009", "category": "zero-emoji-anti-slop", "severity": "error" },
-    { "id": "ARCH-010", "category": "single-ai-product-ownership", "severity": "error" },
-    { "id": "ARCH-011", "category": "tools-domain-purity", "severity": "error" },
-    { "id": "ARCH-012", "category": "atlas-link-integrity", "severity": "error" },
-    { "id": "ARCH-013", "category": "manifest-versioning-integrity", "severity": "error" },
-    { "id": "ARCH-014", "category": "chromium-deps-binary-hygiene", "severity": "error" },
-    { "id": "ARCH-015", "category": "linux-upstream-maintainers-hygiene", "severity": "error" },
-    { "id": "ARCH-016", "category": "bun-speed-zero-glue-hygiene", "severity": "error" },
-    { "id": "ARCH-017", "category": "graph-acyclic-boundaries", "severity": "error" }
+    {
+      "id": "ARCH-001",
+      "category": "crate-domain-purity",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-002",
+      "category": "crate-manifest-edition",
+      "severity": "warn"
+    },
+    {
+      "id": "ARCH-003",
+      "category": "package-domain-purity",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-004",
+      "category": "app-contract-purity",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-005",
+      "category": "root-topology-junctions",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-006",
+      "category": "infra-domain-purity",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-007",
+      "category": "host-userspace-boundary",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-008",
+      "category": "secret-vault-hygiene",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-009",
+      "category": "zero-emoji-anti-slop",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-010",
+      "category": "single-ai-product-ownership",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-011",
+      "category": "tools-domain-purity",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-012",
+      "category": "atlas-link-integrity",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-013",
+      "category": "manifest-versioning-integrity",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-014",
+      "category": "chromium-deps-binary-hygiene",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-015",
+      "category": "linux-upstream-maintainers-hygiene",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-016",
+      "category": "bun-speed-zero-glue-hygiene",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-017",
+      "category": "graph-acyclic-boundaries",
+      "severity": "error"
+    }
   ]
 }

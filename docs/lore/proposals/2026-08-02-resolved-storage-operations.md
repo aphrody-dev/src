@@ -84,7 +84,7 @@ Callers whose content lives on disk — which is most of them, for content large
 
 `get_file_resolved` and `put_file_resolved` name a path instead of a buffer. Neither the caller nor Lore holds the content: a file at or below the fragment threshold is read once into the single fragment it becomes, and a larger one chunks straight off disk on the way in and is written leaf by leaf at each leaf's own offset on the way out, so peak memory follows the fragment size rather than the file size.
 
-They keep the round trip count of the pair they mirror, including for content that fragments. A read fuses the resolve with the fetch of the *first* fragment it needs — the tree's root — exactly as `get_resolved` does, since the root is what the resolve answers with. A write fuses the publish into the upload of the *last* fragment it sends — the fragment list root, or the single fragment of content that does not fragment. Fusing at the root is safe for the reason the ordering in "Two operations" demands: the root is stored after every fragment beneath it, so each level's placement is settled before the level above is written, and a level that finds a child missing from the remote withdraws the key rather than passing it on. A tree that did not reach the remote whole therefore leaves its key unpublished, as it did when the mapping followed as a separate write. `put_resolved` publishes fragmented content the same way, so the two writes differ only in where their bytes come from.
+They keep the round trip count of the pair they mirror, including for content that fragments. A read fuses the resolve with the fetch of the _first_ fragment it needs — the tree's root — exactly as `get_resolved` does, since the root is what the resolve answers with. A write fuses the publish into the upload of the _last_ fragment it sends — the fragment list root, or the single fragment of content that does not fragment. Fusing at the root is safe for the reason the ordering in "Two operations" demands: the root is stored after every fragment beneath it, so each level's placement is settled before the level above is written, and a level that finds a child missing from the remote withdraws the key rather than passing it on. A tree that did not reach the remote whole therefore leaves its key unpublished, as it did when the mapping followed as a separate write. `put_resolved` publishes fragmented content the same way, so the two writes differ only in where their bytes come from.
 
 Ranges apply as they do to `lore_storage_get_file`: a read may ask for part of the content, the file holds exactly that range from its first byte, and only the fragments the range covers are fetched. A zero-length file retracts the key, since a publish with nothing to publish is the removal described below rather than a third state.
 
@@ -116,9 +116,9 @@ Because the local store is a cache, a mapping cached locally can be stale, and a
 
 ## Non-Functional Considerations
 
-- **Concurrency** — Publishes to the same key are last-writer-wins, as `mutable_store` is today. Concurrent publishes of identical *content* coalesce on the existing in-flight guard, so N publishers of the same bytes produce one upload. Concurrent resolves of one key may observe different mappings if the key moves between them, which is inherent to reading a mutable value and not introduced here.
+- **Concurrency** — Publishes to the same key are last-writer-wins, as `mutable_store` is today. Concurrent publishes of identical _content_ coalesce on the existing in-flight guard, so N publishers of the same bytes produce one upload. Concurrent resolves of one key may observe different mappings if the key moves between them, which is inherent to reading a mutable value and not introduced here.
 
-- **Memory** — Unchanged in both directions. A publish carries a single fragment, bounded by the existing fragment size threshold, and larger content fragments through the existing write path with its streaming and backpressure intact. A resolved read offers the same `streaming` mode as `lore_storage_get`: set it and the content arrives one leaf fragment at a time, so peak memory follows the fragment size rather than the content. Left unset it reassembles into a single buffer, which is the right default for the small values this API is aimed at but not for a key naming something large. The file-backed variants bound the *caller's* memory too, which the streaming mode does not: the content never exists as a buffer on either side of the boundary.
+- **Memory** — Unchanged in both directions. A publish carries a single fragment, bounded by the existing fragment size threshold, and larger content fragments through the existing write path with its streaming and backpressure intact. A resolved read offers the same `streaming` mode as `lore_storage_get`: set it and the content arrives one leaf fragment at a time, so peak memory follows the fragment size rather than the content. Left unset it reassembles into a single buffer, which is the right default for the small values this API is aimed at but not for a key naming something large. The file-backed variants bound the _caller's_ memory too, which the streaming mode does not: the content never exists as a buffer on either side of the boundary.
 
 - **Statelessness** — No new process- or library-level state. The operations reuse the existing per-session transport state and the existing local stores.
 
@@ -144,19 +144,19 @@ No implications. The operations move the same content, under the same repository
 
 **Assumptions**
 
-- **Assumption:** Foreign-keyed access is a real and growing integration shape, not a niche one — *invalidated if:* the integrations that motivated this proposal turn out to hold content hashes after all, or to tolerate the second round trip.
+- **Assumption:** Foreign-keyed access is a real and growing integration shape, not a niche one — _invalidated if:_ the integrations that motivated this proposal turn out to hold content hashes after all, or to tolerate the second round trip.
 
-- **Assumption:** Latency, not bandwidth, is what limits these callers — *invalidated if:* measurement shows the second round trip is a small fraction of their end-to-end time compared with payload transfer.
+- **Assumption:** Latency, not bandwidth, is what limits these callers — _invalidated if:_ measurement shows the second round trip is a small fraction of their end-to-end time compared with payload transfer.
 
-- **Assumption:** One mapping per key is sufficient — *invalidated if:* callers need a key to name several content versions, at which point this becomes a versioning problem rather than a caching one.
+- **Assumption:** One mapping per key is sufficient — _invalidated if:_ callers need a key to name several content versions, at which point this becomes a versioning problem rather than a caching one.
 
 **Risks**
 
-- **Risk:** A new client talking to a server that predates these operations fails outright rather than falling back to the two-request sequence it could have used — *mitigation:* not addressed by this proposal. The fallback is mechanically simple and worth adding before these operations are relied on in a mixed-version deployment; it is called out in Unresolved Questions rather than assumed away.
+- **Risk:** A new client talking to a server that predates these operations fails outright rather than falling back to the two-request sequence it could have used — _mitigation:_ not addressed by this proposal. The fallback is mechanically simple and worth adding before these operations are relied on in a mixed-version deployment; it is called out in Unresolved Questions rather than assumed away.
 
-- **Risk:** Locally cached mappings go stale, and nothing tells a client its cached key has moved — *mitigation:* accepted and documented. A caller that needs the authoritative mapping asks for it explicitly; the default prefers the local answer, as every other storage read does.
+- **Risk:** Locally cached mappings go stale, and nothing tells a client its cached key has moved — _mitigation:_ accepted and documented. A caller that needs the authoritative mapping asks for it explicitly; the default prefers the local answer, as every other storage read does.
 
-- **Risk:** The new key type accumulates entries in the local mutable store with no reclamation, since Lore's maintenance passes cover the immutable store only — *mitigation:* accepted for now, and bounded in practice by the fact that a mapping is only cached when the caller asks for caching. Reclaiming mutable-store entries is a broader gap than this proposal.
+- **Risk:** The new key type accumulates entries in the local mutable store with no reclamation, since Lore's maintenance passes cover the immutable store only — _mitigation:_ accepted for now, and bounded in practice by the fact that a mapping is only cached when the caller asks for caching. Reclaiming mutable-store entries is a broader gap than this proposal.
 
 ## Drawbacks
 
@@ -172,25 +172,25 @@ No implications. The operations move the same content, under the same repository
 
 Callers keep issuing `mutable_load` + `get` and `put` + `mutable_store`, and the documentation states the ordering constraint that a publish must follow its content.
 
-*Rejected because:* it addresses neither of the costs in Motivation. The serial round trip remains, which is the cost that decides whether these integrations are viable, and documenting an ordering requirement still leaves every integration to implement it correctly and independently.
+_Rejected because:_ it addresses neither of the costs in Motivation. The serial round trip remains, which is the cost that decides whether these integrations are viable, and documenting an ordering requirement still leaves every integration to implement it correctly and independently.
 
 ### Client-side batching or pipelining of the existing operations
 
 Callers issue many key lookups concurrently, so the transport amortizes the two requests across a batch.
 
-*Rejected because:* the two requests are serially dependent — the second needs the first's answer — so concurrency across keys does not reduce the depth for any individual key. A caller resolving ten thousand keys concurrently still waits two round trips for each. Batching addresses throughput, and the problem is latency.
+_Rejected because:_ the two requests are serially dependent — the second needs the first's answer — so concurrency across keys does not reduce the depth for any individual key. A caller resolving ten thousand keys concurrently still waits two round trips for each. Batching addresses throughput, and the problem is latency.
 
 ### A general server-side scripting or multi-command facility
 
 A mechanism for a client to submit a small program of dependent storage commands, of which resolve-then-read is one instance.
 
-*Rejected because:* it is a much larger surface, with its own evaluation, resource and security questions, to solve one specific dependency that recurs often enough to deserve a first-class operation. Nothing else in the storage command set currently wants this generality.
+_Rejected because:_ it is a much larger surface, with its own evaluation, resource and security questions, to solve one specific dependency that recurs often enough to deserve a first-class operation. Nothing else in the storage command set currently wants this generality.
 
 ### Store the content under its foreign key directly
 
 Let the mutable store hold content rather than a hash, so one lookup returns bytes.
 
-*Rejected because:* it discards content addressing for that data — deduplication, verification, and the ability to share one blob between many keys — to save a lookup. It also splits Lore's content into two stores with different durability, replication and repair behaviour.
+_Rejected because:_ it discards content addressing for that data — deduplication, verification, and the ability to share one blob between many keys — to save a lookup. It also splits Lore's content into two stores with different durability, replication and repair behaviour.
 
 ## Prior Art
 

@@ -9,73 +9,73 @@ Principe : Rust possède l'architecture, la mémoire, la concurrence, le réseau
 
 ## Choix par domaine
 
-| Domaine | Choix | Implémentation | Raison |
-|---|---|---|---|
-| MP4/fMP4/CMAF | Rust | mp4-atom | pur, actif, écriture CMAF |
-| Matroska/WebM | Rust démux + C repli | matroska-demuxer ; libavformat pour muxer | muxer Rust immature |
-| MPEG-TS | Rust | mpeg2ts-reader + muxer interne | lecture mature, muxer simple à écrire |
-| Autres conteneurs (AVI, FLV, MXF, OGG, ASF, RM, NUT, GXF, LXF, image2, raw, ~370 démuxeurs) | C | libavformat | aucune couverture Rust équivalente |
-| Playlists HLS / DASH | Rust | m3u8-rs, dash-mpd | pur, mature |
-| AV1 décodage | C (Rust en option) | dav1d ; rav1d en feature | dav1d référence, rav1d à parité (nv) |
-| AV1 encodage | C + matériel | SVT-AV1, av1_nvenc ; rav1e option | bench : SVT 190 i/s, NVENC 247 i/s |
-| H.264 / HEVC | C + matériel | x264, x265 (GPL), libavcodec déc., NVENC/NVDEC | pas d'équivalent Rust |
-| VP8/VP9 | C | libvpx, libavcodec | idem |
-| VVC | C++ | vvenc/vvdec, décodeur natif libavcodec | idem |
-| AV2 | — | absent de FFmpeg n9.1-dev | à surveiller |
-| Audio Opus | C | libopus | référence |
-| Audio FLAC/MP3/AAC/Vorbis/WAV/ALAC déc. | Rust | symphonia | pur, mature (MPL-2.0) |
-| Audio AAC enc., AC-3/E-AC-3, TrueHD, DTS | C | libavcodec | pas d'équivalent Rust |
-| Rééchantillonnage | Rust | rubato (nv version) ; swresample repli | pur |
-| Image PNG/JPEG/GIF/BMP/TIFF/QOI | Rust | image, zune-* (nv) | pur, mature |
-| JPEG XL | C++ (Rust option) | libjxl ; jxl-oxide décodeur (nv) | encodeur de référence |
-| AVIF / HEIF | C | libavif (+dav1d/SVT), libheif (nv) | référence |
-| WebP | C | libwebp | référence |
-| Sous-titres SRT/WebVTT/TTML | Rust | parseurs internes `tv-subs` | formats texte simples |
-| Sous-titres ASS/SSA | C | libass | rendu de référence |
-| Sous-titres bitmap PGS/DVB/DVD, CEA-608/708 | C | libavcodec | idem |
-| Métadonnées | Rust | lofty (audio, nv), Exif/XMP Rust (nv), ID3 | pur |
-| Filtres | Rust GPU + C | shaders wgpu ; libavfilter pour le reste | 597 filtres non réécrits |
-| Échelle et couleur | C + GPU | libplacebo (tone mapping, DV, HDR10+) ; libswscale | référence HDR |
-| HDR10+/Dolby Vision métadonnées | Rust | hdr10plus, dolby_vision (quietvoid, nv) | parse RPU pur |
-| Matériel NVIDIA | C SDK via Rust | cudarc + en-têtes Video Codec SDK (non installés) ; ou hwcontext FFmpeg | bench : CUDA 2,66 s AV1 4K120 |
-| Vulkan Video | Rust | ash ; ou hwaccel FFmpeg Vulkan | bench : 2,71 s, 0,06 s CPU |
-| D3D12 / Media Foundation | Rust | crate windows | natif Windows ; D3D12 lent dans le bench (9,09 s) |
-| Rendu | Rust | wgpu (DX12, Vulkan, WebGPU) | multiplateforme |
-| HLS/LL-HLS, DASH/CMAF | Rust | serveur axum/hyper + packager interne | réseau, sécurité |
-| RTSP | Rust | retina (nv) | pur |
-| RTMP | Rust | rml_rtmp (nv) ; libavformat repli | — |
-| SRT | C | libsrt via `-sys` | référence |
-| WebRTC / WHIP / WHEP | Rust | str0m ou webrtc-rs (nv) ; gst-plugins-rs webrtcsink | pur |
-| MoQ | Rust | moq-rs (nv) | référence en Rust |
-| IPTV M3U, Xtream, XMLTV, catch-up | Rust | code interne `tv-iptv` | logique applicative |
-| i18n | Rust | fluent-rs, ICU4X, unicode-bidi | RTL, pluriels |
-| CLI / serveur / desktop | Rust | clap ; axum + tokio ; wgpu + winit/egui ou Tauri (nv) | — |
+| Domaine                                                                                     | Choix                | Implémentation                                                          | Raison                                            |
+| ------------------------------------------------------------------------------------------- | -------------------- | ----------------------------------------------------------------------- | ------------------------------------------------- |
+| MP4/fMP4/CMAF                                                                               | Rust                 | mp4-atom                                                                | pur, actif, écriture CMAF                         |
+| Matroska/WebM                                                                               | Rust démux + C repli | matroska-demuxer ; libavformat pour muxer                               | muxer Rust immature                               |
+| MPEG-TS                                                                                     | Rust                 | mpeg2ts-reader + muxer interne                                          | lecture mature, muxer simple à écrire             |
+| Autres conteneurs (AVI, FLV, MXF, OGG, ASF, RM, NUT, GXF, LXF, image2, raw, ~370 démuxeurs) | C                    | libavformat                                                             | aucune couverture Rust équivalente                |
+| Playlists HLS / DASH                                                                        | Rust                 | m3u8-rs, dash-mpd                                                       | pur, mature                                       |
+| AV1 décodage                                                                                | C (Rust en option)   | dav1d ; rav1d en feature                                                | dav1d référence, rav1d à parité (nv)              |
+| AV1 encodage                                                                                | C + matériel         | SVT-AV1, av1_nvenc ; rav1e option                                       | bench : SVT 190 i/s, NVENC 247 i/s                |
+| H.264 / HEVC                                                                                | C + matériel         | x264, x265 (GPL), libavcodec déc., NVENC/NVDEC                          | pas d'équivalent Rust                             |
+| VP8/VP9                                                                                     | C                    | libvpx, libavcodec                                                      | idem                                              |
+| VVC                                                                                         | C++                  | vvenc/vvdec, décodeur natif libavcodec                                  | idem                                              |
+| AV2                                                                                         | —                    | absent de FFmpeg n9.1-dev                                               | à surveiller                                      |
+| Audio Opus                                                                                  | C                    | libopus                                                                 | référence                                         |
+| Audio FLAC/MP3/AAC/Vorbis/WAV/ALAC déc.                                                     | Rust                 | symphonia                                                               | pur, mature (MPL-2.0)                             |
+| Audio AAC enc., AC-3/E-AC-3, TrueHD, DTS                                                    | C                    | libavcodec                                                              | pas d'équivalent Rust                             |
+| Rééchantillonnage                                                                           | Rust                 | rubato (nv version) ; swresample repli                                  | pur                                               |
+| Image PNG/JPEG/GIF/BMP/TIFF/QOI                                                             | Rust                 | image, zune-\* (nv)                                                     | pur, mature                                       |
+| JPEG XL                                                                                     | C++ (Rust option)    | libjxl ; jxl-oxide décodeur (nv)                                        | encodeur de référence                             |
+| AVIF / HEIF                                                                                 | C                    | libavif (+dav1d/SVT), libheif (nv)                                      | référence                                         |
+| WebP                                                                                        | C                    | libwebp                                                                 | référence                                         |
+| Sous-titres SRT/WebVTT/TTML                                                                 | Rust                 | parseurs internes `tv-subs`                                             | formats texte simples                             |
+| Sous-titres ASS/SSA                                                                         | C                    | libass                                                                  | rendu de référence                                |
+| Sous-titres bitmap PGS/DVB/DVD, CEA-608/708                                                 | C                    | libavcodec                                                              | idem                                              |
+| Métadonnées                                                                                 | Rust                 | lofty (audio, nv), Exif/XMP Rust (nv), ID3                              | pur                                               |
+| Filtres                                                                                     | Rust GPU + C         | shaders wgpu ; libavfilter pour le reste                                | 597 filtres non réécrits                          |
+| Échelle et couleur                                                                          | C + GPU              | libplacebo (tone mapping, DV, HDR10+) ; libswscale                      | référence HDR                                     |
+| HDR10+/Dolby Vision métadonnées                                                             | Rust                 | hdr10plus, dolby_vision (quietvoid, nv)                                 | parse RPU pur                                     |
+| Matériel NVIDIA                                                                             | C SDK via Rust       | cudarc + en-têtes Video Codec SDK (non installés) ; ou hwcontext FFmpeg | bench : CUDA 2,66 s AV1 4K120                     |
+| Vulkan Video                                                                                | Rust                 | ash ; ou hwaccel FFmpeg Vulkan                                          | bench : 2,71 s, 0,06 s CPU                        |
+| D3D12 / Media Foundation                                                                    | Rust                 | crate windows                                                           | natif Windows ; D3D12 lent dans le bench (9,09 s) |
+| Rendu                                                                                       | Rust                 | wgpu (DX12, Vulkan, WebGPU)                                             | multiplateforme                                   |
+| HLS/LL-HLS, DASH/CMAF                                                                       | Rust                 | serveur axum/hyper + packager interne                                   | réseau, sécurité                                  |
+| RTSP                                                                                        | Rust                 | retina (nv)                                                             | pur                                               |
+| RTMP                                                                                        | Rust                 | rml_rtmp (nv) ; libavformat repli                                       | —                                                 |
+| SRT                                                                                         | C                    | libsrt via `-sys`                                                       | référence                                         |
+| WebRTC / WHIP / WHEP                                                                        | Rust                 | str0m ou webrtc-rs (nv) ; gst-plugins-rs webrtcsink                     | pur                                               |
+| MoQ                                                                                         | Rust                 | moq-rs (nv)                                                             | référence en Rust                                 |
+| IPTV M3U, Xtream, XMLTV, catch-up                                                           | Rust                 | code interne `tv-iptv`                                                  | logique applicative                               |
+| i18n                                                                                        | Rust                 | fluent-rs, ICU4X, unicode-bidi                                          | RTL, pluriels                                     |
+| CLI / serveur / desktop                                                                     | Rust                 | clap ; axum + tokio ; wgpu + winit/egui ou Tauri (nv)                   | —                                                 |
 
 ## Workspace
 
-| Crate | Responsabilité |
-|---|---|
-| `tv-core` | types communs : temps, rationnels, `Packet`, `Frame`, erreurs |
-| `tv-color` | espaces couleur, HDR10, HDR10+, Dolby Vision RPU |
-| `tv-ffi-util` | outils FFI : `AvBox`, gestion d'erreurs C, logs |
-| `tv-ffmpeg-sys` | bindgen sur libav* (généré, sans logique) |
-| `tv-ffmpeg` | wrapper sûr : démux, mux, codecs, filtres, hwcontext |
-| `tv-<lib>-sys` / `tv-<lib>` | dav1d, svtav1, x264, x265, vpx, vvenc, vvdec, opus, jxl, avif, webp, placebo, ass, srt |
-| `tv-container` | trait `Demuxer`/`Muxer`, implémentations Rust + repli FFmpeg |
-| `tv-codec` | trait `Decoder`/`Encoder`, registre, sélection par feature |
-| `tv-audio` | symphonia, rééchantillonnage, sortie cpal (nv) |
-| `tv-image` | formats image fixes |
-| `tv-subs` | sous-titres texte et rendu |
-| `tv-meta` | métadonnées, tags, chapitres |
-| `tv-hw` | NVENC/NVDEC/CUDA, Vulkan Video, D3D12, Media Foundation |
-| `tv-filter` | graphe de filtres, nœuds GPU wgpu + libavfilter |
-| `tv-render` | wgpu, présentation, tone mapping |
-| `tv-pipeline` | ordonnanceur tokio, files bornées, horloge A/V |
-| `tv-stream` | HLS, LL-HLS, DASH, CMAF |
-| `tv-net` | RTSP, RTMP, SRT, WebRTC/WHIP/WHEP, MoQ |
-| `tv-iptv` | M3U, Xtream, XMLTV/EPG, catch-up |
-| `tv-i18n` | Fluent, ICU4X, bidi |
-| `tv-cli`, `tv-server`, `tv-desktop` | binaires |
+| Crate                               | Responsabilité                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------------------- |
+| `tv-core`                           | types communs : temps, rationnels, `Packet`, `Frame`, erreurs                          |
+| `tv-color`                          | espaces couleur, HDR10, HDR10+, Dolby Vision RPU                                       |
+| `tv-ffi-util`                       | outils FFI : `AvBox`, gestion d'erreurs C, logs                                        |
+| `tv-ffmpeg-sys`                     | bindgen sur libav\* (généré, sans logique)                                             |
+| `tv-ffmpeg`                         | wrapper sûr : démux, mux, codecs, filtres, hwcontext                                   |
+| `tv-<lib>-sys` / `tv-<lib>`         | dav1d, svtav1, x264, x265, vpx, vvenc, vvdec, opus, jxl, avif, webp, placebo, ass, srt |
+| `tv-container`                      | trait `Demuxer`/`Muxer`, implémentations Rust + repli FFmpeg                           |
+| `tv-codec`                          | trait `Decoder`/`Encoder`, registre, sélection par feature                             |
+| `tv-audio`                          | symphonia, rééchantillonnage, sortie cpal (nv)                                         |
+| `tv-image`                          | formats image fixes                                                                    |
+| `tv-subs`                           | sous-titres texte et rendu                                                             |
+| `tv-meta`                           | métadonnées, tags, chapitres                                                           |
+| `tv-hw`                             | NVENC/NVDEC/CUDA, Vulkan Video, D3D12, Media Foundation                                |
+| `tv-filter`                         | graphe de filtres, nœuds GPU wgpu + libavfilter                                        |
+| `tv-render`                         | wgpu, présentation, tone mapping                                                       |
+| `tv-pipeline`                       | ordonnanceur tokio, files bornées, horloge A/V                                         |
+| `tv-stream`                         | HLS, LL-HLS, DASH, CMAF                                                                |
+| `tv-net`                            | RTSP, RTMP, SRT, WebRTC/WHIP/WHEP, MoQ                                                 |
+| `tv-iptv`                           | M3U, Xtream, XMLTV/EPG, catch-up                                                       |
+| `tv-i18n`                           | Fluent, ICU4X, bidi                                                                    |
+| `tv-cli`, `tv-server`, `tv-desktop` | binaires                                                                               |
 
 Graphe (sens « dépend de ») :
 
@@ -95,26 +95,26 @@ Graphe (sens « dépend de ») :
 
 ## Build
 
-| Option | Usage | Décision |
-|---|---|---|
-| vcpkg (triplet x64-windows-static-md) | dav1d, opus, libwebp, libavif, libjxl, x264, x265, libvpx, ffmpeg | défaut Windows |
-| pkg-config | Linux, GStreamer local | défaut Linux |
-| vendored (`cc`/`cmake`/meson dans `build.rs`) | FFmpeg configuré minimal, SVT-AV1, vvenc | feature `vendored` pour builds reproductibles |
-| Toolchain | `x86_64-pc-windows-msvc` | MSVC : compatible vcpkg, D3D12, MF ; GNU non supporté |
+| Option                                        | Usage                                                             | Décision                                              |
+| --------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------- |
+| vcpkg (triplet x64-windows-static-md)         | dav1d, opus, libwebp, libavif, libjxl, x264, x265, libvpx, ffmpeg | défaut Windows                                        |
+| pkg-config                                    | Linux, GStreamer local                                            | défaut Linux                                          |
+| vendored (`cc`/`cmake`/meson dans `build.rs`) | FFmpeg configuré minimal, SVT-AV1, vvenc                          | feature `vendored` pour builds reproductibles         |
+| Toolchain                                     | `x86_64-pc-windows-msvc`                                          | MSVC : compatible vcpkg, D3D12, MF ; GNU non supporté |
 
 - NASM 3.02 requis (dav1d, x264, FFmpeg asm). sccache activé.
 - Features Cargo : `ffmpeg`, `dav1d`, `rav1d`, `svt-av1`, `rav1e`, `x264`, `x265` (GPL), `vpx`, `vvc`, `opus`, `jxl`, `avif`, `webp`, `placebo`, `nvidia`, `vulkan-video`, `d3d12`, `mf`, `srt`, `webrtc`, `moq`, `gpl` (agrégat), `nonfree` (refusé par défaut).
 
 ## Licences
 
-| Composant | Licence | Effet |
-|---|---|---|
-| FFmpeg par défaut | LGPL 2.1+ | lien dynamique ou fourniture des objets ; build `tv` reste MIT/Apache |
-| x264, x265, `--enable-gpl` | GPL 2+ | binaire entier GPL : feature `gpl` explicite |
-| fdk-aac, NVENC SDK headers | non libre / spécifique | `nonfree` : non distribuable |
-| dav1d, SVT-AV1, libvpx, opus, libwebp, libavif, libjxl | BSD/MIT | compatible |
-| symphonia | MPL-2.0 | compatible par fichier |
-| Contrôle | cargo-deny (installé) | politique `deny.toml` par profil |
+| Composant                                              | Licence                | Effet                                                                 |
+| ------------------------------------------------------ | ---------------------- | --------------------------------------------------------------------- |
+| FFmpeg par défaut                                      | LGPL 2.1+              | lien dynamique ou fourniture des objets ; build `tv` reste MIT/Apache |
+| x264, x265, `--enable-gpl`                             | GPL 2+                 | binaire entier GPL : feature `gpl` explicite                          |
+| fdk-aac, NVENC SDK headers                             | non libre / spécifique | `nonfree` : non distribuable                                          |
+| dav1d, SVT-AV1, libvpx, opus, libwebp, libavif, libjxl | BSD/MIT                | compatible                                                            |
+| symphonia                                              | MPL-2.0                | compatible par fichier                                                |
+| Contrôle                                               | cargo-deny (installé)  | politique `deny.toml` par profil                                      |
 
 ## Tests et qualité
 
@@ -130,25 +130,25 @@ Graphe (sens « dépend de ») :
 
 ## Benchmarks de référence (mesures locales, benchmark-video.mdx)
 
-| Mesure | Valeur cible à égaler |
-|---|---|
-| AV1 4K120 10 bits déc., 1200 images | Vulkan 2,71 s / CUDA 2,66 s / dav1d 5,67 s |
-| Enc. 720p 400 kb/s | x264 296 i/s, HEVC NVENC 340 i/s, SVT-AV1 p8 190 i/s, AV1 NVENC 247 i/s |
-| Lecture 4K120 10 s | ≤ VLC : 1,38 s CPU, 162 Mo RAM |
+| Mesure                              | Valeur cible à égaler                                                   |
+| ----------------------------------- | ----------------------------------------------------------------------- |
+| AV1 4K120 10 bits déc., 1200 images | Vulkan 2,71 s / CUDA 2,66 s / dav1d 5,67 s                              |
+| Enc. 720p 400 kb/s                  | x264 296 i/s, HEVC NVENC 340 i/s, SVT-AV1 p8 190 i/s, AV1 NVENC 247 i/s |
+| Lecture 4K120 10 s                  | ≤ VLC : 1,38 s CPU, 162 Mo RAM                                          |
 
 ## Feuille de route
 
-| Phase | Livrable | Critères de sortie |
-|---|---|---|
-| 0 Socle | workspace, `tv-core`, `tv-ffi-util`, CI, deny, toolchain MSVC + vcpkg | CI verte 3 OS ; clippy zéro avertissement |
-| 1 FFmpeg sûr | `tv-ffmpeg-sys`/`tv-ffmpeg`, `tv-cli probe/remux/transcode` | remux des échantillons FATE de toutes familles de conteneurs ; 0 fuite (ASan) ; parité `ffprobe` sur 100 fichiers |
-| 2 Formats Rust | MP4/CMAF, MKV démux, TS, symphonia, image, sous-titres texte | sorties identiques à FFmpeg (CRC) ; fuzz 24 h sans crash par parseur |
-| 3 Codecs C | dav1d, SVT-AV1, x264/x265, vpx, vvc, opus, jxl, avif, webp | débits/qualité ±2 % du bench local ; features isolées compilent seules |
-| 4 Matériel | `tv-hw` NVDEC/NVENC, Vulkan Video, D3D12, MF | AV1 4K120 déc. ≤ 2,8 s, CPU ≤ 0,1 s ; NVENC ≥ 240 i/s 720p |
-| 5 Rendu/couleur | `tv-render` wgpu, libplacebo, HDR10/HDR10+/DV P5/P8 | lecture 4K120 ≤ 1,4 s CPU / 200 Mo ; tone mapping validé sur mires |
-| 6 Streaming | HLS/LL-HLS, DASH/CMAF, RTSP, RTMP, SRT, WHIP/WHEP, MoQ | validateur Apple mediastreamvalidator (nv dispo Windows) et DASH-IF conformes ; latence LL-HLS < 3 s |
-| 7 IPTV + i18n | M3U, Xtream, XMLTV, catch-up, Fluent/ICU4X, RTL | 50 000 chaînes chargées < 1 s ; EPG 7 jours < 2 s ; UI arabe/hébreu correcte |
-| 8 Produits | `tv-cli`, `tv-server`, `tv-desktop` signés | installeurs, tests E2E, docs ; aucun `unsafe` hors crates FFI |
+| Phase           | Livrable                                                              | Critères de sortie                                                                                                |
+| --------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 0 Socle         | workspace, `tv-core`, `tv-ffi-util`, CI, deny, toolchain MSVC + vcpkg | CI verte 3 OS ; clippy zéro avertissement                                                                         |
+| 1 FFmpeg sûr    | `tv-ffmpeg-sys`/`tv-ffmpeg`, `tv-cli probe/remux/transcode`           | remux des échantillons FATE de toutes familles de conteneurs ; 0 fuite (ASan) ; parité `ffprobe` sur 100 fichiers |
+| 2 Formats Rust  | MP4/CMAF, MKV démux, TS, symphonia, image, sous-titres texte          | sorties identiques à FFmpeg (CRC) ; fuzz 24 h sans crash par parseur                                              |
+| 3 Codecs C      | dav1d, SVT-AV1, x264/x265, vpx, vvc, opus, jxl, avif, webp            | débits/qualité ±2 % du bench local ; features isolées compilent seules                                            |
+| 4 Matériel      | `tv-hw` NVDEC/NVENC, Vulkan Video, D3D12, MF                          | AV1 4K120 déc. ≤ 2,8 s, CPU ≤ 0,1 s ; NVENC ≥ 240 i/s 720p                                                        |
+| 5 Rendu/couleur | `tv-render` wgpu, libplacebo, HDR10/HDR10+/DV P5/P8                   | lecture 4K120 ≤ 1,4 s CPU / 200 Mo ; tone mapping validé sur mires                                                |
+| 6 Streaming     | HLS/LL-HLS, DASH/CMAF, RTSP, RTMP, SRT, WHIP/WHEP, MoQ                | validateur Apple mediastreamvalidator (nv dispo Windows) et DASH-IF conformes ; latence LL-HLS < 3 s              |
+| 7 IPTV + i18n   | M3U, Xtream, XMLTV, catch-up, Fluent/ICU4X, RTL                       | 50 000 chaînes chargées < 1 s ; EPG 7 jours < 2 s ; UI arabe/hébreu correcte                                      |
+| 8 Produits      | `tv-cli`, `tv-server`, `tv-desktop` signés                            | installeurs, tests E2E, docs ; aucun `unsafe` hors crates FFI                                                     |
 
 ## Sources
 

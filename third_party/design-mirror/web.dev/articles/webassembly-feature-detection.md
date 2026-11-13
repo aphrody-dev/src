@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to use the newest WebAssembly features while supporting users across all browsers.
 
- Ingvar Stepanyan [X](https://twitter.com/RReverser) [GitHub](https://github.com/RReverser) [Homepage](https://rreverser.com/)
+Ingvar Stepanyan [X](https://twitter.com/RReverser) [GitHub](https://github.com/RReverser) [Homepage](https://rreverser.com/)
 
 WebAssembly 1.0 was released four years ago, but development didn't stop there. New features are added through the [proposal standardization process](https://github.com/WebAssembly/meetings/blob/main/process/phases.md). As is generally the case with new features on the web, their implementation order and timelines can differ significantly between different engines. If you want to use those new features, you need to ensure that none of your users are left out. In this article you'll learn an approach for achieving this.
 
@@ -22,7 +23,7 @@ To ensure that users of all browsers can use your application, you need to figur
 ## Picking and grouping features
 
 Let's walk through those steps by picking some arbitrary feature set as an example. Let's say I've identified that I want to use SIMD, threads, and exception handling in my library for size and performance reasons. Their [browser support](https://webassembly.org/roadmap/) is as follows:
- View this feature table on [webassembly.org/roadmap](https://webassembly.org/roadmap/).
+View this feature table on [webassembly.org/roadmap](https://webassembly.org/roadmap/).
 
 You can split browsers into the following cohorts to make sure that each user gets the most optimized experience:
 
@@ -75,21 +76,25 @@ The exception handling doesn't need `#ifdef` directives, because it can be used 
 Once you have built bundles for all feature cohorts, you need to load the correct one from the main JavaScript application. To do that, first, detect which features are supported in the current browser. You can do that with the [wasm-feature-detect](https://github.com/GoogleChromeLabs/wasm-feature-detect) library. By combining it with [dynamic import](https://v8.dev/features/dynamic-import), you can load the most optimized bundle in any browser:
 
 ```javascript
-import { simd, threads, exceptions } from 'https://unpkg.com/wasm-feature-detect?module';
+import {
+  simd,
+  threads,
+  exceptions,
+} from "https://unpkg.com/wasm-feature-detect?module";
 
 let initModule;
 if (await threads()) {
   if (await simd()) {
     if (await exceptions()) {
-      initModule = import('./main.threads-simd-exceptions.mjs');
+      initModule = import("./main.threads-simd-exceptions.mjs");
     } else {
-      initModule = import('./main.threads-simd.mjs');
+      initModule = import("./main.threads-simd.mjs");
     }
   } else {
-    initModule = import('./main.threads.mjs');
+    initModule = import("./main.threads.mjs");
   }
 } else {
-  initModule = import('./main.basic.mjs');
+  initModule = import("./main.basic.mjs");
 }
 
 const Module = await initModule();

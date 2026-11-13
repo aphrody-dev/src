@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 When you link to a page on another site using the `target="_blank"` attribute,
 you can expose your site to performance and security issues:
 
@@ -23,7 +24,7 @@ to your `target="_blank"` links avoids these issues.
 
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt) flags unsafe links to cross-origin
 destinations:
- Lighthouse audit that shows unsafe links to cross-origin destinations.
+Lighthouse audit that shows unsafe links to cross-origin destinations.
 
 Lighthouse uses the following process to identify links as unsafe:
 

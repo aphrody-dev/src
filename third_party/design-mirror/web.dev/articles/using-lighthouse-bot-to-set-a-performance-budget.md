@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)
 
 You've done hard work to get fast, now make sure you stay fast by automating
@@ -25,7 +26,7 @@ that you won't accidentally downgrade performance without noticing. You can
 [configure your repository](https://help.github.com/articles/about-required-status-checks/)
 so that it won't allow merging pull-requests if the Lighthouse scores fall below
 the threshold you've set (e.g. \< 96/100).
- Lighthouse Bot checks on GitHub.
+Lighthouse Bot checks on GitHub.
 
 > [!NOTE]
 > **Note:** Lighthouse Bot used to be called Lighthouse CI.

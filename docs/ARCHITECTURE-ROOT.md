@@ -44,27 +44,27 @@ Common target with the labs session (reference: `labs/docs/ROOT-ARCHITECTURE.md`
 
 ## 3. Roles
 
-| Role | Layers | Pieces |
-| --- | --- | --- |
-| OS for agents | `sys-`, `nt-`, `desktop-`, `agent-` | model of the workstation's real NT (ntdll, NTFS, PE, UI Automation) rendered on GPU (WebGPU, D3D12), `agent-desktop` (UIA, SendInput, capture, MCP), `ring3-agent`, `apm`, `packages/machine` (reproducible workstation, elevation) |
-| NT/Linux compatibility | `third_party` | `LiberNT` (+ remote `reactos`), `linux` (kernel.org), `wine` (gitlab.winehq.org), `mingw-w64` (SourceForge), `windows-rs`, `windows-drivers-rs`, `litebox`, `openvmm` |
-| Browser | `browser-` | `chromium` (indivisible gclient unit), `infra/chromium-factory`, channels, conformance, `webui`, `blitz`, `agent-browser` (labs session) |
-| Shell | `shell-` | `niubash`, `rubash`, `brush`, `oils` (Windows port), Coreutils, `packages/shell-matrix`, `packages/machine/shell.dsc.winget` |
-| Monorepo | `depot-`, `vcs-` | `ay` (lock, forks, up, identity, arch), Lore, `just` |
+| Role                   | Layers                              | Pieces                                                                                                                                                                                                                              |
+| ---------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OS for agents          | `sys-`, `nt-`, `desktop-`, `agent-` | model of the workstation's real NT (ntdll, NTFS, PE, UI Automation) rendered on GPU (WebGPU, D3D12), `agent-desktop` (UIA, SendInput, capture, MCP), `ring3-agent`, `apm`, `packages/machine` (reproducible workstation, elevation) |
+| NT/Linux compatibility | `third_party`                       | `LiberNT` (+ remote `reactos`), `linux` (kernel.org), `wine` (gitlab.winehq.org), `mingw-w64` (SourceForge), `windows-rs`, `windows-drivers-rs`, `litebox`, `openvmm`                                                               |
+| Browser                | `browser-`                          | `chromium` (indivisible gclient unit), `infra/chromium-factory`, channels, conformance, `webui`, `blitz`, `agent-browser` (labs session)                                                                                            |
+| Shell                  | `shell-`                            | `niubash`, `rubash`, `brush`, `oils` (Windows port), Coreutils, `packages/shell-matrix`, `packages/machine/shell.dsc.winget`                                                                                                        |
+| Monorepo               | `depot-`, `vcs-`                    | `ay` (lock, forks, up, identity, arch), Lore, `just`                                                                                                                                                                                |
 
 ## 4. Merge: origin → destination
 
-| Origin | Destination | Note |
-| --- | --- | --- |
-| `nt` (aphrody-labs/nt, still active on GitHub as of 2026-11-13) | `apps/nt` (WinUI 3 shell, web scene, bun host tools) | Rust core = windows-rs monorepo (aphrody-labs fork, single branch `master`) → `third_party/windows-rs` |
-| `nt/docs` | `docs/nt`, `docs/ms`, `docs/bun`, `docs/research` | deduplicated against the existing |
-| `nt/vendor` (35 clones) | deleted on 2026-11-12 (without local changes); LiberNT moved to `third_party/LiberNT` | duplicates of `third_party` |
-| `labs/crates/*` | `crates/*` | merge by the labs session (worktree `merge/labs`): dependencies, profiles, cargo-features, `[patch]` |
-| `labs/vendor/{glob-match,quinn-proto}` | forks + `[patch.crates-io]` | |
-| `labs/infra/chromium-factory` | `infra/chromium-factory` | |
-| `labs/forks/oils` | `third_party/oils` | windows-native branch |
-| `third_party/<cat>/<repo>` | `third_party/<name>` | `packages/machine/src/flatten-third-party.ts` (see §5) |
-| `configuration/` (root, ARCH-005) | `packages/machine` | ARCH-006 forbids TS in `infra/` |
+| Origin                                                          | Destination                                                                           | Note                                                                                                   |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `nt` (aphrody-labs/nt, still active on GitHub as of 2026-11-13) | `apps/nt` (WinUI 3 shell, web scene, bun host tools)                                  | Rust core = windows-rs monorepo (aphrody-labs fork, single branch `master`) → `third_party/windows-rs` |
+| `nt/docs`                                                       | `docs/nt`, `docs/ms`, `docs/bun`, `docs/research`                                     | deduplicated against the existing                                                                      |
+| `nt/vendor` (35 clones)                                         | deleted on 2026-11-12 (without local changes); LiberNT moved to `third_party/LiberNT` | duplicates of `third_party`                                                                            |
+| `labs/crates/*`                                                 | `crates/*`                                                                            | merge by the labs session (worktree `merge/labs`): dependencies, profiles, cargo-features, `[patch]`   |
+| `labs/vendor/{glob-match,quinn-proto}`                          | forks + `[patch.crates-io]`                                                           |                                                                                                        |
+| `labs/infra/chromium-factory`                                   | `infra/chromium-factory`                                                              |                                                                                                        |
+| `labs/forks/oils`                                               | `third_party/oils`                                                                    | windows-native branch                                                                                  |
+| `third_party/<cat>/<repo>`                                      | `third_party/<name>`                                                                  | `packages/machine/src/flatten-third-party.ts` (see §5)                                                 |
+| `configuration/` (root, ARCH-005)                               | `packages/machine`                                                                    | ARCH-006 forbids TS in `infra/`                                                                        |
 
 ## 5. Flat third_party — verified plan (simulation 2026-11-12)
 

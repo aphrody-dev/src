@@ -1,5 +1,12 @@
 import { SRC_ROOT } from "./root.ts";
-import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -24,7 +31,10 @@ export interface FourPillarAuditReport {
   pillars: Record<PillarName, PillarHealth>;
 }
 
-function runGitRead(args: string[], cwd: string): { ok: boolean; stdout: string } {
+function runGitRead(
+  args: string[],
+  cwd: string,
+): { ok: boolean; stdout: string } {
   if (!existsSync(cwd)) return { ok: false, stdout: "" };
   const res = spawnSync("git", args, {
     cwd,
@@ -55,9 +65,12 @@ function readRemotesMap(repoDir: string): Record<string, string> {
   return map;
 }
 
-export function parseChromiumDepsPins(depsContent: string): Record<string, string> {
+export function parseChromiumDepsPins(
+  depsContent: string,
+): Record<string, string> {
   const pins: Record<string, string> = {};
-  const entryRegex = /['"]([^'"]+)['"]\s*:\s*['"](https?:\/\/[^'"]+|git:\/\/[^'"]+|gs:\/\/[^'"]+)['"]/g;
+  const entryRegex =
+    /['"]([^'"]+)['"]\s*:\s*['"](https?:\/\/[^'"]+|git:\/\/[^'"]+|gs:\/\/[^'"]+)['"]/g;
   for (const match of depsContent.matchAll(entryRegex)) {
     const pathKey = match[1];
     const urlSpec = match[2];
@@ -115,7 +128,9 @@ export function parseAospRepoManifestProjects(xmlContent: string): Array<{
   return projects;
 }
 
-export function parseKernelMaintainersSubsystems(maintainersContent: string): Array<{
+export function parseKernelMaintainersSubsystems(
+  maintainersContent: string,
+): Array<{
   subsystem: string;
   maintainers: string[];
   status: string;
@@ -180,7 +195,9 @@ export function parseKernelMaintainersSubsystems(maintainersContent: string): Ar
   return subsystems;
 }
 
-export function auditFourPillars(srcRoot: string = SRC_ROOT): FourPillarAuditReport {
+export function auditFourPillars(
+  srcRoot: string = SRC_ROOT,
+): FourPillarAuditReport {
   const root = resolve(srcRoot);
 
   // Scan root junctions
@@ -211,8 +228,10 @@ export function auditFourPillars(srcRoot: string = SRC_ROOT): FourPillarAuditRep
   const rootRemotes = readRemotesMap(root);
   const gitDetails: string[] = [];
   if (existsSync(gitmodulesPath)) gitDetails.push(".gitmodules verified");
-  if (existsSync(gitattributesPath)) gitDetails.push(".gitattributes LF normalization active");
-  if (existsSync(lockPath)) gitDetails.push("src.lock.json reproducible pinfile present");
+  if (existsSync(gitattributesPath))
+    gitDetails.push(".gitattributes LF normalization active");
+  if (existsSync(lockPath))
+    gitDetails.push("src.lock.json reproducible pinfile present");
   const gitHealthy =
     existsSync(gitmodulesPath) &&
     existsSync(lockPath) &&
@@ -227,10 +246,14 @@ export function auditFourPillars(srcRoot: string = SRC_ROOT): FourPillarAuditRep
   const chromiumHead = runGitRead(["rev-parse", "HEAD"], chromiumSrc).stdout;
   const chromiumRemotes = readRemotesMap(chromiumSrc);
   const chromiumDetails: string[] = [];
-  if (existsSync(depotToolsDir)) chromiumDetails.push("depot_tools (gclient/siso/gn/cipd) installed");
-  if (existsSync(gclientPath)) chromiumDetails.push("third_party/chromium/.gclient configured");
+  if (existsSync(depotToolsDir))
+    chromiumDetails.push("depot_tools (gclient/siso/gn/cipd) installed");
+  if (existsSync(gclientPath))
+    chromiumDetails.push("third_party/chromium/.gclient configured");
   if (existsSync(depsPath)) {
-    const pinCount = Object.keys(parseChromiumDepsPins(readFileSync(depsPath, "utf-8"))).length;
+    const pinCount = Object.keys(
+      parseChromiumDepsPins(readFileSync(depsPath, "utf-8")),
+    ).length;
     chromiumDetails.push(`root DEPS active (${pinCount} pinned entries)`);
   }
   const chromiumHealthy =
@@ -246,10 +269,16 @@ export function auditFourPillars(srcRoot: string = SRC_ROOT): FourPillarAuditRep
   const linuxRemotes = readRemotesMap(linuxDir);
   const kernelDetails: string[] = [];
   if (existsSync(maintainersPath)) {
-    const subs = parseKernelMaintainersSubsystems(readFileSync(maintainersPath, "utf-8"));
+    const subs = parseKernelMaintainersSubsystems(
+      readFileSync(maintainersPath, "utf-8"),
+    );
     kernelDetails.push(`root MAINTAINERS active (${subs.length} subsystems)`);
   }
-  if (linuxRemotes["torvalds"] && linuxRemotes["stable"] && linuxRemotes["next"]) {
+  if (
+    linuxRemotes["torvalds"] &&
+    linuxRemotes["stable"] &&
+    linuxRemotes["next"]
+  ) {
     kernelDetails.push("remotes torvalds + stable + next + gki wired");
   }
   const patchesSeries = join(root, "docs", "patches", "series");
@@ -265,17 +294,29 @@ export function auditFourPillars(srcRoot: string = SRC_ROOT): FourPillarAuditRep
 
   // 4. Android AOSP Pillar (.repo/manifests/default.xml + platform/manifest + build/kleaf)
   const aospManifestPath = join(root, ".repo", "manifests", "default.xml");
-  const aospPlatformDir = join(root, "third_party", "aosp", "platform", "manifest");
+  const aospPlatformDir = join(
+    root,
+    "third_party",
+    "aosp",
+    "platform",
+    "manifest",
+  );
   const aospKleafDir = join(root, "third_party", "aosp", "build", "kleaf");
   const aospHead = runGitRead(["rev-parse", "HEAD"], aospPlatformDir).stdout;
   const aospRemotes = readRemotesMap(aospPlatformDir);
   const aospDetails: string[] = [];
   if (existsSync(aospManifestPath)) {
-    const projs = parseAospRepoManifestProjects(readFileSync(aospManifestPath, "utf-8"));
-    aospDetails.push(`.repo/manifests/default.xml active (${projs.length} projects)`);
+    const projs = parseAospRepoManifestProjects(
+      readFileSync(aospManifestPath, "utf-8"),
+    );
+    aospDetails.push(
+      `.repo/manifests/default.xml active (${projs.length} projects)`,
+    );
   }
-  if (existsSync(aospPlatformDir)) aospDetails.push("third_party/aosp-manifest cloned");
-  if (existsSync(aospKleafDir)) aospDetails.push("third_party/kleaf GKI toolchain cloned");
+  if (existsSync(aospPlatformDir))
+    aospDetails.push("third_party/aosp-manifest cloned");
+  if (existsSync(aospKleafDir))
+    aospDetails.push("third_party/kleaf GKI toolchain cloned");
   const aospHealthy =
     existsSync(aospManifestPath) &&
     existsSync(aospPlatformDir) &&
@@ -337,7 +378,10 @@ export function writePatchQueueSeries(
   mkdirSync(dirname(seriesFilePath), { recursive: true });
   const body =
     "# Declarative Quilt / b4 Patch Queue Series\n" +
-    entries.map((e) => e.trim()).filter(Boolean).join("\n") +
+    entries
+      .map((e) => e.trim())
+      .filter(Boolean)
+      .join("\n") +
     "\n";
   writeFileSync(seriesFilePath, body, "utf-8");
 }

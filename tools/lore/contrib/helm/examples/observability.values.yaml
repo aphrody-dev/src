@@ -1,7 +1,7 @@
 # Ship logs/metrics/traces to an OTLP collector (OTLP/gRPC push — no /metrics scrape).
 image:
   repository: ghcr.io/epicgames/lore/loreserver
-  tag: ""  # empty = the chart's appVersion
+  tag: "" # empty = the chart's appVersion
 
 telemetry:
   exporter:

@@ -21,7 +21,12 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111318);
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 1.5, 5);
 
 const mesh = new THREE.Mesh(
@@ -101,7 +106,10 @@ const hits = raycaster.intersectObjects(clickables, false); // sorted, closest f
 const raycaster = new THREE.Raycaster();
 
 // From any origin and direction (normalize the direction first)
-raycaster.set(new THREE.Vector3(0, 2, 0), new THREE.Vector3(1, 0, 0).normalize());
+raycaster.set(
+  new THREE.Vector3(0, 2, 0),
+  new THREE.Vector3(1, 0, 0).normalize(),
+);
 
 // Range: hits closer than near or farther than far are discarded
 raycaster.near = 0.1;
@@ -133,7 +141,10 @@ renderer.domElement.addEventListener("pointermove", (event) => {
   );
   raycaster.setFromCamera(pointer, camera);
   // null when the ray is parallel to the plane or points away from it
-  if (event.buttons !== 0 && raycaster.ray.intersectPlane(groundPlane, hit) !== null) {
+  if (
+    event.buttons !== 0 &&
+    raycaster.ray.intersectPlane(groundPlane, hit) !== null
+  ) {
     mesh.position.copy(hit); // while a button is held, drag the mesh along the ground
   }
 });
@@ -155,15 +166,15 @@ controls.dampingFactor = 0.05;
 
 controls.minDistance = 2;
 controls.maxDistance = 50;
-controls.minPolarAngle = 0.1;          // vertical limits, radians
-controls.maxPolarAngle = Math.PI / 2;  // stop at the horizon
+controls.minPolarAngle = 0.1; // vertical limits, radians
+controls.maxPolarAngle = Math.PI / 2; // stop at the horizon
 controls.minAzimuthAngle = -Math.PI / 4;
 controls.maxAzimuthAngle = Math.PI / 4;
 
-controls.target.set(0, 1, 0);  // the point orbited around
+controls.target.set(0, 1, 0); // the point orbited around
 controls.zoomToCursor = true; // wheel zooms toward the pointer
 
-controls.autoRotate = true;      // requires update() every frame; stops at an azimuth limit
+controls.autoRotate = true; // requires update() every frame; stops at an azimuth limit
 controls.autoRotateSpeed = 2.0;
 
 const timer = new THREE.Timer();
@@ -219,7 +230,7 @@ import { FirstPersonControls } from "three/addons/controls/FirstPersonControls.j
 
 const controls = new FirstPersonControls(camera, renderer.domElement);
 controls.movementSpeed = 10;
-controls.lookSpeed = 0.005;   // default
+controls.lookSpeed = 0.005; // default
 controls.dampingFactor = 0.1; // default; 1 disables the easing
 controls.constrainVertical = true;
 controls.verticalMin = Math.PI / 4;
@@ -318,7 +329,7 @@ scene.add(transformControls.getHelper()); // the gizmo; adding the controls them
 
 transformControls.attach(mesh); // show the gizmo on this object
 transformControls.setMode("translate"); // "translate" | "rotate" | "scale"
-transformControls.setSpace("local");    // "local" | "world"; scale always acts locally
+transformControls.setSpace("local"); // "local" | "world"; scale always acts locally
 transformControls.setSize(0.8);
 transformControls.setTranslationSnap(0.5);
 transformControls.setRotationSnap(THREE.MathUtils.degToRad(15));
@@ -348,7 +359,11 @@ import { DragControls } from "three/addons/controls/DragControls.js";
 
 const dragControls = new DragControls([mesh], camera, renderer.domElement);
 dragControls.rotateSpeed = 1; // default
-dragControls.mouseButtons = { LEFT: THREE.MOUSE.PAN, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.ROTATE }; // the default map
+dragControls.mouseButtons = {
+  LEFT: THREE.MOUSE.PAN,
+  MIDDLE: THREE.MOUSE.PAN,
+  RIGHT: THREE.MOUSE.ROTATE,
+}; // the default map
 // transformGroup = true drags the outermost Group above the hit instead (pass objects = [group]); event.object is then that Group, which has no material, so use event.object.material?.emissive in the handlers
 
 dragControls.addEventListener("dragstart", (event) => {
@@ -455,18 +470,35 @@ const world = camera.position.clone().addScaledVector(direction, distance);
 ```
 
 ## WebGPU and TSL
+
 Controls and Raycaster are renderer-neutral: the picking and camera-control code above runs unchanged under WebGPURenderer. Raycaster tests CPU-side geometry, so it never sees `positionNode` displacement — pick against an undisplaced proxy mesh instead.
+
 ```javascript
 import * as THREE from "three/webgpu";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-const renderer = new THREE.WebGPURenderer({ antialias: true }); await renderer.init(); // required before any other use
-renderer.setPixelRatio(window.devicePixelRatio); renderer.setSize(window.innerWidth, window.innerHeight);
+const renderer = new THREE.WebGPURenderer({ antialias: true });
+await renderer.init(); // required before any other use
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-const scene = new THREE.Scene(); scene.background = new THREE.Color(0x111318); // WebGPU canvas is transparent by default
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100); camera.position.set(0, 1.5, 5);
-scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x3a86ff }))); // unlit: no light needed
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111318); // WebGPU canvas is transparent by default
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
+camera.position.set(0, 1.5, 5);
+scene.add(
+  new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: 0x3a86ff }),
+  ),
+); // unlit: no light needed
 const controls = new OrbitControls(camera, renderer.domElement);
-const timer = new THREE.Timer(); timer.connect(document);
+const timer = new THREE.Timer();
+timer.connect(document);
 renderer.setAnimationLoop(function animate() {
   timer.update();
   controls.update(timer.getDelta());

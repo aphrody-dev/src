@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+
+Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Browser Support
 
@@ -37,7 +38,7 @@ Third-party embeds cover a wide range of use cases, from video players to
 social media posts to ads. This content is often not immediately visible in
 the user's viewport, but users still pay the cost of downloading data and costly
 JavaScript for each frame, even if they don't scroll to it.
- Eagerly loading offscreen iframes means users waste data by downloading elements they might never see.
+Eagerly loading offscreen iframes means users waste data by downloading elements they might never see.
 
 Based on Chrome's research into [automatically lazy-loading offscreen iframes
 for Data Saver users](https://blog.chromium.org/2019/10/automatically-lazy-loading-offscreen.html),
@@ -64,21 +65,21 @@ Using the `loading` attribute on iframes works as follows:
 
 ```html
 <!-- Lazy-load the iframe -->
-<iframe src="https://example.com"
-        loading="lazy"
-        width="600"
-        height="400"></iframe>
+<iframe
+  src="https://example.com"
+  loading="lazy"
+  width="600"
+  height="400"
+></iframe>
 
 <!-- Eagerly load the iframe -->
-<iframe src="https://example.com"
-        width="600"
-        height="400"></iframe>
+<iframe src="https://example.com" width="600" height="400"></iframe>
 ```
 
 Not specifying the attribute has the same impact as explicitly eagerly loading
 the resource.
 
-If you need to *dynamically* create iframes using JavaScript, setting
+If you need to _dynamically_ create iframes using JavaScript, setting
 `iframe.loading = 'lazy'` on the element is also
 [supported](https://bugs.chromium.org/p/chromium/issues/detail?id=993273):
 
@@ -108,7 +109,7 @@ Lazy-loading YouTube video embeds saves around 500KB on initial page load:
             picture-in-picture"
             allowfullscreen></iframe>
 
- Chrome.com reduced its TTI by 10 seconds by lazy-loading offscreen YouTube embeds.
+Chrome.com reduced its TTI by 10 seconds by lazy-loading offscreen YouTube embeds.
 
 > [!NOTE]
 > **Note:** If you're looking for more efficient ways to load YouTube embeds, you might be interested in the [YouTube lite component](https://github.com/paulirish/lite-youtube-embed).
@@ -126,25 +127,27 @@ reasonable candidate for iframe lazy-loading.
 Lazy-loading Spotify embeds can save 514 KB on initial load.
 
 ```html
-<iframe src="https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3"
-        loading="lazy"
-        width="300"
-        height="380"
-        frameborder="0"
-        allowtransparency="true"
-        allow="encrypted-media"></iframe>
+<iframe
+  src="https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3"
+  loading="lazy"
+  width="300"
+  height="380"
+  frameborder="0"
+  allowtransparency="true"
+  allow="encrypted-media"
+></iframe>
 ```
 
 ### Facebook's social plugins
 
-Facebook *social plugins* let developers embed Facebook content in their
+Facebook _social plugins_ let developers embed Facebook content in their
 web pages. The most popular of these is the [Like plugin](https://developers.facebook.com/docs/plugins/like-button/),
 a button that shows how many users have "liked" the page. By default, embedding
 the Like plugin in a web page using the Facebook JSSDK pulls in around 215 KB of
 resources, 197 KB of which is JavaScript. The plugin often appears at the end of
 an article or near the end of a page, so loading it eagerly when it's offscreen
 can be suboptimal.
- Facebook's Like plugin.
+Facebook's Like plugin.
 
 Thanks to engineer Stoyan Stefanov, [all of Facebook's social plugins now
 support standardized iframe
@@ -178,5 +181,5 @@ honored, subject to distance limits and other browser choices (such as printing)
 For more lazy-loading ideas, see web.dev's
 [image and video lazy-loading collection](https://web.dev/explore/fast#lazy-load-images-and-video).
 
-*With thanks to Dom Farolino, Scott Little, Houssein Djirdeh, Simon Pieters, Kayce Basques, Joe Medley, and Stoyan
-Stefanov for their reviews.*
+_With thanks to Dom Farolino, Scott Little, Houssein Djirdeh, Simon Pieters, Kayce Basques, Joe Medley, and Stoyan
+Stefanov for their reviews._

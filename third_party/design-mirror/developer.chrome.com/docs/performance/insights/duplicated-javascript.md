@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Connor Clark [X](https://twitter.com/cjamcl) [GitHub](https://github.com/connorjclark)
 
 Published: Oct 8, 2025
@@ -19,14 +20,15 @@ Remove large, duplicate JavaScript modules from bundles to reduce unnecessary by
 - Within individual JavaScript bundles, ensure there is only one version of large dependencies.
 
 You can dive deeper into the JavaScript bundles on a page by clicking the `View Treemap`. This opens the page's bundles in the Lighthouse Treemap.
- Lighthouse Treemap. The colored nodes represent duplicate modules found across multiple JavaScript bundles.
+Lighthouse Treemap. The colored nodes represent duplicate modules found across multiple JavaScript bundles.
 
 - In PageSpeed Insights and in the Lighthouse report, this button is in the Performance category below the metrics:
 
-   Lighthouse "View Treemap" button.
+  Lighthouse "View Treemap" button.
+
 - In the DevTools **Performance** Panel, this button is in the **Duplicated JavaScript** insight:
 
-   DevTools Performance Panel "View Treemap" button.
+  DevTools Performance Panel "View Treemap" button.
 
 ## Stack-specific guidance
 

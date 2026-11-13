@@ -3,17 +3,18 @@ Review 1: agent/docs/ARCHITECTURE.md
 
 Score: 8 / 20 — Clear layered vision with an initial working packages/core slice, but undermined by wrong Transformer/IR math, a benchmark that empirically disproves its own multi-head design, broken runtime layering (bun:sqlite / native C++ over Cloudflare Workers), unredacted secret leakage to remote embedding APIs, and 11 undeclared module paths.
 
-Criterion	Score	Verdict
-Factual & mathematical accuracy	2 / 6	Wrong AI SDK symbol, false 
+Criterion Score Verdict
+Factual & mathematical accuracy 2 / 6 Wrong AI SDK symbol, false
 O(n
 2
-) / 
+) /
 W
 O
- / KV-cache claims, benchmark regression ignored
-Internal & monorepo consistency	2 / 4	Violates own ADR 0008, C:\src flat-root & no-absolute-path rules; 11 phantom paths
-Architectural & security soundness	2 / 5	Post-ingest redaction leaks secrets; bun:sqlite locks & breaks Workers; pyo3 ↔ Bun gap
-Completeness & operational readiness	2 / 5	Linux prd CI cannot run Windows-first tests; no vector index, IPC spec, or capability gates
+/ KV-cache claims, benchmark regression ignored
+Internal & monorepo consistency 2 / 4 Violates own ADR 0008, C:\src flat-root & no-absolute-path rules; 11 phantom paths
+Architectural & security soundness 2 / 5 Post-ingest redaction leaks secrets; bun:sqlite locks & breaks Workers; pyo3 ↔ Bun gap
+Completeness & operational readiness 2 / 5 Linux prd CI cannot run Windows-first tests; no vector index, IPC spec, or capability gates
+
 1. Factual Errors
 
 Wrong Vercel AI SDK API symbol (## Feature mapping):
@@ -24,7 +25,7 @@ Fact: The AI SDK loop-termination helper is stepCountIs(n) (passed to stopWhen: 
 
 Three mathematical/architectural errors in ## Context (attention-style selection):
 
-False 
+False
 𝑂
 (
 𝑛
@@ -32,16 +33,16 @@ False
 )
 O(n
 2
-) complexity (top-k, O(n²) bound): Scoring 1 task query against 
+) complexity (top-k, O(n²) bound): Scoring 1 task query against
 𝑁
-N stored entries is 
+N stored entries is
 𝑂
 (
 𝑁
 ⋅
 𝑑
 )
-O(N⋅d) linear cross-retrieval (and sublinear posting-list traversal for FTS5 BM25), not 
+O(N⋅d) linear cross-retrieval (and sublinear posting-list traversal for FTS5 BM25), not
 𝑂
 (
 𝑛
@@ -51,16 +52,16 @@ O(n
 2
 ) self-attention (
 𝑁
-N tokens attending to 
+N tokens attending to
 𝑁
 N tokens). Furthermore, with 39 entries in the benchmark, candidate cap (200) is never exercised.
 
-Wrong 
+Wrong
 𝑊
 𝑂
 W
 O
- & pre-softmax scalar merge (scaling + softmax): In Vaswani et al. (§3.2.2), each head computes an independent softmax over keys, and 
+& pre-softmax scalar merge (scaling + softmax): In Vaswani et al. (§3.2.2), each head computes an independent softmax over keys, and
 𝑊
 𝑂
 ∈
@@ -76,13 +77,13 @@ O
 ∈R
 hd
 v
-	​
+​
 
 ×d
 model
-	​
+​
 
- projects concatenated post-softmax value vectors. Averaging standardized scalar scores before a single softmax collapses multi-head retrieval into single-head linear score fusion—diluting sharp semantic matches with noisy lexical scores.
+projects concatenated post-softmax value vectors. Averaging standardized scalar scores before a single softmax collapses multi-head retrieval into single-head linear score fusion—diluting sharp semantic matches with noisy lexical scores.
 
 Misclassified hash512 & "KV-cache": Feature hashing (hash512) is lexical token hashing, not semantic embedding ("car" and "automobile" remain orthogonal). Caching static document embeddings by (embedder, sha256(text)) is an embedding lookup table, not a Transformer KV-cache, and uses sha256 despite L3 standardizing on blake3.
 
@@ -122,7 +123,7 @@ Claims native/dev work never runs on the PC, yet cites done: agent run, e2e test
 
 Monorepo vs Sub-repo Split Brain & 11 Phantom Paths:
 
-Located at agent/docs/ARCHITECTURE.md inside C:\src, yet declares its own root workspaces (packages/*, crates/*, python/*, legacy/*, identity.toml), colliding with C:\src's single flat Cargo/Bun workspace rule.
+Located at agent/docs/ARCHITECTURE.md inside C:\src, yet declares its own root workspaces (packages/_, crates/_, python/_, legacy/_, identity.toml), colliding with C:\src's single flat Cargo/Bun workspace rule.
 
 Even internally, ## Feature mapping and ## Context reference 11 paths absent from ## Modules: packages/research, packages/runtime-adapter, protocols, web, desktop, tools/{research,council,sentinel,code}, crates/desktop-use, crates/gpu, and crates/core.
 
@@ -157,11 +158,12 @@ Budget, telemetry, and loop-runaway circuit breakers: Dropping finops leaves rec
 Database schema migration strategy (PRAGMA user_version / deterministic SQL migrations).
 
 4. Concrete Fixes
-Fix 1 — Align workspace paths, fix L0–L7 cloud vs native split, and purge U+00A0 / hardcoded paths
+   Fix 1 — Align workspace paths, fix L0–L7 cloud vs native split, and purge U+00A0 / hardcoded paths
 
 Replace the header, ## Layers, and ADR 0001–0008 errors in agent/docs/ARCHITECTURE.md:
 
 Markdown
+
 # Agent Architecture
 
 Unified agent subsystem within the root monorepo (`identity.toml` governs CLI binary, env prefix, and home directory name; `<cli>` and `<CLI_HOME>` below denote values resolved from `identity.toml`).
@@ -169,35 +171,36 @@ Toolchain: shared LLVM toolchain (`docs/llvm/UNIFIED-TOOLCHAIN.md`). CI: Bun uni
 
 ## Layers
 
-| Layer | Native Host Profile (Windows 11 / Linux 6.6+) | Edge / Serverless Profile (CF Workers + DO / Vercel) |
-|---|---|---|
-| L7 Surfaces | `<cli>`, TUI, Desktop (`windows-rs`/WebView), HTTP, MCP, A2A/ACP/AG-UI | HTTP API, Webhook Channels, MCP/A2A/AG-UI, Web UI |
-| L6 Gateway | Chat SDK adapters, local session auth, routing | Chat SDK adapters, Access/OAuth, DO session routing |
-| L5 Core | AI SDK loop (`stopWhen: stepCountIs(n)`), tools, `StoragePort` memory, skills, cron, hooks | Same TS core over async `StoragePort`, Workflow/DO alarms, remote sandbox |
-| L4 Providers | `@ai-sdk/*`, AI Gateway, local OpenAI-compatible server | `@ai-sdk/*`, AI Gateway, Workers AI |
-| L3 Weights | HF fetch → `blake3` CAS store → R2 mirror | N/A (remote inference only) |
-| L2 Inference | `llama.cpp`, ONNX Runtime (DirectML/CUDA), `vLLM` (Linux `prd`) | Workers AI / external endpoints |
-| L1 Compute | `wgpu`/Dawn, CUDA, Vulkan, DirectML, CPU (`x86-64-v3`/`v4`, NEON) | V8 isolate (`workerd` / Node compat) |
-| L0 Platform | Windows 11 (`windows-rs`, Job Objects + Restricted Tokens / Hyper-V), Linux 6.6+ (`namespaces`/`landlock`) | Cloudflare Workers + Durable Objects + D1, Vercel Functions + Sandbox |
+| Layer        | Native Host Profile (Windows 11 / Linux 6.6+)                                                              | Edge / Serverless Profile (CF Workers + DO / Vercel)                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| L7 Surfaces  | `<cli>`, TUI, Desktop (`windows-rs`/WebView), HTTP, MCP, A2A/ACP/AG-UI                                     | HTTP API, Webhook Channels, MCP/A2A/AG-UI, Web UI                         |
+| L6 Gateway   | Chat SDK adapters, local session auth, routing                                                             | Chat SDK adapters, Access/OAuth, DO session routing                       |
+| L5 Core      | AI SDK loop (`stopWhen: stepCountIs(n)`), tools, `StoragePort` memory, skills, cron, hooks                 | Same TS core over async `StoragePort`, Workflow/DO alarms, remote sandbox |
+| L4 Providers | `@ai-sdk/*`, AI Gateway, local OpenAI-compatible server                                                    | `@ai-sdk/*`, AI Gateway, Workers AI                                       |
+| L3 Weights   | HF fetch → `blake3` CAS store → R2 mirror                                                                  | N/A (remote inference only)                                               |
+| L2 Inference | `llama.cpp`, ONNX Runtime (DirectML/CUDA), `vLLM` (Linux `prd`)                                            | Workers AI / external endpoints                                           |
+| L1 Compute   | `wgpu`/Dawn, CUDA, Vulkan, DirectML, CPU (`x86-64-v3`/`v4`, NEON)                                          | V8 isolate (`workerd` / Node compat)                                      |
+| L0 Platform  | Windows 11 (`windows-rs`, Job Objects + Restricted Tokens / Hyper-V), Linux 6.6+ (`namespaces`/`landlock`) | Cloudflare Workers + Durable Objects + D1, Vercel Functions + Sandbox     |
 
 Fix 2 — Reconcile ## Modules so zero undeclared paths exist
 
 Add missing modules explicitly and drop verbatim legacy/* from HEAD (keep as an immutable Git tag archive/legacy-pre-fusion):
 
 Markdown
-| Module | Monorepo Path | Runtime | Status |
-|---|---|---|---|
-| Agent core (loop, context, memory, skills, hooks, sessions) | `packages/agent-core` | Bun / Edge TS | active |
-| Runtime storage & sandbox adapters (SQLite vs D1/DO, Win32 vs CF/Vercel) | `packages/agent-runtime` | Bun / Edge TS | planned |
-| Research, council & sentinel tools | `packages/agent-tools` | Bun TS | planned |
-| Gateway + Chat SDK / A2A / ACP / AG-UI protocols | `packages/agent-gateway` | Bun / Edge TS | planned |
-| MCP client/server | `packages/agent-mcp` | Bun / Edge TS | planned |
-| Scheduler / durable workflows | `packages/agent-scheduler` | Bun / Edge TS | planned |
-| TUI & Web surfaces | `packages/agent-tui`, `apps/agent-web` | Bun TS | planned |
-| Native desktop & UIA computer-use | `crates/agent-desktop` | Rust (`windows-rs`) | planned |
-| Code graph & AST indexing | `crates/agent-code` | Rust (`tree-sitter`) | planned |
-| Local inference, GPU & `blake3` weight store | `crates/agent-infer`, `crates/agent-gpu`, `crates/agent-weights` | Rust | planned |
-| Out-of-process Python tool worker (MCP stdio) | `python/agent_worker` | Python (`uv`) | planned |
+
+| Module                                                                   | Monorepo Path                                                    | Runtime              | Status  |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------- | -------------------- | ------- |
+| Agent core (loop, context, memory, skills, hooks, sessions)              | `packages/agent-core`                                            | Bun / Edge TS        | active  |
+| Runtime storage & sandbox adapters (SQLite vs D1/DO, Win32 vs CF/Vercel) | `packages/agent-runtime`                                         | Bun / Edge TS        | planned |
+| Research, council & sentinel tools                                       | `packages/agent-tools`                                           | Bun TS               | planned |
+| Gateway + Chat SDK / A2A / ACP / AG-UI protocols                         | `packages/agent-gateway`                                         | Bun / Edge TS        | planned |
+| MCP client/server                                                        | `packages/agent-mcp`                                             | Bun / Edge TS        | planned |
+| Scheduler / durable workflows                                            | `packages/agent-scheduler`                                       | Bun / Edge TS        | planned |
+| TUI & Web surfaces                                                       | `packages/agent-tui`, `apps/agent-web`                           | Bun TS               | planned |
+| Native desktop & UIA computer-use                                        | `crates/agent-desktop`                                           | Rust (`windows-rs`)  | planned |
+| Code graph & AST indexing                                                | `crates/agent-code`                                              | Rust (`tree-sitter`) | planned |
+| Local inference, GPU & `blake3` weight store                             | `crates/agent-infer`, `crates/agent-gpu`, `crates/agent-weights` | Rust                 | planned |
+| Out-of-process Python tool worker (MCP stdio)                            | `python/agent_worker`                                            | Python (`uv`)        | planned |
 
 Fix 3 — Pre-ingest redaction, WAL concurrency, and Reciprocal Rank Fusion (context.ts)
 
@@ -206,42 +209,41 @@ Replace the broken pre-softmax logit merge (which degraded bge-m3 MRR from 0.423
 TypeScript
 // packages/agent-core/src/context.ts
 // 1. SQLite init (native host adapter): prevent SQLITE_BUSY across CLI/daemon/workers
-db.exec(`
-  PRAGMA journal_mode = WAL;
+db.exec(`  PRAGMA journal_mode = WAL;
   PRAGMA synchronous = NORMAL;
   PRAGMA busy_timeout = 5000;
-  PRAGMA foreign_keys = ON;
-`);
+  PRAGMA foreign_keys = ON;`);
 
 // 2. Redact BEFORE writing to FTS5 or sending text to remote Workers AI embedders
 export async function ingestEntry(rawText: string, meta: EntryMeta): Promise<void> {
-  const safeText = redactSecrets(rawText);
-  const digest = blake3Hex(`${EMBEDDER_ID}:${EMBEDDER_REV}:${safeText}`);
-  const vec = await getOrComputeEmbedding(digest, safeText); // cached by blake3
-  await store.upsertEntry({ ...meta, text: safeText, digest, vec });
+const safeText = redactSecrets(rawText);
+const digest = blake3Hex(`${EMBEDDER_ID}:${EMBEDDER_REV}:${safeText}`);
+const vec = await getOrComputeEmbedding(digest, safeText); // cached by blake3
+await store.upsertEntry({ ...meta, text: safeText, digest, vec });
 }
 
 // 3. Reciprocal Rank Fusion (k = 60) over pre-masked SQL/vector candidates — scale-invariant, O(N)
 export function fuseRankedHeads(heads: ReadonlyArray<{ weight: number; ids: readonly string[] }>, k = 60): string[] {
-  const scores = new Map<string, number>();
-  for (const { weight, ids } of heads) {
-    for (let rank = 0; rank < ids.length; rank++) {
-      const id = ids[rank]!;
-      scores.set(id, (scores.get(id) ?? 0) + weight / (k + rank + 1));
-    }
-  }
-  return [...scores.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => id);
+const scores = new Map<string, number>();
+for (const { weight, ids } of heads) {
+for (let rank = 0; rank < ids.length; rank++) {
+const id = ids[rank]!;
+scores.set(id, (scores.get(id) ?? 0) + weight / (k + rank + 1));
+}
+}
+return [...scores.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => id);
 }
 
 Review 2: agent/docs/FUSION.md
 
 Score: 6 / 20 — Useful raw GitHub org inventory, but directly contradicts its sibling ARCHITECTURE.md written the same day, specifies a runtime-impossible Python ↔ bun:ffi/pyo3 ↔ TypeScript bridge and a Bun-only → Cloudflare Workers deployment, schedules macOS-only crawlers for Windows porting, and commits to rewriting/maintaining 60+ external repositories with zero prioritization, commit SHAs, or license checks.
 
-Criterion	Score	Verdict
-Factual & runtime accuracy	1 / 6	Impossible Python→bun:ffi/pyo3→TS bridge; Bun.* breaks Workers; macOS crawlers in todo
-Cross-doc & monorepo consistency	1 / 4	Contradicts ARCHITECTURE.md paths, module statuses, FFI policy, and identity.toml rules
-Scope & architectural realism	2 / 5	60+ repo rewrite ("boil the ocean"), needless Go→TS rewrites, dual TS+Python plugin split brain
-Governance, licensing & phasing	2 / 5	Wildcard repo names (*), GPL/LGPL blind spots (ffmpeg-wasm), missing commit pins & P0–P3 tiers
+Criterion Score Verdict
+Factual & runtime accuracy 1 / 6 Impossible Python→bun:ffi/pyo3→TS bridge; Bun.* breaks Workers; macOS crawlers in todo
+Cross-doc & monorepo consistency 1 / 4 Contradicts ARCHITECTURE.md paths, module statuses, FFI policy, and identity.toml rules
+Scope & architectural realism 2 / 5 60+ repo rewrite ("boil the ocean"), needless Go→TS rewrites, dual TS+Python plugin split brain
+Governance, licensing & phasing 2 / 5 Wildcard repo names (*), GPL/LGPL blind spots (ffmpeg-wasm), missing commit pins & P0–P3 tiers
+
 1. Factual Errors
 
 Physically impossible Python ↔ Core FFI rule (## Rules):
@@ -315,18 +317,20 @@ Plugin Sandbox & Permission Manifest: No capability model (fs, net, env, exec) g
 Windows Home Directory Resolution Spec: Must follow %LOCALAPPDATA%\<product> (Windows) and $XDG_DATA_HOME/<product> / $XDG_CONFIG_HOME/<product> (Linux), overridden by $<PRODUCT>_HOME from identity.toml.
 
 4. Concrete Fixes
-Fix 1 — Replace Header & ## Rules in agent/docs/FUSION.md
+   Fix 1 — Replace Header & ## Rules in agent/docs/FUSION.md
 
 Fixes identity hardcoding, broken ~/.agent path, impossible Python bun:ffi/pyo3 calls, and Workers runtime incompatibility:
 
 Markdown
+
 # Fusion: OpenClaw + Hermes Ecosystems
 
 Inventory date: 2026-11-12 (`gh api orgs/openclaw/repos`, `gh api orgs/NousResearch/repos`).
 Upstream forks (locked in root `src.lock.json`):
+
 - `third_party/openclaw` (`aphrody-labs/openclaw`, branch `windows-native`, rev `<40-char-sha>`)
 - `third_party/hermes-agent` (`aphrody-labs/hermes-agent`, branch `windows-native`, rev `<40-char-sha>`)
-Reference: `docs/agents/WINDOWS-NATIVE-PORT.md`.
+  Reference: `docs/agents/WINDOWS-NATIVE-PORT.md`.
 
 ## Fusion Rules
 
@@ -343,14 +347,15 @@ Fix 2 — Enforce a Phased Cutline & Correct Misclassified Repos
 Replace the flat todo sprawl across agent/docs/FUSION.md with explicit P0–Skip dispositions:
 
 Markdown
+
 ## Prioritized Intake Matrix (Cutline)
 
-| Tier | Scope | Included Upstream Repos | Target Monorepo Path | Disposition |
-|---|---|---|---|---|
-| **P0 (MVP)** | Loop, context, memory, skills, templates, MCP, CLI/TUI | `openclaw` (core/templates), `hermes-agent` (SOUL, compression, skill lint), `mcporter`, `libterminal`, `fs-safe`, `proc-safe` | `packages/agent-{core,runtime,mcp,tui}` | Port to TS (`done` / `active`) |
-| **P1 (Next)** | Gateway, official channels, durable cron, Windows host | `openclaw` (gateway), `acpx`, `hermes-agent` (`acp_adapter`, cron), `clawrouter`, `catalog`, `openclaw-windows-node` | `packages/agent-{gateway,scheduler}`, `crates/agent-desktop` | Planned after P0 |
-| **P2 (Sidecars)** | Registry, security scan, evals (no core rewrite) | `clawhub`, `clawscan` (keep Go bin), `turnwire` (keep Go bin), `crabline`, `Kova`, `hermes-toolperf-evals`, `hermes-compression-eval` | `apps/agent-hub`, `third_party/{clawscan,turnwire}`, `packages/agent-evals` | Keep upstream lang / isolated evals |
-| **Skip (Platform / Legal / Bloat)** | macOS-only, unofficial scrapers, copyleft media, external SaaS wrappers, C firmware | `imsgcrawl`, `photoscrawl`, `remindctl` (macOS-only); `wacli`, `wacrawl`, `telecrawl`, `slacrawl`, `discrawl`, `birdclaw` (ban/ToS risk → external optional MCP only); `ffmpeg-wasm` (GPL/LGPL); `esp-openclaw-node`; `hermes-plugin-{honcho,mem0,openviking,supermemory,retaindb,byterover}` | — | **Skip** (out of core monorepo) |
+| Tier                                | Scope                                                                               | Included Upstream Repos                                                                                                                                                                                                                                                                       | Target Monorepo Path                                                        | Disposition                         |
+| ----------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------- |
+| **P0 (MVP)**                        | Loop, context, memory, skills, templates, MCP, CLI/TUI                              | `openclaw` (core/templates), `hermes-agent` (SOUL, compression, skill lint), `mcporter`, `libterminal`, `fs-safe`, `proc-safe`                                                                                                                                                                | `packages/agent-{core,runtime,mcp,tui}`                                     | Port to TS (`done` / `active`)      |
+| **P1 (Next)**                       | Gateway, official channels, durable cron, Windows host                              | `openclaw` (gateway), `acpx`, `hermes-agent` (`acp_adapter`, cron), `clawrouter`, `catalog`, `openclaw-windows-node`                                                                                                                                                                          | `packages/agent-{gateway,scheduler}`, `crates/agent-desktop`                | Planned after P0                    |
+| **P2 (Sidecars)**                   | Registry, security scan, evals (no core rewrite)                                    | `clawhub`, `clawscan` (keep Go bin), `turnwire` (keep Go bin), `crabline`, `Kova`, `hermes-toolperf-evals`, `hermes-compression-eval`                                                                                                                                                         | `apps/agent-hub`, `third_party/{clawscan,turnwire}`, `packages/agent-evals` | Keep upstream lang / isolated evals |
+| **Skip (Platform / Legal / Bloat)** | macOS-only, unofficial scrapers, copyleft media, external SaaS wrappers, C firmware | `imsgcrawl`, `photoscrawl`, `remindctl` (macOS-only); `wacli`, `wacrawl`, `telecrawl`, `slacrawl`, `discrawl`, `birdclaw` (ban/ToS risk → external optional MCP only); `ffmpeg-wasm` (GPL/LGPL); `esp-openclaw-node`; `hermes-plugin-{honcho,mem0,openviking,supermemory,retaindb,byterover}` | —                                                                           | **Skip** (out of core monorepo)     |
 
 Fix 3 — Expand wildcard entries (clawsweeper*, nix-openclaw*) via gh
 
@@ -358,4 +363,3 @@ Run once and commit exact repository names so FUSION.md is deterministic and aud
 
 Bash
 gh api --paginate orgs/openclaw/repos --jq '.[] | select(.archived == false) | "\(.name)\t\(.license.spdx_id // "NOASSERTION")\t\(.pushed_at)"' | sort
-

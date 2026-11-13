@@ -4,12 +4,12 @@ This document defines the standard patterns for testing across the Lore codebase
 
 ## Overview
 
-| Type | Location | Framework | Purpose |
-| --- | --- | --- | --- |
-| **Unit tests** | `tests/unit/` in each crate | Rust/tokio | Module-level testing |
-| **Integration tests** | `lore-revision/tests/` | Rust/tokio | Cross-module testing |
-| **Smoke tests** | `scripts/test/` | Python/pytest | CLI and server testing |
-| **Load tests** | Internal infrastructure | Internal harness | Performance testing |
+| Type                  | Location                    | Framework        | Purpose                |
+| --------------------- | --------------------------- | ---------------- | ---------------------- |
+| **Unit tests**        | `tests/unit/` in each crate | Rust/tokio       | Module-level testing   |
+| **Integration tests** | `lore-revision/tests/`      | Rust/tokio       | Cross-module testing   |
+| **Smoke tests**       | `scripts/test/`             | Python/pytest    | CLI and server testing |
+| **Load tests**        | Internal infrastructure     | Internal harness | Performance testing    |
 
 ---
 
@@ -39,9 +39,9 @@ A change must come with its tests. Write them with the code, not after review.
 
 Cheapest first. Cost tracks how much must be standing before the test can run.
 
-| Tier | Answers | Location | Needs |
-| --- | --- | --- | --- |
-| Unit | Is this logic correct across all its cases? | `tests/unit/` | Nothing |
+| Tier  | Answers                                         | Location                              | Needs                                  |
+| ----- | ----------------------------------------------- | ------------------------------------- | -------------------------------------- |
+| Unit  | Is this logic correct across all its cases?     | `tests/unit/`                         | Nothing                                |
 | Smoke | Does a real user flow work across the binaries? | `scripts/test/`, `@pytest.mark.smoke` | `lore` and `loreserver` binaries built |
 
 Edge cases belong in unit tests. The smoke test covers the happy path only.
@@ -330,10 +330,10 @@ Fixed sleeps are acceptable only for time-based behavior such as TTL expiry, or 
 
 ### Key files
 
-| File | Purpose |
-| --- | --- |
-| `conftest.py` | Fixtures and server management |
-| `lore.py` | `Lore` wrapper class for the CLI |
+| File             | Purpose                           |
+| ---------------- | --------------------------------- |
+| `conftest.py`    | Fixtures and server management    |
+| `lore.py`        | `Lore` wrapper class for the CLI  |
 | `error_types.py` | Exception mapping from CLI output |
 
 ### Fixtures
@@ -410,14 +410,14 @@ uv run pytest scripts/test/ --disable-local-server --lore-remote-url=lore://host
 
 ### Command-line options
 
-| Option | Default | Description |
-| --- | --- | --- |
-| `--lore-client-binary` | `release` | Path or "release"/"debug" |
-| `--lore-server-binary` | `release` | Path or "release"/"debug" |
-| `--lore-remote-url` | `lore://127.0.0.1:41338` | Server address |
-| `--disable-local-server` | `false` | Use external server |
-| `--disable-auto-server` | `false` | Don't auto start the server |
-| `--keep-test-data` | `false` | Leave repositories, stores and server roots on disk |
+| Option                   | Default                  | Description                                         |
+| ------------------------ | ------------------------ | --------------------------------------------------- |
+| `--lore-client-binary`   | `release`                | Path or "release"/"debug"                           |
+| `--lore-server-binary`   | `release`                | Path or "release"/"debug"                           |
+| `--lore-remote-url`      | `lore://127.0.0.1:41338` | Server address                                      |
+| `--disable-local-server` | `false`                  | Use external server                                 |
+| `--disable-auto-server`  | `false`                  | Don't auto start the server                         |
+| `--keep-test-data`       | `false`                  | Leave repositories, stores and server roots on disk |
 
 ### Running the SWFS tests
 
@@ -564,12 +564,12 @@ is legitimately slower.
 
 ### pytest markers
 
-| Marker | Description |
-| --- | --- |
-| `@pytest.mark.smoke` | Smoke tests for basic functionality |
-| `@pytest.mark.swfs` | Tests that need the EpicVFS driver, which is available only on Windows machines where it is installed. Deselect with `-m "smoke and not swfs"` if you don't have the driver. |
-| `@pytest.mark.slow` | Slow running tests |
-| `@pytest.mark.disable_auto_server` | Tests requiring the `--disable-auto-server` flag |
+| Marker                             | Description                                                                                                                                                                  |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@pytest.mark.smoke`               | Smoke tests for basic functionality                                                                                                                                          |
+| `@pytest.mark.swfs`                | Tests that need the EpicVFS driver, which is available only on Windows machines where it is installed. Deselect with `-m "smoke and not swfs"` if you don't have the driver. |
+| `@pytest.mark.slow`                | Slow running tests                                                                                                                                                           |
+| `@pytest.mark.disable_auto_server` | Tests requiring the `--disable-auto-server` flag                                                                                                                             |
 
 ---
 

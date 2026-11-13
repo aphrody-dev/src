@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In this module, you learn how to define goals, analyze your forms, measure
 changes, and get notified about new issues.
 
@@ -32,8 +33,8 @@ To get a clearer picture of a high bounce rate, you can define
 to identify in detail where users leave your form.
 
 A [goal funnel](https://support.google.com/analytics/answer/1012040?ref_topic=6150889#funnels_for_destination_goals&zippy=%2Cin-this-article)
-(or *conversion funnel* ) is a series of interactions that lead to complete a
-predefined objective, such as a completed purchase (a *conversion*).
+(or _conversion funnel_ ) is a series of interactions that lead to complete a
+predefined objective, such as a completed purchase (a _conversion_).
 Each goal funnel consists of individual steps such as opening a shopping cart
 page or proceeding to a checkout page.
 

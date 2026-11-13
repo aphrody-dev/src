@@ -38,7 +38,13 @@ import { styles as typescaleStyles } from "@material/web/typography/md-typescale
 
 /** Applique les classes .md-typescale-* de Material Web au document. */
 export function adoptTypescale(doc: Document = document): void {
-  if (typescaleStyles.styleSheet && !doc.adoptedStyleSheets.includes(typescaleStyles.styleSheet)) {
-    doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, typescaleStyles.styleSheet];
+  if (
+    typescaleStyles.styleSheet &&
+    !doc.adoptedStyleSheets.includes(typescaleStyles.styleSheet)
+  ) {
+    doc.adoptedStyleSheets = [
+      ...doc.adoptedStyleSheets,
+      typescaleStyles.styleSheet,
+    ];
   }
 }

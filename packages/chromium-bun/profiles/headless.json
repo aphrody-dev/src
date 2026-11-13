@@ -1,0 +1,252 @@
+{
+  "$comment": "Profil headless/cloud unique pour les agents navigateur (agent-browser, chromium-bun, Chromium headless de fr1). Chaque entrée cite sa définition dans la source Chromium 157.0.8103.78 (fr1:/srv/chromium/src). Consommé par src/browser/profile.ts ; mesures : docs/infra/CHROMIUM-HEADLESS.md.",
+  "chromium": "157.0.8103.78",
+  "source": "chromium/src@157.0.8103.78",
+  "notes": [
+    "base/command_line.cc:436-455 : un commutateur répété garde la dernière valeur (aucun DuplicateSwitchHandler hors tests). agent-browser ajoute ses arguments utilisateur après les siens : --disable-features du profil remplace son --disable-features=Translate.",
+    "Translate n'est pas une fonctionnalité de base::Feature en 157 (components/translate/core/common/translate_features.cc ne définit que TranslateTrigger, TranslateSimplifiedHindi, ...) : le --disable-features=Translate d'agent-browser 0.42.0 est sans effet ; la traduction est coupée par la politique TranslateEnabled sur Linux.",
+    "chrome/browser/headless/headless_mode_util.cc:21 : le mode headless ne teste que la présence de --headless ; la valeur =new est ignorée en 157 (ancien headless = binaire headless_shell séparé).",
+    "chrome/browser/devtools/remote_debugging_server.cc:90,133 : le port CDP n'écoute que sur 127.0.0.1."
+  ],
+  "args": [
+    {
+      "arg": "--headless=new",
+      "os": ["linux", "win"],
+      "src": "components/embedder_support/switches.h (kHeadless) ; chrome/browser/headless/headless_mode_util.cc:21",
+      "why": "navigateur complet sans fenêtre"
+    },
+    {
+      "arg": "--no-first-run",
+      "os": ["linux", "win"],
+      "src": "chrome/common/chrome_switches.h:528",
+      "why": "pas d'assistant de premier lancement"
+    },
+    {
+      "arg": "--no-default-browser-check",
+      "os": ["linux", "win"],
+      "src": "chrome/common/chrome_switches.h:507",
+      "why": "pas de vérification navigateur par défaut"
+    },
+    {
+      "arg": "--disable-background-networking",
+      "os": ["linux", "win"],
+      "src": "chrome/common/chrome_switches.h:238",
+      "why": "pas de trafic de fond (variations, promos, prélecture)"
+    },
+    {
+      "arg": "--disable-component-update",
+      "os": ["linux", "win"],
+      "src": "chrome/common/chrome_switches.h:245",
+      "why": "pas de téléchargement de composants au démarrage d'un profil jetable"
+    },
+    {
+      "arg": "--disable-default-apps",
+      "os": ["linux", "win"],
+      "src": "chrome/common/chrome_switches.h:254",
+      "why": "pas d'installation des applis par défaut"
+    },
+    {
+      "arg": "--disable-domain-reliability",
+      "os": ["linux", "win"],
+      "src": "chrome/common/chrome_switches.h:262",
+      "why": "pas de balises Domain Reliability envoyées à Google"
+    },
+    {
+      "arg": "--no-pings",
+      "os": ["linux", "win"],
+      "src": "chrome/common/chrome_switches.h:535",
+      "why": "pas de pings d'audit de liens <a ping>"
+    },
+    {
+      "arg": "--disable-sync",
+      "os": ["linux", "win"],
+      "src": "components/sync/base/command_line_switches.h:11",
+      "why": "aucune synchronisation de compte"
+    },
+    {
+      "arg": "--metrics-recording-only",
+      "os": ["linux", "win"],
+      "src": "components/metrics/metrics_switches.h:49",
+      "why": "métriques locales seulement, aucun envoi"
+    },
+    {
+      "arg": "--disable-breakpad",
+      "os": ["linux", "win"],
+      "src": "base/base_switches.h:15",
+      "why": "pas de gestionnaire de crash (crashpad) : un processus de moins"
+    },
+    {
+      "arg": "--mute-audio",
+      "os": ["linux", "win"],
+      "src": "media/base/media_switches.cc:183",
+      "why": "aucune sortie audio côté serveur/agent"
+    },
+    {
+      "arg": "--disable-renderer-backgrounding",
+      "os": ["linux", "win"],
+      "src": "content/public/common/content_switches.cc:243",
+      "why": "les onglets d'arrière-plan d'un agent gardent leur priorité"
+    },
+    {
+      "arg": "--disable-background-timer-throttling",
+      "os": ["linux", "win"],
+      "src": "content/public/common/content_switches.cc:97",
+      "why": "timers non bridés dans les onglets d'arrière-plan"
+    },
+    {
+      "arg": "--disable-backgrounding-occluded-windows",
+      "os": ["linux", "win"],
+      "src": "content/public/common/content_switches.cc:93",
+      "why": "fenêtres masquées non mises en veille"
+    },
+    {
+      "arg": "--disk-cache-size=268435456",
+      "os": ["linux", "win"],
+      "src": "chrome/common/chrome_switches.h:288",
+      "why": "cache disque plafonné à 256 Mio (profil persistant de fr1)"
+    },
+    {
+      "arg": "--password-store=basic",
+      "os": ["linux"],
+      "src": "components/password_manager/core/browser/password_manager_switches.cc:13",
+      "why": "pas de trousseau (gnome-keyring/kwallet) sur un serveur"
+    }
+  ],
+  "disableFeatures": [
+    {
+      "name": "BackForwardCache",
+      "src": "content/public/common/content_features.cc:182",
+      "why": "un agent navigue en série dans un onglet : les pages quittées ne restent pas en mémoire"
+    },
+    {
+      "name": "OptimizationHints",
+      "src": "components/optimization_guide/core/optimization_guide_features.cc:60",
+      "why": "pas de récupération d'indices d'optimisation"
+    },
+    {
+      "name": "MediaRouter",
+      "src": "chrome/browser/media/router/media_router_feature.cc:47",
+      "why": "pas de découverte Cast/DIAL"
+    },
+    {
+      "name": "AutofillServerCommunication",
+      "src": "components/autofill/core/common/autofill_debug_features.cc:143",
+      "why": "pas de requêtes au serveur Autofill"
+    }
+  ],
+  "gpu": {
+    "$comment": "software = hôte sans GPU (fr1) ; hardware = GPU réel (PC, ANGLE D3D11 par défaut) ; off = GPU coupé sans repli SwiftShader explicite. Choix par mesure (docs/infra/CHROMIUM-HEADLESS.md) : sur fr1, --disable-gpu + SwiftShader = 422 Mo contre 504 Mo avec --use-angle=swiftshader, WebGL2 conservé dans les deux cas.",
+    "software": [
+      {
+        "arg": "--disable-gpu",
+        "src": "content/public/common/content_switches.cc:134",
+        "why": "pas d'essai de pilote GPU absent ; compositing logiciel"
+      },
+      {
+        "arg": "--enable-unsafe-swiftshader",
+        "src": "ui/gl/gl_switches.cc:168",
+        "why": "garde WebGL2 en repli SwiftShader (CPU) ; agent-browser l'ajoute aussi en headless"
+      }
+    ],
+    "hardware": [],
+    "off": [
+      {
+        "arg": "--disable-gpu",
+        "src": "content/public/common/content_switches.cc:134",
+        "why": "compositing logiciel"
+      }
+    ],
+    "rejected": [
+      {
+        "arg": "--use-angle=swiftshader",
+        "src": "ui/gl/gl_switches.cc:102",
+        "why": "mesuré sur fr1 : +82 Mo de RAM finale contre --disable-gpu, sans gain"
+      }
+    ],
+    "default": { "linux": "software", "win": "hardware" }
+  },
+  "policies": {
+    "$comment": "Linux seulement : /etc/opt/chrome/policies/managed/aphrody-headless.json sur fr1. Sous Windows le Chrome headless lit les politiques HKLM/HKCU du Chrome de l'utilisateur : rien n'y est posé ici. Définitions : components/policy/resources/templates/policy_definitions/.",
+    "linux": {
+      "BackgroundModeEnabled": {
+        "value": false,
+        "src": "Miscellaneous/BackgroundModeEnabled.yaml (chrome.linux:19-)"
+      },
+      "MetricsReportingEnabled": {
+        "value": false,
+        "src": "Miscellaneous/MetricsReportingEnabled.yaml (chrome.*:8-)"
+      },
+      "TranslateEnabled": {
+        "value": false,
+        "src": "Miscellaneous/TranslateEnabled.yaml (chrome.*:12-)"
+      },
+      "SpellcheckEnabled": {
+        "value": false,
+        "src": "Miscellaneous/SpellcheckEnabled.yaml (chrome.*:65-)"
+      },
+      "PasswordManagerEnabled": {
+        "value": false,
+        "src": "PasswordManager/PasswordManagerEnabled.yaml (chrome.*:8-)"
+      },
+      "AutofillAddressEnabled": {
+        "value": false,
+        "src": "Miscellaneous/AutofillAddressEnabled.yaml (chrome.*:69-)"
+      },
+      "AutofillCreditCardEnabled": {
+        "value": false,
+        "src": "Miscellaneous/AutofillCreditCardEnabled.yaml (chrome.*:63-)"
+      },
+      "PromotionsEnabled": {
+        "value": false,
+        "src": "Miscellaneous/PromotionsEnabled.yaml (chrome.*:128-)"
+      },
+      "DiskCacheSize": {
+        "value": 268435456,
+        "src": "Miscellaneous/DiskCacheSize.yaml (chrome.*:17-)"
+      }
+    }
+  },
+  "excluded": [
+    {
+      "arg": "--no-sandbox",
+      "why": "sandbox conservé : fr1 a chrome-sandbox setuid et userns autorisés (kernel.apparmor_restrict_unprivileged_userns=0), lancement vérifié sans"
+    },
+    {
+      "arg": "--disable-ipc-flooding-protection",
+      "why": "protection du processus navigateur (content_switches.cc:167) : exclue"
+    },
+    {
+      "arg": "--disable-client-side-phishing-detection",
+      "why": "Safe Browsing : exclu"
+    },
+    {
+      "arg": "--disable-dev-shm-usage",
+      "why": "inutile sur fr1 (/dev/shm 23 Gio) ; agent-browser l'ajoute seul sous 256 Mio (base/base_switches.h:153)"
+    }
+  ],
+  "agentBrowserBaseline": {
+    "$comment": "Arguments qu'agent-browser 0.42.0 passe d'office en headless (third_party/agent-browser/cli/src/native/cdp/chrome.rs:466-577) : base de comparaison « avant ».",
+    "version": "0.42.0",
+    "common": [
+      "--no-first-run",
+      "--no-default-browser-check",
+      "--disable-background-networking",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-component-update",
+      "--disable-default-apps",
+      "--disable-hang-monitor",
+      "--disable-popup-blocking",
+      "--disable-prompt-on-repost",
+      "--disable-sync",
+      "--disable-features=Translate",
+      "--enable-features=NetworkService,NetworkServiceInProcess,WebMCPTesting,DevToolsWebMCPSupport",
+      "--metrics-recording-only",
+      "--password-store=basic",
+      "--use-mock-keychain",
+      "--headless=new",
+      "--hide-scrollbars",
+      "--enable-unsafe-swiftshader",
+      "--window-size=1280,720"
+    ]
+  }
+}

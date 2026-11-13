@@ -30,11 +30,11 @@ The client data path is QUIC over **UDP 41337**. It needs a NodePort or a UDP-ca
 
 Ports and protocols the server exposes (open the client ports 41337/41339 on your firewall / load balancer):
 
-| Port | Protocol | Purpose |
-|------|----------|---------|
-| 41337 | UDP | QUIC — clone / push / pull (the client data path) |
-| 41337 | TCP | gRPC — admin and revision API (`repository`, `branch`, …) |
-| 41339 | TCP | HTTP — `/health_check` and presigned URLs |
+| Port  | Protocol  | Purpose                                                                                                                                                                             |
+| ----- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 41337 | UDP       | QUIC — clone / push / pull (the client data path)                                                                                                                                   |
+| 41337 | TCP       | gRPC — admin and revision API (`repository`, `branch`, …)                                                                                                                           |
+| 41339 | TCP       | HTTP — `/health_check` and presigned URLs                                                                                                                                           |
 | 41340 | UDP + TCP | Internal replication (quic_internal + replication), peer-to-peer. Opt-in via `replication.enabled`; not a client port. See [Cross-cluster replication](#cross-cluster-replication). |
 
 QUIC and gRPC share port number 41337 on different protocols, so a LoadBalancer must serve **both TCP and UDP** on it (e.g. an AWS NLB with `aws-load-balancer-enable-tcp-udp-listener: "true"`). A TCP-only load balancer breaks clone/push.
@@ -65,7 +65,6 @@ adds a hop and loses the client's real source IP.
 
 For a stable external address instead, install with `--set service.type=LoadBalancer` on your `helm` command.
 
-
 ## Getting Started with Lore
 
 Create and clone a repo (auth is off by default):
@@ -88,19 +87,19 @@ transport error. Verified TLS needs `tls.grpcTls=true`:
 
 ```yaml
 tls:
-  mode: certManager               # requires cert-manager in the cluster
+  mode: certManager # requires cert-manager in the cluster
   grpcTls: true
-  issuerName: my-real-ca-issuer   # an Issuer backed by a CA your clients trust
+  issuerName: my-real-ca-issuer # an Issuer backed by a CA your clients trust
   extraSANs:
-    - lore.google.com            # the address clients actually dial
+    - lore.google.com # the address clients actually dial
 ```
 
 The gRPC listener is **either** plaintext **or** TLS, so this is a hard switch:
 
-| `tls.grpcTls` | Client scheme | Notes |
-|---------------|---------------|-------|
-| `false` (default) | `lore://` | gRPC is plaintext h2c. QUIC still encrypted; cert not verified. `lores://` will not connect. |
-| `true` | `lores://` | gRPC is TLS. `lore://` stops working. Clients must trust the cert. |
+| `tls.grpcTls`     | Client scheme | Notes                                                                                        |
+| ----------------- | ------------- | -------------------------------------------------------------------------------------------- |
+| `false` (default) | `lore://`     | gRPC is plaintext h2c. QUIC still encrypted; cert not verified. `lores://` will not connect. |
+| `true`            | `lores://`    | gRPC is TLS. `lore://` stops working. Clients must trust the cert.                           |
 
 Two things to get right:
 
@@ -125,21 +124,21 @@ handler return `Not found`.
 
 Override with `--set key=value`. See `values.yaml` for the full, commented list and `examples/` for ready-made sample values.yaml files.
 
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `image.repository` / `.tag` / `.digest` | `ghcr.io/epicgames/lore/loreserver` / `appVersion` / — | The loreserver image. Public; `linux/amd64`. Use the `-graviton` tag on Graviton3+. |
-| `fullnameOverride` | `""` | Pin the names of the created objects, including the Service — i.e. the in-cluster DNS name clients dial. Otherwise derived from the release name. |
-| `priorityClassName` | `""` | PriorityClass for the pods. Set it where the server shares nodes and should win or lose preemption. |
-| `terminationGracePeriodSeconds` | `45` | SIGTERM-to-SIGKILL window. Must cover the preStop hook plus shutdown. |
-| `lifecycle` | preStop `sleep 5` | Container lifecycle hooks. The default delay lets endpoint removal land before shutdown starts; `null` removes it (`{}` does not — Helm coalesces it against the default). |
-| `topology.mode` | `tiered` | `tiered` (data + handler cache) or `single` (one self-contained pod). |
-| `handler.replicas` | `2` | Number of cache pods. |
-| `service.type` | `NodePort` | `NodePort` \| `LoadBalancer` \| `ClusterIP`. |
-| `tls.mode` | `ephemeral` | `ephemeral` (self-signed, zero setup) \| `selfSigned` \| `certManager` \| `secret`. `certManager` requires [cert-manager](https://cert-manager.io) installed in the cluster; the other modes do not. |
-| `data.persistence.size` / `.storageClass` | `500Gi` / cluster default | Durable store size and class. Use fast disk (NVMe / provisioned-IOPS) for real workloads. |
-| `handler.persistence.size` / `.storageClass` / `.type` | `500Gi` / default / `pvc` | Cache size and class; `type: hostPath` puts the cache on node-local NVMe. |
-| `data.store.maxSize` / `handler.store.maxSize` | `""` (off) | Size cap that lets the store reclaim space. Off by default, and off means unbounded — see [Bounding the store](#bounding-the-store). |
-| `auth.enabled` | `false` | JWT auth. Off = open server. |
+| Key                                                    | Default                                                | What it does                                                                                                                                                                                         |
+| ------------------------------------------------------ | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `image.repository` / `.tag` / `.digest`                | `ghcr.io/epicgames/lore/loreserver` / `appVersion` / — | The loreserver image. Public; `linux/amd64`. Use the `-graviton` tag on Graviton3+.                                                                                                                  |
+| `fullnameOverride`                                     | `""`                                                   | Pin the names of the created objects, including the Service — i.e. the in-cluster DNS name clients dial. Otherwise derived from the release name.                                                    |
+| `priorityClassName`                                    | `""`                                                   | PriorityClass for the pods. Set it where the server shares nodes and should win or lose preemption.                                                                                                  |
+| `terminationGracePeriodSeconds`                        | `45`                                                   | SIGTERM-to-SIGKILL window. Must cover the preStop hook plus shutdown.                                                                                                                                |
+| `lifecycle`                                            | preStop `sleep 5`                                      | Container lifecycle hooks. The default delay lets endpoint removal land before shutdown starts; `null` removes it (`{}` does not — Helm coalesces it against the default).                           |
+| `topology.mode`                                        | `tiered`                                               | `tiered` (data + handler cache) or `single` (one self-contained pod).                                                                                                                                |
+| `handler.replicas`                                     | `2`                                                    | Number of cache pods.                                                                                                                                                                                |
+| `service.type`                                         | `NodePort`                                             | `NodePort` \| `LoadBalancer` \| `ClusterIP`.                                                                                                                                                         |
+| `tls.mode`                                             | `ephemeral`                                            | `ephemeral` (self-signed, zero setup) \| `selfSigned` \| `certManager` \| `secret`. `certManager` requires [cert-manager](https://cert-manager.io) installed in the cluster; the other modes do not. |
+| `data.persistence.size` / `.storageClass`              | `500Gi` / cluster default                              | Durable store size and class. Use fast disk (NVMe / provisioned-IOPS) for real workloads.                                                                                                            |
+| `handler.persistence.size` / `.storageClass` / `.type` | `500Gi` / default / `pvc`                              | Cache size and class; `type: hostPath` puts the cache on node-local NVMe.                                                                                                                            |
+| `data.store.maxSize` / `handler.store.maxSize`         | `""` (off)                                             | Size cap that lets the store reclaim space. Off by default, and off means unbounded — see [Bounding the store](#bounding-the-store).                                                                 |
+| `auth.enabled`                                         | `false`                                                | JWT auth. Off = open server.                                                                                                                                                                         |
 
 ### Storage
 
@@ -164,10 +163,10 @@ Under `restricted`, use `emptyDir` on a node whose ephemeral storage is NVMe-bac
 
 Two caps, set per tier under `data.store` and `handler.store`:
 
-| Key | What it bounds |
-|-----|----------------|
-| `maxSize` | Total payload bytes. Above it, the compactor drops least-recently-accessed payloads until the store is back under 70% of the cap, then reclaims the pack files they occupied. Takes a Kubernetes quantity (`200Gi`), the same units as `persistence.size` and `emptyDir.sizeLimit`, so the two can be read against each other. **This is the knob that bounds disk.** |
-| `maxCapacity` | Number of stored fragments, via a separate evictor that also drops oldest-accessed first. Floored by the server at 1048576, so smaller values do nothing. Usually redundant once `maxSize` is set. |
+| Key           | What it bounds                                                                                                                                                                                                                                                                                                                                                        |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `maxSize`     | Total payload bytes. Above it, the compactor drops least-recently-accessed payloads until the store is back under 70% of the cap, then reclaims the pack files they occupied. Takes a Kubernetes quantity (`200Gi`), the same units as `persistence.size` and `emptyDir.sizeLimit`, so the two can be read against each other. **This is the knob that bounds disk.** |
+| `maxCapacity` | Number of stored fragments, via a separate evictor that also drops oldest-accessed first. Floored by the server at 1048576, so smaller values do nothing. Usually redundant once `maxSize` is set.                                                                                                                                                                    |
 
 Set `compactionDelaySeconds` whenever you set `maxSize`. The server's own default is 86400 — one pass a day — which is far too slow for a store that fills in hours. `evictionDelaySeconds` (default 10) governs the `maxCapacity` pass and rarely needs changing.
 
@@ -178,7 +177,7 @@ data:
     compactionDelaySeconds: 900
 ```
 
-**Leaving the caps off is right for the data tier by default.** In `tiered` mode it holds the only authoritative copy, so eviction there is deletion, not cache turnover. Turn it on when the store is deliberately *acting* as a cache — a `single`-mode server in front of disposable content, say a shared build cache — and you would rather lose the coldest content gradually than all of it at once. Be clear about the trade: reading content that has aged out fails, it does not merely run slow.
+**Leaving the caps off is right for the data tier by default.** In `tiered` mode it holds the only authoritative copy, so eviction there is deletion, not cache turnover. Turn it on when the store is deliberately _acting_ as a cache — a `single`-mode server in front of disposable content, say a shared build cache — and you would rather lose the coldest content gradually than all of it at once. Be clear about the trade: reading content that has aged out fails, it does not merely run slow.
 
 On `handler`, eviction is safe by construction. A handler's `/data` is a cache in front of the durable store on the data pod, so an evicted fragment is re-fetched rather than lost.
 
@@ -201,7 +200,7 @@ replication:
   service:
     enabled: true
     type: LoadBalancer
-    loadBalancerClass: service.k8s.aws/nlb   # must carry TCP + UDP on 41340
+    loadBalancerClass: service.k8s.aws/nlb # must carry TCP + UDP on 41340
     loadBalancerSourceRanges: ["10.0.0.0/8"] # restrict to your peer networks
   topology:
     provider: fixed

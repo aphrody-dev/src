@@ -12,10 +12,15 @@ permission_claim = "lore_actions"
 # client_id is in local.toml, which setup.js writes: ZITADEL generates it.
 # ZITADEL adds the project to `aud`, and the user's roles to what the Action
 # sees, only for these scopes.
-scopes = ["openid", "profile", "urn:zitadel:iam:org:project:id:lore-project:aud", "urn:zitadel:iam:org:projects:roles"]
+scopes = [
+  "openid",
+  "profile",
+  "urn:zitadel:iam:org:project:id:lore-project:aud",
+  "urn:zitadel:iam:org:projects:roles",
+]
 client_credentials_scopes = [
-    "urn:zitadel:iam:org:project:id:lore-project:aud",
-    "urn:zitadel:iam:org:projects:roles",
+  "urn:zitadel:iam:org:project:id:lore-project:aud",
+  "urn:zitadel:iam:org:projects:roles",
 ]
 
 [immutable_store.local]

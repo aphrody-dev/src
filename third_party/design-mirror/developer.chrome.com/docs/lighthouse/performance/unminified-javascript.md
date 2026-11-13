@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Minifying JavaScript files can reduce payload sizes and script parse time.
 The Opportunities section of your Lighthouse report lists
 all unminified JavaScript files,

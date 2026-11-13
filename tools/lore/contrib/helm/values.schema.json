@@ -45,23 +45,40 @@
             },
             "accessMode": {
               "type": "string",
-              "enum": ["ReadWriteOnce", "ReadWriteMany", "ReadOnlyMany", "ReadWriteOncePod"],
+              "enum": [
+                "ReadWriteOnce",
+                "ReadWriteMany",
+                "ReadOnlyMany",
+                "ReadWriteOncePod"
+              ],
               "description": "PVC access mode (type=pvc). Each pod gets its own volume, so ReadWriteOnce is correct."
             },
             "hostPath": {
               "type": "object",
               "description": "Host directory for /data when type=hostPath. Pin the pod to nodes that have this path via nodeSelector/affinity.",
               "properties": {
-                "path": { "type": "string", "description": "Absolute directory on the node (e.g. a mounted NVMe path)." },
-                "type": { "type": "string", "description": "Kubernetes HostPathType, e.g. DirectoryOrCreate, Directory." }
+                "path": {
+                  "type": "string",
+                  "description": "Absolute directory on the node (e.g. a mounted NVMe path)."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Kubernetes HostPathType, e.g. DirectoryOrCreate, Directory."
+                }
               }
             },
             "emptyDir": {
               "type": "object",
               "description": "emptyDir options when type=emptyDir.",
               "properties": {
-                "medium": { "type": "string", "description": "\"\" (node disk) or \"Memory\" (tmpfs)." },
-                "sizeLimit": { "type": "string", "description": "Optional size limit (e.g. 200Gi); \"\" = none." }
+                "medium": {
+                  "type": "string",
+                  "description": "\"\" (node disk) or \"Memory\" (tmpfs)."
+                },
+                "sizeLimit": {
+                  "type": "string",
+                  "description": "Optional size limit (e.g. 200Gi); \"\" = none."
+                }
               }
             }
           }
@@ -109,23 +126,40 @@
             },
             "accessMode": {
               "type": "string",
-              "enum": ["ReadWriteOnce", "ReadWriteMany", "ReadOnlyMany", "ReadWriteOncePod"],
+              "enum": [
+                "ReadWriteOnce",
+                "ReadWriteMany",
+                "ReadOnlyMany",
+                "ReadWriteOncePod"
+              ],
               "description": "Cache PVC access mode (type=pvc). Each pod gets its own volume, so ReadWriteOnce is correct."
             },
             "hostPath": {
               "type": "object",
               "description": "Host directory for the cache when type=hostPath.",
               "properties": {
-                "path": { "type": "string", "description": "Absolute directory on the node (e.g. a mounted NVMe path)." },
-                "type": { "type": "string", "description": "Kubernetes HostPathType, e.g. DirectoryOrCreate." }
+                "path": {
+                  "type": "string",
+                  "description": "Absolute directory on the node (e.g. a mounted NVMe path)."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Kubernetes HostPathType, e.g. DirectoryOrCreate."
+                }
               }
             },
             "emptyDir": {
               "type": "object",
               "description": "emptyDir options when type=emptyDir.",
               "properties": {
-                "medium": { "type": "string", "description": "\"\" (node disk) or \"Memory\" (tmpfs)." },
-                "sizeLimit": { "type": "string", "description": "Optional size limit; \"\" = none." }
+                "medium": {
+                  "type": "string",
+                  "description": "\"\" (node disk) or \"Memory\" (tmpfs)."
+                },
+                "sizeLimit": {
+                  "type": "string",
+                  "description": "Optional size limit; \"\" = none."
+                }
               }
             }
           }
@@ -180,7 +214,10 @@
       "items": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "description": "Name of an existing image pull Secret." }
+          "name": {
+            "type": "string",
+            "description": "Name of an existing image pull Secret."
+          }
         }
       }
     },
@@ -208,9 +245,18 @@
           "type": "object",
           "description": "Optional pinned NodePorts (30000-32767) when type=NodePort. Empty string lets Kubernetes assign them.",
           "properties": {
-            "quic": { "type": ["string", "integer"], "description": "UDP/QUIC node port (client data path)." },
-            "grpc": { "type": ["string", "integer"], "description": "TCP/gRPC node port." },
-            "http": { "type": ["string", "integer"], "description": "TCP/HTTP node port (/health_check)." }
+            "quic": {
+              "type": ["string", "integer"],
+              "description": "UDP/QUIC node port (client data path)."
+            },
+            "grpc": {
+              "type": ["string", "integer"],
+              "description": "TCP/gRPC node port."
+            },
+            "http": {
+              "type": ["string", "integer"],
+              "description": "TCP/HTTP node port (/health_check)."
+            }
           }
         },
         "loadBalancerClass": {
@@ -262,7 +308,10 @@
           "enum": ["ephemeral", "certManager", "secret", "selfSigned"],
           "description": "Certificate source (enumerated):\n- ephemeral (default): the SERVER generates a self-signed cert at startup. No cert-manager, no Secret, nothing mounted. Untrusted and regenerated on every restart — clients use lore:// (skip verify). Best for trials / dev.\n- selfSigned: the CHART generates a stable self-signed cert (sprig) stored in a Secret and preserved across upgrades. No cert-manager. Still untrusted by clients (lore://) unless they trust it out of band.\n- certManager: cert-manager issues the cert (the ONLY mode that requires cert-manager installed). With a real CA Issuer (tls.issuerName) and tls.extraSANs, clients can use the verifying lores:// scheme.\n- secret: bring your own existing TLS Secret (tls.existingSecret). Use lores:// if the cert is trusted and its SANs match the address."
         },
-        "grpcTls": { "type": "boolean", "description": "Also serve gRPC (TCP 41337) over TLS with the same cert. Required for the lores:// scheme; makes the gRPC listener TLS-only so plaintext lore:// clients stop working. Cannot be used with tls.mode=ephemeral; the install fails if you try." },
+        "grpcTls": {
+          "type": "boolean",
+          "description": "Also serve gRPC (TCP 41337) over TLS with the same cert. Required for the lores:// scheme; makes the gRPC listener TLS-only so plaintext lore:// clients stop working. Cannot be used with tls.mode=ephemeral; the install fails if you try."
+        },
         "extraSANs": {
           "type": "array",
           "items": { "type": "string" },
@@ -321,16 +370,28 @@
           "type": "object",
           "description": "Minimum guaranteed compute resources.",
           "properties": {
-            "cpu": { "type": ["string", "number"], "description": "CPU request (e.g. \"2\")." },
-            "memory": { "type": "string", "description": "Memory request (e.g. 8Gi)." }
+            "cpu": {
+              "type": ["string", "number"],
+              "description": "CPU request (e.g. \"2\")."
+            },
+            "memory": {
+              "type": "string",
+              "description": "Memory request (e.g. 8Gi)."
+            }
           }
         },
         "limits": {
           "type": "object",
           "description": "Maximum compute resources.",
           "properties": {
-            "cpu": { "type": ["string", "number"], "description": "CPU limit (e.g. \"2\")." },
-            "memory": { "type": "string", "description": "Memory limit (e.g. 8Gi)." }
+            "cpu": {
+              "type": ["string", "number"],
+              "description": "CPU limit (e.g. \"2\")."
+            },
+            "memory": {
+              "type": "string",
+              "description": "Memory limit (e.g. 8Gi)."
+            }
           }
         }
       }
@@ -412,26 +473,58 @@
       "type": "object",
       "description": "Startup probe (HTTP GET /health_check). Allows the server time to start before liveness/readiness apply.",
       "properties": {
-        "failureThreshold": { "type": "integer", "minimum": 1, "description": "Consecutive failures allowed during startup before the pod is killed." },
-        "periodSeconds": { "type": "integer", "minimum": 1, "description": "Seconds between startup probe attempts." }
+        "failureThreshold": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Consecutive failures allowed during startup before the pod is killed."
+        },
+        "periodSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Seconds between startup probe attempts."
+        }
       }
     },
     "livenessProbe": {
       "type": "object",
       "description": "Liveness probe (HTTP GET /health_check). Restarts the pod when it fails repeatedly.",
       "properties": {
-        "failureThreshold": { "type": "integer", "minimum": 1, "description": "Consecutive failures before the pod is restarted." },
-        "periodSeconds": { "type": "integer", "minimum": 1, "description": "Seconds between liveness probe attempts." },
-        "timeoutSeconds": { "type": "integer", "minimum": 1, "description": "Probe timeout in seconds." }
+        "failureThreshold": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Consecutive failures before the pod is restarted."
+        },
+        "periodSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Seconds between liveness probe attempts."
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Probe timeout in seconds."
+        }
       }
     },
     "readinessProbe": {
       "type": "object",
       "description": "Readiness probe (HTTP GET /health_check). Removes the pod from Service endpoints when unhealthy.",
       "properties": {
-        "failureThreshold": { "type": "integer", "minimum": 1, "description": "Consecutive failures before the pod is marked not ready." },
-        "periodSeconds": { "type": "integer", "minimum": 1, "description": "Seconds between readiness probe attempts." },
-        "timeoutSeconds": { "type": "integer", "minimum": 1, "description": "Probe timeout in seconds." }
+        "failureThreshold": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Consecutive failures before the pod is marked not ready."
+        },
+        "periodSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Seconds between readiness probe attempts."
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Probe timeout in seconds."
+        }
       }
     },
     "terminationGracePeriodSeconds": {
@@ -448,33 +541,62 @@
       "type": "object",
       "description": "Internal server-to-server replication endpoints (port 41340: quic_internal UDP + grpc_internal TCP) for cross-cluster peers/read replicas. Off by default; requires mutual TLS and loreserver >= v0.8.4. Only the data tier runs these.",
       "properties": {
-        "enabled": { "type": "boolean", "description": "Expose and configure the 41340 replication endpoints." },
-        "port": { "type": "integer", "description": "Replication port (default 41340)." },
-        "verifyClientCerts": { "type": "boolean", "description": "Require mutual TLS. When true, a full cert chain (tls.secretName) is required or the endpoint won't start." },
+        "enabled": {
+          "type": "boolean",
+          "description": "Expose and configure the 41340 replication endpoints."
+        },
+        "port": {
+          "type": "integer",
+          "description": "Replication port (default 41340)."
+        },
+        "verifyClientCerts": {
+          "type": "boolean",
+          "description": "Require mutual TLS. When true, a full cert chain (tls.secretName) is required or the endpoint won't start."
+        },
         "service": {
           "type": "object",
           "description": "Dedicated Service publishing port 41340 (quic_internal UDP + replication gRPC/TCP) on a routable address so peers in OTHER clusters can reach it. The headless Service has no external address. Off by default; requires replication.enabled.",
           "properties": {
-            "enabled": { "type": "boolean", "description": "Render the replication Service." },
-            "type": { "type": "string", "enum": ["LoadBalancer", "NodePort", "ClusterIP"], "description": "Service type for the replication endpoint." },
+            "enabled": {
+              "type": "boolean",
+              "description": "Render the replication Service."
+            },
+            "type": {
+              "type": "string",
+              "enum": ["LoadBalancer", "NodePort", "ClusterIP"],
+              "description": "Service type for the replication endpoint."
+            },
             "annotations": {
               "type": "object",
               "additionalProperties": { "type": "string" },
               "description": "Annotations on the replication Service (e.g. an internal-only LB scheme)."
             },
-            "loadBalancerClass": { "type": "string", "description": "loadBalancerClass when type=LoadBalancer; must carry TCP+UDP on one port." },
+            "loadBalancerClass": {
+              "type": "string",
+              "description": "loadBalancerClass when type=LoadBalancer; must carry TCP+UDP on one port."
+            },
             "loadBalancerSourceRanges": {
               "type": "array",
               "items": { "type": "string" },
               "description": "CIDRs allowed to reach 41340. Empty = unrestricted."
             },
-            "externalTrafficPolicy": { "type": "string", "enum": ["Cluster", "Local"], "description": "externalTrafficPolicy for LoadBalancer/NodePort." },
+            "externalTrafficPolicy": {
+              "type": "string",
+              "enum": ["Cluster", "Local"],
+              "description": "externalTrafficPolicy for LoadBalancer/NodePort."
+            },
             "nodePorts": {
               "type": "object",
               "description": "Pinned NodePorts when type=NodePort (30000-32767); empty = auto-assign.",
               "properties": {
-                "quic": { "type": ["string", "integer"], "description": "UDP NodePort for quic_internal." },
-                "grpc": { "type": ["string", "integer"], "description": "TCP NodePort for replication gRPC." }
+                "quic": {
+                  "type": ["string", "integer"],
+                  "description": "UDP NodePort for quic_internal."
+                },
+                "grpc": {
+                  "type": ["string", "integer"],
+                  "description": "TCP NodePort for replication gRPC."
+                }
               }
             }
           }
@@ -483,17 +605,33 @@
           "type": "object",
           "description": "Secret holding the replication server cert, key, and CA chain (mounted at /etc/lore/replication-tls).",
           "properties": {
-            "secretName": { "type": "string", "description": "Secret name (empty = no cert mounted)." },
-            "certKey": { "type": "string", "description": "Secret key for the server cert." },
-            "keyKey": { "type": "string", "description": "Secret key for the private key." },
-            "caKey": { "type": "string", "description": "Secret key for the CA chain (cert_chain)." }
+            "secretName": {
+              "type": "string",
+              "description": "Secret name (empty = no cert mounted)."
+            },
+            "certKey": {
+              "type": "string",
+              "description": "Secret key for the server cert."
+            },
+            "keyKey": {
+              "type": "string",
+              "description": "Secret key for the private key."
+            },
+            "caKey": {
+              "type": "string",
+              "description": "Secret key for the CA chain (cert_chain)."
+            }
           }
         },
         "topology": {
           "type": "object",
           "description": "Peer discovery for replication.",
           "properties": {
-            "provider": { "type": "string", "enum": ["none", "fixed", "consul"], "description": "none (single-node), fixed (static peer list), or consul (needs the consul plugin in the image)." },
+            "provider": {
+              "type": "string",
+              "enum": ["none", "fixed", "consul"],
+              "description": "none (single-node), fixed (static peer list), or consul (needs the consul plugin in the image)."
+            },
             "fixed": {
               "type": "object",
               "properties": {
@@ -504,7 +642,11 @@
                 }
               }
             },
-            "consul": { "type": "object", "additionalProperties": true, "description": "[plugins.consul] key/values." }
+            "consul": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "[plugins.consul] key/values."
+            }
           }
         }
       }
@@ -513,7 +655,10 @@
       "type": "object",
       "description": "Presigned-URL feature on the HTTP endpoint. Off by default. The HMAC key is a Secret injected as an env var (LORE__SERVER__HTTP__PRESIGNED_URL_HMAC_KEY), never written to the ConfigMap.",
       "properties": {
-        "enabled": { "type": "boolean", "description": "Emit the presigned-URL TTL settings and wire the HMAC key env." },
+        "enabled": {
+          "type": "boolean",
+          "description": "Emit the presigned-URL TTL settings and wire the HMAC key env."
+        },
         "hmacKeySecret": {
           "type": "object",
           "description": "Secret reference for the hex HMAC key (>= 32 bytes; openssl rand -hex 32).",
@@ -522,9 +667,18 @@
             "key": { "type": "string", "description": "Key within the Secret." }
           }
         },
-        "minTtlSeconds": { "type": "integer", "description": "Minimum presigned-URL lifetime." },
-        "defaultTtlSeconds": { "type": "integer", "description": "Default presigned-URL lifetime." },
-        "maxTtlSeconds": { "type": "integer", "description": "Maximum presigned-URL lifetime." }
+        "minTtlSeconds": {
+          "type": "integer",
+          "description": "Minimum presigned-URL lifetime."
+        },
+        "defaultTtlSeconds": {
+          "type": "integer",
+          "description": "Default presigned-URL lifetime."
+        },
+        "maxTtlSeconds": {
+          "type": "integer",
+          "description": "Maximum presigned-URL lifetime."
+        }
       }
     },
     "telemetry": {
@@ -535,32 +689,70 @@
           "type": "object",
           "description": "OTLP exporter. When endpoint is set, all three fields are emitted (they have no server-side individual defaults).",
           "properties": {
-            "endpoint": { "type": "string", "description": "OTLP collector endpoint (e.g. http://otel-collector.observability.svc.cluster.local:4317). Empty = no export." },
-            "queueSize": { "type": "integer", "description": "Export queue size." },
-            "timeoutMs": { "type": "integer", "description": "Export timeout in milliseconds." }
+            "endpoint": {
+              "type": "string",
+              "description": "OTLP collector endpoint (e.g. http://otel-collector.observability.svc.cluster.local:4317). Empty = no export."
+            },
+            "queueSize": {
+              "type": "integer",
+              "description": "Export queue size."
+            },
+            "timeoutMs": {
+              "type": "integer",
+              "description": "Export timeout in milliseconds."
+            }
           }
         },
         "logger": {
           "type": "object",
           "properties": {
-            "enableOtlp": { "type": "boolean", "description": "Forward logs over OTLP (only when exporter.endpoint is set)." },
-            "format": { "type": "string", "enum": ["ansi", "json", "text"], "description": "Log format." },
-            "output": { "type": "string", "description": "Log output: stdout or stderr (file output via config.extra)." }
+            "enableOtlp": {
+              "type": "boolean",
+              "description": "Forward logs over OTLP (only when exporter.endpoint is set)."
+            },
+            "format": {
+              "type": "string",
+              "enum": ["ansi", "json", "text"],
+              "description": "Log format."
+            },
+            "output": {
+              "type": "string",
+              "description": "Log output: stdout or stderr (file output via config.extra)."
+            }
           }
         },
         "metrics": {
           "type": "object",
           "properties": {
-            "exportIntervalMillis": { "type": "integer", "description": "Metric export interval (ms)." },
-            "sampleIntervalMillis": { "type": "integer", "description": "Metric sample interval (ms)." }
+            "exportIntervalMillis": {
+              "type": "integer",
+              "description": "Metric export interval (ms)."
+            },
+            "sampleIntervalMillis": {
+              "type": "integer",
+              "description": "Metric sample interval (ms)."
+            }
           }
         },
         "traces": {
           "type": "object",
           "properties": {
-            "sampleRate": { "type": "number", "minimum": 0, "maximum": 1, "description": "Trace sample rate [0,1]." },
-            "sampleRateLowTier": { "type": "number", "minimum": 0, "maximum": 1, "description": "Low-tier trace sample rate [0,1]." },
-            "serviceName": { "type": "string", "description": "Optional service name in traces." }
+            "sampleRate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Trace sample rate [0,1]."
+            },
+            "sampleRateLowTier": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Low-tier trace sample rate [0,1]."
+            },
+            "serviceName": {
+              "type": "string",
+              "description": "Optional service name in traces."
+            }
           }
         },
         "additionalLabels": {

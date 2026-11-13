@@ -23,13 +23,21 @@ export interface WindowsDx {
 }
 
 function regValue(key: string, value: string): string | null {
-  const r = Bun.spawnSync(["reg", "query", key, "/v", value], { stdout: "pipe", stderr: "ignore" });
-  const m = r.stdout.toString().match(new RegExp(`${value}\\s+REG_\\w+\\s+(.+)`));
+  const r = Bun.spawnSync(["reg", "query", key, "/v", value], {
+    stdout: "pipe",
+    stderr: "ignore",
+  });
+  const m = r.stdout
+    .toString()
+    .match(new RegExp(`${value}\\s+REG_\\w+\\s+(.+)`));
   return m?.[1]?.trim() ?? null;
 }
 
 export function windowsDx(): WindowsDx {
-  const sys = Bun.spawnSync([ayBin(), "sys", "--json", "--no-tools"], { stdout: "pipe", stderr: "ignore" });
+  const sys = Bun.spawnSync([ayBin(), "sys", "--json", "--no-tools"], {
+    stdout: "pipe",
+    stderr: "ignore",
+  });
   let adapters: Adapter[] = [];
   try {
     adapters = (JSON.parse(sys.stdout.toString()).gpus ?? []) as Adapter[];
@@ -38,12 +46,21 @@ export function windowsDx(): WindowsDx {
   }
   const sys32 = join(process.env.SystemRoot ?? "C:\\Windows", "System32");
   const runtime = Object.fromEntries(
-    ["d3d12.dll", "D3D12Core.dll", "dxgi.dll", "d3d11.dll", "dxcore.dll", "dxil.dll", "dxcompiler.dll"].map((f) => [
-      f,
-      existsSync(join(sys32, f)),
-    ]),
+    [
+      "d3d12.dll",
+      "D3D12Core.dll",
+      "dxgi.dll",
+      "d3d11.dll",
+      "dxcore.dll",
+      "dxil.dll",
+      "dxcompiler.dll",
+    ].map((f) => [f, existsSync(join(sys32, f))]),
   );
-  return { adapters, runtime, directx_version: regValue("HKLM\\SOFTWARE\\Microsoft\\DirectX", "Version") };
+  return {
+    adapters,
+    runtime,
+    directx_version: regValue("HKLM\\SOFTWARE\\Microsoft\\DirectX", "Version"),
+  };
 }
 
 export interface ProtonDx {
@@ -59,7 +76,9 @@ export function protonDx(tools: CompatTool[]): ProtonDx[] {
     existsSync(dir)
       ? readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
           e.isDirectory()
-            ? readdirSync(join(dir, e.name)).filter((f) => f.endsWith(".dll")).map((f) => `${e.name}/${f}`)
+            ? readdirSync(join(dir, e.name))
+                .filter((f) => f.endsWith(".dll"))
+                .map((f) => `${e.name}/${f}`)
             : e.name.endsWith(".dll")
               ? [e.name]
               : [],

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Katie Hempenius [X](https://twitter.com/katiehempenius)
 
 > [!IMPORTANT]
@@ -30,13 +31,13 @@ compressing them.
 - First, declare the Imagemin plugin by adding this code at the top of `webpack.config.js`:
 
 ```javascript
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
+const ImageminPlugin = require("imagemin-webpack-plugin").default;
 ```
 
 - Next, add the following code as the last item in the `plugins[]` array. This adds Imagemin to the list of plugins that webpack uses:
 
 ```javascript
-new ImageminPlugin()
+new ImageminPlugin();
 ```
 
 > [!NOTE]
@@ -47,24 +48,26 @@ new ImageminPlugin()
 Your complete `webpack.config.js` file should now look like this:
 
 ```javascript
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const path = require('path');
+const ImageminPlugin = require("imagemin-webpack-plugin").default;
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path");
 
 module.exports = {
-  entry: './index.js',
+  entry: "./index.js",
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
   },
   plugins: [
-     new CopyWebpackPlugin([{
-       from: 'img/**/**',
-       to: path.resolve(__dirname, 'dist')
-     }]),
-     new ImageminPlugin()
-  ]
-}
+    new CopyWebpackPlugin([
+      {
+        from: "img/**/**",
+        to: path.resolve(__dirname, "dist"),
+      },
+    ]),
+    new ImageminPlugin(),
+  ],
+};
 ```
 
 You now have a webpack config that compresses images using Imagemin.
@@ -98,7 +101,9 @@ Customize our Imagemin configuration to fix this warning.
 Add settings for compressing PNG images by passing the following object to `ImageminPlugin()`:
 
 ```javascript
-{pngquant: ({quality: [0.5, 0.5]})}
+{
+  pngquant: ({ quality: [0.5, 0.5] });
+}
 ```
 
 This code tells Imagemin to compress PNGs using the Pngquant plugin. The
@@ -111,26 +116,28 @@ be compressed at 50% quality, pass `0.5` as both the min and max value.
 Your `webpack.config.js` file should now look like this:
 
 ```javascript
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const path = require('path');
+const ImageminPlugin = require("imagemin-webpack-plugin").default;
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path");
 
 module.exports = {
-  entry: './index.js',
+  entry: "./index.js",
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
   },
   plugins: [
-    new CopyWebpackPlugin([{
-        from: 'img/**/**',
-        to: path.resolve(__dirname, 'dist')
-    }]),
+    new CopyWebpackPlugin([
+      {
+        from: "img/**/**",
+        to: path.resolve(__dirname, "dist"),
+      },
+    ]),
     new ImageminPlugin({
-      pngquant: ({quality: [0.5, 0.5]}),
-      })
-  ]
-}
+      pngquant: { quality: [0.5, 0.5] },
+    }),
+  ],
+};
 ```
 
 But what about JPEGs? The project also has JPEG images, so you should specify
@@ -147,16 +154,16 @@ edit your `webpack.config.js` file:
 - Initialize the `imagemin-mozjpeg` plugin by adding the following line at the top of your `webpack.config.js` file:
 
 ```javascript
-const imageminMozjpeg = require('imagemin-mozjpeg');
+const imageminMozjpeg = require("imagemin-mozjpeg");
 ```
 
 - Add a `plugins` property to the object passed to `ImageminPlugin()`, such that the object now looks like this:
 
 ```javascript
 new ImageminPlugin({
-  pngquant: ({quality: [0.5, 0.5]}),
-  plugins: [imageminMozjpeg({quality: 50})]
-})
+  pngquant: { quality: [0.5, 0.5] },
+  plugins: [imageminMozjpeg({ quality: 50 })],
+});
 ```
 
 This code tells webpack to compress JPGs to a quality of 50 (0 is the worst;
@@ -179,28 +186,30 @@ the `plugins` property.
 Your code should now look like this:
 
 ```javascript
-const imageminMozjpeg = require('imagemin-mozjpeg');
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const path = require('path');
+const imageminMozjpeg = require("imagemin-mozjpeg");
+const ImageminPlugin = require("imagemin-webpack-plugin").default;
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path");
 
 module.exports = {
-  entry: './index.js',
+  entry: "./index.js",
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
   },
   plugins: [
-    new CopyWebpackPlugin([{
-      from: 'img/**/**',
-      to: path.resolve(__dirname, 'dist')
-    }]),
+    new CopyWebpackPlugin([
+      {
+        from: "img/**/**",
+        to: path.resolve(__dirname, "dist"),
+      },
+    ]),
     new ImageminPlugin({
-      pngquant: ({quality: [0.5, 0.5]}),
-      plugins: [imageminMozjpeg({quality: 50})]
-    })
-  ]
-}
+      pngquant: { quality: [0.5, 0.5] },
+      plugins: [imageminMozjpeg({ quality: 50 })],
+    }),
+  ],
+};
 ```
 
 ## Re-run webpack and verify results with Lighthouse

@@ -20,44 +20,44 @@ If you've used Git worktrees, instances cover the same ground without a main rep
 
 1. **Turn on automatic use.**
 
-    ```bash
-    lore shared-store set-use-automatically true
-    ```
+   ```bash
+   lore shared-store set-use-automatically true
+   ```
 
-    Every `lore clone` and `lore repository create` on this machine then uses a shared store. To opt in one clone at a time instead, leave the setting off and pass `--use-shared-store` to each clone.
+   Every `lore clone` and `lore repository create` on this machine then uses a shared store. To opt in one clone at a time instead, leave the setting off and pass `--use-shared-store` to each clone.
 
 2. **Clone the first instance.**
 
-    ```bash
-    cd ~
-    lore clone lore://127.0.0.1:41337/my-project my-project-a
-    ```
+   ```bash
+   cd ~
+   lore clone lore://127.0.0.1:41337/my-project my-project-a
+   ```
 
-    The first clone from a server finds no store for it and creates one:
+   The first clone from a server finds no store for it and creates one:
 
-    ```text
-    [Warn] Creating new shared store for remote lore://127.0.0.1:41337 in shared store at /home/you/.local/share/lore/shared_store/127.0.0.1_41337/shared_store
-    Cloning repository 3f2a1b4c5d6e7f8a... branch main into /home/you/my-project-a
-    ...
-    Clone complete in 0.12s
-    ```
+   ```text
+   [Warn] Creating new shared store for remote lore://127.0.0.1:41337 in shared store at /home/you/.local/share/lore/shared_store/127.0.0.1_41337/shared_store
+   Cloning repository 3f2a1b4c5d6e7f8a... branch main into /home/you/my-project-a
+   ...
+   Clone complete in 0.12s
+   ```
 
-    The instance's `.lore/` holds only its config and identity. Its content lives in the store.
+   The instance's `.lore/` holds only its config and identity. Its content lives in the store.
 
 3. **Check the store.**
 
-    ```bash
-    lore shared-store info
-    ```
+   ```bash
+   lore shared-store info
+   ```
 
-    ```text
-    Shared store will be used automatically: true
-    Remote URL: 127.0.0.1:41337
-      Path: /home/you/.local/share/lore/shared_store/127.0.0.1_41337/shared_store
-      Exists: true
-    ```
+   ```text
+   Shared store will be used automatically: true
+   Remote URL: 127.0.0.1:41337
+     Path: /home/you/.local/share/lore/shared_store/127.0.0.1_41337/shared_store
+     Exists: true
+   ```
 
-    Linux is shown. The store lives in Lore's data directory, which is `~/Library/Application Support/com.epicgames.lore` on macOS and `%LOCALAPPDATA%\Epic Games\lore\data` on Windows.
+   Linux is shown. The store lives in Lore's data directory, which is `~/Library/Application Support/com.epicgames.lore` on macOS and `%LOCALAPPDATA%\Epic Games\lore\data` on Windows.
 
 One store serves every repository on a Lore Server, so a clone of another repository from `lore://127.0.0.1:41337` uses the same store.
 
@@ -174,42 +174,44 @@ Store at path: /home/you/.local/share/lore/shared_store/127.0.0.1_41337
 
 1. **Commit what you want to keep.**
 
-    Revisions you've committed stay in the store, on their branch, after the instance is gone. Changes you haven't committed are deleted with the directory.
+   Revisions you've committed stay in the store, on their branch, after the instance is gone. Changes you haven't committed are deleted with the directory.
 
 2. **Delete the directory.**
 
     <!-- tabs:start -->
 
     <!-- tab -->
-    **macOS / Linux**
 
-    ```bash
-    rm -rf ~/my-project-b
-    ```
+   **macOS / Linux**
+
+   ```bash
+   rm -rf ~/my-project-b
+   ```
 
     <!-- tab -->
-    **Windows**
 
-    ```powershell
-    Remove-Item -Recurse -Force ~/my-project-b
-    ```
+   **Windows**
+
+   ```powershell
+   Remove-Item -Recurse -Force ~/my-project-b
+   ```
 
     <!-- tabs:end -->
 
 3. **Prune the instance list.**
 
-    From any other instance of the repository:
+   From any other instance of the repository:
 
-    ```bash
-    lore repository instance prune
-    ```
+   ```bash
+   lore repository instance prune
+   ```
 
-    ```text
-      Pruned 01a134f3df717142... /home/you/my-project-b (stale)
-    Pruned 1 stale instance(s)
-    ```
+   ```text
+     Pruned 01a134f3df717142... /home/you/my-project-b (stale)
+   Pruned 1 stale instance(s)
+   ```
 
-    Every clone over the store also prunes the stale instances of its repository, so the list catches up at the next clone if you skip this step.
+   Every clone over the store also prunes the stale instances of its repository, so the list catches up at the next clone if you skip this step.
 
 ## Move an instance
 
@@ -218,29 +220,31 @@ Store at path: /home/you/.local/share/lore/shared_store/127.0.0.1_41337
     <!-- tabs:start -->
 
     <!-- tab -->
-    **macOS / Linux**
 
-    ```bash
-    mv ~/my-project-a ~/work/my-project-a
-    ```
+   **macOS / Linux**
+
+   ```bash
+   mv ~/my-project-a ~/work/my-project-a
+   ```
 
     <!-- tab -->
-    **Windows**
 
-    ```powershell
-    Move-Item ~/my-project-a ~/work/my-project-a
-    ```
+   **Windows**
+
+   ```powershell
+   Move-Item ~/my-project-a ~/work/my-project-a
+   ```
 
     <!-- tabs:end -->
 
 2. **Record the new path.**
 
-    In the moved instance:
+   In the moved instance:
 
-    ```bash
-    cd ~/work/my-project-a
-    lore repository update-path
-    ```
+   ```bash
+   cd ~/work/my-project-a
+   lore repository update-path
+   ```
 
 > [!WARNING]
 > Run `lore repository update-path` before any other instance prunes or clones. Until you do, the instance list records the old path, which no longer exists. A prune, including the one every clone over the store runs, takes the moved instance for a deleted one and discards its branch, revision, and staged state. The instance then fails with `anchor branch is missing`, and you have to delete it and clone it again. The revisions it committed stay in the store.
@@ -253,11 +257,11 @@ To delete a store and everything in it:
 
 1. **Remove every instance over it.**
 
-    `lore shared-store list --include-instances true` lists them, for every repository on the server. Remove each one as in [Remove an instance](#remove-an-instance).
+   `lore shared-store list --include-instances true` lists them, for every repository on the server. Remove each one as in [Remove an instance](#remove-an-instance).
 
 2. **Delete the store directory.**
 
-    Delete the path `lore shared-store info` reports for the server. The next clone from that server creates a new, empty store in the same place.
+   Delete the path `lore shared-store info` reports for the server. The next clone from that server creates a new, empty store in the same place.
 
 > [!WARNING]
 > Deleting a store deletes every revision committed in its instances and not pushed, on every branch of every repository over it.

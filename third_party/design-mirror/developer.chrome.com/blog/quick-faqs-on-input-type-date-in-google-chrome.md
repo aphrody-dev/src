@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Eiji Kitamura [X](https://twitter.com/agektmr) [GitHub](https://github.com/agektmr) [Mastodon](https://infosec.exchange/@agektmr) [Bluesky](https://bsky.app/profile/agektmr.com)
 
 - This article is written by a Chrome software engineer Kent Tamura.
@@ -44,13 +45,14 @@ If you'd like to apply jQuery Datepicker on all platforms, use `input[type=text]
 If you'd like to apply jQuery Datepicker only on platforms without `input[type=date]` support, you may use [Modernizr](https://modernizr.com/), or the following code:
 
 ```javascript
-var isDateInputSupported = function(){
-var elem = document.createElement('input');
-elem.setAttribute('type','date');
-elem.value = 'foo';
-return (elem.type == 'date' && elem.value != 'foo');
-}
+var isDateInputSupported = function () {
+  var elem = document.createElement("input");
+  elem.setAttribute("type", "date");
+  elem.value = "foo";
+  return elem.type == "date" && elem.value != "foo";
+};
 
-if (!isDateInputSupported())  // or.. !Modernizr.inputtypes.date
-    $('input[type="date"]').datepicker();
+if (!isDateInputSupported())
+  // or.. !Modernizr.inputtypes.date
+  $('input[type="date"]').datepicker();
 ```

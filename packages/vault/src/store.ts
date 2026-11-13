@@ -7,7 +7,15 @@
  * Values travel through memory, stdin and child environments only: never argv, never stdout.
  */
 
-import { mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  readdir,
+  readFile,
+  rename,
+  rm,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import { join } from "node:path";
 import { localStore, type LocalStoreInfo, WIN } from "./paths.ts";
 import { dpapiProtect, dpapiUnprotect } from "./win/pool.ts";
@@ -19,10 +27,15 @@ import { dpapiProtect, dpapiUnprotect } from "./win/pool.ts";
  * starts with 01 00 00 00 (dwVersion), so the magic cannot collide.
  */
 export const DPAPI_V2 = new TextEncoder().encode("AYD2");
-export const entropyV2 = (name: string): Uint8Array => new TextEncoder().encode(`aphrody/vault/dpapi/v2|${name}`);
-export const isDpapiV2 = (b: Uint8Array): boolean => b.byteLength > 4 && DPAPI_V2.every((c, i) => b[i] === c);
+export const entropyV2 = (name: string): Uint8Array =>
+  new TextEncoder().encode(`aphrody/vault/dpapi/v2|${name}`);
+export const isDpapiV2 = (b: Uint8Array): boolean =>
+  b.byteLength > 4 && DPAPI_V2.every((c, i) => b[i] === c);
 
-export async function dpapiEncode(name: string, data: Uint8Array): Promise<Uint8Array> {
+export async function dpapiEncode(
+  name: string,
+  data: Uint8Array,
+): Promise<Uint8Array> {
   const blob = await dpapiProtect(data, entropyV2(name));
   const out = new Uint8Array(4 + blob.byteLength);
   out.set(DPAPI_V2);
@@ -31,11 +44,20 @@ export async function dpapiEncode(name: string, data: Uint8Array): Promise<Uint8
 }
 
 /** Marker written by `vault migrate-dpapi` once no v1 blob remains: v1 is then refused (vault + env-kit). */
-export const v2OnlyMarker = (): string => join(localStore().dir, ".dpapi-v2-only");
-const v2Only = (): Promise<boolean> => stat(v2OnlyMarker()).then(() => true, () => false);
+export const v2OnlyMarker = (): string =>
+  join(localStore().dir, ".dpapi-v2-only");
+const v2Only = (): Promise<boolean> =>
+  stat(v2OnlyMarker()).then(
+    () => true,
+    () => false,
+  );
 
 /** Rewrites every v1 blob as v2, then sets the v2-only marker. Values never leave the process. */
-export async function migrateDpapiV2(): Promise<{ migrated: number; v2: number; marker: boolean }> {
+export async function migrateDpapiV2(): Promise<{
+  migrated: number;
+  v2: number;
+  marker: boolean;
+}> {
   const info = localStore();
   if (info.backend !== "dpapi") return { migrated: 0, v2: 0, marker: false };
   let migrated = 0;
@@ -58,19 +80,26 @@ export async function migrateDpapiV2(): Promise<{ migrated: number; v2: number; 
   return { migrated, v2, marker: true };
 }
 
-export async function dpapiDecode(name: string, file: Uint8Array): Promise<Uint8Array> {
-  return isDpapiV2(file) ? dpapiUnprotect(file.subarray(4), entropyV2(name)) : dpapiUnprotect(file);
+export async function dpapiDecode(
+  name: string,
+  file: Uint8Array,
+): Promise<Uint8Array> {
+  return isDpapiV2(file)
+    ? dpapiUnprotect(file.subarray(4), entropyV2(name))
+    : dpapiUnprotect(file);
 }
 
 export const NAME = /^[A-Za-z_][A-Za-z0-9_.-]{0,127}$/;
 
 export function assertName(name: string): void {
-  if (!NAME.test(name)) throw new Error(`invalid secret name: ${JSON.stringify(name)}`);
+  if (!NAME.test(name))
+    throw new Error(`invalid secret name: ${JSON.stringify(name)}`);
 }
 
 const enc = new TextEncoder();
 const dec = new TextDecoder();
-const fileName = (info: LocalStoreInfo, name: string): string => (info.backend === "dpapi" ? `${name}.dpapi` : name);
+const fileName = (info: LocalStoreInfo, name: string): string =>
+  info.backend === "dpapi" ? `${name}.dpapi` : name;
 
 async function mtime(p: string): Promise<number | undefined> {
   try {
@@ -81,7 +110,10 @@ async function mtime(p: string): Promise<number | undefined> {
 }
 
 /** Newest existing file among the store and its read-only fallbacks. */
-async function locate(info: LocalStoreInfo, name: string): Promise<string | undefined> {
+async function locate(
+  info: LocalStoreInfo,
+  name: string,
+): Promise<string | undefined> {
   let best: string | undefined;
   let bestAt = -1;
   for (const d of [info.dir, ...info.legacy]) {
@@ -94,34 +126,60 @@ async function locate(info: LocalStoreInfo, name: string): Promise<string | unde
 
 // --- systemd-creds (async spawn) ---------------------------------------------------------------
 
-export async function creds(user: boolean, args: string[], input?: Uint8Array): Promise<Uint8Array> {
+export async function creds(
+  user: boolean,
+  args: string[],
+  input?: Uint8Array,
+): Promise<Uint8Array> {
   const p = Bun.spawn(["systemd-creds", ...(user ? ["--user"] : []), ...args], {
     stdin: input ? input : "ignore",
     stdout: "pipe",
     stderr: "pipe",
   });
-  const [out, err, code] = await Promise.all([new Response(p.stdout).bytes(), new Response(p.stderr).text(), p.exited]);
+  const [out, err, code] = await Promise.all([
+    new Response(p.stdout).bytes(),
+    new Response(p.stderr).text(),
+    p.exited,
+  ]);
   // stderr of systemd-creds never contains the payload.
-  if (code !== 0) throw new Error(`systemd-creds ${args[0]} failed: ${err.trim()}`);
+  if (code !== 0)
+    throw new Error(`systemd-creds ${args[0]} failed: ${err.trim()}`);
   return out;
 }
 
 /** Encrypts bytes with the local layer only (no file): DPAPI blob or systemd-creds credential. */
-export async function protect(name: string, data: Uint8Array): Promise<Uint8Array> {
+export async function protect(
+  name: string,
+  data: Uint8Array,
+): Promise<Uint8Array> {
   const info = localStore();
   if (info.backend === "dpapi") return dpapiEncode(name, data);
-  return creds(info.backend === "systemd-creds-user", ["encrypt", `--name=${name}`, "-", "-"], data);
+  return creds(
+    info.backend === "systemd-creds-user",
+    ["encrypt", `--name=${name}`, "-", "-"],
+    data,
+  );
 }
 
-export async function unprotect(name: string, data: Uint8Array): Promise<Uint8Array> {
+export async function unprotect(
+  name: string,
+  data: Uint8Array,
+): Promise<Uint8Array> {
   const info = localStore();
   if (info.backend === "dpapi") return dpapiDecode(name, data);
-  return creds(info.backend === "systemd-creds-user", ["decrypt", `--name=${name}`, "-", "-"], data);
+  return creds(
+    info.backend === "systemd-creds-user",
+    ["decrypt", `--name=${name}`, "-", "-"],
+    data,
+  );
 }
 
 // --- Public API ---------------------------------------------------------------------------------
 
-export async function setSecret(name: string, value: string | Uint8Array): Promise<void> {
+export async function setSecret(
+  name: string,
+  value: string | Uint8Array,
+): Promise<void> {
   assertName(name);
   const bytes = typeof value === "string" ? enc.encode(value) : value;
   if (!bytes.byteLength) throw new Error(`secret ${name}: empty value`);
@@ -136,24 +194,36 @@ export async function setSecret(name: string, value: string | Uint8Array): Promi
   }
   // systemd-creds writes the output file itself (0600) and binds the credential name; hidden tmp + rename.
   const tmp = join(info.dir, `.${name}.${process.pid}.tmp`);
-  await creds(info.backend === "systemd-creds-user", ["encrypt", `--name=${name}`, "-", tmp], bytes);
+  await creds(
+    info.backend === "systemd-creds-user",
+    ["encrypt", `--name=${name}`, "-", tmp],
+    bytes,
+  );
   await rename(tmp, file);
 }
 
-export async function getSecretBytes(name: string): Promise<Uint8Array | undefined> {
+export async function getSecretBytes(
+  name: string,
+): Promise<Uint8Array | undefined> {
   assertName(name);
   const info = localStore();
   const file = await locate(info, name);
   if (!file) return undefined;
   if (info.backend === "dpapi") {
     const raw = new Uint8Array(await readFile(file));
-    if (!isDpapiV2(raw) && (await v2Only())) throw new Error(`secret ${name}: DPAPI v1 refused (vault is v2-only)`);
+    if (!isDpapiV2(raw) && (await v2Only()))
+      throw new Error(`secret ${name}: DPAPI v1 refused (vault is v2-only)`);
     const v = await dpapiDecode(name, raw);
     // Lazy migration on read: a v1 blob is rewritten as v2 in the vault directory.
     if (!isDpapiV2(raw)) await setSecret(name, v).catch(() => undefined);
     return v;
   }
-  return creds(info.backend === "systemd-creds-user", ["decrypt", `--name=${name}`, file, "-"]);
+  return creds(info.backend === "systemd-creds-user", [
+    "decrypt",
+    `--name=${name}`,
+    file,
+    "-",
+  ]);
 }
 
 export async function getSecret(name: string): Promise<string | undefined> {
@@ -183,7 +253,12 @@ export async function listSecrets(): Promise<string[]> {
     }
     for (const f of entries) {
       const n = info.backend === "dpapi" ? f.replace(/\.dpapi$/, "") : f;
-      if ((info.backend !== "dpapi" || f.endsWith(".dpapi")) && NAME.test(n) && !n.startsWith(".")) names.add(n);
+      if (
+        (info.backend !== "dpapi" || f.endsWith(".dpapi")) &&
+        NAME.test(n) &&
+        !n.startsWith(".")
+      )
+        names.add(n);
     }
   }
   return [...names].sort();
@@ -209,10 +284,15 @@ export async function runWithSecrets(
   command: string[],
   mode: "exec" | "pipe" = "exec",
 ): Promise<{ code: number; missing: string[] }> {
-  const values = await Promise.all(names.map(async (n) => [n, await getSecret(n)] as const));
+  const values = await Promise.all(
+    names.map(async (n) => [n, await getSecret(n)] as const),
+  );
   const missing = values.filter(([, v]) => v === undefined).map(([n]) => n);
   if (missing.length) return { code: 1, missing };
-  const env = mode === "exec" ? { ...process.env, ...Object.fromEntries(values) } : process.env;
+  const env =
+    mode === "exec"
+      ? { ...process.env, ...Object.fromEntries(values) }
+      : process.env;
   const p = Bun.spawn(command, {
     env: env as Record<string, string>,
     stdin: mode === "pipe" ? enc.encode(values[0]![1]!) : "inherit",

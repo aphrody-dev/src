@@ -18,30 +18,32 @@
  *   --max-size   Max file size to inline in bytes (default: 5242880 / 5MB)
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from "node:fs";
+import path from "node:path";
 
 // ---------------------------------------------------------------------------
 // MIME type mapping
 // ---------------------------------------------------------------------------
 const MIME_MAP: Record<string, string> = {
-  '.svg': 'image/svg+xml',
-  '.jpeg': 'image/jpeg',
-  '.jpg': 'image/jpeg',
-  '.png': 'image/png',
-  '.gif': 'image/gif',
-  '.webp': 'image/webp',
-  '.ico': 'image/x-icon',
-  '.bmp': 'image/bmp',
-  '.avif': 'image/avif',
-  '.tiff': 'image/tiff',
-  '.tif': 'image/tiff',
-  '.apng': 'image/apng',
-  '.cur': 'image/x-icon',
+  ".svg": "image/svg+xml",
+  ".jpeg": "image/jpeg",
+  ".jpg": "image/jpeg",
+  ".png": "image/png",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
+  ".ico": "image/x-icon",
+  ".bmp": "image/bmp",
+  ".avif": "image/avif",
+  ".tiff": "image/tiff",
+  ".tif": "image/tiff",
+  ".apng": "image/apng",
+  ".cur": "image/x-icon",
 };
 
 function getMime(filePath: string): string {
-  return MIME_MAP[path.extname(filePath).toLowerCase()] || 'application/octet-stream';
+  return (
+    MIME_MAP[path.extname(filePath).toLowerCase()] || "application/octet-stream"
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -93,7 +95,7 @@ function parseArgs(): Opts {
   const args = process.argv.slice(2);
   const opts: Opts = {
     files: [],
-    baseDir: '',
+    baseDir: "",
     json: false,
     dryRun: false,
     maxSize: 5 * 1024 * 1024, // 5MB
@@ -101,19 +103,19 @@ function parseArgs(): Opts {
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--base-dir':
+      case "--base-dir":
         opts.baseDir = args[++i];
         break;
-      case '--json':
+      case "--json":
         opts.json = true;
         break;
-      case '--dry-run':
+      case "--dry-run":
         opts.dryRun = true;
         break;
-      case '--max-size':
+      case "--max-size":
         opts.maxSize = parseInt(args[++i], 10);
         break;
-      case '--help':
+      case "--help":
         console.log(`
 Usage: bun post_process.ts <html_file> [...] [options]
 
@@ -136,7 +138,7 @@ function validateOpts(opts: Opts): void {
   const errors: string[] = [];
 
   if (opts.files.length === 0) {
-    errors.push('No HTML files specified');
+    errors.push("No HTML files specified");
   }
 
   if (opts.baseDir && !fs.existsSync(opts.baseDir)) {
@@ -144,11 +146,11 @@ function validateOpts(opts: Opts): void {
   }
 
   if (isNaN(opts.maxSize) || opts.maxSize < 1) {
-    errors.push('--max-size must be a positive integer');
+    errors.push("--max-size must be a positive integer");
   }
 
   if (errors.length > 0) {
-    console.error('❌ Validation errors:');
+    console.error("❌ Validation errors:");
     errors.forEach((e) => console.error(`   • ${e}`));
     process.exit(1);
   }
@@ -165,16 +167,23 @@ function extractCssUrls(text: string): CssUrlRef[] {
   while (i < len) {
     if (
       i + 3 < len &&
-      text[i].toLowerCase() === 'u' &&
-      text[i + 1].toLowerCase() === 'r' &&
-      text[i + 2].toLowerCase() === 'l' &&
-      text[i + 3] === '('
+      text[i].toLowerCase() === "u" &&
+      text[i + 1].toLowerCase() === "r" &&
+      text[i + 2].toLowerCase() === "l" &&
+      text[i + 3] === "("
     ) {
       const urlStart = i;
       i += 4;
 
       // Skip whitespace
-      while (i < len && (text[i] === ' ' || text[i] === '\t' || text[i] === '\n' || text[i] === '\r')) i++;
+      while (
+        i < len &&
+        (text[i] === " " ||
+          text[i] === "\t" ||
+          text[i] === "\n" ||
+          text[i] === "\r")
+      )
+        i++;
 
       let quote: string | null = null;
       if (i < len && (text[i] === '"' || text[i] === "'")) {
@@ -182,10 +191,10 @@ function extractCssUrls(text: string): CssUrlRef[] {
         i++;
       }
 
-      let url = '';
+      let url = "";
       if (quote) {
         while (i < len && text[i] !== quote) {
-          if (text[i] === '\\' && i + 1 < len) {
+          if (text[i] === "\\" && i + 1 < len) {
             i++;
             url += text[i];
           } else {
@@ -195,17 +204,35 @@ function extractCssUrls(text: string): CssUrlRef[] {
         }
         if (i < len) i++;
       } else {
-        while (i < len && text[i] !== ')' && text[i] !== ' ' && text[i] !== '\t' && text[i] !== '\n') {
+        while (
+          i < len &&
+          text[i] !== ")" &&
+          text[i] !== " " &&
+          text[i] !== "\t" &&
+          text[i] !== "\n"
+        ) {
           url += text[i];
           i++;
         }
       }
 
-      while (i < len && (text[i] === ' ' || text[i] === '\t' || text[i] === '\n' || text[i] === '\r')) i++;
+      while (
+        i < len &&
+        (text[i] === " " ||
+          text[i] === "\t" ||
+          text[i] === "\n" ||
+          text[i] === "\r")
+      )
+        i++;
 
-      if (i < len && text[i] === ')') {
+      if (i < len && text[i] === ")") {
         const fullMatch = text.substring(urlStart, i + 1);
-        results.push({ url: url.trim(), fullMatch, start: urlStart, end: i + 1 });
+        results.push({
+          url: url.trim(),
+          fullMatch,
+          start: urlStart,
+          end: i + 1,
+        });
         i++;
       } else {
         i = urlStart + 1;
@@ -224,7 +251,7 @@ function extractCssUrls(text: string): CssUrlRef[] {
 function resolveLocalFile(localPath: string, baseDir: string): string | null {
   const candidates = [localPath];
   if (baseDir) {
-    candidates.push(path.join(baseDir, localPath.replace(/^\//, '')));
+    candidates.push(path.join(baseDir, localPath.replace(/^\//, "")));
   }
 
   for (const candidate of candidates) {
@@ -248,10 +275,13 @@ function resolveLocalFile(localPath: string, baseDir: string): string | null {
 function readFileAtomic(
   filePath: string,
   maxSize: number,
-): { size: number; mime: string; b64: string } | { size: number; tooLarge: true } | null {
+):
+  | { size: number; mime: string; b64: string }
+  | { size: number; tooLarge: true }
+  | null {
   let fd: number;
   try {
-    fd = fs.openSync(filePath, 'r');
+    fd = fs.openSync(filePath, "r");
   } catch {
     // File was removed or became inaccessible between resolve and open
     return null;
@@ -262,7 +292,7 @@ function readFileAtomic(
       return { size: stat.size, tooLarge: true };
     }
     const mime = getMime(filePath);
-    const b64 = fs.readFileSync(fd).toString('base64');
+    const b64 = fs.readFileSync(fd).toString("base64");
     return { size: stat.size, mime, b64 };
   } finally {
     fs.closeSync(fd);
@@ -275,10 +305,10 @@ function readFileAtomic(
 function isLocalPath(url: string): boolean {
   return (
     !!url &&
-    !url.startsWith('http://') &&
-    !url.startsWith('https://') &&
-    !url.startsWith('data:') &&
-    !url.startsWith('//')
+    !url.startsWith("http://") &&
+    !url.startsWith("https://") &&
+    !url.startsWith("data:") &&
+    !url.startsWith("//")
   );
 }
 
@@ -300,13 +330,16 @@ function inlineImages(
 
   // --- Inline src="<local_path>" attributes ---
   // Handle src, poster, data attributes
-  const srcAttrs = ['src', 'poster', 'data'];
+  const srcAttrs = ["src", "poster", "data"];
   for (const attr of srcAttrs) {
-    const regex = new RegExp(`${attr}="((?!https?:\\/\\/|data:|\\/\\/)[^"]+)"`, 'g');
+    const regex = new RegExp(
+      `${attr}="((?!https?:\\/\\/|data:|\\/\\/)[^"]+)"`,
+      "g",
+    );
     html = html.replace(regex, (match: string, localPath: string) => {
       const resolved = resolveLocalFile(localPath, baseDir);
       if (!resolved) {
-        if (!localPath.endsWith('.js') && !localPath.endsWith('.css')) {
+        if (!localPath.endsWith(".js") && !localPath.endsWith(".css")) {
           stats.skippedNotFound.push(localPath);
         }
         return match;
@@ -317,7 +350,7 @@ function inlineImages(
         stats.skippedNotFound.push(localPath);
         return match;
       }
-      if ('tooLarge' in result) {
+      if ("tooLarge" in result) {
         stats.skippedTooLarge.push({ path: localPath, size: result.size });
         return match;
       }
@@ -350,7 +383,7 @@ function inlineImages(
       stats.skippedNotFound.push(ref.url);
       continue;
     }
-    if ('tooLarge' in result) {
+    if ("tooLarge" in result) {
       stats.skippedTooLarge.push({ path: ref.url, size: result.size });
       continue;
     }
@@ -369,36 +402,39 @@ function inlineImages(
 
   // --- Inline SVG <image href="..."> and xlink:href ---
   const svgHrefRegex = /(href|xlink:href)="((?!https?:\/\/|data:|\/\/)[^"]+)"/g;
-  html = html.replace(svgHrefRegex, (match: string, attrName: string, localPath: string) => {
-    // Skip non-image hrefs (like <a href>)
-    if (!localPath.match(/\.(svg|png|jpg|jpeg|gif|webp|avif|bmp|ico)$/i)) {
-      return match;
-    }
+  html = html.replace(
+    svgHrefRegex,
+    (match: string, attrName: string, localPath: string) => {
+      // Skip non-image hrefs (like <a href>)
+      if (!localPath.match(/\.(svg|png|jpg|jpeg|gif|webp|avif|bmp|ico)$/i)) {
+        return match;
+      }
 
-    const resolved = resolveLocalFile(localPath, baseDir);
-    if (!resolved) {
-      stats.skippedNotFound.push(localPath);
-      return match;
-    }
+      const resolved = resolveLocalFile(localPath, baseDir);
+      if (!resolved) {
+        stats.skippedNotFound.push(localPath);
+        return match;
+      }
 
-    const result = readFileAtomic(resolved, maxSize);
-    if (!result) {
-      stats.skippedNotFound.push(localPath);
-      return match;
-    }
-    if ('tooLarge' in result) {
-      stats.skippedTooLarge.push({ path: localPath, size: result.size });
-      return match;
-    }
+      const result = readFileAtomic(resolved, maxSize);
+      if (!result) {
+        stats.skippedNotFound.push(localPath);
+        return match;
+      }
+      if ("tooLarge" in result) {
+        stats.skippedTooLarge.push({ path: localPath, size: result.size });
+        return match;
+      }
 
-    if (dryRun) {
+      if (dryRun) {
+        stats.srcInlined++;
+        return match;
+      }
+
       stats.srcInlined++;
-      return match;
-    }
-
-    stats.srcInlined++;
-    return `${attrName}="data:${result.mime};base64,${result.b64}"`;
-  });
+      return `${attrName}="data:${result.mime};base64,${result.b64}"`;
+    },
+  );
 
   return { html, stats };
 }
@@ -419,7 +455,7 @@ function main(): void {
   };
 
   if (opts.dryRun) {
-    console.log('🔍 DRY RUN — no files will be modified\n');
+    console.log("🔍 DRY RUN — no files will be modified\n");
   }
 
   for (const file of opts.files) {
@@ -428,32 +464,42 @@ function main(): void {
     // between the read and write phases.
     let fd: number;
     try {
-      fd = fs.openSync(file, opts.dryRun ? 'r' : 'r+');
+      fd = fs.openSync(file, opts.dryRun ? "r" : "r+");
     } catch {
       console.warn(`⚠️  File not found, skipping: ${file}`);
       continue;
     }
 
-    let processed: string = '';
-    let stats: InlineStats = { srcInlined: 0, urlInlined: 0, skippedTooLarge: [], skippedNotFound: [] };
+    let processed: string = "";
+    let stats: InlineStats = {
+      srcInlined: 0,
+      urlInlined: 0,
+      skippedTooLarge: [],
+      skippedNotFound: [],
+    };
     try {
-      const html = fs.readFileSync(fd, 'utf-8');
+      const html = fs.readFileSync(fd, "utf-8");
 
-      const result = inlineImages(html, opts.baseDir, opts.maxSize, opts.dryRun);
+      const result = inlineImages(
+        html,
+        opts.baseDir,
+        opts.maxSize,
+        opts.dryRun,
+      );
       processed = result.html;
       stats = result.stats;
 
       if (!opts.dryRun) {
         // Truncate and rewrite using the same fd — no second path-based open
         fs.ftruncateSync(fd);
-        fs.writeSync(fd, processed, 0, 'utf-8');
+        fs.writeSync(fd, processed, 0, "utf-8");
       }
     } finally {
       fs.closeSync(fd);
     }
 
     const totalInlined = stats.srcInlined + stats.urlInlined;
-    const label = opts.dryRun ? 'would inline' : 'inlined';
+    const label = opts.dryRun ? "would inline" : "inlined";
     console.log(
       `${file}: ${label} ${totalInlined} resources ` +
         `(${stats.srcInlined} src, ${stats.urlInlined} url()) ` +
@@ -483,14 +529,18 @@ function main(): void {
   }
 
   const totalInlined = allStats.totalSrcInlined + allStats.totalUrlInlined;
-  console.log(`\n✅ Total: ${totalInlined} resources inlined across ${allStats.files.length} file(s)`);
+  console.log(
+    `\n✅ Total: ${totalInlined} resources inlined across ${allStats.files.length} file(s)`,
+  );
 
   if (allStats.totalSkippedTooLarge > 0) {
-    console.log(`   ⚠️  ${allStats.totalSkippedTooLarge} skipped (exceeded ${(opts.maxSize / 1024 / 1024).toFixed(1)} MB limit)`);
+    console.log(
+      `   ⚠️  ${allStats.totalSkippedTooLarge} skipped (exceeded ${(opts.maxSize / 1024 / 1024).toFixed(1)} MB limit)`,
+    );
   }
 
   if (opts.json) {
-    console.log('\n--- JSON Stats ---');
+    console.log("\n--- JSON Stats ---");
     console.log(JSON.stringify(allStats, null, 2));
   }
 }

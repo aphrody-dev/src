@@ -53,13 +53,13 @@ flowchart LR
     D --> E["🔀 Merge"]
 ```
 
-| Phase | Script | What it does |
-|-------|--------|-------------|
-| **Analyze** | `fleet-analyze.ts` | Fetches open issues → structured markdown |
-| **Plan** | `fleet-plan.ts` | Jules diagnoses root causes, builds File Ownership Matrix |
-| **Validate** | `fleet-dispatch.ts` | Checks no two tasks claim the same file |
-| **Dispatch** | `fleet-dispatch.ts` | Spawns parallel Jules sessions via `jules.all()` |
-| **Merge** | `fleet-merge.ts` | Sequential merge: update branch → CI → squash |
+| Phase        | Script              | What it does                                              |
+| ------------ | ------------------- | --------------------------------------------------------- |
+| **Analyze**  | `fleet-analyze.ts`  | Fetches open issues → structured markdown                 |
+| **Plan**     | `fleet-plan.ts`     | Jules diagnoses root causes, builds File Ownership Matrix |
+| **Validate** | `fleet-dispatch.ts` | Checks no two tasks claim the same file                   |
+| **Dispatch** | `fleet-dispatch.ts` | Spawns parallel Jules sessions via `jules.all()`          |
+| **Merge**    | `fleet-merge.ts`    | Sequential merge: update branch → CI → squash             |
 
 ### Detailed Flow
 

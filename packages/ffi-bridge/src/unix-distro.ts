@@ -4,7 +4,12 @@
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { type Dx12Adapter, dx12Adapters, loadDx12Hal, srcRoot } from "./dx12-hal";
+import {
+  type Dx12Adapter,
+  dx12Adapters,
+  loadDx12Hal,
+  srcRoot,
+} from "./dx12-hal";
 
 export interface DistroHardwareProbe {
   cpu: {
@@ -47,7 +52,10 @@ export const KERNEL_CONFIG = join(
   "cachyos_sm89_wsl2_baremetal.config",
 );
 
-export function verifyLinuxKernelConfig(): { valid: boolean; options: string[] } {
+export function verifyLinuxKernelConfig(): {
+  valid: boolean;
+  options: string[];
+} {
   if (!existsSync(KERNEL_CONFIG)) {
     return { valid: false, options: [] };
   }
@@ -74,9 +82,13 @@ export function verifyLinuxKernelConfig(): { valid: boolean; options: string[] }
 
 export function probeDistroHardware(): DistroHardwareProbe {
   const exe = process.platform === "win32" ? "unix-distro.exe" : "unix-distro";
-  const res = spawnSync(join(TARGET_DIR, "release", exe), ["probe", "--json"], { encoding: "utf-8" });
+  const res = spawnSync(join(TARGET_DIR, "release", exe), ["probe", "--json"], {
+    encoding: "utf-8",
+  });
   if (res.status !== 0) {
-    throw new Error(`Failed to execute unix-distro probe: ${res.stderr ?? res.error}`);
+    throw new Error(
+      `Failed to execute unix-distro probe: ${res.stderr ?? res.error}`,
+    );
   }
   return JSON.parse(res.stdout);
 }
@@ -91,11 +103,19 @@ export function checkDistroFullStatus(): DistroStatus {
 
 if (import.meta.main) {
   const status = checkDistroFullStatus();
-  console.log(`Kernel config fragment: ${status.kernelConfigValid ? "verified" : "invalid"}`);
-  console.log(`CPU: ${status.hardware.cpu.brand} (${status.hardware.cpu.architecture_level})`);
-  console.log(`GPU (probe): ${status.hardware.gpu.name} (${status.hardware.gpu.architecture})`);
+  console.log(
+    `Kernel config fragment: ${status.kernelConfigValid ? "verified" : "invalid"}`,
+  );
+  console.log(
+    `CPU: ${status.hardware.cpu.brand} (${status.hardware.cpu.architecture_level})`,
+  );
+  console.log(
+    `GPU (probe): ${status.hardware.gpu.name} (${status.hardware.gpu.architecture})`,
+  );
   for (const a of status.dx12Adapters ?? []) {
-    console.log(`DXGI adapter ${a.index}: ${a.name} (${Math.round(a.dedicated_video_memory / 2 ** 20)} MB)`);
+    console.log(
+      `DXGI adapter ${a.index}: ${a.name} (${Math.round(a.dedicated_video_memory / 2 ** 20)} MB)`,
+    );
   }
   if (!status.dx12Adapters) console.log("DXGI adapters: dx12_hal.dll absent");
 }

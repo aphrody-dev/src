@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!TIP]
 > **Tip:** For in-depth learning on creating better web images, take the [Learn Images course](https://web.dev/learn/images.md.txt). Learn about specific file formats, high performance image workflows, and more.
 
@@ -27,7 +28,6 @@ the CSS [`background-image` property](https://developer.mozilla.org/docs/Web/CSS
 > in JavaScript. Given this module's focus on image performance, this use case
 > for SVG images isn't covered.
 >
->
 > Regardless of whether you inline an SVG or load one from the HTML
 > `` element, it helps to know when to use an SVG image.
 > Because SVG is a
@@ -35,7 +35,6 @@ the CSS [`background-image` property](https://developer.mozilla.org/docs/Web/CSS
 > image format](https://wikipedia.org/wiki/Vector_graphics), they're most useful in cases where the image's contents
 > are line art, diagrams and charts, and other cases where there aren't fine
 > photographic details.
->
 >
 > If you use SVG images on your website, bear in mind that the SVG format is
 > text-based, so techniques such as minification and compression apply. Lossy
@@ -45,13 +44,13 @@ the CSS [`background-image` property](https://developer.mozilla.org/docs/Web/CSS
 ## Image size
 
 The first optimization you can perform when it comes to using image resources is
-to display the image at the correct size---in this case, the term *size* refers to
-the *dimensions* of an image. Considering no other variables, an image displayed
+to display the image at the correct size---in this case, the term _size_ refers to
+the _dimensions_ of an image. Considering no other variables, an image displayed
 in a 500 pixel by 500 pixel container would be optimally sized at 500 pixels by
 500 pixels. For example, using a square 1000 pixel image means that the image is
 twice as large as needed.
 
-However, there are *many* variables involved in choosing the proper image size,
+However, there are _many_ variables involved in choosing the proper image size,
 making the task of choosing the proper image size in every case to be quite
 complicated. In 2010, when the iPhone 4 was released, the screen resolution
 (640x960) was double that of the iPhone 3 (320x480). However, the physical size
@@ -74,7 +73,7 @@ device has a DPR of 3, then a square 1500 pixel image would be the optimal size.
 
 The `` element supports the [`srcset`](https://developer.mozilla.org/docs/Web/HTML/Element/img#attr-srcset) attribute, which lets you specify a
 list of possible image sources the browser may use. Each image source specified
-must include the image URL, and a width *or* pixel density descriptor.
+must include the image URL, and a width _or_ pixel density descriptor.
 
 ```html
 
@@ -86,7 +85,7 @@ with a DPR of 2, and `image-1500.jpg` on devices with a DPR of 3.
 
 While this all may seem cut and dry, a screen's DPR is not the only
 consideration in choosing the optimal image for a given page. The page's
-*layout* is yet another consideration.
+_layout_ is yet another consideration.
 
 ### `sizes`
 
@@ -107,7 +106,7 @@ is best for the user's device.
 In the preceding HTML snippet, the `srcset` attribute specifies a list of image
 candidates the browser can choose from, separated by commas. Each candidate in
 the list consists of the image's URL, followed by a syntax that denotes the
-intrinsic width of the image. An image's *intrinsic size* is its dimensions. For
+intrinsic width of the image. An image's _intrinsic size_ is its dimensions. For
 example, a descriptor of `1000w` denotes that the image's intrinsic width is
 1000 pixels wide.
 
@@ -187,9 +186,8 @@ image candidates:
 
 ```html
 <picture>
-  <source type="image/avif" srcset="image.avif">
-  <source type="image/webp" srcset="image.webp">
-  
+  <source type="image/avif" srcset="image.avif" />
+  <source type="image/webp" srcset="image.webp" />
 </picture>
 ```
 
@@ -202,8 +200,8 @@ moves on to the next specified `<source>` element. In the preceding HTML
 snippet, the AVIF format takes priority over the WebP format, falling back to
 the JPEG format if neither AVIF or WebP is supported.
 
-A `<picture>` element requires an `` element nested inside of it. The
-`alt`, `width`, and `height` attributes are defined on the `` and used
+A `<picture>` element requires an ``element nested inside of it. The
+`alt`, `width`, and `height` attributes are defined on the`` and used
 regardless of which `<source>` is selected.
 
 The `<source>` element also supports the `media`, `srcset`, and `sizes`
@@ -218,8 +216,8 @@ browser which image to select on different viewports.
   <source
     media="(min-resolution: 1.5x)"
     srcset="/image-1000.jpg 1000w, /image-1500.jpg 1500w"
-    sizes="(min-width: 768px) 500px, 100vw">
-  
+    sizes="(min-width: 768px) 500px, 100vw"
+  />
 </picture>
 ```
 
@@ -234,13 +232,13 @@ attributes, you can have finer control over which image to use.
 This is illustrated in the following table, where several viewport widths and
 device pixel ratios are evaluated:
 
-| Viewport Width (pixels) | 1 DPR | 1.5 DPR | 2 DPR | 3 DPR |
-|---|---|---|---|---|
-| 320 | 500.jpg | 500.jpg | 500.jpg | 1000.jpg |
-| 480 | 500.jpg | 500.jpg | 1000.jpg | 1500.jpg |
-| 560 | 500.jpg | 1000.jpg | 1000.jpg | 1500.jpg |
-| 1024 | 500.jpg | 1000.jpg | 1000.jpg | 1500.jpg |
-| 1920 | 500.jpg | 1000.jpg | 1000.jpg | 1500.jpg |
+| Viewport Width (pixels) | 1 DPR   | 1.5 DPR  | 2 DPR    | 3 DPR    |
+| ----------------------- | ------- | -------- | -------- | -------- |
+| 320                     | 500.jpg | 500.jpg  | 500.jpg  | 1000.jpg |
+| 480                     | 500.jpg | 500.jpg  | 1000.jpg | 1500.jpg |
+| 560                     | 500.jpg | 1000.jpg | 1000.jpg | 1500.jpg |
+| 1024                    | 500.jpg | 1000.jpg | 1000.jpg | 1500.jpg |
+| 1920                    | 500.jpg | 1000.jpg | 1000.jpg | 1500.jpg |
 
 Devices with a DPR of 1 download the `image-500.jpg` image, including most
 desktop users---who view the image at an [extrinsic size](https://www.w3.org/TR/css-sizing-3/#extrinsic) of 500 pixels wide. On
@@ -252,25 +250,26 @@ the other hand, mobile users with a DPR of 3 download a potentially larger
   <source
     media="(min-width: 561px) and (min-resolution: 1.5x)"
     srcset="/image-1000.jpg 1000w, /image-1500.jpg 1500w"
-    sizes="(min-width: 768px) 500px, 100vw">
+    sizes="(min-width: 768px) 500px, 100vw"
+  />
   <source
     media="(max-width: 560px) and (min-resolution: 1.5x)"
     srcset="/image-1000-sm.jpg 1000w, /image-1500-sm.jpg 1500w"
-    sizes="(min-width: 768px) 500px, 100vw">
-  
+    sizes="(min-width: 768px) 500px, 100vw"
+  />
 </picture>
 ```
 
 In this example, the `<picture>` element is adjusted to include an additional
 `<source>` element to use different images for wide devices with a high DPR:
 
-| Viewport Width (pixels) | 1 DPR | 1.5 DPR | 2 DPR | 3 DPR |
-|---|---|---|---|---|
-| 320 | 500.jpg | 500.jpg | 1000-sm.jpg | 1000-sm.jpg |
-| 480 | 500.jpg | 500.jpg | 1000-sm.jpg | 1500-sm.jpg |
-| 560 | 500.jpg | 1000-sm.jpg | 1000-sm.jpg | 1500-sm.jpg |
-| 1024 | 500.jpg | 1000.jpg | 1000.jpg | 1500.jpg |
-| 1920 | 500.jpg | 1000.jpg | 1000.jpg | 1500.jpg |
+| Viewport Width (pixels) | 1 DPR   | 1.5 DPR     | 2 DPR       | 3 DPR       |
+| ----------------------- | ------- | ----------- | ----------- | ----------- |
+| 320                     | 500.jpg | 500.jpg     | 1000-sm.jpg | 1000-sm.jpg |
+| 480                     | 500.jpg | 500.jpg     | 1000-sm.jpg | 1500-sm.jpg |
+| 560                     | 500.jpg | 1000-sm.jpg | 1000-sm.jpg | 1500-sm.jpg |
+| 1024                    | 500.jpg | 1000.jpg    | 1000.jpg    | 1500.jpg    |
+| 1920                    | 500.jpg | 1000.jpg    | 1000.jpg    | 1500.jpg    |
 
 With this additional query, you can see that `image-1000-sm.jpg` and
 `image-1500-sm.jpg` are displayed on small viewports. This extra information
@@ -285,11 +284,12 @@ serving large images on small viewports:
 <picture>
   <source
     media="(min-width: 561px)"
-    srcset="/image-500.jpg, /image-1000.jpg 2x, /image-1500.jpg 3x">
+    srcset="/image-500.jpg, /image-1000.jpg 2x, /image-1500.jpg 3x"
+  />
   <source
     media="(max-width: 560px)"
-    srcset="/image-500.jpg 1x, /image-1000.jpg 2x">
-  
+    srcset="/image-500.jpg 1x, /image-1000.jpg 2x"
+  />
 </picture>
 ```
 
@@ -325,14 +325,14 @@ the optimal image format without adding extra bytes to your HTML responses.
 
 ```javascript
 if (request.headers.accept) {
-  if (request.headers.accept.includes('image/avif')) {
-    return reply.from('image.avif');
-  } else if (request.headers.accept.includes('image/webp')) {
-    return reply.from('image.webp');
+  if (request.headers.accept.includes("image/avif")) {
+    return reply.from("image.avif");
+  } else if (request.headers.accept.includes("image/webp")) {
+    return reply.from("image.webp");
   }
 }
 
-return reply.from('image.jpg');
+return reply.from("image.jpg");
 ```
 
 > [!IMPORTANT]
@@ -393,17 +393,17 @@ into the DOM.
 
 ## Test your knowledge
 
-Which image formats support *lossless* compression?
+Which image formats support _lossless_ compression?
 GIF. Correct! JPEG. Try again. PNG. Correct! WebP. Correct! AVIF. Correct!
-Which image formats support *lossy* compression?
+Which image formats support _lossy_ compression?
 GIF. Try again. Although the GIF format only supports a limited palette of 256 colors, the lossy encoding must be done before converting to GIF. JPEG. Correct! PNG. Try again. WebP. Correct! AVIF. Correct!
 What does the width descriptor (for example, `1000w`) tell
 the browser about an image candidate specified in an `srcset`
 attribute?
-The *extrinsic* width of the image---that is, the dimensions of the image in the layout after styles have been applied to the page Try again. The *intrinsic* width of the image---that is, the dimensions of the image itself. Correct!
+The _extrinsic_ width of the image---that is, the dimensions of the image in the layout after styles have been applied to the page Try again. The _intrinsic_ width of the image---that is, the dimensions of the image itself. Correct!
 What does the `sizes` attribute tell the browser about an
-`` element it's applied to?
-Logic that expresses which candidate specified in an `` element's `srcset` should be loaded, given the dimensions of the user's current viewport. Correct! The *intrinsic* width of the image to be loaded from the `` element's `srcset` attribute. Try again.
+`element it's applied to?
+Logic that expresses which candidate specified in an` element's `srcset` should be loaded, given the dimensions of the user's current viewport. Correct! The _intrinsic_ width of the image to be loaded from the `` element's `srcset` attribute. Try again.
 
 ## Up next: Video performance
 

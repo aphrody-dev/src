@@ -2,11 +2,11 @@
 
 Measurements taken on `Cargo.lock`, all targets combined, with `ay doctor --deps --dups`. We count the crates resolved in several versions and the extra copies. The `cargo tree -d -e normal,build` measurement on the Linux host (prd) is given as a complement.
 
-| State | Packages | Duplicated crates | Extra copies | `cargo tree -d` (names, host) |
-|---|---|---|---|---|
-| before (main 8c3c113) | 1352 | 114 | 127 | 67 |
-| after (`ay lock --deps --hoist --breaking --dedupe`) | 1352 | 110 | 123 | 65 |
-| smallvec 1.16 and dashmap 6.2 stable, aphrody-design-emit removed by its agent | 1347 | 105 | 118 | n. m. |
+| State                                                                          | Packages | Duplicated crates | Extra copies | `cargo tree -d` (names, host) |
+| ------------------------------------------------------------------------------ | -------- | ----------------- | ------------ | ----------------------------- |
+| before (main 8c3c113)                                                          | 1352     | 114               | 127          | 67                            |
+| after (`ay lock --deps --hoist --breaking --dedupe`)                           | 1352     | 110               | 123          | 65                            |
+| smallvec 1.16 and dashmap 6.2 stable, aphrody-design-emit removed by its agent | 1347     | 105               | 118          | n. m.                         |
 
 ## What was done
 
@@ -23,15 +23,15 @@ Measurements taken on `Cargo.lock`, all targets combined, with `ay doctor --deps
 
 ## Remaining duplicates and cause
 
-| Family | Versions | Cause | Action |
-|---|---|---|---|
-| RustCrypto (`digest`, `sha1`, `sha2`, `hmac`, `cipher`, `aes`, `der`, `spki`, `pkcs8`, `rsa`, `p256`, `p384`, `ecdsa`, `ed25519-dalek`, `signature`, `rand_core`…) | 0.10/0.11, 2/3 | upstream transition: russh 0.65, aws-sdk and rust-stack on the new generation; jsonwebtoken, ssh-key and rsa 0.9 on the old one | follow the releases; nothing to fix locally |
-| `rand`, `rand_core`, `rand_chacha`, `getrandom` | 0.8/0.9/0.10, 0.2/0.3/0.4 | lore on `rand` 0.10, hickory on 0.9, older crates on 0.8 | same |
-| `windows*` | 0.61/0.62 | gpu-allocator, sysinfo, wgpu-hal on 0.62; other crates still on 0.61 | align the `windows-rs` fork when the dependents publish |
-| `syn` | 1/2/3 | `lore-macro` and `lore-error-set-macro` on syn 3; the ecosystem still on 2; a few crates on 1 | none |
-| `hashbrown`, `foldhash` | 0.14 to 0.17, 0.1/0.2 | versions frozen by indexmap, dashmap and the gpu crates | none |
-| `parking_lot` 0.13, `quick-xml` 0.42, `tower-http` 0.7 | new majors | members are up to date, external dependencies still on the old one | wait for upstream |
-| `thiserror`, `toml`, `winnow`, `itertools`, `phf` | 1/2, 0.9/1, … | lagging external dependencies | wait for upstream |
+| Family                                                                                                                                                             | Versions                  | Cause                                                                                                                           | Action                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| RustCrypto (`digest`, `sha1`, `sha2`, `hmac`, `cipher`, `aes`, `der`, `spki`, `pkcs8`, `rsa`, `p256`, `p384`, `ecdsa`, `ed25519-dalek`, `signature`, `rand_core`…) | 0.10/0.11, 2/3            | upstream transition: russh 0.65, aws-sdk and rust-stack on the new generation; jsonwebtoken, ssh-key and rsa 0.9 on the old one | follow the releases; nothing to fix locally             |
+| `rand`, `rand_core`, `rand_chacha`, `getrandom`                                                                                                                    | 0.8/0.9/0.10, 0.2/0.3/0.4 | lore on `rand` 0.10, hickory on 0.9, older crates on 0.8                                                                        | same                                                    |
+| `windows*`                                                                                                                                                         | 0.61/0.62                 | gpu-allocator, sysinfo, wgpu-hal on 0.62; other crates still on 0.61                                                            | align the `windows-rs` fork when the dependents publish |
+| `syn`                                                                                                                                                              | 1/2/3                     | `lore-macro` and `lore-error-set-macro` on syn 3; the ecosystem still on 2; a few crates on 1                                   | none                                                    |
+| `hashbrown`, `foldhash`                                                                                                                                            | 0.14 to 0.17, 0.1/0.2     | versions frozen by indexmap, dashmap and the gpu crates                                                                         | none                                                    |
+| `parking_lot` 0.13, `quick-xml` 0.42, `tower-http` 0.7                                                                                                             | new majors                | members are up to date, external dependencies still on the old one                                                              | wait for upstream                                       |
+| `thiserror`, `toml`, `winnow`, `itertools`, `phf`                                                                                                                  | 1/2, 0.9/1, …             | lagging external dependencies                                                                                                   | wait for upstream                                       |
 
 The remaining duplicates all come from external dependencies. Each weekly `ay lock --deps --bump --dedupe` reduces them as upstream publishes.
 

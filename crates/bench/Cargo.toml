@@ -9,7 +9,14 @@ description = "Hardware and compiler benchmark suite behind `ay bench` (Windows)
 [dependencies]
 argh = { workspace = true }
 zerocopy = { workspace = true }
-windows-sys = { workspace = true, features = ["Win32_Foundation", "Win32_Security", "Win32_Storage_FileSystem", "Win32_System_Memory", "Win32_System_Performance", "Win32_System_Threading"] }
+windows-sys = { workspace = true, features = [
+  "Win32_Foundation",
+  "Win32_Security",
+  "Win32_Storage_FileSystem",
+  "Win32_System_Memory",
+  "Win32_System_Performance",
+  "Win32_System_Threading",
+] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 rayon = { workspace = true }

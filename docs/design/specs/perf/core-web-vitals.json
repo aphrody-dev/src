@@ -135,10 +135,7 @@
       "rule": "Évaluer chaque métrique au 75e centile des chargements de page mesurés sur le terrain, séparément pour mobile et desktop.",
       "value": {
         "percentile": 75,
-        "segments": [
-          "mobile",
-          "desktop"
-        ]
+        "segments": ["mobile", "desktop"]
       },
       "source": "https://web.dev/articles/vitals"
     },

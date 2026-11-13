@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## Experimental support for OpenGL ES on Android
@@ -17,7 +18,8 @@ You can now access a `GPUAdapter` from the OpenGL ES backend when requesting the
 // Request a GPUAdapter in compatibility mode
 const adapter = await navigator.gpu.requestAdapter({ compatibilityMode: true });
 ```
- OpenGL ES adapter info in [webgpureport.org](https://webgpureport.org)
+
+OpenGL ES adapter info in [webgpureport.org](https://webgpureport.org)
 
 As this feature is still in an experimental stage, you will need to perform the following steps:
 

@@ -3,6 +3,7 @@
 Moteur : relais ai-os `gemini_review` (antigravity), sur un résumé du document et le code de `replay`, `pickTree`, `moveBranch`, `push`. Note : 12/20.
 
 Retenu et corrigé dans le même commit :
+
 - conflit pendant `sync` : l'état (`last-sync.json`) liste aussi les patchs retirés avant le conflit (`dropped_before`) ;
 - `pickTree` : sortie de `git merge-tree` lue avec `-z`, les chemins en conflit restent exacts (espaces, guillemets, non ASCII) ;
 - registre des statuts : deux patchs au même nom font échouer la lecture de la pile au lieu de partager un statut.

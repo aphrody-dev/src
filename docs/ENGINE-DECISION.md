@@ -5,6 +5,7 @@
 Issue du débat Chromium / Servo / Bun (inventaire neutre, 3 avocats, réfutations, juge). Scores et chiffres non vérifiés exclus de la décision.
 
 **Faits contestés vérifiés (2026-11-12)**
+
 - V8 local : **16.0.25.0**, et non 15.9.85 (`C:\src\third_party\chromium\src\v8\include\v8-version.h` l.11-14). Commit `e4e354fb9e409c178a647af015b5fa330461081e` du 2026-11-11 = `v8_revision` (DEPS l.334). Chromium 160.0.8158.0 (`chrome/VERSION`). La réfutation Bun a raison.
 - `LICENSE_FOR_ABOUT_CREDITS` : 967 lignes au total, dont 829 non vides. Les deux chiffres cités sont exacts.
 - `denoland/deno_core` : `archived: true`. Le crate continue pourtant d'être publié depuis `denoland/deno` `libs/core` (labs l.195 `=0.413.0`). Il n'est donc pas abandonné, mais le dépôt historique est mort.
@@ -17,16 +18,17 @@ Issue du débat Chromium / Servo / Bun (inventaire neutre, 3 avocats, réfutatio
 
 Je retiens un hybride. Le binaire est un runtime serveur Rust sur V8 compilé depuis les sources à la `v8_revision` du checkout. Blink sert d'oracle hors binaire. Blitz est opt-in.
 
-| Critère | Chromium embarqué | Blitz/stylo intégré | Runtime V8 façon Bun (+ oracle Chromium) |
-|---|---|---|---|
-| (a) Bout en bout | 5 (le web Google natif ; le reste à écrire de toute façon) | 2 (WPT non mesuré) | 4 (Workers, Vercel et RSC complets ; le web Google vérifié par l'oracle) |
-| (b) Bas niveau, LTO, zero-copy | 3 (ThinLTO, GN maître) | 4 (fat LTO Rust, mais V8 reste un blob C++) | 5 (fat LTO, plus V8 sources avec linker-plugin-lto) |
-| (c) Coût petite équipe | 1 | 3 | 4 |
-| (d) Licences | 1 (LGPL Blink statique, contraire à deny.toml) | 4 (MPL par fichier) | 5 (BSD, MIT, Apache) |
-| (e) Chiffres citables | 2 (rien de vérifié) | 1 | 2 (à mesurer en M1) |
-| **Total /25** | **12** | **14** | **20** |
+| Critère                        | Chromium embarqué                                          | Blitz/stylo intégré                         | Runtime V8 façon Bun (+ oracle Chromium)                                 |
+| ------------------------------ | ---------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------ |
+| (a) Bout en bout               | 5 (le web Google natif ; le reste à écrire de toute façon) | 2 (WPT non mesuré)                          | 4 (Workers, Vercel et RSC complets ; le web Google vérifié par l'oracle) |
+| (b) Bas niveau, LTO, zero-copy | 3 (ThinLTO, GN maître)                                     | 4 (fat LTO Rust, mais V8 reste un blob C++) | 5 (fat LTO, plus V8 sources avec linker-plugin-lto)                      |
+| (c) Coût petite équipe         | 1                                                          | 3                                           | 4                                                                        |
+| (d) Licences                   | 1 (LGPL Blink statique, contraire à deny.toml)             | 4 (MPL par fichier)                         | 5 (BSD, MIT, Apache)                                                     |
+| (e) Chiffres citables          | 2 (rien de vérifié)                                        | 1                                           | 2 (à mesurer en M1)                                                      |
+| **Total /25**                  | **12**                                                     | **14**                                      | **20**                                                                   |
 
 Pourquoi :
+
 - Aucune des cibles Cloudflare, Vercel et Next.js n'a besoin d'un DOM dans le binaire. Les trois parties le concèdent.
 - Pour le web Google, seul Blink atteint la référence. Or l'embarquer viole deny.toml et inverse le build (GN maître).
 - On le sert donc comme oracle et comme outil `aphrody render` (`headless_shell` lancé comme processus séparé), jamais lié au binaire.
@@ -35,6 +37,7 @@ Pourquoi :
 ## 2. Architecture refondue
 
 **Couches (de bas en haut)**
+
 1. **`aphrody-v8`** : fork `aphrody-labs/rusty_v8`.
    - Son sous-module `v8/` pointe sur `v8_revision` du DEPS de `C:\src`. `build/`, `buildtools/` et `third_party/*` sont alignés sur `v8/DEPS` à cette révision.
    - Build avec `V8_FROM_SOURCE=1`, et `GN`, `NINJA` pris dans `C:\src\third_party\depot_tools`. Le clang est celui de Chromium (`CLANG_BASE_PATH` = `third_party/llvm-build`), `SCCACHE` vient de `src.lock.json`.
@@ -62,11 +65,13 @@ Pourquoi :
    - tests workerd et `bun/test/js/workerd` (HTMLRewriter seulement, couverture limitée).
 
 **Crates**
+
 - Gardées : `cli`, `conformance`, `lore*`.
 - Retirées du chemin par défaut : blitz, stylo, vello, wgpu, winit (passent sous `render`). Plus aucun pin `v8 =152.2.0` venant de crates.io.
 - Ajoutées : `aphrody-v8`, `aphrody-core`, `aphrody-io`, `aphrody-web`, `aphrody-workers`, `aphrody-node`, `aphrody-bundler`, `aphrody-vercel`, `aphrody-next`, `aphrody-pm`, `aphrody-test`, `aphrody-render`.
 
 **Politique de révision V8**
+
 - La seule source de vérité est `C:\src\DEPS` `v8_revision`, qui suit le pin Chromium dans `src.lock.json`.
 - Une recette `just v8-roll` :
   1. lit la révision ;
@@ -80,6 +85,7 @@ Pourquoi :
 - Sémantique Workers : un écart de version avec workerd (15.8.62.5) est acceptable, car les flags de compat sont gérés par nous et non par V8.
 
 **Build**
+
 - Cargo est maître. GN et ninja ne servent qu'à l'intérieur du `build.rs` de `aphrody-v8`, avec depot_tools réutilisé tel quel. Aucun gclient ne touche labs.
 - Release :
   - `lto="fat"`, `codegen-units=1`, `panic="abort"`, PGO (`cargo pgo` sur des workloads Next et Workers) ;
@@ -92,6 +98,7 @@ Pourquoi :
 - `cargo-deny` : la règle actuelle reste, et MPL n'est autorisée que dans le graphe `render` (`[graph] features` séparés).
 
 **Exécution par cible**
+
 - **Cloudflare** : `aphrody serve --workers wrangler.toml`. Un isolate par Worker, les bindings KV/DO sont simulés en local et compat_date est appliquée. Validé par les tests workerd portés.
 - **Vercel** : `aphrody build --vercel` produit `.vercel/output` v3, puis `aphrody deploy` passe par l'API Vercel. Les functions edge tournent sur notre runtime, les functions node sur `aphrody-node`.
 - **Next.js** : `next build` et `next start` exécutés par `aphrody` (compat Node). On remplace progressivement le bundler par rolldown, et RSC est streamé via Web Streams natives.
@@ -101,6 +108,7 @@ Pourquoi :
   - Blitz sert au rendu natif et léger, avec un score WPT publié contre l'oracle.
 
 **Forks aphrody-labs**
+
 - `rusty_v8` (prioritaire) et `deno` (pour `libs/core` et `ext/node`).
 - `blitz` + `stylo` + `taffy` + `parley`, uniquement pour `render`, publiés comme l'exige la MPL.
 - `chromium` : le pin existe déjà via `C:\src\DEPS`, rien à forker dans labs.
@@ -124,6 +132,7 @@ Pourquoi :
 ## Amendements du propriétaire (2026-11-12)
 
 **Chromium : rôles séparés**
+
 - Le checkout `C:\src\third_party\chromium\src` (Chromium 160.0.8158.0, V8 16.0.25) sert uniquement de source à extraire : `third_party/*`, LLVM/clang, documentation, ressources UI. Il n'est ni embarqué ni ciblé, car 160 est incompatible avec les embeddings ci-dessous.
 - Cibles d'embedding (VPS et desktop), toujours sur la dernière version publiée :
   - CEF via `tauri-apps/cef-rs` 156.4.0+156.0.26 (Chromium 156) ;
@@ -132,6 +141,7 @@ Pourquoi :
 - La politique de révision V8 change : `aphrody-v8` suit le V8 du Chromium de cef-rs (la cible d'embedding la plus récente), et non la HEAD du checkout. Le JS côté serveur garde ainsi la même sémantique que le navigateur livré. `just v8-roll` lit la version Chromium dans `cef-rs`.
 
 **Priorités produit dès la création**
+
 - WebAssembly et WebGPU sont des cibles de premier rang : le runtime expose WASM (SIMD, threads, GC, exceptions, memory64, JSPI) et WebGPU via `wgpu` (et Dawn comme référence). Le pipeline build produit du WASM optimisé (`wasm-opt`/binaryen, `wasm-bindgen`).
 - Front supporté de bout en bout : TypeScript (tsc et `typescript-go`), Tailwind v4, shadcn, Base UI, React, Svelte, Solid, Vue, vanilla JS, Electron, Microsoft Fluent UI/FAST, et les APIs Bun (HTML/CSS bundler, React).
 - Équivalents Rust suivis et forkés : GPUI (Zed), gpui-component, Tauri v3, Taffy, Leptos, Axum, Blitz, wasmtime.
@@ -139,6 +149,7 @@ Pourquoi :
 ## Décision mesurée (benchmark fr1, 2026-11-12) — fait foi
 
 Source : [bench/REPORT.md](bench/REPORT.md), 15 moteurs, 12 sites réels, app Next.js 16 (RSC, streaming, server action, next/image), Turnstile test keys, 45 features.
+
 - **Oracle de rendu** : chrome-headless-shell Stable (157), Canary (160) en alerte avancée. Seul sans faute, Lighthouse OK, ~140 ms à froid, ~620 Mo.
 - **Second oracle** : Firefox Nightly via BiDi ; WebKit (Playwright) pour le point de vue JSC.
 - **Agent léger** : Lightpanda (12/12 sites, 72 Mo, 44 ms à froid ; pas de layout/paint/iframes/Turnstile).

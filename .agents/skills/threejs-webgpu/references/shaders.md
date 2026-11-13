@@ -18,7 +18,12 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 2);
 
 const material = new THREE.ShaderMaterial({
@@ -125,7 +130,9 @@ const material = new THREE.RawShaderMaterial({
 ## Uniforms
 
 ```javascript
-const texture = await new THREE.TextureLoader().loadAsync("textures/diffuse.jpg");
+const texture = await new THREE.TextureLoader().loadAsync(
+  "textures/diffuse.jpg",
+);
 texture.colorSpace = THREE.SRGBColorSpace; // a color image: decoded to linear when sampled
 
 const material = new THREE.ShaderMaterial({
@@ -257,7 +264,10 @@ const instanceCount = 100;
 const geometry = new THREE.PlaneGeometry(0.2, 0.2);
 const offsets = new Float32Array(instanceCount * 3);
 // fill offsets with one vec3 per instance
-geometry.setAttribute("aOffset", new THREE.InstancedBufferAttribute(offsets, 3));
+geometry.setAttribute(
+  "aOffset",
+  new THREE.InstancedBufferAttribute(offsets, 3),
+);
 
 const material = new THREE.ShaderMaterial({
   vertexShader: /* glsl */ `
@@ -368,11 +378,20 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111827); // the WebGPU canvas is transparent by default
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 2);
 
 const material = new THREE.MeshBasicNodeMaterial();
-material.colorNode = mix(color(0x004466), color(0x66ddff), sin(uv().x.mul(20).add(time)).mul(0.5).add(0.5));
+material.colorNode = mix(
+  color(0x004466),
+  color(0x66ddff),
+  sin(uv().x.mul(20).add(time)).mul(0.5).add(0.5),
+);
 
 scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
 
@@ -389,12 +408,21 @@ function animate() {
 
 ```javascript
 import * as THREE from "three/webgpu";
-import { abs, mx_fractal_noise_float, time, uniform, uv, vec3 } from "three/tsl";
+import {
+  abs,
+  mx_fractal_noise_float,
+  time,
+  uniform,
+  uv,
+  vec3,
+} from "three/tsl";
 
 const material = new THREE.MeshBasicNodeMaterial();
 
 const amplitude = uniform(0.5);
-material.colorNode = vec3(abs(mx_fractal_noise_float(uv().mul(10).add(time.mul(0.2)))).mul(amplitude));
+material.colorNode = vec3(
+  abs(mx_fractal_noise_float(uv().mul(10).add(time.mul(0.2)))).mul(amplitude),
+);
 
 // update from JS without touching the node graph:
 amplitude.value = 1.0;
@@ -408,14 +436,20 @@ amplitude.value = 1.0;
 import * as THREE from "three/webgpu";
 import { Fn, color, mix, smoothstep, texture, uniform, uv } from "three/tsl";
 
-const noiseMap = await new THREE.TextureLoader().loadAsync("textures/noise.png"); // scalar data: keep NoColorSpace
+const noiseMap = await new THREE.TextureLoader().loadAsync(
+  "textures/noise.png",
+); // scalar data: keep NoColorSpace
 const progress = uniform(0); // animate progress.value from 0 to 1
 
 const material = new THREE.MeshBasicNodeMaterial();
 material.colorNode = Fn(() => {
   const n = texture(noiseMap, uv()).r;
   n.lessThan(progress).discard();
-  return mix(color(1, 0.5, 0), color(0.5, 0.5, 0.5), smoothstep(progress, progress.add(0.1), n));
+  return mix(
+    color(1, 0.5, 0),
+    color(0.5, 0.5, 0.5),
+    smoothstep(progress, progress.add(0.1), n),
+  );
 })();
 ```
 
@@ -432,7 +466,9 @@ sun.position.set(1, 2, 3);
 scene.add(sun, new THREE.HemisphereLight(0xffffff, 0x223344, 1)); // lit material: black without lights or scene.environment
 
 const material = new THREE.MeshStandardNodeMaterial({ flatShading: true }); // normals from the displaced surface; vertex normals ignore positionNode
-material.positionNode = positionLocal.add(normalLocal.mul(sin(positionLocal.y.mul(4).add(time))).mul(0.2));
+material.positionNode = positionLocal.add(
+  normalLocal.mul(sin(positionLocal.y.mul(4).add(time))).mul(0.2),
+);
 
 const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2, 96, 96), material);
 mesh.rotation.x = -Math.PI / 3; // tilt so the displacement along the normal is visible
@@ -447,7 +483,9 @@ Write reusable logic as a TSL `Fn`; it compiles to both GLSL and WGSL. `varying(
 import * as THREE from "three/webgpu";
 import { Fn, color, mix, positionWorld, sin, varying } from "three/tsl";
 
-const heightFade = Fn(([y]) => mix(color(0x003344), color(0x88eeff), sin(y.mul(3)).mul(0.5).add(0.5)));
+const heightFade = Fn(([y]) =>
+  mix(color(0x003344), color(0x88eeff), sin(y.mul(3)).mul(0.5).add(0.5)),
+);
 
 const material = new THREE.MeshBasicNodeMaterial();
 const vWorldY = varying(positionWorld.y, "vWorldY"); // interpolated from vertex to fragment stage

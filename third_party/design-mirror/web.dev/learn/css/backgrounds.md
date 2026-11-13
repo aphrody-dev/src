@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 053: Background](https://thecsspodcast.libsyn.com/035-background)
 
 Behind every CSS box is a specialized layer called the background layer. CSS provides a variety of ways to make meaningful changes to it--including allowing multiple backgrounds.
@@ -112,28 +113,33 @@ Do
 ```css
 background-position: left 50%;
 ```
+
 Do
 
 ```css
 background-position: top left;
 ```
+
 Do
 
 ```css
 background-position: left top;
 ```
+
 Order does not matter for keywords associated with different axes of position.
 Don't
 
 ```css
-  background-position: 50% left;
+background-position: 50% left;
 ```
+
 When CSS values are used alongside keywords, the order matters. The first value represents the horizontal axis and the second the vertical axis.
 Don't
 
 ```css
-  background-position: left right;
+background-position: left right;
 ```
+
 You cannot use keywords associated with the same axis simultaneously.
 
 The `background-position` property also has a convenient one value shorthand; the omitted value resolves to `50%`. Here's an example that demonstrates this using the keywords the `background-position` property accepts:
@@ -149,31 +155,37 @@ Do
 ```css
 background-position: bottom 88% right;
 ```
+
 Do
 
 ```css
 background-position: right bottom 88%;
 ```
+
 Don't
 
 ```css
 background-position: 88% bottom right;
 ```
+
 CSS length value must be preceded by the `top`, `right`, `bottom`, or `left` keywords when using three or more parameters. Do
 
 ```css
 background-position: bottom 88% right 33%;
 ```
+
 Do
 
 ```css
 background-position: right 33% bottom 88%;
 ```
+
 Don't
 
 ```css
 background-position: 88% 33% bottom left;
 ```
+
 CSS length value must be preceded by the `top`, `right`, `bottom`, or `left` keywords when using three or more parameters.
 
 If `background-position: top left 20%`is applied to a CSS background image, the image is placed at the top of the box, the `20%` value represents a 20% offset from the left of the box (on the x axis).
@@ -300,7 +312,7 @@ As mentioned at the beginning of the module, the background layer allows multipl
 
 Multiple backgrounds are defined top to bottom; The first background is the closest to the user, while the last background is the furthest from the user.
 
-The only background defined or the last layer is designated the *final background layer* by the browser. Only this layer is allowed to assign a `background-color`.
+The only background defined or the last layer is designated the _final background layer_ by the browser. Only this layer is allowed to assign a `background-color`.
 
 > [!NOTE]
 > **Note:** With the unpredictability of the web in mind, a background-image may fail to load. Setting a background-color on the final layer ensures good contrast for text and so on if important background layers fail to load.
@@ -308,14 +320,19 @@ The only background defined or the last layer is designated the *final backgroun
 Multiple layers can be individually configured using most background-related CSS properties that are comma separated, as demonstrated in the code snippet and live demo below.
 
 ```css
-background-image: url("https://assets.codepen.io/7518/pngaaa.com-1272986.png"),
-    url("https://assets.codepen.io/7518/blob.svg"),
-    linear-gradient(hsl(191deg, 40%, 86%), hsla(191deg, 96%, 96%, 0.5));
-  background-size: contain, cover, auto;
-  background-repeat: no-repeat, no-repeat, no-repeat;
-  background-position: 50% 50%, 10% 50%, 0% 0%;
-  background-origin: padding-box, border-box, content-box;
+background-image:
+  url("https://assets.codepen.io/7518/pngaaa.com-1272986.png"),
+  url("https://assets.codepen.io/7518/blob.svg"),
+  linear-gradient(hsl(191deg, 40%, 86%), hsla(191deg, 96%, 96%, 0.5));
+background-size: contain, cover, auto;
+background-repeat: no-repeat, no-repeat, no-repeat;
+background-position:
+  50% 50%,
+  10% 50%,
+  0% 0%;
+background-origin: padding-box, border-box, content-box;
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/dyRzQBz?height=650&amp;theme-id=dark&amp;default-tab=css&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen dyRzQBz by web-dot-dev on Codepen"></iframe>
 
 ## The background shorthand
@@ -323,14 +340,9 @@ background-image: url("https://assets.codepen.io/7518/pngaaa.com-1272986.png"),
 To make it easier to style the background layer of a box-especially when multiple background layers are desired--there is a shorthand that follows the following specific pattern:
 
 ```css
-background:
-  <background-image>
-  <background-position> / <background-size>?
-  <background-repeat>
-  <background-attachment>
-  <background-origin>
-  <background-clip>
-  <background-color>?
+background: <background-image> <background-position> / <background-size>?
+  <background-repeat> <background-attachment> <background-origin>
+  <background-clip> <background-color>?;
 ```
 
 > [!TIP]
@@ -341,14 +353,19 @@ Order is important in the shorthand form of declaring multiple backgrounds. The 
 The following declaration clips the background, and originates it from the content box:
 
 ```css
-background: url("https://assets.codepen.io/7518/blob.svg") 50%
-      50% / contain no-repeat content-box;
+background: url("https://assets.codepen.io/7518/blob.svg") 50% 50% / contain
+  no-repeat content-box;
 ```
 
 With these shorthand semantics in mind, the previous background-related declarations of the code snippet could be rewritten to be following:
 
 ```css
-background: url("https://assets.codepen.io/7518/pngaaa.com-1272986.png") 50% 50%/contain no-repeat padding-box, url("https://assets.codepen.io/7518/blob.svg") 10% 50% / cover border-box, linear-gradient(hsl(191deg, 40%, 86%), hsla(191deg, 96%, 96%, 0.5) ) 0% 0% / cover no-repeat content-box ;
+background:
+  url("https://assets.codepen.io/7518/pngaaa.com-1272986.png") 50% 50% / contain
+    no-repeat padding-box,
+  url("https://assets.codepen.io/7518/blob.svg") 10% 50% / cover border-box,
+  linear-gradient(hsl(191deg, 40%, 86%), hsla(191deg, 96%, 96%, 0.5)) 0% 0% /
+    cover no-repeat content-box;
 ```
 
 ### Check your understanding

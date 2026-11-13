@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** This audit has moved into the [Optimize viewport for mobile](https://developer.chrome.com/docs/performance/insights/viewport.md.txt) insight as of Lighthouse 13. For more information see [What's new in Lighthouse 13](https://developer.chrome.com/blog/lighthouse-13-0.md.txt).
 
@@ -23,6 +24,7 @@ width and scaling of the viewport so that it's sized correctly on all devices.
 without a viewport meta tag:
 
 A page fails the audit unless all of these conditions are met:
+
 - The document's `<head>` contains a `<meta name="viewport">` tag.
 - The viewport meta tag contains a `content` attribute.
 - The `content` attribute's value includes the text `width=`.
@@ -42,6 +44,7 @@ of your page:
       ...
 
 Here's what each key-value pair does:
+
 - `width=device-width` sets the width of the viewport to the width of the device.
 - `initial-scale=1` sets the initial zoom level when the user visits the page.
 

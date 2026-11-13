@@ -724,7 +724,16 @@ function titleCaseSlug(slug: string): string {
  * falling back cleanly to embedded canonical values when standalone.
  */
 export function loadAll27Themes(
-  omarchyDir = join(import.meta.dir, "..", "..", "..", "..", "third_party", "omarchy", "themes"),
+  omarchyDir = join(
+    import.meta.dir,
+    "..",
+    "..",
+    "..",
+    "..",
+    "third_party",
+    "omarchy",
+    "themes",
+  ),
 ): SovereignThemePalette[] {
   const fallbackById = new Map(
     CANONICAL_OMARCHY_FALLBACKS.map((t) => [t.id, t]),

@@ -7,12 +7,13 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 018: Focus](https://thecsspodcast.libsyn.com/018-focus)
 
 On your webpage,
 you click a link that skips the user to the main content of the website.
 These are often referred to as skip links, or anchor links.
-When that link is activated by a keyboard, using the *tab* and *enter* keys,
+When that link is activated by a keyboard, using the _tab_ and _enter_ keys,
 the main content container has a focus ring around it. Why is that?
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/poRWRjp?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen poRWRjp by web-dot-dev on Codepen"></iframe>
 
@@ -48,7 +49,7 @@ Certain elements are automatically focusable;
 these are elements that accept interaction and input, such as `<a>`,
 `<button>`, `<input>` and `<select>`.
 In short, all form elements, buttons and links.
-You can typically navigate a website's focusable elements using the *tab* key to move forward on the page, and *shift* + *tab* to move backward.
+You can typically navigate a website's focusable elements using the _tab_ key to move forward on the page, and _shift_ + _tab_ to move backward.
 
 There is also a HTML attribute called `tabindex` which allows you to change the tabbing index---which is the
 order in which elements are focused---every time someone presses their <kbd>tab</kbd> key,
@@ -86,6 +87,7 @@ a:focus {
   outline: 2px solid slateblue;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/ZELXLMw?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen ZELXLMw by web-dot-dev on Codepen"></iframe>
 
 The `outline` property could appear too close to the text of a link,

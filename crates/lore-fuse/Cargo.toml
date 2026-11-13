@@ -22,8 +22,10 @@ parking_lot = { workspace = true }
 thiserror = { workspace = true }
 
 [dev-dependencies]
-lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
-lore-fuse = { path = ".", features = ["test-util"] , package = "aphrody-lore-fuse" }
+lore-base = { path = "../lore-base", package = "aphrody-lore-base", features = [
+  "test-util",
+] }
+lore-fuse = { path = ".", features = ["test-util"], package = "aphrody-lore-fuse" }
 tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
 
 [features]

@@ -103,7 +103,17 @@ requests = "1200/1m"
 private-key = "%{file:/opt/stalwart-mail/data/dkim/aphrody.ed25519.key}%"
 domain = "aphrody.com"
 selector = "s1-ed25519"
-headers = ["From", "To", "Cc", "Date", "Subject", "Message-ID", "Reply-To", "MIME-Version", "Content-Type"]
+headers = [
+  "From",
+  "To",
+  "Cc",
+  "Date",
+  "Subject",
+  "Message-ID",
+  "Reply-To",
+  "MIME-Version",
+  "Content-Type",
+]
 algorithm = "ed25519-sha256"
 canonicalization = "relaxed/relaxed"
 expire = "10d"
@@ -114,7 +124,17 @@ report = true
 private-key = "%{file:/opt/stalwart-mail/data/dkim/aphrody.rsa2048.key}%"
 domain = "aphrody.com"
 selector = "s2-rsa"
-headers = ["From", "To", "Cc", "Date", "Subject", "Message-ID", "Reply-To", "MIME-Version", "Content-Type"]
+headers = [
+  "From",
+  "To",
+  "Cc",
+  "Date",
+  "Subject",
+  "Message-ID",
+  "Reply-To",
+  "MIME-Version",
+  "Content-Type",
+]
 algorithm = "rsa-sha256"
 canonicalization = "relaxed/relaxed"
 expire = "10d"
@@ -124,7 +144,7 @@ report = true
 [auth.dkim]
 sign = [
   { if = "listener != 'smtp' && sender_domain == 'aphrody.com'", then = "['ed25519-aphrody', 'rsa2048-aphrody']" },
-  { else = false }
+  { else = false },
 ]
 verify = "relaxed"
 
@@ -189,21 +209,18 @@ tls.allow-invalid-certs = false
 route = [
   { if = "rcpt == 'workspace-copy@aphrody.com'", then = "'google-workspace-split'" },
   { if = "rcpt_domain == 'aphrody.com'", then = "'local-stalwart'" },
-  { else = "'mx'" }
+  { else = "'mx'" },
 ]
 
 [session.rcpt]
 directory = "'internal'"
-relay = [
-  { if = "authenticated_as != ''", then = true },
-  { else = false }
-]
+relay = [{ if = "authenticated_as != ''", then = true }, { else = false }]
 rewrite = [
   { if = "rcpt == 'security@aphrody.com'", then = "'contact@aphrody.com'" },
   { if = "rcpt == 'ai@aphrody.com'", then = "'contact@aphrody.com'" },
   { if = "rcpt == 'postmaster@aphrody.com'", then = "'contact@aphrody.com'" },
   { if = "rcpt == 'abuse@aphrody.com'", then = "'contact@aphrody.com'" },
-  { else = false }
+  { else = false },
 ]
 
 # --- Admin Bootstrap ---

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Tap targets are the areas of a web page that users on touch devices can
 interact with. Buttons, links, and form elements all have tap targets.
 
@@ -37,9 +38,9 @@ table with three columns:
 
 **Option 1:** Increase the size of tap targets that are too small.
 Tap targets that are 48 px by 48 px never fail the audit. If you have
-elements that shouldn't *appear* any bigger (for example, icons), try increasing
+elements that shouldn't _appear_ any bigger (for example, icons), try increasing
 the `padding` property:
- Use `padding` to make tap targets bigger without changing the appearance of an element.
+Use `padding` to make tap targets bigger without changing the appearance of an element.
 
 **Option 2:** Increase the spacing between tap targets that are too close together
 using properties like `margin`. 8 px between tap targets is a good starting point,

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Allowing your pages to respond to different screen sizes is just one way of making sure your website is accessible to as many people as possible. Consider some of these other factors that you should keep in mind.
 
 ## Color vision deficiency
@@ -16,7 +17,7 @@ Different people perceive color differently. People with protanopia don't percei
 Some tools can give you a general idea of how your color schemes appear to people with different kinds of color vision.
 
 [Firefox's Accessibility tab](https://developer.mozilla.org/docs/Tools/Accessibility_inspector/Simulation) includes a drop-down labeled **Simulate** with a list of options.
-  Viewing a website with simulations of different kinds of color vision.
+Viewing a website with simulations of different kinds of color vision.
 
 In Chrome DevTools, the rendering tab lets you [emulate vision deficiencies](https://developer.chrome.com/blog/new-in-devtools-83#vision-deficiencies).
 
@@ -40,6 +41,7 @@ a {
   color: red;
 }
 ```
+
 Do
 
 ```css
@@ -68,6 +70,7 @@ body {
   color: black;
 }
 ```
+
 Do
 
 ```css
@@ -126,7 +129,7 @@ You can respond to these settings by using relative font sizes. Avoid using unit
 Try changing the default text size setting in your browser. You can do that in your browser preferences. Or you can do it while you're visiting a web page by zooming in. Does your website still work if [the default font size is increased by 200%](https://www.w3.org/WAI/WCAG21/Understanding/resize-text.html)? How about 400%?
 
 Someone visiting your website on a desktop computer with their font size bumped up to 400% should get the same layout as someone visiting your site on a small-screen device.
- The same website viewed on a desktop device and a mobile device. The desktop browser's font size has been increased to 400%.
+The same website viewed on a desktop device and a mobile device. The desktop browser's font size has been increased to 400%.
 
 ## Keyboard navigation
 
@@ -143,6 +146,7 @@ a:focus-visible {
   outline: 3px solid;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/wvroErW?height=400&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen wvroErW by web-dot-dev on Codepen"></iframe>
 
 As the user tabs from link to link or form field to form field, those elements will be focused in the order they appear in the document structure. This should also match the visual order.
@@ -210,14 +214,15 @@ Don't
 
 <div class="heading-tertiary">How this site was built</div>
 ```
+
 Do
 
 ```html
 <h1>Welcome to my page</h1>
-  <h2>About me</h2>
-    <h3>My childhood</h3>
-  <h2>About this website</h2>
-    <h3>How this site was built</h3>
+<h2>About me</h2>
+<h3>My childhood</h3>
+<h2>About this website</h2>
+<h3>How this site was built</h3>
 ```
 
 ## Structure
@@ -236,6 +241,7 @@ Don't
 
 <div class="footer">...</div>
 ```
+
 Do
 
 ```html
@@ -252,14 +258,13 @@ Make sure that every form field has an associated `<label>` element. You can ass
 Don't
 
 ```html
-<span class="formlabel">Your name</span>
-<input type="text">
+<span class="formlabel">Your name</span> <input type="text" />
 ```
+
 Do
 
 ```html
-<label for="name">Your name</label>
-<input id="name" type="text">
+<label for="name">Your name</label> <input id="name" type="text" />
 ```
 
 > [!NOTE]
@@ -273,6 +278,7 @@ Don't
 ```html
 
 ```
+
 Do
 
 ```html
@@ -285,6 +291,7 @@ Don't
 ```html
 
 ```
+
 Do
 
 ```html
@@ -299,8 +306,12 @@ Try to provide descriptive text within links. Avoid using phrases like "click he
 Don't
 
 ```html
-<p>To find out more about our latest offers, <a href="/offers.html">click here</a>.</p>
+<p>
+  To find out more about our latest offers,
+  <a href="/offers.html">click here</a>.
+</p>
 ```
+
 Do
 
 ```html

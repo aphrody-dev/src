@@ -40,8 +40,19 @@ export interface ForkPin {
 }
 
 export function forkPins(root: string): ForkPin[] {
-  const lock = JSON.parse(readFileSync(join(root, "src.lock.json"), "utf8")) as {
-    repositories: Record<string, { url?: string; upstream_url?: string; commit?: string; branch?: string; remotes?: Record<string, string> }>;
+  const lock = JSON.parse(
+    readFileSync(join(root, "src.lock.json"), "utf8"),
+  ) as {
+    repositories: Record<
+      string,
+      {
+        url?: string;
+        upstream_url?: string;
+        commit?: string;
+        branch?: string;
+        remotes?: Record<string, string>;
+      }
+    >;
   };
   return GAMING_CHECKOUTS.map((name) => {
     const e = lock.repositories[`third_party/${name}`];
@@ -51,7 +62,9 @@ export function forkPins(root: string): ForkPin[] {
       upstream: e?.upstream_url ?? null,
       commit: e?.commit ?? null,
       branch: e?.branch ?? null,
-      variants: Object.keys(e?.remotes ?? {}).filter((r) => r !== "origin" && r !== "upstream"),
+      variants: Object.keys(e?.remotes ?? {}).filter(
+        (r) => r !== "origin" && r !== "upstream",
+      ),
     };
   });
 }

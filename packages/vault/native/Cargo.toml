@@ -1,28 +1,36 @@
 # aphrody-vault: Rust side of @aphrody/vault (docs/infra/VAULT.md). Same on-disk formats as the TS
 # package: DPAPI blobs (entropy v1) / systemd-creds credentials, AYV1 envelopes, age X25519.
-# Standalone (packages/ is outside the root workspace): own lockfile, built in CI or on fr1.
+# Member of the root workspace (explicit entry in the root Cargo.toml), built in CI or on fr1.
 [package]
 name = "aphrody-vault"
 version = "0.1.0"
-edition = "2024"
-rust-version = "1.85"
-license = "MIT OR Apache-2.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
 publish = false
-
-[workspace]
 
 [lib]
 crate-type = ["rlib", "cdylib"]
 
 [dependencies]
-age = { version = "0.12.1", default-features = false }
-aes-gcm = "0.11.1"
-tokio = { version = "1.54.1", features = ["rt", "rt-multi-thread", "process", "fs", "io-util", "macros"] }
-zeroize = "1.9.1"
-getrandom = "0.4.3"
+age = { workspace = true }
+aes-gcm = { workspace = true }
+tokio = { workspace = true, features = [
+  "rt",
+  "rt-multi-thread",
+  "process",
+  "fs",
+  "io-util",
+  "macros",
+] }
+zeroize = { workspace = true }
+getrandom = { workspace = true }
 
 [target.'cfg(windows)'.dependencies]
-windows = { version = "0.62.2", features = ["Win32_Foundation", "Win32_Security_Cryptography"] }
+windows = { workspace = true, features = [
+  "Win32_Foundation",
+  "Win32_Security_Cryptography",
+] }
 
 [dev-dependencies]
-tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros"] }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }

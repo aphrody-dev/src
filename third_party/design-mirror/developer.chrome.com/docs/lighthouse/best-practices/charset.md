@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Servers and browsers communicate with each other by sending bytes of data over the
 internet. If the server doesn't specify which [character encoding format](https://en.wikipedia.org/wiki/Character_encoding) it's
 using when it sends an HTML file, the browser won't know what character each byte represents.
@@ -44,8 +45,10 @@ The best practice is to make the `<meta charset>` element the first element in t
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     ...
+  </head>
+</html>
 ```
 
 ### Add a `Content-Type` HTTP response header

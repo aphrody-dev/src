@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## Experimenting with subgroups
@@ -42,7 +43,8 @@ const device = await adapter.requestDevice({
   requiredFeatures: ["subgroups"],
 });
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   enable subgroups;
 
   var<workgroup> wgmem : u32;

@@ -1,7 +1,8 @@
 ---
 title: "The Modern Linux Revolutions: eBPF, io_uring, and Rust in the Kernel"
 description: "How modern innovations—eBPF programmable kernel space, Jens Axboe's io_uring asynchronous I/O, and Rust memory safety—are shaping Linux in the 2020s."
-tags: ["linux", "kernel", "ebpf", "io_uring", "rust", "modern-kernel", "systems"]
+tags:
+  ["linux", "kernel", "ebpf", "io_uring", "rust", "modern-kernel", "systems"]
 chapter: 9
 order: 9
 ---
@@ -11,6 +12,7 @@ order: 9
 ## 1. The Triad of Modern Linux Engineering
 
 Over the past decade, three transformative technologies have redefined what is possible in systems programming, turning the Linux kernel into an ultra-high-throughput programmable runtime engine:
+
 1. **eBPF (Extended Berkeley Packet Filter)**: Safe, dynamic, in-kernel sandboxed bytecode execution without recompiling kernel modules.
 2. **`io_uring`**: Zero-copy, lockless, asynchronous I/O interface using shared ring buffers between userspace and kernel space.
 3. **Rust in the Kernel**: First-class memory-safe systems language integrated directly into the kernel source tree alongside C.
@@ -46,6 +48,7 @@ Over the past decade, three transformative technologies have redefined what is p
 Originally created by Steven McCanne and Van Jacobson in 1992 for packet filtering (`tcpdump`), BPF was rewritten and generalized by **Alexei Starovoitov** and **Daniel Borkmann** in Linux 3.18 (2014) as **eBPF**.
 
 ### 2.1 The eBPF Execution Model
+
 eBPF allows developers to write C or Rust code, compile it with LLVM/Clang into custom bytecode, and load it dynamically into the running kernel via the `bpf()` syscall.
 
 ```
@@ -70,6 +73,7 @@ eBPF allows developers to write C or Rust code, compile it with LLVM/Clang into 
 ```
 
 ### 2.2 Why eBPF is Revolutionary
+
 - **Zero Kernel Recompilation**: Observability (BCC, bpftrace), networking (Cilium), and security auditing (Falco, Tetragon) run dynamically at wire speed without patching or rebooting the kernel.
 - **XDP Packet Processing**: Drops millions of malicious DDoS packets directly in the network card driver ring buffer before the kernel even allocates an `sk_buff` socket buffer.
 
@@ -99,11 +103,14 @@ In Linux 5.1 (2019), **Jens Axboe** created **`io_uring`**, completely overturni
 ```
 
 ### 3.1 The Architecture of `io_uring`
+
 `io_uring` establishes two ring buffers shared between userspace and the kernel via `mmap()`:
+
 1. **Submission Queue (SQ)**: Userspace writes Submission Queue Entries (`struct io_uring_sqe`) describing operations (read, write, accept, connect, send, recv, fsync, splice).
 2. **Completion Queue (CQ)**: The kernel processes the requests and writes Completion Queue Entries (`struct io_uring_cqe`) containing the result and status code.
 
 ### 3.2 Key Performance Breakthroughs
+
 - **Zero-Syscall Operation (`IORING_SETUP_SQPOLL`)**: A dedicated kernel thread continuously polls the SQ ring. Userspace submits thousands of I/O operations simply by writing to memory, achieving millions of IOPS **without a single system call interrupt transition**.
 - **Fixed Buffers and Files**: Pre-registers memory pages and file descriptors to avoid repeated page pinning, VFS lookup, and dentry refcount overhead.
 
@@ -114,7 +121,9 @@ In Linux 5.1 (2019), **Jens Axboe** created **`io_uring`**, completely overturni
 For 30 years, Linus Torvalds resisted introducing other programming languages (including C++) into the kernel tree. However, in **Linux 6.1** (December 2022), Linus formally merged initial infrastructure for **Rust**.
 
 ### 4.1 The Impetus: Memory Safety Without Garbage Collection
+
 Roughly 70% of high-severity CVEs in the Linux kernel stem from memory safety bugs:
+
 - Use-after-free (UAF)
 - Out-of-bounds array indexing
 - Double frees and null pointer dereferences
@@ -151,6 +160,7 @@ impl Drop for RustMinimal {
 ```
 
 ### 4.2 Architectural Integration
+
 - **`rust/` directory**: Contains core safe bindings, types (`Ref<T>`, `Arc<T>`, `Mutex<T>`), and driver abstractions.
 - **`bindgen`**: Automatically generates unsafe C FFI bindings from internal kernel C header files.
 - **Safe Abstractions**: Safe wrappers around core kernel subsystems (DRM graphics drivers, NVMe, network PHY drivers, Android Binder) ensure driver developers cannot cause memory corruption or data races without explicitly writing the `unsafe` keyword.

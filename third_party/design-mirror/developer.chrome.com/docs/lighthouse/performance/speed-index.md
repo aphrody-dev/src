@@ -7,12 +7,13 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Speed Index is one of five metrics
 tracked in the **Performance** section of the Lighthouse report.
 Each metric captures some aspect of page load speed.
 
 Lighthouse displays Speed Index in seconds:
- Speed Index is one of five metrics tracked in the Performance section of the Lighthouse report
+Speed Index is one of five metrics tracked in the Performance section of the Lighthouse report
 
 ## What Speed Index measures
 
@@ -33,21 +34,21 @@ and the speed indexes of real websites, based on
 
 This table shows how to interpret your mobile Speed Index score:
 
-| Speed Index (in seconds) | Color-coding |
-|---|---|
-| 0--3.4 | Green (fast) |
-| 3.4--5.8 | Orange (moderate) |
-| Over 5.8 | Red (slow) |
+| Speed Index (in seconds) | Color-coding      |
+| ------------------------ | ----------------- |
+| 0--3.4                   | Green (fast)      |
+| 3.4--5.8                 | Orange (moderate) |
+| Over 5.8                 | Red (slow)        |
 
 Lighthouse mobile Speed Index thresholds
 
 This table shows how to interpret your desktop Speed Index score:
 
-| Speed Index (in seconds) | Color-coding |
-|---|---|
-| 0--1.3 | Green (fast) |
-| 1.3--2.3 | Orange (moderate) |
-| Over 2.3 | Red (slow) |
+| Speed Index (in seconds) | Color-coding      |
+| ------------------------ | ----------------- |
+| 0--1.3                   | Green (fast)      |
+| 1.3--2.3                 | Orange (moderate) |
+| Over 2.3                 | Red (slow)        |
 
 Lighthouse desktop Speed Index thresholds
 
@@ -71,7 +72,7 @@ Unless you have a specific reason for focusing on a particular metric, it's
 usually better to focus on improving your overall Performance score.
 
 Use the **Diagnostics** section of your Lighthouse report to determine which improvements will have the most value for your page. The more significant the opportunity, the greater the effect it will have on your Performance score. For example, the following Lighthouse screenshot shows that [eliminating render-blocking resources](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources.md.txt) will yield the biggest improvement:
- Lighthouse: Diagnostics section
+Lighthouse: Diagnostics section
 
 See the [Performance audits](https://developer.chrome.com/docs/lighthouse/performance)
 to learn how to address the opportunities identified in your Lighthouse report.

@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)  Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com) Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 Published: October 26, 2021, Last updated: November 18, 2025
 
@@ -19,7 +20,7 @@ Published: October 26, 2021, Last updated: November 18, 2025
 ## What is TTFB?
 
 TTFB is a metric that measures the time between starting navigating to a page and when the first byte of a response begins to arrive.
- A diagram of network request phases and their associated timings. TTFB measures the elapsed time between `startTime` and `responseStart`.
+A diagram of network request phases and their associated timings. TTFB measures the elapsed time between `startTime` and `responseStart`.
 
 TTFB is the sum of the following request phases:
 
@@ -45,15 +46,13 @@ There is real value in sending back data early if the full response is going to 
 ### What is a good TTFB score?
 
 Because TTFB precedes [user-centric metrics](https://web.dev/articles/user-centric-performance-metrics.md.txt) such as [First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt) and [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt), it's recommended that your server responds to navigation requests quickly enough so that the **75th percentile** of users experience an [FCP within the "good" threshold](https://web.dev/articles/fcp.md.txt#what_is_a_good_fcp_score). As a rough guide, most sites should strive to have a TTFB of **0.8 seconds** or less.
- Good TTFB values are 0.8 seconds or less, and poor values are greater than 1.8 seconds.
+Good TTFB values are 0.8 seconds or less, and poor values are greater than 1.8 seconds.
 
 > [!IMPORTANT]
 >
 > **Key point:** Because TTFB isn't a [Core Web Vitals](https://web.dev/articles/vitals.md.txt) metric, it's not absolutely necessary that sites meet the "good" TTFB threshold, provided that it doesn't impede their ability to score well on the metrics that matter.
 >
->
 > Websites vary in how they deliver content. A low TTFB is crucial for getting markup out to the client as soon as possible. However, if a website delivers the initial markup quickly, but that markup then requires JavaScript to populate it with meaningful content---as is the the case with Single Page Applications (SPAs)---then achieving the lowest possible TTFB is especially important so that the client-rendering of markup can occur sooner.
->
 >
 > Conversely, a server-rendered site that does not require as much client-side work could have a higher TTFB, but better FCP and LCP values than an entirely client-rendered experience. This is why the TTFB thresholds are a "rough guide", and will need to be weighed against how your site delivers its core content.
 
@@ -77,19 +76,19 @@ You can measure the TTFB of [navigation requests](https://developer.mozilla.org/
 
 ```javascript
 new PerformanceObserver((entryList) => {
-  const [pageNav] = entryList.getEntriesByType('navigation');
+  const [pageNav] = entryList.getEntriesByType("navigation");
 
   console.log(`TTFB: ${pageNav.responseStart}`);
 }).observe({
-  type: 'navigation',
-  buffered: true
+  type: "navigation",
+  buffered: true,
 });
 ```
 
 The [`web-vitals` JavaScript library](https://github.com/GoogleChrome/web-vitals) can also measure TTFB in the browser more succinctly:
 
 ```javascript
-import {onTTFB} from 'web-vitals';
+import { onTTFB } from "web-vitals";
 
 // Measure and log TTFB as soon as it's available.
 onTTFB(console.log);
@@ -97,7 +96,7 @@ onTTFB(console.log);
 
 ### Measure resource requests
 
-TTFB can also be measured on *all* requests, not just navigation requests. In particular, resources hosted on cross-origin servers can introduce latency due to the need to set up connections to those servers.
+TTFB can also be measured on _all_ requests, not just navigation requests. In particular, resources hosted on cross-origin servers can introduce latency due to the need to set up connections to those servers.
 
 > [!NOTE]
 > **Note:** CrUX and other measurement tools may only provide TTFB data on the main navigation request.
@@ -117,8 +116,8 @@ new PerformanceObserver((entryList) => {
     }
   }
 }).observe({
-  type: 'resource',
-  buffered: true
+  type: "resource",
+  buffered: true,
 });
 ```
 

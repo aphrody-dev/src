@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The Web is available to everyone in the world---it's right there in the name!
 That means that your website is potentially available to anyone who has access to the internet, regardless of where they are, what device they're using, or what languages they speak.
 
@@ -36,6 +37,7 @@ Don't
   text-align: right;
 }
 ```
+
 Do
 
 ```css
@@ -68,6 +70,7 @@ label {
   margin-right: 0.5em;
 }
 ```
+
 Do
 
 ```css
@@ -75,6 +78,7 @@ label {
   margin-inline-end: 0.5em;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/gOxXOLK?height=300&amp;theme-id=dark&amp;default-tab=css%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen gOxXOLK by web-dot-dev on Codepen"></iframe>
 
 If that page is translated into a right-to-left language, the styles won't need to be updated.
@@ -90,13 +94,13 @@ If you'd like to experiment with all the permutations of document directions (th
 It's a good idea to identify the language of your page by using the `lang` attribute on the `html` element.
 
 ```html
-<html lang="en">
+<html lang="en"></html>
 ```
 
 That example is for a page in English. You can be even more specific. Here's how you declare that a page is using US English:
 
 ```html
-<html lang="en-us">
+<html lang="en-us"></html>
 ```
 
 Declaring the language of your document is useful for search engines.
@@ -130,7 +134,7 @@ Here, the text "Deutsche Version" is marked up as being in the German language, 
 You can also use the `hreflang` attribute on the `link` element. This goes in the `head` of your document:
 
 ```html
-<link href="/path/to/german/version" rel="alternate" hreflang="de">
+<link href="/path/to/german/version" rel="alternate" hreflang="de" />
 ```
 
 But unlike the `lang` attribute, which can go on any element, `hreflang` can only be applied to `a` and `link` elements.

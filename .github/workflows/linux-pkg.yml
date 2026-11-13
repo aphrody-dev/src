@@ -6,7 +6,14 @@ name: linux-pkg
 on:
   push:
     branches: [main]
-    paths: ["infra/pkg/**", "infra/linux/**", "infra/fleet/sysctl/**", "packages/linux/**", ".github/workflows/linux-pkg.yml"]
+    paths:
+      [
+        "infra/pkg/**",
+        "infra/linux/**",
+        "infra/fleet/sysctl/**",
+        "packages/linux/**",
+        ".github/workflows/linux-pkg.yml",
+      ]
   pull_request:
     paths: ["infra/pkg/**", "infra/linux/**", "packages/linux/**"]
   workflow_dispatch:

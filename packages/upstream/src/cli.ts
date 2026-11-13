@@ -26,7 +26,12 @@ import {
   type Review,
   type Status,
 } from "./patch.ts";
-import { mirrorStatus, mirrorSync, type MirrorRow, type MirrorStack } from "./mirror.ts";
+import {
+  mirrorStatus,
+  mirrorSync,
+  type MirrorRow,
+  type MirrorStack,
+} from "./mirror.ts";
 import { applyRegistry, saveEntry } from "./registry.ts";
 import { bunPrBody, check, type Finding } from "./rules.ts";
 import {
@@ -148,7 +153,8 @@ async function stackStatus(
   };
   try {
     if (s.optional && !repoExists(s.fork)) return { ...rep, present: false };
-    if (s.model === "mirror") return { ...rep, source: "api", mirror: mirrorStatus(s as MirrorStack) };
+    if (s.model === "mirror")
+      return { ...rep, source: "api", mirror: mirrorStatus(s as MirrorStack) };
     const dir = stackDir(root, s);
     let patches: Patch[] = [];
     if (s.model === "series") {
@@ -274,7 +280,9 @@ function printStatus(reps: StackReport[], markdown: boolean): void {
     if (r.error) console.log(`  erreur : ${r.error}`);
     if (r.mirror) {
       for (const m of r.mirror)
-        console.log(`  ${m.branch.padEnd(16)} ${m.in_sync ? "à jour" : "en retard"}  ${m.fork_tip?.slice(0, 12) ?? "absente"} <- ${m.source_tip?.slice(0, 12) ?? "?"}  ${m.source}`);
+        console.log(
+          `  ${m.branch.padEnd(16)} ${m.in_sync ? "à jour" : "en retard"}  ${m.fork_tip?.slice(0, 12) ?? "absente"} <- ${m.source_tip?.slice(0, 12) ?? "?"}  ${m.source}`,
+        );
       console.log("");
       continue;
     }
@@ -293,7 +301,8 @@ async function sync(root: string, s: StackConfig, o: Opts): Promise<number> {
     console.log(`${s.name} : ${s.fork} absent, ignoré`);
     return 0;
   }
-  if (s.model === "mirror") return mirrorSync(root, s as MirrorStack, o.flags.has("push"));
+  if (s.model === "mirror")
+    return mirrorSync(root, s as MirrorStack, o.flags.has("push"));
   const dir = ensureCheckout(root, s);
   if (!o.flags.has("no-fetch")) fetchBoth(dir, s);
   const at = new Date().toISOString();

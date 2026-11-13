@@ -26,7 +26,11 @@ lore-base = { workspace = true }
 lore-macro = { workspace = true }
 
 [target.'cfg(target_family = "windows")'.dependencies]
-windows-sys = { workspace = true, features = ["Win32_System_Console", "Win32_Networking_WinSock", "Win32_Globalization"] }
+windows-sys = { workspace = true, features = [
+  "Win32_System_Console",
+  "Win32_Networking_WinSock",
+  "Win32_Globalization",
+] }
 
 [features]
 default = []
@@ -34,7 +38,7 @@ oodle = ["lore/oodle"]
 test-util = []
 
 [dev-dependencies]
-lore-client = { path = ".", features = ["test-util"] , package = "aphrody-lore-client" }
+lore-client = { path = ".", features = ["test-util"], package = "aphrody-lore-client" }
 
 [build-dependencies]
 winresource = { workspace = true }

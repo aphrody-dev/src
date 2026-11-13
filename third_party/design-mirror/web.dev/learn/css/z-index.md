@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 019: z-index and stacking contexts](https://thecsspodcast.libsyn.com/019-z-index-and-stacking-context)
 
 Say you've got a couple of elements that are absolutely positioned,
@@ -15,8 +16,8 @@ You might write a bit of a HTML like this:
 
 ```html
 <div class="stacked-items">
-    <div class="item-1">Item 1</div>
-    <div class="item-2">Item 2</div>
+  <div class="item-1">Item 1</div>
+  <div class="item-2">Item 2</div>
 </div>
 ```
 
@@ -50,17 +51,17 @@ because you can modify the z-index of flex or grid items without adding `positio
 
 ## Negative z-index
 
-To set an element *behind* another element,
+To set an element _behind_ another element,
 add a negative value for `z-index`.
 
 ```css
 .my-element {
-    background: rgb(232 240 254 / 0.4);
+  background: rgb(232 240 254 / 0.4);
 }
 
 .my-element .child {
-    position: relative;
-    z-index: -1;
+  position: relative;
+  z-index: -1;
 }
 ```
 

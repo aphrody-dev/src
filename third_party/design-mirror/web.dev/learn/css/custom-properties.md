@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Say you've been building some initial styles for your site, and you've found yourself repeating some of the values in your CSS. You're using `dodgerblue` as your primary color, and you're adding that to button borders, link text, header backgrounds, and using a design tool to pick some variants of that blue for other pieces of the site. Then, you get a style guide, and the primary color is now `oklch(70% 0.15 270)`.
 
 Custom properties, or CSS variables, allow you to organize and reuse values in your CSS, so that your styles are more flexible and easier to understand.
@@ -48,12 +49,10 @@ What happens if you try to use a custom property that doesn't have a value set? 
 
 ```css
 #my-element {
-  background: var(
-    --alert-variant-background,
-    var(--alert-primary-background)
-  );
+  background: var(--alert-variant-background, var(--alert-primary-background));
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/OPyvYmO?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen OPyvYmO by web-dot-dev on Codepen">
 </iframe>
 
@@ -124,6 +123,7 @@ This example updates the style tag on the `#my-button` element, and inspecting i
 ```html
 <button id="my-button" style="--color: orange">Click me</button>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/EaVEzvx?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen EaVEzvx by web-dot-dev on Codepen">
 </iframe>
 

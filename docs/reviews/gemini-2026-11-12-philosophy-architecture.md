@@ -14,7 +14,7 @@ Note : 13,5 / 20 — La gouvernance (couches explicites, gestion de la dette par
 
 des modules intrinsèquement liés à l'OS (crates/sys, crates/net, packages/machine, packages/runtime-adapter), impossibles à écrire sans cfg(target_os) ni windows-rs ;
 
-des crates métier (lore-*, depot-*, aphrody-design-*, gamescope-core).Correction : Remonter sys, net, machine et runtime-adapter en L2 (ou scinder sys sous L2 en autorisant cfg(target_os) en L1), et déplacer les crates lore-*, depot-*, aphrody-design-* et gamescope-core en L2/L3.
+des crates métier (lore-_, depot-_, aphrody-design-_, gamescope-core).Correction : Remonter sys, net, machine et runtime-adapter en L2 (ou scinder sys sous L2 en autorisant cfg(target_os) en L1), et déplacer les crates lore-_, depot-_, aphrody-design-_ et gamescope-core en L2/L3.
 
 [Incohérence interne — ARCHITECTURE.md §1, §2 & §5] Dépendance montante packages/core (L1) → crates/core-capi (L2) et règle C ABI incohérente. @aphrody/core (L1) charge core-capi (L2) via bun:ffi, créant une arête montante L1 → L2. De plus, §2 place toute C ABI « une couche au-dessus de ce qu'elle expose », mais range ffi et lore-capi (exposant L3) en L5 au lieu de L4 — ce qui interdit à agent (L4) de les utiliser sans infraction montante.Correction : Placer une C ABI dans la même couche que ce qu'elle expose (core-capi en L1 ou @aphrody/core en L2 ; ffi et lore-capi en L3), ou réserver L5 aux seuls binaires finaux.
 
@@ -44,7 +44,7 @@ les [dev-dependencies] et [build-dependencies] ne sont pas distinguées : utilis
 
 [Lacune d'isolation — ARCHITECTURE.md §1, §2 & §8 (checkdeps-002)] Supprimer ARCH-017 détruit le cloisonnement horizontal entre domaines. Comme toute arête descendante est permise par défaut, retirer ARCH-017 autorise un service backend L3 (lore, depot) à importer dx12-winui-core ou steam-depot (L2), et agent (L4) à importer next ou react (L3).Correction : Traduire les frontières de domaines d'ARCH-017 en règles - dans DEPS.rules avant de supprimer ARCH-017, et sortir next/react/ui du socle L3 partagé avec les services système.
 
-[Incohérence VCS / Workspace — ARCHITECTURE.md §2, §4, §7 & §8] Superposition de quatre mécanismes d'épinglage et statut flou de apps/*. Le dépôt cumule .lore/, DEPS (gclient, SHA-1 de 40 caractères), src.lock.json, des sous-modules (agent/) et vendored-sources, tout en exigeant un « workspace Cargo unique » (§4) alors que apps/* sont des dépôts externes dont checkdeps « ne contrôle que la racine » (§4) — ce que contredit le ticket checkdeps-003 qui traque un cycle interne rg-db ↔ rg-types dans apps/rosegriffon.Correction : Fusionner DEPS et src.lock.json en une seule source d'épinglage, documenter [workspace] exclude pour apps/* et third_party/, ajouter uv.lock à §4, et clarifier si checkdeps inspecte ou non l'intérieur de apps/*.
+[Incohérence VCS / Workspace — ARCHITECTURE.md §2, §4, §7 & §8] Superposition de quatre mécanismes d'épinglage et statut flou de apps/_. Le dépôt cumule .lore/, DEPS (gclient, SHA-1 de 40 caractères), src.lock.json, des sous-modules (agent/) et vendored-sources, tout en exigeant un « workspace Cargo unique » (§4) alors que apps/_ sont des dépôts externes dont checkdeps « ne contrôle que la racine » (§4) — ce que contredit le ticket checkdeps-003 qui traque un cycle interne rg-db ↔ rg-types dans apps/rosegriffon.Correction : Fusionner DEPS et src.lock.json en une seule source d'épinglage, documenter [workspace] exclude pour apps/* et third_party/, ajouter uv.lock à §4, et clarifier si checkdeps inspecte ou non l'intérieur de apps/*.
 
 [Lacune protocole — ARCHITECTURE.md §5] Vérification de core_abi_version() non imposée avant liaison des symboles. Incrémenter core_abi_version() lors d'une rupture d'ABI n'évite un crash dans bun:ffi que si @aphrody/core vérifie cette version avant de résoudre les autres symboles C.Correction : Imposer dans @aphrody/core une ouverture dlopen en deux étapes : résolution et assertion stricte sur core_abi_version() avant liaison du reste de la table FFI.
 
@@ -63,4 +63,4 @@ les [dev-dependencies] et [build-dependencies] ne sont pas distinguées : utilis
 11. ARCH-017 : retrait conditionné à la traduction des frontières de domaine en règles `-` (checkdeps-002).
 12. Python : ticket checkdeps-004 ; dev-dependencies exemptées et documentées.
 
-Non retenu : déplacer lore-*/depot-*/design-* hors de L1 en bloc (seules leurs primitives portables y restent ; les services sont déjà en L3).
+Non retenu : déplacer lore-_/depot-_/design-* hors de L1 en bloc (seules leurs primitives portables y restent ; les services sont déjà en L3).

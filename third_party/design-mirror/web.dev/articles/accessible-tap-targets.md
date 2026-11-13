@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Dave Gash  Meggin Kearney Patrick H. Lauke [GitHub](https://github.com/patrickhlauke) [Homepage](https://www.splintered.co.uk/)  Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)  Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
+
+Dave Gash Meggin Kearney Patrick H. Lauke [GitHub](https://github.com/patrickhlauke) [Homepage](https://www.splintered.co.uk/) Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk) Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
 When your design is displayed on a mobile device, make sure that interactive
 elements, such as buttons or links, are large enough and have enough
@@ -61,12 +62,12 @@ what device they're using.
 
 ```css
 .container a {
-  padding: .2em;
+  padding: 0.2em;
 }
 
 @media (any-pointer: coarse) {
   .container a {
-    padding: .8em;
+    padding: 0.8em;
   }
 }
 ```

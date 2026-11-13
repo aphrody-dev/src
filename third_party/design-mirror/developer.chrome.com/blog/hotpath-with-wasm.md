@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Surma [X](https://twitter.com/dassurma) [GitHub](https://github.com/surma) [Homepage](https://surma.dev/)
 
 ## It's consistently fast, yo
@@ -49,21 +50,21 @@ seconds or less. An acceptable duration for this type of interaction.
 
 ```javascript
 for (let d2 = d2Start; d2 >= 0 && d2 < d2Limit; d2 += d2Advance) {
-    for (let d1 = d1Start; d1 >= 0 && d1 < d1Limit; d1 += d1Advance) {
-    const in_idx = ((d1 * d1Multiplier) + (d2 * d2Multiplier));
+  for (let d1 = d1Start; d1 >= 0 && d1 < d1Limit; d1 += d1Advance) {
+    const in_idx = d1 * d1Multiplier + d2 * d2Multiplier;
     outBuffer[i] = inBuffer[in_idx];
     i += 1;
-    }
+  }
 }
 ```
 
 One browser, however, takes over 8 seconds. The way browsers optimize JavaScript
-is *really complicated*, and different engines optimize for different things.
+is _really complicated_, and different engines optimize for different things.
 Some optimize for raw execution, some optimize for interaction with the DOM. In
 this case, we've hit an unoptimized path in one browser.
 
 WebAssembly on the other hand is built entirely around raw execution speed. So
-if we want fast, *predictable* performance across browsers for code like this,
+if we want fast, _predictable_ performance across browsers for code like this,
 WebAssembly can help.
 
 ## WebAssembly for predictable performance
@@ -87,7 +88,7 @@ advantages that WebAssembly has.
 
 #### WebAssembly architecture
 
-When writing *for* WebAssembly, it's beneficial to understand a bit more about
+When writing _for_ WebAssembly, it's beneficial to understand a bit more about
 what WebAssembly actually is.
 
 To quote [WebAssembly.org](https://webassembly.org/):
@@ -109,7 +110,7 @@ to write WebAssembly modules that don't need any additional memory at all and
 only use the VM-internal stack.
 
 > [!NOTE]
-> **Note:** Compilers like Emscripten still use the WebAssembly memory to implement their own stack. This is necessary so you can access values anywhere on the stack through constructs like pointers in C, something the VM-internal stack does not allow. So, somewhat confusingly, when you run C via WebAssembly, *two* stacks are in use!
+> **Note:** Compilers like Emscripten still use the WebAssembly memory to implement their own stack. This is necessary so you can access values anywhere on the stack through constructs like pointers in C, something the VM-internal stack does not allow. So, somewhat confusingly, when you run C via WebAssembly, _two_ stacks are in use!
 
 In our case we will need to use some additional memory to allow arbitrary access
 to the pixels of our image and generate a rotated version of that image. This is
@@ -134,7 +135,7 @@ parameter to a WebAssembly function and return the rotated image as a return
 value. To generate that return value we would have to make use of the allocator.
 But since we know the total amount of memory needed (twice the size of the input
 image, once for input and once for output), we can put the input image into the
-WebAssembly memory using *JavaScript*, run the WebAssembly module to generate a
+WebAssembly memory using _JavaScript_, run the WebAssembly module to generate a
 2nd, rotated image and then use JavaScript to read back the result. We can get
 away without using any memory management at all!
 
@@ -174,7 +175,7 @@ allowing us to access individual bytes for reading and writing. In our case we
 are looking at an RGBA buffer of an image that we want to re-order to achieve
 rotation. To move a pixel we actually need to move 4 consecutive bytes at once
 (one byte for each channel: R, G, B and A). To make this easier we can create an
-array of unsigned, *32-bit* integers. By convention, our input image will start
+array of unsigned, _32-bit_ integers. By convention, our input image will start
 at address 4 and our output image will start directly after the input image
 ends:
 
@@ -272,17 +273,17 @@ important to note, however, that it won't just consume any TypeScript.
 AssemblyScript uses the same syntax as TypeScript but switches out the standard
 library for their own. Their standard library models the capabilities of
 WebAssembly. That means you can't just compile any TypeScript you have lying
-around to WebAssembly, but it *does* mean that you don't have to learn a new
+around to WebAssembly, but it _does_ mean that you don't have to learn a new
 programming language to write WebAssembly!
 
 ```javascript
-    for (let d2 = d2Start; d2 >= 0 && d2 < d2Limit; d2 += d2Advance) {
-      for (let d1 = d1Start; d1 >= 0 && d1 < d1Limit; d1 += d1Advance) {
-        let in_idx = ((d1 * d1Multiplier) + (d2 * d2Multiplier));
-        store<u32>(offset + i * 4 + 4, load<u32>(in_idx * 4 + 4));
-        i += 1;
-      }
-    }
+for (let d2 = d2Start; d2 >= 0 && d2 < d2Limit; d2 += d2Advance) {
+  for (let d1 = d1Start; d1 >= 0 && d1 < d1Limit; d1 += d1Advance) {
+    let in_idx = d1 * d1Multiplier + d2 * d2Multiplier;
+    store < u32 > (offset + i * 4 + 4, load < u32 > in_idx * 4 + 4);
+    i += 1;
+  }
+}
 ```
 
 Considering the small type surface that our `rotate()` function has, it was
@@ -295,7 +296,7 @@ we only need to install the `AssemblyScript/assemblyscript` npm package and run
 $ asc rotate.ts -b assemblyscript.wasm --validate -O3
 ```
 
-AssemblyScript will provide us with a \~300 Bytes wasm module and *no* glue code.
+AssemblyScript will provide us with a \~300 Bytes wasm module and _no_ glue code.
 The module just works with the vanilla WebAssembly APIs.
 
 ### WebAssembly Forensics
@@ -401,8 +402,6 @@ make decisions based on the numbers from that single run.
 
 #### Performance comparison
 
- 
-
 These two graphs are different views onto the same data. In the first graph we
 compare per browser, in the second graph we compare per language used. Please
 note that I chose a logarithmic timescale. It's also important that all
@@ -411,7 +410,7 @@ machine, except for one browser, which could not be run on the same machine.
 
 Without analyzing these graphs too much, it is clear that we solved our original
 performance problem: All WebAssembly modules run in \~500ms or less. This
-confirms what we laid out at the start: WebAssembly gives you *predictable*
+confirms what we laid out at the start: WebAssembly gives you _predictable_
 performance. No matter which language we choose, the variance between browsers
 and languages is minimal. To be exact: The standard deviation of JavaScript
 across all browsers is \~400ms, while the standard deviation of all our
@@ -447,13 +446,13 @@ faster or more consistent with WebAssembly. As always with performance
 questions, the answer is: It depends. So what did we ship?
 
 > [!NOTE]
-> **Note:** Again, please note that *both* axis are logarithmic and that the x axis goes to 2000 Bytes, while the y axis goes up to 10 seconds.
+> **Note:** Again, please note that _both_ axis are logarithmic and that the x axis goes to 2000 Bytes, while the y axis goes up to 10 seconds.
 
 Comparing at the module size / performance tradeoff of the different languages
 we used, the best choice seems to be either C or AssemblyScript. [We decided to ship Rust](https://github.com/GoogleChromeLabs/squoosh/pull/438/files). There
 are multiple reasons for this decision: All the codecs shipped in Squoosh so far
 are compiled using Emscripten. We wanted to broaden our knowledge about the
-WebAssembly ecosystem and use a different language *in production*.
+WebAssembly ecosystem and use a different language _in production_.
 AssemblyScript is a strong alternative, but the project is relatively young and
 the compiler isn't as mature as the Rust compiler.
 
@@ -483,4 +482,4 @@ panic handling) allowed us to write "normal" Rust code and go back to using
 `Cargo` (the `npm` of Rust) without bloating the file size. The Rust module ends
 up with 370B after gzip. For details, please take a look at [the PR I opened on Squoosh](https://github.com/GoogleChromeLabs/squoosh/pull/462).
 
-*Special thanks to [Ashley Williams](https://twitter.com/ag_dubs), [Steve Klabnik](https://twitter.com/steveklabnik), [Nick Fitzgerald](https://twitter.com/fitzgen) and [Max Graey](https://twitter.com/MaxGraey) for all their help on this journey.*
+_Special thanks to [Ashley Williams](https://twitter.com/ag_dubs), [Steve Klabnik](https://twitter.com/steveklabnik), [Nick Fitzgerald](https://twitter.com/fitzgen) and [Max Graey](https://twitter.com/MaxGraey) for all their help on this journey._

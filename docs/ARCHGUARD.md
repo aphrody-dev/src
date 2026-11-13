@@ -17,15 +17,18 @@ flowchart LR
 ```
 
 ### 1.1 Linus Torvalds: Systems Taste & Userspace Boundary
+
 - **Never Break Userspace (`ARCH-007`)**: Windows host directories (`C:\Windows\System32`, `C:\Windows\SysWOW64`) are strictly immutable. All userland binaries live in `C:\Users\aphro\.local\bin` or user winget/Cargo/Bun paths.
 - **Good Taste in Data Structures**: Data structures in systems code are flat and cache-friendly without special edge-case branching.
 - **Upstream Linux Standards (`ARCH-015`)**: Upstream `MAINTAINERS` file format is validated against disk reality. File patterns `F:` must resolve to actual directories or files. Patch series in `docs/patches/series` follow Quilt / b4 / git-am unified diff standards.
 
 ### 1.2 Jarred Sumner: Bun v1.4.4 Full-Rust Vertical Speed
+
 - **Sub-Millisecond Feedback Loops**: ArchGuard parallelizes file scanning across all CPU cores using Rayon, verifying 2,800+ files in under 5 seconds.
 - **Delete Glue & Zero NPM Dependencies (`ARCH-003`, `ARCH-016`)**: First-party packages avoid npm dependency sprawl. Native Bun APIs (`bun:sqlite`, `Bun.serve`, `Bun.build`) and Rust FFI DLLs replace third-party glue. Legacy `binding.gyp` and `postinstall` compilation scripts are banned.
 
 ### 1.3 Larry Page: 10x Clarity & Autonomous Ambient Verification
+
 - **Extreme Surface Simplicity**: High-density capabilities hidden behind a clean CLI surface (`archguard check`, `archguard graph`, `archguard rules`).
 - **Cryptographic Audit Digest (`report_blake3`)**: Every audit execution produces an immutable BLAKE3 hash of its findings, providing verifiable reproducibility for CI/CD and AI agent pairs.
 
@@ -77,6 +80,7 @@ flowchart TD
 ```
 
 ### Layer Rules:
+
 1. **Monotonicity**: Dependencies flow strictly downward. A lower layer may never import or depend on a higher layer.
 2. **Acyclicity**: Zero cycles allowed within any layer or across package boundaries.
 

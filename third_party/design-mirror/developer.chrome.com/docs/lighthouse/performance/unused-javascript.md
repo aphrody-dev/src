@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Unused JavaScript can slow down your page load speed:
 
 - If the JavaScript is [render-blocking](https://web.dev/critical-rendering-path-adding-interactivity-with-javascript/), the browser must download, parse, compile, and evaluate the script before it can proceed with all of the other work that's needed for rendering the page.
@@ -16,7 +17,7 @@ Unused JavaScript can slow down your page load speed:
 
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt)
 flags every JavaScript file with more than 20 kibibytes of unused code:
- Click a value in the **URL** column to open the script's source code in a new tab.
+Click a value in the **URL** column to open the script's source code in a new tab.
 
 > [!NOTE]
 > **Note:** See the [Lighthouse performance scoring](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring.md.txt) post to learn how your page's overall performance score is calculated.

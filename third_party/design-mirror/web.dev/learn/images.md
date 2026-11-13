@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 [Responsive image](https://web.dev/learn/design/responsive-images.md.txt) markup can be divided into two scenarios: situations
 where the goal is the most efficient possible images, and situations where you need explicit control over what image source
-the browser selects. You can think of these as *descriptive* and *prescriptive* syntaxes, respectively.
+the browser selects. You can think of these as _descriptive_ and _prescriptive_ syntaxes, respectively.
 
 In this module you'll learn both approaches. First we'll cover `srcset` and `sizes`, and how to help the browser make the best
 choice based on what it knows about the user, their device, and their browsing situation. You'll then discover the `<picture>` element,
@@ -18,10 +19,10 @@ which allows for explicit control over source selection based on factors like vi
 ## Descriptive syntaxes
 
 A descriptive syntax provides the browser with information about image sources and how they'll be used, but ultimately leaves
-the decision-making to the browser. This is by far the more common scenario; for the vast majority of images you won't *want* granular
+the decision-making to the browser. This is by far the more common scenario; for the vast majority of images you won't _want_ granular
 control over browser behavior. Browsers have far more information at their disposal than web developers do, and can make complex decisions
 based on this information. You can't predict users' browsing contexts accurately---there's too much about their hardware, preferences, and connection
-speeds that you can't know. At best, you can make educated guesses, but can't know for *certain* how each user experiences the web. The
+speeds that you can't know. At best, you can make educated guesses, but can't know for _certain_ how each user experiences the web. The
 central use case for responsive images is strictly goal-oriented, from a developer's perspective: allow browsers to make the most efficient image
 requests possible, based on the information the browser has at hand.
 

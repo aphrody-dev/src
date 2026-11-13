@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Many people use component-driven development using pattern style guides,
 component libraries, or full design systems in their development workflow
 process. Even if you have not used these tools formally, it's likely you use a
@@ -106,15 +107,15 @@ in the module on [AT testing](https://web.dev/learn/accessibility/test-assistive
 but for pattern evaluation purposes, it's helpful to understand these
 combinations exist, so you know what you need in terms of support.
 
-| Screen reader | OS | Browser compatibility | Cost |
-|---|---|---|---|
-| Job Access with Speech (JAWS) | Windows | Chrome, Firefox, Edge | License require (a free 40-min version exists) |
-| Non-Visual Desktop Access (NVDA) | Windows | Chrome and Firefox | Free (requires download) |
-| Narrator | Windows | Edge | Free (built into Windows machines) |
-| VoiceOver | macOS | Safari | Free (built into macOS machines) |
-| Orca | Linux | Firefox | Free (built into Gnome-based distributions) |
-| TalkBack | Android | Chrome and Firefox | Free (built into certain versions of Android OS) |
-| VoiceOver | iOS | Safari | Free (built into iOS devices) |
+| Screen reader                    | OS      | Browser compatibility | Cost                                             |
+| -------------------------------- | ------- | --------------------- | ------------------------------------------------ |
+| Job Access with Speech (JAWS)    | Windows | Chrome, Firefox, Edge | License require (a free 40-min version exists)   |
+| Non-Visual Desktop Access (NVDA) | Windows | Chrome and Firefox    | Free (requires download)                         |
+| Narrator                         | Windows | Edge                  | Free (built into Windows machines)               |
+| VoiceOver                        | macOS   | Safari                | Free (built into macOS machines)                 |
+| Orca                             | Linux   | Firefox               | Free (built into Gnome-based distributions)      |
+| TalkBack                         | Android | Chrome and Firefox    | Free (built into certain versions of Android OS) |
+| VoiceOver                        | iOS     | Safari                | Free (built into iOS devices)                    |
 
 Browser support is generally complicated, and things get even trickier when you
 add AT devices and ARIA specifications to the mix.

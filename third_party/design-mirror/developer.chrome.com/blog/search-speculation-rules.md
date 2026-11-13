@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)  Oleksiy Busaryev [LinkedIn](https://www.linkedin.com/in/oleksiy-busaryev-31695b4/)
+
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com) Oleksiy Busaryev [LinkedIn](https://www.linkedin.com/in/oleksiy-busaryev-31695b4/)
 
 Published: Feb 12, 2025
 
@@ -21,24 +22,24 @@ One of the first uses of speculation rules was to prefetch the first two search 
 
 ```json
 {
-    "prefetch": [{
-        "source": "list",
-        "requires": [
-            "anonymous-client-ip-when-cross-origin"
-        ],
-        "referrer_policy": "strict-origin",
-        "urls": [
-            "https://www.merriam-webster.com/dictionary/test",
-            "https://dictionary.cambridge.org/dictionary/english/test"
-        ]
-    }]
+  "prefetch": [
+    {
+      "source": "list",
+      "requires": ["anonymous-client-ip-when-cross-origin"],
+      "referrer_policy": "strict-origin",
+      "urls": [
+        "https://www.merriam-webster.com/dictionary/test",
+        "https://dictionary.cambridge.org/dictionary/english/test"
+      ]
+    }
+  ]
 }
 ```
 
 The two URLs at the bottom are the first two search results, and they are immediately prefetched. If the user clicks on those, then they will have gotten a head start as the HTML document should already be available to the browser.
 
 The rule and the prefetch attempts can be seen in DevTools Application -\> Speculation tab [as documented previously](https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules.md.txt):
- Speculations panel with two successful prefetches.
+Speculations panel with two successful prefetches.
 
 ### Privacy-preserving prefetches
 
@@ -68,7 +69,7 @@ Secondly, Google Search uses the [`referrer_policy` setting](https://developer.m
 Most browsers now [default to `strict-origin-when-cross-origin`](https://developer.mozilla.org/docs/Web/HTTP/Headers/Referrer-Policy#strict-origin-when-cross-origin_2) but this setting uses a stricter setting to use `strict-origin` referrer policy even for same-origin prefetches.
 
 A third protection automatically happens if the user has cookies for the site. In this case, they may receive different results based on those cookies, and Chrome won't use the prefetched HTML:
- Speculations panel with one failed prefetch due to cookies.
+Speculations panel with one failed prefetch due to cookies.
 
 This does mean that users with cookies won't benefit from the improved performance prefetching provides when clicking on that site, but privacy protection and accurate page loads are prioritized. Additionally, if a user has already visited a site and has cookies for it, then they are more likely to have some assets from that site cached and will likely experience a faster page load even without prefetching.
 
@@ -90,7 +91,7 @@ Since the Speculation Rules API's initial launch, it was [enhanced with an eager
 Google Search decided to move beyond the first two search results and also prefetch remaining search results---but only when the user hovers over the link, by using the `moderate` eagerness setting. This prevents the unnecessary waste of resources for links that are less likely to be clicked.
 
 Again, the rule can be seen in DevTools when you search in Chrome, and it's identical to the previous rule, but this time with the `"eagerness": "moderate"` option set:
- The speculation rule used by Google Search.
+The speculation rule used by Google Search.
 
 Hovering over these links will trigger the prefetch. Note that Google Search explicitly lists the URLs rather than using the [document rules](https://developer.chrome.com/blog/speculation-rules-improvements.md.txt#document_rules) feature of the Speculation Rules API, since they don't want to prefetch other URLs like ads.
 

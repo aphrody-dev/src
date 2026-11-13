@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: January 8, 2025
@@ -31,7 +32,7 @@ const texture = myDevice.createTexture({
 });
 
 const view = texture.createView({
-  format: 'rgba8unorm-srgb',
+  format: "rgba8unorm-srgb",
   usage: GPUTextureUsage.RENDER_ATTACHMENT, // Restrict allowed usage.
 });
 ```

@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Yuriko Hirota [X](https://twitter.com/yuriko_fuuu) [LinkedIn](https://www.linkedin.com/in/yurikohirota)  Saurabh Rajpal [X](https://twitter.com/imsaurabhrajpal) [LinkedIn](https://www.linkedin.com/in/imsaurabhrajpal)
+
+Yuriko Hirota [X](https://twitter.com/yuriko_fuuu) [LinkedIn](https://www.linkedin.com/in/yurikohirota) Saurabh Rajpal [X](https://twitter.com/imsaurabhrajpal) [LinkedIn](https://www.linkedin.com/in/imsaurabhrajpal)
 
 Transitions have numerous benefits for users, including helping to keep them in context and reduce the perception of latency. Developers want the ability to create seamless transitions between pages, helping to increase user engagement with their site.
 
@@ -67,26 +68,31 @@ In the following CSS, `slide-to-right`, `slide-to-left`, `slide-from-right`, and
 
 ```css
 ::view-transition-old(root) {
-  animation: 300ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
-  300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+  animation:
+    300ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
 }
 ::view-transition-new(root) {
-  animation: 700ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
-  700ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+  animation:
+    700ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+    700ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
 }
 .back-transition::view-transition-old(root) {
-  animation: 300ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
-  300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-right;
+  animation:
+    300ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-right;
 }
 .back-transition::view-transition-new(root) {
-  animation: 700ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
-  700ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-left;
+  animation:
+    700ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+    700ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-left;
 }
 ```
 
 ## Business impact
 
 redBus chose to implement view transitions along with INP improvement efforts across their site, which led to [7% more sales](https://web.dev/case-studies/redbus-inp). [Amit Kumar](https://amitkumar-v.medium.com/), Senior Engineering Manager at redBus, said that view transitions are really awesome for those who genuinely want better user experience and desire less maintenance overhead.
+
 > We have conducted comprehensive user feedback sessions, incorporating valuable insights from a diverse group of users. Our deep understanding of our user base (bus and rail) and their needs, combined with our expertise, has led us to believe that this feature will provide significant value right from the start, without the need for A/B testing. View transitions are a step towards bridging the gap between app and web with a smooth navigation experience.
 > Anoop Menon, CTO redBus
 
@@ -162,13 +168,13 @@ Here's how they did this: they assigned a different `view-transition-name` to th
 
 ```css
 ::view-transition-old(root) {
-  animation:
-    var(--animation-disappear-duration) var(--animation-disappear-easing) both fade-out;
-  }
+  animation: var(--animation-disappear-duration)
+    var(--animation-disappear-easing) both fade-out;
+}
 
 ::view-transition-new(root) {
-  animation:
-    var(--animation-appear-in-duration) var(--animation-appear-in-easing) both fade-in;
+  animation: var(--animation-appear-in-duration)
+    var(--animation-appear-in-easing) both fade-in;
 }
 ```
 
@@ -192,6 +198,7 @@ You can read more about their quicklink implementation from [this article](https
 Kazunari Hara, the Tech Lead of the Ameba service in CyberAgent, said that the view transitions could have significant impact on the business for two reasons.
 
 Firstly, they guide users on the page. View transitions make it possible to visually focus users on the most important message, and helps them get the most out of the web page. Also, they enhance and emphasize the brand with animation. CyberAgent has a [designated animation design](https://spindle.ameba.design/styles/animation/) to communicate their brand. With view transitions they are able to implement this branded experience without adding the cost of maintaining external libraries.
+
 > View Transitions is one of my favorite APIs. The ability to add animations as a standard browser feature makes view transitions easier to implement and maintain compared to other solutions dependent on libraries. We are looking forward to implementing view transitions to more services to communicate our brand.
 > Kazunari Hara, CTO of Ameba
 
@@ -209,12 +216,12 @@ Nykaa used React and [Emotion](https://emotion.sh/docs/introduction) to build th
 
 ```javascript
 if (document.startViewTransition) {
-      document.startViewTransition(() => {
-        history.push(productUrl);
-      });
-    } else {
-      history.push(productUrl);
-   }
+  document.startViewTransition(() => {
+    history.push(productUrl);
+  });
+} else {
+  history.push(productUrl);
+}
 
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -238,7 +245,7 @@ const slideToRight = keyframes`
 
 const slideFromLeft = keyframes`
   from { transform: translateX(-300px); }
-`
+`;
 ```
 
 CSS for side drawer animation:
@@ -273,6 +280,7 @@ CSS for side drawer animation:
 With view transitions, the transition itself provided users the sense that "something is about to happen", which made the wait less painful.
 
 Nykaa was very excited with the newly enhanced UX of their web page with view transitions, and is ready to implement view transitions on additional pages as well. Here's what their VP of Design said:
+
 > We are softly-committed to implement view transitions in all the upcoming features where it makes sense. Some areas have already been identified and the team is actively investing in those.
 > Krishna R V, VP of Design
 
@@ -316,6 +324,7 @@ toggleWidgetAnimation() {
 ### Testimonial
 
 Rishabh Mehrotra, their head of Design (Life BU), said that view transitions played a significant role in enhancing the website experience for their users by improving usability, engagement, and overall satisfaction. It helped in providing smooth navigation, guided interaction, reduced cognitive load, modern aesthetics and much more.
+
 > Elevating the web experience stands as a paramount objective for PB, and VT has proven to be an instrumental tool in achieving this with remarkable seamlessness. Its widespread appeal among both our developer community and user base has imbued our team with a sense of enthusiasm. As we contemplate its integration across diverse PODs, we anticipate a far-reaching positive impact on satisfaction levels and operational excellence.
 > Saurabh Tiwari (CTO, PolicyBazaar)
 

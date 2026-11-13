@@ -7,8 +7,9 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 A Content Security Policy (CSP) helps to ensure any content loaded in the page is trusted by the site owner. CSPs mitigate cross-site scripting (XSS) attacks because they can block unsafe scripts injected by attackers. However, the CSP can easily be bypassed if it is not strict enough. Check out [Mitigate cross-site scripting (XSS) with a strict Content Security Policy (CSP)](https://web.dev/articles/strict-csp) for more information. Lighthouse collects CSPs enforced on the main document, and reports issues from [CSP Evaluator](https://csp-evaluator.withgoogle.com/) if they can be bypassed.
- Lighthouse report warning that no CSP is found in enforcement mode.
+Lighthouse report warning that no CSP is found in enforcement mode.
 
 ## Required practices for a non-bypassable CSP
 
@@ -59,7 +60,7 @@ If any content violates the CSP, the browser will send a report to the configure
 A CSP can be defined in a meta tag like this:
 
 ```html
-<meta http-equiv="Content-Security-Policy" content="script-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'none'" />
 ```
 
 However, you should define a CSP in an HTTP response header if you can. An injection before the meta tag will bypass the CSP. Additionally, `frame-ancestors`, `sandbox` and reporting are not supported in meta tag CSPs.
@@ -86,7 +87,10 @@ report-uri https://reporting.example.com;
 HTML:
 
 ```html
-<script nonce="random123" src="https://trusted.example.com/trusted_script.js"></script>
+<script
+  nonce="random123"
+  src="https://trusted.example.com/trusted_script.js"
+></script>
 ```
 
 `random123` would be any base64 string generated server-side every time the page loads. `unsafe-inline` and `https:` are ignored in modern browsers because of the nonce and `strict-dynamic`. For more information about adopting a strict CSP, check out the [Strict CSP guide](https://web.dev/articles/strict-csp#adopting_a_strict_csp).

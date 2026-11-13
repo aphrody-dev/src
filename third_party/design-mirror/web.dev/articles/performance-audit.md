@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sam Dutton [X](https://twitter.com/sw12) [GitHub](https://github.com/samdutton) [Mastodon](https://techhub.social/@samdutton) [Bluesky](https://bsky.app/profile/samdutton.bsky.social) [Homepage](https://samdutton.com)
 
 > [!TIP]
@@ -18,7 +19,7 @@ site. You might feel tempted to add PWA features without improving the
 foundation of your site's performance. But no amount of PWA features can fix
 problems with blocking JavaScript and bloated images.
 
-Instead, your first step is to perform a *site audit*, an objective review of
+Instead, your first step is to perform a _site audit_, an objective review of
 what works well, and where it can be improved.
 
 Auditing your site or app helps you build a resilient, performant experience.

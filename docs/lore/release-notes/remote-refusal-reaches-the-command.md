@@ -3,8 +3,7 @@ type: breaking
 ---
 
 - `lore-revision`: A command whose remote refuses the caller fails with `NotAuthenticated` (16) or
-  `NotAuthorized` (17), where it reported a missing branch, failed as an internal error (exit status
-  255) or went on without the remote. `lore branch merge into`, `lore revision restore` and
+  `NotAuthorized` (17), where it reported a missing branch, failed as an internal error (exit status 255) or went on without the remote. `lore branch merge into`, `lore revision restore` and
   `lore clone` of a repository with layers failed with 255. `lore branch merge` merged against the
   local latest revision of the branch, or failed with 255 when it had none. `lore branch diff`
   compared the branches' local latest revisions. A revision named by a branch's latest or by a

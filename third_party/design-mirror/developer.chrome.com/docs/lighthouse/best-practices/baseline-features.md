@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 As part of the **Best Practices** suite of audits in
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt), DevTools tells you the
 [Baseline](https://web.dev/baseline) status of features used on the current
 page.
- The Baseline Features Lighthouse audit showing all the web feature IDs detected on page along with their current Baseline status.
+The Baseline Features Lighthouse audit showing all the web feature IDs detected on page along with their current Baseline status.
 
 ## This is a diagnostic audit
 

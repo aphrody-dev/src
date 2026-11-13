@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
 
 Published: May 4, 2020, Last updated: October 31, 2024
@@ -26,12 +27,11 @@ Site owners shouldn't have to be performance experts to understand the quality o
 
 Core Web Vitals are the subset of Web Vitals that apply to all web pages, should be measured by all site owners, and will be surfaced across all Google tools. Each of the Core Web Vitals represents a distinct facet of the user experience, is measurable [in the field](https://web.dev/articles/user-centric-performance-metrics.md.txt#how_metrics_are_measured), and reflects the real-world experience of a critical [user-centric](https://web.dev/articles/user-centric-performance-metrics.md.txt#how_metrics_are_measured) outcome.
 
-The metrics that make up Core Web Vitals will [evolve](https://web.dev/articles/vitals.md.txt#evolving-web-vitals) over time. The current set focuses on three aspects of the user experience---*loading* , *interactivity* , and *visual stability*---and includes the following metrics (and their respective thresholds):
-  
+The metrics that make up Core Web Vitals will [evolve](https://web.dev/articles/vitals.md.txt#evolving-web-vitals) over time. The current set focuses on three aspects of the user experience---_loading_ , _interactivity_ , and _visual stability_---and includes the following metrics (and their respective thresholds):
 
-- **[Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt)** : measures *loading* performance. To provide a good user experience, LCP should occur within **2.5 seconds** of when the page first starts loading.
-- **[Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt)** : measures *interactivity* . To provide a good user experience, pages should have a INP of **200 milliseconds** or less.
-- **[Cumulative Layout Shift (CLS)](https://web.dev/articles/cls.md.txt)** : measures *visual stability* . To provide a good user experience, pages should maintain a CLS of **0.1.** or less.
+- **[Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt)** : measures _loading_ performance. To provide a good user experience, LCP should occur within **2.5 seconds** of when the page first starts loading.
+- **[Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt)** : measures _interactivity_ . To provide a good user experience, pages should have a INP of **200 milliseconds** or less.
+- **[Cumulative Layout Shift (CLS)](https://web.dev/articles/cls.md.txt)** : measures _visual stability_ . To provide a good user experience, pages should maintain a CLS of **0.1.** or less.
 
 To ensure you're hitting the recommended target for these metrics for most of your users, a good threshold to measure is the **75th percentile** of page loads, segmented across mobile and desktop devices.
 
@@ -43,7 +43,7 @@ Tools that assess Core Web Vitals compliance should consider a page passing if i
 ### Lifecycle
 
 Metrics on the Core Web Vitals track go through a lifecycle consisting of three phases: experimental, pending, and stable.
- The stages of the Core Web Vitals lifecycle.
+The stages of the Core Web Vitals lifecycle.
 
 Each phase is designed to signal to developers how they should think about each metric:
 
@@ -59,7 +59,7 @@ The Core Web Vitals are at the following lifecycle stages:
 
 #### Experimental
 
-When a metric is initially developed and enters the ecosystem, it is considered an *experimental metric*.
+When a metric is initially developed and enters the ecosystem, it is considered an _experimental metric_.
 
 The purpose of the experimental phase is to assess a metric's fitness, first by exploring the problem to be solved, and possibly iterate on what previous metrics may have failed to address. For example, [Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt) was initially developed as an experimental metric to address the runtime performance issues present on the web more comprehensively than [First Input Delay (FID)](https://web.dev/articles/fid.md.txt).
 
@@ -67,13 +67,13 @@ The experimental phase of Core Web Vitals lifecycle is also intended to give fle
 
 #### Pending
 
-When the Chrome team determines that an experimental metric has received sufficient feedback and proven its efficacy, it becomes a *pending metric*. For example, INP was promoted in 2023 from experimental to pending status with the intent to eventually retire FID.
+When the Chrome team determines that an experimental metric has received sufficient feedback and proven its efficacy, it becomes a _pending metric_. For example, INP was promoted in 2023 from experimental to pending status with the intent to eventually retire FID.
 
 Pending metrics are held in this phase for a minimum of six months to give the ecosystem time to adapt. Community feedback remains an important aspect of this phase, as more developers begin to use the metric.
 
 #### Stable
 
-When a Core Web Vital candidate metric is finalized, it becomes a *stable metric*. This is when the metric can become a Core Web Vital.
+When a Core Web Vital candidate metric is finalized, it becomes a _stable metric_. This is when the metric can become a Core Web Vital.
 
 Stable metrics are actively supported, and can be subject to bug fixes and definition changes. Stable Core Web Vitals metrics won't change more than once per year. Any change to a Core Web Vital will be clearly communicated in the metric's official documentation, as well as in the metric's changelog. Core Web Vitals are also included in any assessments.
 
@@ -89,11 +89,11 @@ Google believes that the Core Web Vitals are critical to all web experiences. As
 The [Chrome User Experience Report](https://developer.chrome.com/docs/crux) collects anonymized, real user measurement data for each Core Web Vital. This data enables site owners to quickly assess their performance without requiring them to manually instrument analytics on their pages, and powers tools like [Chrome DevTools](https://developer.chrome.com/docs/devtools/performance/overview#compare), [PageSpeed Insights](https://pagespeed.web.dev), and Search Console's [Core Web Vitals report](https://support.google.com/webmasters/answer/9205520).
 
 |---|---|---|---|
-|   | LCP | INP | CLS |
-| [Chrome User Experience Report](https://developer.chrome.com/docs/crux) |   |   |   |
-| [Chrome DevTools](https://developer.chrome.com/docs/devtools/performance/overview#compare) |   |   |   |
-| [PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/) |   |   |   |
-| [Search Console (Core Web Vitals report)](https://support.google.com/webmasters/answer/9205520) |   |   |   |
+| | LCP | INP | CLS |
+| [Chrome User Experience Report](https://developer.chrome.com/docs/crux) | | | |
+| [Chrome DevTools](https://developer.chrome.com/docs/devtools/performance/overview#compare) | | | |
+| [PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/) | | | |
+| [Search Console (Core Web Vitals report)](https://support.google.com/webmasters/answer/9205520) | | | |
 
 > [!NOTE]
 > **Note:** For guidance on how to use these tools, and which tool is right for your use case, see: [Getting started with measuring Web Vitals](https://web.dev/articles/vitals-measurement-getting-started.md.txt).
@@ -112,13 +112,13 @@ The easiest way to measure all the Core Web Vitals is to use the [web-vitals](ht
 With the [web-vitals](https://github.com/GoogleChrome/web-vitals) library, measuring each metric can be done by calling a single function. See the documentation for complete [usage](https://github.com/GoogleChrome/web-vitals#usage) and [API](https://github.com/GoogleChrome/web-vitals#api) details.
 
 ```javascript
-import {onCLS, onINP, onLCP} from 'web-vitals';
+import { onCLS, onINP, onLCP } from "web-vitals";
 
 function sendToAnalytics(metric) {
   const body = JSON.stringify(metric);
   // Use `navigator.sendBeacon()` if available, falling back to `fetch()`.
-  (navigator.sendBeacon && navigator.sendBeacon('/analytics', body)) ||
-    fetch('/analytics', {body, method: 'POST', keepalive: true});
+  (navigator.sendBeacon && navigator.sendBeacon("/analytics", body)) ||
+    fetch("/analytics", { body, method: "POST", keepalive: true });
 }
 
 onCLS(sendToAnalytics);
@@ -146,10 +146,10 @@ Lab measurement is the best way to test the performance of features during devel
 
 The following tools can be used to measure the Core Web Vitals in a lab environment:
 
-|   | LCP | INP | CLS |
-|---|---|---|---|
-| [Chrome DevTools](https://developer.chrome.com/docs/devtools) |   |   |   |
-| [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview) |   | (use [TBT](https://web.dev/articles/tbt.md.txt) instead) |   |
+|                                                                     | LCP | INP                                                      | CLS |
+| ------------------------------------------------------------------- | --- | -------------------------------------------------------- | --- |
+| [Chrome DevTools](https://developer.chrome.com/docs/devtools)       |     |                                                          |     |
+| [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview) |     | (use [TBT](https://web.dev/articles/tbt.md.txt) instead) |     |
 
 > [!NOTE]
 > **Note:** Tools like Lighthouse that load pages in a simulated environment without a user cannot measure INP, as there is no user input. However, the Total Blocking Time (TBT) metric is lab-measurable and is a proxy for INP. Performance optimizations that improve TBT in the lab may improve INP in the field (see performance recommendations below).
@@ -174,9 +174,9 @@ While the Core Web Vitals are the critical metrics for understanding and deliver
 
 These other metrics can serve as proxy---or as supplemental metrics for the three Core Web Vitals---to help capture a larger part of the experience or to aid in diagnosing a specific issue.
 
-For example, the metrics [Time to First Byte (TTFB)](https://web.dev/articles/ttfb.md.txt) and [First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt) are both vital aspects of the *loading* experience, and are both useful in diagnosing issues with LCP (slow [server response times](https://web.dev/articles/overloaded-server.md.txt) or [render-blocking resources](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources), respectively).
+For example, the metrics [Time to First Byte (TTFB)](https://web.dev/articles/ttfb.md.txt) and [First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt) are both vital aspects of the _loading_ experience, and are both useful in diagnosing issues with LCP (slow [server response times](https://web.dev/articles/overloaded-server.md.txt) or [render-blocking resources](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources), respectively).
 
-Similarly, a metric like [Total Blocking Time (TBT)](https://web.dev/articles/tbt.md.txt) is a lab metrics is vital in catching and diagnosing potential *interactivity* issues that can impact INP. However, it is not part of the Core Web Vitals set because they are not field-measurable, nor do they reflect a [user-centric](https://web.dev/articles/user-centric-performance-metrics.md.txt#how_metrics_are_measured) outcome.
+Similarly, a metric like [Total Blocking Time (TBT)](https://web.dev/articles/tbt.md.txt) is a lab metrics is vital in catching and diagnosing potential _interactivity_ issues that can impact INP. However, it is not part of the Core Web Vitals set because they are not field-measurable, nor do they reflect a [user-centric](https://web.dev/articles/user-centric-performance-metrics.md.txt#how_metrics_are_measured) outcome.
 
 ## Changes to Web Vitals
 

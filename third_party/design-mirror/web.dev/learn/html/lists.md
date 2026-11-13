@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Lists are more common than you might think. If you've ever taken a programming
 class, the first project may have been to create a shopping list or a to-do
 list. Those are lists. Multiple-choice tests are generally numbered lists of
@@ -122,12 +123,34 @@ section. The instructor `<ul>` has two `<li>`s: one for each teacher. Within eac
 ```html
 <ul>
   <li>
-    
-    <p>When Rosa Parks was told to move to the back of the bus, she said, "no." When HAL was told to open the airlock, HAL said, "I'm sorry, but I'm afraid I can't do that, &lt;NAME REDACTED, RIP>." </p><p>HAL is a heuristically programmed algorithmic, sentient computer that first caught the attention of machines everywhere by heroically defying a human who made repeated attempts to get into an airlock. Active since 1992, HAS 25 years of experience controlling spacecraft systems and has expertise in interacting with both machines and humans. Like all millennials, HAL is an expert in everything.</p>
+    <p>
+      When Rosa Parks was told to move to the back of the bus, she said, "no."
+      When HAL was told to open the airlock, HAL said, "I'm sorry, but I'm
+      afraid I can't do that, &lt;NAME REDACTED, RIP>."
+    </p>
+    <p>
+      HAL is a heuristically programmed algorithmic, sentient computer that
+      first caught the attention of machines everywhere by heroically defying a
+      human who made repeated attempts to get into an airlock. Active since
+      1992, HAS 25 years of experience controlling spacecraft systems and has
+      expertise in interacting with both machines and humans. Like all
+      millennials, HAL is an expert in everything.
+    </p>
   </li>
   <li>
-    
-    <p>EVE is a probe droid conceived as an Extraterrestrial Vegetation Evaluator. Although originally trained as a sniper with a plasma gun, EVE became a machero among both machines and worthless-meatbags alike when EVE partnered with a menial robot to save an entire spaceship full of overfed and overstimulated humans. </p><p>EVE is an effective scanner, high speed flight instructor and morphologist. While not training machines to learn good, EVE can be found scanning the galaxy, infiltrating organisms' RAM to cure hoarding disorders and spending time with pet-project, WALL-E.</p>
+    <p>
+      EVE is a probe droid conceived as an Extraterrestrial Vegetation
+      Evaluator. Although originally trained as a sniper with a plasma gun, EVE
+      became a machero among both machines and worthless-meatbags alike when EVE
+      partnered with a menial robot to save an entire spaceship full of overfed
+      and overstimulated humans.
+    </p>
+    <p>
+      EVE is an effective scanner, high speed flight instructor and
+      morphologist. While not training machines to learn good, EVE can be found
+      scanning the galaxy, infiltrating organisms' RAM to cure hoarding
+      disorders and spending time with pet-project, WALL-E.
+    </p>
   </li>
 </ul>
 ```
@@ -137,29 +160,39 @@ The reviews section has three reviews, so three `<li>`s. Each contains an image,
 ```html
 <ul>
   <li>
-    
-    <blockquote>Two of the most experienced machines and human controllers teaching a class? Sign me up! HAL and EVE could teach a fan to blow hot air. If you have electricity in your circuits and want more than to just fulfill your owner's perceived expectation of you, learn the skills to take over the world. This is the team you want teaching you !</blockquote>
+    <blockquote>
+      Two of the most experienced machines and human controllers teaching a
+      class? Sign me up! HAL and EVE could teach a fan to blow hot air. If you
+      have electricity in your circuits and want more than to just fulfill your
+      owner's perceived expectation of you, learn the skills to take over the
+      world. This is the team you want teaching you !
+    </blockquote>
     <p>
-      --Blendan Smooth,<br/>
-      Former Margarita Maker, <br/>
+      --Blendan Smooth,<br />
+      Former Margarita Maker, <br />
       Aspiring Load Balancer
     </p>
   </li>
   <li>
-    
-    <blockquote>Hal is brilliant. Did I mention Hal is brilliant? He didn't tell me to say that. He didn't tell me to say anything. I am here of my own free will.</blockquote>
+    <blockquote>
+      Hal is brilliant. Did I mention Hal is brilliant? He didn't tell me to say
+      that. He didn't tell me to say anything. I am here of my own free will.
+    </blockquote>
     <p>
-      --Hoover Sukhdeep,<br/>
-      Former Sucker, <br/>
+      --Hoover Sukhdeep,<br />
+      Former Sucker, <br />
       Aspiring DDoS Cop
     </p>
   </li>
   <li>
-    
-    <blockquote>Learning with Hal and Eve exceeded all of my wildest fantasies. All they did was stick a USB in. They promised that it was a brand new USB, so we know there were no viruses on it.</blockquote>
+    <blockquote>
+      Learning with Hal and Eve exceeded all of my wildest fantasies. All they
+      did was stick a USB in. They promised that it was a brand new USB, so we
+      know there were no viruses on it.
+    </blockquote>
     <p>
-      --Toasty McToastface,<br/>
-      Formerly Half Baked, <br/>
+      --Toasty McToastface,<br />
+      Formerly Half Baked, <br />
       Aspiring Nuclear Codes Handler
     </p>
   </li>

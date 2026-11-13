@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Connor Clark [X](https://twitter.com/cjamcl) [GitHub](https://github.com/connorjclark)
 
 Published: Oct 8, 2025
@@ -27,8 +28,8 @@ What to look for:
 
 This insight only fails if there is a large layout or style recalculation exceeding a duration of 40ms.
 
-- A *large* layout update involves over 100 layout objects (which are roughly elements).
-- A *large* style recalculation affects more than 300 elements.
+- A _large_ layout update involves over 100 layout objects (which are roughly elements).
+- A _large_ style recalculation affects more than 300 elements.
 
 On failure, in the **Performance** panel, this insight highlights these events in the flame chart.
 

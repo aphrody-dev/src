@@ -1,7 +1,17 @@
 ---
 title: "The Linux Kernel & Linus Torvalds Story: Complete MDX Dataset"
 description: "Master navigation, architectural index, and syllabus for the comprehensive Linux Kernel from Scratch & Linus Torvalds MDX Documentation Suite."
-tags: ["linux", "kernel", "documentation", "mdx", "torvalds", "architecture", "posix", "2026"]
+tags:
+  [
+    "linux",
+    "kernel",
+    "documentation",
+    "mdx",
+    "torvalds",
+    "architecture",
+    "posix",
+    "2026",
+  ]
 ---
 
 # The Linux Kernel & Linus Torvalds Story: Complete MDX Dataset
@@ -12,21 +22,21 @@ Welcome to the definitive, deep-dive technical dataset documenting the engineeri
 
 ## Dataset Table of Contents
 
-| Chapter | Document | Core Topics |
-| :---: | :--- | :--- |
-| **01** | [01. The Linux Genesis: 80386 Hardware to comp.os.minix](./01-linux-genesis-80386-minix-1991.mdx) | Intel 80386 protected mode, TSS task switching, Linux 0.01 source tree, Demand Paging, Copy-On-Write (COW), `mem_map` 16-bit word tracker, $O(N)$ counter scheduler. |
-| **02** | [02. The Great Microkernel Debate: Tanenbaum vs. Torvalds](./02-tanenbaum-torvalds-microkernel-debate-1992.mdx) | Monolithic vs. Microkernel, TLB flushes and IPC overhead, MINIX vs. Mach vs. Linux, GNU Hurd history, modern seL4/hybrid balance. |
-| **03** | [03. The Birth of Git: 14 Days That Changed SCM](./03-birth-of-git-14-days-2005.mdx) | BitKeeper licensing crisis, Andrew Tridgell, Linus's 14-day sprint, Content-Addressable Storage, DAG, Blobs, Trees, Commits, Packfiles, Index. |
-| **04** | [04. Kernel.org: Infrastructure and Governance](./04-kernel-org-infrastructure-and-governance.mdx) | `nic.funet.fi` to Transmeta, 2011 breach & YubiKey/PGP rebuild, `git.kernel.org`, Grokmirror, `lore.kernel.org`, `b4`, Linux Foundation. |
-| **05** | [05. The Linux Development Model](./05-development-model-merge-window-rc-cycles.mdx) | Scaling 15,000 commits per cycle, 2-week merge window, `-rc1` to `-rc8` freeze, `linux-next`, `MAINTAINERS`, DCO sign-offs, Stable & LTS. |
-| **06** | [06. The Golden Rule: 'We Do Not Break Userspace'](./06-golden-rule-never-break-userspace.mdx) | Linus's absolute ABI law, difference between Userspace ABI vs Unstable In-Kernel KAPI, Mauro Carvalho Chehab confrontation, Docker seccomp / `clone3` case studies. |
-| **07** | [07. Kernel Subsystems Deep Dive](./07-subsystems-vfs-memory-management-schedulers.mdx) | VFS architecture (`super_block`, `inode`, `dentry`, `file`), Buddy Allocator, SLUB, Page Cache (`struct folio`, XArray), Scheduler evolution: $O(N) \rightarrow O(1) \rightarrow \text{CFS} \rightarrow \text{EEVDF}$ (Ion Stoica & Hussein Abdel-Wahab). |
-| **08** | [08. Concurrency: BKL, Spinlocks, and RCU](./08-concurrency-bkl-spinlocks-rcu.mdx) | Symmetric Multi-Processing (SMP), Big Kernel Lock (BKL) 15-year elimination, Spinlocks, Mutexes, Paul McKenney's Read-Copy Update (RCU, `rcu_assign_pointer` store-release). |
-| **09** | [09. Modern Revolutions: eBPF, io_uring, and Rust](./09-modern-revolutions-ebpf-iouring-rust.mdx) | In-kernel sandbox eBPF and XDP, Jens Axboe's lockless `io_uring` ring buffers, memory-safe Rust in the kernel tree (`linux/rust`). |
-| **10** | [10. Chronology and Major Milestones (1991–2026)](./10-chronology-torvalds-milestones-1991-2026.mdx) | Release timeline from 0.01 to 7.x, Linus Torvalds biography, the philosophy of "Good Taste in Code", data structures over algorithms. |
-| **11** | [11. Comparative Study: Linux Kernel vs Aphrody](./11-comparative-study-linux-vs-aphrody.mdx) | Forensic comparative study: Linus Torvalds' mechanical sympathy vs Aphrody's Bun v1.4.4 full-Rust engine, zero-npm discipline, VFS vs UniversalStore, and zero layout shift (`CLS=0`). |
-| **13** | [13. Upstream Kernel Live State & Distro Deployments](./13-upstream-live-releases-git-and-distro-deployments.mdx) | Live verified kernel.org feed (mainline 7.4-rc2, stable 7.3.4, longterm trees), GPG attestation, and how Arch, Debian, Fedora, NixOS, and AOSP build & deploy kernels. |
-| **12** | [12. 2026 Linux Ecosystem: Active Kernels, Non-C Rewrites & POSIX Discovery](./12-linux-2026-variants-non-c-kernels-discovery.mdx) | Comparative audit of active 2026 kernels (Mainline, AOSP GKI, WSL2 Hyper-V, Arch/CachyOS, Alpine, NixOS), non-C operating systems (Redox, Theseus, Asterinas, seL4), and Gitoxide + Gitingest automated indexing pipeline. |
+| Chapter | Document                                                                                                                           | Core Topics                                                                                                                                                                                                                                               |
+| :-----: | :--------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **01**  | [01. The Linux Genesis: 80386 Hardware to comp.os.minix](./01-linux-genesis-80386-minix-1991.mdx)                                  | Intel 80386 protected mode, TSS task switching, Linux 0.01 source tree, Demand Paging, Copy-On-Write (COW), `mem_map` 16-bit word tracker, $O(N)$ counter scheduler.                                                                                      |
+| **02**  | [02. The Great Microkernel Debate: Tanenbaum vs. Torvalds](./02-tanenbaum-torvalds-microkernel-debate-1992.mdx)                    | Monolithic vs. Microkernel, TLB flushes and IPC overhead, MINIX vs. Mach vs. Linux, GNU Hurd history, modern seL4/hybrid balance.                                                                                                                         |
+| **03**  | [03. The Birth of Git: 14 Days That Changed SCM](./03-birth-of-git-14-days-2005.mdx)                                               | BitKeeper licensing crisis, Andrew Tridgell, Linus's 14-day sprint, Content-Addressable Storage, DAG, Blobs, Trees, Commits, Packfiles, Index.                                                                                                            |
+| **04**  | [04. Kernel.org: Infrastructure and Governance](./04-kernel-org-infrastructure-and-governance.mdx)                                 | `nic.funet.fi` to Transmeta, 2011 breach & YubiKey/PGP rebuild, `git.kernel.org`, Grokmirror, `lore.kernel.org`, `b4`, Linux Foundation.                                                                                                                  |
+| **05**  | [05. The Linux Development Model](./05-development-model-merge-window-rc-cycles.mdx)                                               | Scaling 15,000 commits per cycle, 2-week merge window, `-rc1` to `-rc8` freeze, `linux-next`, `MAINTAINERS`, DCO sign-offs, Stable & LTS.                                                                                                                 |
+| **06**  | [06. The Golden Rule: 'We Do Not Break Userspace'](./06-golden-rule-never-break-userspace.mdx)                                     | Linus's absolute ABI law, difference between Userspace ABI vs Unstable In-Kernel KAPI, Mauro Carvalho Chehab confrontation, Docker seccomp / `clone3` case studies.                                                                                       |
+| **07**  | [07. Kernel Subsystems Deep Dive](./07-subsystems-vfs-memory-management-schedulers.mdx)                                            | VFS architecture (`super_block`, `inode`, `dentry`, `file`), Buddy Allocator, SLUB, Page Cache (`struct folio`, XArray), Scheduler evolution: $O(N) \rightarrow O(1) \rightarrow \text{CFS} \rightarrow \text{EEVDF}$ (Ion Stoica & Hussein Abdel-Wahab). |
+| **08**  | [08. Concurrency: BKL, Spinlocks, and RCU](./08-concurrency-bkl-spinlocks-rcu.mdx)                                                 | Symmetric Multi-Processing (SMP), Big Kernel Lock (BKL) 15-year elimination, Spinlocks, Mutexes, Paul McKenney's Read-Copy Update (RCU, `rcu_assign_pointer` store-release).                                                                              |
+| **09**  | [09. Modern Revolutions: eBPF, io_uring, and Rust](./09-modern-revolutions-ebpf-iouring-rust.mdx)                                  | In-kernel sandbox eBPF and XDP, Jens Axboe's lockless `io_uring` ring buffers, memory-safe Rust in the kernel tree (`linux/rust`).                                                                                                                        |
+| **10**  | [10. Chronology and Major Milestones (1991–2026)](./10-chronology-torvalds-milestones-1991-2026.mdx)                               | Release timeline from 0.01 to 7.x, Linus Torvalds biography, the philosophy of "Good Taste in Code", data structures over algorithms.                                                                                                                     |
+| **11**  | [11. Comparative Study: Linux Kernel vs Aphrody](./11-comparative-study-linux-vs-aphrody.mdx)                                      | Forensic comparative study: Linus Torvalds' mechanical sympathy vs Aphrody's Bun v1.4.4 full-Rust engine, zero-npm discipline, VFS vs UniversalStore, and zero layout shift (`CLS=0`).                                                                    |
+| **13**  | [13. Upstream Kernel Live State & Distro Deployments](./13-upstream-live-releases-git-and-distro-deployments.mdx)                  | Live verified kernel.org feed (mainline 7.4-rc2, stable 7.3.4, longterm trees), GPG attestation, and how Arch, Debian, Fedora, NixOS, and AOSP build & deploy kernels.                                                                                    |
+| **12**  | [12. 2026 Linux Ecosystem: Active Kernels, Non-C Rewrites & POSIX Discovery](./12-linux-2026-variants-non-c-kernels-discovery.mdx) | Comparative audit of active 2026 kernels (Mainline, AOSP GKI, WSL2 Hyper-V, Arch/CachyOS, Alpine, NixOS), non-C operating systems (Redox, Theseus, Asterinas, seL4), and Gitoxide + Gitingest automated indexing pipeline.                                |
 
 ---
 
@@ -59,4 +69,5 @@ Welcome to the definitive, deep-dive technical dataset documenting the engineeri
 ## Automated Discovery JSON Catalog
 
 The automated discovery pipeline generated by `awesome-posix-discovery` (Gitoxide `gix v0.61.0` + Gitingest) is continuously refreshed at:
+
 - [`awesome_posix_linux_2026_catalog.json`](file:///C:/src/docs/linux-kernel-story/awesome_posix_linux_2026_catalog.json)

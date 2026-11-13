@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Link text is the clickable word or phrase in a hyperlink. When link text clearly
 conveys a hyperlink's target, both users and search engines can more easily
 understand your content and how it relates to other pages.
@@ -38,8 +39,11 @@ descriptions. In general, write link text that clearly indicates what type of
 content users will get if they follow the hyperlink.
 
 ```html
-<p>To see all of our basketball videos, <a href="videos.html">click here</a>.</p>
+<p>
+  To see all of our basketball videos, <a href="videos.html">click here</a>.
+</p>
 ```
+
 Don't
 
 "Click here" doesn't convey where the hyperlink will take users.
@@ -47,6 +51,7 @@ Don't
 ```html
 <p>Check out all of our <a href="videos.html">basketball videos</a>.</p>
 ```
+
 Do
 
 "Basketball videos" clearly conveys that the hyperlink will take users to a page

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** This audit has been removed as of Lighthouse 13. For more information see [What's new in Lighthouse 13](https://developer.chrome.com/blog/lighthouse-13-0.md.txt).
 
@@ -18,13 +19,13 @@ content is not critical, this performance cost can be reduced by
 [lazy loading](https://web.dev/articles/fast#lazy_load_images_and_video) it.
 
 This audit highlights third-party embeds which can be lazily loaded on
-interaction. In that case, a *facade* is used in place of the third-party
+interaction. In that case, a _facade_ is used in place of the third-party
 content until the user interacts with it.
 
 > [!IMPORTANT]
-> **Key Term:** A *facade* is a static element that looks similar to the embedded third-party, but is not functional and therefore much less taxing on the page load.
+> **Key Term:** A _facade_ is a static element that looks similar to the embedded third-party, but is not functional and therefore much less taxing on the page load.
 
- Loading YouTube embedded player with a facade.
+Loading YouTube embedded player with a facade.
 
 ## How Lighthouse detects deferrable third-party embeds
 
@@ -33,7 +34,7 @@ Lighthouse looks for third-party products which can be deferred, such as social 
 The data about deferrable products and available facades is [maintained in third-party-web](https://github.com/patrickhulce/third-party-web/).
 
 The audit fails if the page loads resources belonging to one of these third-party embeds.
- Lighthouse third-party facade audit.
+Lighthouse third-party facade audit.
 
 ## Defer third-parties with a facade
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Browser Support
@@ -22,7 +23,7 @@ The Long Animation Frame API (LoAF-pronounced Lo-Af) has shipped from Chrome 123
 
 ## LoAF is available in `web-vitals` JavaScript library
 
-Version 4 of [the web-vitals JavaScript library](https://github.com/GoogleChrome/web-vitals) includes the long animation frame (or frames) related to the INP interaction as documented in the *Find slow interactions in the field* guide [to include information on how to take advantage of LoAF](https://web.dev/articles/find-slow-interactions-in-the-field#the_long_animation_frame_api_loaf).
+Version 4 of [the web-vitals JavaScript library](https://github.com/GoogleChrome/web-vitals) includes the long animation frame (or frames) related to the INP interaction as documented in the _Find slow interactions in the field_ guide [to include information on how to take advantage of LoAF](https://web.dev/articles/find-slow-interactions-in-the-field#the_long_animation_frame_api_loaf).
 
 At Google I/O 2024, we presented this information in the [New field insights for debugging INP](https://www.youtube.com/watch?v=xfjumh8ySRY) talk, including [leveraging LoAF](https://www.youtube.com/watch?v=xfjumh8ySRY&t=390s) to identify other scripts slowing down your INP interactions.
 
@@ -36,14 +37,14 @@ Integrating the API directly in the library allows RUM partners using this API t
 > **Deprecated:** Since this post was published, [the Web Vitals extension has been deprecated](https://developer.chrome.com/blog/web-vitals-extension-merged.md.txt) and the LoAF functionality discussed here [is now available in DevTools](https://github.com/GoogleChrome/web-vitals-extension?tab=readme-ov-file#loaf-attribution).
 
 The [Web Vitals Extension](https://chromewebstore.google.com/detail/web-vitals/ahfhijdlegdabablpippeagghigmibma) has been updated to include long animation frame data to help you debug INP interactions:
- Web Vitals Extension console logging surfaces LoAF data.
+Web Vitals Extension console logging surfaces LoAF data.
 
 This is useful to see what other scripts are running at the time of your interaction, which are often the cause of delays (particularly input delays) but until now were difficult to diagnose when using the extension.
 
 ## Updated guidance on using LoAF
 
 We have also [updated our guidance in our main Long Animation Frames API documentation](https://developer.chrome.com/docs/web-platform/long-animation-frames.md.txt#use-loaf) to help you make the most of this API.
- A page may have many LoAFs, one of which is related to the INP interaction.
+A page may have many LoAFs, one of which is related to the INP interaction.
 
 This guidance is based on how we have seen this API used in the field, for example [in this case study from Taboola](https://web.dev/case-studies/taboola-inp). We are working on a number of other case studies and look forward to publishing more examples like this in the future.
 

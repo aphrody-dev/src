@@ -7,13 +7,14 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to use the Chrome UX Report API to get access to real-user experience data across millions of websites.
 
- Rick Viscomi [GitHub](https://github.com/rviscomi) [Bluesky](https://bsky.app/profile/rviscomi.dev) [Homepage](https://developer.chrome.com/rviscomi.dev/)  Shane Exterkamp [X](https://twitter.com/shane_exterkamp) [GitHub](https://github.com/exterkamp)
+Rick Viscomi [GitHub](https://github.com/rviscomi) [Bluesky](https://bsky.app/profile/rviscomi.dev) [Homepage](https://developer.chrome.com/rviscomi.dev/) Shane Exterkamp [X](https://twitter.com/shane_exterkamp) [GitHub](https://github.com/exterkamp)
 
 The [Chrome UX Report](https://developer.chrome.com/docs/crux.md.txt) (CrUX) dataset represents how real-world Chrome users experience popular destinations on the web. Since 2017, when the queryable dataset was first released on [BigQuery](https://developer.chrome.com/chrome-ux-report-bigquery), field data from CrUX has been integrated into developer tools like [PageSpeed Insights](https://developer.chrome.com/chrome-ux-report-pagespeed-insights), and Search Console's [Core Web Vitals report](https://support.google.com/webmasters/answer/9205520), enabling developers to measure and monitor real-user experiences. The piece that has been missing all this time has been a tool that provides free and RESTful access to CrUX data programmatically. To help bridge that gap, we're excited to announce the release of the all new [Chrome UX Report API](https://developer.chrome.com/docs/crux/api.md.txt)!
 
-This API has been built with the goal of providing developers with quick and comprehensive access to CrUX data. The CrUX API only reports [*field*](https://web.dev/articles/how-to-measure-speed#lab_data_vs_field_data) user experience data, unlike the existing [PageSpeed Insights API](https://developers.google.com/speed/docs/insights/v5/get-started), which also reports *lab* data from the Lighthouse performance audits. The CrUX API is streamlined and can quickly serve user experience data, making it ideally suited for real-time auditing applications.
+This API has been built with the goal of providing developers with quick and comprehensive access to CrUX data. The CrUX API only reports [_field_](https://web.dev/articles/how-to-measure-speed#lab_data_vs_field_data) user experience data, unlike the existing [PageSpeed Insights API](https://developers.google.com/speed/docs/insights/v5/get-started), which also reports _lab_ data from the Lighthouse performance audits. The CrUX API is streamlined and can quickly serve user experience data, making it ideally suited for real-time auditing applications.
 
 To ensure that developers have access to all of the metrics that matter the most---the [Core Web Vitals](https://web.dev/articles/vitals#core_web_vitals)---the CrUX API audits and monitors [Largest Contentful Paint](https://web.dev/articles/lcp) (LCP), [Interaction to Next Paint](https://web.dev/articles/inp) (INP), and [Cumulative Layout Shift](https://web.dev/articles/cls) (CLS) at both the origin and URL level.
 
@@ -48,21 +49,23 @@ for more features including history and batch support).
 ```javascript
 const CrUXApiUtil = {};
 // Get your CrUX API key at https://goo.gle/crux-api-key.
-CrUXApiUtil.API_KEY = '[YOUR_API_KEY]';
+CrUXApiUtil.API_KEY = "[YOUR_API_KEY]";
 CrUXApiUtil.API_ENDPOINT = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${CrUXApiUtil.API_KEY}`;
 CrUXApiUtil.query = function (requestBody) {
-  if (CrUXApiUtil.API_KEY == '[YOUR_API_KEY]') {
+  if (CrUXApiUtil.API_KEY == "[YOUR_API_KEY]") {
     throw 'Replace "YOUR_API_KEY" with your private CrUX API key. Get a key at https://goo.gle/crux-api-key.';
   }
   return fetch(CrUXApiUtil.API_ENDPOINT, {
-    method: 'POST',
-    body: JSON.stringify(requestBody)
-  }).then(response => response.json()).then(response => {
-    if (response.error) {
-      return Promise.reject(response);
-    }
-    return response;
-  });
+    method: "POST",
+    body: JSON.stringify(requestBody),
+  })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.error) {
+        return Promise.reject(response);
+      }
+      return response;
+    });
 };
 ```
 
@@ -130,17 +133,19 @@ To debug this error, first check that the requested origin is publicly navigable
 Error
 
 ```json
-{"origin": "http://www.web.dev"}
+{ "origin": "http://www.web.dev" }
 ```
+
 This origin incorrectly includes the `http://` protocol and `www.` subdomain.
 Success
 
 ```json
-{"origin": "https://web.dev"}
+{ "origin": "https://web.dev" }
 ```
+
 This origin is publicly navigable.
 
-If the requested origin *is* the navigable version, this error may also occur if the origin has an insufficient number of samples. All origins and URLs included in the dataset must have a sufficient number of samples to anonymize individual users. Additionally, origins and URLs must be [publicly indexable](https://developers.google.com/search/docs/advanced/crawling/block-indexing). Refer to the [CrUX methodology](https://developer.chrome.com/docs/crux/methodology.md.txt#origin-eligibility) to learn more about how websites are included in the dataset.
+If the requested origin _is_ the navigable version, this error may also occur if the origin has an insufficient number of samples. All origins and URLs included in the dataset must have a sufficient number of samples to anonymize individual users. Additionally, origins and URLs must be [publicly indexable](https://developers.google.com/search/docs/advanced/crawling/block-indexing). Refer to the [CrUX methodology](https://developer.chrome.com/docs/crux/methodology.md.txt#origin-eligibility) to learn more about how websites are included in the dataset.
 
 ## Query URL data
 
@@ -157,12 +162,14 @@ To query URL data from the CrUX API in JavaScript, call the [`CrUXApiUtil.query`
 
 ```javascript
 CrUXApiUtil.query({
-  url: 'https://web.dev/fast/'
-}).then(response => {
-  console.log(response);
-}).catch(response => {
-  console.error(response);
-});
+  url: "https://web.dev/fast/",
+})
+  .then((response) => {
+    console.log(response);
+  })
+  .catch((response) => {
+    console.error(response);
+  });
 ```
 
 If data for this URL exists in the CrUX dataset, the API will return a JSON-encoded response. For example
@@ -194,7 +201,7 @@ If data for this URL exists in the CrUX dataset, the API will return a JSON-enco
         "percentiles": {
           "p75": 1947
         }
-      },
+      }
       // ...
     }
   }

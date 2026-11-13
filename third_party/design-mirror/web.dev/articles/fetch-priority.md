@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The Fetch Priority API indicates the relative priority of resources to the browser. It can enable optimal loading and improve Core Web Vitals.
 
- Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)  Leena Sohoni [X](https://twitter.com/leena_sohoni)  Patrick Meenan [X](https://twitter.com/patmeenan)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social) Leena Sohoni [X](https://twitter.com/leena_sohoni) Patrick Meenan [X](https://twitter.com/patmeenan) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 > [!NOTE]
 > **Note:** This feature was originally called Priority Hints but was renamed to Fetch Priority after standardization. See [History](https://web.dev/articles/fetch-priority.md.txt#history) for more details.
@@ -39,7 +40,7 @@ This page discusses the Fetch Priority API and the `fetchpriority` HTML attribut
 - Increasing the priority of `async` scripts, using better semantics than the current most common hack (inserting a `<link rel="preload">` for the `async` script).
 - Decreasing the priority of late-body scripts to allow for better sequencing with images.
 
- Fetch Priority improving Largest Contentful Paint from 2.6 s to 1.9 s in a test of Google Flights.
+Fetch Priority improving Largest Contentful Paint from 2.6 s to 1.9 s in a test of Google Flights.
 
 Historically, developers have had limited influence over resource priority using [preload](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preload) and [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect). Preload lets you tell the browser about critical resources you want to load early before the browser would naturally discover them. This is especially useful for resources that are harder to discover, such as fonts included in stylesheets, background images, or resources loaded from a script. Preconnect helps warm up connections to cross-origin servers and can help improve metrics like [Time to first byte](https://web.dev/articles/ttfb.md.txt). It's useful when you know an origin but not necessarily the exact URL of a resource that will be needed.
 
@@ -63,36 +64,36 @@ The following table shows how Chrome prioritizes and sequences most resources:
 > - Early CSS (like CSS in the `<head>`) is `highest` by default and blocks layout.
 > - Late CSS (like CSS in the middle of the `<body>`), doesn't block the initial layout. It's not all loaded while the browser is in this layout-blocking phase, and instead is only loaded one at a time with other resources until the browser leaves the layout-blocking phase, so the browser can focus on more important resources.
 > - Non-matching CSS (like `media="print"` stylesheets when the page is loading on a screen, not being printed) are loaded with the `lowest` priority.
-> There are more explanations in the table footnotes.
+>   There are more explanations in the table footnotes.
 
-|   | Load in layout-blocking phase || Load one-at-a-time in layout-blocking phase |||
-|---|---|---|---|---|---|
-| **Blink Priority** | **VeryHigh** | **High** | **Medium** | **Low** | **VeryLow** |
-| **DevTools Priority** | **Highest** | **High** | **Medium** | **Low** | **Lowest** |
-|   | Main resource |   |   |   |   |
-|   | CSS (early\*\*) |   | CSS (late\*\*) |   | CSS (media mismatch\*\*\*) |
-|   |   | Script (early\*\* or not from preload scanner) | Script (late\*\*) | Script (async) |   |
-|   | Font | Font (rel=preload) |   |   |   |
-|   |   | Import |   |   |   |
-|   |   | Image (in viewport) | Image (first 5 images \> 10,000px2) | Image |   |
-|   |   |   |   | Media (video/audio) |   |
-|   |   |   |   |   | Prefetch |
-|   |   | XSL |   |   |   |
-|   | XHR (sync) | XHR/fetch\* (async) |   |   |   |
+|                       | Load in layout-blocking phase |                                                | Load one-at-a-time in layout-blocking phase |                     |                            |
+| --------------------- | ----------------------------- | ---------------------------------------------- | ------------------------------------------- | ------------------- | -------------------------- |
+| **Blink Priority**    | **VeryHigh**                  | **High**                                       | **Medium**                                  | **Low**             | **VeryLow**                |
+| **DevTools Priority** | **Highest**                   | **High**                                       | **Medium**                                  | **Low**             | **Lowest**                 |
+|                       | Main resource                 |                                                |                                             |                     |                            |
+|                       | CSS (early\*\*)               |                                                | CSS (late\*\*)                              |                     | CSS (media mismatch\*\*\*) |
+|                       |                               | Script (early\*\* or not from preload scanner) | Script (late\*\*)                           | Script (async)      |                            |
+|                       | Font                          | Font (rel=preload)                             |                                             |                     |                            |
+|                       |                               | Import                                         |                                             |                     |                            |
+|                       |                               | Image (in viewport)                            | Image (first 5 images \> 10,000px2)         | Image               |                            |
+|                       |                               |                                                |                                             | Media (video/audio) |                            |
+|                       |                               |                                                |                                             |                     | Prefetch                   |
+|                       |                               | XSL                                            |                                             |                     |                            |
+|                       | XHR (sync)                    | XHR/fetch\* (async)                            |                                             |                     |                            |
 
 > [!NOTE]
-> **Notes:**   
+> **Notes:**  
 > **\*** Preloads using `"as"` or [fetch](https://developer.mozilla.org/docs/Web/API/Fetch_API) with a specific `"destination"` use the priority of the destination they're requesting. For example, preload `as="style"` uses Highest priority. With no explicit destination, fetch is prioritized like an async XHR.  
 > **\*\*** "Early" is defined as being requested before any non-preloaded images have been requested, and "late" is after non-preloaded images have been requested.  
-> **\*\*\*** CSS where the media type doesn't match isn't fetched by the preload scanner and is only processed when the main parser reaches it, which usually means it's fetched very late.  
+> **\*\*\*** CSS where the media type doesn't match isn't fetched by the preload scanner and is only processed when the main parser reaches it, which usually means it's fetched very late.
 >
 > Images start at "Low" priority by default. At layout time, images within the viewport are boosted to "High". As of Chrome 117, the first 5 large images are set to "Medium" to speed this up, and two of them can be fetched in parallel during the initial "tight mode". By tagging important images in markup using `fetchpriority="high"`, they can start at "High" immediately and load much faster.
 
 The browser downloads resources with the same computed priority in the order they're discovered. You can check the priority assigned to different resources when loading a page under the Chrome Dev Tools **Network** tab. (Make sure you include the **priority** column by right-clicking the table headings and ticking that).
- Priority for resource `type = "font"` on BBC news detail page  Priority for resource `type = "script"` on BBC news detail page.
+Priority for resource `type = "font"` on BBC news detail page Priority for resource `type = "script"` on BBC news detail page.
 
 When priorities change, you can see both the initial and final priority in the **Big request rows** setting or in a tooltip.
- Priority changes in DevTools.
+Priority changes in DevTools.
 
 ## When might you need Fetch Priority?
 
@@ -108,9 +109,10 @@ These techniques help to control the browser's priority computation, thereby imp
 Sometimes these handles may not be enough to prioritize resources optimally for your application. Here are some of the scenarios where Fetch Priority could be helpful:
 
 - You have several above-the-fold images, but not all of them should have the same priority. For example, in an image carousel, only the first visible image needs a higher priority, and the others, typically offscreen initially can be set to have lower priority.
-- Images inside the viewport typically start at a `Low` priority. After the layout is complete, Chrome discovers that they're in the viewport and boosts their priority. This usually adds a significant delay to loading the critical images, like hero images. Providing the Fetch Priority in markup lets the image start at a `High` priority and start loading much earlier. In an attempt to automate this somewhat, the first five larger images are set to `Medium` priority by Chrome which will help, but an explicit `fetchpriority="high"` will be even better.   
+- Images inside the viewport typically start at a `Low` priority. After the layout is complete, Chrome discovers that they're in the viewport and boosts their priority. This usually adds a significant delay to loading the critical images, like hero images. Providing the Fetch Priority in markup lets the image start at a `High` priority and start loading much earlier. In an attempt to automate this somewhat, the first five larger images are set to `Medium` priority by Chrome which will help, but an explicit `fetchpriority="high"` will be even better.
 
   Preload is still required for early discovery of LCP images included as CSS backgrounds. To boost your background images' priority, include `fetchpriority='high'` on the preload.
+
 - Declaring scripts as `async` or `defer` tells the browser to load them asynchronously. However, as shown in the [priority table](https://web.dev/articles/fetch-priority.md.txt#resource-priority), these scripts are also assigned a "Low" priority. You might want to increase their priority while ensuring asynchronous download, especially for scripts that are critical for the user experience.
 - If you use the JavaScript [`fetch()`](https://web.dev/articles/introduction-to-fetch.md.txt) API to fetch resources or data asynchronously, the browser assigns it `High` priority. You might want some of your fetches to run with lower priority, especially if you're mixing background API calls with API calls that respond to user input. Mark the background API calls as `Low` priority and the interactive API calls as `High` priority.
 - The browser assigns CSS and fonts a `High` priority, but some of those resources might be more important than others. You can use Fetch Priority to lower the priority of non-critical resources (note early CSS is render blocking so should usually be a `High` priority).
@@ -129,11 +131,10 @@ Here are a few examples of using the `fetchpriority` attribute in markup, as wel
 <!-- We don't want a high priority for this above-the-fold image -->
 
 <!-- We want to initiate an early fetch for a resource, but also deprioritize it -->
-<link rel="preload" href="/js/script.js" as="script" fetchpriority="low">
+<link rel="preload" href="/js/script.js" as="script" fetchpriority="low" />
 
 <script>
-  fetch('https://example.com/', {priority: 'low'})
-  .then(data => {
+  fetch("https://example.com/", { priority: "low" }).then((data) => {
     // Trigger a low priority fetch
   });
 </script>
@@ -147,40 +148,40 @@ You can apply the `fetchpriority` attribute to different resources as shown in t
 > **Example of how to read this table:**
 >
 > - Early CSS (like CSS in the `<head>`) is `highest` by default (◉). Even if you use `fetchpriority=high` (⬆), it won't increase any further because it's as it's as high as it can go. If you lower it with `fetchpriority=low` (⬇) it only lowers to `high`, and not any lower. In both cases, it can load during the layout-blocking phase.
-> There are more explanations in the table footnotes.
+>   There are more explanations in the table footnotes.
 
-|   | Load in layout-blocking phase || Load one at a time in layout-blocking phase |||
-|---|---|---|---|---|---|
-| **Blink Priority** | **VeryHigh** | **High** | **Medium** | **Low** | **VeryLow** |
-| **DevTools Priority** | **Highest** | **High** | **Medium** | **Low** | **Lowest** |
-| Main Resource | ◉ |   |   |   |   |
-| CSS (early\*\*) | ⬆◉ | ⬇ |   |   |   |
-| CSS (late\*\*) |   | ⬆ | ◉ | ⬇ |   |
-| CSS (media mismatch\*\*\*) |   | ⬆\*\*\* |   |   | ◉⬇ |
-| Script (early\*\* or not from preload scanner) |   | ⬆◉ |   | ⬇ |   |
-| Script (late\*\*) |   | ⬆ | ◉ | ⬇ |   |
-| Script (async/defer) |   | ⬆ |   | ◉⬇ |   |
-| Font | ◉ |   |   |   |   |
-| Font (rel=preload) |   | ⬆◉ |   | ⬇ |   |
-| Import |   | ◉ |   |   |   |
-| Image (in viewport - after layout) |   | ⬆◉ |   | ⬇ |   |
-| Image (first 5 images \> 10,000px2) |   | ⬆ | ◉ | ⬇ |   |
-| Image |   | ⬆ |   | ◉⬇ |   |
-| Media (video/audio) |   |   |   | ◉ |   |
-| XHR (sync) - deprecated | ◉ |   |   |   |   |
-| XHR/fetch\* (async) |   | ⬆◉ |   | ⬇ |   |
-| Prefetch |   |   |   |   | ◉ |
-| XSL |   | ◉ |   |   |   |
+|                                                | Load in layout-blocking phase |          | Load one at a time in layout-blocking phase |         |             |
+| ---------------------------------------------- | ----------------------------- | -------- | ------------------------------------------- | ------- | ----------- |
+| **Blink Priority**                             | **VeryHigh**                  | **High** | **Medium**                                  | **Low** | **VeryLow** |
+| **DevTools Priority**                          | **Highest**                   | **High** | **Medium**                                  | **Low** | **Lowest**  |
+| Main Resource                                  | ◉                             |          |                                             |         |             |
+| CSS (early\*\*)                                | ⬆◉                            | ⬇        |                                             |         |             |
+| CSS (late\*\*)                                 |                               | ⬆        | ◉                                           | ⬇       |             |
+| CSS (media mismatch\*\*\*)                     |                               | ⬆\*\*\*  |                                             |         | ◉⬇          |
+| Script (early\*\* or not from preload scanner) |                               | ⬆◉       |                                             | ⬇       |             |
+| Script (late\*\*)                              |                               | ⬆        | ◉                                           | ⬇       |             |
+| Script (async/defer)                           |                               | ⬆        |                                             | ◉⬇      |             |
+| Font                                           | ◉                             |          |                                             |         |             |
+| Font (rel=preload)                             |                               | ⬆◉       |                                             | ⬇       |             |
+| Import                                         |                               | ◉        |                                             |         |             |
+| Image (in viewport - after layout)             |                               | ⬆◉       |                                             | ⬇       |             |
+| Image (first 5 images \> 10,000px2)            |                               | ⬆        | ◉                                           | ⬇       |             |
+| Image                                          |                               | ⬆        |                                             | ◉⬇      |             |
+| Media (video/audio)                            |                               |          |                                             | ◉       |             |
+| XHR (sync) - deprecated                        | ◉                             |          |                                             |         |             |
+| XHR/fetch\* (async)                            |                               | ⬆◉       |                                             | ⬇       |             |
+| Prefetch                                       |                               |          |                                             |         | ◉           |
+| XSL                                            |                               | ◉        |                                             |         |             |
 
 > [!NOTE]
-> **Notes:**   
+> **Notes:**  
 > **\*** Preload using `"as"` or [fetch](https://developer.mozilla.org/docs/Web/API/Fetch_API) using a specific `"destination"` use the priority of the destination they are requesting. For example, preload `as="style"` will use Highest priority. With no explicit destintation, fetch will be prioritized like an async XHR.  
 > **\*\*** "Early" is defined as being requested before any non-preloaded images have been requested ("late" is after).  
-> **\*\*\*** CSS where the media type doesn't match is not fetched by the preload scanner and is only processed when the main parser reaches it, which usually means it will be fetched very late, even with `fetchpriority="high"`.  
+> **\*\*\*** CSS where the media type doesn't match is not fetched by the preload scanner and is only processed when the main parser reaches it, which usually means it will be fetched very late, even with `fetchpriority="high"`.
 >
 > Images by default start at "Low" priority and then at layout time are boosted to "High" if within the viewport. As of Chrome 117, the first 5 large images are set to "Medium" to speed this up and two of these can be fetched in parallel during the initial "tight mode". By tagging important images in markup using `fetchpriority="high"`, they can start at "High" immediately and load much faster.
 
-`fetchpriority` sets *relative priority* , meaning it raises or lowers the default priority by an appropriate amount, rather instead of explicitly setting the priority to `High` or `Low`. This often results in `High` or `Low` priority, but not always. For example, critical CSS with `fetchpriority="high"` retains the "Very High"/"Highest" priority, and using `fetchpriority="low"` on these elements retains the "High" priority. Neither of these cases involve explicitly setting priority to `High` or `Low`.
+`fetchpriority` sets _relative priority_ , meaning it raises or lowers the default priority by an appropriate amount, rather instead of explicitly setting the priority to `High` or `Low`. This often results in `High` or `Low` priority, but not always. For example, critical CSS with `fetchpriority="high"` retains the "Very High"/"Highest" priority, and using `fetchpriority="low"` on these elements retains the "High" priority. Neither of these cases involve explicitly setting priority to `High` or `Low`.
 
 ### Use cases
 
@@ -202,18 +203,13 @@ An experiment conducted using Cloudflare workers to rewrite the Google Flights p
 Use `fetchpriority="low"` to lower the priority of above-the-fold images that aren't immediately important, for example offscreen images in an image carousel.
 
 ```html
-<ul class="carousel">
-  
-  
-  
-  
-</ul>
+<ul class="carousel"></ul>
 ```
 
 While images 2-4 will be outside of the viewport, they may be considered "close enough" to boost them to `high` and also load even if a `load=lazy` attribute is added. Therefore `fetchpriority="low"` is the correct solution for this.
 
 In an earlier experiment with the [Oodle](https://github.com/google/oodle-demo) app, we used this to lower the priority of images that don't appear on load. It decreased page load time by 2 seconds.
- Using high priority for only the first carousel image lets the page load faster.
+Using high priority for only the first carousel image lets the page load faster.
 
 #### Lower the priority of preloaded resources
 
@@ -221,11 +217,22 @@ To stop preloaded resources from competing with other critical resources, you ca
 
 ```html
 <!-- Lower priority only for non-critical preloaded scripts -->
-<link rel="preload" as="script" href="critical-script.js">
-<link rel="preload" as="script" href="non-critical-script.js" fetchpriority="low">
+<link rel="preload" as="script" href="critical-script.js" />
+<link
+  rel="preload"
+  as="script"
+  href="non-critical-script.js"
+  fetchpriority="low"
+/>
 
 <!-- Preload CSS without blocking render, or other resources -->
-<link rel="preload" as="style" href="theme.css" fetchpriority="low" onload="this.rel='stylesheet'">
+<link
+  rel="preload"
+  as="style"
+  href="theme.css"
+  fetchpriority="low"
+  onload="this.rel='stylesheet'"
+/>
 ```
 
 #### Reprioritize scripts
@@ -252,10 +259,10 @@ The browser executes `fetch` with a high priority. If you have multiple fetches 
 
 ```javascript
 // Important validation data (high by default)
-let authenticate = await fetch('/user');
+let authenticate = await fetch("/user");
 
 // Less important content data (suggested low)
-let suggestedContent = await fetch('/content/suggested', {priority: 'low'});
+let suggestedContent = await fetch("/content/suggested", { priority: "low" });
 ```
 
 ## Fetch Priority implementation notes
@@ -270,6 +277,7 @@ Fetch Priority can improve performance in specific use cases but there are some 
   - It's often easier to observe and measure the effects of a preload than the effects of a priority change.
 
   Fetch Priority can complement preloads by increasing the granularity of prioritization. If you've already specified a preload as one of the first items in the `<head>` for an LCP image, then a `high` Fetch Priority might not improve LCP significantly. However, if the preload happens after other resources load, a `high` Fetch Priority can improve LCP more. If a critical image is a CSS background image, preload it with `fetchpriority = "high"`.
+
 - Load time improvements from prioritization are more relevant in environments where more resources compete for the available network bandwidth. This is common for HTTP/1.x connections where parallel downloads aren't possible, or on low bandwidth HTTP/2 or HTTP/3 connections. In these cases, prioritization can help resolve bottlenecks.
 
 - CDNs don't [implement HTTP/2 prioritization](https://github.com/andydavies/http2-prioritization-issues#cdns--cloud-hosting-services) uniformly, and similarly for HTTP/3. Even if the browser communicates the priority from Fetch Priority, the CDN might not reprioritize resources in the specified order. This makes testing Fetch Priority difficult. The priorities are applied both internally within the browser and with protocols that support prioritization (HTTP/2 and HTTP/3). It's still worth using Fetch Priority just for the internal browser prioritization independent of CDN or origin support, because priorities often change when the browser requests resources. For example, low-priority resources like images are often held back from being requested while the browser processes critical `<head>` items.

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Interactive elements, such as links and buttons,
 should indicate their state and be distinguishable from non-interactive elements.
 To check that interactive elements indicate their purpose and state,
@@ -54,7 +55,7 @@ Learn how to improve [Labels and text alternatives](https://web.dev/articles/lab
 ## Why this matters
 
 Providing visual hints about what a control does can help people operate and
-navigate your site. These hints are called *affordances*.
+navigate your site. These hints are called _affordances_.
 Affordances makes it possible for people to use your site on a wide variety of
 devices.
 

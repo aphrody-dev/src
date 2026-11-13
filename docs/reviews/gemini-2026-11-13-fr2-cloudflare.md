@@ -6,18 +6,18 @@ Gemini said
 
 Note globale : 10,0 / 20 — La mécanique d'exécution progressive (mode déclaratif plan/apply, canaris fr2mig-check, garde-fou systemd-run de 180 s, chiffrement systemd-creds, harnais proof.ts) est rigoureuse, mais le document comporte 7 erreurs ou contradictions factuelles, une impasse architecturale sur le repli self-host, un couplage en dur au green_port (23000), un angle mort IPv6 complet et une consigne de fermeture du port 22 dangereuse.
 
-Critère du barème	Note	Justification synthétique
-Exactitude factuelle et protocolaire	3,0 / 6	Relevés live précis, mais décomptes erronés (33 CNAME vs 31, 17 certs vs 19), contradiction directe sur nie.aphrody.app (21 vs 22 A), confusion résolution DNS vs origine, limite nginx mTLS inexacte et incohérences de rollback.
-Conception réseau et architecture	2,5 / 5	Suppression saine du double saut fr2 → prd, mais ingress couplée en dur à green_port (23000), repli fleet-health rendu inopérant par fr2-edge-fw + Workers + rebouclage mig-tunnel, et hairpinning SSH via cdg malgré wg1.
-Sécurité et hygiène	2,0 / 5	Origine IPv4 filtrée, mais IPv6 jamais testée, admin/console/control exposés en 200 sans Access, consigne port 22 exposant sshd aux Workers tiers, jeton fleet-agents bidirectionnel, absence de mTLS d'origine et 4 couches firewall concurrentes.
-Complétude et sûreté opérationnelle	2,5 / 4	Jeton CLOUDFLARE_API_TOKEN expiré laissé cassé en production, persistance au reboot de fr2-edge-fw incertaine, binaire cloudflared hors APT, cert Let's Encrypt webroot cassé par le pare-feu et assertions proof.ts lacunaires.
+Critère du barème Note Justification synthétique
+Exactitude factuelle et protocolaire 3,0 / 6 Relevés live précis, mais décomptes erronés (33 CNAME vs 31, 17 certs vs 19), contradiction directe sur nie.aphrody.app (21 vs 22 A), confusion résolution DNS vs origine, limite nginx mTLS inexacte et incohérences de rollback.
+Conception réseau et architecture 2,5 / 5 Suppression saine du double saut fr2 → prd, mais ingress couplée en dur à green_port (23000), repli fleet-health rendu inopérant par fr2-edge-fw + Workers + rebouclage mig-tunnel, et hairpinning SSH via cdg malgré wg1.
+Sécurité et hygiène 2,0 / 5 Origine IPv4 filtrée, mais IPv6 jamais testée, admin/console/control exposés en 200 sans Access, consigne port 22 exposant sshd aux Workers tiers, jeton fleet-agents bidirectionnel, absence de mTLS d'origine et 4 couches firewall concurrentes.
+Complétude et sûreté opérationnelle 2,5 / 4 Jeton CLOUDFLARE_API_TOKEN expiré laissé cassé en production, persistance au reboot de fr2-edge-fw incertaine, binaire cloudflared hors APT, cert Let's Encrypt webroot cassé par le pare-feu et assertions proof.ts lacunaires.
+
 1. Erreurs factuelles et contradictions protocolaires
 
 Décompte erroné des CNAME aphrody.com (sections 1 et 4) : le document annonce « 31 CNAME » à deux reprises, alors que l'énumération explicite entre parenthèses (admin jusqu'à translate) contient exactement 33 sous-domaines.
 
 Décompte incohérent des certificats Let's Encrypt (section 1) : l'inventaire indique « 19 certificats Let's Encrypt (16 en dns-cloudflare, 1 en webroot) ». La somme des méthodes d'authentification fait 17 (
-16
-+
+16 +
 1
 ≠
 19
@@ -37,7 +37,7 @@ Contradiction d'état sur la fermeture du port 22 (section 2 vs sections 5 et 6)
 
 Justification techniquement fausse du rejet d'Authenticated Origin Pulls (section 2) : refuser AOP parce que rosegriffon-cdn.conf est hors périmètre repose sur une prémisse erronée. Dans nginx, ssl_client_certificate et ssl_verify_client se déclarent par bloc server {} (vhost) et non uniquement au niveau global http {}. De plus, l'AOP standard partagé de Cloudflare ne prouve pas l'appartenance à votre compte (tout client Cloudflare activant AOP présente le même certificat) : seul Custom Authenticated Origin Pulls (certificat client propre à la zone/au hostname) authentifie réellement votre zone.
 
-Routage /api derrière un Worker Static Assets non étayé (sections 1, 4 et 5) : la section 4 affirme sur l'apex aphrody.com : « Worker devant ; /api passe par l'ingress prd ». Or la section 1 indique que le Worker aphrody couvre la route [aphrody.com/](https://aphrody.com/)*. Un Worker avec Static Assets ne retombe jamais implicitement sur l'origine DNS/tunnel sans route d'exclusion dédiée ([aphrody.com/api/](https://aphrody.com/api/)* à null) ou appel explicite fetch(request) dans le code Worker — et aucun test de [https://aphrody.com/api/](https://aphrody.com/api/)... ne figure dans proof.ts.
+Routage /api derrière un Worker Static Assets non étayé (sections 1, 4 et 5) : la section 4 affirme sur l'apex aphrody.com : « Worker devant ; /api passe par l'ingress prd ». Or la section 1 indique que le Worker aphrody couvre la route [aphrody.com/](https://aphrody.com/)_. Un Worker avec Static Assets ne retombe jamais implicitement sur l'origine DNS/tunnel sans route d'exclusion dédiée ([aphrody.com/api/](https://aphrody.com/api/)_ à null) ou appel explicite fetch(request) dans le code Worker — et aucun test de [https://aphrody.com/api/](https://aphrody.com/api/)... ne figure dans proof.ts.
 
 Incohérences des commandes de rollback DNS (section 4) :
 
@@ -46,7 +46,7 @@ La note certifie avoir vérifié update (PUT) en --dry-run, mais la ligne dbfr.a
 Le rollback unitaire d'un des 33 CNAME vers content: "aphrody.com" ne rétablit pas fr2 tant que l'apex aphrody.com reste un CNAME aplati vers le tunnel mig-prd : le sous-domaine continuera d'aboutir sur mig-prd.
 
 2. Risques architecturaux, sécurité et sûreté opérationnelle
-Risques critiques
+   Risques critiques
 
 Bombe à retardement Blue/Green (127.0.0.1:23000 codé en dur dans cloudflare.toml) : l'ingress du tunnel mig-prd cible directement deploy.toml green_port (23000) au lieu d'un point d'entrée local stable (:3000). Dès le prochain déploiement de aphrody basculant le trafic actif sur le blue_port, l'intégralité de aphrody.com (/api) et *.aphrody.com tombera en 502 Bad Gateway.
 
@@ -97,7 +97,7 @@ Fuite potentielle du jeton tunnel via /proc et binaire cloudflared non maintenu 
 Calibrage fr2-rl-edge (400 req / 10 s / IP+colo) et bruit 502 : 40 req/s par PoP est trop lâche pour protéger des routes d'authentification/API, mais peut bloquer des utilisateurs derrière CGNAT chargeant des dizaines de chunks JS/WASM en HTTP/2 si les assets ne sont pas exclus. Enfin, router 22 sous-domaines *.aphrody.app morts vers le tunnel mig-prd consomme des connexions origine pour renvoyer des 502.
 
 3. Corrections concrètes (par composant)
-A. Pare-feu infra/fleet/fr2/bin/fr2-edge-fw.sh et unité systemd
+   A. Pare-feu infra/fleet/fr2/bin/fr2-edge-fw.sh et unité systemd
 
 Filtrer IPv4 + IPv6 + TCP/UDP 80/443 atomiquement, valider les plages téléchargées avant application, ne jamais inclure 22/tcp dans @cf_v4/@cf_v6, et versionner/absorber table inet fleet :
 
@@ -106,30 +106,27 @@ table inet fr2_edge
 delete table inet fr2_edge
 
 table inet fr2_edge {
-  set cf_v4    { type ipv4_addr; flags interval; elements = { $CF_V4_CSV }; }
-  set cf_v6    { type ipv6_addr; flags interval; elements = { $CF_V6_CSV }; }
-  set fleet_v4 { type ipv4_addr; flags interval; elements = { 10.200.77.0/24, $FR1_V4, $PRD_V4 }; }
-  set fleet_v6 { type ipv6_addr; flags interval; elements = { $FR1_V6, $PRD_V6 }; }
+set cf_v4 { type ipv4_addr; flags interval; elements = { $CF_V4_CSV }; }
+set cf_v6 { type ipv6_addr; flags interval; elements = { $CF_V6_CSV }; }
+set fleet_v4 { type ipv4_addr; flags interval; elements = { 10.200.77.0/24, $FR1_V4, $PRD_V4 }; }
+set fleet_v6 { type ipv6_addr; flags interval; elements = { $FR1_V6, $PRD_V6 }; }
 
-  chain filter_web {
-    iifname { "lo", "wg1" } accept
-    ip saddr @fleet_v4 accept
-    ip6 saddr @fleet_v6 accept
-    ip saddr @cf_v4 accept
-    ip6 saddr @cf_v6 accept
-    counter drop
-  }
-
-  chain input {
-    type filter hook input priority -20; policy accept;
-    ct state established,related accept
-    tcp dport { 80, 443 } jump filter_web
-    udp dport { 80, 443 } jump filter_web
-    # À J+7 pour fermer SSH public (JAMAIS @cf_v4/@cf_v6 ici) :
-    # tcp dport 22 iifname != { "lo", "wg1" } ip saddr != @fleet_v4 ip6 saddr != @fleet_v6 counter drop
-  }
+chain filter_web {
+iifname { "lo", "wg1" } accept
+ip saddr @fleet_v4 accept
+ip6 saddr @fleet_v6 accept
+ip saddr @cf_v4 accept
+ip6 saddr @cf_v6 accept
+counter drop
 }
 
+chain input {
+type filter hook input priority -20; policy accept;
+ct state established,related accept
+tcp dport { 80, 443 } jump filter_web
+udp dport { 80, 443 } jump filter_web # À J+7 pour fermer SSH public (JAMAIS @cf_v4/@cf_v6 ici) : # tcp dport 22 iifname != { "lo", "wg1" } ip saddr != @fleet_v4 ip6 saddr != @fleet_v6 counter drop
+}
+}
 
 Garantir l'application dès le boot : activer fr2-edge-fw.service (WantedBy=multi-user.target, Before=nginx.service, exécutant le cache local /var/lib/aphrody/cf-ips.{v4,v6} immédiatement avant toute tentative réseau) et ajouter Persistent=true + OnBootSec=2min dans fr2-edge-fw.timer.
 
@@ -140,21 +137,21 @@ B. Authentification d'origine nginx (Custom AOP compatible rosegriffon-cdn et fl
 Émettre un certificat client dédié via votre PKI interne (upki-fetch) et le téléverser sur Cloudflare (Custom Authenticated Origin Pulls par zone), puis configurer nginx par vhost sans toucher à rosegriffon-cdn.conf :
 
 Nginx
+
 # /etc/nginx/conf.d/origin-auth.conf
+
 geo $is_fleet_peer {
-    default         0;
-    127.0.0.0/8     1;
-    ::1/128         1;
-    10.200.77.0/24  1;
-    # Ajouter ici les IP publiques v4/v6 de fr1 et prd
+default 0;
+127.0.0.0/8 1;
+::1/128 1;
+10.200.77.0/24 1; # Ajouter ici les IP publiques v4/v6 de fr1 et prd
 }
 
 map "$is_fleet_peer:$ssl_client_verify" $origin_denied {
-    "~^1:"      0;
-    "0:SUCCESS" 0;
-    default     1;
+"~^1:" 0;
+"0:SUCCESS" 0;
+default 1;
 }
-
 
 Dans les seuls blocs server {} de dbfr, api, cdn, creator et downloads :
 
@@ -162,7 +159,6 @@ Nginx
 ssl_client_certificate /etc/nginx/certs/aphrody-custom-aop-ca.pem;
 ssl_verify_client optional;
 if ($origin_denied) { return 403; }
-
 
 Remplacer les 19 certificats Let's Encrypt de fr2 (hors rosegriffon si DNS direct) par un certificat Cloudflare Origin CA (15 ans) et supprimer /etc/letsencrypt/cloudflare.ini ainsi que le certificat expiré achillea.rosegriffon.fr.
 
@@ -199,6 +195,7 @@ Ajouter une assertion explicite sur [https://aphrody.com/api/](https://aphrody.c
 Figer le code HTTP exact attendu par nom d'hôte dans la table d'assertions (ne jamais tolérer 502 sur un hôte censé répondre 200), et afficher le compte brut de connexions par colo sans déduplication silencieuse.
 
 Corriger docs/infra/FR2-CLOUDFLARE.md : rectifier 31 → 33 CNAME, détailler les 2 certificats Let's Encrypt manquants (16 + 1 + 2 = 19), trancher l'état réel de nie.aphrody.app (21 vs 22 A), passer l'état de fermeture du port 22 en planifié à J+7, préciser les zones couvertes par fr2-rl-edge, et corriger l'ordre ainsi que la syntaxe CLI (update + ID explicites) du tableau de retour arrière.
+
 ## Passe 2 (2026-11-13 ~03:05) : 12/20
 
 Barème : exactitude 4/6, réseau 3/5, sécurité 3/5, complétude 2/4. Défauts : ports d'ingress contradictoires (23000/19300), fail2ban et repli DNS contradictoires, preuves de plusieurs instantanés, zone Cloudflare tierce, pool figé sur green_port, port 22 non daté, 21 *.aphrody.app en 502, secret perdu si le dépôt échoue, écriture de secrets.env non atomique, secret de jeton en argv, access-scope trop faible, --record sans garde, chemin expFile cassé hors Windows, retrait du jeton non vérifié, retours arrière incomplets, cloudflared hors APT, rotation non datée.

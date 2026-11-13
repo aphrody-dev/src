@@ -45,13 +45,18 @@ let pat;
 async function call(method, route, body, { allow = [] } = {}) {
   const response = await fetch(`${API}/${route}`, {
     method,
-    headers: { Authorization: `Bearer ${pat}`, "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${pat}`,
+      "Content-Type": "application/json",
+    },
     body: body === undefined ? undefined : JSON.stringify(body),
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
   const text = await response.text();
   if (!response.ok && !allow.includes(response.status)) {
-    throw new Error(`${method} /${route} answered HTTP ${response.status}: ${text}`);
+    throw new Error(
+      `${method} /${route} answered HTTP ${response.status}: ${text}`,
+    );
   }
   return { status: response.status, body: text ? JSON.parse(text) : {} };
 }
@@ -64,9 +69,15 @@ async function connect() {
       pat = fs.readFileSync(PAT_FILE, "utf8").trim();
       // Until ZITADEL has written the token and accepts it, reading it, connecting or the
       // request can fail.
-      me = await call("GET", "auth/v1/users/me", undefined, { allow: [401, 404] });
+      me = await call("GET", "auth/v1/users/me", undefined, {
+        allow: [401, 404],
+      });
     } catch (error) {
-      if (error.code !== "ENOENT" && error.name !== "TimeoutError" && error.message !== "fetch failed") {
+      if (
+        error.code !== "ENOENT" &&
+        error.name !== "TimeoutError" &&
+        error.message !== "fetch failed"
+      ) {
         throw error;
       }
     }
@@ -78,19 +89,29 @@ async function connect() {
 
 /** Creates something unless it exists. True when it was created. */
 async function create(route, body) {
-  const { status, body: answer } = await call("POST", route, body, { allow: [400, 409] });
+  const { status, body: answer } = await call("POST", route, body, {
+    allow: [400, 409],
+  });
   // Some ZITADEL APIs report an existing object as 409, others as 400 with an
   // AlreadyExist* error.
-  if (status === 409 || (status === 400 && /AlreadyExist/.test(answer.message))) return false;
-  if (status === 400) throw new Error(`POST /${route} answered HTTP 400: ${JSON.stringify(answer)}`);
+  if (status === 409 || (status === 400 && /AlreadyExist/.test(answer.message)))
+    return false;
+  if (status === 400)
+    throw new Error(
+      `POST /${route} answered HTTP 400: ${JSON.stringify(answer)}`,
+    );
   return true;
 }
 
 /** Updates something. ZITADEL refuses an update that changes nothing, in several wordings. */
 async function change(method, route, body) {
-  const { status, body: answer } = await call(method, route, body, { allow: [400] });
+  const { status, body: answer } = await call(method, route, body, {
+    allow: [400],
+  });
   if (status === 400 && !/NotChanged|No changes/i.test(answer.message)) {
-    throw new Error(`${method} /${route} answered HTTP 400: ${JSON.stringify(answer)}`);
+    throw new Error(
+      `${method} /${route} answered HTTP 400: ${JSON.stringify(answer)}`,
+    );
   }
 }
 
@@ -105,7 +126,10 @@ async function createAll(org) {
     name: "Lore",
   });
   for (const action of ACTIONS) {
-    await create(`management/v1/projects/${PROJECT}/roles`, { roleKey: action, displayName: action });
+    await create(`management/v1/projects/${PROJECT}/roles`, {
+      roleKey: action,
+      displayName: action,
+    });
   }
   await create("zitadel.app.v2beta.AppService/CreateApplication", {
     projectId: PROJECT,
@@ -114,7 +138,10 @@ async function createAll(org) {
     oidcRequest: {
       appType: "OIDC_APP_TYPE_NATIVE",
       authMethodType: "OIDC_AUTH_METHOD_TYPE_NONE",
-      grantTypes: ["OIDC_GRANT_TYPE_DEVICE_CODE", "OIDC_GRANT_TYPE_REFRESH_TOKEN"],
+      grantTypes: [
+        "OIDC_GRANT_TYPE_DEVICE_CODE",
+        "OIDC_GRANT_TYPE_REFRESH_TOKEN",
+      ],
       responseTypes: ["OIDC_RESPONSE_TYPE_CODE"],
       accessTokenType: "OIDC_TOKEN_TYPE_JWT",
     },
@@ -141,18 +168,38 @@ async function createAll(org) {
     accessTokenType: "ACCESS_TOKEN_TYPE_JWT",
   });
   for (const user of [...USERS, CI_USER]) {
-    await create(`management/v1/users/${user.id}/grants`, { projectId: PROJECT, roleKeys: user.actions });
+    await create(`management/v1/users/${user.id}/grants`, {
+      projectId: PROJECT,
+      roleKeys: user.actions,
+    });
   }
   const { body: found } = await call("POST", "management/v1/actions/_search", {
-    queries: [{ actionNameQuery: { name: "loreClaims", method: "TEXT_QUERY_METHOD_EQUALS" } }],
+    queries: [
+      {
+        actionNameQuery: {
+          name: "loreClaims",
+          method: "TEXT_QUERY_METHOD_EQUALS",
+        },
+      },
+    ],
   });
-  const action = { name: "loreClaims", script: CLAIMS_ACTION, timeout: "10s", allowedToFail: false };
+  const action = {
+    name: "loreClaims",
+    script: CLAIMS_ACTION,
+    timeout: "10s",
+    allowedToFail: false,
+  };
   let actionId = found.result?.[0]?.id;
-  if (actionId) await change("PUT", `management/v1/actions/${actionId}`, action);
+  if (actionId)
+    await change("PUT", `management/v1/actions/${actionId}`, action);
   else actionId = (await call("POST", "management/v1/actions", action)).body.id;
-  await change("POST", `management/v1/flows/${COMPLEMENT_TOKEN_FLOW}/trigger/${PRE_ACCESS_TOKEN_TRIGGER}`, {
-    actionIds: [actionId],
-  });
+  await change(
+    "POST",
+    `management/v1/flows/${COMPLEMENT_TOKEN_FLOW}/trigger/${PRE_ACCESS_TOKEN_TRIGGER}`,
+    {
+      actionIds: [actionId],
+    },
+  );
   return ciCreated;
 }
 
@@ -165,7 +212,10 @@ function writeOutput(name, content, mode) {
 }
 
 async function writeClientId() {
-  const { body } = await call("GET", `management/v1/projects/${PROJECT}/apps/lore-cli`);
+  const { body } = await call(
+    "GET",
+    `management/v1/projects/${PROJECT}/apps/lore-cli`,
+  );
   writeOutput(
     "local.toml",
     "# Written by setup.js: the client ID ZITADEL generated for lore-cli.\n" +
@@ -185,16 +235,25 @@ async function ciSecretWorks() {
   }
   const response = await fetch(`${API}/oauth/v2/token`, {
     method: "POST",
-    headers: { Authorization: `Basic ${Buffer.from(`${CI_USER.id}:${secret}`).toString("base64")}` },
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${CI_USER.id}:${secret}`).toString("base64")}`,
+    },
     // ZITADEL refuses a token request with no scope.
-    body: new URLSearchParams({ grant_type: "client_credentials", scope: "openid" }),
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      scope: "openid",
+    }),
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
   return response.ok;
 }
 
 async function writeCiSecret() {
-  const { body } = await call("PUT", `management/v1/users/${CI_USER.id}/secret`, {});
+  const { body } = await call(
+    "PUT",
+    `management/v1/users/${CI_USER.id}/secret`,
+    {},
+  );
   writeOutput("ci-secret", `${body.clientSecret}\n`, 0o600);
 }
 
@@ -207,7 +266,9 @@ async function main() {
   // ZITADEL shows a secret only when it generates one, so a new one replaces a lost or
   // stale file.
   if (ciCreated || !(await ciSecretWorks())) await writeCiSecret();
-  console.log(`ZITADEL is set up. lore-cli's client ID and lore-ci's secret are in ${OUT_DIR}.`);
+  console.log(
+    `ZITADEL is set up. lore-cli's client ID and lore-ci's secret are in ${OUT_DIR}.`,
+  );
 }
 
 main().catch((error) => {

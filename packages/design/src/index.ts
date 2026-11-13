@@ -6,7 +6,8 @@ export type Mode = keyof typeof tokens.color;
 export type Role = keyof typeof tokens.color.light;
 
 /** Hex d'un rôle M3 (ex. role("primary", "dark")). */
-export const role = (name: Role, mode: Mode = "light"): string => tokens.color[mode][name];
+export const role = (name: Role, mode: Mode = "light"): string =>
+  tokens.color[mode][name];
 
 /** Séquence SGR 24 bits pour un rôle (TUI), avant-plan ou fond. */
 export function ansi(name: Role, mode: Mode = "dark", bg = false): string {

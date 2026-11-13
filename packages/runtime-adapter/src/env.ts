@@ -1,6 +1,7 @@
 import type { Env, Target } from "./types";
 
-const proc = (): Record<string, string | undefined> => (typeof process !== "undefined" ? process.env : {});
+const proc = (): Record<string, string | undefined> =>
+  typeof process !== "undefined" ? process.env : {};
 
 /** Worker string bindings over process.env. No secret is ever read from disk. */
 export function makeEnv(bindings?: Record<string, unknown>): Env {
@@ -20,9 +21,14 @@ export function makeEnv(bindings?: Record<string, unknown>): Env {
 
 /** RUNTIME_TARGET wins, else detection. */
 export function detectTarget(bindings?: Record<string, unknown>): Target {
-  const t = (bindings?.RUNTIME_TARGET as string | undefined) ?? proc().RUNTIME_TARGET;
+  const t =
+    (bindings?.RUNTIME_TARGET as string | undefined) ?? proc().RUNTIME_TARGET;
   if (t === "cf" || t === "vercel" || t === "vps") return t;
   if (proc().VERCEL) return "vercel";
-  if (typeof navigator !== "undefined" && navigator.userAgent === "Cloudflare-Workers") return "cf";
+  if (
+    typeof navigator !== "undefined" &&
+    navigator.userAgent === "Cloudflare-Workers"
+  )
+    return "cf";
   return "vps";
 }

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)
 
 Published: March 31, 2014
@@ -75,9 +76,9 @@ Our "Hello World experience" page seems basic, but a lot goes on under the hood.
 
 [Try it](https://googlesamples.github.io/web-fundamentals/fundamentals/performance/critical-rendering-path/measure_crp_timing.html)
 
-*Before adding JavaScript and CSS:*
+_Before adding JavaScript and CSS:_
 
-*With JavaScript and CSS:*
+_With JavaScript and CSS:_
 
 Adding external CSS and JavaScript files adds two extra requests to our waterfall, all of which the browser dispatches at about the same time. However, **note that there is now a much smaller timing difference between the `domContentLoaded` and `onload` events.**
 
@@ -90,9 +91,9 @@ What happened?
 
 That said, despite blocking on CSS, does inlining the script make the page render faster? Try it and see what happens.
 
-*External JavaScript:*
+_External JavaScript:_
 
-*Inlined JavaScript:*
+_Inlined JavaScript:_
 
 We are making one less request, but both our `onload` and `domContentLoaded` times are effectively the same. Why? Well, we know that it doesn't matter if the JavaScript is inlined or external, because as soon as the browser hits the script tag it blocks and waits until the CSSOM is constructed. Further, in our first example, the browser downloads both CSS and JavaScript in parallel and they finish downloading at about the same time. In this instance, inlining the JavaScript code doesn't help us much. But there are several strategies that can make our page render faster.
 
@@ -116,9 +117,9 @@ First, recall that all inline scripts are parser blocking, but for external scri
 
 [Try it](https://googlesamples.github.io/web-fundamentals/fundamentals/performance/critical-rendering-path/measure_crp_async.html)
 
-*Parser-blocking (external) JavaScript:*
+_Parser-blocking (external) JavaScript:_
 
-*Async (external) JavaScript:*
+_Async (external) JavaScript:_
 
 Much better! The `domContentLoaded` event fires shortly after the HTML is parsed; the browser knows not to block on JavaScript and since there are no other parser blocking scripts the CSSOM construction can also proceed in parallel.
 
@@ -149,13 +150,13 @@ Alternatively, we could have inlined both the CSS and JavaScript:
     <p>Hello <span>web performance</span> students!</p>
     <div></div>
     <script>
-      var span = document.getElementsByTagName('span')[0];
-      span.textContent = 'interactive'; // change DOM text content
-      span.style.display = 'inline'; // change CSSOM property
+      var span = document.getElementsByTagName("span")[0];
+      span.textContent = "interactive"; // change DOM text content
+      span.style.display = "inline"; // change CSSOM property
       // create a new element, style it, and append it to the DOM
-      var loadTime = document.createElement('div');
-      loadTime.textContent = 'You loaded this page on: ' + new Date();
-      loadTime.style.color = 'blue';
+      var loadTime = document.createElement("div");
+      loadTime.textContent = "You loaded this page on: " + new Date();
+      loadTime.style.color = "blue";
       document.body.appendChild(loadTime);
     </script>
   </body>

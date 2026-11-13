@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sofia Emelianova [GitHub](https://github.com/sofiayem)
 
 The **Performance** panel marks each long-running task with a red triangle in the upper right corner and a warning in the **Summary** tab, to indicate work on the main thread that takes a long time to run and has slow performance:
@@ -41,7 +42,6 @@ To record a performance trace with selector statistics:
 
 3. In the **Performance** panel, click the **Capture settings** button and check **Enable CSS selector stats**.
 
-   
 4. Click **Record** , run the scenario that you want to improve, then click **Stop**.
 
 Then, view CSS selector statistics, as described in the next sections.
@@ -60,14 +60,14 @@ To view the statistics of the CSS rule selectors that are involved in a single *
 
 The **Selector Stats** tab contains a table of CSS selectors. The table displays the following information for each CSS selector:
 
-| Column | Description |
-|---|---|
-| Elapsed (ms) | The amount of time the browser spent matching this CSS selector. This time is given in milliseconds (ms), where 1 ms is 1/1000 of a second. |
-| Match Attempts | The number of elements the browser engine attempted to match with this CSS selector. |
-| Match Count | The number of elements the browser engine matched with this CSS selector. |
+| Column                     | Description                                                                                                                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Elapsed (ms)               | The amount of time the browser spent matching this CSS selector. This time is given in milliseconds (ms), where 1 ms is 1/1000 of a second.                                                            |
+| Match Attempts             | The number of elements the browser engine attempted to match with this CSS selector.                                                                                                                   |
+| Match Count                | The number of elements the browser engine matched with this CSS selector.                                                                                                                              |
 | % of slow-path non-matches | The ratio of elements that didn't match with this CSS selector, to the elements that the browser engine attempted to match, and which required the browser engine to use less optimized code to match. |
-| Selector | The CSS selector that was matched. |
-| Style Sheet | The CSS style sheet that contains the CSS selector. |
+| Selector                   | The CSS selector that was matched.                                                                                                                                                                     |
+| Style Sheet                | The CSS style sheet that contains the CSS selector.                                                                                                                                                    |
 
 When finished, in the **Performance** panel, open **Capture settings** and clear **Enable CSS selector stats**.
 
@@ -83,7 +83,6 @@ To view aggregate statistics of the CSS rule selectors that are involved in mult
 
 4. Right-click the selector stats table and select **Copy table**.
 
-   
 5. Paste the table into a spreadsheet, such as Google Sheets.
 
 6. Repeat the previous steps with the other **Recalculate Style** events you're interested in.

@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 How to think when thinking about service workers.
 
- Dave Geddes [X](https://twitter.com/geddski) [GitHub](https://github.com/geddski) [Homepage](https://gedd.ski/)
+Dave Geddes [X](https://twitter.com/geddski) [GitHub](https://github.com/geddski) [Homepage](https://gedd.ski/)
 
-Service workers are powerful and absolutely worth learning. They let you deliver an entirely new level of experience to your users. Your site can load *instantly* . It can work *offline*. It can be installed as a platform-specific app and feel every bit as polished---but with the reach and freedom of the web.
+Service workers are powerful and absolutely worth learning. They let you deliver an entirely new level of experience to your users. Your site can load _instantly_ . It can work _offline_. It can be installed as a platform-specific app and feel every bit as polished---but with the reach and freedom of the web.
 
 But service workers are unlike anything most of us web devs are used to. They come with a steep learning curve and a handful of snags you've got to watch out for.
 
@@ -27,7 +28,7 @@ But other service worker behavior causes you to scratch your head in confusion. 
 
 Normally when building a site you have just two layers to think about: the client and the server. The service worker is a brand new layer that sits in the middle.
 
-Think of your service worker as a sort of *browser extension* ---one that your site can install in your user's browser. Once installed, the service worker *extends* the browser for your site with a powerful middle layer. This service worker layer can intercept and handle all of the requests your site makes.
+Think of your service worker as a sort of _browser extension_ ---one that your site can install in your user's browser. Once installed, the service worker _extends_ the browser for your site with a powerful middle layer. This service worker layer can intercept and handle all of the requests your site makes.
 
 The service worker layer has its **own lifecycle** independent of the browser tab. A simple page refresh isn't enough to update a service worker---just like you wouldn't expect a page refresh to update code deployed on a server. Each layer has its own unique rules for updating.
 
@@ -64,7 +65,7 @@ In [Service Workies](https://serviceworkies.com) we visualize this concept with 
 
 ### Stopped
 
-Despite service workers appearing to be immortal, they can be **stopped** at almost any time. The browser doesn't want to waste resources on a service worker that isn't currently doing anything. Getting stopped isn't the same thing as getting *terminated*---the service worker remains installed and activated. It's just put to sleep. The next time it's needed (e.g., to handle a request), the browser wakes it back up.
+Despite service workers appearing to be immortal, they can be **stopped** at almost any time. The browser doesn't want to waste resources on a service worker that isn't currently doing anything. Getting stopped isn't the same thing as getting _terminated_---the service worker remains installed and activated. It's just put to sleep. The next time it's needed (e.g., to handle a request), the browser wakes it back up.
 
 ### waitUntil
 
@@ -73,11 +74,11 @@ Because of the constant possibility of getting put to sleep, your service worker
 This example tells the browser that our service worker isn't done installing until the `assets` cache has been created and populated with the picture of a sword:
 
 ```javascript
-self.addEventListener("install", event => {
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open("assets").then(cache => {
+    caches.open("assets").then((cache) => {
       return cache.addAll(["/weapons/sword/blade.png"]);
-    })
+    }),
   );
 });
 ```
@@ -92,7 +93,7 @@ Consider this example that uses a global state:
 const favoriteNumber = Math.random();
 let hasHandledARequest = false;
 
-self.addEventListener("fetch", event => {
+self.addEventListener("fetch", (event) => {
   console.log(favoriteNumber);
   console.log(hasHandledARequest);
   hasHandledARequest = true;
@@ -113,7 +114,7 @@ In [Service Workies chapter 3](https://gedd.ski/post/service-workies-chapter3/) 
 
 ## Together, but separate
 
-Your page can only be *controlled* by one service worker at a time. But it can have two service workers *installed* at once. When you make a change to your service worker code and refresh the page, you aren't actually editing your service worker at all. Service workers are *immutable* . You're instead making a brand new one. This new service worker (let's call it SW2) will *install* but it won't *activate* yet. It has to *wait* for the current service worker (SW1) to terminate (when your user leaves your site).
+Your page can only be _controlled_ by one service worker at a time. But it can have two service workers _installed_ at once. When you make a change to your service worker code and refresh the page, you aren't actually editing your service worker at all. Service workers are _immutable_ . You're instead making a brand new one. This new service worker (let's call it SW2) will _install_ but it won't _activate_ yet. It has to _wait_ for the current service worker (SW1) to terminate (when your user leaves your site).
 
 ### Messing with another service worker's caches
 
@@ -134,8 +135,8 @@ The way to prevent your service workers from clobbering each other is to make su
 const version = 1;
 const assetCacheName = `assets-${version}`;
 
-self.addEventListener("install", event => {
-  caches.open(assetCacheName).then(cache => {
+self.addEventListener("install", (event) => {
+  caches.open(assetCacheName).then((cache) => {
     // confidently do stuff with your very own cache
   });
 });
@@ -147,7 +148,7 @@ When you deploy a new service worker, you'll bump the `version` so that it does 
 
 Once your service worker reaches the `activated` state, you know it has taken over, and the previous service worker is redundant. At this point it's important to clean up after the old service worker. Not only does it respect your users' cache storage limits, but it can also prevent unintentional bugs.
 
-The [`caches.match()`](https://developer.mozilla.org/docs/Web/API/CacheStorage/match) method is an often-used shortcut for retrieving an item from *any* cache where there's a match. But it iterates through the caches in the order they were created. So let's say you've got two versions of a script file `app.js` in two different caches---`assets-1` and `assets-2`. Your page is expecting the newer script that's stored in `assets-2`. But if you haven't deleted the old cache, `caches.match('app.js')` is going to return the old one from `assets-1` and most likely break your site.
+The [`caches.match()`](https://developer.mozilla.org/docs/Web/API/CacheStorage/match) method is an often-used shortcut for retrieving an item from _any_ cache where there's a match. But it iterates through the caches in the order they were created. So let's say you've got two versions of a script file `app.js` in two different caches---`assets-1` and `assets-2`. Your page is expecting the newer script that's stored in `assets-2`. But if you haven't deleted the old cache, `caches.match('app.js')` is going to return the old one from `assets-1` and most likely break your site.
 
 All it takes to clean up after previous service workers is to delete any cache that the new service worker doesn't need:
 

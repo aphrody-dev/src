@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: February 25, 2026
@@ -21,7 +22,9 @@ For many web apps, you can enable compatibility mode by passing `featureLevel: "
 
 ```javascript
 // Request a GPUAdapter in compatibility mode.
-const adapter = await navigator.gpu.requestAdapter({ featureLevel: "compatibility" });
+const adapter = await navigator.gpu.requestAdapter({
+  featureLevel: "compatibility",
+});
 const device = await adapter.requestDevice();
 ```
 
@@ -39,14 +42,14 @@ The following example shows how to create a transient texture.
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-if ('TRANSIENT_ATTACHMENT' in GPUTextureUsage) {
-
+if ("TRANSIENT_ATTACHMENT" in GPUTextureUsage) {
   const transientTexture = device.createTexture({
     size: [42, 42],
     // The TRANSIENT_ATTACHMENT flag indicates the texture content is temporary,
     // potentially keeping it in fast on-chip memory.
-    usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TRANSIENT_ATTACHMENT,
-    format: 'rgba8unorm',
+    usage:
+      GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TRANSIENT_ATTACHMENT,
+    format: "rgba8unorm",
   });
 }
 ```

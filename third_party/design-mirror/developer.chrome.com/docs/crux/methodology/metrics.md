@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Published: June 23, 2022, Last updated: October 13, 2026
 
 Metrics in CrUX are powered by standard web platform APIs exposed by browsers. In the BigQuery dataset in particular, this data is aggregated to origin-resolution. Site owners requiring more detailed (e.g. URL-level resolution) analysis and insight into their site performance can use the same APIs to gather detailed real user measurement (RUM) data for their own origins. Note that while all APIs are available in Chrome, other browsers may not support the full set of metrics.
@@ -92,17 +93,17 @@ For more information see the [LCP image subparts launch blog post](https://devel
 
 ## Navigation types
 
-The *navigation types* metric provides a breakdown of the percentage of page views of the following navigations:
+The _navigation types_ metric provides a breakdown of the percentage of page views of the following navigations:
 
-| Type | Description |
-|---|---|
-| `navigate` | A page load, which does not fit into any of the other categories. |
-| `navigate_cache` | A page load for which the main resource (the main HTML document) was served from the HTTP cache. Sites often make use of caching for sub-resources, but the main HTML document is often [cached considerably less](https://almanac.httparchive.org/en/2022/cdn#cdn-adoption) and when it can be, it can result in noticeable performance improvements from being able to be cached locally and at a CDN. |
-| `reload` | The user reloaded the page, either by hitting the reload button, by hitting enter in the address bar, or by undoing a tab close. Page reloads often result in revalidation back to the server to check if the main page has changed. A high percentage of page reloads may indicate user experience frustrations. |
-| `restore` | The page was reloaded after a browser restart, or a tab that had been removed for memory reasons. For Chrome on Android these are reported as 'reload' instead. |
-| `back_forward` | A history navigation, meaning that the page was seen and returned to recently. With correct caching, these should be reasonably fast experiences but still require the page to be processed and JavaScript to be executed---both of which the bfcache avoids. |
-| `back_forward_cache` | A history navigation which was served from the bfcache. [Optimizing your pages](https://web.dev/articles/bfcache#optimize_your_pages_for_bfcache) to take advantage of the bfcache, by removing blockers, should result in faster experiences, so sites should look |
-| `prerender` | The page was [prerendered](https://developer.chrome.com/docs/web-platform/prerender-pages.md.txt) which---similar to bfcache---can result in near-instant page loads. |
+| Type                 | Description                                                                                                                                                                                                                                                                                                                                                                                              |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `navigate`           | A page load, which does not fit into any of the other categories.                                                                                                                                                                                                                                                                                                                                        |
+| `navigate_cache`     | A page load for which the main resource (the main HTML document) was served from the HTTP cache. Sites often make use of caching for sub-resources, but the main HTML document is often [cached considerably less](https://almanac.httparchive.org/en/2022/cdn#cdn-adoption) and when it can be, it can result in noticeable performance improvements from being able to be cached locally and at a CDN. |
+| `reload`             | The user reloaded the page, either by hitting the reload button, by hitting enter in the address bar, or by undoing a tab close. Page reloads often result in revalidation back to the server to check if the main page has changed. A high percentage of page reloads may indicate user experience frustrations.                                                                                        |
+| `restore`            | The page was reloaded after a browser restart, or a tab that had been removed for memory reasons. For Chrome on Android these are reported as 'reload' instead.                                                                                                                                                                                                                                          |
+| `back_forward`       | A history navigation, meaning that the page was seen and returned to recently. With correct caching, these should be reasonably fast experiences but still require the page to be processed and JavaScript to be executed---both of which the bfcache avoids.                                                                                                                                            |
+| `back_forward_cache` | A history navigation which was served from the bfcache. [Optimizing your pages](https://web.dev/articles/bfcache#optimize_your_pages_for_bfcache) to take advantage of the bfcache, by removing blockers, should result in faster experiences, so sites should look                                                                                                                                      |
+| `prerender`          | The page was [prerendered](https://developer.chrome.com/docs/web-platform/prerender-pages.md.txt) which---similar to bfcache---can result in near-instant page loads.                                                                                                                                                                                                                                    |
 
 In some cases, a page load can be a combination of multiple navigation types. In that case, CrUX reports the first match in reverse order of the table (from bottom to top).
 

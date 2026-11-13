@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)  Alexandra Klepper [GitHub](https://github.com/alexandrascript) [Bluesky](https://bsky.app/profile/alexandrascript.com)
+
+Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me) Alexandra Klepper [GitHub](https://github.com/alexandrascript) [Bluesky](https://bsky.app/profile/alexandrascript.com)
 
 Standard HTML elements such as `<button>` or `<input>` have keyboard accessibility
 built in, and should be used whenever possible. However, if you need to build
@@ -57,7 +58,7 @@ can still be focused by calling its `focus()` method
 of the natural tab order. If there are multiple elements with a tabindex greater
 than `0`, the tab order starts from the lowest value that is greater than zero
 and works its way up. Using a tabindex greater than `0` is considered an
-*anti-pattern*.
+_anti-pattern_.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/wvbgEqx?height=250&amp;default-tab=result,html&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe>
 
 ## Ensure controls are keyboard accessible
@@ -85,7 +86,7 @@ navigation links change the visible content, without a page refresh.
 
 In this case, identify the selected content area and give it a `tabindex` of
 `-1` and call its `focus` method. This ensures the content doesn't appear in
-the natural tab order. This technique, called *managing focus*, keeps the
+the natural tab order. This technique, called _managing focus_, keeps the
 user's perceived context in sync with the site's visual content.
 
 ## Manage focus in components
@@ -171,6 +172,7 @@ Before
   <button tabindex="-1">Cut</button>
 </div>
 ```
+
 After
 
 ```html
@@ -180,6 +182,7 @@ After
   <button tabindex="0">Cut</button>
 </div>
 ```
+
 <iframe loading="lazy" allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" src="https://codepen.io/web-dot-dev/embed/LYOOWam?height=360&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe>
 
 > [!NOTE]

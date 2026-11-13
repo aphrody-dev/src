@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to take your field data into the lab to reproduce and identify the causes behind slow interactions through manual testing.
 
- Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 Published: May 9, 2023
 
@@ -40,7 +41,7 @@ There are a number of ways you can reproduce slow interactions in the lab throug
 The DevTools performance profiler is the recommended approach to diagnosing interactions known to be slow, but it can take time to identify slow interactions when you don't know which interactions are your problematic ones.
 
 When you first open the Performance panel you will see a [live metrics view](https://developer.chrome.com/blog/devtools-realtime-cwv). This can be used to quickly try out a number of interactions to find the problematic ones, before you move into the more detailed performance profiler. As you interact, diagnostic data will appear in the Interactions log (with the INP interaction highlighted). These interactions can be expanded to get the phase breakdowns:
- The live metrics screen of the Performance panel.
+The live metrics screen of the Performance panel.
 
 While the live metrics view helps identify slow interactions, and provides some details to help you debug INP, **you may still need to use the performance profiler to diagnose slow interactions**, as it provides the detailed data you'll need to navigate through your website's production code to find the causes behind slow interactions.
 
@@ -55,15 +56,15 @@ While the live metrics view helps identify slow interactions, and provides some 
 5. Click the **Record** button again to stop tracing.
 
 When the profiler populates, the first place to look should be the activity summary at the top of the profiler. The activity summary shows red bars at the top where long tasks occurred in the recording. This lets you quickly zoom in on problem areas.
- The activity summary at the top of Chrome's performance profiler. Long tasks are highlighted in red above the activity flame chart. In this case, significant scripting work was responsible for most of the work in the long task.
+The activity summary at the top of Chrome's performance profiler. Long tasks are highlighted in red above the activity flame chart. In this case, significant scripting work was responsible for most of the work in the long task.
 
 You can quickly focus on problem areas by dragging and selecting a region in the activity summary. You can optionally use the [breadcrumbs feature](https://developer.chrome.com/blog/new-in-devtools-122#perf-breadcrumbs) in the profiler to help you narrow the timeline down and ignore unrelated activity.
 
 Once you've focused to where the interaction occurred, the **Interactions** track helps you line up the interaction and the activity that occurred in the main thread track beneath it:
- An interaction profiled in the performance profiler in Chrome's DevTools. The **Interactions** track shows a series of events that correspond to a click interaction. The Interactions track entries span across the tasks responsible for driving the interaction.
+An interaction profiled in the performance profiler in Chrome's DevTools. The **Interactions** track shows a series of events that correspond to a click interaction. The Interactions track entries span across the tasks responsible for driving the interaction.
 
 You can get additional details on which part of the interaction was longest by hovering over the interaction in the interactions track:
- The tooltip that appears when an interaction in the interactions track of the performance panel is hovered over. The tooltip displays how much time was spent in each part of the interaction.
+The tooltip that appears when an interaction in the interactions track of the performance panel is hovered over. The tooltip displays how much time was spent in each part of the interaction.
 
 The striped portion of the interaction represents how much time of the interaction exceeded 200 milliseconds, which is the upper limit of the "good" threshold for a page's INP. The portions of the interaction listed are:
 
@@ -79,12 +80,12 @@ Interactions consist of three parts: the input delay, the processing duration, a
 
 ### How to identify long input delays
 
-Input delays can cause high interaction latency. The [*input delay*](https://web.dev/articles/optimize-input-delay.md.txt#what_is_input_delay) is the first part of an interaction. This is the period of time from when the user action is first received by the operating system to the point at which the browser is able to start processing that interaction's first event handler callback.
+Input delays can cause high interaction latency. The [_input delay_](https://web.dev/articles/optimize-input-delay.md.txt#what_is_input_delay) is the first part of an interaction. This is the period of time from when the user action is first received by the operating system to the point at which the browser is able to start processing that interaction's first event handler callback.
 
 Identifying input delays in Chrome's performance profiler can be done by locating the interaction in the interactions track. The length of the left whisker indicates the portion of the interaction's input delay, and the precise value can be found in a tooltip by hovering over the interaction in the performance profiler.
 
-Input delays can never be zero, but you do have some control over how *long* the input delay is. **The key is to figure out if there is work running on the main thread that's preventing your callbacks from running as soon as they should.**
- Input delay caused by a task fired by a timer from a third-party script. The left portion of the whisker in the interaction shown in the interactions track visualizes the input delay.
+Input delays can never be zero, but you do have some control over how _long_ the input delay is. **The key is to figure out if there is work running on the main thread that's preventing your callbacks from running as soon as they should.**
+Input delay caused by a task fired by a timer from a third-party script. The left portion of the whisker in the interaction shown in the interactions track visualizes the input delay.
 
 In the previous figure, a task from a third-party script is running as the user attempts to interact with the page, and therefore extends the input delay. The extended input delay affects the interaction's latency, and could therefore affect the page's INP.
 
@@ -93,8 +94,8 @@ In the previous figure, a task from a third-party script is running as the user 
 
 ### How to identify long processing durations
 
-Event callbacks run immediately after the input delay, and the time they take to complete is known as the *processing duration*. If event callbacks run for too long, they delay the browser from presenting the next frame, and can add significantly to an interaction's total latency. Long processing durations can be the result of computationally expensive first-party or third-party JavaScript---and in some cases, both. In the performance profiler, this is represented by the solid portion of the interaction in the interactions track.
- The event callbacks that run in response to a click interaction, as shown in the performance profiler in Chrome DevTools. Note the high processing duration.
+Event callbacks run immediately after the input delay, and the time they take to complete is known as the _processing duration_. If event callbacks run for too long, they delay the browser from presenting the next frame, and can add significantly to an interaction's total latency. Long processing durations can be the result of computationally expensive first-party or third-party JavaScript---and in some cases, both. In the performance profiler, this is represented by the solid portion of the interaction in the interactions track.
+The event callbacks that run in response to a click interaction, as shown in the performance profiler in Chrome DevTools. Note the high processing duration.
 
 Finding expensive event callbacks can be done by observing the following in a trace for a specific interaction:
 
@@ -110,12 +111,12 @@ These strategies should be able to help you optimize event callbacks so that the
 
 ### How to identify presentation delays
 
-Long input delays and processing durations aren't the only causes of poor INP. Sometimes the rendering updates that occur in response to even small amounts of event callback code can be expensive. The time it takes for the browser to render visual updates to the user interface to reflect the result of an interaction is known as *presentation delay*.
+Long input delays and processing durations aren't the only causes of poor INP. Sometimes the rendering updates that occur in response to even small amounts of event callback code can be expensive. The time it takes for the browser to render visual updates to the user interface to reflect the result of an interaction is known as _presentation delay_.
 
 > [!IMPORTANT]
 > **Important:** The [rendering performance guide](https://web.dev/articles/rendering-performance.md.txt) is a good primer on understanding how the browser renders a page. [Life of a pixel](https://www.youtube.com/watch?v=K2QHdgAKP-s) goes further in depth on how rendering works in Chromium-based browsers.
 
- Rendering tasks as shown in Chrome's performance profiler. The right whisker visualizes the length of the presentation delays.
+Rendering tasks as shown in Chrome's performance profiler. The right whisker visualizes the length of the presentation delays.
 
 Rendering work most often consists of tasks such as style recalculation, layout, paint, and composite, and are represented by purple and green blocks in the profiler's flame chart. The total presentation delay is represented by the interaction's right whisker in the interactions track.
 
@@ -138,7 +139,7 @@ What if your field data suggests a particular interaction is slow, but you can't
 
 1. If you have a physical Android device, use [remote debugging](https://developer.chrome.com/docs/devtools/remote-debugging) to open a Chrome DevTools instance on your host machine and try to reproduce slow interactions there. Mobile devices are often not as fast as laptops or desktop machines, so slow interactions may be more readily observed on these devices.
 2. If you don't have a physical device, [enable the CPU throttling feature in Chrome DevTools](https://developer.chrome.com/docs/devtools/device-mode#cpu).
-3. It could be that you're waiting for a page to load *before* interacting with it, but your users aren't. If you're on a fast network, simulate slower network conditions by enabling [network throttling](https://developer.chrome.com/docs/devtools/settings/throttling), *then* interact with the page as soon as it paints. You should do this because the main thread is often busiest during startup, and testing during that period of time may reveal what your users are experiencing.
+3. It could be that you're waiting for a page to load _before_ interacting with it, but your users aren't. If you're on a fast network, simulate slower network conditions by enabling [network throttling](https://developer.chrome.com/docs/devtools/settings/throttling), _then_ interact with the page as soon as it paints. You should do this because the main thread is often busiest during startup, and testing during that period of time may reveal what your users are experiencing.
 
 ## Troubleshooting INP is an iterative process
 

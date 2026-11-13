@@ -8,6 +8,7 @@ created: 2026-11-06
 updated: 2026-11-09
 discussion: <link to the review venue>
 ---
+
 <!-- nox:artifact type=rfc feature=peer-read-fan-out phase=define -->
 <!-- NEXT: /nox:design after engineer approval (optional: /nox:submit-docs for standalone team review) -->
 <!-- REQUIRES: Engineer approval in-session; RFC committed to the repo -->
@@ -18,8 +19,8 @@ discussion: <link to the review venue>
 
 A Lore Server node that misses a fragment in its local cache asks every same-region peer for it at
 once, and every peer that holds the fragment sends it, so peer traffic grows with the number of nodes.
-This proposal gives every fragment a *home* node. The last bytes of the fragment's hash select one of
-a fixed number of *slots*, and every node derives the same slot-to-node assignment from the cluster's
+This proposal gives every fragment a _home_ node. The last bytes of the fragment's hash select one of
+a fixed number of _slots_, and every node derives the same slot-to-node assignment from the cluster's
 member list by rendezvous hashing. A node that misses a fragment asks only its home. The home answers
 from its cache, or asks the one member ranked next for that slot, or reads the durable store, and
 caches what it finds. A write to the fragment's home is no longer skipped while a node refreshes its peer
@@ -39,13 +40,13 @@ nodes (2026-11-05 18:00 to 2026-11-06 06:50 UTC). Peer bytes come from the per-c
 gauges Lore Server records for each peer connection (`lore-server/src/quic/client_monitor.rs`); request
 counts come from the composite store and replication client metrics.
 
-| | 3 nodes | 4 nodes |
-|---|---|---|
-| Peer requests per local miss | 2.02 | 2.99 |
-| Successful peer replies per local miss | 1.82 | 2.30 |
-| Peer replication traffic | 0.28 GB/s | 0.55 GB/s |
-| Peer bytes per client byte | 0.20 | 0.36 |
-| Client traffic | 1.38 GB/s | 1.55 GB/s |
+|                                        | 3 nodes   | 4 nodes   |
+| -------------------------------------- | --------- | --------- |
+| Peer requests per local miss           | 2.02      | 2.99      |
+| Successful peer replies per local miss | 1.82      | 2.30      |
+| Peer replication traffic               | 0.28 GB/s | 0.55 GB/s |
+| Peer bytes per client byte             | 0.20      | 0.36      |
+| Client traffic                         | 1.38 GB/s | 1.55 GB/s |
 
 Peer requests per miss equal the number of peers, and replies per miss rise with every node added.
 Peer traffic doubled for a 12% rise in client traffic.
@@ -103,7 +104,7 @@ that cannot send home reads (Members and member ids), keeps today's fan-out.
 
 ### Members and member ids (Goals 3 and 4)
 
-Every same-region node the topology reports, plus the local node, is a *member* with a *member id*. The
+Every same-region node the topology reports, plus the local node, is a _member_ with a _member id_. The
 topology reports the local node's own member id as well as each peer's. A member id decides which slots a
 node homes, so it must follow the node's cache: it stays the same while the machine and its cache can serve
 the slots, and changes only when the node is a different machine. A valid member id is:
@@ -116,14 +117,14 @@ the slots, and changes only when the node is a different machine. A valid member
   it unchanged.
 - **Stable while the cache survives**, and **new when the machine changes**:
 
-| Operation | Member id |
-|---|---|
-| Process restart or crash, config reload, connection id rotation | Same |
-| Deploy of a new version on the same host | Same |
-| Health check failure or short network partition | Same |
-| Instance stop and start, or cache wiped, on the same host | Same, though the cache is empty |
-| Job moved to a different host, instance replaced, node added | New |
-| A second Lore Server process on the same host | Different from the first |
+| Operation                                                       | Member id                       |
+| --------------------------------------------------------------- | ------------------------------- |
+| Process restart or crash, config reload, connection id rotation | Same                            |
+| Deploy of a new version on the same host                        | Same                            |
+| Health check failure or short network partition                 | Same                            |
+| Instance stop and start, or cache wiped, on the same host       | Same, though the cache is empty |
+| Job moved to a different host, instance replaced, node added    | New                             |
+| A second Lore Server process on the same host                   | Different from the first        |
 
 A node that keeps its id with an empty cache keeps its slots and reads the durable store for them until it
 warms. Changing the id instead moves about twice as many slots for a similar number of durable reads, so an
@@ -167,7 +168,7 @@ The slot count never changes for a cluster, because changing it would move almos
 
 Every node computes the owner of each slot from the member list alone; there is no stored table and no
 coordinator. For each slot, each member gets a score: a fixed hash of its member id and the slot number.
-The member with the highest score is the slot's *home*. This is rendezvous (highest random weight)
+The member with the highest score is the slot's _home_. This is rendezvous (highest random weight)
 hashing applied per slot.
 
 The scoring has the properties the goals need:
@@ -192,7 +193,7 @@ not it sends home reads itself, so that it can serve them.
 On a local miss for an address:
 
 - If the node is the address's home, it runs the home read path itself.
-- Otherwise it sends one *home read* to the home. If the home fails, answers `SlowDown`, does not answer
+- Otherwise it sends one _home read_ to the home. If the home fails, answers `SlowDown`, does not answer
   within the home read timeout, is not reachable, or rejects the request as unknown, the node reads the
   durable store itself.
 
@@ -215,7 +216,7 @@ reads.
 
 A home that does not hold a requested fragment:
 
-1. asks the *runner-up*: the highest-ranked member for the slot other than itself, with one local-only
+1. asks the _runner-up_: the highest-ranked member for the slot other than itself, with one local-only
    peer read under its own timeout;
 2. on a miss or failure, reads the durable store.
 
@@ -230,7 +231,7 @@ timeout plus a durable read.
   one home share one lookup; a `query` part is looked up on its own, as `query` is at the requester today.
   A home's own client misses go through the requester path, so a home can briefly have both a
   home read and its own miss outstanding for one fragment.
-- **Answers.** For `get`, the home's answer is final, including *not found*, because the home consulted the
+- **Answers.** For `get`, the home's answer is final, including _not found_, because the home consulted the
   durable store last. For `query` and `get_metadata`, which report how strongly a store matches an address,
   the home merges the answers along its path and stops at the first full match or at the durable store's
   answer, the same stopping rule the composite store applies today.
@@ -268,7 +269,7 @@ Home routing gives each node a role per slot, never a role for the cluster:
 - **Every node does every job.** Every node accepts client requests, acts as a requester, and serves every home
   read it receives. Being a home is a property of a slot, and every member homes about 1/N of them.
 - **Correct answers from every node.** The store is content-addressed, so a fragment returned by any node is the
-  right fragment. A *not found* from any node reflects the durable store.
+  right fragment. A _not found_ from any node reflects the durable store.
 - **No node answers better because of its role.** On a local miss, every node sends the read to the same home,
   which follows the same path, so every node receives the same answer from it. The home answers without a peer
   hop, so only its latency is better.
@@ -322,6 +323,7 @@ verify Goals 1 to 7 and measure the costs under Non-Functional Considerations.
     or a peer reports it.
 
   Changing any of these moves homes across the cluster and needs its own proposal.
+
 - **Topology plugin interface** — The `Topology` trait (`lore-revision/src/cluster/topology.rs`), which plugin
   crates implement through `TopologyPluginFactory` (`lore-server/src/plugins/traits.rs`), gains a method
   reporting the local node's member id, with a default implementation that reports none. `PeerInfo`
@@ -372,10 +374,10 @@ The `PeerInfo` change breaks the build of every topology plugin crate that const
 Such a crate must add the member id field, or leave it empty, before it builds against the new version; a plugin
 that leaves it empty keeps working, with home routing off on the nodes that use it.
 
-| Phase | Versions | `home_reads` | Requests sent | Behaviour |
-|---|---|---|---|---|
-| 1. Deploy | Old and new mixed | Off everywhere | Today's fan-out | New nodes compute slots and can answer home reads; no node sends them |
-| 2. Enable | New everywhere | On per node, one canary first | Home reads from enabled nodes, fan-out from the rest | Every node answers home reads |
+| Phase     | Versions          | `home_reads`                  | Requests sent                                        | Behaviour                                                             |
+| --------- | ----------------- | ----------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------- |
+| 1. Deploy | Old and new mixed | Off everywhere                | Today's fan-out                                      | New nodes compute slots and can answer home reads; no node sends them |
+| 2. Enable | New everywhere    | On per node, one canary first | Home reads from enabled nodes, fan-out from the rest | Every node answers home reads                                         |
 
 - **Signal.** The canary's peer requests per miss, home outcomes, durable reads, peer bytes and answer time,
   compared with the other nodes.
@@ -403,28 +405,28 @@ topologies. The replication metrics keep their existing peer labels.
 
 **Assumptions**
 
-- **Assumption:** each topology can supply member ids with the properties in Members and member ids — *invalidated
-  if:* a topology can identify a node only by values that change on restart or deploy, which would move that node's
+- **Assumption:** each topology can supply member ids with the properties in Members and member ids — _invalidated
+  if:_ a topology can identify a node only by values that change on restart or deploy, which would move that node's
   slots every time.
-- **Assumption:** the bytes of a BLAKE3 hash behave as independent and uniform — *invalidated if:* a sample of
+- **Assumption:** the bytes of a BLAKE3 hash behave as independent and uniform — _invalidated if:_ a sample of
   production hashes shows slots uneven, or the last bytes correlated with the first.
-- **Assumption:** peer reads, not write replication, dominate peer traffic — *invalidated if:* write replication
+- **Assumption:** peer reads, not write replication, dominate peer traffic — _invalidated if:_ write replication
   grows to a comparable share of peer bytes.
-- **Assumption:** the durable store returns a fragment immediately after it is written, so a home's *not found*
-  is final — *invalidated if:* a deployment uses a durable store without read-after-write consistency.
+- **Assumption:** the durable store returns a fragment immediately after it is written, so a home's _not found_
+  is final — _invalidated if:_ a deployment uses a durable store without read-after-write consistency.
 
 **Risks**
 
-- **Risk:** a popular fragment concentrates load on its home's egress — *mitigation:* every requester caches what
+- **Risk:** a popular fragment concentrates load on its home's egress — _mitigation:_ every requester caches what
   it receives, so repeat reads become local hits; per-node counters show skew.
 - **Risk:** a home whose health check flaps leaves and rejoins the member list, moving its slots each time —
-  *mitigation:* members that disagree cost extra reads only; damping membership changes stays open (Unresolved
+  _mitigation:_ members that disagree cost extra reads only; damping membership changes stays open (Unresolved
   Questions).
 - **Risk:** a slow home adds latency to every miss it homes, because the requester sends no second peer request —
-  *mitigation:* the home read timeout bounds the delay, and the existing unhealthy-client check fails fast for a
+  _mitigation:_ the home read timeout bounds the delay, and the existing unhealthy-client check fails fast for a
   disconnected peer.
 - **Risk:** cold misses, common for newly written or rarely read data, gain up to two peer round trips before the
-  durable read — *mitigation:* the home asks one peer only; the answer-time counters show the cost.
+  durable read — _mitigation:_ the home asks one peer only; the answer-time counters show the cost.
 
 ## Drawbacks
 
@@ -440,7 +442,7 @@ topologies. The replication metrics keep their existing peer labels.
 
 Keep asking every peer on a miss, now that peer hits are cached.
 
-*Rejected because:* every remaining miss still sends a request to every peer and receives a reply from every peer
+_Rejected because:_ every remaining miss still sends a request to every peer and receives a reply from every peer
 that holds the fragment, so peer traffic per miss still grows with the number of nodes, and a new node still pulls
 from every peer.
 
@@ -448,7 +450,7 @@ from every peer.
 
 After the runner-up, ask each other member in turn before the durable store.
 
-*Rejected because:* a cold miss then waits for up to N−1 peer round trips before the durable read. Since every node
+_Rejected because:_ a cold miss then waits for up to N−1 peer round trips before the durable read. Since every node
 caches what it reads and the home is where requesters go first, a fragment missing at both the home and the
 runner-up is less likely to be held by a third member than to be held by none.
 
@@ -457,7 +459,7 @@ runner-up is less likely to be held by a third member than to be held by none.
 Keep an explicit slot-to-node table in a shared store such as Consul's key-value store, edited by one leader that
 moves the fewest slots needed for an exact split.
 
-*Rejected because:* it introduces a leader, which Goal 7 rules out, along with locking and a rebalance procedure,
+_Rejected because:_ it introduces a leader, which Goal 7 rules out, along with locking and a rebalance procedure,
 for a gain of a few percent in balance; a stalled leader would leave a new node without slots. The data on each
 node is a cache, so a derived assignment's statistical balance costs little.
 
@@ -465,14 +467,14 @@ node is a cache, so a derived assignment's statistical balance costs little.
 
 Select the home as the last bytes modulo N.
 
-*Rejected because:* a change from N to N+1 members moves about N/(N+1) of fragments, 75% when going from three
+_Rejected because:_ a change from N to N+1 members moves about N/(N+1) of fragments, 75% when going from three
 nodes to four, which empties every node's useful cache at once.
 
 ### Ring with virtual nodes
 
 Place each member at several positions on a hash ring and give each position the range up to the next.
 
-*Rejected because:* the virtual-node positions form a derived table of the same kind as the slot assignment, with
+_Rejected because:_ the virtual-node positions form a derived table of the same kind as the slot assignment, with
 more entries per member for comparable balance, and the previous owner of a range is a neighbour on the ring rather
 than a single, directly computed runner-up.
 
@@ -480,14 +482,14 @@ than a single, directly computed runner-up.
 
 Score members against each fragment's hash directly.
 
-*Rejected because:* every read then scores every member instead of looking up one table entry, and each node can
+_Rejected because:_ every read then scores every member instead of looking up one table entry, and each node can
 report its share only by counting fragments rather than slots.
 
 ### Hedged second request
 
 After a delay, also ask a second member.
 
-*Rejected because:* it adds traffic on every slow read, and the timeout with durable-store fallback already bounds the
+_Rejected because:_ it adds traffic on every slow read, and the timeout with durable-store fallback already bounds the
 delay.
 
 ## Prior Art
@@ -521,24 +523,24 @@ delay.
 
 No topology reports a node's own id today, and the peer ids they report differ:
 
-| Topology | Peer id today | Stable | Node knows its own |
-|---|---|---|---|
-| Consul | The Consul node id (`lore-hashicorp/src/consul/service_peer_discovery.rs`) | Yes, per host; the Consul agent keeps it in its data directory | No |
-| Fixed | A label built from locality, address and port (`lore-server/src/topology/fixed.rs`) | Yes, while the configuration is unchanged | No |
-| Rotating | A random value on every rotation (`lore-server/src/topology/rotating_id_fixed.rs`) | No, by design | No |
+| Topology | Peer id today                                                                       | Stable                                                         | Node knows its own |
+| -------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------ |
+| Consul   | The Consul node id (`lore-hashicorp/src/consul/service_peer_discovery.rs`)          | Yes, per host; the Consul agent keeps it in its data directory | No                 |
+| Fixed    | A label built from locality, address and port (`lore-server/src/topology/fixed.rs`) | Yes, while the configuration is unchanged                      | No                 |
+| Rotating | A random value on every rotation (`lore-server/src/topology/rotating_id_fixed.rs`)  | No, by design                                                  | No                 |
 
 Three candidate sources, measured against the properties in Members and member ids:
 
-| Property | Advertised address and port | Consul node id | Configured id |
-|---|---|---|---|
-| Unique among live members | Yes; the port separates processes on one host | No for two processes on one host | Only if operators assign it correctly |
-| The same bytes everywhere | Yes, if every node uses the service address its peers see | Yes | Yes, if advertised to peers |
-| Known locally at startup | Yes; deployments that set `ignore_address` already supply it | Needs a query to the local Consul agent, or injection at deploy time | Yes |
-| Independent of connections | Yes | Yes | Yes |
-| Same across restart and redeploy on one host | Yes, while the address and port do not change | Yes | Yes |
-| New on replacement, move or scale-out | Yes | Yes | Only if operators issue a new one |
-| Works in every topology | Yes | Consul only | Yes, with new configuration in each |
-| Changes when it should not | An operator changes the address or port | The Consul agent's data directory is lost | Operator error |
+| Property                                     | Advertised address and port                                  | Consul node id                                                       | Configured id                         |
+| -------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------- | ------------------------------------- |
+| Unique among live members                    | Yes; the port separates processes on one host                | No for two processes on one host                                     | Only if operators assign it correctly |
+| The same bytes everywhere                    | Yes, if every node uses the service address its peers see    | Yes                                                                  | Yes, if advertised to peers           |
+| Known locally at startup                     | Yes; deployments that set `ignore_address` already supply it | Needs a query to the local Consul agent, or injection at deploy time | Yes                                   |
+| Independent of connections                   | Yes                                                          | Yes                                                                  | Yes                                   |
+| Same across restart and redeploy on one host | Yes, while the address and port do not change                | Yes                                                                  | Yes                                   |
+| New on replacement, move or scale-out        | Yes                                                          | Yes                                                                  | Only if operators issue a new one     |
+| Works in every topology                      | Yes                                                          | Consul only                                                          | Yes, with new configuration in each   |
+| Changes when it should not                   | An operator changes the address or port                      | The Consul agent's data directory is lost                            | Operator error                        |
 
 - **Advertised address and port** meets every property without new infrastructure. Every node must use the service
   address its peers see; the Consul source today filters on the node address but builds peers from the service

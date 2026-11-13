@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to avoid sudden layout shifts to improve user-experience
 
- Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: May 5, 2020, Last updated: Feb 7, 2025
 
@@ -18,7 +19,7 @@ Published: May 5, 2020, Last updated: Feb 7, 2025
 Layout shifts can be distracting to users. Imagine you've started reading an article when all of a sudden elements shift around the page, throwing you off and requiring you to find your place again. This is very common on the web, including when reading the news, or trying to click those 'Search' or 'Add to Cart' buttons. Such experiences are visually jarring and frustrating. They're often caused when visible elements are forced to move because another element was suddenly added to the page or resized.
 
 To provide a good user experience, **sites should strive to have a CLS of 0.1 or less for at least 75% of page visits.**
- Good CLS values are 0.1 or less. Poor values are greater than 0.25.
+Good CLS values are 0.1 or less. Poor values are greater than 0.25.
 
 Unlike the other Core Web Vitals, which are time-based values measured in seconds or milliseconds, the CLS score is a unitless value based on a calculation of how much content is shifting and by how far.
 
@@ -46,7 +47,7 @@ It is common to hear developers think the CLS measured by the [Chrome UX Report 
 
 CrUX is the Google dataset of the Web Vitals program, and for that, CLS is measured throughout the full life of the page and not just during the initial page load that lab tools typically measure.
 
-Layout shifts are very common during page load, as all the necessary resources are fetched to initially render the page, but layout shifts can also happen after the initial load. Many post-load shifts may occur [as the result of a user interaction](https://web.dev/articles/cls.md.txt#user-initiated_layout_shifts) and therefore will be excluded from the CLS score as they are *expected* shifts---as long as they occur within 500 milliseconds of that interaction.
+Layout shifts are very common during page load, as all the necessary resources are fetched to initially render the page, but layout shifts can also happen after the initial load. Many post-load shifts may occur [as the result of a user interaction](https://web.dev/articles/cls.md.txt#user-initiated_layout_shifts) and therefore will be excluded from the CLS score as they are _expected_ shifts---as long as they occur within 500 milliseconds of that interaction.
 
 However, other post-load shifts that are unexpected by the user may be included where there was no qualifying interaction---for example, if you scroll further along the page and lazy-loaded content is loaded and that causes shifts. Other common causes of post-load CLS are on interactions of transitions, for example on Single Page Apps, which take longer than the 500 millisecond grace period.
 
@@ -54,7 +55,7 @@ However, other post-load shifts that are unexpected by the user may be included 
 CLS from a URL in its "Discover what your real users are experiencing" section,
 and the lab-based load CLS in its "Diagnose performance issues" section.
 Differences between these values are likely the result of post-load CLS.
- In this example, CrUX measures a much larger CLS than Lighthouse.
+In this example, CrUX measures a much larger CLS than Lighthouse.
 
 > [!NOTE]
 > **Note:** PageSpeed Insights will show URL-level data where it exists, and attempt to fall back to origin-level data where this does not exist. Always check what data is showing to ensure you don't waste time trying to track down a CLS issue that actually exists on other pages on your origin! In the earlier example, you can see this is URL-level data as shown in the top right of the image.
@@ -62,13 +63,13 @@ Differences between these values are likely the result of post-load CLS.
 ### Identify load CLS issues
 
 When the CrUX and Lighthouse CLS scores of PageSpeed Insights are broadly aligned, this usually indicates there is a load CLS issue that was detected by Lighthouse. In this case Lighthouse will help with two audits to provide more information on images causing CLS due to missing width and height, and also list all the elements that shifted for the page load along with their CLS contribution. You can see these audits by filtering on the CLS audits:
- Lighthouse's detailed CLS diagnostics.
+Lighthouse's detailed CLS diagnostics.
 
 > [!NOTE]
-> **Note:** Lighthouse will identify the elements that were shifted, but often these are the ones *impacted* rather than the elements *causing* the CLS. For example, if a new element is inserted into the DOM, the elements that are beneath it will show in this audit, but the root cause is the addition of the new element above. However, the shifted element should be sufficient to help you identify and resolve the root cause.
+> **Note:** Lighthouse will identify the elements that were shifted, but often these are the ones _impacted_ rather than the elements _causing_ the CLS. For example, if a new element is inserted into the DOM, the elements that are beneath it will show in this audit, but the root cause is the addition of the new element above. However, the shifted element should be sufficient to help you identify and resolve the root cause.
 
 The [Performance panel](https://developer.chrome.com/docs/devtools/evaluate-performance) in DevTools provides a wealth of information on layout shifts:
- After recording a new trace in the Performance panel, the **Layout Shifts** track of the results is populated with purple bars displaying a `Layout Shift` clusters. Clicking the diamonds shows an animation of the shift and details in the **Summary** panel.
+After recording a new trace in the Performance panel, the **Layout Shifts** track of the results is populated with purple bars displaying a `Layout Shift` clusters. Clicking the diamonds shows an animation of the shift and details in the **Summary** panel.
 
 Layout shifts are highlighted in the **Layout shifts** track. The purple line groups shifts into shift clusters with the diamonds showing individual shifts in that cluster. The size of the diamond is proportional to the size of the shift allowing you to hone in on the largest shifts.
 
@@ -83,7 +84,7 @@ This also links to the **Layout shift culprits** insight displayed in the **Insi
 Disagreement between the CrUX and Lighthouse CLS scores often indicates post-load CLS. These shifts can be tricky to track down without field data. For information on collecting field data, see [Measure CLS elements in the field](https://web.dev/articles/optimize-cls.md.txt#measure-cls-in-field).
 
 The live metrics view of the Performance Panel lets you interact with the page and monitor the CLS score to identify interactions causing large layout shfts.
- The live metrics view of the Performance Panel allows monitoring of a web page's CLS score while interacting with the page.
+The live metrics view of the Performance Panel allows monitoring of a web page's CLS score while interacting with the page.
 
 As an alternative to using the DevTools, you can browse your web page while [recording layout shifts using a Performance Observer](https://web.dev/articles/cls.md.txt#measure_layout_shifts_in_javascript) pasted into the console.
 
@@ -109,7 +110,7 @@ Once you have identified the causes of CLS, you can start working on fixing the 
 ### Images without dimensions
 
 Always include `width` and `height` size attributes on your images and video elements. Alternatively, reserve the required space with [CSS `aspect-ratio`](https://web.dev/articles/aspect-ratio.md.txt) or similar. This approach ensures that the browser can allocate the correct amount of space in the document while the image is loading.
-Images without width and height specified. Images with width and height specified.  Lighthouse 6.0 impact of setting image dimensions on CLS.
+Images without width and height specified. Images with width and height specified. Lighthouse 6.0 impact of setting image dimensions on CLS.
 
 #### History of `width` and `height` attributes on images
 
@@ -150,7 +151,6 @@ style sheet.
 
 ```html
 <!-- set a 640:360 i.e a 16:9 aspect ratio -->
-
 ```
 
 All browsers will then add a [default aspect ratio](https://html.spec.whatwg.org/multipage/rendering.html#attributes-for-embedded-content-and-images) based on the element's existing `width` and `height` attributes.
@@ -200,7 +200,6 @@ viewports, and display the full image on desktop:
 <picture>
   <source media="(max-width: 799px)" srcset="puppy-480w-cropped.jpg" />
   <source media="(min-width: 800px)" srcset="puppy-800w.jpg" />
-  
 </picture>
 ```
 
@@ -209,9 +208,18 @@ Chrome, Firefox, and Safari now support setting `width` and `height` on the
 
 ```html
 <picture>
-  <source media="(max-width: 799px)" srcset="puppy-480w-cropped.jpg" width="480" height="400" />
-  <source media="(min-width: 800px)" srcset="puppy-800w.jpg" width="800" height="400" />
-  
+  <source
+    media="(max-width: 799px)"
+    srcset="puppy-480w-cropped.jpg"
+    width="480"
+    height="400"
+  />
+  <source
+    media="(min-width: 800px)"
+    srcset="puppy-800w.jpg"
+    width="800"
+    height="400"
+  />
 </picture>
 ```
 
@@ -230,7 +238,7 @@ The techniques for dealing with these are all similar. The major differences are
 When placing late-loading content in the content flow, layout shifts can be avoided by reserving the space for them in the initial layout.
 
 One approach is to add a `min-height` CSS rule to reserve space or---for responsive content such as ads, for example---use the [`aspect-ratio`](https://web.dev/articles/aspect-ratio.md.txt) CSS property in a similar manner to the way browsers automatically use this for images with dimensions provided.
- Reserving space for ads can prevent layout shifts
+Reserving space for ads can prevent layout shifts
 
 You may need to account for subtle differences in ad or placeholder sizes across form factors using media queries.
 
@@ -257,7 +265,7 @@ In some cases adding content dynamically is an important part of user experience
 - Have the user initiate the load of new content, so they are not surprised by the shift (for example with a "Load more" or "Refresh" button). It's recommended to prefetch the content before the user interaction so that it shows up immediately. As a reminder, [layout shifts that occur within 500 milliseconds](https://web.dev/articles/cls.md.txt#user-initiated_layout_shifts) of user input are not counted towards CLS.
 - Seamlessly load the content offscreen and overlay a notice to the user that it's available (for example, with a "Scroll to top" button).
 
- Examples of dynamic content loading without causing unexpected layout shifts. Left: Live feed content loading on Twitter. Right: "Load More" example on Chloé website. Check out how the YNAP team [optimized for CLS when loading more content](https://medium.com/ynap-tech/how-to-optimize-for-cls-when-having-to-load-more-content-3f60f0cf561c).
+Examples of dynamic content loading without causing unexpected layout shifts. Left: Live feed content loading on Twitter. Right: "Load More" example on Chloé website. Check out how the YNAP team [optimized for CLS when loading more content](https://medium.com/ynap-tech/how-to-optimize-for-cls-when-having-to-load-more-content-3f60f0cf561c).
 
 > [!NOTE]
 > **Note:** If content is likely to take more than 500 milliseconds---for example it requires a network fetch---then reserving the expected space within that 500 millisecond timeframe and taking the impact of any future shift up front ensures any shifts won't be included in the CLS score.

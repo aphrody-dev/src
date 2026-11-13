@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: August 18, 2018, Last updated: October 15, 2025
@@ -42,7 +43,7 @@ However, Lighthouse is still useful for the other categories (Accessibility, Bes
 Lighthouse offers some extra features or considerations compared to other Lighthouse tooling, whether that be [PageSpeed Insights](https://pagespeed.web.dev), [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) in automated testing, or other third-party tools.
 
 Some of these are controlled with the options shown on screen before initiating the Lighthouse audit, with some of the more advanced settings hidden by default until the **Settings** button is clicked:
- Lighthouse panel options
+Lighthouse panel options
 
 These aren't the full suite of [configuration options](https://github.com/GoogleChrome/lighthouse/blob/main/docs/configuration.md) available to Lighthouse, but do represent the more common options used.
 
@@ -83,7 +84,7 @@ By contrast, PageSpeed Insights or CI tools run on separate servers may produce 
 ### Post-run options
 
 Other features are available after the run has completed in the "three dots" menu option that replaces **Settings** button:
- Lighthouse three-dots menu options
+Lighthouse three-dots menu options
 
 You can choose to **Print** , **Copy** , or **Save** the audit details or **Open** this outside of DevTools in a separate viewer.
 

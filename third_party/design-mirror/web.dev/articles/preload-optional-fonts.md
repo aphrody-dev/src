@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Starting in Chrome 83, link rel="preload" and font-display: optional can be combined to remove layout jank completely
 
- Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
+Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
 
 > [!NOTE]
 > **Note:** In Chrome 83, new font loading improvements have been made to completely eliminate layout shifting and flash of invisible text (FOIT) when optional fonts are preloaded.
@@ -56,11 +57,11 @@ Previously, fonts designated with `font-display: optional` had a 100ms block per
 period. This means that "invisible" text is displayed very briefly before switching to a fallback
 font. If the font is not downloaded within 100ms, then the fallback font is used and no swapping
 occurs.
- Previous `font-display: optional` behavior in Chrome when font is downloaded **after** the 100ms block period
+Previous `font-display: optional` behavior in Chrome when font is downloaded **after** the 100ms block period
 
 However, in the case that the font is downloaded before the 100ms block period completes, the custom
 font is rendered and used on the page.
- Previous `font-display: optional` behavior in Chrome when font is downloaded **before** the 100ms block period
+Previous `font-display: optional` behavior in Chrome when font is downloaded **before** the 100ms block period
 
 Chrome re-renders the page **twice** in both instances, regardless of whether the fallback font
 is used or if the custom font finishes loading in time. This causes a slight flicker of invisible
@@ -73,7 +74,7 @@ that are preloaded with [`<link rel="preload'>`](https://web.dev/articles/codela
 Instead, rendering is blocked until the custom font has finished loading or a certain period of time
 has passed. This timeout period is currently set at 100ms, but may possibly change in the near
 future to optimize performance.
- New `font-display: optional` behavior in Chrome when fonts are preloaded and font is downloaded **after** the 100ms block period (no flash of invisible text)  New `font-display: optional` behavior in Chrome when fonts are preloaded and font is downloaded **before** the 100ms block period (no flash of invisible text)
+New `font-display: optional` behavior in Chrome when fonts are preloaded and font is downloaded **after** the 100ms block period (no flash of invisible text) New `font-display: optional` behavior in Chrome when fonts are preloaded and font is downloaded **before** the 100ms block period (no flash of invisible text)
 
 Preloading optional fonts in Chrome removes the possibility of layout jank and flash of unstyled
 text. This matches the required behavior as specified in [CSS Fonts Module Level

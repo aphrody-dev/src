@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In this module you learn how to style form controls, and how to match your other site styles.
 
 > [!CAUTION]
@@ -26,14 +27,16 @@ First, let's change the arrows.
 
 ```css
 select {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none;
-    background-color: #fff;
-    background-image: url(arrow.png);
-    background-repeat: no-repeat;
-    background-position: right .7em top 50%, 0 0;
-    background-size: .65em auto;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  background-image: url(arrow.png);
+  background-repeat: no-repeat;
+  background-position:
+    right 0.7em top 50%,
+    0 0;
+  background-size: 0.65em auto;
 }
 ```
 
@@ -80,8 +83,8 @@ First, hide the default checkbox and radio button visually.
 ```css
 input[type="radio"],
 input[type="checkbox"] {
-   position: absolute;
-   opacity: 0;
+  position: absolute;
+  opacity: 0;
 }
 ```
 

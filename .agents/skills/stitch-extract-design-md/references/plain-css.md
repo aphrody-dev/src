@@ -63,26 +63,26 @@ This is the cleanest source of truth. Extract directly and name each token.
 ```scss
 // _variables.scss
 $colors: (
-  'primary': #294056,
-  'background': #FCFAFA,
-  'surface': #F5F5F5,
-  'text': #2C2C2C,
-  'text-muted': #6B6B6B,
+  "primary": #294056,
+  "background": #fcfafa,
+  "surface": #f5f5f5,
+  "text": #2c2c2c,
+  "text-muted": #6b6b6b,
 );
 
-$font-stack-heading: 'Manrope', sans-serif;
-$font-stack-body: 'Inter', sans-serif;
+$font-stack-heading: "Manrope", sans-serif;
+$font-stack-body: "Inter", sans-serif;
 
 $breakpoints: (
-  'mobile': 768px,
-  'tablet': 1024px,
-  'desktop': 1280px,
+  "mobile": 768px,
+  "tablet": 1024px,
+  "desktop": 1280px,
 );
 
 $spacers: (
-  'section': 5rem,
-  'component': 2rem,
-  'element': 1rem,
+  "section": 5rem,
+  "component": 2rem,
+  "element": 1rem,
 );
 ```
 
@@ -92,9 +92,9 @@ SASS maps are essentially design token dictionaries. Extract all values.
 
 ```less
 @primary-color: #294056;
-@bg-color: #FCFAFA;
-@text-color: #2C2C2C;
-@font-heading: 'Manrope', sans-serif;
+@bg-color: #fcfafa;
+@text-color: #2c2c2c;
+@font-heading: "Manrope", sans-serif;
 @border-radius-base: 8px;
 ```
 

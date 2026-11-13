@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The CrUX API gives low-latency access to aggregated real-user experience data at page and origin granularity.
 
 [Try it!](https://developer.chrome.com/docs/crux/api.md.txt#try-it)
@@ -159,57 +160,57 @@ In this case, 3.77% of page loads were measured on a desktop, 2.88% on a tablet,
 
 #### Metric value types
 
-| CrUX API Metric Name | Data Type | Metric Units | Statistical Aggregations | Documentation |
-|---|---|---|---|---|
-| `cumulative_layout_shift` | 2 decimal place double encoded as string | unitless | histogram with three bins, percentiles with p75 | [CLS](https://web.dev/articles/cls) |
-| `interaction_to_next_paint` | int | milliseconds | histogram with three bins, percentiles with p75 | [INP](https://web.dev/articles/inp) |
-| `largest_contentful_paint` | int | milliseconds | histogram with three bins, percentiles with p75 | [LCP](https://web.dev/articles/lcp) |
-| `experimental_cumulative_layout_shift_with_softnavs` | 2 decimal place double encoded as string | unitless | histogram with three bins, percentiles with p75 | [Blog](https://web.dev/blog/crux-experimental-soft-navs/) |
-| `experimental_interaction_to_next_paint_with_softnavs` | int | milliseconds | histogram with three bins, percentiles with p75 | [Blog](https://web.dev/blog/crux-experimental-soft-navs/) |
-| `experimental_largest_contentful_paint_with_softnavs` | int | milliseconds | histogram with three bins, percentiles with p75 | [Blog](https://web.dev/blog/crux-experimental-soft-navs/) |
-| `first_contentful_paint` | int | milliseconds | histogram with three bins, percentiles with p75 | [FCP](https://web.dev/articles/fcp) |
-| `experimental_first_contentful_paint_with_softnavs` | int | milliseconds | histogram with three bins, percentiles with p75 | [Blog](https://web.dev/blog/crux-experimental-soft-navs/) |
-| `experimental_time_to_first_byte` | int | milliseconds | histogram with three bins, percentiles with p75 | [TTFB](https://web.dev/articles/ttfb) |
-| `form_factors` | 4-decimal place double | percent | mapping from form factor to fraction | [Form Factors](https://developer.chrome.com/docs/crux/api.md.txt#form-factors-metric) |
-| `navigation_types` | 4-decimal place double | percent | mapping from navigation type to fraction | [Navigation Types](https://developer.chrome.com/blog/crux-navigation-types.md.txt) |
-| `experimental_navigation_types_with_softnavs` | 4-decimal place double | percent | mapping from navigation type to fraction | [Blog](https://web.dev/blog/crux-experimental-soft-navs/) |
-| `round_trip_time` | int | milliseconds | histogram with three bins, percentiles with p75 | [RTT metric](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#round-trip-time-metric) |
-| `largest_contentful_paint_resource_type` | 4-decimal place double | percent | mapping from navigation type to fraction | [LCP resource types](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-resource-type) |
-| `largest_contentful_paint_image_time_to_first_byte` | int | milliseconds | percentiles with p75 | [LCP subparts](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-image-subparts) |
-| `largest_contentful_paint_image_resource_load_delay` | int | milliseconds | percentiles with p75 | [LCP subparts](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-image-subparts) |
-| `largest_contentful_paint_image_resource_load_duration` | int | milliseconds | percentiles with p75 | [LCP subparts](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-image-subparts) |
-| `largest_contentful_paint_image_element_render_delay` | int | milliseconds | percentiles with p75 | [LCP subparts](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-image-subparts) |
-| `experimental_ad_count` | 2-decimal place double | unitless | p75 only | [Ad Count](https://developer.chrome.com/docs/ads/metrics/count.md.txt) |
-| `experimental_ad_density` | 2-decimal place double | unitless | p75 only | [Ad Density](https://developer.chrome.com/docs/ads/metrics/density.md.txt) |
-| `experimental_ad_cpu` | int | milliseconds | p75 only | [Ad Weight: CPU](https://developer.chrome.com/docs/ads/metrics/weight-cpu.md.txt) |
-| `experimental_ad_kilobytes` | int | KB | p75 only | [Ad Weight: Network](https://developer.chrome.com/docs/ads/metrics/weight-network.md.txt) |
+| CrUX API Metric Name                                    | Data Type                                | Metric Units | Statistical Aggregations                        | Documentation                                                                                             |
+| ------------------------------------------------------- | ---------------------------------------- | ------------ | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `cumulative_layout_shift`                               | 2 decimal place double encoded as string | unitless     | histogram with three bins, percentiles with p75 | [CLS](https://web.dev/articles/cls)                                                                       |
+| `interaction_to_next_paint`                             | int                                      | milliseconds | histogram with three bins, percentiles with p75 | [INP](https://web.dev/articles/inp)                                                                       |
+| `largest_contentful_paint`                              | int                                      | milliseconds | histogram with three bins, percentiles with p75 | [LCP](https://web.dev/articles/lcp)                                                                       |
+| `experimental_cumulative_layout_shift_with_softnavs`    | 2 decimal place double encoded as string | unitless     | histogram with three bins, percentiles with p75 | [Blog](https://web.dev/blog/crux-experimental-soft-navs/)                                                 |
+| `experimental_interaction_to_next_paint_with_softnavs`  | int                                      | milliseconds | histogram with three bins, percentiles with p75 | [Blog](https://web.dev/blog/crux-experimental-soft-navs/)                                                 |
+| `experimental_largest_contentful_paint_with_softnavs`   | int                                      | milliseconds | histogram with three bins, percentiles with p75 | [Blog](https://web.dev/blog/crux-experimental-soft-navs/)                                                 |
+| `first_contentful_paint`                                | int                                      | milliseconds | histogram with three bins, percentiles with p75 | [FCP](https://web.dev/articles/fcp)                                                                       |
+| `experimental_first_contentful_paint_with_softnavs`     | int                                      | milliseconds | histogram with three bins, percentiles with p75 | [Blog](https://web.dev/blog/crux-experimental-soft-navs/)                                                 |
+| `experimental_time_to_first_byte`                       | int                                      | milliseconds | histogram with three bins, percentiles with p75 | [TTFB](https://web.dev/articles/ttfb)                                                                     |
+| `form_factors`                                          | 4-decimal place double                   | percent      | mapping from form factor to fraction            | [Form Factors](https://developer.chrome.com/docs/crux/api.md.txt#form-factors-metric)                     |
+| `navigation_types`                                      | 4-decimal place double                   | percent      | mapping from navigation type to fraction        | [Navigation Types](https://developer.chrome.com/blog/crux-navigation-types.md.txt)                        |
+| `experimental_navigation_types_with_softnavs`           | 4-decimal place double                   | percent      | mapping from navigation type to fraction        | [Blog](https://web.dev/blog/crux-experimental-soft-navs/)                                                 |
+| `round_trip_time`                                       | int                                      | milliseconds | histogram with three bins, percentiles with p75 | [RTT metric](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#round-trip-time-metric)    |
+| `largest_contentful_paint_resource_type`                | 4-decimal place double                   | percent      | mapping from navigation type to fraction        | [LCP resource types](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-resource-type) |
+| `largest_contentful_paint_image_time_to_first_byte`     | int                                      | milliseconds | percentiles with p75                            | [LCP subparts](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-image-subparts)      |
+| `largest_contentful_paint_image_resource_load_delay`    | int                                      | milliseconds | percentiles with p75                            | [LCP subparts](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-image-subparts)      |
+| `largest_contentful_paint_image_resource_load_duration` | int                                      | milliseconds | percentiles with p75                            | [LCP subparts](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-image-subparts)      |
+| `largest_contentful_paint_image_element_render_delay`   | int                                      | milliseconds | percentiles with p75                            | [LCP subparts](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt#lcp-image-subparts)      |
+| `experimental_ad_count`                                 | 2-decimal place double                   | unitless     | p75 only                                        | [Ad Count](https://developer.chrome.com/docs/ads/metrics/count.md.txt)                                    |
+| `experimental_ad_density`                               | 2-decimal place double                   | unitless     | p75 only                                        | [Ad Density](https://developer.chrome.com/docs/ads/metrics/density.md.txt)                                |
+| `experimental_ad_cpu`                                   | int                                      | milliseconds | p75 only                                        | [Ad Weight: CPU](https://developer.chrome.com/docs/ads/metrics/weight-cpu.md.txt)                         |
+| `experimental_ad_kilobytes`                             | int                                      | KB           | p75 only                                        | [Ad Weight: Network](https://developer.chrome.com/docs/ads/metrics/weight-network.md.txt)                 |
 
 #### BigQuery metric name mapping
 
-| CrUX API Metric Name | BigQuery Metric Name |
-|---|---|
-| `cumulative_layout_shift` | `layout_instability.cumulative_layout_shift` |
-| `first_contentful_paint` | `first_contentful_paint` |
-| `interaction_to_next_paint` | `interaction_to_next_paint` |
-| `largest_contentful_paint` | `largest_contentful_paint` |
-| `experimental_time_to_first_byte` | `experimental.time_to_first_byte` |
-| `experimental_cumulative_layout_shift_with_softnavs` | `experimental.cumulative_layout_shift_with_softnavs` |
-| `experimental_first_contentful_paint_with_softnavs` | `n/a` |
-| `experimental_interaction_to_next_paint_with_softnavs` | `experimental.interaction_to_next_paint_with_softnavs` |
-| `experimental_largest_contentful_paint_with_softnavs` | `experimental.largest_contentful_paint_with_softnavs` |
-| `navigation_types` | `navigation_types` |
-| `experimental_navigation_types_with_softnavs` | `n/a` |
-| `form_factors` | n/a |
-| `round_trip_time` | `round_trip_time` |
-| `largest_contentful_paint_resource_type` | n/a |
-| `largest_contentful_paint_image_time_to_first_byte` | n/a |
-| `largest_contentful_paint_image_resource_load_delay` | n/a |
-| `largest_contentful_paint_image_resource_load_duration` | n/a |
-| `largest_contentful_paint_image_element_render_delay` | n/a |
-| `experimental_ad_count` | `n/a` |
-| `experimental_ad_density` | `n/a` |
-| `experimental_ad_cpu` | `n/a` |
-| `experimental_ad_kilobytes` | `n/a` |
+| CrUX API Metric Name                                    | BigQuery Metric Name                                   |
+| ------------------------------------------------------- | ------------------------------------------------------ |
+| `cumulative_layout_shift`                               | `layout_instability.cumulative_layout_shift`           |
+| `first_contentful_paint`                                | `first_contentful_paint`                               |
+| `interaction_to_next_paint`                             | `interaction_to_next_paint`                            |
+| `largest_contentful_paint`                              | `largest_contentful_paint`                             |
+| `experimental_time_to_first_byte`                       | `experimental.time_to_first_byte`                      |
+| `experimental_cumulative_layout_shift_with_softnavs`    | `experimental.cumulative_layout_shift_with_softnavs`   |
+| `experimental_first_contentful_paint_with_softnavs`     | `n/a`                                                  |
+| `experimental_interaction_to_next_paint_with_softnavs`  | `experimental.interaction_to_next_paint_with_softnavs` |
+| `experimental_largest_contentful_paint_with_softnavs`   | `experimental.largest_contentful_paint_with_softnavs`  |
+| `navigation_types`                                      | `navigation_types`                                     |
+| `experimental_navigation_types_with_softnavs`           | `n/a`                                                  |
+| `form_factors`                                          | n/a                                                    |
+| `round_trip_time`                                       | `round_trip_time`                                      |
+| `largest_contentful_paint_resource_type`                | n/a                                                    |
+| `largest_contentful_paint_image_time_to_first_byte`     | n/a                                                    |
+| `largest_contentful_paint_image_resource_load_delay`    | n/a                                                    |
+| `largest_contentful_paint_image_resource_load_duration` | n/a                                                    |
+| `largest_contentful_paint_image_element_render_delay`   | n/a                                                    |
+| `experimental_ad_count`                                 | `n/a`                                                  |
+| `experimental_ad_density`                               | `n/a`                                                  |
+| `experimental_ad_cpu`                                   | `n/a`                                                  |
+| `experimental_ad_kilobytes`                             | `n/a`                                                  |
 
 > [!NOTE]
 > **Note:** In [CrUX BigQuery](https://developer.chrome.com/docs/crux/bigquery.md.txt), the histogram densities add up to 100% per origin across form factors, so the `form_factors` metric that we support in the API is instead expressed as the histogram densities for `first_contentful_paint`.
@@ -239,7 +240,7 @@ This allows better understanding of the data and whether it's been updated yet f
 > **Note:** The CrUX API is approximately two days behind today's date since it waits for completed data for the day, and there is some processing time involved before it is available in the API. The timezone used is Pacific Standard Time (PST) with no changes for daylight savings.
 
 The collection period is also available in PageSpeed Insights:
- Collection period dates in PageSpeed Insights.
+Collection period dates in PageSpeed Insights.
 
 Additionally, the `collectionPeriod` will always show 28-days, even if the data is not for the full 28 days (for example if a page was launched less than 28 days ago). The `collectionPeriod` is the period of time that the CrUX data was aggregated over, not necessarily the period of time that the data represents.
 
@@ -251,10 +252,7 @@ Queries are submitted as JSON objects using a POST request to `https://chromeuxr
 {
   "origin": "https://example.com",
   "formFactor": "PHONE",
-  "metrics": [
-    "largest_contentful_paint",
-    "experimental_time_to_first_byte"
-  ]
+  "metrics": ["largest_contentful_paint", "experimental_time_to_first_byte"]
 }
 ```
 
@@ -276,10 +274,7 @@ Page-level data is available through the API by passing a `url` property in the 
 {
   "url": "https://example.com/page",
   "formFactor": "PHONE",
-  "metrics": [
-    "largest_contentful_paint",
-    "experimental_time_to_first_byte"
-  ]
+  "metrics": ["largest_contentful_paint", "experimental_time_to_first_byte"]
 }
 ```
 
@@ -359,13 +354,13 @@ The request body should contain data with the following structure:
 }
 ```
 
-| Fields ||
-|---|---|
-| `formFactor` | **`enum` ([`FormFactor`](https://developer.chrome.com/docs/crux/api.md.txt#form_factor))** The form factor is a query dimension that specifies the device class that the record's data should belong to. This field uses the values `DESKTOP`, `PHONE`, or `TABLET`. Note: If no form factor is specified, then a special record with aggregated data over all form factors will be returned. |
-| `metrics[]` | **`string`** The metrics that should be included in the response. If none are specified then any metrics found will be returned. Allowed values: `["cumulative_layout_shift", "first_contentful_paint", "interaction_to_next_paint", "largest_contentful_paint", "experimental_cumulative_layout_shift_with_softnavs", "experimental_first_contentful_paint_with_softnavs", "experimental_interaction_to_next_paint_with_softnavs", "experimental_largest_contentful_paint_with_softnavs", "experimental_time_to_first_byte", "experimental_navigation_types_with_softnavs", "largest_contentful_paint_resource_type", "largest_contentful_paint_image_time_to_first_byte", "largest_contentful_paint_image_resource_load_delay", "largest_contentful_paint_image_resource_load_duration", "largest_contentful_paint_image_element_render_delay", "navigation_types", "round_trip_time", "experimental_ad_count", "experimental_ad_density", "experimental_ad_cpu", "experimental_ad_kilobytes"]` |
-| Union field `url_pattern`. The `url_pattern` is the main identifier for a record lookup. It can be only one of the following: ||
-| `origin` | **`string`** The `url_pattern` "origin" refers to a URL pattern that is the origin of a website. Examples: `"https://example.com"`, `"https://cloud.google.com"` |
-| `url` | **`string`** The `url_pattern` `url` refers to a URL pattern that is any arbitrary URL. Examples: `"https://example.com/`, `https://cloud.google.com/why-google-cloud/"` |
+| Fields                                                                                                                        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `formFactor`                                                                                                                  | **`enum` ([`FormFactor`](https://developer.chrome.com/docs/crux/api.md.txt#form_factor))** The form factor is a query dimension that specifies the device class that the record's data should belong to. This field uses the values `DESKTOP`, `PHONE`, or `TABLET`. Note: If no form factor is specified, then a special record with aggregated data over all form factors will be returned.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `metrics[]`                                                                                                                   | **`string`** The metrics that should be included in the response. If none are specified then any metrics found will be returned. Allowed values: `["cumulative_layout_shift", "first_contentful_paint", "interaction_to_next_paint", "largest_contentful_paint", "experimental_cumulative_layout_shift_with_softnavs", "experimental_first_contentful_paint_with_softnavs", "experimental_interaction_to_next_paint_with_softnavs", "experimental_largest_contentful_paint_with_softnavs", "experimental_time_to_first_byte", "experimental_navigation_types_with_softnavs", "largest_contentful_paint_resource_type", "largest_contentful_paint_image_time_to_first_byte", "largest_contentful_paint_image_resource_load_delay", "largest_contentful_paint_image_resource_load_duration", "largest_contentful_paint_image_element_render_delay", "navigation_types", "round_trip_time", "experimental_ad_count", "experimental_ad_density", "experimental_ad_cpu", "experimental_ad_kilobytes"]` |
+| Union field `url_pattern`. The `url_pattern` is the main identifier for a record lookup. It can be only one of the following: |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `origin`                                                                                                                      | **`string`** The `url_pattern` "origin" refers to a URL pattern that is the origin of a website. Examples: `"https://example.com"`, `"https://cloud.google.com"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `url`                                                                                                                         | **`string`** The `url_pattern` `url` refers to a URL pattern that is any arbitrary URL. Examples: `"https://example.com/`, `https://cloud.google.com/why-google-cloud/"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 
 For example, to request the desktop largest contentful paint values for the Chrome developer documentation homepage:
 
@@ -373,9 +368,7 @@ For example, to request the desktop largest contentful paint values for the Chro
 {
   "url": "https://developer.chrome.com/docs/",
   "formFactor": "DESKTOP",
-  "metrics": [
-    "largest_contentful_paint"
-  ]
+  "metrics": ["largest_contentful_paint"]
 }
 ```
 
@@ -464,12 +457,12 @@ For example, the response to the request body in the previous request could be:
 }
 ```
 
-| Fields ||
-|---|---|
-| `formFactor` | **`enum (FormFactor)`** The form factor is the device class that all users used to access the site for this record. If the form factor is unspecified, then aggregated data over all form factors will be returned. |
-| Union field `url_pattern`. The URL pattern is the URL that the record applies to. `url_pattern` can be only one of the following: ||
-| `origin` | **`string`** `origin` specifies the origin that this record is for. Note: When specifying an `origin`, data for loads under this origin over all pages are aggregated into origin level user experience data. |
-| `url` | **`string`** `url` specifies a specific URL that this record is for. Note: When specifying a `url` only data for that specific URL will be aggregated. |
+| Fields                                                                                                                            |                                                                                                                                                                                                                     |
+| --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `formFactor`                                                                                                                      | **`enum (FormFactor)`** The form factor is the device class that all users used to access the site for this record. If the form factor is unspecified, then aggregated data over all form factors will be returned. |
+| Union field `url_pattern`. The URL pattern is the URL that the record applies to. `url_pattern` can be only one of the following: |                                                                                                                                                                                                                     |
+| `origin`                                                                                                                          | **`string`** `origin` specifies the origin that this record is for. Note: When specifying an `origin`, data for loads under this origin over all pages are aggregated into origin level user experience data.       |
+| `url`                                                                                                                             | **`string`** `url` specifies a specific URL that this record is for. Note: When specifying a `url` only data for that specific URL will be aggregated.                                                              |
 
 #### Metrics
 
@@ -500,11 +493,11 @@ or
 }
 ```
 
-| Fields ||
-|---|---|
-| `histogram[]` | **`object (Bin)`** The histogram of user experiences for a metric. The histogram will have at least one bin and the densities of all bins will add up to \~1. |
+| Fields        |                                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `histogram[]` | **`object (Bin)`** The histogram of user experiences for a metric. The histogram will have at least one bin and the densities of all bins will add up to \~1.            |
 | `percentiles` | **`object (Percentiles)`** Common useful percentiles of the Metric. The value type for the percentiles will be the same as the value types given for the Histogram bins. |
-| `fractions` | **`object (Fractions)`** This object contains labeled fractions, which add up to \~1. Fractions are rounded to 4 decimal places. |
+| `fractions`   | **`object (Fractions)`** This object contains labeled fractions, which add up to \~1. Fractions are rounded to 4 decimal places.                                         |
 
 #### Bin
 
@@ -520,10 +513,10 @@ A bin's start and end values are given in the value type of the metric it repres
 }
 ```
 
-| Fields ||
-|---|---|
-| `start` | **`(integer | string)`** Start is the beginning of the data bin. |
-| `end` | **`(integer | string)`** End is the end of the data bin. If end is not populated, then the bin has no end and is valid from start to +inf. |
+| Fields    |                                                                                                                                         |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `start`   | **`(integer                                                                                                                             | string)`** Start is the beginning of the data bin.                                                                           |
+| `end`     | **`(integer                                                                                                                             | string)`** End is the end of the data bin. If end is not populated, then the bin has no end and is valid from start to +inf. |
 | `density` | **`number`** The proportion of users that experienced this bin's value for the given metric. Densities are rounded to 4 decimal places. |
 
 #### Percentiles
@@ -536,9 +529,9 @@ A bin's start and end values are given in the value type of the metric it repres
 }
 ```
 
-| Fields ||
-|---|---|
-| `p75` | **`(integer | string)`** 75% of page loads experienced the given metric at or less than this value. |
+| Fields |             |
+| ------ | ----------- |
+| `p75`  | **`(integer | string)`** 75% of page loads experienced the given metric at or less than this value. |
 
 #### Fractions
 
@@ -570,9 +563,9 @@ Object representing the normalization actions taken to normalize a URL to achiev
 }
 ```
 
-| Fields ||
-|---|---|
-| `originalUrl` | **`string`** The original requested URL prior to any normalization actions. |
+| Fields          |                                                                                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `originalUrl`   | **`string`** The original requested URL prior to any normalization actions.                                                   |
 | `normalizedUrl` | **`string`** The URL after any normalization actions. This is a valid user experience URL that could reasonably be looked up. |
 
 ## Rate limits

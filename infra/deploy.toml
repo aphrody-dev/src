@@ -141,7 +141,14 @@ verify_gate = "wck check C:/src/apps/yolo"
 [test_targets.gemini]
 url = "https://gemini.google.com/app"
 tag = "e2e:auth"
-expect = ["avatar", "prompt", "model-response", "h2|h3", "TLS 1.3", "alt-svc h3"]
+expect = [
+  "avatar",
+  "prompt",
+  "model-response",
+  "h2|h3",
+  "TLS 1.3",
+  "alt-svc h3",
+]
 
 [test_targets.google]
 url = "https://www.google.com/"
@@ -218,10 +225,20 @@ vps_exec = "bun run server.ts"
 # GitHub Actions secrets pushed by `ay auth gh-secrets` (`gh secret set --body -`, value on stdin).
 # AI provider keys (ANTHROPIC_API_KEY...) are synced by the AI provider tooling, not listed here.
 [auth.github.repo_secrets]
-"aphrody-labs/src" = ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID", "HOSTINGER_API_TOKEN", "VERCEL_TOKEN"]
+"aphrody-labs/src" = [
+  "CLOUDFLARE_API_TOKEN",
+  "CLOUDFLARE_ACCOUNT_ID",
+  "HOSTINGER_API_TOKEN",
+  "VERCEL_TOKEN",
+]
 
 [auth.github.org_secrets]
-aphrody-labs = ["HOSTINGER_API_TOKEN", "CARGO_REGISTRY_TOKEN", "NPM_TOKEN", "APHRODY_APP_KEY"]
+aphrody-labs = [
+  "HOSTINGER_API_TOKEN",
+  "CARGO_REGISTRY_TOKEN",
+  "NPM_TOKEN",
+  "APHRODY_APP_KEY",
+]
 
 # Per node: cloudflared units (unit = tunnel name), WireGuard interfaces (handshake < 180 s),
 # units that renew a credential (must not be failed). repair = false: checked, never changed.
@@ -294,9 +311,9 @@ llama = { upstream = "ghcr.io/ggml-org/llama.cpp:server-b12316", services = ["ll
 # cache shard or remote member over backend mTLS (TCP 7444, private CA, verify required); no ssh, no WireGuard.
 # -----------------------------------------------------------------------------
 [cluster]
-domain = "cluster.internal"     # SNI <service>.<member>.cluster.internal
-mesh_port = 7444                # TCP, public IPv4, mTLS only (fleet IPs already allowed by fr2 nft table)
-stats_port = 19900              # 127.0.0.1: /stats, /metrics (Prometheus)
+domain = "cluster.internal" # SNI <service>.<member>.cluster.internal
+mesh_port = 7444 # TCP, public IPv4, mTLS only (fleet IPs already allowed by fr2 nft table)
+stats_port = 19900 # 127.0.0.1: /stats, /metrics (Prometheus)
 check_inter_ms = 1000
 check_fall = 2
 check_rise = 3
@@ -305,7 +322,7 @@ cache_max_size = "2g"
 [cluster.members.fr1]
 node = "fr1"
 ssh = "fr1"
-weight = 20                     # low weight: Chromium/LLVM builds keep priority
+weight = 20 # low weight: Chromium/LLVM builds keep priority
 slice = { CPUQuota = "200%", MemoryMax = "6G", CPUWeight = "10", IOWeight = "10" }
 [cluster.members.fr2]
 node = "fr2"
@@ -340,7 +357,7 @@ lb_port = 19780
 targets = { prd = "127.0.0.1:8780" }
 check = { path = "/", host = "mig-test.aphrody.com", expect = "status 200" }
 cache = "honor"
-[cluster.services.aphrody]           # aphrody.com / *.aphrody.com (mig-prd ingress); blue/green switch = active colour here
+[cluster.services.aphrody] # aphrody.com / *.aphrody.com (mig-prd ingress); blue/green switch = active colour here
 lb_port = 19300
 bluegreen = { service = "aphrody", active = "green" } # origins = [services.aphrody] green_port (primary), blue_port (backup)
 # fr1/fr2: standby (HAProxy backup, used only when prd is down), same image as prd, no secrets
@@ -349,13 +366,13 @@ targets = { prd = "127.0.0.1", fr1 = "127.0.0.1", fr2 = "127.0.0.1" }
 standby = ["fr1", "fr2"]
 check = { path = "/", host = "aphrody.com", expect = "rstatus ^[23]" }
 cache = "honor"
-[cluster.services.ai-os]             # ai.aphrody.com gateway; same blue/green rule
+[cluster.services.ai-os] # ai.aphrody.com gateway; same blue/green rule
 lb_port = 19400
 bluegreen = { service = "ai-os", active = "green" }
 targets = { prd = "127.0.0.1" }
 check = { path = "/health", host = "ai.aphrody.com", expect = "status 200" }
 cache = "off"
-[cluster.services.ssh-prd]           # Tunnel ingress ssh-prd: always prd's sshd, whichever member runs the connector
+[cluster.services.ssh-prd] # Tunnel ingress ssh-prd: always prd's sshd, whichever member runs the connector
 mode = "tcp"
 lb_port = 19022
 targets = { prd = "127.0.0.1:22" }
@@ -403,7 +420,7 @@ cache = "off"
 [cluster.stateful.postgres]
 primary = "prd"
 target = "127.0.0.1:5432"
-backup = []                     # no standby yet: dumps only; a standby would stream WAL over the mesh (mode tcp service)
+backup = [] # no standby yet: dumps only; a standby would stream WAL over the mesh (mode tcp service)
 [cluster.stateful.redis]
 primary = "prd"
 target = "127.0.0.1:6379"

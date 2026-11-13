@@ -63,7 +63,7 @@ enforcement point (D9), and the compatibility, migration and security analysis.
 ## Summary
 
 Lore authenticates through a custom gRPC service, `UrcAuthApi`, that mints two kinds of JWT. An
-*authentication* token identifies the user. An *authorization* token carries a custom `resources`
+_authentication_ token identifies the user. An _authorization_ token carries a custom `resources`
 claim naming the partitions the holder may touch. Anyone who wants to run Lore against their own
 identity provider has to reimplement that gRPC API. This proposal replaces the custom protocol
 with OpenID Connect Discovery and standard OAuth 2.0 grants: device authorization for interactive
@@ -72,8 +72,8 @@ API-key login, which survives as an exchange rather than being dropped. It defin
 that deployments whose provider cannot mint per-partition tokens still get a working system.
 
 **A note on terms.** Authentication and authorization in Lore apply to storage, whose unit of
-access control is the *partition*. A revision-control repository is one kind of partition. This
-document therefore says *partition* wherever it names the thing storage access is granted to.
+access control is the _partition_. A revision-control repository is one kind of partition. This
+document therefore says _partition_ wherever it names the thing storage access is granted to.
 
 ## Motivation
 
@@ -203,7 +203,7 @@ every partition question through the `RepositoryAuthorizer` trait
 ([`lore-server/src/authnz/repository_authorizer.rs`](../../lore-server/src/authnz/repository_authorizer.rs)),
 which D8 extends and D9 wires into every enforcement point.
 
-Authorization in this tier is *global per action*, not per partition. An authenticated principal
+Authorization in this tier is _global per action_, not per partition. An authenticated principal
 reaches every partition the server holds, and privileged actions such as obliterate or admin are
 held everywhere or nowhere, read from an ordinary role or group claim (D8). A deployment that needs
 "obliterate, but only here" needs Tier 2. That is the line between the tiers, and it is why Tier 1
@@ -290,16 +290,16 @@ RFCs fix none of the paths: only the discovery document's location is fixed,
 `device_authorization_endpoint`, `token_endpoint` and `revocation_endpoint`, so the service serves
 them wherever it likes. The mapping:
 
-| Standard endpoint | Existing capability behind it |
-| --- | --- |
-| Discovery document and JWKS | New, and small: a JSON document naming the endpoints below, and the signing keys published at the advertised `jwks_uri`. |
+| Standard endpoint                                                                  | Existing capability behind it                                                                                                                                                            |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Discovery document and JWKS                                                        | New, and small: a JSON document naming the endpoints below, and the signing keys published at the advertised `jwks_uri`.                                                                 |
 | Device authorization endpoint ([RFC 8628](https://www.rfc-editor.org/rfc/rfc8628)) | The `StartAuthSession` flow. `login_url` becomes `verification_uri_complete`, and the response adds the `device_code`, `user_code`, `interval` and `expires_in` fields the RFC requires. |
-| Token endpoint, device code grant | The `GetAuthSession` polling flow, answering `authorization_pending`, `slow_down`, `expired_token` or `access_denied` instead of an empty response. |
-| Token endpoint, exchange with `resource` | The `ExchangeUserTokenForMultiresourceToken` logic, one resource per request from Lorelib (D2). |
-| Token endpoint, exchange with a foreign `subject_token` | The `ExchangeExternalTokenForUserToken` logic, with today's `token_type` values as `subject_token_type` URIs. |
-| Token endpoint, exchange with the API-key `subject_token_type` | The `ExchangeAPIKeyForUserToken` logic (D3). |
-| Token endpoint, refresh grant | New work rather than a mapping: the gRPC API has no operation that accepts a refresh token. Skipping it costs a fresh login per access-token lifetime. |
-| Revocation endpoint ([RFC 7009](https://www.rfc-editor.org/rfc/rfc7009)) | Optional. `lore auth logout` calls it only where the discovery document advertises one. |
+| Token endpoint, device code grant                                                  | The `GetAuthSession` polling flow, answering `authorization_pending`, `slow_down`, `expired_token` or `access_denied` instead of an empty response.                                      |
+| Token endpoint, exchange with `resource`                                           | The `ExchangeUserTokenForMultiresourceToken` logic, one resource per request from Lorelib (D2).                                                                                          |
+| Token endpoint, exchange with a foreign `subject_token`                            | The `ExchangeExternalTokenForUserToken` logic, with today's `token_type` values as `subject_token_type` URIs.                                                                            |
+| Token endpoint, exchange with the API-key `subject_token_type`                     | The `ExchangeAPIKeyForUserToken` logic (D3).                                                                                                                                             |
+| Token endpoint, refresh grant                                                      | New work rather than a mapping: the gRPC API has no operation that accepts a refresh token. Skipping it costs a fresh login per access-token lifetime.                                   |
+| Revocation endpoint ([RFC 7009](https://www.rfc-editor.org/rfc/rfc7009))           | Optional. `lore auth logout` calls it only where the discovery document advertises one.                                                                                                  |
 
 The tokens themselves need three properties:
 
@@ -329,14 +329,14 @@ issue opaque access tokens by default and need the JWT format turned on to meet 
 one satisfies P4 without a custom extension. This is a fast-moving area and the table is a snapshot
 taken 2026-08-20:
 
-| Provider | P2 device grant | P4 [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) | P4 dynamic resource indicator |
-| --- | --- | --- | --- |
-| [Keycloak](https://github.com/keycloak/keycloak/pull/46763) | yes | yes (standard exchange, 26.2+) | no. Experimental, feature-flagged, resolves only to pre-registered clients |
-| [Zitadel](https://zitadel.com/docs/guides/integrate/token-exchange) | yes | yes, opt-in via the Feature API (2.49+) | no. `resource` returns `invalid_target`, and `audience` must be a subset of the subject and actor tokens' own audiences, so it can only narrow |
-| [Ory Hydra](https://www.ory.com/hydra) | yes | not in the open-source edition. Maintainers [confirm](https://github.com/ory/hydra/discussions/3359) it is not implemented there, and [the tracking issue](https://github.com/ory/hydra/issues/1218) is still open | no evidence of native `resource` handling |
-| [Dex](https://dexidp.io/docs/guides/token-exchange/) | yes | yes, but OIDC-connector-only and no nested claim mapping | no |
-| [authentik](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/) | yes, with a configured device-code flow | yes, delegation from 2026.8 | no. `audience` only |
-| [node-oidc-provider](https://oidc-provider.dev/) | yes | via a custom grant type | **yes**. `getResourceServerInfo(ctx, resourceIndicator, client)` maps an arbitrary indicator to audience, scopes, TTL and token format per request |
+| Provider                                                                   | P2 device grant                         | P4 [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)                                                                                                                                                              | P4 dynamic resource indicator                                                                                                                      |
+| -------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Keycloak](https://github.com/keycloak/keycloak/pull/46763)                | yes                                     | yes (standard exchange, 26.2+)                                                                                                                                                                                     | no. Experimental, feature-flagged, resolves only to pre-registered clients                                                                         |
+| [Zitadel](https://zitadel.com/docs/guides/integrate/token-exchange)        | yes                                     | yes, opt-in via the Feature API (2.49+)                                                                                                                                                                            | no. `resource` returns `invalid_target`, and `audience` must be a subset of the subject and actor tokens' own audiences, so it can only narrow     |
+| [Ory Hydra](https://www.ory.com/hydra)                                     | yes                                     | not in the open-source edition. Maintainers [confirm](https://github.com/ory/hydra/discussions/3359) it is not implemented there, and [the tracking issue](https://github.com/ory/hydra/issues/1218) is still open | no evidence of native `resource` handling                                                                                                          |
+| [Dex](https://dexidp.io/docs/guides/token-exchange/)                       | yes                                     | yes, but OIDC-connector-only and no nested claim mapping                                                                                                                                                           | no                                                                                                                                                 |
+| [authentik](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/) | yes, with a configured device-code flow | yes, delegation from 2026.8                                                                                                                                                                                        | no. `audience` only                                                                                                                                |
+| [node-oidc-provider](https://oidc-provider.dev/)                           | yes                                     | via a custom grant type                                                                                                                                                                                            | **yes**. `getResourceServerInfo(ctx, resourceIndicator, client)` maps an arbitrary indicator to audience, scopes, TTL and token format per request |
 
 Two findings drive the design. First, P4 is missing from the deployable open-source providers and
 commercial providers without additional extensions. Keycloak's
@@ -428,7 +428,7 @@ demonstration rather than on that reading, and one is cheap enough to include.
 hands the resource to the existing `getResourceServerInfo` hook is about a hundred lines.
 That is a minimal extension to a real OIDC implementation, enough to show P4 is buildable.
 
-Extending a *deployable* provider would prove more, and this proposal does not attempt it.
+Extending a _deployable_ provider would prove more, and this proposal does not attempt it.
 Keycloak would be the candidate, since the merged work added a `TokenPostProcessor` hook and the
 `RESOURCE_INDICATORS` feature, and its follow-ups ([resource
 validation](https://github.com/keycloak/keycloak/issues/47116), since closed for 26.6, and
@@ -461,23 +461,23 @@ document. What `[server.auth]` does not already hold is in a new `[server.auth.o
 The rest of this proposal calls the first four fields
 `oidc_issuer`, `oidc_client_id`, `oidc_scopes` and `oidc_preferred`.
 
-| `Oidc` field | Source | Meaning |
-| --- | --- | --- |
-| `issuer` | The first `[server.auth] jwt_issuer` entry, once its discovery document names the same issuer | Issuer URL. The client fetches `<issuer>/.well-known/openid-configuration`. |
-| `client_id` | `[server.auth.oidc]` | The public client ID Lorelib presents. |
-| `scopes` | `[server.auth.oidc]` | Default scopes to request at a user login. |
-| `client_credentials_scopes` | `[server.auth.oidc]` | Scopes to request with the client credentials grant. |
-| `preferred` | `[server.auth.oidc]` | Whether a client that expresses no preference should take the OIDC path. Absent or false keeps it on `auth_url` while both are advertised. |
-| `resource_template` | `[server.auth.oidc]` | How to name a partition as an [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707) resource, for example `https://lore.google.com/partitions/{id}`. The standard form and the default. |
-| `scope_template` | `[server.auth.oidc]` | How to name a partition as a scope value instead, for example `partition:{id}`. For providers that reject `resource` or never see it on the exchange grant. |
-| `token_exchange_issuer` | `[server.auth.oidc]` | The [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) endpoint to exchange against, whether that is the provider itself or a separate token service. |
-| `identity_claim` | none | Reserved: a deprecated field the server leaves empty and the client ignores. The identity is read from the token itself, its `identity` claim or else `sub` (D7). |
+| `Oidc` field                | Source                                                                                        | Meaning                                                                                                                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `issuer`                    | The first `[server.auth] jwt_issuer` entry, once its discovery document names the same issuer | Issuer URL. The client fetches `<issuer>/.well-known/openid-configuration`.                                                                                                          |
+| `client_id`                 | `[server.auth.oidc]`                                                                          | The public client ID Lorelib presents.                                                                                                                                               |
+| `scopes`                    | `[server.auth.oidc]`                                                                          | Default scopes to request at a user login.                                                                                                                                           |
+| `client_credentials_scopes` | `[server.auth.oidc]`                                                                          | Scopes to request with the client credentials grant.                                                                                                                                 |
+| `preferred`                 | `[server.auth.oidc]`                                                                          | Whether a client that expresses no preference should take the OIDC path. Absent or false keeps it on `auth_url` while both are advertised.                                           |
+| `resource_template`         | `[server.auth.oidc]`                                                                          | How to name a partition as an [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707) resource, for example `https://lore.google.com/partitions/{id}`. The standard form and the default. |
+| `scope_template`            | `[server.auth.oidc]`                                                                          | How to name a partition as a scope value instead, for example `partition:{id}`. For providers that reject `resource` or never see it on the exchange grant.                          |
+| `token_exchange_issuer`     | `[server.auth.oidc]`                                                                          | The [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) endpoint to exchange against, whether that is the provider itself or a separate token service.                                |
+| `identity_claim`            | none                                                                                          | Reserved: a deprecated field the server leaves empty and the client ignores. The identity is read from the token itself, its `identity` claim or else `sub` (D7).                    |
 
 `Endpoint` gains `user_url`, from `[environment.endpoint]`: the user directory clients resolve
 names at, over `lore.user.v1.UserService` (D7). Independent of the auth path, so an OIDC deployment can
 advertise a directory without a gRPC auth service.
 
-The list of hosts a token may be sent to is deliberately *not* advertised here: it comes from the
+The list of hosts a token may be sent to is deliberately _not_ advertised here: it comes from the
 issuer-signed token, because the environment response is served by the same party a stolen token
 would be replayed against (D5).
 
@@ -536,21 +536,21 @@ leaves the other path's credentials intact. The setting retires with the gRPC pa
 
 ### D3. Standard grants replace the custom RPCs
 
-| Today | Replacement |
-| --- | --- |
-| `StartAuthSession` returning `{session_code, login_url}` | [RFC 8628](https://www.rfc-editor.org/rfc/rfc8628) device authorization request. `login_url` comes from `verification_uri_complete`, `session_code` from `device_code`. |
-| `GetAuthSession` polling | [RFC 8628](https://www.rfc-editor.org/rfc/rfc8628) token request, `grant_type=urn:ietf:params:oauth:grant-type:device_code`. Honors `interval`, `slow_down`, `expired_token`, `access_denied`. |
-| `ExchangeAPIKeyForUserToken` | [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) token exchange with a Lore-specific `subject_token_type` naming the API key. Keeps the user binding, which `client_credentials` cannot express. See below. |
-| `ExchangeExternalTokenForUserToken(token, token_type)` | [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) token exchange. `token_type` becomes a `subject_token_type` URI. |
-| (new) | `client_credentials` grant, for machine identities registered at the provider. Nothing migrates onto it. It is what a deployment on a stock provider uses for CI. It requests `client_credentials_scopes` rather than `scopes`, which can hold values only a user login may request. |
-| `ExchangeUserTokenForMultiresourceToken(resource_id[])` | [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) token exchange with `resource` ([RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)) naming the partition, or the verbatim resource for non-partition callers (D2). Sent to whatever `token_exchange_issuer` names. |
-| `RefreshAuthSession` | `refresh_token` grant. Fills in `Authentication::refresh_authentication`, which currently returns `NotSupported`. |
-| `GetUserInfo`, `GetUserId`, `GetProviderUserId` | Moves off the auth path entirely, see D7. `GetProviderUserId` maps an internal ID to the upstream provider's ID. With an external issuer the provider's `sub` *is* the ID, so it has no successor. |
-| `CheckUserPermission` | Stays as a `RepositoryAuthorizer` implementation rather than part of the standard set, see D8. |
-| `LookupUserPermissions` | A paginated search over a permission store, which no standard endpoint offers. Moves to the optional `RepositoryCatalog` trait, see D7. |
-| `VerifyUser` | Asserts a user satisfies a named compliance requirement. No OAuth 2.0 equivalent, and no caller in this repository, so it gets no successor until one is needed. A deployment that needs it grants an action and checks it through `RepositoryAuthorizer`, the way `obliterate` works (D4, D8). |
-| `HealthCheck` | No successor needed. The provider's discovery document serves as the liveness probe. |
-| (new) | [RFC 7009](https://www.rfc-editor.org/rfc/rfc7009) revocation on `lore auth logout`. |
+| Today                                                    | Replacement                                                                                                                                                                                                                                                                                     |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `StartAuthSession` returning `{session_code, login_url}` | [RFC 8628](https://www.rfc-editor.org/rfc/rfc8628) device authorization request. `login_url` comes from `verification_uri_complete`, `session_code` from `device_code`.                                                                                                                         |
+| `GetAuthSession` polling                                 | [RFC 8628](https://www.rfc-editor.org/rfc/rfc8628) token request, `grant_type=urn:ietf:params:oauth:grant-type:device_code`. Honors `interval`, `slow_down`, `expired_token`, `access_denied`.                                                                                                  |
+| `ExchangeAPIKeyForUserToken`                             | [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) token exchange with a Lore-specific `subject_token_type` naming the API key. Keeps the user binding, which `client_credentials` cannot express. See below.                                                                                   |
+| `ExchangeExternalTokenForUserToken(token, token_type)`   | [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) token exchange. `token_type` becomes a `subject_token_type` URI.                                                                                                                                                                             |
+| (new)                                                    | `client_credentials` grant, for machine identities registered at the provider. Nothing migrates onto it. It is what a deployment on a stock provider uses for CI. It requests `client_credentials_scopes` rather than `scopes`, which can hold values only a user login may request.            |
+| `ExchangeUserTokenForMultiresourceToken(resource_id[])`  | [RFC 8693](https://www.rfc-editor.org/rfc/rfc8693) token exchange with `resource` ([RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)) naming the partition, or the verbatim resource for non-partition callers (D2). Sent to whatever `token_exchange_issuer` names.                           |
+| `RefreshAuthSession`                                     | `refresh_token` grant. Fills in `Authentication::refresh_authentication`, which currently returns `NotSupported`.                                                                                                                                                                               |
+| `GetUserInfo`, `GetUserId`, `GetProviderUserId`          | Moves off the auth path entirely, see D7. `GetProviderUserId` maps an internal ID to the upstream provider's ID. With an external issuer the provider's `sub` _is_ the ID, so it has no successor.                                                                                              |
+| `CheckUserPermission`                                    | Stays as a `RepositoryAuthorizer` implementation rather than part of the standard set, see D8.                                                                                                                                                                                                  |
+| `LookupUserPermissions`                                  | A paginated search over a permission store, which no standard endpoint offers. Moves to the optional `RepositoryCatalog` trait, see D7.                                                                                                                                                         |
+| `VerifyUser`                                             | Asserts a user satisfies a named compliance requirement. No OAuth 2.0 equivalent, and no caller in this repository, so it gets no successor until one is needed. A deployment that needs it grants an action and checks it through `RepositoryAuthorizer`, the way `obliterate` works (D4, D8). |
+| `HealthCheck`                                            | No successor needed. The provider's discovery document serves as the liveness probe.                                                                                                                                                                                                            |
+| (new)                                                    | [RFC 7009](https://www.rfc-editor.org/rfc/rfc7009) revocation on `lore auth logout`.                                                                                                                                                                                                            |
 
 That accounts for all 13 RPCs in
 [`auth_api.proto`](../../lore-proto/proto/auth_api.proto).
@@ -648,13 +648,13 @@ where a CI instance authenticates with a client id and secret.
 
 ### D4. Claim model
 
-| Custom claim | Replacement |
-| --- | --- |
+| Custom claim                             | Replacement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `resources: [{resource_id, permission}]` | A namespaced custom claim carrying `{resource, actions}` entries, the same structure under names a provider can be configured to emit. `resource_claim` names the claim, `resource_id_claim` names the resource field within an entry (`resource_id` by default) and `permission_claim` names the actions (`permission` by default). All three field names are configuration because some providers cannot change their entry shape — Keycloak's UMA `permissions` entries carry `rsname` and `scopes` — and configuring only some of the shape would be worse than configuring none of it. `permission_claim` also answers the Tier 1 case, where actions are read without a resource beside them (D8). See below. |
-| `is_service_account` | Dropped from the server's decision path. Every reader becomes an action check through `RepositoryAuthorizer` (D8), the way obliterate already works. See below. |
-| `name`, `preferred_username` | Already standard OIDC claims. Made optional (D6). |
-| `env` | Unused in any decision path. Dropped. |
-| `idp` | Unused in any decision path. Dropped. |
+| `is_service_account`                     | Dropped from the server's decision path. Every reader becomes an action check through `RepositoryAuthorizer` (D8), the way obliterate already works. See below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `name`, `preferred_username`             | Already standard OIDC claims. Made optional (D6).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `env`                                    | Unused in any decision path. Dropped.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `idp`                                    | Unused in any decision path. Dropped.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
 `verify_authorization` ([`lore-server/src/auth/jwt.rs`](../../lore-server/src/auth/jwt.rs)) becomes
 a lookup against whichever claim the configuration names, comparing whatever `resource_id_template`
@@ -678,7 +678,7 @@ a token without it keeps verifying (D6).
 #### The claim carries actions, not just identity
 
 The resource claim is Tier 2's mechanism, and Tier 1 reads no resource claim at all (D1). Both
-tiers answer the same *question*: `check_repository_access(token, repository, action)` is asked
+tiers answer the same _question_: `check_repository_access(token, repository, action)` is asked
 identically at every enforcement point, and the tier decides who answers it. Under Tier 2
 `ResourceGrantsAuthorizer` answers from this claim. Under Tier 1
 `GlobalGrantsAuthorizer` answers the same question from a global action set read out of a
@@ -706,11 +706,11 @@ This part applies to both tiers. Five call sites read `is_service_account` today
 Branch push and repository delete each have a v0 and a v1 handler carrying the same check, and
 although both groups share a `bypass_protection` variable they waive different things:
 
-| Call site | What the flag waives today | Becomes |
-| --- | --- | --- |
-| `branch_push.rs`, [v0](../../lore-server/src/grpc/handlers/branch_push.rs) and [v1](../../lore-server/src/grpc/revision/v1/branch_push.rs) | The `PROTECT` flag on branch metadata, so a push to a protected branch succeeds instead of returning `permission_denied("protected")`. | `push-protected`, a new action. |
-| `repository_delete.rs`, [v0](../../lore-server/src/grpc/handlers/repository_delete.rs) and [v1](../../lore-server/src/grpc/repository/v1/repository_delete.rs) | The creator check, `metadata.creator != user_id`, so a partition can be deleted by someone who did not create it. | `owner` or `admin`, both already in use. The check it waives is an ownership check, and `is_owner_or_admin` is the existing reader for exactly that question. |
-| [`presign_repository_content.rs`](../../lore-server/src/http/repositories/repository/contents/content/presign_repository_content.rs) | Nothing. Here the flag is the whole gate on issuing a presigned URL. | `presign`, a new action. |
+| Call site                                                                                                                                                      | What the flag waives today                                                                                                             | Becomes                                                                                                                                                       |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `branch_push.rs`, [v0](../../lore-server/src/grpc/handlers/branch_push.rs) and [v1](../../lore-server/src/grpc/revision/v1/branch_push.rs)                     | The `PROTECT` flag on branch metadata, so a push to a protected branch succeeds instead of returning `permission_denied("protected")`. | `push-protected`, a new action.                                                                                                                               |
+| `repository_delete.rs`, [v0](../../lore-server/src/grpc/handlers/repository_delete.rs) and [v1](../../lore-server/src/grpc/repository/v1/repository_delete.rs) | The creator check, `metadata.creator != user_id`, so a partition can be deleted by someone who did not create it.                      | `owner` or `admin`, both already in use. The check it waives is an ownership check, and `is_owner_or_admin` is the existing reader for exactly that question. |
+| [`presign_repository_content.rs`](../../lore-server/src/http/repositories/repository/contents/content/presign_repository_content.rs)                           | Nothing. Here the flag is the whole gate on issuing a presigned URL.                                                                   | `presign`, a new action.                                                                                                                                      |
 
 A Tier 2 deployment grants these per partition in the resource claim. A Tier 1 deployment grants
 them globally through a role. One behavior to preserve: with no verifier configured the presign
@@ -792,7 +792,7 @@ becomes optional too, `preferred_username` being optional there already. And
 `AuthorizationToken`'s required set narrows to `iss`, `sub`, `aud`, `exp` and `iat`, with
 `client_id` read where present.
 
-That is deliberately *less* than the [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068) profile, which makes seven claims REQUIRED, adding
+That is deliberately _less_ than the [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068) profile, which makes seven claims REQUIRED, adding
 `client_id` and `jti`, and whose §4 says a resource server MUST reject a token whose `typ` is not
 `at+jwt` or `application/at+jwt`. Requiring the full set would reject the tokens the legacy auth
 service issues, which is the one thing phase 1 must not do. So the server requires the five that
@@ -817,7 +817,7 @@ provider, so it ships first.
 ### D7. The two lookups with no standard successor become optional traits
 
 Two of the custom RPCs ask questions no OAuth 2.0 or OIDC endpoint answers, and they fail the same
-way for the same reason. A token carries a grant: neither standard offers a way to *search* the
+way for the same reason. A token carries a grant: neither standard offers a way to _search_ the
 grant space, or to resolve an identifier that is not the bearer's. Both therefore move off the
 authentication path onto optional traits with a degraded default, rather than being forced into a
 mechanism that cannot hold them.
@@ -835,7 +835,7 @@ printing the ID when no name resolves
 ([`lore-client/src/cli/commands/auth.rs`](../../lore-client/src/cli/commands/auth.rs)), so that
 path is exercised today.
 
-Where Lore displays *another* user's name, such as a revision author or a lock holder, the lookup
+Where Lore displays _another_ user's name, such as a revision author or a lock holder, the lookup
 cannot be avoided. Revision metadata records the user identifier and deliberately not the
 name (`created_by` and its siblings in
 [`lore-revision/src/revision.rs`](../../lore-revision/src/revision.rs)), so that the identifier can
@@ -1020,7 +1020,7 @@ Two changes from today's `check_repository_access(authorization: Option<String>,
   `AllowAllRepositoryAuthorizer` exists for. The axum middleware already passes such requests
   through with an empty token extension, and keeps doing so.
 - **An action.** `can_admin_lock`, `can_obliterate` and `is_owner_or_admin` (D4) ask whether a
-  *particular action* is allowed, as do the `push-protected` and `presign` checks that replace
+  _particular action_ is allowed, as do the `push-protected` and `presign` checks that replace
   `is_service_account` (D4). Under Tier 2 the answer comes from the resource claim. Under Tier 1
   there is no resource claim, but a Tier 1 token will carry these as global permissions in
   `permission_claim`. A Tier 1 token that carries none of those permissions is denied those
@@ -1032,7 +1032,7 @@ The two implementations:
 
 - `ResourceGrantsAuthorizer` answers from the token's resource claim with no network call.
   **Tier 2 only.** It consumes the per-partition scoping that tier exists to produce.
-- `GlobalGrantsAuthorizer` answers from a *global* action set read out of a role or group
+- `GlobalGrantsAuthorizer` answers from a _global_ action set read out of a role or group
   claim, ignoring the repository parameter entirely. **This is Tier 1's authorizer.** Without it
   Tier 1 would fall through to `AllowAllRepositoryAuthorizer`, which is not an acceptable default
   for a tier meant for real deployments.
@@ -1067,7 +1067,7 @@ See D4 for the claim shape and the wildcard semantics.
 
 #### Tier 1 grants actions globally, not per partition
 
-Tier 1 makes one decision per *action*, not per action-and-partition. Any principal that passes
+Tier 1 makes one decision per _action_, not per action-and-partition. Any principal that passes
 authentication reads every partition the server holds and, unless the deployment moves `write`
 into the role claim (`implicit_actions`, below), writes it, and a small number of
 principals hold extra actions that apply everywhere: `obliterate`, `owner`, `admin`, `migrate`, `push-protected`,
@@ -1076,7 +1076,7 @@ no way to say "obliterate, but only in this partition." That is what distinguish
 Tier 2, and per-partition narrowing is exactly what P4 and Tier 2 exist to provide.
 
 This is the one authorization shape every provider can already express. A static set of role strings on
-a principal is universal and usually on by default: Keycloak's `roles` client scope is a *default*
+a principal is universal and usually on by default: Keycloak's `roles` client scope is a _default_
 scope carrying a realm-roles mapper that writes `realm_access.roles` into every access token with
 no configuration at all, and Dex emits a flat `groups` claim. Role administration stays in the
 identity provider, which is where this migration is trying to move it.
@@ -1084,14 +1084,14 @@ identity provider, which is where this migration is trying to move it.
 Three settings carry it, and `resource_claim` is what selects the tier. The rest sit beside them
 in `[server.auth]` but touch listing only:
 
-| Setting | Meaning |
-| --- | --- |
-| `permission_claim` | Dotted path to the actions claim, for example `realm_access.roles` on Keycloak or `groups` on Dex. Claim values are action names. |
-| `implicit_actions` | Tier 1 only. Actions every token holder gets, added to whatever `permission_claim` carries and to `read`, which any token implies. Defaults to `["write"]`; `[]` makes write a role, or makes the server read-only without `permission_claim`. Any action may be listed, privileged ones included; an unknown name is a configuration error. The server refuses to start with it set beside `resource_claim` or `auth_url`, where it would do nothing. |
-| `resource_claim` | Present means Tier 2, and actions are scoped by the resource beside them. Absent means the `permission_claim` actions are global, which is Tier 1. |
-| `baseline_access` | What the default `RepositoryCatalog` (D7) lists when no custom implementation is configured. `denied`, the default, lists none. `reachable` lists every repository the server holds. It gates no access decision. |
-| `repository_catalog` | Which catalog (D7) answers the listing: `baseline`, per `baseline_access`; `auth_service`, a `UrcAuthApi` service's `LookupUserPermissions`; or `user_service`, `RepositoryList` at `user_url`. Absent, `user_service` when `user_url` is set, else `auth_service` when `auth_url` is set, and `baseline` otherwise. |
-| `repository_catalog_url` | The endpoint the `auth_service` catalog asks, `auth_url` by default. It receives the caller's token, so it must accept the tokens this server verifies. |
+| Setting                  | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `permission_claim`       | Dotted path to the actions claim, for example `realm_access.roles` on Keycloak or `groups` on Dex. Claim values are action names.                                                                                                                                                                                                                                                                                                                      |
+| `implicit_actions`       | Tier 1 only. Actions every token holder gets, added to whatever `permission_claim` carries and to `read`, which any token implies. Defaults to `["write"]`; `[]` makes write a role, or makes the server read-only without `permission_claim`. Any action may be listed, privileged ones included; an unknown name is a configuration error. The server refuses to start with it set beside `resource_claim` or `auth_url`, where it would do nothing. |
+| `resource_claim`         | Present means Tier 2, and actions are scoped by the resource beside them. Absent means the `permission_claim` actions are global, which is Tier 1.                                                                                                                                                                                                                                                                                                     |
+| `baseline_access`        | What the default `RepositoryCatalog` (D7) lists when no custom implementation is configured. `denied`, the default, lists none. `reachable` lists every repository the server holds. It gates no access decision.                                                                                                                                                                                                                                      |
+| `repository_catalog`     | Which catalog (D7) answers the listing: `baseline`, per `baseline_access`; `auth_service`, a `UrcAuthApi` service's `LookupUserPermissions`; or `user_service`, `RepositoryList` at `user_url`. Absent, `user_service` when `user_url` is set, else `auth_service` when `auth_url` is set, and `baseline` otherwise.                                                                                                                                   |
+| `repository_catalog_url` | The endpoint the `auth_service` catalog asks, `auth_url` by default. It receives the caller's token, so it must accept the tokens this server verifies.                                                                                                                                                                                                                                                                                                |
 
 A deployment that configures `[server.auth]` but no `permission_claim` leaves every authenticated
 principal with `implicit_actions` and no admin actions at all. That fails closed on every
@@ -1135,16 +1135,16 @@ like an inconsistency and is not one: it stops an unauthorized caller distinguis
 that exists from one that does not, and switching it for uniformity would newly disclose partition
 existence by name. The Compatibility note about status codes covers the interceptor path only.
 
-| Call site | Path | Rewired check |
-| --- | --- | --- |
-| [`auth/jwt_interceptor.rs:71`](../../lore-server/src/auth/jwt_interceptor.rs) | gRPC interceptor | The partition check moves onto the configured authorizer, either inside the interceptor or in the handlers it covers. Synchronous call site. See below. |
-| [`repository_query.rs`](../../lore-server/src/grpc/handlers/repository_query.rs) | repository query and get, v0 and v1 | Move onto the configured authorizer, keeping `RepositoryNotFound` on denial. |
-| [`quic/storage_service_v4.rs:189`](../../lore-server/src/quic/storage_service_v4.rs) | QUIC storage authorize | Enumerate the caller's grants at session start, once per session, and answer each command's action from them. |
-| [`protocol/storage/connect.rs:87`](../../lore-server/src/protocol/storage/connect.rs) | QUIC storage connect | Same, at connect. |
-| [`protocol/storage/copy.rs:143`](../../lore-server/src/protocol/storage/copy.rs) | QUIC cross-partition copy, source side | `check_repository_access` on the source partition. |
-| [`grpc/storage/v1/copy.rs:83`](../../lore-server/src/grpc/storage/v1/copy.rs) | gRPC cross-partition copy, source side | Same. |
-| [`auth/jwt_axum_middleware.rs:40`](../../lore-server/src/auth/jwt_axum_middleware.rs) | HTTP repository routes | Already `async`, so the authorizer call is direct. |
-| [`grpc/mod.rs:209`](../../lore-server/src/grpc/mod.rs) | `link_read_authorizer`, cross-partition link reads | Synchronous closure. See below. |
+| Call site                                                                             | Path                                               | Rewired check                                                                                                                                           |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`auth/jwt_interceptor.rs:71`](../../lore-server/src/auth/jwt_interceptor.rs)         | gRPC interceptor                                   | The partition check moves onto the configured authorizer, either inside the interceptor or in the handlers it covers. Synchronous call site. See below. |
+| [`repository_query.rs`](../../lore-server/src/grpc/handlers/repository_query.rs)      | repository query and get, v0 and v1                | Move onto the configured authorizer, keeping `RepositoryNotFound` on denial.                                                                            |
+| [`quic/storage_service_v4.rs:189`](../../lore-server/src/quic/storage_service_v4.rs)  | QUIC storage authorize                             | Enumerate the caller's grants at session start, once per session, and answer each command's action from them.                                           |
+| [`protocol/storage/connect.rs:87`](../../lore-server/src/protocol/storage/connect.rs) | QUIC storage connect                               | Same, at connect.                                                                                                                                       |
+| [`protocol/storage/copy.rs:143`](../../lore-server/src/protocol/storage/copy.rs)      | QUIC cross-partition copy, source side             | `check_repository_access` on the source partition.                                                                                                      |
+| [`grpc/storage/v1/copy.rs:83`](../../lore-server/src/grpc/storage/v1/copy.rs)         | gRPC cross-partition copy, source side             | Same.                                                                                                                                                   |
+| [`auth/jwt_axum_middleware.rs:40`](../../lore-server/src/auth/jwt_axum_middleware.rs) | HTTP repository routes                             | Already `async`, so the authorizer call is direct.                                                                                                      |
+| [`grpc/mod.rs:209`](../../lore-server/src/grpc/mod.rs)                                | `link_read_authorizer`, cross-partition link reads | Synchronous closure. See below.                                                                                                                         |
 
 Two of these cannot simply await an authorizer.
 
@@ -1186,7 +1186,7 @@ request performs, so action checks such as `can_admin_lock` stay in handlers eit
 interceptor-resident check covers the plain reachability question only. What this proposal needs is
 that nothing in the current code rules out either placement, and nothing does.
 
-*Resolved 2026-09-15, a third way.* The check landed as an **async tower layer**
+_Resolved 2026-09-15, a third way._ The check landed as an **async tower layer**
 ([`partition_access.rs`](../../lore-server/src/grpc/tower/partition_access.rs)) mounted inside
 each partition-scoped service's JWT interceptor. The interceptor placement was only ruled out
 above for being synchronous. A tower `Service` can await, so the online authorizer is reachable
@@ -1230,7 +1230,7 @@ server behaves today, apart from repository delete (D8).
 
 **Notification is the exception either way.** `NotificationService::subscribe`
 ([`notification_service.rs`](../../lore-server/src/grpc/notification_service.rs)) takes the
-partition from `SubscribeRequest.repository`, the request *body*, and registers the stream on that
+partition from `SubscribeRequest.repository`, the request _body_, and registers the stream on that
 value. The interceptor authorized `get_repository(request.metadata())`, a different field, so it
 cannot answer for this RPC and the check belongs in the handler.
 
@@ -1463,7 +1463,7 @@ history, choosing readability over erasability, and a token without the claim st
 from the caller's own token rather than accumulating a local cache of other people's names.
 
 **Tokens stay out of logs.** The existing discipline holds: `set_sensitive` on the gRPC
-authorization metadata, and the interceptor's deliberate refusal to report *why* verification
+authorization metadata, and the interceptor's deliberate refusal to report _why_ verification
 failed
 ([`lore-server/src/auth/jwt_interceptor.rs`](../../lore-server/src/auth/jwt_interceptor.rs)). The
 new code paths follow it, and the discovery and token endpoints get the same treatment as the JWKS
@@ -1475,14 +1475,14 @@ endpoint's `body_excerpt`: bounded, and never echoing a credential.
 
 - **Assumption:** global, per-action grants are enough for a Tier 1 deployment, so that privileged
   actions can be held everywhere or nowhere and ordinary access needs no per-partition decision
-  (D8). — *invalidated if:* a deployment needs a principal to hold an action on some partitions
+  (D8). — _invalidated if:_ a deployment needs a principal to hold an action on some partitions
   and not others while remaining on Tier 1. There is no Tier 1 answer to that, by construction. The
   routes out are Tier 2, which is what per-partition scoping is for, or a Lore-side policy store,
   which this design deliberately does not build.
 - **Assumption:** a deployment on the custom-issuer variant can add the standard endpoints to its
   auth service, including serving discovery at a URL its tokens carry as `iss` (D1). This is work
   outside this repository, and for the deployment driving this proposal it is in hand.
-  — *invalidated if:* an auth service cannot be extended, in which case that deployment stays on
+  — _invalidated if:_ an auth service cannot be extended, in which case that deployment stays on
   the gRPC path and phase 5 waits on it.
 
 **Risks**
@@ -1490,28 +1490,28 @@ endpoint's `body_excerpt`: bounded, and never echoing a credential.
 - **Risk: no deployable provider supports per-partition resource indicators, so Tier 2 has no
   user.** The survey in D1 confirms this for every open-source provider examined. Keycloak's
   support is experimental and resolves only to pre-registered clients, Zitadel rejects `resource`
-  outright, and the rest offer `audience` against registered targets at best. — *mitigation:*
+  outright, and the rest offer `audience` against registered targets at best. — _mitigation:_
   the custom-issuer and provider-extension variants exist for this, so the risk is to the
   provider-direct variant rather than to Tier 2 itself. Tier 1 is unaffected either way. Commercial
   OIDC implementations have better Tier 2 extensibility.
 - **Risk: a custom issuer built for Lore drifts into Lore-specific behavior, recreating the custom
-  protocol under standard names.** — *mitigation:* Lorelib sends nothing a generic OAuth client
+  protocol under standard names.** — _mitigation:_ Lorelib sends nothing a generic OAuth client
   could not send, so a deployment can test its issuer with standard OAuth tooling rather than only
   with Lorelib, and the reference provider gives the client side the same independence.
 - **Risk: the `aud` change breaks every existing client on the day a server switches config.** A
   client that still runs `verify_jwt_usage_for_remote` against a standard token refuses to send
-  it. — *mitigation:* D6 and D5 land in phases 1 and 3, both before any server advertises an OIDC
+  it. — _mitigation:_ D6 and D5 land in phases 1 and 3, both before any server advertises an OIDC
   issuer in phase 3, and a server must not switch to the standard claims until its client fleet
   has phase 3. This ordering is the migration plan's main constraint, and the `auth_mode` opt-in
   (D2) is what lets a deployment verify the new path on a few clients before the fleet depends on
   it.
 - **Risk: device-flow polling against a provider that sets a long `interval` makes login feel
-  broken.** — *mitigation:* honor `interval` as [RFC 8628](https://www.rfc-editor.org/rfc/rfc8628) requires, but report progress through the
+  broken.** — _mitigation:_ honor `interval` as [RFC 8628](https://www.rfc-editor.org/rfc/rfc8628) requires, but report progress through the
   existing event stream so the CLI can show that it is still waiting.
 - **Risk: other consumers of the auth service assume long-lived tokens.** Deployments run services
   and scripts against the same auth service, some holding a token for hours or re-logging in on a
   timer. Shortening access-token lifetimes at the provider can turn those into tight refresh
-  loops. — *mitigation:* audit the lifetimes non-Lorelib consumers assume before shortening, and give
+  loops. — _mitigation:_ audit the lifetimes non-Lorelib consumers assume before shortening, and give
   them the refresh grant first.
 
 ## Drawbacks
@@ -1525,7 +1525,7 @@ endpoint's `body_excerpt`: bounded, and never echoing a credential.
 
 Document `UrcAuthApi` and let operators implement it against their own identity provider.
 
-*Rejected because:* it makes every operator write and maintain a gRPC service that duplicates what
+_Rejected because:_ it makes every operator write and maintain a gRPC service that duplicates what
 their provider already does, and it leaves Lore unable to use any of the ecosystem, Keycloak,
 Auth0, Okta, Entra or Dex, without one such service per provider. Those 13 RPCs also include a user
 directory and a permission engine, so that service is not a thin one.
@@ -1536,7 +1536,7 @@ A small stateless service that speaks standard OAuth 2.0 on the front and `UrcAu
 back, translating each request and returning the upstream's token unchanged, so an existing
 implementation gets the standard interface without changing.
 
-*Rejected because:* building the translation costs about as much as adding the standard endpoints
+_Rejected because:_ building the translation costs about as much as adding the standard endpoints
 to the auth service itself, and it does not remove that work, it only defers it, leaving two
 services running where one would do. A relay also needs the upstream to emit the adapter's URL as
 `iss`, or the adapter has to re-sign tokens, which breaks the no-signing-key goal. And no
@@ -1549,7 +1549,7 @@ D1, or extend the provider instead.
 
 Issue one access token per user, and authorize everything server-side from group and role claims.
 
-*Rejected because:* it discards the property that a token exfiltrated from a build machine unlocks
+_Rejected because:_ it discards the property that a token exfiltrated from a build machine unlocks
 only the partitions that machine works on. That property is the reason the two-token split
 exists, and CI machines holding broadly-scoped credentials is the case it protects. Tier 1 remains
 available for deployments that accept the trade, but it does not become the only option.
@@ -1559,7 +1559,7 @@ available for deployments that accept the trade, but it does not become the only
 [RFC 6749](https://www.rfc-editor.org/rfc/rfc6749) §6 permits a refresh-token request to ask for a narrower scope than the original grant,
 which maps neatly onto trading the identity credential for a smaller one.
 
-*Rejected as the primary mechanism because:* scope is a flat space-delimited string of values the
+_Rejected as the primary mechanism because:_ scope is a flat space-delimited string of values the
 provider must know in advance, and Lore's resources are repository/partition IDs created at runtime. Encoding
 them as scopes requires the provider to mint scope values it has never seen. That is the same
 dynamic-value problem as Tier 2's resource indicators, but with less specification support, since
@@ -1571,7 +1571,7 @@ strategy for providers where it happens to work.
 Let the provider issue opaque access tokens, and have the server call [RFC 7662](https://www.rfc-editor.org/rfc/rfc7662) introspection on
 every request.
 
-*Rejected because:* it puts a synchronous call to the provider on the path of every storage,
+_Rejected because:_ it puts a synchronous call to the provider on the path of every storage,
 revision and lock operation, which for Lore's request rates makes the provider a throughput ceiling
 and a shared failure domain. P1 therefore requires JWT access tokens outright rather than offering
 introspection as a fallback, and D8 leaves the setting out until a deployment asks for it.
@@ -1587,7 +1587,7 @@ bearer token carrying the access it actually holds on that repository. The regis
 verifies the token's signature and its `access` claim without calling back.
 
 D4 borrows the arrangement: one claim naming the resource and the actions on it, computed per
-exchange, verified locally. Where Lore differs is in how the client *asks*. Docker packs the request
+exchange, verified locally. Where Lore differs is in how the client _asks_. Docker packs the request
 into `scope` because its token is opaque, leaving nowhere else to put it, whereas Lore asks with an
 [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707) `resource` indicator and reads the answer out of a claim, which keeps the two directions
 separate, though the request can also travel as a Docker-style scope where a provider needs it (D2).
@@ -1603,7 +1603,7 @@ well, and which the working group is trying to replace for the same reason.
 Device flow first and falls back to Web application flow".
 
 **Google Cloud SDK** goes the other way and is the more interesting comparison for what it does
-*not* do. `gcloud auth login` launches a browser against a loopback redirect by default, but its
+_not_ do. `gcloud auth login` launches a browser against a loopback redirect by default, but its
 browserless path has never been the device grant. `--no-browser` runs a remote bootstrap that
 requires a second trusted machine with both a browser and gcloud 372.0 or later, having replaced an
 out-of-band copy-paste flow that was deprecated in 2022.

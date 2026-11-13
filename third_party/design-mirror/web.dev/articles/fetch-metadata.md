@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Prevent CSRF, XSSI, and cross-origin information leaks.
 
- Lukas Weichselbaum [X](https://twitter.com/we1x) [GitHub](https://github.com/lweichselbaum) [Homepage](https://webappsec.dev)
+Lukas Weichselbaum [X](https://twitter.com/we1x) [GitHub](https://github.com/lweichselbaum) [Homepage](https://webappsec.dev)
 
 ## Why should you care about isolating your web resources?
 
@@ -40,12 +41,12 @@ A typical cross-origin attack is cross-site request forgery (CSRF) where an atta
 Other cross-site attacks like cross-site script inclusion (XSSI) or cross-origin information leaks are similar in nature to CSRF and rely on loading resources from a victim application in an attacker-controlled document and leaking information about the victim applications. Since applications cannot easily distinguish trusted requests from untrusted ones, they cannot discard malicious cross-site traffic.
 
 > [!TIP]
-> Apart from attacks on resources as described above, *window references* can also lead to cross-origin information leaks and Spectre attacks. You can prevent them by setting the `Cross-Origin-Opener-Policy` response header to `same-origin`.
+> Apart from attacks on resources as described above, _window references_ can also lead to cross-origin information leaks and Spectre attacks. You can prevent them by setting the `Cross-Origin-Opener-Policy` response header to `same-origin`.
 
 ## Introducing Fetch Metadata
 
 Fetch Metadata request headers are a new web platform security feature designed to help servers defend themselves against cross-origin attacks. By providing information about the context of an HTTP request in a set of `Sec-Fetch-*` headers, they allow the responding server to apply security policies before processing the request. This lets developers decide whether to accept or reject a request based on the way it was made and the context in which it will be used, making it possible to respond to only legitimate requests made by their own application.
-Same-Origin Requests originating from sites served by your own server (same-origin) will continue to work.  Cross-site Malicious cross-site requests can be rejected by the server because of the additional context in the HTTP request provided by `Sec-Fetch-*` headers. 
+Same-Origin Requests originating from sites served by your own server (same-origin) will continue to work. Cross-site Malicious cross-site requests can be rejected by the server because of the additional context in the HTTP request provided by `Sec-Fetch-*` headers.
 
 ### `Sec-Fetch-Site`
 

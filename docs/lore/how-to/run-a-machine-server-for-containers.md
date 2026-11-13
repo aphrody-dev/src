@@ -15,151 +15,151 @@ The examples use Linux paths and Docker. The machine server and its clients work
 
 1. **Log the machine identity in for the server's user.**
 
-    Run this as the user the server runs as, with the environment the server will run with. On a machine without a keyring service, `LORE_AUTH_STORE=fallback` keeps the token store and its key in files under `LORE_AUTH_PATH`:
+   Run this as the user the server runs as, with the environment the server will run with. On a machine without a keyring service, `LORE_AUTH_STORE=fallback` keeps the token store and its key in files under `LORE_AUTH_PATH`:
 
-    ```bash
-    export LORE_AUTH_STORE=fallback LORE_AUTH_PATH=/var/lib/lore-machine/auth
-    lore auth login lores://lore.google.com:41337 --token-type api-key --token "$MACHINE_API_KEY"
-    ```
+   ```bash
+   export LORE_AUTH_STORE=fallback LORE_AUTH_PATH=/var/lib/lore-machine/auth
+   lore auth login lores://lore.google.com:41337 --token-type api-key --token "$MACHINE_API_KEY"
+   ```
 
-    With client credentials, log in with `--client-id` instead. Keep this login the only one in the token store: the `remote` mutable store authenticates as the first identity stored there that the upstream accepts, and the `remote` immutable store does too unless its `auth_url` names one (see [Remote store mode](../reference/lore-server-config.md#remote-store-mode)).
+   With client credentials, log in with `--client-id` instead. Keep this login the only one in the token store: the `remote` mutable store authenticates as the first identity stored there that the upstream accepts, and the `remote` immutable store does too unless its `auth_url` names one (see [Remote store mode](../reference/lore-server-config.md#remote-store-mode)).
 
 2. **Create one socket directory per container.**
 
-    Each container mounts its own directory, so it can't reach another container's socket:
+   Each container mounts its own directory, so it can't reach another container's socket:
 
-    ```bash
-    mkdir -p /run/lore-machine/build-1 /run/lore-machine/build-2
-    ```
+   ```bash
+   mkdir -p /run/lore-machine/build-1 /run/lore-machine/build-2
+   ```
 
-    On Unix the server leaves the directory's permissions to you, and each socket file takes the bits `socket_mode` sets, `0o666` by default. The user a container runs as must be able to traverse its directory.
+   On Unix the server leaves the directory's permissions to you, and each socket file takes the bits `socket_mode` sets, `0o666` by default. The user a container runs as must be able to traverse its directory.
 
 3. **Write the server configuration.**
 
-    Create `/etc/lore-machine/config/local.toml`:
+   Create `/etc/lore-machine/config/local.toml`:
 
-    ```toml
-    # The upstream's authorization service: the server checks each container's
-    # session grants there, per partition.
-    [environment.endpoint]
-    auth_url = "ucs-auth://auth.google.com"
+   ```toml
+   # The upstream's authorization service: the server checks each container's
+   # session grants there, per partition.
+   [environment.endpoint]
+   auth_url = "ucs-auth://auth.google.com"
 
-    # The upstream's token issuer and audience, so the server accepts the
-    # tokens the containers already hold.
-    [server.auth]
-    jwt_issuer = "https://accounts.google.com"
-    jwt_audience = ["lore-service"]
+   # The upstream's token issuer and audience, so the server accepts the
+   # tokens the containers already hold.
+   [server.auth]
+   jwt_issuer = "https://accounts.google.com"
+   jwt_audience = ["lore-service"]
 
-    [server]
-    upstream_connections = 4
+   [server]
+   upstream_connections = 4
 
-    # The containers use the sockets alone.
-    [server.quic]
-    enabled = false
+   # The containers use the sockets alone.
+   [server.quic]
+   enabled = false
 
-    [server.http]
-    enabled = false
+   [server.http]
+   enabled = false
 
-    [server.grpc]
-    host = "127.0.0.1"
+   [server.grpc]
+   host = "127.0.0.1"
 
-    [server.uds]
-    enabled = true
-    sockets = [
-      "/run/lore-machine/build-1/lore.sock",
-      "/run/lore-machine/build-2/lore.sock",
-    ]
+   [server.uds]
+   enabled = true
+   sockets = [
+     "/run/lore-machine/build-1/lore.sock",
+     "/run/lore-machine/build-2/lore.sock",
+   ]
 
-    # Every host the containers' requests name: the upstream, its
-    # authentication service, and each service host the upstream advertises.
-    [server.uds.forward]
-    "lore.google.com" = "https://lore.google.com:41337"
-    "auth.google.com" = "https://auth.google.com"
+   # Every host the containers' requests name: the upstream, its
+   # authentication service, and each service host the upstream advertises.
+   [server.uds.forward]
+   "lore.google.com" = "https://lore.google.com:41337"
+   "auth.google.com" = "https://auth.google.com"
 
-    [immutable_store]
-    mode = "composite"
+   [immutable_store]
+   mode = "composite"
 
-    [immutable_store.composite]
-    cache_metadata = true
+   [immutable_store.composite]
+   cache_metadata = true
 
-    [immutable_store.composite.local]
-    mode = "local"
+   [immutable_store.composite.local]
+   mode = "local"
 
-    [immutable_store.composite.local.local]
-    path = "/var/lib/lore-machine/store"
-    max_size = 500000000000
-    max_capacity = 50000000
+   [immutable_store.composite.local.local]
+   path = "/var/lib/lore-machine/store"
+   max_size = 500000000000
+   max_capacity = 50000000
 
-    [immutable_store.composite.durable]
-    mode = "remote"
+   [immutable_store.composite.durable]
+   mode = "remote"
 
-    [immutable_store.composite.durable.remote]
-    remote_url = "lores://lore.google.com:41337"
+   [immutable_store.composite.durable.remote]
+   remote_url = "lores://lore.google.com:41337"
 
-    [mutable_store]
-    mode = "remote"
+   [mutable_store]
+   mode = "remote"
 
-    [mutable_store.remote]
-    remote_url = "lores://lore.google.com:41337"
-    ```
+   [mutable_store.remote]
+   remote_url = "lores://lore.google.com:41337"
+   ```
 
-    What to adjust:
+   What to adjust:
 
-    - `[server.auth]` and the authorizer. The sockets require `[server.auth]` and an authorizer that grants per partition: `auth_url` as above, or `resource_claim` for partition-scoped OIDC tokens. See [Authentication](../reference/lore-server-config.md#authentication) and [Container sockets](../reference/lore-server-config.md#container-sockets).
-    - `forward`. Name each host by its bare host name, with no scheme or port. A request for a host the table leaves out fails with `PERMISSION_DENIED`. See [Forwarded gRPC](../reference/lore-server-config.md#forwarded-grpc).
-    - The local tier. Set `max_size` to the bytes its disk can spare and `max_capacity` to the entries whose index the server can keep in memory; without `max_capacity` it never evicts. See [Local store mode](../reference/lore-server-config.md#local-store-mode).
-    - Verification. The `remote` tier trusts the upstream and checks only each payload's sizes, while the containers' clients check what they fetch. Set `verify = true` in `[immutable_store.composite.durable.remote]` to have the server check each payload too.
-    - `upstream_connections`. The storage connections to the upstream that all the containers' requests share, from `1` to `10`.
+   - `[server.auth]` and the authorizer. The sockets require `[server.auth]` and an authorizer that grants per partition: `auth_url` as above, or `resource_claim` for partition-scoped OIDC tokens. See [Authentication](../reference/lore-server-config.md#authentication) and [Container sockets](../reference/lore-server-config.md#container-sockets).
+   - `forward`. Name each host by its bare host name, with no scheme or port. A request for a host the table leaves out fails with `PERMISSION_DENIED`. See [Forwarded gRPC](../reference/lore-server-config.md#forwarded-grpc).
+   - The local tier. Set `max_size` to the bytes its disk can spare and `max_capacity` to the entries whose index the server can keep in memory; without `max_capacity` it never evicts. See [Local store mode](../reference/lore-server-config.md#local-store-mode).
+   - Verification. The `remote` tier trusts the upstream and checks only each payload's sizes, while the containers' clients check what they fetch. Set `verify = true` in `[immutable_store.composite.durable.remote]` to have the server check each payload too.
+   - `upstream_connections`. The storage connections to the upstream that all the containers' requests share, from `1` to `10`.
 
-    The server keeps a gRPC listener of its own, which the containers don't use; binding it to `127.0.0.1` keeps it off the network.
+   The server keeps a gRPC listener of its own, which the containers don't use; binding it to `127.0.0.1` keeps it off the network.
 
 4. **Start the server.**
 
-    Start it as the server's user, with the token store from step 1, and under the machine's service manager so it restarts if it stops:
+   Start it as the server's user, with the token store from step 1, and under the machine's service manager so it restarts if it stops:
 
-    ```bash
-    LORE_AUTH_STORE=fallback LORE_AUTH_PATH=/var/lib/lore-machine/auth \
-      loreserver --config /etc/lore-machine/config
-    ```
+   ```bash
+   LORE_AUTH_STORE=fallback LORE_AUTH_PATH=/var/lib/lore-machine/auth \
+     loreserver --config /etc/lore-machine/config
+   ```
 
-    Don't set `LORE_UDS_SOCKET` for the server: it refuses to start with it. Once its sockets are bound, it logs `Lore socket server listening` with the number of sockets, and each socket file exists:
+   Don't set `LORE_UDS_SOCKET` for the server: it refuses to start with it. Once its sockets are bound, it logs `Lore socket server listening` with the number of sockets, and each socket file exists:
 
-    ```bash
-    ls -l /run/lore-machine/*/lore.sock
-    ```
+   ```bash
+   ls -l /run/lore-machine/*/lore.sock
+   ```
 
 5. **Start each container with its socket.**
 
-    Mount the container's socket directory and set `LORE_UDS_SOCKET` to the socket's absolute path inside the container. Every Lore process reads the variable from its own environment, the Lore service included, so set it for the whole container:
+   Mount the container's socket directory and set `LORE_UDS_SOCKET` to the socket's absolute path inside the container. Every Lore process reads the variable from its own environment, the Lore service included, so set it for the whole container:
 
-    ```bash
-    docker run --detach --name build-1 \
-      --network none \
-      --volume /run/lore-machine/build-1:/run/lore \
-      --env LORE_UDS_SOCKET=/run/lore/lore.sock \
-      <image> <command>
-    ```
+   ```bash
+   docker run --detach --name build-1 \
+     --network none \
+     --volume /run/lore-machine/build-1:/run/lore \
+     --env LORE_UDS_SOCKET=/run/lore/lore.sock \
+     <image> <command>
+   ```
 
-    Mount the directory, not the socket file: the server binds a new socket at each start, and a mounted file would keep the old one. The container needs no network: its storage and gRPC requests, logins with an API key included, go through the socket. Only OIDC logins in a browser or with client credentials go to the network.
+   Mount the directory, not the socket file: the server binds a new socket at each start, and a mounted file would keep the old one. The container needs no network: its storage and gRPC requests, logins with an API key included, go through the socket. Only OIDC logins in a browser or with client credentials go to the network.
 
 6. **Give each container its tokens.**
 
-    Mount a token store the container may use and point `LORE_AUTH_PATH` at it, or log in through the socket:
+   Mount a token store the container may use and point `LORE_AUTH_PATH` at it, or log in through the socket:
 
-    ```bash
-    docker exec build-1 lore auth login lore-unix://lore.google.com:41337 \
-      --token-type api-key --token "$USER_API_KEY"
-    ```
+   ```bash
+   docker exec build-1 lore auth login lore-unix://lore.google.com:41337 \
+     --token-type api-key --token "$USER_API_KEY"
+   ```
 
-    The machine server checks each storage session against these tokens, and the upstream checks every forwarded request, so a container reaches only the repositories its tokens grant.
+   The machine server checks each storage session against these tokens, and the upstream checks every forwarded request, so a container reaches only the repositories its tokens grant.
 
 7. **Clone through the machine server.**
 
-    In the container, name the upstream's host and port in a `lore-unix` URL:
+   In the container, name the upstream's host and port in a `lore-unix` URL:
 
-    ```bash
-    docker exec build-1 lore clone lore-unix://lore.google.com:41337/my-project /work/my-project
-    ```
+   ```bash
+   docker exec build-1 lore clone lore-unix://lore.google.com:41337/my-project /work/my-project
+   ```
 
 ## Result
 

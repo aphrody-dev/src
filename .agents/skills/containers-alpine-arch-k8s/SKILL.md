@@ -11,7 +11,7 @@ description: Build, run, and ship containers and Kubernetes workloads for src. U
 | :---------------------------------------------------------------------------- | :--------------------- | :----------------------------------------------------------------------------------------------------------------- |
 | Runtime, CI job, deployable service                                           | `alpine:3.23`          | musl. Build Rust as static musl, Go with `CGO_ENABLED=0`, Bun via `oven/bun:<ver>-alpine`.                         |
 | Toolchain or workstation image (Rust + Go + Bun + C++, Chromium-style builds) | `archlinux:base-devel` | amd64 only. Pin a dated tag `base-devel-YYYYMMDD.0.N` for reproducible rebuilds (see `archlinux-docker/REPRO.md`). |
-| Reproducible shell without containers                                         | `infra/nix/flake.nix`  | `nix develop ./infra/nix` / `just nix-shell`. Images from Nix: `dockerTools` (see nix.dev tutorial below).                     |
+| Reproducible shell without containers                                         | `infra/nix/flake.nix`  | `nix develop ./infra/nix` / `just nix-shell`. Images from Nix: `dockerTools` (see nix.dev tutorial below).         |
 | Final stage for a single static binary                                        | `scratch` or `alpine`  | Prefer `alpine` when a shell or CA bundle is needed.                                                               |
 
 Never use `debian`, `ubuntu`, `*-slim`, `*-bookworm`, `*-trixie`, `*-jammy`, or `*-noble` tags, including in builder stages. Official language images have Alpine variants: `golang:<ver>-alpine3.23`, `rust:<ver>-alpine3.23`, `oven/bun:<ver>-alpine`, `node:<ver>-alpine3.23`, `python:<ver>-alpine3.23`.

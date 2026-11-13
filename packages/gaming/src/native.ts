@@ -39,7 +39,9 @@ export function steamJson<T = unknown>(args: string[], root?: string): T {
       throw new NativeError(
         "this ay has no `steam` command; update it (`ay self-update`) or set AY_BIN",
       );
-    throw new NativeError(err || `ay steam ${args.join(" ")}: exit ${r.exitCode}`);
+    throw new NativeError(
+      err || `ay steam ${args.join(" ")}: exit ${r.exitCode}`,
+    );
   }
   return JSON.parse(r.stdout.toString()) as T;
 }

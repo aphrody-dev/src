@@ -14,11 +14,7 @@ export interface ForkedRepoEntry {
   readonly url: `https://github.com/aphrody-labs/${string}`;
   readonly plane: RuntimePlane;
   readonly category:
-    | "runtime"
-    | "js-engine"
-    | "v8-binding"
-    | "native-dep"
-    | "build-tool";
+    "runtime" | "js-engine" | "v8-binding" | "native-dep" | "build-tool";
   readonly pinnedCommit?: string;
   readonly description: string;
 }

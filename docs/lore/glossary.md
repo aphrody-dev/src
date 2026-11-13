@@ -223,7 +223,7 @@ Also see: partition.
 
 ### Lock
 
-A server-recorded, exclusive, file-level claim meant to facilitate coordinated edits to content that can't be merged automatically, such as a binary asset or a serialized scene. Acquiring a lock fails if another user already holds one on the same resource, but locks are *advisory*: the storage, push, and merge paths never consult them, so holding a lock does not stop another user from committing or pushing a change to that file — honoring locks is the responsibility of the client application.
+A server-recorded, exclusive, file-level claim meant to facilitate coordinated edits to content that can't be merged automatically, such as a binary asset or a serialized scene. Acquiring a lock fails if another user already holds one on the same resource, but locks are _advisory_: the storage, push, and merge paths never consult them, so holding a lock does not stop another user from committing or pushing a change to that file — honoring locks is the responsibility of the client application.
 
 Also see: binary-first.
 

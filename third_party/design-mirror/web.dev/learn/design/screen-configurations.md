@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Responsive web design was in many ways a reaction to mobile phones. Before smartphones appeared, very few people seriously considered how websites should look and feel on handheld devices. That changed with the meteoric rise of mobile phones featuring built-in web browsers.
 
 Responsive web design encouraged a mindset that questioned assumptions. Whereas previously it was common to assume that a website would only be viewed on a desktop computer, now it's standard practice to design that same website for phones and tablets as well. In fact, [mobile usage has now eclipsed desktop usage](https://www.statista.com/statistics/277125/share-of-website-traffic-coming-from-mobile-devices/) on the web.
@@ -41,13 +42,14 @@ If the `vertical-viewport-segments` media feature reports a value of `2` and `ho
   // Styles for stacked screens.
 }
 ```
- Diagram from [Microsoft Edge Explainers](https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/main/Foldables/explainer.md).
+
+Diagram from [Microsoft Edge Explainers](https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/main/Foldables/explainer.md).
 
 If both `vertical-viewport-segments` and `horizontal-viewport-segments` report a value of `1` this means the website is being displayed on just one screen, even if the device has more than one screen. This is equivalent to not using any media query.
 
 ## Environment variables
 
-The `viewport-segments` media feature by itself won't help you design around that annoying hinge. You need a way of knowing the size of the hinge. That's where [environment](https://developer.mozilla.org/docs/Web/CSS/env()) variables can help.
+The `viewport-segments` media feature by itself won't help you design around that annoying hinge. You need a way of knowing the size of the hinge. That's where [environment](<https://developer.mozilla.org/docs/Web/CSS/env()>) variables can help.
 
 Environment variables in CSS allow you to factor awkward device intrusions into your styles. For example, you can design around the "notch" on the iPhone X using the environment values `safe-area-inset-top`, `safe-area-inset-right`, `safe-area-inset-bottom` and `safe-area-inset-left`. These keywords are wrapped in an `env()` function.
 
@@ -74,7 +76,10 @@ body {
 For those environment variables to work on the iPhone X, update the `meta` element that specifies `viewport` information:
 
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
+/>
 ```
 
 Now your page layout will take up the entire viewport and safely pad the document with device-provided inset values.
@@ -84,7 +89,7 @@ For foldable screens, six new environment variables are being proposed: `viewpor
 > [!CAUTION]
 > **Caution:** Remember, this is just at the proposal stage right now. The specific syntax for the environment variables may well change.
 
- Diagram from [Microsoft Edge Explainers](https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/main/Foldables/explainer.md).
+Diagram from [Microsoft Edge Explainers](https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/main/Foldables/explainer.md).
 
 > [!NOTE]
 > **Note:** It might seem a little strange to see names proposed with `left`, `right`, `top`, and `bottom`. If you're using logical properties you would expect terms like `inline-start`, `inline-end`, `block-start`, and `block-end`. In this instance though, the names refer to the hardware's physical properties, regardless of the writing mode used by the website being displayed.
@@ -120,7 +125,7 @@ For dual screens with a vertical hinge, set the first column to be the width of 
 ```
 
 Treat dual screens as an opportunity. Perhaps one screen could be used to display scrollable text content while the other displays a fixed element like an image or a map.
- Diagram from [Microsoft Edge Explainers](https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/main/Foldables/explainer.md).
+Diagram from [Microsoft Edge Explainers](https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/main/Foldables/explainer.md).
 
 ## The future
 

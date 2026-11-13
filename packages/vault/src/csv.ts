@@ -11,22 +11,32 @@ export function parseCsv(text: string): string[][] {
     const c = s[i]!;
     if (q) {
       if (c === '"') {
-        if (s[i + 1] === '"') { field += '"'; i++; } else q = false;
+        if (s[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else q = false;
       } else field += c;
     } else if (c === '"') q = true;
-    else if (c === ",") { row.push(field); field = ""; }
-    else if (c === "\n" || c === "\r") {
+    else if (c === ",") {
+      row.push(field);
+      field = "";
+    } else if (c === "\n" || c === "\r") {
       if (c === "\r" && s[i + 1] === "\n") i++;
-      row.push(field); field = "";
+      row.push(field);
+      field = "";
       if (row.length > 1 || row[0] !== "") rows.push(row);
       row = [];
     } else field += c;
   }
-  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  if (field !== "" || row.length) {
+    row.push(field);
+    rows.push(row);
+  }
   return rows;
 }
 
-const cell = (v: string): string => (/[",\r\n]/.test(v) || /^\s|\s$/.test(v) ? `"${v.replaceAll('"', '""')}"` : v);
+const cell = (v: string): string =>
+  /[",\r\n]/.test(v) || /^\s|\s$/.test(v) ? `"${v.replaceAll('"', '""')}"` : v;
 
 export function stringifyCsv(rows: string[][]): string {
   return rows.map((r) => r.map(cell).join(",")).join("\n") + "\n";

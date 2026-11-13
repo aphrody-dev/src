@@ -14,19 +14,25 @@ import { dirname, join, relative, resolve } from "node:path";
 // SemVer 2.0.0 (semver.org): numeric identifiers without leading zeros, optional pre-release and build metadata.
 const NUM = "0|[1-9]\\d*";
 const PRE = `(?:${NUM}|\\d*[A-Za-z-][0-9A-Za-z-]*)`;
-export const SEMVER = new RegExp(`^(${NUM})\\.(${NUM})\\.(${NUM})(?:-(${PRE}(?:\\.${PRE})*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$`);
+export const SEMVER = new RegExp(
+  `^(${NUM})\\.(${NUM})\\.(${NUM})(?:-(${PRE}(?:\\.${PRE})*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$`,
+);
 
 /** SemVer precedence (build metadata ignored, as the spec requires). */
 export function cmp(a: string, b: string): number {
-  const pa = SEMVER.exec(a), pb = SEMVER.exec(b);
+  const pa = SEMVER.exec(a),
+    pb = SEMVER.exec(b);
   if (!pa || !pb) throw new Error(`not SemVer: ${pa ? b : a}`);
-  for (let i = 1; i <= 3; i++) if (+pa[i]! !== +pb[i]!) return +pa[i]! - +pb[i]!;
+  for (let i = 1; i <= 3; i++)
+    if (+pa[i]! !== +pb[i]!) return +pa[i]! - +pb[i]!;
   if (!pa[4] || !pb[4]) return pa[4] ? -1 : pb[4] ? 1 : 0;
-  const x = pa[4].split("."), y = pb[4].split(".");
+  const x = pa[4].split("."),
+    y = pb[4].split(".");
   for (let i = 0; i < Math.max(x.length, y.length); i++) {
     if (x[i] === undefined) return -1;
     if (y[i] === undefined) return 1;
-    const nx = /^\d+$/.test(x[i]!), ny = /^\d+$/.test(y[i]!);
+    const nx = /^\d+$/.test(x[i]!),
+      ny = /^\d+$/.test(y[i]!);
     if (nx && ny && +x[i]! !== +y[i]!) return +x[i]! - +y[i]!;
     if (nx !== ny) return nx ? -1 : 1;
     if (x[i] !== y[i]) return x[i]! < y[i]! ? -1 : 1;
@@ -38,44 +44,73 @@ export function cmp(a: string, b: string): number {
 export function latestStable(tags: string[]): string | null {
   const v = tags
     .map((t) => t.replace(/^refs\/tags\//, "").replace(/\^\{\}$/, ""))
-    .filter((t) => t.startsWith("v") && SEMVER.test(t.slice(1)) && !/[-+]/.test(t))
+    .filter(
+      (t) => t.startsWith("v") && SEMVER.test(t.slice(1)) && !/[-+]/.test(t),
+    )
     .map((t) => t.slice(1));
   return v.sort(cmp).at(-1) ?? null;
 }
 
-const header = (line: string) => /^\s*\[\[?\s*([^\]]+?)\s*\]\]?\s*(#.*)?$/.exec(line)?.[1] ?? null;
+const header = (line: string) =>
+  /^\s*\[\[?\s*([^\]]+?)\s*\]\]?\s*(#.*)?$/.exec(line)?.[1] ?? null;
 
 /** Root Cargo.toml with [workspace.package] version set to v; throws when the key is absent. */
 export function setWorkspaceVersion(toml: string, v: string): string {
-  let sec = "", done = false;
+  let sec = "",
+    done = false;
   const out = toml.split("\n").map((line) => {
     const h = header(line);
-    if (h !== null) { sec = h; return line; }
-    if (sec === "workspace.package" && !done && /^\s*version\s*=\s*"/.test(line)) { done = true; return line.replace(/(=\s*")[^"]*(")/, `$1${v}$2`); }
+    if (h !== null) {
+      sec = h;
+      return line;
+    }
+    if (
+      sec === "workspace.package" &&
+      !done &&
+      /^\s*version\s*=\s*"/.test(line)
+    ) {
+      done = true;
+      return line.replace(/(=\s*")[^"]*(")/, `$1${v}$2`);
+    }
     return line;
   });
-  if (!done) throw new Error("Cargo.toml: no version key in [workspace.package]");
+  if (!done)
+    throw new Error("Cargo.toml: no version key in [workspace.package]");
   return out.join("\n");
 }
 
 /** A manifest with the version of every path dependency on an inheriting crate set to v, in dependency sections
  *  only: inline `name = { path = "..", version = ".." }` and `[<...>dependencies.<name>]` tables.
  *  `dir` = the manifest's directory, `inherit` = norm()ed directories of crates that use version.workspace. */
-export function setPathDepVersions(toml: string, dir: string, inherit: Set<string>, v: string): string {
+export function setPathDepVersions(
+  toml: string,
+  dir: string,
+  inherit: Set<string>,
+  v: string,
+): string {
   const lines = toml.split("\n");
   const isDeps = (s: string) => /(^|\.)(dev-|build-)?dependencies$/.test(s);
-  const isDepTable = (s: string) => /(^|\.)(dev-|build-)?dependencies\.[^.]+$/.test(s);
+  const isDepTable = (s: string) =>
+    /(^|\.)(dev-|build-)?dependencies\.[^.]+$/.test(s);
   const hits = (p: string) => inherit.has(norm(resolve(dir, p)));
   let sec = "";
-  let table: number[] = [], tablePath: string | null = null;
+  let table: number[] = [],
+    tablePath: string | null = null;
   const flush = () => {
-    if (tablePath && hits(tablePath)) for (const i of table) lines[i] = lines[i]!.replace(/(=\s*")[^"]*(")/, `$1${v}$2`);
-    table = []; tablePath = null;
+    if (tablePath && hits(tablePath))
+      for (const i of table)
+        lines[i] = lines[i]!.replace(/(=\s*")[^"]*(")/, `$1${v}$2`);
+    table = [];
+    tablePath = null;
   };
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     const h = header(line);
-    if (h !== null) { flush(); sec = h; continue; }
+    if (h !== null) {
+      flush();
+      sec = h;
+      continue;
+    }
     if (isDepTable(sec)) {
       const p = /^\s*path\s*=\s*"([^"]+)"/.exec(line);
       if (p) tablePath = p[1]!;
@@ -99,22 +134,50 @@ export const norm = (p: string) => {
 
 export type Drift = { file: string; what: string };
 
-export function freeze(root: string, check: boolean): { version: string; drift: Drift[]; errors: string[] } {
+export function freeze(
+  root: string,
+  check: boolean,
+): { version: string; drift: Drift[]; errors: string[] } {
   const errors: string[] = [];
   const drift: Drift[] = [];
   const vf = join(root, "VERSION");
   const version = existsSync(vf) ? readFileSync(vf, "utf8").trim() : "";
   if (!SEMVER.test(version) || version.includes("+"))
-    return { version, drift, errors: [`VERSION: missing or not SemVer X.Y.Z[-pre] without build metadata (${JSON.stringify(version)})`] };
+    return {
+      version,
+      drift,
+      errors: [
+        `VERSION: missing or not SemVer X.Y.Z[-pre] without build metadata (${JSON.stringify(version)})`,
+      ],
+    };
 
-  const meta = Bun.spawnSync(["cargo", "metadata", "--no-deps", "--format-version", "1", "--offline"], { cwd: root, stdout: "pipe", stderr: "pipe" });
-  if (meta.exitCode !== 0) return { version, drift, errors: [`cargo metadata: ${meta.stderr.toString().trim().split("\n").at(-1)}`] };
-  const pkgs = (JSON.parse(meta.stdout.toString()) as { packages: { name: string; manifest_path: string }[] }).packages;
+  const meta = Bun.spawnSync(
+    ["cargo", "metadata", "--no-deps", "--format-version", "1", "--offline"],
+    { cwd: root, stdout: "pipe", stderr: "pipe" },
+  );
+  if (meta.exitCode !== 0)
+    return {
+      version,
+      drift,
+      errors: [
+        `cargo metadata: ${meta.stderr.toString().trim().split("\n").at(-1)}`,
+      ],
+    };
+  const pkgs = (
+    JSON.parse(meta.stdout.toString()) as {
+      packages: { name: string; manifest_path: string }[];
+    }
+  ).packages;
   const manifests = pkgs.map((p) => p.manifest_path);
   const inherit = new Set<string>();
   for (const m of manifests) {
     const t = readFileSync(m, "utf8");
-    if (/^\s*version\s*(?:\.\s*workspace\s*=\s*true|=\s*\{\s*workspace\s*=\s*true\s*\})/m.test(t)) inherit.add(norm(dirname(m)));
+    if (
+      /^\s*version\s*(?:\.\s*workspace\s*=\s*true|=\s*\{\s*workspace\s*=\s*true\s*\})/m.test(
+        t,
+      )
+    )
+      inherit.add(norm(dirname(m)));
   }
 
   const edit = (file: string, f: (s: string) => string, what: string) => {
@@ -126,43 +189,101 @@ export function freeze(root: string, check: boolean): { version: string; drift: 
   };
   const rootToml = join(root, "Cargo.toml");
   try {
-    edit(rootToml, (s) => setPathDepVersions(setWorkspaceVersion(s, version), root, inherit, version), `[workspace.package] / workspace path deps -> ${version}`);
+    edit(
+      rootToml,
+      (s) =>
+        setPathDepVersions(
+          setWorkspaceVersion(s, version),
+          root,
+          inherit,
+          version,
+        ),
+      `[workspace.package] / workspace path deps -> ${version}`,
+    );
   } catch (e) {
     return { version, drift, errors: [String((e as Error).message)] };
   }
-  for (const m of manifests) if (resolve(m) !== resolve(rootToml)) edit(m, (s) => setPathDepVersions(s, dirname(m), inherit, version), `path deps -> ${version}`);
-  edit(join(root, "package.json"), (s) => s.replace(/("version"\s*:\s*")[^"]*(")/, `$1${version}$2`), `"version" -> ${version}`);
+  for (const m of manifests)
+    if (resolve(m) !== resolve(rootToml))
+      edit(
+        m,
+        (s) => setPathDepVersions(s, dirname(m), inherit, version),
+        `path deps -> ${version}`,
+      );
+  edit(
+    join(root, "package.json"),
+    (s) => s.replace(/("version"\s*:\s*")[^"]*(")/, `$1${version}$2`),
+    `"version" -> ${version}`,
+  );
 
   if (!check && drift.length) {
-    const lock = Bun.spawnSync(["cargo", "metadata", "--format-version", "1", "--offline"], { cwd: root, stdout: "ignore", stderr: "pipe" });
-    if (lock.exitCode !== 0) errors.push(`Cargo.lock refresh: ${lock.stderr.toString().trim().split("\n").at(-1)}`);
+    const lock = Bun.spawnSync(
+      ["cargo", "metadata", "--format-version", "1", "--offline"],
+      { cwd: root, stdout: "ignore", stderr: "pipe" },
+    );
+    if (lock.exitCode !== 0)
+      errors.push(
+        `Cargo.lock refresh: ${lock.stderr.toString().trim().split("\n").at(-1)}`,
+      );
   }
 
   // Tags from origin (the CI checkout is shallow, without tags); unreachable origin = explicit failure.
-  const remote = Bun.spawnSync(["git", "ls-remote", "--tags", "origin", "v*"], { cwd: root, stdout: "pipe", stderr: "pipe" });
+  const remote = Bun.spawnSync(["git", "ls-remote", "--tags", "origin", "v*"], {
+    cwd: root,
+    stdout: "pipe",
+    stderr: "pipe",
+  });
   if (remote.exitCode !== 0) {
-    errors.push(`git ls-remote origin: ${remote.stderr.toString().trim().split("\n").at(-1)} (tags needed to compare VERSION with the last stable)`);
+    errors.push(
+      `git ls-remote origin: ${remote.stderr.toString().trim().split("\n").at(-1)} (tags needed to compare VERSION with the last stable)`,
+    );
     return { version, drift, errors };
   }
-  const refs = remote.stdout.toString().split("\n").filter(Boolean).map((l) => l.split("\t") as [string, string]);
+  const refs = remote.stdout
+    .toString()
+    .split("\n")
+    .filter(Boolean)
+    .map((l) => l.split("\t") as [string, string]);
   const stable = latestStable(refs.map(([, r]) => r));
-  if (stable && cmp(version, stable) < 0) errors.push(`VERSION ${version} is below the latest stable tag v${stable}`);
+  if (stable && cmp(version, stable) < 0)
+    errors.push(`VERSION ${version} is below the latest stable tag v${stable}`);
   else if (stable && cmp(version, stable) === 0) {
     // Equal is valid only on the tagged commit itself; the next commit bumps VERSION (docs/VERSIONING.md).
-    const head = Bun.spawnSync(["git", "rev-parse", "HEAD"], { cwd: root, stdout: "pipe" }).stdout.toString().trim();
-    const at = refs.filter(([, r]) => r === `refs/tags/v${stable}` || r === `refs/tags/v${stable}^{}`).map(([h]) => h);
-    if (!at.includes(head)) errors.push(`VERSION ${version} equals the stable tag v${stable} but HEAD is not that commit: bump VERSION (a canary ${version}-canary.N would sort before v${stable})`);
+    const head = Bun.spawnSync(["git", "rev-parse", "HEAD"], {
+      cwd: root,
+      stdout: "pipe",
+    })
+      .stdout.toString()
+      .trim();
+    const at = refs
+      .filter(
+        ([, r]) =>
+          r === `refs/tags/v${stable}` || r === `refs/tags/v${stable}^{}`,
+      )
+      .map(([h]) => h);
+    if (!at.includes(head))
+      errors.push(
+        `VERSION ${version} equals the stable tag v${stable} but HEAD is not that commit: bump VERSION (a canary ${version}-canary.N would sort before v${stable})`,
+      );
   }
   return { version, drift, errors };
 }
 
-export function main(args: string[], root = process.env.SRC_ROOT ?? join(import.meta.dir, "..", "..", "..")): never {
+export function main(
+  args: string[],
+  root = process.env.SRC_ROOT ?? join(import.meta.dir, "..", "..", ".."),
+): never {
   const check = args.includes("--check");
   const r = freeze(root, check);
-  for (const d of r.drift) console.error(`${check ? "drift" : "fixed"} ${d.file}: ${d.what}`);
+  for (const d of r.drift)
+    console.error(`${check ? "drift" : "fixed"} ${d.file}: ${d.what}`);
   for (const e of r.errors) console.error(`error ${e}`);
   const bad = r.errors.length > 0 || (check && r.drift.length > 0);
-  console.error(bad ? `ay release freeze${check ? " --check" : ""}: FAIL (VERSION ${r.version})${check && r.drift.length ? "; fix with `ay release freeze`" : ""}` : `ay release freeze${check ? " --check" : ""}: ok, monorepo version ${r.version}${check ? "" : `, ${r.drift.length} file(s) updated`}`);
+  console.error(
+    bad
+      ? `ay release freeze${check ? " --check" : ""}: FAIL (VERSION ${r.version})${check && r.drift.length ? "; fix with `ay release freeze`" : ""}`
+      : `ay release freeze${check ? " --check" : ""}: ok, monorepo version ${r.version}${check ? "" : `, ${r.drift.length} file(s) updated`}`,
+  );
   process.exit(bad ? 1 : 0);
 }
 

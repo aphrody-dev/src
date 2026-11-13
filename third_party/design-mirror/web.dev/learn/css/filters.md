@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 023: Filters](https://thecsspodcast.libsyn.com/023-filters)
 
 Say you need to build an element that's got a slightly opaque,
@@ -48,9 +49,10 @@ This needs to be a length unit, like `10px`. Percentages are not accepted.
 
 ```css
 .my-element {
-    filter: blur(0.2em);
+  filter: blur(0.2em);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/VwPQJwX?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen VwPQJwX by web-dot-dev on Codepen"></iframe>
 
 ### `brightness`
@@ -73,7 +75,7 @@ Use values over 100% to increase the brightness.
 
 ```css
 .my-element {
-    filter: brightness(80%);
+  filter: brightness(80%);
 }
 ```
 
@@ -97,9 +99,10 @@ Set a value between 0% and 100% to decrease or increase the contrast, respective
 
 ```css
 .my-element {
-    filter: contrast(160%);
+  filter: contrast(160%);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/rNjJEOW?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen rNjJEOW by web-dot-dev on Codepen"></iframe>
 
 ### `grayscale`
@@ -121,9 +124,10 @@ If you pass a value greater than 100%, it will be capped at 100%.
 
 ```css
 .my-element {
-    filter: grayscale(80%);
+  filter: grayscale(80%);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/MWJQMKe?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen MWJQMKe by web-dot-dev on Codepen"></iframe>
 
 ### `invert`
@@ -146,9 +150,10 @@ the element will be completely inverted.
 
 ```css
 .my-element {
-    filter: invert(1);
+  filter: invert(1);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/yLgvdOO?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen yLgvdOO by web-dot-dev on Codepen"></iframe>
 
 ### `opacity`
@@ -168,9 +173,10 @@ If you pass no arguments, the element is fully visible.
 
 ```css
 .my-element {
-    filter: opacity(0.3);
+  filter: opacity(0.3);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/RwKQzae?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen RwKQzae by web-dot-dev on Codepen"></iframe>
 
 ### `saturate`
@@ -191,9 +197,10 @@ Instead of increasing or decreasing the brightness effect,
 
 ```css
 .my-element {
-    filter: saturate(155%);
+  filter: saturate(155%);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/BapYgQg?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen BapYgQg by web-dot-dev on Codepen"></iframe>
 
 ### `sepia`
@@ -215,9 +222,10 @@ Passing no arguments adds a full sepia effect (equivalent to `sepia(100%)`).
 
 ```css
 .my-element {
-    filter: sepia(70%);
+  filter: sepia(70%);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/WNRMqpb?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen WNRMqpb by web-dot-dev on Codepen"></iframe>
 
 ### `hue-rotate`
@@ -239,9 +247,10 @@ changing the part of the color wheel it references. If you pass no argument, it 
 
 ```css
 .my-element {
-    filter: hue-rotate(120deg);
+  filter: hue-rotate(120deg);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/ExZQBWw?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen ExZQBWw by web-dot-dev on Codepen"></iframe>
 
 ### `drop-shadow`
@@ -257,7 +266,7 @@ Browser Support
 
 You can apply a curve-hugging drop shadow like you would in a design tool,
 such as Photoshop with
-[`drop-shadow`](https://developer.mozilla.org/docs/Web/CSS/filter-function/drop-shadow()).
+[`drop-shadow`](<https://developer.mozilla.org/docs/Web/CSS/filter-function/drop-shadow()>).
 This shadow is applied to an alpha mask which makes it very useful for adding a shadow to a cutout image.
 The `drop-shadow` filter takes a shadow parameter which contains space separated offset-x, offset-y, blur and color values.
 It is almost identical to `box-shadow`,
@@ -265,9 +274,10 @@ but the `inset` keyword and spread value are not supported.
 
 ```css
 .my-element {
-    filter: drop-shadow(5px 5px 10px orange);
+  filter: drop-shadow(5px 5px 10px orange);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/PoWQrJr?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen PoWQrJr by web-dot-dev on Codepen"></iframe>
 
 Learn more about the different types of shadows in the [shadows](https://web.dev/learn/css/shadows.md.txt) module.

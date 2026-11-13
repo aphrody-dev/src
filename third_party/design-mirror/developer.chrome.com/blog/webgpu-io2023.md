@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how WebGPU unlocks the power of the GPU for faster machine learning performance and better graphics rendering.
 
- Corentin Wallez [X](https://twitter.com/DaKangz) [GitHub](https://github.com/Kangz) [Mastodon](https://mastodon.gamedev.place/@DaKangz)  Brandon Jones [X](https://twitter.com/tojiro) [GitHub](https://github.com/toji) [Mastodon](https://mastodon.social/@tojiro) [Homepage](https://toji.dev/)  François Beaufort [GitHub](https://github.com/beaufortfrancois)
+Corentin Wallez [X](https://twitter.com/DaKangz) [GitHub](https://github.com/Kangz) [Mastodon](https://mastodon.gamedev.place/@DaKangz) Brandon Jones [X](https://twitter.com/tojiro) [GitHub](https://github.com/toji) [Mastodon](https://mastodon.social/@tojiro) [Homepage](https://toji.dev/) François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 [Video](https://www.youtube.com/watch?v=m6T-Mq1BPXg)
 
@@ -46,12 +47,12 @@ That's why the demo uses an advanced algorithm called [Fast Fourier Transform](h
 WebGPU is also useful to accelerate machine learning, which has become a major use of GPUs in recent years.
 
 For a long time, creative developers have been repurposing WebGL's rendering API to perform non-rendering operations such as machine learning computations. However, this requires drawing the pixels of triangles as a way to initiate the computations, and carefully packing and unpacking tensor data in texture instead of more general purpose memory accesses.
- A single ML operator execution with WebGL.
+A single ML operator execution with WebGL.
 
 Using WebGL in this way requires developers to awkwardly conform their code to the expectations of an API designed only for drawing. Combined with the lack of basic features like shared memory access between computations, this leads to duplicate work and suboptimal performance.
 
 Compute shaders are WebGPU's primary new feature and remove these pain points. Compute shaders offer a more flexible programming model that takes advantage of the GPU's massively parallel nature while not being constrained by the strict structure of rendering operations.
- WebGPU compute shader efficiencies.
+WebGPU compute shader efficiencies.
 
 Compute shaders give more opportunity for sharing data and computation results within groups of shader work for better efficiency. This can lead to significant gains over previous attempts to use WebGL for the same purpose.
 
@@ -133,7 +134,7 @@ This has the happy side effect that WebGPU is easy to learn and use. It relies o
 It's exciting to see all the new possibilities that WebGPU brings to the web platform and we're looking forward to seeing all the cool new use cases that you will find for WebGPU!
 
 A vibrant ecosystem of libraries and frameworks has been built around WebGL, and that same ecosystem is eager to embrace WebGPU. Support for WebGPU is in-progress or already complete in many popular Javascript WebGL libraries, and in some cases taking advantage of the benefits of WebGPU might be as simple as changing a single flag!
- Frameworks, applications, and libraries with finished or ongoing WebGPU ports.
+Frameworks, applications, and libraries with finished or ongoing WebGPU ports.
 
 And this [first release in Chrome 113](https://developer.chrome.com/blog/webgpu-release.md.txt) is just a start. While our initial release is for Windows, ChromeOS, and MacOS, we plan to bring WebGPU to the remaining platforms like Android and Linux in the near future.
 

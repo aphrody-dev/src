@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 You can fill out a form in many ways.
 People might use your form on their smartphone while standing in a crowded bus,
 or with a screen reader, or from an old laptop.
@@ -87,9 +88,9 @@ If you're curious how the on-screen keyboard works for another `type`, try `type
 Imagine that you filled out a long form,
 and you're ready to submit it. But where is the **Submit** button?
 It may be behind the browser toolbar, located at the bottom of the screen.
-One way to ensure that buttons are visible is to use the [`env()`](https://developer.mozilla.org/docs/Web/CSS/env()) CSS function.
+One way to ensure that buttons are visible is to use the [`env()`](<https://developer.mozilla.org/docs/Web/CSS/env()>) CSS function.
 Learn how to
-[ensure buttons aren't obscured by device user interfaces](https://developer.mozilla.org/docs/Web/CSS/env()#using_env_to_ensure_buttons_are_not_obscured_by_device_ui).
+[ensure buttons aren't obscured by device user interfaces](<https://developer.mozilla.org/docs/Web/CSS/env()#using_env_to_ensure_buttons_are_not_obscured_by_device_ui>).
 
 ## Ensure your form works on different platforms
 

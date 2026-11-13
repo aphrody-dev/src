@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Filling in an address can be time-consuming and frustrating. What is
 **Address line 2** for? You may not have a surname, so what should you enter in
 a **Surname** field? Avoid these confusions and help users fill out address

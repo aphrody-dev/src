@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 At Google IO 2018, we presented a roundup of tools, libraries and optimization techniques that make improving web performance easier. Here we explain them using The Oodles Theater app. We also talk about our experiments with predictive loading and the new Guess.js initiative.
 
- Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social) Ewa Gasperowicz [X](https://twitter.com/devnook)
+Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social) Ewa Gasperowicz [X](https://twitter.com/devnook)
 
 We've been pretty busy over the past year trying to figure out how to make the Web faster and
 more performant. This led to new tools, approaches and libraries that we'd like share with you
@@ -36,7 +37,7 @@ the complicated performance puzzle.
 Most users rate speed as being at the very top of the UX hierarchy of their needs. This isn't too
 surprising, because you can't really do a whole lot until a page is finished loading. You can't
 derive value from the page, you can't admire its aesthetics.
- **Fig. 1.** How important is speed to users? (Speed Matters, Vol. 3)
+**Fig. 1.** How important is speed to users? (Speed Matters, Vol. 3)
 
 We know that performance matters to the users, but it can also feel like a secret discovering
 where to start optimizing. Fortunately, there are tools that can help you on the way.
@@ -49,7 +50,7 @@ that allows you to make an audit of your website, and gives you hints on how to 
 We recently launched a bunch of
 [new performance audits](https://developer.chrome.com/blog/lighthouse-load-performance)
 that are really useful in everyday development workflow.
- **Fig. 2.** New Lighthouse audits
+**Fig. 2.** New Lighthouse audits
 
 Let's explore how you can take advantage of them on a practical example:
 [The Oodles Theater app](https://oodle-demo.firebaseapp.com/). It's a little demo web app,
@@ -57,7 +58,7 @@ where you can try out some of our favourite interactive Google Doodles and even 
 
 While building the app, we wanted to make sure that it was as performant as possible. The starting
 point for optimization was a Lighthouse report.
- **Fig. 3.** Lighthouse report for Oodles app
+**Fig. 3.** Lighthouse report for Oodles app
 
 The initial performance of our app as seen on Lighthouse report was pretty terrible.
 On a 3G network, the user needed to wait for 15 seconds for the first meaningful paint, or for
@@ -74,7 +75,7 @@ affecting the overall experience.
 ### Remove unnecessary resources
 
 There are some obvious things that can be safely removed: whitespace and comments.
- **Fig. 4.** Minify and compress JavaScript and CSS
+**Fig. 4.** Minify and compress JavaScript and CSS
 
 Lighthouse highlights this opportunity in the **Unminified CSS \& JavaScript audit** . We were using
 webpack for our build process, so in order to get minification we simply used the
@@ -114,7 +115,7 @@ that got updated.
 
 So far we removed the obvious parts of the unnecessary download, but what about the less obvious
 parts? For example, unused code.
- **Fig. 5.** Check code coverage
+**Fig. 5.** Check code coverage
 
 Sometimes we include in our apps code that is not really necessary. This happens especially
 if you work on your app for a longer period of time, your team or your dependencies change,
@@ -131,7 +132,7 @@ of our CSS unused, and a big bunch of JavaScript as well.
 Lighthouse also picked up this issue in the unused CSS rules audit. It showed a potential saving
 of over 400kb. So we got back to our code and we removed both the JavaScript and CSS part
 of that library.
- **Fig. 6.** If we drop MVC adapter our styles drop to 10KB!
+**Fig. 6.** If we drop MVC adapter our styles drop to 10KB!
 
 This brought our CSS bundle down 20-fold, which is pretty good for a tiny, two-line-long commit.
 
@@ -145,7 +146,7 @@ Removing actual code is never risk-free, so you should always look out for poten
 Our code was unused in 95% - there's still this 5% somewhere. Apparently one of our components
 was still using the styles from that library - the little arrows in the doodle slider. Because it
 was so small though, we could just go and manually incorporate those styles back into the buttons.
- **Fig. 7.** One component was still using the removed library
+**Fig. 7.** One component was still using the removed library
 
 So if you remove code, just make sure you have a proper testing workflow in place to help you
 guard against potential visual regressions.
@@ -158,7 +159,7 @@ they can have a big impact on their data plans, so it's really important to be m
 Lighthouse was able to detect that we had an issue with some of our network payloads using the
 [Enormous network payload](https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight)
 audit.
- **Fig. 8.** Detect enormous network payloads
+**Fig. 8.** Detect enormous network payloads
 
 Here we saw that we had over 3mb worth of code that was being shipped down -- which is quite a lot,
 especially on mobile.
@@ -175,7 +176,7 @@ or processed during idle time.
 
 In our case, because we're dealing with a lot of JavaScript bundles, we were fortunate because
 the JavaScript community has a rich set of JavaScript bundle auditing tools.
- **Fig. 9.** JavaScript bundle auditing
+**Fig. 9.** JavaScript bundle auditing
 
 We started off with webpack bundle analyzer, which informed us that we were including a
 dependency called unicode which was 1.6mb of parsed JavaScript, so quite a lot.
@@ -214,7 +215,7 @@ user interface components. That means they can be tapping on UI without anything
 actually happening. So it's important for us to understand why JavaScript costs so much.
 
 This is how a browser processes JavaScript.
- **Fig. 10.** JavaScript processing
+**Fig. 10.** JavaScript processing
 
 We first of all have to download that script, we have a JavaScript engine which then needs to parse
 that code, needs to compile it and execute it.
@@ -226,7 +227,7 @@ so it's important for us to try trimming this down.
 
 To help you discover these issues with your app, we introduced a new
 [JavaScript boot-up time audit](https://developer.chrome.com/docs/lighthouse/performance/bootup-time) to Lighthouse.
- **Fig. 11.** JavaScript boot up time audit
+**Fig. 11.** JavaScript boot up time audit
 
 And in the case of the Oodle app, it told us that we had 1.8 seconds of time spent in JavaScript
 boot-up. What was happening was that we were statically importing in all of our routes and
@@ -242,7 +243,7 @@ React Loadable, Vue.js, Angular, Polymer, Preact, and multiple other libraries.
 
 We incorporated code splitting into our application, we switched over from static imports to
 dynamic imports, allowing us to asynchronously lazy load code in as we needed it.
- **Fig. 13.** Code splitting with dynamic imports
+**Fig. 13.** Code splitting with dynamic imports
 
 The impact this had was both shrinking down the size of our bundles, but also decreasing our
 JavaScript boot up time. It took it down to 0.78 seconds, making the app 56% faster.
@@ -261,7 +262,7 @@ about it than we were. As a matter of fact, we failed on all three image-related
 
 We forgot to optimize our images, we were not sizing them correctly, and also we could get some
 gain from using other image formats.
- **Fig. 14.** Lighthouse image audits
+**Fig. 14.** Lighthouse image audits
 
 We started with optimizing our images.
 
@@ -280,7 +281,7 @@ image optimization solutions. so you can also simply host your images on those s
 If you don't want to do that because of the cost, or latency issues, projects like
 [Thumbor](http://thumbor.org/) or [Imageflow](https://github.com/imazen/imageflow) offer
 self-hosted alternatives.
- **Fig. 15.** Before and after optimization
+**Fig. 15.** Before and after optimization
 
 Our background PNG was flagged in webpack as big, and rightly so. After sizing it correctly to
 the viewport and running it through ImageOptim, we went down to 100kb, which is acceptable.
@@ -298,7 +299,7 @@ In Oodle app, we were using a GIF as an intro sequence on the home page. Accordi
 we could be saving over 7mb by switching to a more efficient video format. Our clip weighted about
 7.3mb, way too much for any reasonable website, so instead we turned it into a video element with
 two source files - an mp4 and WebM for wider browser support.
- **Fig. 16.** Replace Animated GIFs with video
+**Fig. 16.** Replace Animated GIFs with video
 
 We used the [FFmpeg](https://ffmpeg.org/) tool to convert our animation GIF into the mp4 file.
 The WebM format offers you even larger savings - the ImageOptim API can do such conversion for you.
@@ -341,11 +342,11 @@ loading behavior to our Oodle covers.
 
 ```html
 <!-- Import library -->
-import lazysizes from 'lazysizes'  <!-- or -->
+import lazysizes from 'lazysizes'
+<!-- or -->
 <script src="lazysizes.min.js"></script>
 
 <!-- Use it -->
-
 ```
 
 Lazysizes is smart because it does not only track the visibility changes of the element, but it
@@ -365,7 +366,7 @@ fetching first. So sometimes they'll fetch CSS before images or scripts.
 Something that could be useful is us, as authors of the page, informing the browser what's
 actually really important to us. Thankfully, over the last couple of years browser vendors have
 been adding a number of features to help us with this, e.g.
-[resource hints](https://web.dev/(https://www.keycdn.com/blog/resource-hints/)) like `link rel=preconnect`,
+[resource hints](<https://web.dev/(https://www.keycdn.com/blog/resource-hints/)>) like `link rel=preconnect`,
 or `preload` or `prefetch`.
 
 These capabilities that were brought to the web platform help the browser fetch the right thing
@@ -375,7 +376,7 @@ logic-based approaches that are done using script instead.
 Let's see how Lighthouse actually guides us towards using some of these features effectively.
 
 The first thing Lighthouse tells us to do is avoid multiple costly round trips to any origin.
- **Fig. 17.** Avoid multiple, costly round trips to any origin
+**Fig. 17.** Avoid multiple, costly round trips to any origin
 
 In the case of the Oodle app, we're actually heavily using Google Fonts. Whenever you drop a
 Google Font stylesheet into your page it's going to connect up to two subdomains. And what
@@ -390,7 +391,7 @@ resources are hosted on [Gstatic](https://superuser.com/a/64724), this can have 
 impact. So we applied this optimization and we shaved off a few hundred milliseconds.
 
 The next thing that Lighthouse suggests is that we preload key requests.
- **Fig. 18.** Preload key requests
+**Fig. 18.** Preload key requests
 
 `<link rel=preload>` is really powerful, it informs the browser that a resource is needed as
 part of the current navigation, and it tries to get the browser fetching it as soon as possible.
@@ -402,7 +403,7 @@ Preloading in a web font looks like this - specifying `rel=preload`, you pass in
 the type of font, and then you specify the type of font you're trying to load in, such as woff2.
 
 The impact this can have on your page is quite stark.
- **Fig. 19.** Impact of preloading resources
+**Fig. 19.** Impact of preloading resources
 
 Normally, without using link rel preload, if web fonts happen to be critical to your page, what
 the browser has to do is it first of all has to fetch your HTML, has to parse your CSS, and
@@ -434,7 +435,7 @@ try to help the browser deliver your critical resources as soon as possible.
 We've got something special to share with you today. In addition to features like resource hints,
 as well as preload, we've been working on a brand new experimental browser feature we're calling
 priority hints.
- **Fig. 20.** Priority hints
+**Fig. 20.** Priority hints
 
 This is a new feature that allows you to hint to the browser how important a resource is. It
 exposes a new attribute - importance - with the values low, high or auto.
@@ -444,7 +445,7 @@ styles, images, or fetch API calls to reduce contention. We can also boost the p
 important things, like our hero images.
 
 In the case of our Oodle app, this actually led to one practical place where we could optimize.
- **Fig. 21.** Set priority for the initially visible content
+**Fig. 21.** Set priority for the initially visible content
 
 Before we added lazy loading to our images, what the browser was doing is, we had this image
 carousel with all of our doodles and the browser was fetching all the images at the very start
@@ -464,7 +465,7 @@ block rendering of your text, and you definitely don't want to show invisible te
 
 We highlight this in Lighthouse now, with the **avoid invisible text while web fonts are loading**
 audit.
- **Fig. 22.** Avoid invisible text while Web Fonts are loading
+**Fig. 22.** Avoid invisible text while Web Fonts are loading
 
 If you load your web fonts using a font face block, you're letting the browser decide what to do
 if it takes a long time for that web font to fetch. Some browsers will wait anywhere up
@@ -476,17 +477,19 @@ week's classic doodles if the web font had taken too long. Thankfully, with a ne
 `font-display`, you actually get a lot more control over this process.
 
 ```css
-    @font-face {
-      font-family: 'Montserrat';
-      font-style: normal;
-      font-display: swap;
-      font-weight: 400;
-      src: local('Montserrat Regular'), local('Montserrat-Regular'),
-          /* Chrome 26+, Opera 23+, Firefox 39+ */
-          url('montserrat-v12-latin-regular.woff2') format('woff2'),
-            /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-          url('montserrat-v12-latin-regular.woff') format('woff');
-    }
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src:
+    local("Montserrat Regular"),
+    local("Montserrat-Regular"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url("montserrat-v12-latin-regular.woff2") format("woff2"),
+    /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+      url("montserrat-v12-latin-regular.woff") format("woff");
+}
 ```
 
 Font display helps you decide how web fonts will render or fallback based on how long it takes
@@ -499,7 +502,7 @@ face is available.
 
 In the case of our app, why this was great is that it allowed us to display some meaningful text
 very early on, and transition over to the web font once it was ready.
- **Fig. 23.** Font display outcome
+**Fig. 23.** Font display outcome
 
 In general, if you happen to be using web fonts, as a large percentage of the web does, have
 a good web font loading strategy in place.
@@ -515,7 +518,7 @@ at least some basic user experience a little bit earlier.
 
 On the Lighthouse timeline strip you can see that during these first few seconds when all the
 resources are loading, the user cannot really see any content.
- **Fig. 24.** Reduce render-blocking stylesheets opportunity
+**Fig. 24.** Reduce render-blocking stylesheets opportunity
 
 Downloading and processing external stylesheets is blocking our rendering process from making
 any progress.
@@ -577,11 +580,11 @@ Analytics data, and use machine learning and models like
 [Markov chains](https://en.wikipedia.org/wiki/Markov_chain) or
 [neural network](https://en.wikipedia.org/wiki/Artificial_neural_network) in order
 to implement such models.
- **Fig. 25.** Data-driven Bundling for Web Apps
+**Fig. 25.** Data-driven Bundling for Web Apps
 
 In order to facilitate this experiments, we're happy to announce a new initiative we're calling
 [Guess.js](https://github.com/guess-js/guess).
- **Fig. 26.** Guess.js
+**Fig. 26.** Guess.js
 
 Guess.js is a project focused on data-driven user experiences for the web. We hope that it's going
 to inspire exploration of using data to improve web performance and go beyond that. It's all

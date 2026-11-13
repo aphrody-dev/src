@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Check that all custom controls have an appropriate `role` and
 any required ARIA attributes that confer their properties and state.
 For example, a custom checkbox needs a `role="checkbox"` and

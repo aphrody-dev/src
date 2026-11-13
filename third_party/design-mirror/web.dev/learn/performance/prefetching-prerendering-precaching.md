@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In the last couple of modules, you discovered concepts such as [deferring the
 loading of JavaScript](https://web.dev/learn/performance/code-split-javascript) and [lazy loading images and `<iframe>` elements](https://web.dev/learn/performance/lazy-load-images-and-iframe-elements.md.txt).
 Deferring resource loading decreases network and CPU usage during the initial
@@ -41,7 +42,7 @@ for that resource at [lowest priority](https://web.dev/articles/fetch-priority.m
 required for the current page.
 
 > [!NOTE]
-> **Note:** The `prefetch` resource hint is just that---a *hint* . Browsers may decide---based on a set of conditions around network quality, system-level preferences or other factors---whether or not to honor a `prefetch` hint.
+> **Note:** The `prefetch` resource hint is just that---a _hint_ . Browsers may decide---based on a set of conditions around network quality, system-level preferences or other factors---whether or not to honor a `prefetch` hint.
 
 Prefetching resources can improve the user experience, as the user is not
 required to wait for resources needed in the near future to be downloaded, as
@@ -50,8 +51,8 @@ they can be instantly retrieved from the disk cache at the time of need.
 ```html
 <head>
   <!-- ... -->
-  <link rel="prefetch" as="script" href="/date-picker.js">
-  <link rel="prefetch" as="style" href="/date-picker.css">
+  <link rel="prefetch" as="script" href="/date-picker.js" />
+  <link rel="prefetch" as="style" href="/date-picker.css" />
   <!-- ... -->
 </head>
 ```
@@ -73,7 +74,7 @@ It's also possible to prefetch a page and all its subresources by specifying the
 `as="document"` attribute when pointing to an HTML document:
 
 ```html
-<link rel="prefetch" href="/page" as="document">
+<link rel="prefetch" href="/page" as="document" />
 ```
 
 When the browser is idle, it may initiate a low priority request for `/page`.
@@ -88,12 +89,14 @@ included in the page's HTML, or added dynamically through JavaScript:
 
 ```html
 <script type="speculationrules">
-{
-  "prefetch": [{
-    "source": "list",
-    "urls": ["/page-a", "/page-b"]
-  }]
-}
+  {
+    "prefetch": [
+      {
+        "source": "list",
+        "urls": ["/page-a", "/page-b"]
+      }
+    ]
+  }
 </script>
 ```
 
@@ -127,14 +130,14 @@ Prerendering is supported through the Speculation Rules API:
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [
-    {
-      "source": "list",
-      "urls": ["/page-a", "page-b"]
-    }
-  ]
-}
+  {
+    "prerender": [
+      {
+        "source": "list",
+        "urls": ["/page-a", "page-b"]
+      }
+    ]
+  }
 </script>
 ```
 
@@ -158,7 +161,7 @@ the network. Service worker precaching uses a very effective service worker
 caching strategy, known as the [cache-only strategy](https://developer.chrome.com/docs/workbox/caching-strategies-overview/#cache-only). This pattern is highly
 effective because, once resources are placed in the service worker cache, they
 are fetched almost instantly upon request.
- The cache-only strategy only ever retrieves eligible resources from the network during the service worker's installation. Once installed, the cached resources are only ever retrieved from the service worker cache.
+The cache-only strategy only ever retrieves eligible resources from the network during the service worker's installation. Once installed, the cached resources are only ever retrieved from the service worker cache.
 
 > [!IMPORTANT]
 > **Important:** In the near future, a module is planned for this course that goes into detail on various performance optimizations that a service worker can provide, such as [runtime
@@ -179,13 +182,16 @@ precached. A precache manifest is a list of files and versioning information
 that serves as the "source of truth" for the resources to be precached.
 
 ```javascript
-[{  
-    url: 'script.ffaa4455.js',
-    revision: null
-}, {
-    url: '/index.html',
-    revision: '518747aa'
-}]
+[
+  {
+    url: "script.ffaa4455.js",
+    revision: null,
+  },
+  {
+    url: "/index.html",
+    revision: "518747aa",
+  },
+];
 ```
 
 The preceding code is an example manifest which includes two files:
@@ -200,8 +206,8 @@ subresources to speed up subsequent page navigations.
 
 ```javascript
 workbox.precaching.precacheAndRoute([
-  '/styles/product-page.ac29.css',
-  '/styles/product-page.39a1.js',
+  "/styles/product-page.ac29.css",
+  "/styles/product-page.39a1.js",
 ]);
 ```
 
@@ -224,7 +230,7 @@ precaching on any modern browser where the situation calls for it.
 > [!IMPORTANT]
 > Similarly to prefetching or prerendering resources using resource hints or speculation rules, service worker precaching consumes network bandwidth, storage, and CPU. It's recommended to only precache resources that are likely to be used, and to specifying too many resources in a precache manifest. When in doubt, it's better to precache too little than too much, and rely on [runtime
 > caching](https://developer.chrome.com/docs/workbox/caching-resources-during-runtime) to populate the service worker cache using one of a [variety
-> of patterns](https://developer.chrome.com/docs/workbox/caching-strategies-overview) to balance speed and resource freshness. For more information on what to do---and what *not* to do---when precaching resources, read [Precaching
+> of patterns](https://developer.chrome.com/docs/workbox/caching-strategies-overview) to balance speed and resource freshness. For more information on what to do---and what _not_ to do---when precaching resources, read [Precaching
 > dos and don'ts](https://developer.chrome.com/docs/workbox/precaching-dos-and-donts).
 
 ## Test your knowledge

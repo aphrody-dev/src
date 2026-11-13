@@ -1,6 +1,11 @@
 [workspace]
 resolver = "3"
-members = ["crates/aphrody-core", "crates/aphrody-wasm", "crates/aphrody-host", "crates/aphrody-android"]
+members = [
+  "crates/aphrody-core",
+  "crates/aphrody-wasm",
+  "crates/aphrody-host",
+  "crates/aphrody-android",
+]
 
 [workspace.package]
 version = "0.1.0"

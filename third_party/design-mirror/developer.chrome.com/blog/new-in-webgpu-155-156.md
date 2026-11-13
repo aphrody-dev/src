@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Preview:** Want to try out bindless rendering? It's now available for early experimentation on Android, Linux, and Windows. Head over to [Brandon's blog post](https://toji.dev/2026/10/06/webgpu-bindless.html) to learn how to enable it and see the live demo in action!
 
@@ -33,7 +34,8 @@ if (!navigator.gpu.wgslLanguageFeatures.has("fragment_depth")) {
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   requires fragment_depth;
 
   @fragment

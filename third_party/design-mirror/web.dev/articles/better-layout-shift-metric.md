@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn about our plans for improving the Cumulative Layout Shift metric and give us feedback.
 
- Annie Sullivan [X](https://twitter.com/anniesullie) [GitHub](https://github.com/anniesullie) [LinkedIn](https://www.linkedin.com/in/anniesullie) [Bluesky](https://bsky.app/profile/https://bsky.app/profile/anniesullie.com)  Michal Mocny [X](https://twitter.com/mmocny) [GitHub](https://github.com/mmocny) [Bluesky](https://bsky.app/profile/https://bsky.app/profile/mmocny.com)
+Annie Sullivan [X](https://twitter.com/anniesullie) [GitHub](https://github.com/anniesullie) [LinkedIn](https://www.linkedin.com/in/anniesullie) [Bluesky](https://bsky.app/profile/https://bsky.app/profile/anniesullie.com) Michal Mocny [X](https://twitter.com/mmocny) [GitHub](https://github.com/mmocny) [Bluesky](https://bsky.app/profile/https://bsky.app/profile/mmocny.com)
 
 [Cumulative Layout Shift](https://web.dev/articles/cls.md.txt) (CLS) is a metric that measures the visual stability of a web page. The metric is called cumulative layout shift because the score of every individual shift is summed throughout the lifespan of the page.
 

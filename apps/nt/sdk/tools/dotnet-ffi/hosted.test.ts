@@ -2,7 +2,13 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import { sharedChecks } from "./checks.ts";
 import { hostDotnet, openHosted } from "./hostfxr.ts";
-import { type Api, type Bindings, builtHosted, load, paths } from "./interop.ts";
+import {
+  type Api,
+  type Bindings,
+  builtHosted,
+  load,
+  paths,
+} from "./interop.ts";
 
 describe.skipIf(!builtHosted)("Nt.Interop CoreCLR (hostfxr)", () => {
   let ctx: { b: Bindings; api: Api };

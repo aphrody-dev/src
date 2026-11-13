@@ -20,9 +20,17 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture; // glTF PBR materials render black without lights or an environment
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(
+  new RoomEnvironment(),
+  0.04,
+).texture; // glTF PBR materials render black without lights or an environment
 
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(2, 1.5, 3);
 camera.lookAt(0, 0, 0);
 
@@ -188,7 +196,8 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
 const room = new RoomEnvironment();
 scene.environment = pmremGenerator.fromScene(room, 0.04).texture;
-room.dispose(); pmremGenerator.dispose(); // the room's geometries and materials, then the generator
+room.dispose();
+pmremGenerator.dispose(); // the room's geometries and materials, then the generator
 ```
 
 ## glTF and GLB
@@ -277,7 +286,9 @@ import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 const materials = await new MTLLoader().loadAsync("model.mtl");
 materials.preload();
 
-const object = await new OBJLoader().setMaterials(materials).loadAsync("model.obj");
+const object = await new OBJLoader()
+  .setMaterials(materials)
+  .loadAsync("model.obj");
 scene.add(object);
 ```
 
@@ -301,7 +312,9 @@ scene.add(object);
 import { STLLoader } from "three/addons/loaders/STLLoader.js";
 
 const geometry = await new STLLoader().loadAsync("model.stl");
-scene.add(new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: 0x888888 })));
+scene.add(
+  new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: 0x888888 })),
+);
 scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1));
 scene.add(new THREE.DirectionalLight(0xffffff, 2)); // lit materials render black without lights; this one shines down from (0, 1, 0)
 ```
@@ -318,12 +331,17 @@ const geometry = await new PLYLoader().loadAsync("model.ply");
 for (const name of Object.keys(geometry.attributes)) {
   const attribute = geometry.getAttribute(name);
   if (attribute.array instanceof Float64Array) {
-    geometry.setAttribute(name, new THREE.Float32BufferAttribute(attribute.array, attribute.itemSize));
+    geometry.setAttribute(
+      name,
+      new THREE.Float32BufferAttribute(attribute.array, attribute.itemSize),
+    );
   }
 }
 
 if (!geometry.hasAttribute("normal")) geometry.computeVertexNormals(); // keep the file's own normals
-const material = new THREE.MeshStandardMaterial({ vertexColors: geometry.hasAttribute("color") }); // vertexColors without a color attribute renders black
+const material = new THREE.MeshStandardMaterial({
+  vertexColors: geometry.hasAttribute("color"),
+}); // vertexColors without a color attribute renders black
 scene.add(new THREE.Mesh(geometry, material));
 scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1));
 scene.add(new THREE.DirectionalLight(0xffffff, 2)); // lit materials render black without lights; this one shines down from (0, 1, 0)
@@ -393,8 +411,12 @@ loader.setResourcePath("assets/textures/"); // where the file's own references r
 const gltf = await loader.loadAsync("model.glb"); // loads assets/models/model.glb
 
 const manager = new THREE.LoadingManager();
-manager.setURLModifier((url) => url.replace("assets/", "https://cdn.example.com/assets/"));
-const cdnGltf = await new GLTFLoader(manager).loadAsync("assets/models/model.glb"); // fetched from https://cdn.example.com/assets/models/model.glb
+manager.setURLModifier((url) =>
+  url.replace("assets/", "https://cdn.example.com/assets/"),
+);
+const cdnGltf = await new GLTFLoader(manager).loadAsync(
+  "assets/models/model.glb",
+); // fetched from https://cdn.example.com/assets/models/model.glb
 ```
 
 Enable the shared cache to serve repeated URLs from memory:
@@ -434,9 +456,12 @@ scene.add(model);
 scene.remove(model);
 model.traverse((child) => {
   child.dispose(); // per-object renderer state: InstancedMesh buffers, WebGPU bindings
-  if (child.geometry) { // meshes, lines and points
+  if (child.geometry) {
+    // meshes, lines and points
     child.geometry.dispose();
-    const materials = Array.isArray(child.material) ? child.material : [child.material];
+    const materials = Array.isArray(child.material)
+      ? child.material
+      : [child.material];
     for (const material of materials) {
       for (const value of Object.values(material)) {
         if (value?.isTexture) value.dispose();
@@ -460,13 +485,24 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111827); // the WebGPU canvas is transparent by default
-scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(
+  new RoomEnvironment(),
+  0.04,
+).texture;
+const camera = new THREE.PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(2, 1.5, 3);
 camera.lookAt(0, 0, 0);
 const gltf = await new GLTFLoader().loadAsync("model.glb"); // loaded materials become node materials automatically
 scene.add(gltf.scene);
-function animate() { renderer.render(scene, camera); } renderer.setAnimationLoop(animate);
+function animate() {
+  renderer.render(scene, camera);
+}
+renderer.setAnimationLoop(animate);
 ```
 
 - `ktx2Loader.detectSupport(renderer)` and the `PMREMGenerator` methods (`fromScene`, `fromEquirectangular`, `fromCubemap`) throw before `await renderer.init()`. Max anisotropy is `renderer.getMaxAnisotropy()`; `renderer.capabilities` does not exist under WebGPURenderer.

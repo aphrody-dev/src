@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 A new font specification that can significantly reduce font file sizes
 
- Dave Crossland [X](https://twitter.com/davelab6) [GitHub](https://github.com/davelab6)  Mustafa Kurtuldu [X](https://twitter.com/mustafa_x) [GitHub](https://github.com/mustafa-x) [Homepage](https://www.designtoday.info/)  Roel Nieskens [X](https://twitter.com/pixelambacht) [GitHub](https://github.com/roeln) [Homepage](https://pixelambacht.nl/)  Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
+Dave Crossland [X](https://twitter.com/davelab6) [GitHub](https://github.com/davelab6) Mustafa Kurtuldu [X](https://twitter.com/mustafa_x) [GitHub](https://github.com/mustafa-x) [Homepage](https://www.designtoday.info/) Roel Nieskens [X](https://twitter.com/pixelambacht) [GitHub](https://github.com/roeln) [Homepage](https://pixelambacht.nl/) Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
 
 In this article, you'll discover what variable fonts are, the benefits they
 offer, and how to use them in your work. First, review how typography
@@ -27,7 +28,7 @@ The terms font and typeface are often used interchangeably by developers.
 However there is a difference: A typeface is the underlying visual design that
 can exist in many different typesetting technologies, and a font is one of these
 implementations, in a digital file format. In other words, a typeface is what
-you *see* , and the font is what you *use*.
+you _see_ , and the font is what you _use_.
 
 Another concept that is often overlooked is the distinction between a style, and
 a family. A style is a single and specific typeface, such as Bold Italic, and a
@@ -35,7 +36,7 @@ family is the complete set of styles.
 
 Before variable fonts, each style was implemented as a separate font file. With
 variable fonts, all styles can be contained in a single file.
- Left: a specimen of the Roboto typeface family. Right: named styles within the family.
+Left: a specimen of the Roboto typeface family. Right: named styles within the family.
 
 ## Challenges for the designer and developer
 
@@ -82,7 +83,7 @@ The variable font [Roboto Flex](https://github.com/TypeNetwork/Roboto-Flex)
 has three styles for its **Weight** axis. The Regular style is at the center,
 and there are two styles at the opposite ends of the axis, one lighter and
 the other heavier. Between these, you can choose from 900 instances:
- Illustrated anatomy of the Weight axis for the typeface Roboto.
+Illustrated anatomy of the Weight axis for the typeface Roboto.
 
 The font developer can offer a set of different axes. You can combine them
 because they all share the same default styles. Roboto has three styles in a
@@ -108,7 +109,7 @@ glyph contours that are not interpolation compatible. For example, the contours
 that typically define a Roman lowercase "n" do not match the contours used to
 define an Italic lowercase "n". Instead of interpolating one contour to the
 other, the **Italic** axis toggles from Roman to Italic contours.
- Amstelvar's "n" contours in Italic (12 point, regular weight, normal width), and in Roman. Image supplied by David Berlow, type designer and typographer at Font Bureau.
+Amstelvar's "n" contours in Italic (12 point, regular weight, normal width), and in Roman. Image supplied by David Berlow, type designer and typographer at Font Bureau.
 
 After the switch to Italic, the axes available to the user should be the same as
 those for the Roman, just as the character set should be the same.
@@ -144,13 +145,13 @@ hairline weight at 1 that goes all the up to 900.
 The five registered axes have 4-character lowercase tags that are used to
 set their values in CSS:
 
-| Axis names and CSS values ||
-|---|---|
-| Weight | `wght` |
-| Width | `wdth` |
-| Slant | `slnt` |
-| Optical Size | `opsz` |
-| Italics | `ital` |
+| Axis names and CSS values |        |
+| ------------------------- | ------ |
+| Weight                    | `wght` |
+| Width                     | `wdth` |
+| Slant                     | `slnt` |
+| Optical Size              | `opsz` |
+| Italics                   | `ital` |
 
 Since the font developer defines which axes are available in a variable font,
 and which values they can have, it is essential to find out what each font
@@ -168,7 +169,7 @@ illegible.
 
 ### Exciting expression
 
- [View this example om CodePen.](https://codepen.io/mandymichael/pen/YYaWop)
+[View this example om CodePen.](https://codepen.io/mandymichael/pen/YYaWop)
 
 This great example of artistic expression is an exploration of the
 typeface
@@ -214,11 +215,11 @@ static web fonts, but with two new enhancements:
 
 ```css
 @font-face {
-    font-family: 'Roboto Flex';
-    src: url('RobotoFlex-VF.woff2') format('woff2-variations');
-    src: url('RobotoFlex-VF.woff2') format('woff2') tech('variations');
-    font-weight: 100 1000;
-    font-stretch: 25% 151%;
+  font-family: "Roboto Flex";
+  src: url("RobotoFlex-VF.woff2") format("woff2-variations");
+  src: url("RobotoFlex-VF.woff2") format("woff2") tech("variations");
+  font-weight: 100 1000;
+  font-stretch: 25% 151%;
 }
 ```
 
@@ -263,6 +264,7 @@ can set any value within the font's Width range:
   font-weight: 1000;
 }
 ```
+
 Roboto Flex' Weight axis being changed from its minimum to its maximum.
 
 Likewise, we can set `font-stretch` with keywords (`condensed`,
@@ -277,6 +279,7 @@ Likewise, we can set `font-stretch` with keywords (`condensed`,
   font-stretch: 151%;
 }
 ```
+
 Roboto Flex' Width axis being changed from its minimum to its maximum.
 
 ### Using italics and obliques
@@ -286,7 +289,7 @@ italic style. The axis is meant to be an on/off switch: value `0` is off and
 will show the regular style, value `1` will show the italics. Unlike other axes,
 there's no transition. A value of `0.5` won't give you "half italics".
 
-The `slnt` axis is different from italics in that it's not a new *style* , but
+The `slnt` axis is different from italics in that it's not a new _style_ , but
 just slants the regular style. By default its value is `0`, which means the
 default upright letter shapes. Roboto Flex has a maximum slant of -10 degrees,
 meaning the letters will lean to the right when going from 0 to -10.
@@ -297,16 +300,19 @@ out](https://github.com/w3c/csswg-drafts/issues/3125). So for now, you should
 treat these as custom axes, and set them through `font-variation-settings`:
 
 ```css
-i, em, .italic {
-    /* Should be font-style: italic; */
-    font-variation-settings: 'ital' 1;
+i,
+em,
+.italic {
+  /* Should be font-style: italic; */
+  font-variation-settings: "ital" 1;
 }
 
 .slanted {
-    /* Should be font-style: oblique 10deg; */
-    font-variation-settings: 'slnt' 10;
+  /* Should be font-style: oblique 10deg; */
+  font-variation-settings: "slnt" 10;
 }
 ```
+
 Roboto Flex' Slant axis being changed from its minimum to its maximum.
 
 ### Using optical sizes
@@ -315,7 +321,7 @@ A typeface can be rendered very small (a 12px footnote) or very large (a 80px
 headline). Fonts can respond to these size changes by changing its letter shapes
 to better suit its size. A small size might be better off without fine details,
 while a large size might benefit from more details and thinner strokes.
- The letter 'a' in Roboto Flex at different pixel sizes, then scaled to be the same size, shows the differences in design. [Try it yourself on Codepen](https://codepen.io/RoelN/pen/PoPvdeV)
+The letter 'a' in Roboto Flex at different pixel sizes, then scaled to be the same size, shows the differences in design. [Try it yourself on Codepen](https://codepen.io/RoelN/pen/PoPvdeV)
 
 A new CSS property has been introduced for this axis: `font-optical-sizing`. By
 default it's set to `auto`, which makes the browser set the axis value based on
@@ -331,7 +337,7 @@ printed in `8pt`:
 ```css
 .small-yet-large {
   font-size: 100px;
-  font-variation-settings: 'opsz' 8;
+  font-variation-settings: "opsz" 8;
 }
 ```
 
@@ -355,15 +361,15 @@ We need to address it with `font-variation-settings`:
 
 ```css
 .grade-light {
-    font-variation-settings: `GRAD` -200;
+  font-variation-settings: `GRAD` -200;
 }
 
 .grade-normal {
-    font-variation-settings: `GRAD` 0;
+  font-variation-settings: `GRAD` 0;
 }
 
 .grade-heavy {
-    font-variation-settings: `GRAD` 150;
+  font-variation-settings: `GRAD` 150;
 }
 ```
 
@@ -390,13 +396,13 @@ properties, for the time being you might need to rely on
 you'll need `font-variation-settings` too.
 
 However, here's a little gotcha with `font-variation-settings`. Every property
-you *don't explicitly set* will automatically be reset to its default.
+you _don't explicitly set_ will automatically be reset to its default.
 Previously set values aren't inherited! This means the following won't work
 as expected:
 
 ```html
 <span class="slanted grade-light">
-    I should be slanted and have a light grade
+  I should be slanted and have a light grade
 </span>
 ```
 
@@ -410,25 +416,25 @@ Luckily, we can work around this by using CSS variables:
 ```css
 /* Set the default values */
 :root {
-    --slnt: 0;
-    --GRAD: 0;
+  --slnt: 0;
+  --GRAD: 0;
 }
 
 /* Change value for these elements and their children */
 .slanted {
-    --slnt: 10;
+  --slnt: 10;
 }
 
 .grade-light {
-    --grad: -200;
+  --grad: -200;
 }
 
 .grade-normal {
-    --grad: 0;
+  --grad: 0;
 }
 
 .grade-heavy {
-    --grad: 150;
+  --grad: 150;
 }
 
 /* Apply whatever value is kept in the CSS variables */
@@ -436,7 +442,9 @@ Luckily, we can work around this by using CSS variables:
 .grade-light,
 .grade-normal,
 .grade-heavy {
-    font-variation-settings: 'slnt' var(--slnt), 'GRAD' var(--GRAD);
+  font-variation-settings:
+    "slnt" var(--slnt),
+    "GRAD" var(--GRAD);
 }
 ```
 
@@ -451,8 +459,12 @@ this doesn't work:
 
 ```css
 @keyframes width-animation {
-   from { --wdth: 25; }
-   to   { --wdth: 151; }
+  from {
+    --wdth: 25;
+  }
+  to {
+    --wdth: 151;
+  }
 }
 ```
 
@@ -465,8 +477,8 @@ into a single font file.
 [Monotype](https://medium.com/@monotype/part-2-from-truetype-gx-to-variable-fonts-4c28b16997c3)
 ran an experiment by combining 12 input fonts to generate eight weights,
 across three widths, across both the Italic and Roman styles. Storing 48
-individual fonts in a single variable font file meant a *88% reduction in file
-size*.
+individual fonts in a single variable font file meant a _88% reduction in file
+size_.
 
 However, if you are using a single font such as Roboto Regular and nothing
 else, you might not see a net gain in font size if you were to switch to a
@@ -481,16 +493,18 @@ animations in elements with the class `vf-animation`, when they're not on
 screen:
 
 ```javascript
-var observer = new IntersectionObserver(function(entries, observer) {
-  entries.forEach(function(entry) {
+var observer = new IntersectionObserver(function (entries, observer) {
+  entries.forEach(function (entry) {
     // Pause/Play the animation
-    if (entry.isIntersecting) entry.target.style.animationPlayState = "running"
-    else entry.target.style.animationPlayState = "paused"
+    if (entry.isIntersecting) entry.target.style.animationPlayState = "running";
+    else entry.target.style.animationPlayState = "paused";
   });
 });
 
 var variableTexts = document.querySelectorAll(".vf-animation");
-variableTexts.forEach(function(el) { observer.observe(el); });
+variableTexts.forEach(function (el) {
+  observer.observe(el);
+});
 ```
 
 If your font responds to user interaction, it's a good idea to [throttle or
@@ -526,13 +540,13 @@ variable fonts as progressive enhancement:
 @supports not (font-variation-settings: normal) {
   @font-face {
     font-family: Roboto;
-    src: url('Roboto-Regular.woff2');
+    src: url("Roboto-Regular.woff2");
     font-weight: normal;
   }
 
   @font-face {
     font-family: Roboto;
-    src: url('Roboto-Bold.woff2');
+    src: url("Roboto-Bold.woff2");
     font-weight: bold;
   }
 
@@ -548,9 +562,10 @@ variable fonts as progressive enhancement:
 /* Set up Roboto for modern browsers, all weights */
 @supports (font-variation-settings: normal) {
   @font-face {
-    font-family: 'Roboto';
-    src: url('RobotoFlex-VF.woff2') format('woff2 supports variations'),
-         url('RobotoFlex-VF.woff2') format('woff2-variations');
+    font-family: "Roboto";
+    src:
+      url("RobotoFlex-VF.woff2") format("woff2 supports variations"),
+      url("RobotoFlex-VF.woff2") format("woff2-variations");
     font-weight: 100 1000;
     font-stretch: 25% 151%;
   }
@@ -575,7 +590,10 @@ fonts for your visitor's browsers. Say you request the font Oswald in weight
 range 200 to 700, like so:
 
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+  rel="stylesheet"
+/>
 ```
 
 Modern browsers that can handle variable fonts will get the variable font, and

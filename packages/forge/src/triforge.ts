@@ -37,9 +37,11 @@ export function getDefaultTriForgeConfig(
   const gitlabSelfBaseUrl = (
     process.env.GITLAB_SELF_BASE_URL || `https://${identity.domains.git}`
   ).replace(/\/+$/, "");
-  const gitlabSelfGroup = process.env.GITLAB_SELF_GROUP || identity.product.name;
+  const gitlabSelfGroup =
+    process.env.GITLAB_SELF_GROUP || identity.product.name;
   const githubOrg = process.env.GITHUB_ORG || identity.orgs.main;
-  const orgOwnerEmail = process.env.APHRODY_ORG_EMAIL || identity.domains.contact;
+  const orgOwnerEmail =
+    process.env.APHRODY_ORG_EMAIL || identity.domains.contact;
   const gcpProjectId = process.env.GCP_PROJECT_ID || "aphrody";
   const gcpProjectNumber = process.env.GCP_PROJECT_NUMBER || "468000409790";
   const gcpRegion = process.env.GCP_REGION || "europe-west1";

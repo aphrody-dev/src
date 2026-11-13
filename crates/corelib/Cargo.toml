@@ -17,7 +17,12 @@ default = ["gpu", "re", "emulation"]
 gpu = ["dep:wgpu", "dep:pollster", "dep:bytemuck"]
 re = ["dep:sha2", "dep:byteorder"]
 emulation = []
-wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:serde-wasm-bindgen"]
+wasm = [
+  "dep:wasm-bindgen",
+  "dep:js-sys",
+  "dep:web-sys",
+  "dep:serde-wasm-bindgen",
+]
 full = ["gpu", "re", "emulation", "wasm"]
 
 [dependencies]

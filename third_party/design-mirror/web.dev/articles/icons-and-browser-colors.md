@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Modern browsers make it easy to customize certain components, like icons, the address bar color, and even add things like custom tiles. These simple tweaks can increase engagement and bring users back to your site.
 
- Paul Bakaus [X](https://twitter.com/pbakaus) [Homepage](https://paulbakaus.com/)
+Paul Bakaus [X](https://twitter.com/pbakaus) [Homepage](https://paulbakaus.com/)
 
 Modern browsers make it easy to customize certain components, like icons, the address bar color, and even add things like custom tiles. These simple tweaks can increase engagement and bring users back to your site.
 
@@ -25,13 +26,13 @@ element of each page.
 
 ```html
 <!-- icon in the highest resolution we need it for -->
-<link rel="icon" sizes="192x192" href="icon.png">
+<link rel="icon" sizes="192x192" href="icon.png" />
 
 <!-- reuse same icon for Safari -->
-<link rel="apple-touch-icon" href="ios-icon.png">
+<link rel="apple-touch-icon" href="ios-icon.png" />
 
 <!-- multiple icons for IE -->
-<meta name="msapplication-square310x310logo" content="icon_largetile.png">
+<meta name="msapplication-square310x310logo" content="icon_largetile.png" />
 ```
 
 ### Chrome and Opera
@@ -49,7 +50,7 @@ Safari also uses the `<link>` tag with the `rel` attribute: `apple-touch-icon` t
 indicate the home screen icon.
 
 ```html
-<link rel="apple-touch-icon" href="touch-icon-iphone.png">
+<link rel="apple-touch-icon" href="touch-icon-iphone.png" />
 ```
 
 A non-transparent PNG that's 180px or 192px square is ideal for the apple-touch-icon.
@@ -65,9 +66,9 @@ pinned sites, and requires four icons. You can leave out the relevant meta
 tags if you don't want to support a specific size.
 
 ```html
-<meta name="msapplication-square70x70logo" content="icon_smalltile.png">
-<meta name="msapplication-square150x150logo" content="icon_mediumtile.png">
-<meta name="msapplication-wide310x150logo" content="icon_widetile.png">
+<meta name="msapplication-square70x70logo" content="icon_smalltile.png" />
+<meta name="msapplication-square150x150logo" content="icon_mediumtile.png" />
+<meta name="msapplication-wide310x150logo" content="icon_widetile.png" />
 ```
 
 ### Tiles in Internet Explorer
@@ -75,7 +76,7 @@ tags if you don't want to support a specific size.
 Microsoft's "Pinned Sites" and rotating "Live Tiles" go far beyond other
 implementations and are beyond the scope of this guide. You can learn more
 at MSDN's
-[how to create live tiles](https://msdn.microsoft.com/library/ie/dn455115(v=vs.85).aspx).
+[how to create live tiles](<https://msdn.microsoft.com/library/ie/dn455115(v=vs.85).aspx>).
 
 ## Color browser elements
 
@@ -92,7 +93,7 @@ To specify the theme color for Chrome on Android, use the meta theme color.
 
 ```html
 <!-- Chrome, Firefox OS and Opera -->
-<meta name="theme-color" content="#4285f4">
+<meta name="theme-color" content="#4285f4" />
 ```
 
 ### Safari specific styling
@@ -107,7 +108,7 @@ telling Safari to show an explicit startup image, by adding a link tag, with
 `rel=apple-touch-startup-image`. For example:
 
 ```html
-<link rel="apple-touch-startup-image" href="icon.png">
+<link rel="apple-touch-startup-image" href="icon.png" />
 ```
 
 The image has to be in the specific size of the target device's screen or it
@@ -128,9 +129,9 @@ of the full screen content, rather than pushing it down. This gives the layout
 more height, but obstructs the top. Here's the code required:
 
 ```html
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 ```
 
- Screenshot using `black-translucent`
+Screenshot using `black-translucent`
 
- Screenshot using `black`
+Screenshot using `black`

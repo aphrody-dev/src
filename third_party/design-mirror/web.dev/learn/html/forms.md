@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Most sites and applications include a web form. Joke sites, like [DoWebsitesNeedToLookExactlyTheSameInEveryBrowser.com](http://dowebsitesneedtolookexactlythesameineverybrowser.com/),
 may not have a form, but even [MachineLearningWorkshop.com](https://machinelearningworkshop.com/) (MLW), which originated as an April Fool's day joke, has a form,
 albeit a fake one. MLW's main "call to action" is a registration form for machines to sign up for a workshop. This form
@@ -36,7 +37,7 @@ Forms are submitted when the user activates a submit button nested within the fo
 and closing `<button>` tags. A submit button can be written either of two ways:
 
 ```html
-<input type="submit" value="Submit Form">
+<input type="submit" value="Submit Form" />
 <button type="submit">Submit Form</button>
 ```
 
@@ -93,9 +94,10 @@ The value of a `<select>` is the selected `<option>`'s `value` or, if the `<opti
     <option>Blendan Smooth</option>
     <option value="toasty">Toasty McToastface</option>
   </select>
-  <input type="submit" value="Submit Form">
+  <input type="submit" value="Submit Form" />
 </form>
 ```
+
 Pick a student: Hoover Sukhdeep Blendan Smooth Toasty McToastface
 
 Selecting "Hoover Sukhdeep" (or doing nothing, as the browser displays and therefore selects the first option value by default)
@@ -187,7 +189,7 @@ To explicitly associate a form control with a `<label>`, include the `for` attri
 
 ```html
 <label for="full_name">Your name</label>
-<input type="text" id="full_name" name="name">
+<input type="text" id="full_name" name="name" />
 ```
 
 Your name
@@ -202,8 +204,9 @@ accessible from both a screen reader and pointer device perspective, but doesn't
 label.
 
 ```html
-<label>Your name
-  <input type="text" name="name">
+<label
+  >Your name
+  <input type="text" name="name" />
 </label>
 ```
 
@@ -227,22 +230,23 @@ but the group of controls and their labels also need a label. To label the group
   <ul>
     <li>
       <label>
-        <input type="radio" value="blendan" name="machine"> Blendan Smooth
+        <input type="radio" value="blendan" name="machine" /> Blendan Smooth
       </label>
     </li>
     <li>
       <label>
-        <input type="radio" value="hoover" name="machine"> Hoover Sukhdeep
+        <input type="radio" value="hoover" name="machine" /> Hoover Sukhdeep
       </label>
     </li>
     <li>
       <label>
-        <input type="radio" value="toasty" name="machine"> Toasty McToastface
+        <input type="radio" value="toasty" name="machine" /> Toasty McToastface
       </label>
     </li>
   </ul>
 </fieldset>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/OJEggda?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen OJEggda by web-dot-dev on Codepen"></iframe>
 
 In this example, the implicit `<label>`s each label a radio button and the `<legend>` provides the label for the group of radio buttons.
@@ -260,6 +264,12 @@ divided into groups of related questions, the "favorite student" `<fieldset>` ma
         <ul>
           <li>
             <!-- the rest of the code here -->
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+  </ul>
+</fieldset>
 ```
 
 These elements' default appearances have led to their underuse, but [`<legend>` and `<fieldset>` can be styled](https://developer.mozilla.org/docs/Web/HTML/Element/fieldset#styling_with_css) with CSS.
@@ -281,10 +291,8 @@ dynamic keyboard for `url` includes a colon and the slash symbol. Unfortunately,
 the default dynamic keyboard for `url` input types.
 
 Keyboards for `<input type="tel">` on iPhone and two different Android phones:
-  
 
 Keyboards for `<input type="email">` on iPhone and two different Android phones:
-  
 
 ## Accessing the microphone and camera
 
@@ -301,7 +309,7 @@ is going to pick which input device they want to use.
 
 ```html
 <label for="avatar">A recent photo of yourself:</label>
-<input type="file" capture="user" accept="image/*" name="avatar" id="avatar">
+<input type="file" capture="user" accept="image/*" name="avatar" id="avatar" />
 ```
 
 ## Built-in validation

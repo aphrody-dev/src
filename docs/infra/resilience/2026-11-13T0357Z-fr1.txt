@@ -1,0 +1,14 @@
+# Reboot proof fr1 (vps) 2026-11-13T03:57:34Z
+## before
+boot_id: 72d16cb2-0d37-4637-a16e-456d55a73ea9 uptime: up 9 hours, 4 minutes
+system: running
+resilience check: 30 OK, 0 FAIL
+containers running: 4 / all: 4
+agent tmux: agents: 2 windows (created Fri Nov 13 03:09:56 2026)
+journald: /var/log/journal/99090f5636e0482c97cd88915c07e4ea/user-1000.journal
+vhosts on vps: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=502 creator.aphrody.com=200 dragonballfr.com=502 rosegriffon.fr=502 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on cdn: aphrody.com=502 aphrody.app=502 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=502 rpbey.fr=200 
+vhosts on prd: aphrody.com=200 aphrody.app=200 api.aphrody.com=404 cdn.aphrody.com=200 downloads.aphrody.com=200 creator.aphrody.com=404 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=200 rpbey.fr=200 
+public: aphrody.com=200 aphrody.app=200 api.aphrody.com=200 cdn.aphrody.com=200 downloads.aphrody.com=404 creator.aphrody.com=200 dragonballfr.com=200 rosegriffon.fr=200 ai.aphrody.com=200 rpbey.fr=200 
+precheck: BUSY heavy lock held by:  BUSY build running: cargo,rustc,rustc <defunct> BUSY D-state processes: 730767/kworker/0:0+events precheck fr1: refused, no reboot
+result: NOT RUN (precheck refused)

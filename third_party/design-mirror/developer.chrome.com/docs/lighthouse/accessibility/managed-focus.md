@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Whenever new content is added to a page,
 try to ensure the user's focus gets directed to that content,
 so they can take action on it.
@@ -41,7 +42,7 @@ and call its `focus()` method:
 <script>
   // Assuming this gets called every time new content loads...
   function onNewPage() {
-    var heading = document.querySelector('h2');
+    var heading = document.querySelector("h2");
     heading.focus();
     // You can also update the page title :)
     document.title = heading.textContent;

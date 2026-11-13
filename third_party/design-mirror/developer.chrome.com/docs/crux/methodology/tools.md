@@ -7,31 +7,32 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Published: Jun 23, 2022, Last updated: Sep 9, 2025
 
 The CrUX dataset is made available through a variety of tools maintained by
 Google. Each tool may access CrUX data slightly differently, resulting in
 varying levels of timeliness and metric support.
 
-| Tool | Frequency | Metrics | Dimensions | Historical Data | Origin / Page-level |
-|---|---|---|---|---|---|
-| [CrUX API](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-crux-api) | 28-day average [^2^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-2) | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimension | No---See CrUX History API | Origin \& Page |
-| [CrUX History API](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-crux-history-api) | Weekly [^3^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-3) | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimension | Previous 40 weeks | Origin \& Page |
-| [CrUX Vis](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-crux-vis) | Weekly [^3^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-3) | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimension | Previous 40 weeks | Origin \& Page |
-| [PageSpeed Insights](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-psi) | 28-day average [^2^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-2) | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimensions | No | Origin \& Page |
-| [PageSpeed Insights API](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-psi-api) | 28-day average [^2^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-2) | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimensions | No | Origin \& Page |
-| [Google Search Console](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-gsc) | 28-day average [^2^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-2) | Core web vitals | Form factor dimension | Three months | Page Group [^6^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-6) |
-| [CrUX on BigQuery](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-bigquery) | Monthly [^1^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-1) | All metrics (except LCP resource types and subparts) | All dimensions | Since 2017 [^5^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-5) | Origin |
+| Tool                                                                                                      | Frequency                                                                                        | Metrics                                                                                                 | Dimensions            | Historical Data                                                                              | Origin / Page-level                                                                          |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| [CrUX API](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-crux-api)                 | 28-day average [^2^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-2) | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimension  | No---See CrUX History API                                                                    | Origin \& Page                                                                               |
+| [CrUX History API](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-crux-history-api) | Weekly [^3^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-3)         | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimension  | Previous 40 weeks                                                                            | Origin \& Page                                                                               |
+| [CrUX Vis](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-crux-vis)                 | Weekly [^3^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-3)         | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimension  | Previous 40 weeks                                                                            | Origin \& Page                                                                               |
+| [PageSpeed Insights](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-psi)            | 28-day average [^2^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-2) | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimensions | No                                                                                           | Origin \& Page                                                                               |
+| [PageSpeed Insights API](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-psi-api)    | 28-day average [^2^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-2) | Subset of key metrics [^4^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-4) | No country dimensions | No                                                                                           | Origin \& Page                                                                               |
+| [Google Search Console](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-gsc)         | 28-day average [^2^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-2) | Core web vitals                                                                                         | Form factor dimension | Three months                                                                                 | Page Group [^6^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-6) |
+| [CrUX on BigQuery](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#tool-bigquery)         | Monthly [^1^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-1)        | All metrics (except LCP resource types and subparts)                                                    | All dimensions        | Since 2017 [^5^](https://developer.chrome.com/docs/crux/methodology/tools.md.txt#footnote-5) | Origin                                                                                       |
 
-^1^ Monthly data is released on the second Tuesday after each monthly collection period. The last 28 days of each month period are included.  
+^1^ Monthly data is released on the second Tuesday after each monthly collection period. The last 28 days of each month period are included.
 
-^2^ 28-day rolling average data is updated daily, based on the aggregated data from the previous 28 days.  
+^2^ 28-day rolling average data is updated daily, based on the aggregated data from the previous 28 days.
 
-^3^ Weekly historical data is released every Monday, containing the 40 most recent 28 day collection periods that end on Saturdays.  
+^3^ Weekly historical data is released every Monday, containing the 40 most recent 28 day collection periods that end on Saturdays.
 
-^4^ The web vital metrics are available in all tools.  
+^4^ The web vital metrics are available in all tools.
 
-^5^ Not all metrics are available in all monthly tables, see the [release notes](https://developer.chrome.com/docs/crux/release-notes.md.txt) for details.  
+^5^ Not all metrics are available in all monthly tables, see the [release notes](https://developer.chrome.com/docs/crux/release-notes.md.txt) for details.
 
 ^6^ Search Console [groups URLs](https://support.google.com/webmasters/answer/9205520#page_groups) that provide similar experiences, Core Web Vitals data are shown aggregated by these page groups.
 

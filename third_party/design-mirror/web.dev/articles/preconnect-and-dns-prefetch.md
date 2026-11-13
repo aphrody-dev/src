@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn about rel=preconnect and rel=dns-prefetch resource hints and how to use them.
 
- Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)  Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)
+Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/) Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)
 
 Before the browser can request a resource from a server, it must establish a connection. Establishing a secure connection involves three steps:
 
@@ -19,7 +20,7 @@ Before the browser can request a resource from a server, it must establish a con
 
 - Encrypt the connection for security.
 
-In each of these steps the browser sends a piece of data to a server, and the server sends back a response. That journey, from origin to destination and back, is called a [round trip](https://developer.mozilla.org/docs/Glossary/Round_Trip_Time_(RTT)).
+In each of these steps the browser sends a piece of data to a server, and the server sends back a response. That journey, from origin to destination and back, is called a [round trip](<https://developer.mozilla.org/docs/Glossary/Round_Trip_Time_(RTT)>).
 
 Depending on network conditions, a single round trip might take a significant amount of time. The connection setup process might involve up to three round trips---and more in unoptimized cases.
 
@@ -36,7 +37,7 @@ Resource hints get their name because they are not mandatory instructions. They 
 Informing the browser of your intention is as simple as adding a `<link>` tag to your page:
 
 ```html
-<link rel="preconnect" href="https://example.com">
+<link rel="preconnect" href="https://example.com" />
 ```
 
 You can speed up the load time by 100--500 ms by establishing early connections to important third-party origins. These numbers might seem small, but they make a difference in how [users perceive web page performance](https://web.dev/articles/user-centric-performance-metrics.md.txt).
@@ -46,13 +47,13 @@ You can speed up the load time by 100--500 ms by establishing early connections 
 
 ## Use-cases for `rel=preconnect`
 
-### Knowing *where from* , but not *what* you're fetching
+### Knowing _where from_ , but not _what_ you're fetching
 
 Due to versioned dependencies, you sometimes end up in a situation where you know you'll be requesting a resource from a particular CDN, but not the exact path for it.
- An example of a versioned URL.
+An example of a versioned URL.
 
 The other common case is loading images from an [image CDN](https://web.dev/articles/image-cdns.md.txt), where the exact path for an image depends on media queries or runtime feature checks on the user's browser.
- An example of an image CDN URL.
+An example of an image CDN URL.
 
 In these situations, if the resource you'll be fetching is important, you want to save as much time as possible by pre-connecting to the server. The browser won't download the file until your page requests it, but at least it can handle the connection aspects ahead of time, saving the user from waiting for several round trips.
 
@@ -68,7 +69,7 @@ One way of initiating a `preconnect` is adding a `<link>` tag to the `<head>` of
 
 ```html
 <head>
-    <link rel="preconnect" href="https://example.com">
+  <link rel="preconnect" href="https://example.com" />
 </head>
 ```
 
@@ -87,7 +88,7 @@ You can also initiate a preconnect via the [`Link` HTTP header](https://develope
 Some types of resources, such as fonts, are loaded in [anonymous mode](https://www.w3.org/TR/css-fonts-3/#font-fetching-requirements). For those you must set the `crossorigin` attribute with the `preconnect` hint:
 
 ```html
-<link rel="preconnect" href="https://example.com/ComicSans" crossorigin>
+<link rel="preconnect" href="https://example.com/ComicSans" crossorigin />
 ```
 
 If you omit the `crossorigin` attribute, the browser only performs the DNS lookup.
@@ -101,21 +102,23 @@ If a page needs to make connections to many third-party domains, preconnecting a
 DNS resolution is initiated similarly to `preconnect`: by adding a `<link>` tag to the `<head>` of the document.
 
 ```html
-<link rel="dns-prefetch" href="http://example.com">
+<link rel="dns-prefetch" href="http://example.com" />
 ```
 
 [Browser support for `dns-prefetch`](https://caniuse.com/#search=dns-prefetch) is slightly different from [`preconnect`](https://caniuse.com/#search=preconnect) [support](https://caniuse.com/#search=preconnect), so `dns-prefetch` can serve as a fallback for browsers that don't support `preconnect`.
 Do
 
 ```html
-<link rel="preconnect" href="http://example.com">
-<link rel="dns-prefetch" href="http://example.com">
+<link rel="preconnect" href="http://example.com" />
+<link rel="dns-prefetch" href="http://example.com" />
 ```
+
 To safely implement the fallback technique, use separate link tags. Don't
 
 ```html
-<link rel="preconnect dns-prefetch" href="http://example.com">
+<link rel="preconnect dns-prefetch" href="http://example.com" />
 ```
+
 Implementing `dns-prefetch` fallback in the same `<link>` tag causes a bug in Safari where `preconnect` gets cancelled.
 
 ## Effect on Largest Contentful Paint (LCP)

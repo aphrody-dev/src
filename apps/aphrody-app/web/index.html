@@ -1,64 +1,203 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aphrody: Rust WebGPU Tiling Desktop Shell</title>
-<meta name="description" content="Aphrody is a pure Rust tiling window shell drawn with WebGPU and WGSL, with sequenced-op sync, OPFS storage and WebMCP tools.">
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-<meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#0F0F0F">
-<link rel="canonical" href="https://aphrody.app/">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<link rel="modulepreload" href="/aphrody_app_wasm.js">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Aphrody: Rust WebGPU Tiling Desktop Shell">
-<meta property="og:description" content="Pure Rust tiling window shell on WebGPU and WGSL with Fluid-style sync, OPFS and WebMCP.">
-<meta property="og:url" content="https://aphrody.app/">
-<meta property="og:site_name" content="Aphrody">
-<meta property="og:image" content="https://aphrody.app/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Aphrody","url":"https://aphrody.app/","description":"Pure Rust tiling window shell drawn with WebGPU and WGSL.","potentialAction":{"@type":"SearchAction","target":"https://aphrody.app/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
-<style>
-:root{color-scheme:dark light;--bg:#0F0F0F;--layer:#1C1C1C;--brand:#0078D4;--brand-light:#60CDFF;--fg:#F3F3F3;--muted:#B8B8B8}
-@media (prefers-color-scheme:light){:root{--bg:#F5F5F5;--layer:#FFFFFF;--fg:#1A1A1A;--muted:#4A4A4A;--brand-light:#005A9E}}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;grid-template-rows:auto 1fr auto;background:var(--bg);color:var(--fg);font:16px/1.5 "Segoe UI Variable","Segoe UI",system-ui,sans-serif}
-header,footer{padding:12px 20px;background:var(--layer)}
-header{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:baseline}
-h1{margin:0;font-size:1.25rem;font-weight:600}
-p{margin:0;color:var(--muted)}
-main{padding:16px 20px;display:grid;gap:12px;grid-template-rows:1fr auto auto}
-canvas{display:block;width:100%;height:min(70vh,720px);border-radius:8px;background:var(--bg);touch-action:none}
-#hud{font:13px/1.4 "Cascadia Mono",Consolas,monospace;color:var(--brand-light);min-height:2.8em}
-kbd{padding:0 6px;border:1px solid var(--muted);border-radius:4px;font:12px "Cascadia Mono",Consolas,monospace}
-a{color:var(--brand-light)}
-:focus-visible{outline:2px solid var(--brand-light);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-</style>
-</head>
-<body>
-<header>
-<h1>Aphrody</h1>
-<p>Pure Rust tiling shell on WebGPU</p>
-<nav aria-label="Resources"><a href="/llms.txt">llms.txt</a> | <a href="/.well-known/webmcp.json">WebMCP tools</a> | <a href="/releases/manifest.json">Releases</a></nav>
-</header>
-<main>
-<canvas id="gpu" width="1280" height="720" tabindex="0" role="application" aria-label="Aphrody window manager canvas. Press n to open a window, w to close, Tab to move focus, l to change layout, 1 to 4 to switch workspace."></canvas>
-<p id="hud" role="status" aria-live="polite">Loading WebAssembly module</p>
-<p>Keys: <kbd>n</kbd> new window, <kbd>w</kbd> close, <kbd>Tab</kbd> focus, <kbd>l</kbd> layout, <kbd>1</kbd> to <kbd>4</kbd> workspace, <kbd>Space</kbd> shared counter.</p>
-</main>
-<footer><p>Rust 2024, wasm32, WGSL. Layouts: dwindle, cosmic grid, niri scroll, floating. Requires a browser with WebGPU.</p></footer>
-<noscript><p>JavaScript and WebAssembly are required to run the Aphrody canvas.</p></noscript>
-<script type="module">
-import init from '/aphrody_app_wasm.js';
-const hud = document.getElementById('hud');
-if (!navigator.gpu) hud.textContent = 'WebGPU is not available in this browser; windows will not be drawn.';
-init({ module_or_path: '/aphrody_app_wasm.wasm' }).catch((e) => { hud.textContent = 'Failed to start: ' + e; });
-</script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aphrody: Rust WebGPU Tiling Desktop Shell</title>
+    <meta
+      name="description"
+      content="Aphrody is a pure Rust tiling window shell drawn with WebGPU and WGSL, with sequenced-op sync, OPFS storage and WebMCP tools."
+    />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0F0F0F" />
+    <link rel="canonical" href="https://aphrody.app/" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
+    <link rel="modulepreload" href="/aphrody_app_wasm.js" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Aphrody: Rust WebGPU Tiling Desktop Shell"
+    />
+    <meta
+      property="og:description"
+      content="Pure Rust tiling window shell on WebGPU and WGSL with Fluid-style sync, OPFS and WebMCP."
+    />
+    <meta property="og:url" content="https://aphrody.app/" />
+    <meta property="og:site_name" content="Aphrody" />
+    <meta property="og:image" content="https://aphrody.app/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Aphrody",
+        "url": "https://aphrody.app/",
+        "description": "Pure Rust tiling window shell drawn with WebGPU and WGSL.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://aphrody.app/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+    <style>
+      :root {
+        color-scheme: dark light;
+        --bg: #0F0F0F;
+        --layer: #1C1C1C;
+        --brand: #0078D4;
+        --brand-light: #60CDFF;
+        --fg: #F3F3F3;
+        --muted: #B8B8B8;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #F5F5F5;
+          --layer: #FFFFFF;
+          --fg: #1A1A1A;
+          --muted: #4A4A4A;
+          --brand-light: #005A9E;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          16px/1.5 "Segoe UI Variable",
+          "Segoe UI",
+          system-ui,
+          sans-serif;
+      }
+      header,
+      footer {
+        padding: 12px 20px;
+        background: var(--layer);
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 24px;
+        align-items: baseline;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      p {
+        margin: 0;
+        color: var(--muted);
+      }
+      main {
+        padding: 16px 20px;
+        display: grid;
+        gap: 12px;
+        grid-template-rows: 1fr auto auto;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: min(70vh, 720px);
+        border-radius: 8px;
+        background: var(--bg);
+        touch-action: none;
+      }
+      #hud {
+        font:
+          13px/1.4 "Cascadia Mono",
+          Consolas,
+          monospace;
+        color: var(--brand-light);
+        min-height: 2.8em;
+      }
+      kbd {
+        padding: 0 6px;
+        border: 1px solid var(--muted);
+        border-radius: 4px;
+        font:
+          12px "Cascadia Mono",
+          Consolas,
+          monospace;
+      }
+      a {
+        color: var(--brand-light);
+      }
+      :focus-visible {
+        outline: 2px solid var(--brand-light);
+        outline-offset: 2px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Aphrody</h1>
+      <p>Pure Rust tiling shell on WebGPU</p>
+      <nav aria-label="Resources">
+        <a href="/llms.txt">llms.txt</a> |
+        <a href="/.well-known/webmcp.json">WebMCP tools</a> |
+        <a href="/releases/manifest.json">Releases</a>
+      </nav>
+    </header>
+    <main>
+      <canvas
+        id="gpu"
+        width="1280"
+        height="720"
+        tabindex="0"
+        role="application"
+        aria-label="Aphrody window manager canvas. Press n to open a window, w to close, Tab to move focus, l to change layout, 1 to 4 to switch workspace."
+      ></canvas>
+      <p id="hud" role="status" aria-live="polite">
+        Loading WebAssembly module
+      </p>
+      <p>
+        Keys: <kbd>n</kbd> new window, <kbd>w</kbd> close, <kbd>Tab</kbd> focus,
+        <kbd>l</kbd> layout, <kbd>1</kbd> to <kbd>4</kbd> workspace,
+        <kbd>Space</kbd> shared counter.
+      </p>
+    </main>
+    <footer>
+      <p>
+        Rust 2024, wasm32, WGSL. Layouts: dwindle, cosmic grid, niri scroll,
+        floating. Requires a browser with WebGPU.
+      </p>
+    </footer>
+    <noscript
+      ><p>
+        JavaScript and WebAssembly are required to run the Aphrody canvas.
+      </p></noscript
+    >
+    <script type="module">
+      import init from "/aphrody_app_wasm.js";
+      const hud = document.getElementById("hud");
+      if (!navigator.gpu)
+        hud.textContent =
+          "WebGPU is not available in this browser; windows will not be drawn.";
+      init({ module_or_path: "/aphrody_app_wasm.wasm" }).catch((e) => {
+        hud.textContent = "Failed to start: " + e;
+      });
+    </script>
+  </body>
 </html>

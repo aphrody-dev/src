@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to bring multithreaded applications written in other languages to WebAssembly.
 
- Ingvar Stepanyan [X](https://twitter.com/RReverser) [GitHub](https://github.com/RReverser) [Homepage](https://rreverser.com/)
+Ingvar Stepanyan [X](https://twitter.com/RReverser) [GitHub](https://github.com/RReverser) [Homepage](https://rreverser.com/)
 
 WebAssembly threads support is one of the most important performance additions to WebAssembly. It
 allows you to either run parts of your code in parallel on separate cores, or the same code over
@@ -142,15 +143,13 @@ support at runtime, use [wasm-feature-detect
 library](https://github.com/GoogleChromeLabs/wasm-feature-detect) and load the module like this:
 
 ```javascript
-import { threads } from 'wasm-feature-detect';
+import { threads } from "wasm-feature-detect";
 
 const hasThreads = await threads();
 
-const module = await (
-  hasThreads
-    ? import('./module-with-threads.js')
-    : import('./module-without-threads.js')
-);
+const module = await (hasThreads
+  ? import("./module-with-threads.js")
+  : import("./module-without-threads.js"));
 
 // ...now use `module` as you normally would
 ```
@@ -240,7 +239,7 @@ more.
 In this case, the code synchronously invokes `pthread_create` to create a background thread, and
 follows up by another synchronous call to `pthread_join` that waits for the background thread to
 finish execution. However, Web Workers, that are used behind the scenes when this code is compiled
-with Emscripten, are asynchronous. So what happens is, `pthread_create` only *schedules* a new
+with Emscripten, are asynchronous. So what happens is, `pthread_create` only _schedules_ a new
 Worker thread to be created on the next event loop run, but then `pthread_join` immediately blocks
 the event loop to wait for that Worker, and by doing so prevents it from ever being created. It's a
 classic example of a [deadlock](https://en.wikipedia.org/wiki/Deadlock).

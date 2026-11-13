@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how WebAssembly and WebGPU enhancements improve machine learning performance on the web.
 
- Austin Eng [GitHub](https://github.com/austinEng)  Deepti Gandluri [GitHub](https://github.com/dtig)  François Beaufort [GitHub](https://github.com/beaufortfrancois)
+Austin Eng [GitHub](https://github.com/austinEng) Deepti Gandluri [GitHub](https://github.com/dtig) François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 [Video](https://www.youtube.com/watch?v=VYJZGa9m34w)
 

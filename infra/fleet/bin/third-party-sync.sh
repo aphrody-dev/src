@@ -1,5 +1,5 @@
 #!/bin/bash
-# third_party forks of /srv/src, pinned in src.lock.json (engine git). fr1 only (the factory); prd and fr2 carry no
+# third_party forks of /srv/src (stored in ~/third_party-store, symlinked), pinned in src.lock.json (engine git). fr1 only (the factory); prd and fr2 carry no
 # third_party. Shallow blobless clone of each fork at the pinned commit (falls back to the branch tip when the pin is not
 # fetchable). Huge upstreams stay out of this checkout: Chromium lives in /srv/chromium (gclient, chromium-factory),
 # the others are listed in SKIP and fetched on demand with `ay git`.
@@ -7,6 +7,8 @@
 # Output: /var/lib/src-sync/third-party.tsv (name, state, commit). Idempotent: present repos only get the pin checked.
 set -uo pipefail
 ROOT=${SRC_CHECKOUT:-/srv/src}; LOCK=$ROOT/src.lock.json; JOBS=${JOBS:-3}
+# Clones live on the big disk (/home, 805 GB) and are symlinked into the checkout: / is 290 GB shared with Docker and builds.
+STORE=${TP_STORE:-$HOME/third_party-store}; mkdir -p "$STORE"
 SKIP='^(chromium/src|chromium|linux|llvm-project|llvm-test-suite|aosp-manifest|webkit|unreal.*|UnrealEngine)$'
 OUT=${THIRD_PARTY_OUT:-$HOME/.cache/src-sync/third-party.tsv}; mkdir -p "$(dirname "$OUT")"
 [ -f "$LOCK" ] || { echo "no $LOCK" >&2; exit 1; }
@@ -19,7 +21,7 @@ for k, v in json.load(open(sys.argv[1]))["repositories"].items():
 PY
 )
 one() { # name url commit branch
-  local n=$1 url=$2 pin=$3 br=$4 d=$ROOT/third_party/$1
+  local n=$1 url=$2 pin=$3 br=$4 d=$STORE/$1; mkdir -p "$ROOT/third_party"; [ -e "$ROOT/third_party/$1" ] || ln -s "$d" "$ROOT/third_party/$1"
   export GIT_TERMINAL_PROMPT=0
   if [ ! -d "$d/.git" ]; then
     mkdir -p "$(dirname "$d")"
@@ -33,7 +35,7 @@ one() { # name url commit branch
   fi
   printf '%s\t%s\t%s\n' "$n" "$([ "$head" = "$pin" ] && echo pinned || echo tip)" "${head:0:12}"
 }
-export -f one; export ROOT
+export -f one; export ROOT STORE
 echo "$list" | while IFS=$'\t' read -r n url pin br; do
   [ -n "$n" ] || continue
   if [ -n "$want" ]; then printf '%s\n' "$want" | grep -qx "$n" || continue; else [[ $n =~ $SKIP ]] && continue; fi

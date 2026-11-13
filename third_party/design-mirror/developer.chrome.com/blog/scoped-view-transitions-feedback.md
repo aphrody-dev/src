@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
 
 Published: Sep 10, 2025
@@ -18,11 +19,11 @@ Scoped view transitions is a proposed extension to the [View Transition API](htt
 To start a scoped view transition, call `element.startViewTransition()` (instead of `document.startViewTransition()`) on any `HTMLElement` with `contain: layout` applied to it.
 
 ```javascript
-document.querySelector('nav').startViewTransition({
+document.querySelector("nav").startViewTransition({
   callback: () => {
     // ... code that manipulates the contents of <nav>
   },
-})
+});
 ```
 
 The result is a view transition scoped to the subtree of your chosen `HTMLElement`, with the resulting `::view-transition` pseudo-tree getting injected onto that `HTMLElement`. The `HTMLElement` acts as a container for the transition animations.

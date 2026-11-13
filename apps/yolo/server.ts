@@ -7,7 +7,10 @@
 import { existsSync, readFileSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { ThreeVpsSearchCluster } from "@aphrody/chromium-bun/search";
-import { generatedSymbols, symbolSvg } from "../../packages/design/src/bun-plugin.ts";
+import {
+  generatedSymbols,
+  symbolSvg,
+} from "../../packages/design/src/bun-plugin.ts";
 import { searchSymbols } from "../../packages/design/src/runtime.ts";
 import { buildYoloApp } from "./build.ts";
 import { YoloModuleGraph } from "./src/framework/graph.ts";
@@ -147,10 +150,13 @@ export async function startYoloServer(options?: {
         const available = new Set(await generatedSymbols());
         const icons = await Promise.all(
           // Catalogue complet pour la recherche, rendu limité aux symboles générés par ay brand build.
-          (await searchSymbols(q, 4000)).filter((n) => available.has(n)).slice(0, 24).map(async (name) => ({
-            name,
-            svg: await symbolSvg("rounded", name, 24),
-          })),
+          (await searchSymbols(q, 4000))
+            .filter((n) => available.has(n))
+            .slice(0, 24)
+            .map(async (name) => ({
+              name,
+              svg: await symbolSvg("rounded", name, 24),
+            })),
         );
         return Response.json(
           { count: icons.length, icons },

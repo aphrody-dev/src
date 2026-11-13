@@ -17,18 +17,32 @@ const manifest = Bun.TOML.parse(
   await Bun.file(join(root, "third_party/toolchain-157.toml")).text(),
 ) as {
   toolchain: { llvm_version: string; rustc_version: string };
-  file: { platform: string; package: string; source_url: string; source_sha256: string }[];
+  file: {
+    platform: string;
+    package: string;
+    source_url: string;
+    source_sha256: string;
+  }[];
 };
 const platform =
-  process.platform === "win32" ? "windows-x64" : process.platform === "linux" && process.arch === "x64" ? "linux-x64" : "";
-const dir = process.env.AY_TOOLCHAIN_DIR || join(homedir(), ".local/share/aphrody/toolchain/157");
+  process.platform === "win32"
+    ? "windows-x64"
+    : process.platform === "linux" && process.arch === "x64"
+      ? "linux-x64"
+      : "";
+const dir =
+  process.env.AY_TOOLCHAIN_DIR ||
+  join(homedir(), ".local/share/aphrody/toolchain/157");
 const RUSTUP_NAME = "chromium-157";
 const exe = process.platform === "win32" ? ".exe" : "";
-const kind = (pkg: string) => (pkg.startsWith("rust-toolchain") ? "rust" : "clang");
+const kind = (pkg: string) =>
+  pkg.startsWith("rust-toolchain") ? "rust" : "clang";
 
 async function install(): Promise<number> {
   if (!platform) {
-    console.error(`toolchain: no Chromium 157 package for ${process.platform}-${process.arch}`);
+    console.error(
+      `toolchain: no Chromium 157 package for ${process.platform}-${process.arch}`,
+    );
     return 2;
   }
   for (const f of manifest.file.filter((x) => x.platform === platform)) {
@@ -39,7 +53,8 @@ async function install(): Promise<number> {
     if (!res.ok) throw new Error(`${f.source_url}: HTTP ${res.status}`);
     const bytes = new Uint8Array(await res.arrayBuffer());
     const sha = new Bun.CryptoHasher("sha256").update(bytes).digest("hex");
-    if (sha !== f.source_sha256) throw new Error(`${f.package}: sha256 ${sha} != ${f.source_sha256}`);
+    if (sha !== f.source_sha256)
+      throw new Error(`${f.package}: sha256 ${sha} != ${f.source_sha256}`);
     const tmp = join(tmpdir(), `${f.package}.tar.xz`);
     await Bun.write(tmp, bytes);
     mkdirSync(dest, { recursive: true });
@@ -57,9 +72,15 @@ async function install(): Promise<number> {
 
 async function status(): Promise<number> {
   // Chromium's Windows package ships clang-cl and lld-link only (no clang driver).
-  const clang = join(dir, "clang/bin", process.platform === "win32" ? "clang-cl.exe" : "clang");
+  const clang = join(
+    dir,
+    "clang/bin",
+    process.platform === "win32" ? "clang-cl.exe" : "clang",
+  );
   const rustc = join(dir, "rust/bin", `rustc${exe}`);
-  console.log(`dir ${dir}  expected LLVM ${manifest.toolchain.llvm_version}, ${manifest.toolchain.rustc_version}`);
+  console.log(
+    `dir ${dir}  expected LLVM ${manifest.toolchain.llvm_version}, ${manifest.toolchain.rustc_version}`,
+  );
   let ok = true;
   for (const [name, bin, args] of [
     ["clang", clang, ["--version"]],
@@ -71,7 +92,10 @@ async function status(): Promise<number> {
       continue;
     }
     const out = (await $`${bin} ${args}`.text()).split("\n");
-    const line = name === "clang" ? out[0] : out.filter((l) => /^(release|LLVM version):/.test(l)).join(", ");
+    const line =
+      name === "clang"
+        ? out[0]
+        : out.filter((l) => /^(release|LLVM version):/.test(l)).join(", ");
     console.log(`${name}: ${line}`);
   }
   return ok ? 0 : 1;
@@ -99,4 +123,6 @@ function env(): number {
 }
 
 const cmd = process.argv[2] ?? "status";
-process.exit(cmd === "install" ? await install() : cmd === "env" ? env() : await status());
+process.exit(
+  cmd === "install" ? await install() : cmd === "env" ? env() : await status(),
+);

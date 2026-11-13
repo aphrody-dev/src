@@ -4,7 +4,7 @@ Conceptual writing about why Lore works the way it does.
 
 ## What this folder is
 
-Explanation is the *why* of Lore. These pages make connections, give context, and dig into the choices and history behind the design. They're about understanding, not about getting a task done.
+Explanation is the _why_ of Lore. These pages make connections, give context, and dig into the choices and history behind the design. They're about understanding, not about getting a task done.
 
 ## What you'll find here
 

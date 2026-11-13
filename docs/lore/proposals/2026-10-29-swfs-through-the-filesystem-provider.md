@@ -77,18 +77,18 @@ The interface has two traits (`lore-revision/src/fs/filesystem_provider.rs`):
 
 The second goal is the reason the interface is not a 1:1 copy of an OS file API. Each method sits at the level where the commands share logic and where SWFS has something better to do than the OS:
 
-| Method | Why it sits at this level |
-|---|---|
-| `changes_from_filesystem_to_state(FilesystemDiffContext) -> ChangeStream` | Takes a whole subtree diff, with the filter verdicts, mounts and dirty/stage intent. `OsOperation` walks the disk. A provider that knows what the user modified answers from that list instead of walking, and so never hydrates the files it skips. |
-| `write_node(repository, node, path) -> FileInfo` | One call creates the parent directory, writes the content and applies the mode. Making these four separate calls would resolve the path four times. A virtual provider records the node and never writes the bytes. |
-| `set_file_to_immutable_store_contents(repository, address, path)` | Names content by address, not by bytes. This lets SWFS make sure the content is in the store and leave the read callback to serve it. |
-| `file_holds_content(repository, path, previous, size, established) -> NodeComparison` | Asks "does this file hold that content?" rather than "give me the bytes". OS reads and compares. A provider that keeps a record of what it served answers without reading. |
-| `content_source(path) -> ContentSource` | Returns *where* content is read from, not the content. The caller never names a host path that the provider cannot read through. |
-| `holds_name_exactly`, `names_folding_to` | Case resolution as two questions: one lookup for the common case and a directory read only when needed. A provider with an index answers either without listing. |
-| `read_directory(path) -> DirectoryListing` | A lazy listing, so a consumer that stops early stops the walk. |
-| `file_info`, `untracked_file_info` | `untracked_file_info` is for paths the revision does not track, such as merge sidecars and scratch files. A virtual provider holds no node for them and reads them from disk instead. |
-| `rename`, `remove`, `remove_recursive`, `create_dir_all`, `make_executable`, `write_file`, `copy_file` | Fine-grained primitives remain for the operations that really are per-path: merge resolution, reset, obliterate. |
-| `InstanceOperationImpl::committed_path(path)` | Commit calls it for each file it stores and each node it deletes. The SWFS provider records the path as written, so the thaw that ends the commit names it and SWFS drops its record of the change. The OS provider ignores it. A dry run makes no call. |
+| Method                                                                                                 | Why it sits at this level                                                                                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `changes_from_filesystem_to_state(FilesystemDiffContext) -> ChangeStream`                              | Takes a whole subtree diff, with the filter verdicts, mounts and dirty/stage intent. `OsOperation` walks the disk. A provider that knows what the user modified answers from that list instead of walking, and so never hydrates the files it skips.     |
+| `write_node(repository, node, path) -> FileInfo`                                                       | One call creates the parent directory, writes the content and applies the mode. Making these four separate calls would resolve the path four times. A virtual provider records the node and never writes the bytes.                                      |
+| `set_file_to_immutable_store_contents(repository, address, path)`                                      | Names content by address, not by bytes. This lets SWFS make sure the content is in the store and leave the read callback to serve it.                                                                                                                    |
+| `file_holds_content(repository, path, previous, size, established) -> NodeComparison`                  | Asks "does this file hold that content?" rather than "give me the bytes". OS reads and compares. A provider that keeps a record of what it served answers without reading.                                                                               |
+| `content_source(path) -> ContentSource`                                                                | Returns _where_ content is read from, not the content. The caller never names a host path that the provider cannot read through.                                                                                                                         |
+| `holds_name_exactly`, `names_folding_to`                                                               | Case resolution as two questions: one lookup for the common case and a directory read only when needed. A provider with an index answers either without listing.                                                                                         |
+| `read_directory(path) -> DirectoryListing`                                                             | A lazy listing, so a consumer that stops early stops the walk.                                                                                                                                                                                           |
+| `file_info`, `untracked_file_info`                                                                     | `untracked_file_info` is for paths the revision does not track, such as merge sidecars and scratch files. A virtual provider holds no node for them and reads them from disk instead.                                                                    |
+| `rename`, `remove`, `remove_recursive`, `create_dir_all`, `make_executable`, `write_file`, `copy_file` | Fine-grained primitives remain for the operations that really are per-path: merge resolution, reset, obliterate.                                                                                                                                         |
+| `InstanceOperationImpl::committed_path(path)`                                                          | Commit calls it for each file it stores and each node it deletes. The SWFS provider records the path as written, so the thaw that ends the commit names it and SWFS drops its record of the change. The OS provider ignores it. A dry run makes no call. |
 
 The rules that make two providers behave the same stay in the commands: filter folding, mode derivation (`FileInfo::mode`, `mode_differs_from`), conflict and diffability inference (default methods derived from `content_source`), and local-modification checks. The provider answers questions about the tree but never decides policy (G1). Where a provider can answer a derived question more cheaply, it overrides the default method (`names_folding_to`, `infer_is_diffable`, `infer_is_conflicted`). It does not get a separate code path.
 
@@ -186,14 +186,14 @@ What users get: an SWFS instance that behaves like an on-disk one for every comm
 
 ### Goal traceability
 
-| Goal | Addressed by |
-|---|---|
-| G1 | The seam; policy stays in commands; the ordinary realize and commit paths shared by both providers in stages 2–4; stage 5's shared test suite |
-| G2 | Interface altitude table; stage 3's list-driven diff; stage 1's no-byte writes |
-| G3 | `with_operation` / `with_operation_if`; freeze in `begin_operation`, thaw in `finalize` |
-| G4 | Phase 0 |
-| G5 | Stages 1–5 |
-| G6 | `StaticDispatchInstanceOperation`; unboxed async methods |
+| Goal | Addressed by                                                                                                                                  |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| G1   | The seam; policy stays in commands; the ordinary realize and commit paths shared by both providers in stages 2–4; stage 5's shared test suite |
+| G2   | Interface altitude table; stage 3's list-driven diff; stage 1's no-byte writes                                                                |
+| G3   | `with_operation` / `with_operation_if`; freeze in `begin_operation`, thaw in `finalize`                                                       |
+| G4   | Phase 0                                                                                                                                       |
+| G5   | Stages 1–5                                                                                                                                    |
+| G6   | `StaticDispatchInstanceOperation`; unboxed async methods                                                                                      |
 
 ## Compatibility
 
@@ -231,18 +231,18 @@ None of this design exposes new data to other parties. Every structure the provi
 
 **Assumptions**
 
-- **Assumption:** SWFS can report, during a freeze, exactly which files the user created, modified, renamed or deleted since the last thaw (`swfsGetModifiedFileList`, `ChangedWhileFrozen`). — *invalidated if:* the list misses changes, for example writes in flight at freeze time. Stages 2 and 3 would then lose local changes or fail to commit them.
-- **Assumption:** Content that a thaw describes is in the immutable store before a read callback asks for it, which `write_node` ensures by caching it. — *invalidated if:* store eviction removes cached content from an SWFS instance's shared store. Reads would then need the remote, and they fail while offline.
-- **Assumption:** `swfsThaw` honors the contracts `swfs.h` states, so the design adds no workaround for them. A described entry takes the type and the spelling the description gives it, so a path can change between file and directory, or change case, in one thaw. A move lists its origin as a deletion with the destination's `file_index`. A thaw that names a path SWFS holds as changed commits that change. — *invalidated if:* SWFS keeps the node it holds, or reads a description of a restored path as the commit of its deletion. A sync that turns a file into a directory, or restores a deleted file, would then leave the old state on the mount.
-- **Assumption:** A thaw can discard what the user holds. Naming a user-held file as nothing, or with the `Deleted` flag, deletes it. Naming it with the source's size makes `read_file` serve the source's bytes. Naming or relisting a parent does not touch the user's files below it, so a purge names each user-held file, taken from the modified list. Naming a path discards the user's version, so Lore names user-held paths only to commit them or to discard them (reset, forced sync, purge). — *invalidated if:* a thaw leaves a user-held file in place after it is named. Verified against the SWFS build in use. **This holds for files only.** No thaw form removes a directory the user made: naming it as nothing, with the `Deleted` flag, naming its parent (relisted without it), or naming parent and child together all leave it, and leave any file in it that was not named. The design does not meet this yet, and it needs a thaw entry from SWFS. Until then `reset --purge` of an untracked directory and the purge forms of `link remove` and `layer remove` leave an empty directory behind.
-- **Assumption:** A freeze over the whole mount is cheap enough to take once per command. — *invalidated if:* freeze latency grows with tree size or open handles, which would make selective freezing a requirement and no longer an optimization.
+- **Assumption:** SWFS can report, during a freeze, exactly which files the user created, modified, renamed or deleted since the last thaw (`swfsGetModifiedFileList`, `ChangedWhileFrozen`). — _invalidated if:_ the list misses changes, for example writes in flight at freeze time. Stages 2 and 3 would then lose local changes or fail to commit them.
+- **Assumption:** Content that a thaw describes is in the immutable store before a read callback asks for it, which `write_node` ensures by caching it. — _invalidated if:_ store eviction removes cached content from an SWFS instance's shared store. Reads would then need the remote, and they fail while offline.
+- **Assumption:** `swfsThaw` honors the contracts `swfs.h` states, so the design adds no workaround for them. A described entry takes the type and the spelling the description gives it, so a path can change between file and directory, or change case, in one thaw. A move lists its origin as a deletion with the destination's `file_index`. A thaw that names a path SWFS holds as changed commits that change. — _invalidated if:_ SWFS keeps the node it holds, or reads a description of a restored path as the commit of its deletion. A sync that turns a file into a directory, or restores a deleted file, would then leave the old state on the mount.
+- **Assumption:** A thaw can discard what the user holds. Naming a user-held file as nothing, or with the `Deleted` flag, deletes it. Naming it with the source's size makes `read_file` serve the source's bytes. Naming or relisting a parent does not touch the user's files below it, so a purge names each user-held file, taken from the modified list. Naming a path discards the user's version, so Lore names user-held paths only to commit them or to discard them (reset, forced sync, purge). — _invalidated if:_ a thaw leaves a user-held file in place after it is named. Verified against the SWFS build in use. **This holds for files only.** No thaw form removes a directory the user made: naming it as nothing, with the `Deleted` flag, naming its parent (relisted without it), or naming parent and child together all leave it, and leave any file in it that was not named. The design does not meet this yet, and it needs a thaw entry from SWFS. Until then `reset --purge` of an untracked directory and the purge forms of `link remove` and `layer remove` leave an empty directory behind.
+- **Assumption:** A freeze over the whole mount is cheap enough to take once per command. — _invalidated if:_ freeze latency grows with tree size or open handles, which would make selective freezing a requirement and no longer an optimization.
 
 **Risks**
 
-- **Risk:** An `OsOperation` method diverges subtly from the direct I/O it replaced during phase 0, for example in error mapping or case handling. — *mitigation:* Most operations' implementation can be 1:1 copied from the code they replace due to existing code re-use. In edge cases the author's judgement can match up error cases, with the existing test suite as the oracle.
-- **Risk:** A command reaches the working tree without going through the operation and bypasses SWFS. — *mitigation:* the contexts that must not touch a working tree carry `InvalidFilesystemProvider`.
-- **Risk:** A thaw fails partway through, leaving SWFS presenting a state that differs from Lore's current anchor. — *mitigation:* `finalize` always clears the touched set and reports the failure. A mount found frozen when it is mounted is thawed, and the first operation after a remount rebuilds the modified-file record from SWFS's own list.
-- **Risk:** Stage 1 instances run `status`/`stage`/`commit` through the OS-delegated reads before stage 3 lands, and get incorrect results. — *mitigation:* Explicitly inform early adopters about SWFS support and ensure it is only used as supported. The limited release of the EpicVFS driver limits early users to people in close contact with the Lore team.
+- **Risk:** An `OsOperation` method diverges subtly from the direct I/O it replaced during phase 0, for example in error mapping or case handling. — _mitigation:_ Most operations' implementation can be 1:1 copied from the code they replace due to existing code re-use. In edge cases the author's judgement can match up error cases, with the existing test suite as the oracle.
+- **Risk:** A command reaches the working tree without going through the operation and bypasses SWFS. — _mitigation:_ the contexts that must not touch a working tree carry `InvalidFilesystemProvider`.
+- **Risk:** A thaw fails partway through, leaving SWFS presenting a state that differs from Lore's current anchor. — _mitigation:_ `finalize` always clears the touched set and reports the failure. A mount found frozen when it is mounted is thawed, and the first operation after a remount rebuilds the modified-file record from SWFS's own list.
+- **Risk:** Stage 1 instances run `status`/`stage`/`commit` through the OS-delegated reads before stage 3 lands, and get incorrect results. — _mitigation:_ Explicitly inform early adopters about SWFS support and ensure it is only used as supported. The limited release of the EpicVFS driver limits early users to people in close contact with the Lore team.
 
 ## Drawbacks
 
@@ -256,25 +256,25 @@ None of this design exposes new data to other parties. Every structure the provi
 
 Mount SWFS at the working-tree path and keep `OsFilesystem`. Lore would write and walk files through the driver like any other directory.
 
-*Rejected because:* every write during clone and sync would pass through the driver into the write directory, which costs the same disk and time as materializing and removes the reason for SWFS. Every status walk would hydrate the files it reads. A plain directory has no freeze/thaw window, so Lore could not update the presented tree atomically against user writes.
+_Rejected because:_ every write during clone and sync would pass through the driver into the write directory, which costs the same disk and time as materializing and removes the reason for SWFS. Every status walk would hydrate the files it reads. A plain directory has no freeze/thaw window, so Lore could not update the presented tree atomically against user writes.
 
 ### A low-level VFS trait mirroring the OS file API
 
 Define the seam as `open`/`read`/`write`/`stat`/`readdir` and have SWFS implement each one.
 
-*Rejected because:* that altitude cannot express "diff this subtree", "write this node" or "does this file hold this content". SWFS would have to emulate a disk file by file, and could never answer from its modified-file list or skip writing bytes. Nor can it express an operation as a freeze window. G2 would be unreachable.
+_Rejected because:_ that altitude cannot express "diff this subtree", "write this node" or "does this file hold this content". SWFS would have to emulate a disk file by file, and could never answer from its modified-file list or skip writing bytes. Nor can it express an operation as a freeze window. G2 would be unreachable.
 
 ### SWFS-specific command implementations
 
 Branch on `config.is_swfs()` inside `sync`, `commit`, `status` and the rest, and write SWFS versions of each.
 
-*Rejected because:* the rules those commands encode (filters, case folding, modes, dirty/stage flags, local-modification checks, dry runs) would exist twice and drift apart. That is the failure G1 exists to prevent. Under the chosen design, a provider that holds state still shares `hold.rs`, the commit path and the event reporting.
+_Rejected because:_ the rules those commands encode (filters, case folding, modes, dirty/stage flags, local-modification checks, dry runs) would exist twice and drift apart. That is the failure G1 exists to prevent. Under the chosen design, a provider that holds state still shares `hold.rs`, the commit path and the event reporting.
 
 ### Dynamic dispatch (`Arc<dyn InstanceOperation>`)
 
 Make `InstanceOperation` object-safe and box each async method's future.
 
-*Rejected because:* the OS path would pay a heap allocation per file operation on the hottest loops (status walks, realize), which G6 rules out. The provider itself is `dyn` (`Arc<dyn FilesystemProvider>`), because it is called once per command.
+_Rejected because:_ the OS path would pay a heap allocation per file operation on the hottest loops (status walks, realize), which G6 rules out. The provider itself is `dyn` (`Arc<dyn FilesystemProvider>`), because it is called once per command.
 
 ## Amendments
 

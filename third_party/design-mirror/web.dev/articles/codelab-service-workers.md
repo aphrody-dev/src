@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Jeff Posnick [X](https://twitter.com/jeffposnick) [GitHub](https://github.com/jeffposnick) [Homepage](https://jeffy.info/)
 
 > [!NOTE]
@@ -32,9 +33,7 @@ won't be used unless it's
 first. You can do this via a call to:
 
 ```javascript
-navigator.serviceWorker.register(
-  '/service-worker.js'
-)
+navigator.serviceWorker.register("/service-worker.js");
 ```
 
 inside your `register-sw.js` file.
@@ -71,9 +70,9 @@ Putting those two points together, add this general-purpose service worker
 registration code to your `register-sw.js` file:
 
 ```javascript
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js');
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js");
   });
 }
 ```
@@ -97,16 +96,16 @@ messages to the DevTools console in response to various events (but not do much
 else):
 
 ```javascript
-self.addEventListener('install', (event) => {
-  console.log('Inside the install handler:', event);
+self.addEventListener("install", (event) => {
+  console.log("Inside the install handler:", event);
 });
 
-self.addEventListener('activate', (event) => {
-  console.log('Inside the activate handler:', event);
+self.addEventListener("activate", (event) => {
+  console.log("Inside the activate handler:", event);
 });
 
 self.addEventListener(fetch, (event) => {
-  console.log('Inside the fetch handler:', event);
+  console.log("Inside the fetch handler:", event);
 });
 ```
 
@@ -154,20 +153,20 @@ check for any changes. If anything in the service worker script is different,
 then the new service worker will get a chance to install, activate,
 and eventually take control.
 
-You can simulate this update flow by going back to the code editor for your project, and making *any* change to the code. One quick change would be
+You can simulate this update flow by going back to the code editor for your project, and making _any_ change to the code. One quick change would be
 to replace
 
 ```javascript
-self.addEventListener('install', (event) => {
-  console.log('Inside the install handler:', event);
+self.addEventListener("install", (event) => {
+  console.log("Inside the install handler:", event);
 });
 ```
 
 with
 
 ```javascript
-self.addEventListener('install', (event) => {
-  console.log('Inside the UPDATED install handler:', event);
+self.addEventListener("install", (event) => {
+  console.log("Inside the UPDATED install handler:", event);
 });
 ```
 

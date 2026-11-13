@@ -2,7 +2,14 @@ import { expect, test } from "bun:test";
 import { mkdtempSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { accepts, defaultClis, type Fleet, place, providerCmd, routeTarget } from "./runner.ts";
+import {
+  accepts,
+  defaultClis,
+  type Fleet,
+  place,
+  providerCmd,
+  routeTarget,
+} from "./runner.ts";
 
 const NASTY = `a & b | c ^ d %PATH% "q" < in > out ; $(x) \`y\``;
 const task = {
@@ -94,32 +101,41 @@ const FLEET = Bun.TOML.parse(
 ) as Fleet;
 
 test("heavy roles run on fr1 only, prd keeps light prod roles", () => {
-  for (const r of ["coder", "tester", "linter", "build", "chromium", "training"]) {
+  for (const r of [
+    "coder",
+    "tester",
+    "linter",
+    "build",
+    "chromium",
+    "training",
+  ]) {
     expect(FLEET.roles[r]?.heavy).toBe(true);
     expect(accepts(FLEET, "fr1", r)).toBe(true);
-    for (const h of ["prd", "fr2", "pc"]) expect(accepts(FLEET, h, r)).toBe(false);
+    for (const h of ["prd", "fr2", "pc"])
+      expect(accepts(FLEET, h, r)).toBe(false);
     expect(place(FLEET, r)).toBe("fr1");
     expect(() => place(FLEET, r, "prd")).toThrow();
   }
-  for (const r of FLEET.hosts.prd!.roles) expect(FLEET.roles[r]?.heavy).toBeFalsy();
+  for (const r of FLEET.hosts.prd!.roles)
+    expect(FLEET.roles[r]?.heavy).toBeFalsy();
   expect(place(FLEET, "deployer", "prd")).toBe("prd");
   // a heavy role listed by mistake on prd is still refused
-  const bad = { ...FLEET, hosts: { ...FLEET.hosts, prd: { ...FLEET.hosts.prd!, roles: ["coder"] } } };
+  const bad = {
+    ...FLEET,
+    hosts: { ...FLEET.hosts, prd: { ...FLEET.hosts.prd!, roles: ["coder"] } },
+  };
   expect(accepts(bad, "prd", "coder")).toBe(false);
 });
 
 test("route: prd forwards heavy and foreign tasks", () => {
   expect(routeTarget(FLEET, "prd", { role: "coder", host: "prd" })).toBe("fr1");
-  expect(routeTarget(FLEET, "prd", { role: "reviewer", host: "prd" })).toBe("fr1");
-  expect(routeTarget(FLEET, "fr1", { role: "deployer", host: "any" })).toBe("prd");
+  expect(routeTarget(FLEET, "prd", { role: "reviewer", host: "prd" })).toBe(
+    "fr1",
+  );
+  expect(routeTarget(FLEET, "fr1", { role: "deployer", host: "any" })).toBe(
+    "prd",
+  );
   expect(routeTarget(FLEET, "fr1", { role: "coder", host: "any" })).toBeNull();
-});
-
-test("default CLIs: claude, codex, opencode, installed and logged in only", () => {
-  const home = mkdtempSync(join(tmpdir(), "clis-"));
-  expect(defaultClis(() => true, { CLAUDE_CODE_OAUTH_TOKEN: "x", OPENAI_API_KEY: "y" }, home)).toEqual(["claude", "codex"]);
-  expect(defaultClis((c) => c !== "claude", { CLAUDE_CODE_OAUTH_TOKEN: "x", OPENAI_API_KEY: "y" }, home)).toEqual(["codex"]);
-  expect(defaultClis(() => true, {}, home)).toEqual([]);
 });
 
 test("jules provider runs ai-os jules run --wait with the repo from the model slot", () => {
@@ -134,4 +150,23 @@ test("jules provider runs ai-os jules run --wait with the repo from the model sl
   ]);
   expect(b.cmd[1]).toMatch(/packages[\\/]ai-os[\\/]src[\\/]cli\.ts$/);
   expect(b.stdin).toBe(task.prompt);
+});
+
+test("default CLIs: claude, codex, opencode, installed and logged in only", () => {
+  const home = mkdtempSync(join(tmpdir(), "clis-"));
+  expect(
+    defaultClis(
+      () => true,
+      { CLAUDE_CODE_OAUTH_TOKEN: "x", OPENAI_API_KEY: "y" },
+      home,
+    ),
+  ).toEqual(["claude", "codex"]);
+  expect(
+    defaultClis(
+      (c) => c !== "claude",
+      { CLAUDE_CODE_OAUTH_TOKEN: "x", OPENAI_API_KEY: "y" },
+      home,
+    ),
+  ).toEqual(["codex"]);
+  expect(defaultClis(() => true, {}, home)).toEqual([]);
 });

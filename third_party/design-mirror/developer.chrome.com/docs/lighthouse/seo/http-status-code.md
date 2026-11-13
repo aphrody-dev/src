@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Servers provide a three-digit [HTTP status code](https://developer.mozilla.org/docs/Web/HTTP/Status)
 for each resource request they receive. Status codes in the 400s and 500s
 [indicate that there's an error](https://developer.mozilla.org/docs/Web/HTTP/Status#Client_error_responses)
@@ -14,7 +15,7 @@ with the requested resource. If a search engine encounters a status code error
 when it's **crawling** a web page, it may not index that page properly.
 
 > [!IMPORTANT]
-> **Key term:** *Crawling* is how a search engine updates its index of content on the web.
+> **Key term:** _Crawling_ is how a search engine updates its index of content on the web.
 
 ## How the Lighthouse HTTP status code audit fails
 

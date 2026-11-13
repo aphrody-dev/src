@@ -17,6 +17,7 @@ A command that the setting sends to the service starts one only from an executab
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```bash
@@ -28,6 +29,7 @@ Lore service executable set to /usr/local/bin/lore
 ```
 
 <!-- tab -->
+
 **Windows**
 
 ```powershell
@@ -104,6 +106,7 @@ The buffer holds the most recent messages and is emptied as it is read, so each 
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```bash
@@ -111,6 +114,7 @@ LORE_USE_SERVICE=0 lore --repository ~/my-project status
 ```
 
 <!-- tab -->
+
 **Windows**
 
 PowerShell has no per-command environment prefix, so set the variable in a child process. Setting it in your own session would overwrite an override you had already set there, and clearing it afterwards would not put that back.
@@ -144,6 +148,7 @@ Both settings are stored in the user-level `config.toml`, so they hold for later
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```toml
@@ -153,6 +158,7 @@ use_automatically = true
 ```
 
 <!-- tab -->
+
 **Windows**
 
 A single-quoted TOML string, so the backslashes stand for themselves rather than starting an escape.
@@ -195,6 +201,7 @@ Every service belonging to a user answers on the same socket by default, which i
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```bash
@@ -202,6 +209,7 @@ export LORE_SERVICE_SOCKET=lore_service-my-checkout
 ```
 
 <!-- tab -->
+
 **Windows**
 
 ```powershell

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Katie Hempenius [X](https://twitter.com/katiehempenius)
 
 ## Why should you care?
@@ -15,8 +16,8 @@ Uncompressed images bloat your pages with unnecessary bytes. Because images can 
 
 The photo on the right is 40% smaller than the one on the left, yet would probably look identical to the average user.
 
-|  20 KB |  12 KB |
-|---|---|
+| 20 KB | 12 KB |
+| ----- | ----- |
 
 ## Measure
 
@@ -54,13 +55,13 @@ greater filesize savings, and you can customize the compression levels to meet
 your needs. The table below lists popular Imagemin plugins. These aren't the only plugins
 available, but they'd all be good choices for your project.
 
-| Image Format | Lossy Plugin(s) | Lossless Plugin(s) |
-|---|---|---|
-| JPEG | [imagemin-mozjpeg](https://www.npmjs.com/package/imagemin-mozjpeg) | [imagemin-jpegtran](https://www.npmjs.com/package/imagemin-jpegtran) |
-| PNG | [imagemin-pngquant](https://www.npmjs.com/package/imagemin-pngquant) | [imagemin-optipng](https://www.npmjs.com/package/imagemin-optipng) |
-| GIF | [imagemin-giflossy](https://www.npmjs.com/package/imagemin-giflossy) | [imagemin-gifsicle](https://www.npmjs.com/package/imagemin-gifsicle) |
-| SVG | [imagemin-svgo](https://www.npmjs.com/package/imagemin-svgo) |   |
-| WebP | [imagemin-webp](https://www.npmjs.com/package/imagemin-webp) | [imagemin-webp](https://www.npmjs.com/package/imagemin-webp) |
+| Image Format | Lossy Plugin(s)                                                      | Lossless Plugin(s)                                                   |
+| ------------ | -------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| JPEG         | [imagemin-mozjpeg](https://www.npmjs.com/package/imagemin-mozjpeg)   | [imagemin-jpegtran](https://www.npmjs.com/package/imagemin-jpegtran) |
+| PNG          | [imagemin-pngquant](https://www.npmjs.com/package/imagemin-pngquant) | [imagemin-optipng](https://www.npmjs.com/package/imagemin-optipng)   |
+| GIF          | [imagemin-giflossy](https://www.npmjs.com/package/imagemin-giflossy) | [imagemin-gifsicle](https://www.npmjs.com/package/imagemin-gifsicle) |
+| SVG          | [imagemin-svgo](https://www.npmjs.com/package/imagemin-svgo)         |                                                                      |
+| WebP         | [imagemin-webp](https://www.npmjs.com/package/imagemin-webp)         | [imagemin-webp](https://www.npmjs.com/package/imagemin-webp)         |
 
 ### Imagemin CLI
 
@@ -88,17 +89,14 @@ This code uses the "imagemin-mozjpeg" plugin to compress JPEG files to a quality
 of 50 ('0' being the worst; '100' being the best):
 
 ```javascript
-const imagemin = require('imagemin');
-const imageminMozjpeg = require('imagemin-mozjpeg');
+const imagemin = require("imagemin");
+const imageminMozjpeg = require("imagemin-mozjpeg");
 
-(async() => {
-  const files = await imagemin(
-      ['source_dir/*.jpg', 'another_dir/*.jpg'],
-      {
-        destination: 'destination_dir',
-        plugins: [imageminMozjpeg({quality: 50})]
-      }
-  );
+(async () => {
+  const files = await imagemin(["source_dir/*.jpg", "another_dir/*.jpg"], {
+    destination: "destination_dir",
+    plugins: [imageminMozjpeg({ quality: 50 })],
+  });
   console.log(files);
 })();
 ```

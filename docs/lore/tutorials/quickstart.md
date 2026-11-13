@@ -16,6 +16,7 @@ Run Lore's install script in demo mode. It downloads the prebuilt `lore` CLI and
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```bash
@@ -23,6 +24,7 @@ curl -fsSL https://raw.githubusercontent.com/EpicGames/lore/main/scripts/install
 ```
 
 <!-- tab -->
+
 **Windows**
 
 ```powershell
@@ -48,6 +50,7 @@ In your new terminal, first confirm the server is healthy:
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```bash
@@ -55,6 +58,7 @@ curl -i http://127.0.0.1:41339/health_check
 ```
 
 <!-- tab -->
+
 **Windows**
 
 ```powershell
@@ -70,6 +74,7 @@ Now create a repository:
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```bash
@@ -77,6 +82,7 @@ mkdir ~/my-project && cd ~/my-project
 ```
 
 <!-- tab -->
+
 **Windows**
 
 ```powershell
@@ -113,6 +119,7 @@ Create a small binary file:
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```bash
@@ -120,6 +127,7 @@ python3 -c "import os; open('sample.bin', 'wb').write(os.urandom(256))"
 ```
 
 <!-- tab -->
+
 **Windows**
 
 ```powershell
@@ -211,7 +219,7 @@ Pushed revision 1 -> a3f8c2d1... to branch main
 
 ## Step 6 — Set up a shared store and clone a second working tree
 
-Now that the repository has a revision on the server, clone it into a sibling directory to get a second, independent working tree, and keep that tree's content in a *shared store*. With a shared store, you can keep multiple working trees on your machine without each one costing its own disk space: instead of copying content into every tree's `.lore/`, all the trees that point at the store draw from one on-disk copy. Any tree cloned from the same server can use it, and because Lore stores content as deduplicated *fragments*, even similar files share the parts they have in common — not just byte-for-byte duplicates.
+Now that the repository has a revision on the server, clone it into a sibling directory to get a second, independent working tree, and keep that tree's content in a _shared store_. With a shared store, you can keep multiple working trees on your machine without each one costing its own disk space: instead of copying content into every tree's `.lore/`, all the trees that point at the store draw from one on-disk copy. Any tree cloned from the same server can use it, and because Lore stores content as deduplicated _fragments_, even similar files share the parts they have in common — not just byte-for-byte duplicates.
 
 Clone into the sibling directory, adding `--use-shared-store` so the new tree keeps its content in the shared store instead of its own `.lore/`. There's no store for this server yet, so the clone creates one first:
 
@@ -238,6 +246,7 @@ The clone already contains the committed files — confirm it:
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```bash
@@ -245,6 +254,7 @@ cd ~/my-project-b && lore status && ls
 ```
 
 <!-- tab -->
+
 **Windows**
 
 ```powershell
@@ -446,6 +456,7 @@ Local branch in sync with remote
 <!-- tabs:start -->
 
 <!-- tab -->
+
 **macOS / Linux**
 
 ```bash
@@ -454,6 +465,7 @@ cd ~/my-project-b && lore status
 ```
 
 <!-- tab -->
+
 **Windows**
 
 ```powershell

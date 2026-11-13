@@ -1,3585 +1,3585 @@
 {
- "startedAt": "2026-11-12T12:24:52.711Z",
- "host": "Linux vps-203bea89 7.3.0-9-generic #9-Ubuntu SMP PREEMPT_DYNAMIC Mon Oct  5 10:38:02 UTC 2026 x86_64 GNU/Linux",
- "runs": 3,
- "engines": {
-  "cef-156": {
-   "version": "CEF 156.0.26+g8ea0c73+chromium-156.0.8078.88 (cefsimple under Xvfb)",
-   "sizeMB": 1520.7,
-   "results": {
-    "A:nextjs.org": {
-     "runs": [
-      {
-       "label": "A:nextjs.org",
-       "coldMs": 581,
-       "wallMs": 3607,
-       "peakRssMB": 1127.9,
-       "cpuSec": 3.67,
-       "loadMs": 642,
-       "idleMs": 1562,
-       "title": "Next.js by Vercel - The React Framework",
-       "textLen": 3987,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 38,
-        "dcl": 563,
-        "load": 636
-       },
-       "vitals": {
-        "LCP": 348,
-        "FCP": 348,
-        "TTFB": 38.4,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:nextjs.org",
-       "coldMs": 490,
-       "wallMs": 3211,
-       "peakRssMB": 1129.2,
-       "cpuSec": 3.56,
-       "loadMs": 575,
-       "idleMs": 1289,
-       "title": "Next.js by Vercel - The React Framework",
-       "textLen": 3987,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 31,
-        "dcl": 491,
-        "load": 569
-       },
-       "vitals": {
-        "LCP": 324,
-        "FCP": 324,
-        "TTFB": 31.2,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:nextjs.org",
-       "coldMs": 511,
-       "wallMs": 3357,
-       "peakRssMB": 1124.9,
-       "cpuSec": 3.61,
-       "loadMs": 532,
-       "idleMs": 1414,
-       "title": "Next.js by Vercel - The React Framework",
-       "textLen": 3987,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 32,
-        "dcl": 475,
-        "load": 525
-       },
-       "vitals": {
-        "LCP": 352,
-        "FCP": 240,
-        "TTFB": 32.1,
-        "CLS": 0
-       },
-       "success": true
+  "startedAt": "2026-11-12T12:24:52.711Z",
+  "host": "Linux vps-203bea89 7.3.0-9-generic #9-Ubuntu SMP PREEMPT_DYNAMIC Mon Oct  5 10:38:02 UTC 2026 x86_64 GNU/Linux",
+  "runs": 3,
+  "engines": {
+    "cef-156": {
+      "version": "CEF 156.0.26+g8ea0c73+chromium-156.0.8078.88 (cefsimple under Xvfb)",
+      "sizeMB": 1520.7,
+      "results": {
+        "A:nextjs.org": {
+          "runs": [
+            {
+              "label": "A:nextjs.org",
+              "coldMs": 581,
+              "wallMs": 3607,
+              "peakRssMB": 1127.9,
+              "cpuSec": 3.67,
+              "loadMs": 642,
+              "idleMs": 1562,
+              "title": "Next.js by Vercel - The React Framework",
+              "textLen": 3987,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 38,
+                "dcl": 563,
+                "load": 636
+              },
+              "vitals": {
+                "LCP": 348,
+                "FCP": 348,
+                "TTFB": 38.4,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:nextjs.org",
+              "coldMs": 490,
+              "wallMs": 3211,
+              "peakRssMB": 1129.2,
+              "cpuSec": 3.56,
+              "loadMs": 575,
+              "idleMs": 1289,
+              "title": "Next.js by Vercel - The React Framework",
+              "textLen": 3987,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 31,
+                "dcl": 491,
+                "load": 569
+              },
+              "vitals": {
+                "LCP": 324,
+                "FCP": 324,
+                "TTFB": 31.2,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:nextjs.org",
+              "coldMs": 511,
+              "wallMs": 3357,
+              "peakRssMB": 1124.9,
+              "cpuSec": 3.61,
+              "loadMs": 532,
+              "idleMs": 1414,
+              "title": "Next.js by Vercel - The React Framework",
+              "textLen": 3987,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 32,
+                "dcl": 475,
+                "load": 525
+              },
+              "vitals": {
+                "LCP": 352,
+                "FCP": 240,
+                "TTFB": 32.1,
+                "CLS": 0
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 575,
+            "idleMs": 1414,
+            "coldMs": 511,
+            "peakRssMB": 1127.9,
+            "cpuSec": 3.61,
+            "dclMs": 491,
+            "ttfbMs": 32,
+            "lcp": 348,
+            "fcp": 324,
+            "cls": 0,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:vercel.com": {
+          "runs": [
+            {
+              "label": "A:vercel.com",
+              "coldMs": 485,
+              "wallMs": 3550,
+              "peakRssMB": 1153.9,
+              "cpuSec": 4.22,
+              "loadMs": 629,
+              "idleMs": 1641,
+              "title": "Agentic Infrastructure - Vercel",
+              "textLen": 966,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 78,
+                "dcl": 604,
+                "load": 626
+              },
+              "vitals": {
+                "LCP": 376,
+                "FCP": 304,
+                "TTFB": 78.2,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:vercel.com",
+              "coldMs": 474,
+              "wallMs": 3579,
+              "peakRssMB": 1154.6,
+              "cpuSec": 4.23,
+              "loadMs": 643,
+              "idleMs": 1679,
+              "title": "Agentic Infrastructure - Vercel",
+              "textLen": 966,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 135,
+                "dcl": 475,
+                "load": 625
+              },
+              "vitals": {
+                "LCP": 392,
+                "FCP": 328,
+                "TTFB": 135.4,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:vercel.com",
+              "coldMs": 472,
+              "wallMs": 3406,
+              "peakRssMB": 1151.8,
+              "cpuSec": 4.01,
+              "loadMs": 547,
+              "idleMs": 1511,
+              "title": "Agentic Infrastructure - Vercel",
+              "textLen": 966,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 97,
+                "dcl": 403,
+                "load": 542
+              },
+              "vitals": {
+                "LCP": 364,
+                "FCP": 304,
+                "TTFB": 96.7,
+                "CLS": 0
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 629,
+            "idleMs": 1641,
+            "coldMs": 474,
+            "peakRssMB": 1153.9,
+            "cpuSec": 4.22,
+            "dclMs": 475,
+            "ttfbMs": 97,
+            "lcp": 376,
+            "fcp": 304,
+            "cls": 0,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:react.dev": {
+          "runs": [
+            {
+              "label": "A:react.dev",
+              "coldMs": 478,
+              "wallMs": 2966,
+              "peakRssMB": 1118.1,
+              "cpuSec": 2.76,
+              "loadMs": 848,
+              "idleMs": 1063,
+              "title": "React",
+              "textLen": 6582,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 222,
+                "dcl": 523,
+                "load": 843
+              },
+              "vitals": {
+                "LCP": 412,
+                "FCP": 412,
+                "TTFB": 222.3,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:react.dev",
+              "coldMs": 518,
+              "wallMs": 2649,
+              "peakRssMB": 1119.3,
+              "cpuSec": 2.7,
+              "loadMs": 656,
+              "idleMs": 695,
+              "title": "React",
+              "textLen": 6582,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 31,
+                "dcl": 342,
+                "load": 652
+              },
+              "vitals": {
+                "LCP": 308,
+                "FCP": 308,
+                "TTFB": 30.8,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:react.dev",
+              "coldMs": 501,
+              "wallMs": 2725,
+              "peakRssMB": 1118.2,
+              "cpuSec": 2.68,
+              "loadMs": 754,
+              "idleMs": 794,
+              "title": "React",
+              "textLen": 6582,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 70,
+                "dcl": 426,
+                "load": 750
+              },
+              "vitals": {
+                "LCP": 344,
+                "FCP": 344,
+                "TTFB": 69.6,
+                "CLS": 0
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 754,
+            "idleMs": 794,
+            "coldMs": 501,
+            "peakRssMB": 1118.2,
+            "cpuSec": 2.7,
+            "dclMs": 426,
+            "ttfbMs": 70,
+            "lcp": 344,
+            "fcp": 344,
+            "cls": 0,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:cf-docs": {
+          "runs": [
+            {
+              "label": "A:cf-docs",
+              "coldMs": 532,
+              "wallMs": 2908,
+              "peakRssMB": 1135,
+              "cpuSec": 3.9,
+              "loadMs": 871,
+              "idleMs": 948,
+              "title": "Cloudflare Developer Docs | Cloudflare Docs",
+              "textLen": 7903,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 64,
+                "dcl": 857,
+                "load": 860
+              },
+              "vitals": {
+                "LCP": 340,
+                "FCP": 340,
+                "TTFB": 63.6,
+                "CLS": 0.01
+              },
+              "success": true
+            },
+            {
+              "label": "A:cf-docs",
+              "coldMs": 573,
+              "wallMs": 2820,
+              "peakRssMB": 1141.1,
+              "cpuSec": 3.78,
+              "loadMs": 612,
+              "idleMs": 809,
+              "title": "Cloudflare Developer Docs | Cloudflare Docs",
+              "textLen": 7903,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 51,
+                "dcl": 603,
+                "load": 606
+              },
+              "vitals": {
+                "LCP": 352,
+                "FCP": 172,
+                "TTFB": 50.8,
+                "CLS": 0.011
+              },
+              "success": true
+            },
+            {
+              "label": "A:cf-docs",
+              "coldMs": 518,
+              "wallMs": 2916,
+              "peakRssMB": 1143.8,
+              "cpuSec": 3.82,
+              "loadMs": 723,
+              "idleMs": 975,
+              "title": "Cloudflare Developer Docs | Cloudflare Docs",
+              "textLen": 7903,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 122,
+                "dcl": 715,
+                "load": 717
+              },
+              "vitals": {
+                "LCP": 472,
+                "FCP": 304,
+                "TTFB": 122.4,
+                "CLS": 0.01
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 723,
+            "idleMs": 948,
+            "coldMs": 532,
+            "peakRssMB": 1141.1,
+            "cpuSec": 3.82,
+            "dclMs": 715,
+            "ttfbMs": 64,
+            "lcp": 352,
+            "fcp": 304,
+            "cls": 0.01,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:web.dev": {
+          "runs": [
+            {
+              "label": "A:web.dev",
+              "coldMs": 509,
+              "wallMs": 5172,
+              "peakRssMB": 1569.2,
+              "cpuSec": 6.18,
+              "loadMs": 2582,
+              "idleMs": 3231,
+              "title": "web.dev",
+              "textLen": 6922,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 1170,
+                "dcl": 1410,
+                "load": 2576
+              },
+              "vitals": {
+                "LCP": 1524,
+                "FCP": 1424,
+                "TTFB": 1170,
+                "CLS": 0.081
+              },
+              "success": true
+            },
+            {
+              "label": "A:web.dev",
+              "coldMs": 536,
+              "wallMs": 4907,
+              "peakRssMB": 1595.1,
+              "cpuSec": 6.27,
+              "loadMs": 2362,
+              "idleMs": 2936,
+              "title": "web.dev",
+              "textLen": 6922,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 953,
+                "dcl": 1170,
+                "load": 2356
+              },
+              "vitals": {
+                "LCP": 1252,
+                "FCP": 1188,
+                "TTFB": 952.7,
+                "CLS": 0.091
+              },
+              "success": true
+            },
+            {
+              "label": "A:web.dev",
+              "coldMs": 637,
+              "wallMs": 4856,
+              "peakRssMB": 1580.9,
+              "cpuSec": 6.49,
+              "loadMs": 2124,
+              "idleMs": 2784,
+              "title": "web.dev",
+              "textLen": 6922,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 691,
+                "dcl": 911,
+                "load": 2120
+              },
+              "vitals": {
+                "LCP": 1028,
+                "FCP": 932,
+                "TTFB": 691,
+                "CLS": 0.081
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 2362,
+            "idleMs": 2936,
+            "coldMs": 536,
+            "peakRssMB": 1580.9,
+            "cpuSec": 6.27,
+            "dclMs": 1170,
+            "ttfbMs": 953,
+            "lcp": 1252,
+            "fcp": 1188,
+            "cls": 0.081,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:wikipedia": {
+          "runs": [
+            {
+              "label": "A:wikipedia",
+              "coldMs": 486,
+              "wallMs": 2950,
+              "peakRssMB": 1107.2,
+              "cpuSec": 2.51,
+              "loadMs": 1001,
+              "idleMs": 1033,
+              "title": "Web browser - Wikipedia",
+              "textLen": 20365,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 294,
+                "dcl": 515,
+                "load": 997
+              },
+              "vitals": {
+                "LCP": 520,
+                "FCP": 520,
+                "TTFB": 294.2,
+                "CLS": 0.001
+              },
+              "success": true
+            },
+            {
+              "label": "A:wikipedia",
+              "coldMs": 589,
+              "wallMs": 2649,
+              "peakRssMB": 1105.4,
+              "cpuSec": 2.57,
+              "loadMs": 402,
+              "idleMs": 613,
+              "title": "Web browser - Wikipedia",
+              "textLen": 20365,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 59,
+                "dcl": 285,
+                "load": 397
+              },
+              "vitals": {
+                "LCP": 272,
+                "FCP": 272,
+                "TTFB": 58.6,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:wikipedia",
+              "coldMs": 563,
+              "wallMs": 2779,
+              "peakRssMB": 1109.4,
+              "cpuSec": 2.81,
+              "loadMs": 572,
+              "idleMs": 781,
+              "title": "Web browser - Wikipedia",
+              "textLen": 20365,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 159,
+                "dcl": 430,
+                "load": 559
+              },
+              "vitals": {
+                "LCP": 424,
+                "FCP": 424,
+                "TTFB": 158.8,
+                "CLS": 0
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 572,
+            "idleMs": 781,
+            "coldMs": 563,
+            "peakRssMB": 1107.2,
+            "cpuSec": 2.57,
+            "dclMs": 430,
+            "ttfbMs": 159,
+            "lcp": 424,
+            "fcp": 424,
+            "cls": 0,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:github-repo": {
+          "runs": [
+            {
+              "label": "A:github-repo",
+              "coldMs": 487,
+              "wallMs": 4623,
+              "peakRssMB": 1217.1,
+              "cpuSec": 5.33,
+              "loadMs": 1626,
+              "idleMs": 2705,
+              "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
+              "textLen": 7984,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 522,
+                "dcl": 1513,
+                "load": 1619
+              },
+              "vitals": {
+                "LCP": 1136,
+                "FCP": 908,
+                "TTFB": 522.4,
+                "CLS": 0.102
+              },
+              "success": true
+            },
+            {
+              "label": "A:github-repo",
+              "coldMs": 514,
+              "wallMs": 4050,
+              "peakRssMB": 1231.3,
+              "cpuSec": 5.17,
+              "loadMs": 1047,
+              "idleMs": 2105,
+              "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
+              "textLen": 7984,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 31,
+                "dcl": 926,
+                "load": 1038
+              },
+              "vitals": {
+                "LCP": 560,
+                "FCP": 420,
+                "TTFB": 30.5,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:github-repo",
+              "coldMs": 463,
+              "wallMs": 4217,
+              "peakRssMB": 1235.5,
+              "cpuSec": 5.62,
+              "loadMs": 1151,
+              "idleMs": 2329,
+              "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
+              "textLen": 7984,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 62,
+                "dcl": 1023,
+                "load": 1135
+              },
+              "vitals": {
+                "LCP": 648,
+                "FCP": 452,
+                "TTFB": 62.4,
+                "CLS": 0
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 1151,
+            "idleMs": 2329,
+            "coldMs": 487,
+            "peakRssMB": 1231.3,
+            "cpuSec": 5.33,
+            "dclMs": 1023,
+            "ttfbMs": 62,
+            "lcp": 648,
+            "fcp": 452,
+            "cls": 0,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:hn": {
+          "runs": [
+            {
+              "label": "A:hn",
+              "coldMs": 477,
+              "wallMs": 2813,
+              "peakRssMB": 1051.1,
+              "cpuSec": 1.61,
+              "loadMs": 902,
+              "idleMs": 913,
+              "title": "Hacker News",
+              "textLen": 3917,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 564,
+                "dcl": 773,
+                "load": 895
+              },
+              "vitals": {
+                "LCP": 788,
+                "FCP": 788,
+                "TTFB": 563.7,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:hn",
+              "coldMs": 533,
+              "wallMs": 2974,
+              "peakRssMB": 1050.8,
+              "cpuSec": 1.66,
+              "loadMs": 1006,
+              "idleMs": 1020,
+              "title": "Hacker News",
+              "textLen": 3917,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 503,
+                "dcl": 896,
+                "load": 1002
+              },
+              "vitals": {
+                "LCP": 912,
+                "FCP": 912,
+                "TTFB": 503.1,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:hn",
+              "coldMs": 466,
+              "wallMs": 2878,
+              "peakRssMB": 1046.5,
+              "cpuSec": 1.8,
+              "loadMs": 972,
+              "idleMs": 983,
+              "title": "Hacker News",
+              "textLen": 3917,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 628,
+                "dcl": 842,
+                "load": 957
+              },
+              "vitals": {
+                "LCP": 856,
+                "FCP": 856,
+                "TTFB": 628.3,
+                "CLS": 0
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 972,
+            "idleMs": 983,
+            "coldMs": 477,
+            "peakRssMB": 1050.8,
+            "cpuSec": 1.66,
+            "dclMs": 842,
+            "ttfbMs": 564,
+            "lcp": 856,
+            "fcp": 856,
+            "cls": 0,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:mdn": {
+          "runs": [
+            {
+              "label": "A:mdn",
+              "coldMs": 470,
+              "wallMs": 2857,
+              "peakRssMB": 1107.8,
+              "cpuSec": 2.42,
+              "loadMs": 344,
+              "idleMs": 958,
+              "title": "JavaScript | MDN",
+              "textLen": 6761,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 44,
+                "dcl": 329,
+                "load": 335
+              },
+              "vitals": {
+                "LCP": 260,
+                "FCP": 260,
+                "TTFB": 43.5,
+                "CLS": 0.001
+              },
+              "success": true
+            },
+            {
+              "label": "A:mdn",
+              "coldMs": 518,
+              "wallMs": 2784,
+              "peakRssMB": 1107.3,
+              "cpuSec": 2.5,
+              "loadMs": 312,
+              "idleMs": 842,
+              "title": "JavaScript | MDN",
+              "textLen": 6761,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 45,
+                "dcl": 283,
+                "load": 307
+              },
+              "vitals": {
+                "LCP": 372,
+                "FCP": 372,
+                "TTFB": 45,
+                "CLS": 0.001
+              },
+              "success": true
+            },
+            {
+              "label": "A:mdn",
+              "coldMs": 486,
+              "wallMs": 2754,
+              "peakRssMB": 1106.6,
+              "cpuSec": 2.36,
+              "loadMs": 296,
+              "idleMs": 839,
+              "title": "JavaScript | MDN",
+              "textLen": 6761,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 40,
+                "dcl": 268,
+                "load": 291
+              },
+              "vitals": {
+                "LCP": 352,
+                "FCP": 352,
+                "TTFB": 40.1,
+                "CLS": 0.001
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 312,
+            "idleMs": 842,
+            "coldMs": 486,
+            "peakRssMB": 1107.3,
+            "cpuSec": 2.42,
+            "dclMs": 283,
+            "ttfbMs": 44,
+            "lcp": 352,
+            "fcp": 352,
+            "cls": 0.001,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:amazon-product": {
+          "runs": [
+            {
+              "label": "A:amazon-product",
+              "coldMs": 521,
+              "wallMs": 2385,
+              "peakRssMB": 1045.3,
+              "cpuSec": 1.67,
+              "loadMs": 422,
+              "idleMs": 441,
+              "title": "Page Not Found",
+              "textLen": 304,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 276,
+                "dcl": 297,
+                "load": 418
+              },
+              "vitals": {
+                "LCP": 436,
+                "FCP": 320,
+                "TTFB": 275.7,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:amazon-product",
+              "coldMs": 485,
+              "wallMs": 2230,
+              "peakRssMB": 1048.2,
+              "cpuSec": 1.55,
+              "loadMs": 288,
+              "idleMs": 317,
+              "title": "Page Not Found",
+              "textLen": 304,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 222,
+                "dcl": 241,
+                "load": 284
+              },
+              "vitals": {
+                "LCP": 296,
+                "FCP": 264,
+                "TTFB": 222.4,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:amazon-product",
+              "coldMs": 491,
+              "wallMs": 2216,
+              "peakRssMB": 1043.8,
+              "cpuSec": 1.56,
+              "loadMs": 271,
+              "idleMs": 294,
+              "title": "Page Not Found",
+              "textLen": 304,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 206,
+                "dcl": 228,
+                "load": 264
+              },
+              "vitals": {
+                "LCP": 280,
+                "FCP": 252,
+                "TTFB": 205.5,
+                "CLS": 0
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 288,
+            "idleMs": 317,
+            "coldMs": 491,
+            "peakRssMB": 1045.3,
+            "cpuSec": 1.56,
+            "dclMs": 241,
+            "ttfbMs": 222,
+            "lcp": 296,
+            "fcp": 264,
+            "cls": 0,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:bbc-news": {
+          "runs": [
+            {
+              "label": "A:bbc-news",
+              "coldMs": 511,
+              "wallMs": 3655,
+              "peakRssMB": 1312.2,
+              "cpuSec": 4.59,
+              "loadMs": 699,
+              "idleMs": 1715,
+              "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
+              "textLen": 8600,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 79,
+                "dcl": 598,
+                "load": 687
+              },
+              "vitals": {
+                "LCP": 568,
+                "FCP": 380,
+                "TTFB": 78.8,
+                "CLS": 0.003
+              },
+              "success": true
+            },
+            {
+              "label": "A:bbc-news",
+              "coldMs": 470,
+              "wallMs": 3838,
+              "peakRssMB": 1324,
+              "cpuSec": 4.72,
+              "loadMs": 1651,
+              "idleMs": 1926,
+              "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
+              "textLen": 8600,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 72,
+                "dcl": 614,
+                "load": 1648
+              },
+              "vitals": {
+                "LCP": 580,
+                "FCP": 352,
+                "TTFB": 72.4,
+                "CLS": 0.003
+              },
+              "success": true
+            },
+            {
+              "label": "A:bbc-news",
+              "coldMs": 503,
+              "wallMs": 3577,
+              "peakRssMB": 1329.4,
+              "cpuSec": 4.59,
+              "loadMs": 1423,
+              "idleMs": 1649,
+              "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
+              "textLen": 8600,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 43,
+                "dcl": 512,
+                "load": 1414
+              },
+              "vitals": {
+                "LCP": 484,
+                "FCP": 300,
+                "TTFB": 42.6,
+                "CLS": 0.003
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 1423,
+            "idleMs": 1715,
+            "coldMs": 503,
+            "peakRssMB": 1324,
+            "cpuSec": 4.59,
+            "dclMs": 598,
+            "ttfbMs": 72,
+            "lcp": 568,
+            "fcp": 352,
+            "cls": 0.003,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:youtube": {
+          "runs": [
+            {
+              "label": "A:youtube",
+              "coldMs": 457,
+              "wallMs": 4801,
+              "peakRssMB": 1631.6,
+              "cpuSec": 7.06,
+              "loadMs": 1667,
+              "idleMs": 2914,
+              "title": "YouTube",
+              "textLen": 1730,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 130,
+                "dcl": 1595,
+                "load": 1664
+              },
+              "vitals": {
+                "LCP": 2072,
+                "FCP": 424,
+                "TTFB": 130.4,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:youtube",
+              "coldMs": 523,
+              "wallMs": 5055,
+              "peakRssMB": 1679.2,
+              "cpuSec": 7.41,
+              "loadMs": 1778,
+              "idleMs": 3101,
+              "title": "YouTube",
+              "textLen": 1730,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 129,
+                "dcl": 1702,
+                "load": 1775
+              },
+              "vitals": {
+                "LCP": 2232,
+                "FCP": 424,
+                "TTFB": 129.1,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:youtube",
+              "coldMs": 463,
+              "wallMs": 5137,
+              "peakRssMB": 1670.6,
+              "cpuSec": 7.31,
+              "loadMs": 1879,
+              "idleMs": 3243,
+              "title": "YouTube",
+              "textLen": 1730,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 132,
+                "dcl": 1814,
+                "load": 1874
+              },
+              "vitals": {
+                "LCP": 2344,
+                "FCP": 384,
+                "TTFB": 132.3,
+                "CLS": 0
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 1778,
+            "idleMs": 3101,
+            "coldMs": 463,
+            "peakRssMB": 1670.6,
+            "cpuSec": 7.31,
+            "dclMs": 1702,
+            "ttfbMs": 130,
+            "lcp": 2232,
+            "fcp": 424,
+            "cls": 0,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "B:next-node": {
+          "runs": [
+            {
+              "label": "B:next-node",
+              "coldMs": 477,
+              "wallMs": 3042,
+              "peakRssMB": 1064.4,
+              "cpuSec": 1.89,
+              "loadMs": 854,
+              "idleMs": 886,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 30,
+                "dcl": 840,
+                "load": 842
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "LCP": 76,
+                "FCP": 76,
+                "TTFB": 30.1,
+                "CLS": 0
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 136,
+              "clientNav": true,
+              "clientNavMs": 34,
+              "success": true
+            },
+            {
+              "label": "B:next-node",
+              "coldMs": 459,
+              "wallMs": 2978,
+              "peakRssMB": 1064.5,
+              "cpuSec": 1.98,
+              "loadMs": 835,
+              "idleMs": 867,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 23,
+                "dcl": 826,
+                "load": 827
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "LCP": 96,
+                "FCP": 96,
+                "TTFB": 22.6,
+                "CLS": 0
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 40,
+              "clientNav": true,
+              "clientNavMs": 134,
+              "success": true
+            },
+            {
+              "label": "B:next-node",
+              "coldMs": 554,
+              "wallMs": 3186,
+              "peakRssMB": 1066.3,
+              "cpuSec": 2.07,
+              "loadMs": 841,
+              "idleMs": 868,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 13,
+                "dcl": 821,
+                "load": 834
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "LCP": 80,
+                "FCP": 80,
+                "TTFB": 13,
+                "CLS": 0
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 150,
+              "clientNav": true,
+              "clientNavMs": 127,
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 841,
+            "idleMs": 868,
+            "coldMs": 477,
+            "peakRssMB": 1064.5,
+            "cpuSec": 1.98,
+            "dclMs": 826,
+            "ttfbMs": 23,
+            "lcp": 80,
+            "fcp": 80,
+            "cls": 0,
+            "hydrationMs": 1,
+            "serverActionMs": 136,
+            "clientNavMs": 127
+          },
+          "successRuns": 3
+        },
+        "B:next-bun": {
+          "runs": [
+            {
+              "label": "B:next-bun",
+              "coldMs": 483,
+              "wallMs": 3045,
+              "peakRssMB": 1064.2,
+              "cpuSec": 1.95,
+              "loadMs": 880,
+              "idleMs": 909,
+              "streamed": true,
+              "streamedMs": 5,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 154,
+                "dcl": 874,
+                "load": 876
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "LCP": 200,
+                "FCP": 200,
+                "TTFB": 153.9,
+                "CLS": 0
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 126,
+              "clientNav": true,
+              "clientNavMs": 42,
+              "success": true
+            },
+            {
+              "label": "B:next-bun",
+              "coldMs": 548,
+              "wallMs": 3146,
+              "peakRssMB": 1064.3,
+              "cpuSec": 1.97,
+              "loadMs": 865,
+              "idleMs": 879,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 33,
+                "dcl": 827,
+                "load": 857
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "LCP": 96,
+                "FCP": 96,
+                "TTFB": 33.3,
+                "CLS": 0
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 129,
+              "clientNav": true,
+              "clientNavMs": 127,
+              "success": true
+            },
+            {
+              "label": "B:next-bun",
+              "coldMs": 582,
+              "wallMs": 3162,
+              "peakRssMB": 1059.2,
+              "cpuSec": 2.13,
+              "loadMs": 872,
+              "idleMs": 904,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 26,
+                "dcl": 831,
+                "load": 867
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "LCP": 84,
+                "FCP": 84,
+                "TTFB": 25.8,
+                "CLS": 0
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 136,
+              "clientNav": true,
+              "clientNavMs": 41,
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 872,
+            "idleMs": 904,
+            "coldMs": 548,
+            "peakRssMB": 1064.2,
+            "cpuSec": 1.97,
+            "dclMs": 831,
+            "ttfbMs": 33,
+            "lcp": 96,
+            "fcp": 96,
+            "cls": 0,
+            "hydrationMs": 1,
+            "serverActionMs": 129,
+            "clientNavMs": 42
+          },
+          "successRuns": 3
+        },
+        "C:turnstile-pass": {
+          "runs": [
+            {
+              "label": "C:turnstile-pass",
+              "coldMs": 482,
+              "wallMs": 16020,
+              "peakRssMB": 1175.2,
+              "cpuSec": 2.25,
+              "loadMs": 320,
+              "final": "success",
+              "resolveMs": 2,
+              "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-pass",
+              "coldMs": 542,
+              "wallMs": 16029,
+              "peakRssMB": 1176.1,
+              "cpuSec": 2.17,
+              "loadMs": 244,
+              "final": "success",
+              "resolveMs": 2,
+              "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-pass",
+              "coldMs": 563,
+              "wallMs": 16014,
+              "peakRssMB": 1175.8,
+              "cpuSec": 2.43,
+              "loadMs": 230,
+              "final": "success",
+              "resolveMs": 2,
+              "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 244,
+            "idleMs": null,
+            "coldMs": 542,
+            "peakRssMB": 1175.8,
+            "cpuSec": 2.25,
+            "dclMs": null,
+            "ttfbMs": null,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "C:turnstile-block": {
+          "runs": [
+            {
+              "label": "C:turnstile-block",
+              "coldMs": 509,
+              "wallMs": 16008,
+              "peakRssMB": 1171.5,
+              "cpuSec": 2.6,
+              "loadMs": 280,
+              "final": "error",
+              "resolveMs": 2,
+              "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-block",
+              "coldMs": 484,
+              "wallMs": 15952,
+              "peakRssMB": 1211.8,
+              "cpuSec": 2.56,
+              "loadMs": 233,
+              "final": "error",
+              "resolveMs": 2,
+              "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-block",
+              "coldMs": 529,
+              "wallMs": 16032,
+              "peakRssMB": 1176.8,
+              "cpuSec": 2.83,
+              "loadMs": 284,
+              "final": "error",
+              "resolveMs": 3,
+              "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 280,
+            "idleMs": null,
+            "coldMs": 509,
+            "peakRssMB": 1176.8,
+            "cpuSec": 2.6,
+            "dclMs": null,
+            "ttfbMs": null,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "C:turnstile-interactive": {
+          "runs": [
+            {
+              "label": "C:turnstile-interactive",
+              "coldMs": 454,
+              "wallMs": 36127,
+              "peakRssMB": 1178.3,
+              "cpuSec": 2.38,
+              "loadMs": 257,
+              "final": "no-callback({\"state\":\"rendered\"})",
+              "resolveMs": 20186,
+              "raw": "{\"state\":\"rendered\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-interactive",
+              "coldMs": 511,
+              "wallMs": 36191,
+              "peakRssMB": 1177.8,
+              "cpuSec": 2.47,
+              "loadMs": 278,
+              "final": "no-callback({\"state\":\"rendered\"})",
+              "resolveMs": 20184,
+              "raw": "{\"state\":\"rendered\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-interactive",
+              "coldMs": 491,
+              "wallMs": 36176,
+              "peakRssMB": 1172.7,
+              "cpuSec": 2.44,
+              "loadMs": 255,
+              "final": "no-callback({\"state\":\"rendered\"})",
+              "resolveMs": 20179,
+              "raw": "{\"state\":\"rendered\"}",
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 257,
+            "idleMs": null,
+            "coldMs": 491,
+            "peakRssMB": 1177.8,
+            "cpuSec": 2.44,
+            "dclMs": null,
+            "ttfbMs": null,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "D:features": {
+          "runs": [
+            {
+              "label": "D:features",
+              "coldMs": 540,
+              "wallMs": 1353,
+              "peakRssMB": 1042.5,
+              "cpuSec": 1.65,
+              "loadMs": 59,
+              "featuresPassed": 44,
+              "featuresTotal": 45,
+              "features": {
+                "fetch": true,
+                "ReadableStream": true,
+                "TransformStream": true,
+                "CompressionStream": true,
+                "WebAssembly": true,
+                "WebAssembly.instantiateStreaming": true,
+                "wasm.run": true,
+                "structuredClone": true,
+                "crypto.subtle": true,
+                "crypto.randomUUID": true,
+                "Worker": true,
+                "SharedArrayBuffer": true,
+                "WebSocket": true,
+                "IntersectionObserver": true,
+                "ResizeObserver": true,
+                "MutationObserver": true,
+                "customElements": true,
+                "shadowDOM": true,
+                "indexedDB": true,
+                "localStorage": true,
+                "canvas2d": true,
+                "webgl": false,
+                "navigator.serviceWorker": true,
+                "Intl.Segmenter": true,
+                "es2022.at": true,
+                "es2023.toSorted": true,
+                "es2024.groupBy": true,
+                "es2024.withResolvers": true,
+                "es2025.Set.union": true,
+                "es2025.Iterator.helpers": true,
+                "es2025.RegExp.escape": true,
+                "es2025.Promise.try": true,
+                "es2025.Float16Array": true,
+                "es2026.Temporal": true,
+                "es2026.Array.fromAsync": true,
+                "css.grid": true,
+                "css.subgrid": true,
+                "css.has": true,
+                "css.container": true,
+                "css.nesting": true,
+                "css.oklch": true,
+                "css.anchor": true,
+                "viewTransition": true,
+                "layout.grid.computed": true,
+                "layout.flex.computed": true
+              },
+              "wasm": {
+                "bigInt": true,
+                "bulkMemory": true,
+                "exceptions": true,
+                "exceptionsFinal": true,
+                "extendedConst": true,
+                "gc": true,
+                "jsStringBuiltins": true,
+                "jspi": true,
+                "memory64": true,
+                "multiMemory": true,
+                "multiValue": true,
+                "mutableGlobals": true,
+                "referenceTypes": true,
+                "relaxedSimd": true,
+                "saturatedFloatToInt": true,
+                "signExtensions": true,
+                "simd": true,
+                "sourcePhaseImports": false,
+                "streamingCompilation": true,
+                "tailCall": true,
+                "threads": true,
+                "typeReflection": false,
+                "typedFunctionReferences": true,
+                "wideArithmetic": false,
+                "JSPI.Suspending": true,
+                "navigator.gpu": true,
+                "gpu.adapter": false
+              },
+              "success": true
+            },
+            {
+              "label": "D:features",
+              "coldMs": 503,
+              "wallMs": 1312,
+              "peakRssMB": 1042.5,
+              "cpuSec": 1.57,
+              "loadMs": 63,
+              "featuresPassed": 44,
+              "featuresTotal": 45,
+              "features": {
+                "fetch": true,
+                "ReadableStream": true,
+                "TransformStream": true,
+                "CompressionStream": true,
+                "WebAssembly": true,
+                "WebAssembly.instantiateStreaming": true,
+                "wasm.run": true,
+                "structuredClone": true,
+                "crypto.subtle": true,
+                "crypto.randomUUID": true,
+                "Worker": true,
+                "SharedArrayBuffer": true,
+                "WebSocket": true,
+                "IntersectionObserver": true,
+                "ResizeObserver": true,
+                "MutationObserver": true,
+                "customElements": true,
+                "shadowDOM": true,
+                "indexedDB": true,
+                "localStorage": true,
+                "canvas2d": true,
+                "webgl": false,
+                "navigator.serviceWorker": true,
+                "Intl.Segmenter": true,
+                "es2022.at": true,
+                "es2023.toSorted": true,
+                "es2024.groupBy": true,
+                "es2024.withResolvers": true,
+                "es2025.Set.union": true,
+                "es2025.Iterator.helpers": true,
+                "es2025.RegExp.escape": true,
+                "es2025.Promise.try": true,
+                "es2025.Float16Array": true,
+                "es2026.Temporal": true,
+                "es2026.Array.fromAsync": true,
+                "css.grid": true,
+                "css.subgrid": true,
+                "css.has": true,
+                "css.container": true,
+                "css.nesting": true,
+                "css.oklch": true,
+                "css.anchor": true,
+                "viewTransition": true,
+                "layout.grid.computed": true,
+                "layout.flex.computed": true
+              },
+              "wasm": {
+                "bigInt": true,
+                "bulkMemory": true,
+                "exceptions": true,
+                "exceptionsFinal": true,
+                "extendedConst": true,
+                "gc": true,
+                "jsStringBuiltins": true,
+                "jspi": true,
+                "memory64": true,
+                "multiMemory": true,
+                "multiValue": true,
+                "mutableGlobals": true,
+                "referenceTypes": true,
+                "relaxedSimd": true,
+                "saturatedFloatToInt": true,
+                "signExtensions": true,
+                "simd": true,
+                "sourcePhaseImports": false,
+                "streamingCompilation": true,
+                "tailCall": true,
+                "threads": true,
+                "typeReflection": false,
+                "typedFunctionReferences": true,
+                "wideArithmetic": false,
+                "JSPI.Suspending": true,
+                "navigator.gpu": true,
+                "gpu.adapter": false
+              },
+              "success": true
+            },
+            {
+              "label": "D:features",
+              "coldMs": 476,
+              "wallMs": 1280,
+              "peakRssMB": 1037.6,
+              "cpuSec": 1.59,
+              "loadMs": 54,
+              "featuresPassed": 44,
+              "featuresTotal": 45,
+              "features": {
+                "fetch": true,
+                "ReadableStream": true,
+                "TransformStream": true,
+                "CompressionStream": true,
+                "WebAssembly": true,
+                "WebAssembly.instantiateStreaming": true,
+                "wasm.run": true,
+                "structuredClone": true,
+                "crypto.subtle": true,
+                "crypto.randomUUID": true,
+                "Worker": true,
+                "SharedArrayBuffer": true,
+                "WebSocket": true,
+                "IntersectionObserver": true,
+                "ResizeObserver": true,
+                "MutationObserver": true,
+                "customElements": true,
+                "shadowDOM": true,
+                "indexedDB": true,
+                "localStorage": true,
+                "canvas2d": true,
+                "webgl": false,
+                "navigator.serviceWorker": true,
+                "Intl.Segmenter": true,
+                "es2022.at": true,
+                "es2023.toSorted": true,
+                "es2024.groupBy": true,
+                "es2024.withResolvers": true,
+                "es2025.Set.union": true,
+                "es2025.Iterator.helpers": true,
+                "es2025.RegExp.escape": true,
+                "es2025.Promise.try": true,
+                "es2025.Float16Array": true,
+                "es2026.Temporal": true,
+                "es2026.Array.fromAsync": true,
+                "css.grid": true,
+                "css.subgrid": true,
+                "css.has": true,
+                "css.container": true,
+                "css.nesting": true,
+                "css.oklch": true,
+                "css.anchor": true,
+                "viewTransition": true,
+                "layout.grid.computed": true,
+                "layout.flex.computed": true
+              },
+              "wasm": {
+                "bigInt": true,
+                "bulkMemory": true,
+                "exceptions": true,
+                "exceptionsFinal": true,
+                "extendedConst": true,
+                "gc": true,
+                "jsStringBuiltins": true,
+                "jspi": true,
+                "memory64": true,
+                "multiMemory": true,
+                "multiValue": true,
+                "mutableGlobals": true,
+                "referenceTypes": true,
+                "relaxedSimd": true,
+                "saturatedFloatToInt": true,
+                "signExtensions": true,
+                "simd": true,
+                "sourcePhaseImports": false,
+                "streamingCompilation": true,
+                "tailCall": true,
+                "threads": true,
+                "typeReflection": false,
+                "typedFunctionReferences": true,
+                "wideArithmetic": false,
+                "JSPI.Suspending": true,
+                "navigator.gpu": true,
+                "gpu.adapter": false
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 59,
+            "idleMs": null,
+            "coldMs": 503,
+            "peakRssMB": 1042.5,
+            "cpuSec": 1.59,
+            "dclMs": null,
+            "ttfbMs": null,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        }
       }
-     ],
-     "median": {
-      "loadMs": 575,
-      "idleMs": 1414,
-      "coldMs": 511,
-      "peakRssMB": 1127.9,
-      "cpuSec": 3.61,
-      "dclMs": 491,
-      "ttfbMs": 32,
-      "lcp": 348,
-      "fcp": 324,
-      "cls": 0,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
     },
-    "A:vercel.com": {
-     "runs": [
-      {
-       "label": "A:vercel.com",
-       "coldMs": 485,
-       "wallMs": 3550,
-       "peakRssMB": 1153.9,
-       "cpuSec": 4.22,
-       "loadMs": 629,
-       "idleMs": 1641,
-       "title": "Agentic Infrastructure - Vercel",
-       "textLen": 966,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 78,
-        "dcl": 604,
-        "load": 626
-       },
-       "vitals": {
-        "LCP": 376,
-        "FCP": 304,
-        "TTFB": 78.2,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:vercel.com",
-       "coldMs": 474,
-       "wallMs": 3579,
-       "peakRssMB": 1154.6,
-       "cpuSec": 4.23,
-       "loadMs": 643,
-       "idleMs": 1679,
-       "title": "Agentic Infrastructure - Vercel",
-       "textLen": 966,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 135,
-        "dcl": 475,
-        "load": 625
-       },
-       "vitals": {
-        "LCP": 392,
-        "FCP": 328,
-        "TTFB": 135.4,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:vercel.com",
-       "coldMs": 472,
-       "wallMs": 3406,
-       "peakRssMB": 1151.8,
-       "cpuSec": 4.01,
-       "loadMs": 547,
-       "idleMs": 1511,
-       "title": "Agentic Infrastructure - Vercel",
-       "textLen": 966,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 97,
-        "dcl": 403,
-        "load": 542
-       },
-       "vitals": {
-        "LCP": 364,
-        "FCP": 304,
-        "TTFB": 96.7,
-        "CLS": 0
-       },
-       "success": true
+    "electron-43": {
+      "version": "Electron 43.8.9 Chromium 150.0.7871.250 (xvfb-run, hidden BrowserWindow)",
+      "sizeMB": 315.8,
+      "results": {
+        "A:nextjs.org": {
+          "runs": [
+            {
+              "label": "A:nextjs.org",
+              "coldMs": 433,
+              "wallMs": 4104,
+              "peakRssMB": 574.7,
+              "cpuSec": 2.2,
+              "loadMs": 840,
+              "idleMs": 2181,
+              "title": "Next.js by Vercel - The React Framework",
+              "textLen": 3856,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 256,
+                "dcl": 655,
+                "load": 837
+              },
+              "vitals": {
+                "TTFB": 255.5
+              },
+              "success": true
+            },
+            {
+              "label": "A:nextjs.org",
+              "coldMs": 413,
+              "wallMs": 4250,
+              "peakRssMB": 580.6,
+              "cpuSec": 2.09,
+              "loadMs": 395,
+              "idleMs": 2338,
+              "title": "Next.js by Vercel - The React Framework",
+              "textLen": 3987,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 37,
+                "dcl": 265,
+                "load": 386
+              },
+              "vitals": {
+                "TTFB": 37.2
+              },
+              "success": true
+            },
+            {
+              "label": "A:nextjs.org",
+              "coldMs": 412,
+              "wallMs": 3534,
+              "peakRssMB": 581.7,
+              "cpuSec": 1.9,
+              "loadMs": 363,
+              "idleMs": 1636,
+              "title": "Next.js by Vercel - The React Framework",
+              "textLen": 3856,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 31,
+                "dcl": 250,
+                "load": 360
+              },
+              "vitals": {
+                "TTFB": 31
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 395,
+            "idleMs": 2181,
+            "coldMs": 413,
+            "peakRssMB": 580.6,
+            "cpuSec": 2.09,
+            "dclMs": 265,
+            "ttfbMs": 37,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:vercel.com": {
+          "runs": [
+            {
+              "label": "A:vercel.com",
+              "coldMs": 428,
+              "wallMs": 3489,
+              "peakRssMB": 601.3,
+              "cpuSec": 2.82,
+              "loadMs": 505,
+              "idleMs": 1356,
+              "title": "Agentic Infrastructure - Vercel",
+              "textLen": 835,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 36,
+                "dcl": 298,
+                "load": 503
+              },
+              "vitals": {
+                "TTFB": 36
+              },
+              "success": true
+            },
+            {
+              "label": "A:vercel.com",
+              "coldMs": 481,
+              "wallMs": 4356,
+              "peakRssMB": 670.4,
+              "cpuSec": 2.9,
+              "loadMs": 517,
+              "idleMs": 2242,
+              "title": "Agentic Infrastructure - Vercel",
+              "textLen": 966,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 42,
+                "dcl": 304,
+                "load": 514
+              },
+              "vitals": {
+                "TTFB": 42
+              },
+              "success": true
+            },
+            {
+              "label": "A:vercel.com",
+              "coldMs": 469,
+              "wallMs": 3591,
+              "peakRssMB": 601.3,
+              "cpuSec": 2.31,
+              "loadMs": 579,
+              "idleMs": 1360,
+              "title": "Agentic Infrastructure - Vercel",
+              "textLen": 835,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 37,
+                "dcl": 444,
+                "load": 576
+              },
+              "vitals": {
+                "TTFB": 37
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 517,
+            "idleMs": 1360,
+            "coldMs": 469,
+            "peakRssMB": 601.3,
+            "cpuSec": 2.82,
+            "dclMs": 304,
+            "ttfbMs": 37,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:react.dev": {
+          "runs": [
+            {
+              "label": "A:react.dev",
+              "coldMs": 444,
+              "wallMs": 4486,
+              "peakRssMB": 578.6,
+              "cpuSec": 1.83,
+              "loadMs": 1594,
+              "idleMs": 1766,
+              "title": "React",
+              "textLen": 6582,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 166,
+                "dcl": 1327,
+                "load": 1591
+              },
+              "vitals": {
+                "TTFB": 165.7
+              },
+              "success": true
+            },
+            {
+              "label": "A:react.dev",
+              "coldMs": 493,
+              "wallMs": 2741,
+              "peakRssMB": 567.8,
+              "cpuSec": 1.78,
+              "loadMs": 687,
+              "idleMs": 688,
+              "title": "React",
+              "textLen": 6582,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 104,
+                "dcl": 401,
+                "load": 684
+              },
+              "vitals": {
+                "TTFB": 103.7
+              },
+              "success": true
+            },
+            {
+              "label": "A:react.dev",
+              "coldMs": 450,
+              "wallMs": 3493,
+              "peakRssMB": 568.2,
+              "cpuSec": 1.67,
+              "loadMs": 779,
+              "idleMs": 779,
+              "title": "React",
+              "textLen": 6582,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 290,
+                "dcl": 567,
+                "load": 775
+              },
+              "vitals": {
+                "TTFB": 290.3
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 779,
+            "idleMs": 779,
+            "coldMs": 450,
+            "peakRssMB": 568.2,
+            "cpuSec": 1.78,
+            "dclMs": 567,
+            "ttfbMs": 166,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:cf-docs": {
+          "runs": [
+            {
+              "label": "A:cf-docs",
+              "coldMs": 490,
+              "wallMs": 2985,
+              "peakRssMB": 585.7,
+              "cpuSec": 1.67,
+              "loadMs": 613,
+              "idleMs": 781,
+              "title": "Cloudflare Developer Docs | Cloudflare Docs",
+              "textLen": 7903,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 105,
+                "dcl": 603,
+                "load": 606
+              },
+              "vitals": {
+                "TTFB": 105
+              },
+              "success": true
+            },
+            {
+              "label": "A:cf-docs",
+              "coldMs": 550,
+              "wallMs": 2872,
+              "peakRssMB": 581.8,
+              "cpuSec": 1.79,
+              "loadMs": 509,
+              "idleMs": 659,
+              "title": "Cloudflare Developer Docs | Cloudflare Docs",
+              "textLen": 7903,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 113,
+                "dcl": 462,
+                "load": 506
+              },
+              "vitals": {
+                "TTFB": 113.2
+              },
+              "success": true
+            },
+            {
+              "label": "A:cf-docs",
+              "coldMs": 452,
+              "wallMs": 2806,
+              "peakRssMB": 582.4,
+              "cpuSec": 1.39,
+              "loadMs": 432,
+              "idleMs": 681,
+              "title": "Cloudflare Developer Docs | Cloudflare Docs",
+              "textLen": 7903,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 78,
+                "dcl": 428,
+                "load": 430
+              },
+              "vitals": {
+                "TTFB": 77.8
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 509,
+            "idleMs": 681,
+            "coldMs": 490,
+            "peakRssMB": 582.4,
+            "cpuSec": 1.67,
+            "dclMs": 462,
+            "ttfbMs": 105,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:web.dev": {
+          "runs": [
+            {
+              "label": "A:web.dev",
+              "coldMs": 435,
+              "wallMs": 5420,
+              "peakRssMB": 963,
+              "cpuSec": 4.85,
+              "loadMs": 2045,
+              "idleMs": 2676,
+              "title": "web.dev",
+              "textLen": 6922,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 747,
+                "dcl": 1013,
+                "load": 2040
+              },
+              "vitals": {
+                "TTFB": 747.2
+              },
+              "success": true
+            },
+            {
+              "label": "A:web.dev",
+              "coldMs": 470,
+              "wallMs": 4867,
+              "peakRssMB": 965.7,
+              "cpuSec": 4.71,
+              "loadMs": 1842,
+              "idleMs": 2350,
+              "title": "web.dev",
+              "textLen": 6942,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 533,
+                "dcl": 796,
+                "load": 1828
+              },
+              "vitals": {
+                "TTFB": 533.3
+              },
+              "success": true
+            },
+            {
+              "label": "A:web.dev",
+              "coldMs": 411,
+              "wallMs": 4327,
+              "peakRssMB": 961.1,
+              "cpuSec": 4.2,
+              "loadMs": 1577,
+              "idleMs": 2068,
+              "title": "web.dev",
+              "textLen": 6942,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 522,
+                "dcl": 707,
+                "load": 1571
+              },
+              "vitals": {
+                "TTFB": 522
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 1842,
+            "idleMs": 2350,
+            "coldMs": 435,
+            "peakRssMB": 963,
+            "cpuSec": 4.71,
+            "dclMs": 796,
+            "ttfbMs": 533,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:wikipedia": {
+          "runs": [
+            {
+              "label": "A:wikipedia",
+              "coldMs": 415,
+              "wallMs": 3953,
+              "peakRssMB": 567.9,
+              "cpuSec": 1.31,
+              "loadMs": 1986,
+              "idleMs": 1986,
+              "title": "Web browser - Wikipedia",
+              "textLen": 20413,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 382,
+                "dcl": 1738,
+                "load": 1983
+              },
+              "vitals": {
+                "LCP": 1640,
+                "FCP": 1640,
+                "TTFB": 381.5,
+                "CLS": 0
+              },
+              "success": true
+            },
+            {
+              "label": "A:wikipedia",
+              "coldMs": 412,
+              "wallMs": 2265,
+              "peakRssMB": 570.7,
+              "cpuSec": 1.23,
+              "loadMs": 346,
+              "idleMs": 376,
+              "title": "Web browser - Wikipedia",
+              "textLen": 20413,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 60,
+                "dcl": 288,
+                "load": 341
+              },
+              "vitals": {
+                "LCP": 272,
+                "FCP": 272,
+                "TTFB": 60.2,
+                "CLS": 0.13
+              },
+              "success": true
+            },
+            {
+              "label": "A:wikipedia",
+              "coldMs": 456,
+              "wallMs": 2302,
+              "peakRssMB": 566.3,
+              "cpuSec": 1.14,
+              "loadMs": 319,
+              "idleMs": 356,
+              "title": "Web browser - Wikipedia",
+              "textLen": 20413,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 61,
+                "dcl": 297,
+                "load": 316
+              },
+              "vitals": {
+                "LCP": 308,
+                "FCP": 308,
+                "TTFB": 60.8,
+                "CLS": 0
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 346,
+            "idleMs": 376,
+            "coldMs": 415,
+            "peakRssMB": 567.9,
+            "cpuSec": 1.23,
+            "dclMs": 297,
+            "ttfbMs": 61,
+            "lcp": 308,
+            "fcp": 308,
+            "cls": 0,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:github-repo": {
+          "runs": [
+            {
+              "label": "A:github-repo",
+              "coldMs": 422,
+              "wallMs": 4197,
+              "peakRssMB": 668.2,
+              "cpuSec": 3.43,
+              "loadMs": 1459,
+              "idleMs": 2066,
+              "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
+              "textLen": 7984,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 464,
+                "dcl": 1395,
+                "load": 1456
+              },
+              "vitals": {
+                "TTFB": 464.2
+              },
+              "success": true
+            },
+            {
+              "label": "A:github-repo",
+              "coldMs": 447,
+              "wallMs": 3572,
+              "peakRssMB": 671.7,
+              "cpuSec": 3.15,
+              "loadMs": 1023,
+              "idleMs": 1481,
+              "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
+              "textLen": 7984,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 26,
+                "dcl": 936,
+                "load": 1020
+              },
+              "vitals": {
+                "TTFB": 26.4
+              },
+              "success": true
+            },
+            {
+              "label": "A:github-repo",
+              "coldMs": 433,
+              "wallMs": 3502,
+              "peakRssMB": 665.4,
+              "cpuSec": 3.21,
+              "loadMs": 1005,
+              "idleMs": 1439,
+              "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
+              "textLen": 7984,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 29,
+                "dcl": 935,
+                "load": 1002
+              },
+              "vitals": {
+                "TTFB": 29
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 1023,
+            "idleMs": 1481,
+            "coldMs": 433,
+            "peakRssMB": 668.2,
+            "cpuSec": 3.21,
+            "dclMs": 936,
+            "ttfbMs": 29,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:hn": {
+          "runs": [
+            {
+              "label": "A:hn",
+              "coldMs": 491,
+              "wallMs": 2789,
+              "peakRssMB": 513.3,
+              "cpuSec": 0.68,
+              "loadMs": 822,
+              "idleMs": 822,
+              "title": "Hacker News",
+              "textLen": 3920,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 491,
+                "dcl": 693,
+                "load": 816
+              },
+              "vitals": {
+                "TTFB": 490.6
+              },
+              "success": true
+            },
+            {
+              "label": "A:hn",
+              "coldMs": 440,
+              "wallMs": 2545,
+              "peakRssMB": 514.1,
+              "cpuSec": 0.69,
+              "loadMs": 644,
+              "idleMs": 645,
+              "title": "Hacker News",
+              "textLen": 3920,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 575,
+                "dcl": 642,
+                "load": 642
+              },
+              "vitals": {
+                "TTFB": 574.8
+              },
+              "success": true
+            },
+            {
+              "label": "A:hn",
+              "coldMs": 422,
+              "wallMs": 2504,
+              "peakRssMB": 510.8,
+              "cpuSec": 0.65,
+              "loadMs": 602,
+              "idleMs": 602,
+              "title": "Hacker News",
+              "textLen": 3920,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 536,
+                "dcl": 563,
+                "load": 599
+              },
+              "vitals": {
+                "TTFB": 535.5
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 644,
+            "idleMs": 645,
+            "coldMs": 440,
+            "peakRssMB": 513.3,
+            "cpuSec": 0.68,
+            "dclMs": 642,
+            "ttfbMs": 536,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:mdn": {
+          "runs": [
+            {
+              "label": "A:mdn",
+              "coldMs": 461,
+              "wallMs": 3094,
+              "peakRssMB": 566.9,
+              "cpuSec": 1.55,
+              "loadMs": 349,
+              "idleMs": 973,
+              "title": "JavaScript | MDN",
+              "textLen": 6761,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 71,
+                "dcl": 315,
+                "load": 340
+              },
+              "vitals": {
+                "TTFB": 71
+              },
+              "success": true
+            },
+            {
+              "label": "A:mdn",
+              "coldMs": 481,
+              "wallMs": 3073,
+              "peakRssMB": 566.5,
+              "cpuSec": 1.31,
+              "loadMs": 209,
+              "idleMs": 828,
+              "title": "JavaScript | MDN",
+              "textLen": 6761,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 3,
+                "dcl": 185,
+                "load": 206
+              },
+              "vitals": {
+                "TTFB": 3.4
+              },
+              "success": true
+            },
+            {
+              "label": "A:mdn",
+              "coldMs": 433,
+              "wallMs": 2763,
+              "peakRssMB": 564.7,
+              "cpuSec": 1.29,
+              "loadMs": 236,
+              "idleMs": 846,
+              "title": "JavaScript | MDN",
+              "textLen": 6761,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 3,
+                "dcl": 231,
+                "load": 231
+              },
+              "vitals": {
+                "TTFB": 3.1
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 236,
+            "idleMs": 846,
+            "coldMs": 461,
+            "peakRssMB": 566.5,
+            "cpuSec": 1.31,
+            "dclMs": 231,
+            "ttfbMs": 3,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:amazon-product": {
+          "runs": [
+            {
+              "label": "A:amazon-product",
+              "coldMs": 481,
+              "wallMs": 2568,
+              "peakRssMB": 511.7,
+              "cpuSec": 0.71,
+              "loadMs": 536,
+              "idleMs": 536,
+              "title": "Page Not Found",
+              "textLen": 304,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 296,
+                "dcl": 329,
+                "load": 521
+              },
+              "vitals": {
+                "TTFB": 296
+              },
+              "success": true
+            },
+            {
+              "label": "A:amazon-product",
+              "coldMs": 420,
+              "wallMs": 2903,
+              "peakRssMB": 512,
+              "cpuSec": 0.59,
+              "loadMs": 237,
+              "idleMs": 237,
+              "title": "Page Not Found",
+              "textLen": 304,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 181,
+                "dcl": 212,
+                "load": 234
+              },
+              "vitals": {
+                "TTFB": 181.4
+              },
+              "success": true
+            },
+            {
+              "label": "A:amazon-product",
+              "coldMs": 433,
+              "wallMs": 2263,
+              "peakRssMB": 510.8,
+              "cpuSec": 0.64,
+              "loadMs": 249,
+              "idleMs": 249,
+              "title": "Page Not Found",
+              "textLen": 304,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 198,
+                "dcl": 216,
+                "load": 244
+              },
+              "vitals": {
+                "TTFB": 197.5
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 249,
+            "idleMs": 249,
+            "coldMs": 433,
+            "peakRssMB": 511.7,
+            "cpuSec": 0.64,
+            "dclMs": 216,
+            "ttfbMs": 198,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:bbc-news": {
+          "runs": [
+            {
+              "label": "A:bbc-news",
+              "coldMs": 417,
+              "wallMs": 3687,
+              "peakRssMB": 741.1,
+              "cpuSec": 3.61,
+              "loadMs": 682,
+              "idleMs": 1657,
+              "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
+              "textLen": 8641,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 89,
+                "dcl": 587,
+                "load": 679
+              },
+              "vitals": {
+                "TTFB": 88.6
+              },
+              "success": true
+            },
+            {
+              "label": "A:bbc-news",
+              "coldMs": 464,
+              "wallMs": 3606,
+              "peakRssMB": 742,
+              "cpuSec": 3.64,
+              "loadMs": 1452,
+              "idleMs": 1537,
+              "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
+              "textLen": 8641,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 62,
+                "dcl": 539,
+                "load": 1444
+              },
+              "vitals": {
+                "TTFB": 62
+              },
+              "success": true
+            },
+            {
+              "label": "A:bbc-news",
+              "coldMs": 414,
+              "wallMs": 3201,
+              "peakRssMB": 744,
+              "cpuSec": 2.99,
+              "loadMs": 1186,
+              "idleMs": 1188,
+              "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
+              "textLen": 8641,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 44,
+                "dcl": 484,
+                "load": 1183
+              },
+              "vitals": {
+                "TTFB": 44.3
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 1186,
+            "idleMs": 1537,
+            "coldMs": 417,
+            "peakRssMB": 742,
+            "cpuSec": 3.61,
+            "dclMs": 539,
+            "ttfbMs": 62,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "A:youtube": {
+          "runs": [
+            {
+              "label": "A:youtube",
+              "coldMs": 417,
+              "wallMs": 4639,
+              "peakRssMB": 775.9,
+              "cpuSec": 4.25,
+              "loadMs": 1875,
+              "idleMs": 2451,
+              "title": "YouTube",
+              "textLen": 1700,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 162,
+                "dcl": 1813,
+                "load": 1871
+              },
+              "vitals": {
+                "TTFB": 162.2
+              },
+              "success": true
+            },
+            {
+              "label": "A:youtube",
+              "coldMs": 451,
+              "wallMs": 6576,
+              "peakRssMB": 783.5,
+              "cpuSec": 4.43,
+              "loadMs": 1906,
+              "idleMs": 2496,
+              "title": "YouTube",
+              "textLen": 1700,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 122,
+                "dcl": 1853,
+                "load": 1903
+              },
+              "vitals": {
+                "TTFB": 122.4
+              },
+              "success": true
+            },
+            {
+              "label": "A:youtube",
+              "coldMs": 438,
+              "wallMs": 3792,
+              "peakRssMB": 824.5,
+              "cpuSec": 3.95,
+              "loadMs": 873,
+              "idleMs": 1645,
+              "title": "YouTube",
+              "textLen": 1730,
+              "expectFound": true,
+              "jsExecuted": true,
+              "nav": {
+                "ttfb": 135,
+                "dcl": 832,
+                "load": 864
+              },
+              "vitals": {
+                "TTFB": 134.7
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 1875,
+            "idleMs": 2451,
+            "coldMs": 438,
+            "peakRssMB": 783.5,
+            "cpuSec": 4.25,
+            "dclMs": 1813,
+            "ttfbMs": 135,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "B:next-node": {
+          "runs": [
+            {
+              "label": "B:next-node",
+              "coldMs": 433,
+              "wallMs": 5717,
+              "peakRssMB": 522.1,
+              "cpuSec": 0.98,
+              "loadMs": 827,
+              "idleMs": 829,
+              "streamed": true,
+              "streamedMs": 3,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 16,
+                "dcl": 822,
+                "load": 825
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "TTFB": 16.2
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 1119,
+              "clientNav": true,
+              "clientNavMs": 1003,
+              "success": true
+            },
+            {
+              "label": "B:next-node",
+              "coldMs": 411,
+              "wallMs": 4932,
+              "peakRssMB": 523.3,
+              "cpuSec": 0.9,
+              "loadMs": 821,
+              "idleMs": 821,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 16,
+                "dcl": 817,
+                "load": 818
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "TTFB": 15.7
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 1140,
+              "clientNav": true,
+              "clientNavMs": 1021,
+              "success": true
+            },
+            {
+              "label": "B:next-node",
+              "coldMs": 438,
+              "wallMs": 5707,
+              "peakRssMB": 521.2,
+              "cpuSec": 0.87,
+              "loadMs": 821,
+              "idleMs": 822,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 14,
+                "dcl": 819,
+                "load": 819
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "TTFB": 14.2
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 1133,
+              "clientNav": true,
+              "clientNavMs": 1007,
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 821,
+            "idleMs": 822,
+            "coldMs": 433,
+            "peakRssMB": 522.1,
+            "cpuSec": 0.9,
+            "dclMs": 819,
+            "ttfbMs": 16,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": 1,
+            "serverActionMs": 1133,
+            "clientNavMs": 1007
+          },
+          "successRuns": 3
+        },
+        "B:next-bun": {
+          "runs": [
+            {
+              "label": "B:next-bun",
+              "coldMs": 428,
+              "wallMs": 5739,
+              "peakRssMB": 522.1,
+              "cpuSec": 0.93,
+              "loadMs": 839,
+              "idleMs": 841,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 40,
+                "dcl": 834,
+                "load": 835
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "TTFB": 39.8
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 1121,
+              "clientNav": true,
+              "clientNavMs": 1015,
+              "success": true
+            },
+            {
+              "label": "B:next-bun",
+              "coldMs": 412,
+              "wallMs": 6263,
+              "peakRssMB": 523.6,
+              "cpuSec": 0.95,
+              "loadMs": 829,
+              "idleMs": 829,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 16,
+                "dcl": 824,
+                "load": 826
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "TTFB": 16.1
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 1125,
+              "clientNav": true,
+              "clientNavMs": 1016,
+              "success": true
+            },
+            {
+              "label": "B:next-bun",
+              "coldMs": 443,
+              "wallMs": 5736,
+              "peakRssMB": 522.9,
+              "cpuSec": 0.95,
+              "loadMs": 825,
+              "idleMs": 825,
+              "streamed": true,
+              "streamedMs": 2,
+              "hydrated": true,
+              "hydrationMs": 1,
+              "nav": {
+                "ttfb": 22,
+                "dcl": 820,
+                "load": 821
+              },
+              "img": {
+                "complete": true,
+                "w": 384,
+                "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
+              },
+              "vitals": {
+                "TTFB": 21.6
+              },
+              "clickState": true,
+              "serverAction": true,
+              "serverActionMs": 1139,
+              "clientNav": true,
+              "clientNavMs": 1005,
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 829,
+            "idleMs": 829,
+            "coldMs": 428,
+            "peakRssMB": 522.9,
+            "cpuSec": 0.95,
+            "dclMs": 824,
+            "ttfbMs": 22,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": 1,
+            "serverActionMs": 1125,
+            "clientNavMs": 1015
+          },
+          "successRuns": 3
+        },
+        "C:turnstile-pass": {
+          "runs": [
+            {
+              "label": "C:turnstile-pass",
+              "coldMs": 489,
+              "wallMs": 16068,
+              "peakRssMB": 623.1,
+              "cpuSec": 0.99,
+              "loadMs": 296,
+              "final": "success",
+              "resolveMs": 3,
+              "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-pass",
+              "coldMs": 463,
+              "wallMs": 15992,
+              "peakRssMB": 622.2,
+              "cpuSec": 0.98,
+              "loadMs": 254,
+              "final": "success",
+              "resolveMs": 2,
+              "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-pass",
+              "coldMs": 428,
+              "wallMs": 15991,
+              "peakRssMB": 626.3,
+              "cpuSec": 0.95,
+              "loadMs": 286,
+              "final": "success",
+              "resolveMs": 6,
+              "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 286,
+            "idleMs": null,
+            "coldMs": 463,
+            "peakRssMB": 623.1,
+            "cpuSec": 0.98,
+            "dclMs": null,
+            "ttfbMs": null,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "C:turnstile-block": {
+          "runs": [
+            {
+              "label": "C:turnstile-block",
+              "coldMs": 443,
+              "wallMs": 15948,
+              "peakRssMB": 627.6,
+              "cpuSec": 1.23,
+              "loadMs": 216,
+              "final": "error",
+              "resolveMs": 4,
+              "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-block",
+              "coldMs": 480,
+              "wallMs": 15977,
+              "peakRssMB": 625.4,
+              "cpuSec": 1.29,
+              "loadMs": 231,
+              "final": "error",
+              "resolveMs": 2,
+              "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-block",
+              "coldMs": 432,
+              "wallMs": 15962,
+              "peakRssMB": 626.6,
+              "cpuSec": 1.27,
+              "loadMs": 208,
+              "final": "error",
+              "resolveMs": 2,
+              "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 216,
+            "idleMs": null,
+            "coldMs": 443,
+            "peakRssMB": 626.6,
+            "cpuSec": 1.27,
+            "dclMs": null,
+            "ttfbMs": null,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "C:turnstile-interactive": {
+          "runs": [
+            {
+              "label": "C:turnstile-interactive",
+              "coldMs": 567,
+              "wallMs": 36298,
+              "peakRssMB": 628.2,
+              "cpuSec": 1.29,
+              "loadMs": 278,
+              "final": "no-callback({\"state\":\"rendered\"})",
+              "resolveMs": 20183,
+              "raw": "{\"state\":\"rendered\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-interactive",
+              "coldMs": 437,
+              "wallMs": 36109,
+              "peakRssMB": 626,
+              "cpuSec": 1.11,
+              "loadMs": 215,
+              "final": "no-callback({\"state\":\"rendered\"})",
+              "resolveMs": 20174,
+              "raw": "{\"state\":\"rendered\"}",
+              "success": true
+            },
+            {
+              "label": "C:turnstile-interactive",
+              "coldMs": 452,
+              "wallMs": 36186,
+              "peakRssMB": 627.7,
+              "cpuSec": 1.15,
+              "loadMs": 262,
+              "final": "no-callback({\"state\":\"rendered\"})",
+              "resolveMs": 20194,
+              "raw": "{\"state\":\"rendered\"}",
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 262,
+            "idleMs": null,
+            "coldMs": 452,
+            "peakRssMB": 627.7,
+            "cpuSec": 1.15,
+            "dclMs": null,
+            "ttfbMs": null,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        },
+        "D:features": {
+          "runs": [
+            {
+              "label": "D:features",
+              "coldMs": 426,
+              "wallMs": 1286,
+              "peakRssMB": 498.9,
+              "cpuSec": 0.64,
+              "loadMs": 72,
+              "featuresPassed": 44,
+              "featuresTotal": 45,
+              "features": {
+                "fetch": true,
+                "ReadableStream": true,
+                "TransformStream": true,
+                "CompressionStream": true,
+                "WebAssembly": true,
+                "WebAssembly.instantiateStreaming": true,
+                "wasm.run": true,
+                "structuredClone": true,
+                "crypto.subtle": true,
+                "crypto.randomUUID": true,
+                "Worker": true,
+                "SharedArrayBuffer": true,
+                "WebSocket": true,
+                "IntersectionObserver": true,
+                "ResizeObserver": true,
+                "MutationObserver": true,
+                "customElements": true,
+                "shadowDOM": true,
+                "indexedDB": true,
+                "localStorage": true,
+                "canvas2d": true,
+                "webgl": false,
+                "navigator.serviceWorker": true,
+                "Intl.Segmenter": true,
+                "es2022.at": true,
+                "es2023.toSorted": true,
+                "es2024.groupBy": true,
+                "es2024.withResolvers": true,
+                "es2025.Set.union": true,
+                "es2025.Iterator.helpers": true,
+                "es2025.RegExp.escape": true,
+                "es2025.Promise.try": true,
+                "es2025.Float16Array": true,
+                "es2026.Temporal": true,
+                "es2026.Array.fromAsync": true,
+                "css.grid": true,
+                "css.subgrid": true,
+                "css.has": true,
+                "css.container": true,
+                "css.nesting": true,
+                "css.oklch": true,
+                "css.anchor": true,
+                "viewTransition": true,
+                "layout.grid.computed": true,
+                "layout.flex.computed": true
+              },
+              "wasm": {
+                "bigInt": true,
+                "bulkMemory": true,
+                "exceptions": true,
+                "exceptionsFinal": true,
+                "extendedConst": true,
+                "gc": true,
+                "jsStringBuiltins": true,
+                "jspi": true,
+                "memory64": true,
+                "multiMemory": true,
+                "multiValue": true,
+                "mutableGlobals": true,
+                "referenceTypes": true,
+                "relaxedSimd": true,
+                "saturatedFloatToInt": true,
+                "signExtensions": true,
+                "simd": true,
+                "sourcePhaseImports": false,
+                "streamingCompilation": true,
+                "tailCall": true,
+                "threads": true,
+                "typeReflection": false,
+                "typedFunctionReferences": true,
+                "wideArithmetic": false,
+                "JSPI.Suspending": true,
+                "navigator.gpu": true,
+                "gpu.adapter": false
+              },
+              "success": true
+            },
+            {
+              "label": "D:features",
+              "coldMs": 414,
+              "wallMs": 1285,
+              "peakRssMB": 501,
+              "cpuSec": 0.61,
+              "loadMs": 68,
+              "featuresPassed": 44,
+              "featuresTotal": 45,
+              "features": {
+                "fetch": true,
+                "ReadableStream": true,
+                "TransformStream": true,
+                "CompressionStream": true,
+                "WebAssembly": true,
+                "WebAssembly.instantiateStreaming": true,
+                "wasm.run": true,
+                "structuredClone": true,
+                "crypto.subtle": true,
+                "crypto.randomUUID": true,
+                "Worker": true,
+                "SharedArrayBuffer": true,
+                "WebSocket": true,
+                "IntersectionObserver": true,
+                "ResizeObserver": true,
+                "MutationObserver": true,
+                "customElements": true,
+                "shadowDOM": true,
+                "indexedDB": true,
+                "localStorage": true,
+                "canvas2d": true,
+                "webgl": false,
+                "navigator.serviceWorker": true,
+                "Intl.Segmenter": true,
+                "es2022.at": true,
+                "es2023.toSorted": true,
+                "es2024.groupBy": true,
+                "es2024.withResolvers": true,
+                "es2025.Set.union": true,
+                "es2025.Iterator.helpers": true,
+                "es2025.RegExp.escape": true,
+                "es2025.Promise.try": true,
+                "es2025.Float16Array": true,
+                "es2026.Temporal": true,
+                "es2026.Array.fromAsync": true,
+                "css.grid": true,
+                "css.subgrid": true,
+                "css.has": true,
+                "css.container": true,
+                "css.nesting": true,
+                "css.oklch": true,
+                "css.anchor": true,
+                "viewTransition": true,
+                "layout.grid.computed": true,
+                "layout.flex.computed": true
+              },
+              "wasm": {
+                "bigInt": true,
+                "bulkMemory": true,
+                "exceptions": true,
+                "exceptionsFinal": true,
+                "extendedConst": true,
+                "gc": true,
+                "jsStringBuiltins": true,
+                "jspi": true,
+                "memory64": true,
+                "multiMemory": true,
+                "multiValue": true,
+                "mutableGlobals": true,
+                "referenceTypes": true,
+                "relaxedSimd": true,
+                "saturatedFloatToInt": true,
+                "signExtensions": true,
+                "simd": true,
+                "sourcePhaseImports": false,
+                "streamingCompilation": true,
+                "tailCall": true,
+                "threads": true,
+                "typeReflection": false,
+                "typedFunctionReferences": true,
+                "wideArithmetic": false,
+                "JSPI.Suspending": true,
+                "navigator.gpu": true,
+                "gpu.adapter": false
+              },
+              "success": true
+            },
+            {
+              "label": "D:features",
+              "coldMs": 415,
+              "wallMs": 1317,
+              "peakRssMB": 498.8,
+              "cpuSec": 0.61,
+              "loadMs": 77,
+              "featuresPassed": 44,
+              "featuresTotal": 45,
+              "features": {
+                "fetch": true,
+                "ReadableStream": true,
+                "TransformStream": true,
+                "CompressionStream": true,
+                "WebAssembly": true,
+                "WebAssembly.instantiateStreaming": true,
+                "wasm.run": true,
+                "structuredClone": true,
+                "crypto.subtle": true,
+                "crypto.randomUUID": true,
+                "Worker": true,
+                "SharedArrayBuffer": true,
+                "WebSocket": true,
+                "IntersectionObserver": true,
+                "ResizeObserver": true,
+                "MutationObserver": true,
+                "customElements": true,
+                "shadowDOM": true,
+                "indexedDB": true,
+                "localStorage": true,
+                "canvas2d": true,
+                "webgl": false,
+                "navigator.serviceWorker": true,
+                "Intl.Segmenter": true,
+                "es2022.at": true,
+                "es2023.toSorted": true,
+                "es2024.groupBy": true,
+                "es2024.withResolvers": true,
+                "es2025.Set.union": true,
+                "es2025.Iterator.helpers": true,
+                "es2025.RegExp.escape": true,
+                "es2025.Promise.try": true,
+                "es2025.Float16Array": true,
+                "es2026.Temporal": true,
+                "es2026.Array.fromAsync": true,
+                "css.grid": true,
+                "css.subgrid": true,
+                "css.has": true,
+                "css.container": true,
+                "css.nesting": true,
+                "css.oklch": true,
+                "css.anchor": true,
+                "viewTransition": true,
+                "layout.grid.computed": true,
+                "layout.flex.computed": true
+              },
+              "wasm": {
+                "bigInt": true,
+                "bulkMemory": true,
+                "exceptions": true,
+                "exceptionsFinal": true,
+                "extendedConst": true,
+                "gc": true,
+                "jsStringBuiltins": true,
+                "jspi": true,
+                "memory64": true,
+                "multiMemory": true,
+                "multiValue": true,
+                "mutableGlobals": true,
+                "referenceTypes": true,
+                "relaxedSimd": true,
+                "saturatedFloatToInt": true,
+                "signExtensions": true,
+                "simd": true,
+                "sourcePhaseImports": false,
+                "streamingCompilation": true,
+                "tailCall": true,
+                "threads": true,
+                "typeReflection": false,
+                "typedFunctionReferences": true,
+                "wideArithmetic": false,
+                "JSPI.Suspending": true,
+                "navigator.gpu": true,
+                "gpu.adapter": false
+              },
+              "success": true
+            }
+          ],
+          "median": {
+            "loadMs": 72,
+            "idleMs": null,
+            "coldMs": 415,
+            "peakRssMB": 498.9,
+            "cpuSec": 0.61,
+            "dclMs": null,
+            "ttfbMs": null,
+            "lcp": null,
+            "fcp": null,
+            "cls": null,
+            "hydrationMs": null,
+            "serverActionMs": null,
+            "clientNavMs": null
+          },
+          "successRuns": 3
+        }
       }
-     ],
-     "median": {
-      "loadMs": 629,
-      "idleMs": 1641,
-      "coldMs": 474,
-      "peakRssMB": 1153.9,
-      "cpuSec": 4.22,
-      "dclMs": 475,
-      "ttfbMs": 97,
-      "lcp": 376,
-      "fcp": 304,
-      "cls": 0,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:react.dev": {
-     "runs": [
-      {
-       "label": "A:react.dev",
-       "coldMs": 478,
-       "wallMs": 2966,
-       "peakRssMB": 1118.1,
-       "cpuSec": 2.76,
-       "loadMs": 848,
-       "idleMs": 1063,
-       "title": "React",
-       "textLen": 6582,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 222,
-        "dcl": 523,
-        "load": 843
-       },
-       "vitals": {
-        "LCP": 412,
-        "FCP": 412,
-        "TTFB": 222.3,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:react.dev",
-       "coldMs": 518,
-       "wallMs": 2649,
-       "peakRssMB": 1119.3,
-       "cpuSec": 2.7,
-       "loadMs": 656,
-       "idleMs": 695,
-       "title": "React",
-       "textLen": 6582,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 31,
-        "dcl": 342,
-        "load": 652
-       },
-       "vitals": {
-        "LCP": 308,
-        "FCP": 308,
-        "TTFB": 30.8,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:react.dev",
-       "coldMs": 501,
-       "wallMs": 2725,
-       "peakRssMB": 1118.2,
-       "cpuSec": 2.68,
-       "loadMs": 754,
-       "idleMs": 794,
-       "title": "React",
-       "textLen": 6582,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 70,
-        "dcl": 426,
-        "load": 750
-       },
-       "vitals": {
-        "LCP": 344,
-        "FCP": 344,
-        "TTFB": 69.6,
-        "CLS": 0
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 754,
-      "idleMs": 794,
-      "coldMs": 501,
-      "peakRssMB": 1118.2,
-      "cpuSec": 2.7,
-      "dclMs": 426,
-      "ttfbMs": 70,
-      "lcp": 344,
-      "fcp": 344,
-      "cls": 0,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:cf-docs": {
-     "runs": [
-      {
-       "label": "A:cf-docs",
-       "coldMs": 532,
-       "wallMs": 2908,
-       "peakRssMB": 1135,
-       "cpuSec": 3.9,
-       "loadMs": 871,
-       "idleMs": 948,
-       "title": "Cloudflare Developer Docs | Cloudflare Docs",
-       "textLen": 7903,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 64,
-        "dcl": 857,
-        "load": 860
-       },
-       "vitals": {
-        "LCP": 340,
-        "FCP": 340,
-        "TTFB": 63.6,
-        "CLS": 0.01
-       },
-       "success": true
-      },
-      {
-       "label": "A:cf-docs",
-       "coldMs": 573,
-       "wallMs": 2820,
-       "peakRssMB": 1141.1,
-       "cpuSec": 3.78,
-       "loadMs": 612,
-       "idleMs": 809,
-       "title": "Cloudflare Developer Docs | Cloudflare Docs",
-       "textLen": 7903,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 51,
-        "dcl": 603,
-        "load": 606
-       },
-       "vitals": {
-        "LCP": 352,
-        "FCP": 172,
-        "TTFB": 50.8,
-        "CLS": 0.011
-       },
-       "success": true
-      },
-      {
-       "label": "A:cf-docs",
-       "coldMs": 518,
-       "wallMs": 2916,
-       "peakRssMB": 1143.8,
-       "cpuSec": 3.82,
-       "loadMs": 723,
-       "idleMs": 975,
-       "title": "Cloudflare Developer Docs | Cloudflare Docs",
-       "textLen": 7903,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 122,
-        "dcl": 715,
-        "load": 717
-       },
-       "vitals": {
-        "LCP": 472,
-        "FCP": 304,
-        "TTFB": 122.4,
-        "CLS": 0.01
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 723,
-      "idleMs": 948,
-      "coldMs": 532,
-      "peakRssMB": 1141.1,
-      "cpuSec": 3.82,
-      "dclMs": 715,
-      "ttfbMs": 64,
-      "lcp": 352,
-      "fcp": 304,
-      "cls": 0.01,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:web.dev": {
-     "runs": [
-      {
-       "label": "A:web.dev",
-       "coldMs": 509,
-       "wallMs": 5172,
-       "peakRssMB": 1569.2,
-       "cpuSec": 6.18,
-       "loadMs": 2582,
-       "idleMs": 3231,
-       "title": "web.dev",
-       "textLen": 6922,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 1170,
-        "dcl": 1410,
-        "load": 2576
-       },
-       "vitals": {
-        "LCP": 1524,
-        "FCP": 1424,
-        "TTFB": 1170,
-        "CLS": 0.081
-       },
-       "success": true
-      },
-      {
-       "label": "A:web.dev",
-       "coldMs": 536,
-       "wallMs": 4907,
-       "peakRssMB": 1595.1,
-       "cpuSec": 6.27,
-       "loadMs": 2362,
-       "idleMs": 2936,
-       "title": "web.dev",
-       "textLen": 6922,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 953,
-        "dcl": 1170,
-        "load": 2356
-       },
-       "vitals": {
-        "LCP": 1252,
-        "FCP": 1188,
-        "TTFB": 952.7,
-        "CLS": 0.091
-       },
-       "success": true
-      },
-      {
-       "label": "A:web.dev",
-       "coldMs": 637,
-       "wallMs": 4856,
-       "peakRssMB": 1580.9,
-       "cpuSec": 6.49,
-       "loadMs": 2124,
-       "idleMs": 2784,
-       "title": "web.dev",
-       "textLen": 6922,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 691,
-        "dcl": 911,
-        "load": 2120
-       },
-       "vitals": {
-        "LCP": 1028,
-        "FCP": 932,
-        "TTFB": 691,
-        "CLS": 0.081
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 2362,
-      "idleMs": 2936,
-      "coldMs": 536,
-      "peakRssMB": 1580.9,
-      "cpuSec": 6.27,
-      "dclMs": 1170,
-      "ttfbMs": 953,
-      "lcp": 1252,
-      "fcp": 1188,
-      "cls": 0.081,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:wikipedia": {
-     "runs": [
-      {
-       "label": "A:wikipedia",
-       "coldMs": 486,
-       "wallMs": 2950,
-       "peakRssMB": 1107.2,
-       "cpuSec": 2.51,
-       "loadMs": 1001,
-       "idleMs": 1033,
-       "title": "Web browser - Wikipedia",
-       "textLen": 20365,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 294,
-        "dcl": 515,
-        "load": 997
-       },
-       "vitals": {
-        "LCP": 520,
-        "FCP": 520,
-        "TTFB": 294.2,
-        "CLS": 0.001
-       },
-       "success": true
-      },
-      {
-       "label": "A:wikipedia",
-       "coldMs": 589,
-       "wallMs": 2649,
-       "peakRssMB": 1105.4,
-       "cpuSec": 2.57,
-       "loadMs": 402,
-       "idleMs": 613,
-       "title": "Web browser - Wikipedia",
-       "textLen": 20365,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 59,
-        "dcl": 285,
-        "load": 397
-       },
-       "vitals": {
-        "LCP": 272,
-        "FCP": 272,
-        "TTFB": 58.6,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:wikipedia",
-       "coldMs": 563,
-       "wallMs": 2779,
-       "peakRssMB": 1109.4,
-       "cpuSec": 2.81,
-       "loadMs": 572,
-       "idleMs": 781,
-       "title": "Web browser - Wikipedia",
-       "textLen": 20365,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 159,
-        "dcl": 430,
-        "load": 559
-       },
-       "vitals": {
-        "LCP": 424,
-        "FCP": 424,
-        "TTFB": 158.8,
-        "CLS": 0
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 572,
-      "idleMs": 781,
-      "coldMs": 563,
-      "peakRssMB": 1107.2,
-      "cpuSec": 2.57,
-      "dclMs": 430,
-      "ttfbMs": 159,
-      "lcp": 424,
-      "fcp": 424,
-      "cls": 0,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:github-repo": {
-     "runs": [
-      {
-       "label": "A:github-repo",
-       "coldMs": 487,
-       "wallMs": 4623,
-       "peakRssMB": 1217.1,
-       "cpuSec": 5.33,
-       "loadMs": 1626,
-       "idleMs": 2705,
-       "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
-       "textLen": 7984,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 522,
-        "dcl": 1513,
-        "load": 1619
-       },
-       "vitals": {
-        "LCP": 1136,
-        "FCP": 908,
-        "TTFB": 522.4,
-        "CLS": 0.102
-       },
-       "success": true
-      },
-      {
-       "label": "A:github-repo",
-       "coldMs": 514,
-       "wallMs": 4050,
-       "peakRssMB": 1231.3,
-       "cpuSec": 5.17,
-       "loadMs": 1047,
-       "idleMs": 2105,
-       "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
-       "textLen": 7984,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 31,
-        "dcl": 926,
-        "load": 1038
-       },
-       "vitals": {
-        "LCP": 560,
-        "FCP": 420,
-        "TTFB": 30.5,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:github-repo",
-       "coldMs": 463,
-       "wallMs": 4217,
-       "peakRssMB": 1235.5,
-       "cpuSec": 5.62,
-       "loadMs": 1151,
-       "idleMs": 2329,
-       "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
-       "textLen": 7984,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 62,
-        "dcl": 1023,
-        "load": 1135
-       },
-       "vitals": {
-        "LCP": 648,
-        "FCP": 452,
-        "TTFB": 62.4,
-        "CLS": 0
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 1151,
-      "idleMs": 2329,
-      "coldMs": 487,
-      "peakRssMB": 1231.3,
-      "cpuSec": 5.33,
-      "dclMs": 1023,
-      "ttfbMs": 62,
-      "lcp": 648,
-      "fcp": 452,
-      "cls": 0,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:hn": {
-     "runs": [
-      {
-       "label": "A:hn",
-       "coldMs": 477,
-       "wallMs": 2813,
-       "peakRssMB": 1051.1,
-       "cpuSec": 1.61,
-       "loadMs": 902,
-       "idleMs": 913,
-       "title": "Hacker News",
-       "textLen": 3917,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 564,
-        "dcl": 773,
-        "load": 895
-       },
-       "vitals": {
-        "LCP": 788,
-        "FCP": 788,
-        "TTFB": 563.7,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:hn",
-       "coldMs": 533,
-       "wallMs": 2974,
-       "peakRssMB": 1050.8,
-       "cpuSec": 1.66,
-       "loadMs": 1006,
-       "idleMs": 1020,
-       "title": "Hacker News",
-       "textLen": 3917,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 503,
-        "dcl": 896,
-        "load": 1002
-       },
-       "vitals": {
-        "LCP": 912,
-        "FCP": 912,
-        "TTFB": 503.1,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:hn",
-       "coldMs": 466,
-       "wallMs": 2878,
-       "peakRssMB": 1046.5,
-       "cpuSec": 1.8,
-       "loadMs": 972,
-       "idleMs": 983,
-       "title": "Hacker News",
-       "textLen": 3917,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 628,
-        "dcl": 842,
-        "load": 957
-       },
-       "vitals": {
-        "LCP": 856,
-        "FCP": 856,
-        "TTFB": 628.3,
-        "CLS": 0
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 972,
-      "idleMs": 983,
-      "coldMs": 477,
-      "peakRssMB": 1050.8,
-      "cpuSec": 1.66,
-      "dclMs": 842,
-      "ttfbMs": 564,
-      "lcp": 856,
-      "fcp": 856,
-      "cls": 0,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:mdn": {
-     "runs": [
-      {
-       "label": "A:mdn",
-       "coldMs": 470,
-       "wallMs": 2857,
-       "peakRssMB": 1107.8,
-       "cpuSec": 2.42,
-       "loadMs": 344,
-       "idleMs": 958,
-       "title": "JavaScript | MDN",
-       "textLen": 6761,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 44,
-        "dcl": 329,
-        "load": 335
-       },
-       "vitals": {
-        "LCP": 260,
-        "FCP": 260,
-        "TTFB": 43.5,
-        "CLS": 0.001
-       },
-       "success": true
-      },
-      {
-       "label": "A:mdn",
-       "coldMs": 518,
-       "wallMs": 2784,
-       "peakRssMB": 1107.3,
-       "cpuSec": 2.5,
-       "loadMs": 312,
-       "idleMs": 842,
-       "title": "JavaScript | MDN",
-       "textLen": 6761,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 45,
-        "dcl": 283,
-        "load": 307
-       },
-       "vitals": {
-        "LCP": 372,
-        "FCP": 372,
-        "TTFB": 45,
-        "CLS": 0.001
-       },
-       "success": true
-      },
-      {
-       "label": "A:mdn",
-       "coldMs": 486,
-       "wallMs": 2754,
-       "peakRssMB": 1106.6,
-       "cpuSec": 2.36,
-       "loadMs": 296,
-       "idleMs": 839,
-       "title": "JavaScript | MDN",
-       "textLen": 6761,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 40,
-        "dcl": 268,
-        "load": 291
-       },
-       "vitals": {
-        "LCP": 352,
-        "FCP": 352,
-        "TTFB": 40.1,
-        "CLS": 0.001
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 312,
-      "idleMs": 842,
-      "coldMs": 486,
-      "peakRssMB": 1107.3,
-      "cpuSec": 2.42,
-      "dclMs": 283,
-      "ttfbMs": 44,
-      "lcp": 352,
-      "fcp": 352,
-      "cls": 0.001,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:amazon-product": {
-     "runs": [
-      {
-       "label": "A:amazon-product",
-       "coldMs": 521,
-       "wallMs": 2385,
-       "peakRssMB": 1045.3,
-       "cpuSec": 1.67,
-       "loadMs": 422,
-       "idleMs": 441,
-       "title": "Page Not Found",
-       "textLen": 304,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 276,
-        "dcl": 297,
-        "load": 418
-       },
-       "vitals": {
-        "LCP": 436,
-        "FCP": 320,
-        "TTFB": 275.7,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:amazon-product",
-       "coldMs": 485,
-       "wallMs": 2230,
-       "peakRssMB": 1048.2,
-       "cpuSec": 1.55,
-       "loadMs": 288,
-       "idleMs": 317,
-       "title": "Page Not Found",
-       "textLen": 304,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 222,
-        "dcl": 241,
-        "load": 284
-       },
-       "vitals": {
-        "LCP": 296,
-        "FCP": 264,
-        "TTFB": 222.4,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:amazon-product",
-       "coldMs": 491,
-       "wallMs": 2216,
-       "peakRssMB": 1043.8,
-       "cpuSec": 1.56,
-       "loadMs": 271,
-       "idleMs": 294,
-       "title": "Page Not Found",
-       "textLen": 304,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 206,
-        "dcl": 228,
-        "load": 264
-       },
-       "vitals": {
-        "LCP": 280,
-        "FCP": 252,
-        "TTFB": 205.5,
-        "CLS": 0
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 288,
-      "idleMs": 317,
-      "coldMs": 491,
-      "peakRssMB": 1045.3,
-      "cpuSec": 1.56,
-      "dclMs": 241,
-      "ttfbMs": 222,
-      "lcp": 296,
-      "fcp": 264,
-      "cls": 0,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:bbc-news": {
-     "runs": [
-      {
-       "label": "A:bbc-news",
-       "coldMs": 511,
-       "wallMs": 3655,
-       "peakRssMB": 1312.2,
-       "cpuSec": 4.59,
-       "loadMs": 699,
-       "idleMs": 1715,
-       "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
-       "textLen": 8600,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 79,
-        "dcl": 598,
-        "load": 687
-       },
-       "vitals": {
-        "LCP": 568,
-        "FCP": 380,
-        "TTFB": 78.8,
-        "CLS": 0.003
-       },
-       "success": true
-      },
-      {
-       "label": "A:bbc-news",
-       "coldMs": 470,
-       "wallMs": 3838,
-       "peakRssMB": 1324,
-       "cpuSec": 4.72,
-       "loadMs": 1651,
-       "idleMs": 1926,
-       "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
-       "textLen": 8600,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 72,
-        "dcl": 614,
-        "load": 1648
-       },
-       "vitals": {
-        "LCP": 580,
-        "FCP": 352,
-        "TTFB": 72.4,
-        "CLS": 0.003
-       },
-       "success": true
-      },
-      {
-       "label": "A:bbc-news",
-       "coldMs": 503,
-       "wallMs": 3577,
-       "peakRssMB": 1329.4,
-       "cpuSec": 4.59,
-       "loadMs": 1423,
-       "idleMs": 1649,
-       "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
-       "textLen": 8600,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 43,
-        "dcl": 512,
-        "load": 1414
-       },
-       "vitals": {
-        "LCP": 484,
-        "FCP": 300,
-        "TTFB": 42.6,
-        "CLS": 0.003
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 1423,
-      "idleMs": 1715,
-      "coldMs": 503,
-      "peakRssMB": 1324,
-      "cpuSec": 4.59,
-      "dclMs": 598,
-      "ttfbMs": 72,
-      "lcp": 568,
-      "fcp": 352,
-      "cls": 0.003,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:youtube": {
-     "runs": [
-      {
-       "label": "A:youtube",
-       "coldMs": 457,
-       "wallMs": 4801,
-       "peakRssMB": 1631.6,
-       "cpuSec": 7.06,
-       "loadMs": 1667,
-       "idleMs": 2914,
-       "title": "YouTube",
-       "textLen": 1730,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 130,
-        "dcl": 1595,
-        "load": 1664
-       },
-       "vitals": {
-        "LCP": 2072,
-        "FCP": 424,
-        "TTFB": 130.4,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:youtube",
-       "coldMs": 523,
-       "wallMs": 5055,
-       "peakRssMB": 1679.2,
-       "cpuSec": 7.41,
-       "loadMs": 1778,
-       "idleMs": 3101,
-       "title": "YouTube",
-       "textLen": 1730,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 129,
-        "dcl": 1702,
-        "load": 1775
-       },
-       "vitals": {
-        "LCP": 2232,
-        "FCP": 424,
-        "TTFB": 129.1,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:youtube",
-       "coldMs": 463,
-       "wallMs": 5137,
-       "peakRssMB": 1670.6,
-       "cpuSec": 7.31,
-       "loadMs": 1879,
-       "idleMs": 3243,
-       "title": "YouTube",
-       "textLen": 1730,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 132,
-        "dcl": 1814,
-        "load": 1874
-       },
-       "vitals": {
-        "LCP": 2344,
-        "FCP": 384,
-        "TTFB": 132.3,
-        "CLS": 0
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 1778,
-      "idleMs": 3101,
-      "coldMs": 463,
-      "peakRssMB": 1670.6,
-      "cpuSec": 7.31,
-      "dclMs": 1702,
-      "ttfbMs": 130,
-      "lcp": 2232,
-      "fcp": 424,
-      "cls": 0,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "B:next-node": {
-     "runs": [
-      {
-       "label": "B:next-node",
-       "coldMs": 477,
-       "wallMs": 3042,
-       "peakRssMB": 1064.4,
-       "cpuSec": 1.89,
-       "loadMs": 854,
-       "idleMs": 886,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 30,
-        "dcl": 840,
-        "load": 842
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "LCP": 76,
-        "FCP": 76,
-        "TTFB": 30.1,
-        "CLS": 0
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 136,
-       "clientNav": true,
-       "clientNavMs": 34,
-       "success": true
-      },
-      {
-       "label": "B:next-node",
-       "coldMs": 459,
-       "wallMs": 2978,
-       "peakRssMB": 1064.5,
-       "cpuSec": 1.98,
-       "loadMs": 835,
-       "idleMs": 867,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 23,
-        "dcl": 826,
-        "load": 827
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "LCP": 96,
-        "FCP": 96,
-        "TTFB": 22.6,
-        "CLS": 0
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 40,
-       "clientNav": true,
-       "clientNavMs": 134,
-       "success": true
-      },
-      {
-       "label": "B:next-node",
-       "coldMs": 554,
-       "wallMs": 3186,
-       "peakRssMB": 1066.3,
-       "cpuSec": 2.07,
-       "loadMs": 841,
-       "idleMs": 868,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 13,
-        "dcl": 821,
-        "load": 834
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "LCP": 80,
-        "FCP": 80,
-        "TTFB": 13,
-        "CLS": 0
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 150,
-       "clientNav": true,
-       "clientNavMs": 127,
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 841,
-      "idleMs": 868,
-      "coldMs": 477,
-      "peakRssMB": 1064.5,
-      "cpuSec": 1.98,
-      "dclMs": 826,
-      "ttfbMs": 23,
-      "lcp": 80,
-      "fcp": 80,
-      "cls": 0,
-      "hydrationMs": 1,
-      "serverActionMs": 136,
-      "clientNavMs": 127
-     },
-     "successRuns": 3
-    },
-    "B:next-bun": {
-     "runs": [
-      {
-       "label": "B:next-bun",
-       "coldMs": 483,
-       "wallMs": 3045,
-       "peakRssMB": 1064.2,
-       "cpuSec": 1.95,
-       "loadMs": 880,
-       "idleMs": 909,
-       "streamed": true,
-       "streamedMs": 5,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 154,
-        "dcl": 874,
-        "load": 876
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "LCP": 200,
-        "FCP": 200,
-        "TTFB": 153.9,
-        "CLS": 0
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 126,
-       "clientNav": true,
-       "clientNavMs": 42,
-       "success": true
-      },
-      {
-       "label": "B:next-bun",
-       "coldMs": 548,
-       "wallMs": 3146,
-       "peakRssMB": 1064.3,
-       "cpuSec": 1.97,
-       "loadMs": 865,
-       "idleMs": 879,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 33,
-        "dcl": 827,
-        "load": 857
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "LCP": 96,
-        "FCP": 96,
-        "TTFB": 33.3,
-        "CLS": 0
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 129,
-       "clientNav": true,
-       "clientNavMs": 127,
-       "success": true
-      },
-      {
-       "label": "B:next-bun",
-       "coldMs": 582,
-       "wallMs": 3162,
-       "peakRssMB": 1059.2,
-       "cpuSec": 2.13,
-       "loadMs": 872,
-       "idleMs": 904,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 26,
-        "dcl": 831,
-        "load": 867
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "LCP": 84,
-        "FCP": 84,
-        "TTFB": 25.8,
-        "CLS": 0
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 136,
-       "clientNav": true,
-       "clientNavMs": 41,
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 872,
-      "idleMs": 904,
-      "coldMs": 548,
-      "peakRssMB": 1064.2,
-      "cpuSec": 1.97,
-      "dclMs": 831,
-      "ttfbMs": 33,
-      "lcp": 96,
-      "fcp": 96,
-      "cls": 0,
-      "hydrationMs": 1,
-      "serverActionMs": 129,
-      "clientNavMs": 42
-     },
-     "successRuns": 3
-    },
-    "C:turnstile-pass": {
-     "runs": [
-      {
-       "label": "C:turnstile-pass",
-       "coldMs": 482,
-       "wallMs": 16020,
-       "peakRssMB": 1175.2,
-       "cpuSec": 2.25,
-       "loadMs": 320,
-       "final": "success",
-       "resolveMs": 2,
-       "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-pass",
-       "coldMs": 542,
-       "wallMs": 16029,
-       "peakRssMB": 1176.1,
-       "cpuSec": 2.17,
-       "loadMs": 244,
-       "final": "success",
-       "resolveMs": 2,
-       "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-pass",
-       "coldMs": 563,
-       "wallMs": 16014,
-       "peakRssMB": 1175.8,
-       "cpuSec": 2.43,
-       "loadMs": 230,
-       "final": "success",
-       "resolveMs": 2,
-       "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 244,
-      "idleMs": null,
-      "coldMs": 542,
-      "peakRssMB": 1175.8,
-      "cpuSec": 2.25,
-      "dclMs": null,
-      "ttfbMs": null,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "C:turnstile-block": {
-     "runs": [
-      {
-       "label": "C:turnstile-block",
-       "coldMs": 509,
-       "wallMs": 16008,
-       "peakRssMB": 1171.5,
-       "cpuSec": 2.6,
-       "loadMs": 280,
-       "final": "error",
-       "resolveMs": 2,
-       "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-block",
-       "coldMs": 484,
-       "wallMs": 15952,
-       "peakRssMB": 1211.8,
-       "cpuSec": 2.56,
-       "loadMs": 233,
-       "final": "error",
-       "resolveMs": 2,
-       "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-block",
-       "coldMs": 529,
-       "wallMs": 16032,
-       "peakRssMB": 1176.8,
-       "cpuSec": 2.83,
-       "loadMs": 284,
-       "final": "error",
-       "resolveMs": 3,
-       "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 280,
-      "idleMs": null,
-      "coldMs": 509,
-      "peakRssMB": 1176.8,
-      "cpuSec": 2.6,
-      "dclMs": null,
-      "ttfbMs": null,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "C:turnstile-interactive": {
-     "runs": [
-      {
-       "label": "C:turnstile-interactive",
-       "coldMs": 454,
-       "wallMs": 36127,
-       "peakRssMB": 1178.3,
-       "cpuSec": 2.38,
-       "loadMs": 257,
-       "final": "no-callback({\"state\":\"rendered\"})",
-       "resolveMs": 20186,
-       "raw": "{\"state\":\"rendered\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-interactive",
-       "coldMs": 511,
-       "wallMs": 36191,
-       "peakRssMB": 1177.8,
-       "cpuSec": 2.47,
-       "loadMs": 278,
-       "final": "no-callback({\"state\":\"rendered\"})",
-       "resolveMs": 20184,
-       "raw": "{\"state\":\"rendered\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-interactive",
-       "coldMs": 491,
-       "wallMs": 36176,
-       "peakRssMB": 1172.7,
-       "cpuSec": 2.44,
-       "loadMs": 255,
-       "final": "no-callback({\"state\":\"rendered\"})",
-       "resolveMs": 20179,
-       "raw": "{\"state\":\"rendered\"}",
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 257,
-      "idleMs": null,
-      "coldMs": 491,
-      "peakRssMB": 1177.8,
-      "cpuSec": 2.44,
-      "dclMs": null,
-      "ttfbMs": null,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "D:features": {
-     "runs": [
-      {
-       "label": "D:features",
-       "coldMs": 540,
-       "wallMs": 1353,
-       "peakRssMB": 1042.5,
-       "cpuSec": 1.65,
-       "loadMs": 59,
-       "featuresPassed": 44,
-       "featuresTotal": 45,
-       "features": {
-        "fetch": true,
-        "ReadableStream": true,
-        "TransformStream": true,
-        "CompressionStream": true,
-        "WebAssembly": true,
-        "WebAssembly.instantiateStreaming": true,
-        "wasm.run": true,
-        "structuredClone": true,
-        "crypto.subtle": true,
-        "crypto.randomUUID": true,
-        "Worker": true,
-        "SharedArrayBuffer": true,
-        "WebSocket": true,
-        "IntersectionObserver": true,
-        "ResizeObserver": true,
-        "MutationObserver": true,
-        "customElements": true,
-        "shadowDOM": true,
-        "indexedDB": true,
-        "localStorage": true,
-        "canvas2d": true,
-        "webgl": false,
-        "navigator.serviceWorker": true,
-        "Intl.Segmenter": true,
-        "es2022.at": true,
-        "es2023.toSorted": true,
-        "es2024.groupBy": true,
-        "es2024.withResolvers": true,
-        "es2025.Set.union": true,
-        "es2025.Iterator.helpers": true,
-        "es2025.RegExp.escape": true,
-        "es2025.Promise.try": true,
-        "es2025.Float16Array": true,
-        "es2026.Temporal": true,
-        "es2026.Array.fromAsync": true,
-        "css.grid": true,
-        "css.subgrid": true,
-        "css.has": true,
-        "css.container": true,
-        "css.nesting": true,
-        "css.oklch": true,
-        "css.anchor": true,
-        "viewTransition": true,
-        "layout.grid.computed": true,
-        "layout.flex.computed": true
-       },
-       "wasm": {
-        "bigInt": true,
-        "bulkMemory": true,
-        "exceptions": true,
-        "exceptionsFinal": true,
-        "extendedConst": true,
-        "gc": true,
-        "jsStringBuiltins": true,
-        "jspi": true,
-        "memory64": true,
-        "multiMemory": true,
-        "multiValue": true,
-        "mutableGlobals": true,
-        "referenceTypes": true,
-        "relaxedSimd": true,
-        "saturatedFloatToInt": true,
-        "signExtensions": true,
-        "simd": true,
-        "sourcePhaseImports": false,
-        "streamingCompilation": true,
-        "tailCall": true,
-        "threads": true,
-        "typeReflection": false,
-        "typedFunctionReferences": true,
-        "wideArithmetic": false,
-        "JSPI.Suspending": true,
-        "navigator.gpu": true,
-        "gpu.adapter": false
-       },
-       "success": true
-      },
-      {
-       "label": "D:features",
-       "coldMs": 503,
-       "wallMs": 1312,
-       "peakRssMB": 1042.5,
-       "cpuSec": 1.57,
-       "loadMs": 63,
-       "featuresPassed": 44,
-       "featuresTotal": 45,
-       "features": {
-        "fetch": true,
-        "ReadableStream": true,
-        "TransformStream": true,
-        "CompressionStream": true,
-        "WebAssembly": true,
-        "WebAssembly.instantiateStreaming": true,
-        "wasm.run": true,
-        "structuredClone": true,
-        "crypto.subtle": true,
-        "crypto.randomUUID": true,
-        "Worker": true,
-        "SharedArrayBuffer": true,
-        "WebSocket": true,
-        "IntersectionObserver": true,
-        "ResizeObserver": true,
-        "MutationObserver": true,
-        "customElements": true,
-        "shadowDOM": true,
-        "indexedDB": true,
-        "localStorage": true,
-        "canvas2d": true,
-        "webgl": false,
-        "navigator.serviceWorker": true,
-        "Intl.Segmenter": true,
-        "es2022.at": true,
-        "es2023.toSorted": true,
-        "es2024.groupBy": true,
-        "es2024.withResolvers": true,
-        "es2025.Set.union": true,
-        "es2025.Iterator.helpers": true,
-        "es2025.RegExp.escape": true,
-        "es2025.Promise.try": true,
-        "es2025.Float16Array": true,
-        "es2026.Temporal": true,
-        "es2026.Array.fromAsync": true,
-        "css.grid": true,
-        "css.subgrid": true,
-        "css.has": true,
-        "css.container": true,
-        "css.nesting": true,
-        "css.oklch": true,
-        "css.anchor": true,
-        "viewTransition": true,
-        "layout.grid.computed": true,
-        "layout.flex.computed": true
-       },
-       "wasm": {
-        "bigInt": true,
-        "bulkMemory": true,
-        "exceptions": true,
-        "exceptionsFinal": true,
-        "extendedConst": true,
-        "gc": true,
-        "jsStringBuiltins": true,
-        "jspi": true,
-        "memory64": true,
-        "multiMemory": true,
-        "multiValue": true,
-        "mutableGlobals": true,
-        "referenceTypes": true,
-        "relaxedSimd": true,
-        "saturatedFloatToInt": true,
-        "signExtensions": true,
-        "simd": true,
-        "sourcePhaseImports": false,
-        "streamingCompilation": true,
-        "tailCall": true,
-        "threads": true,
-        "typeReflection": false,
-        "typedFunctionReferences": true,
-        "wideArithmetic": false,
-        "JSPI.Suspending": true,
-        "navigator.gpu": true,
-        "gpu.adapter": false
-       },
-       "success": true
-      },
-      {
-       "label": "D:features",
-       "coldMs": 476,
-       "wallMs": 1280,
-       "peakRssMB": 1037.6,
-       "cpuSec": 1.59,
-       "loadMs": 54,
-       "featuresPassed": 44,
-       "featuresTotal": 45,
-       "features": {
-        "fetch": true,
-        "ReadableStream": true,
-        "TransformStream": true,
-        "CompressionStream": true,
-        "WebAssembly": true,
-        "WebAssembly.instantiateStreaming": true,
-        "wasm.run": true,
-        "structuredClone": true,
-        "crypto.subtle": true,
-        "crypto.randomUUID": true,
-        "Worker": true,
-        "SharedArrayBuffer": true,
-        "WebSocket": true,
-        "IntersectionObserver": true,
-        "ResizeObserver": true,
-        "MutationObserver": true,
-        "customElements": true,
-        "shadowDOM": true,
-        "indexedDB": true,
-        "localStorage": true,
-        "canvas2d": true,
-        "webgl": false,
-        "navigator.serviceWorker": true,
-        "Intl.Segmenter": true,
-        "es2022.at": true,
-        "es2023.toSorted": true,
-        "es2024.groupBy": true,
-        "es2024.withResolvers": true,
-        "es2025.Set.union": true,
-        "es2025.Iterator.helpers": true,
-        "es2025.RegExp.escape": true,
-        "es2025.Promise.try": true,
-        "es2025.Float16Array": true,
-        "es2026.Temporal": true,
-        "es2026.Array.fromAsync": true,
-        "css.grid": true,
-        "css.subgrid": true,
-        "css.has": true,
-        "css.container": true,
-        "css.nesting": true,
-        "css.oklch": true,
-        "css.anchor": true,
-        "viewTransition": true,
-        "layout.grid.computed": true,
-        "layout.flex.computed": true
-       },
-       "wasm": {
-        "bigInt": true,
-        "bulkMemory": true,
-        "exceptions": true,
-        "exceptionsFinal": true,
-        "extendedConst": true,
-        "gc": true,
-        "jsStringBuiltins": true,
-        "jspi": true,
-        "memory64": true,
-        "multiMemory": true,
-        "multiValue": true,
-        "mutableGlobals": true,
-        "referenceTypes": true,
-        "relaxedSimd": true,
-        "saturatedFloatToInt": true,
-        "signExtensions": true,
-        "simd": true,
-        "sourcePhaseImports": false,
-        "streamingCompilation": true,
-        "tailCall": true,
-        "threads": true,
-        "typeReflection": false,
-        "typedFunctionReferences": true,
-        "wideArithmetic": false,
-        "JSPI.Suspending": true,
-        "navigator.gpu": true,
-        "gpu.adapter": false
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 59,
-      "idleMs": null,
-      "coldMs": 503,
-      "peakRssMB": 1042.5,
-      "cpuSec": 1.59,
-      "dclMs": null,
-      "ttfbMs": null,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
     }
-   }
   },
-  "electron-43": {
-   "version": "Electron 43.8.9 Chromium 150.0.7871.250 (xvfb-run, hidden BrowserWindow)",
-   "sizeMB": 315.8,
-   "results": {
-    "A:nextjs.org": {
-     "runs": [
-      {
-       "label": "A:nextjs.org",
-       "coldMs": 433,
-       "wallMs": 4104,
-       "peakRssMB": 574.7,
-       "cpuSec": 2.2,
-       "loadMs": 840,
-       "idleMs": 2181,
-       "title": "Next.js by Vercel - The React Framework",
-       "textLen": 3856,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 256,
-        "dcl": 655,
-        "load": 837
-       },
-       "vitals": {
-        "TTFB": 255.5
-       },
-       "success": true
-      },
-      {
-       "label": "A:nextjs.org",
-       "coldMs": 413,
-       "wallMs": 4250,
-       "peakRssMB": 580.6,
-       "cpuSec": 2.09,
-       "loadMs": 395,
-       "idleMs": 2338,
-       "title": "Next.js by Vercel - The React Framework",
-       "textLen": 3987,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 37,
-        "dcl": 265,
-        "load": 386
-       },
-       "vitals": {
-        "TTFB": 37.2
-       },
-       "success": true
-      },
-      {
-       "label": "A:nextjs.org",
-       "coldMs": 412,
-       "wallMs": 3534,
-       "peakRssMB": 581.7,
-       "cpuSec": 1.9,
-       "loadMs": 363,
-       "idleMs": 1636,
-       "title": "Next.js by Vercel - The React Framework",
-       "textLen": 3856,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 31,
-        "dcl": 250,
-        "load": 360
-       },
-       "vitals": {
-        "TTFB": 31
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 395,
-      "idleMs": 2181,
-      "coldMs": 413,
-      "peakRssMB": 580.6,
-      "cpuSec": 2.09,
-      "dclMs": 265,
-      "ttfbMs": 37,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:vercel.com": {
-     "runs": [
-      {
-       "label": "A:vercel.com",
-       "coldMs": 428,
-       "wallMs": 3489,
-       "peakRssMB": 601.3,
-       "cpuSec": 2.82,
-       "loadMs": 505,
-       "idleMs": 1356,
-       "title": "Agentic Infrastructure - Vercel",
-       "textLen": 835,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 36,
-        "dcl": 298,
-        "load": 503
-       },
-       "vitals": {
-        "TTFB": 36
-       },
-       "success": true
-      },
-      {
-       "label": "A:vercel.com",
-       "coldMs": 481,
-       "wallMs": 4356,
-       "peakRssMB": 670.4,
-       "cpuSec": 2.9,
-       "loadMs": 517,
-       "idleMs": 2242,
-       "title": "Agentic Infrastructure - Vercel",
-       "textLen": 966,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 42,
-        "dcl": 304,
-        "load": 514
-       },
-       "vitals": {
-        "TTFB": 42
-       },
-       "success": true
-      },
-      {
-       "label": "A:vercel.com",
-       "coldMs": 469,
-       "wallMs": 3591,
-       "peakRssMB": 601.3,
-       "cpuSec": 2.31,
-       "loadMs": 579,
-       "idleMs": 1360,
-       "title": "Agentic Infrastructure - Vercel",
-       "textLen": 835,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 37,
-        "dcl": 444,
-        "load": 576
-       },
-       "vitals": {
-        "TTFB": 37
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 517,
-      "idleMs": 1360,
-      "coldMs": 469,
-      "peakRssMB": 601.3,
-      "cpuSec": 2.82,
-      "dclMs": 304,
-      "ttfbMs": 37,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:react.dev": {
-     "runs": [
-      {
-       "label": "A:react.dev",
-       "coldMs": 444,
-       "wallMs": 4486,
-       "peakRssMB": 578.6,
-       "cpuSec": 1.83,
-       "loadMs": 1594,
-       "idleMs": 1766,
-       "title": "React",
-       "textLen": 6582,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 166,
-        "dcl": 1327,
-        "load": 1591
-       },
-       "vitals": {
-        "TTFB": 165.7
-       },
-       "success": true
-      },
-      {
-       "label": "A:react.dev",
-       "coldMs": 493,
-       "wallMs": 2741,
-       "peakRssMB": 567.8,
-       "cpuSec": 1.78,
-       "loadMs": 687,
-       "idleMs": 688,
-       "title": "React",
-       "textLen": 6582,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 104,
-        "dcl": 401,
-        "load": 684
-       },
-       "vitals": {
-        "TTFB": 103.7
-       },
-       "success": true
-      },
-      {
-       "label": "A:react.dev",
-       "coldMs": 450,
-       "wallMs": 3493,
-       "peakRssMB": 568.2,
-       "cpuSec": 1.67,
-       "loadMs": 779,
-       "idleMs": 779,
-       "title": "React",
-       "textLen": 6582,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 290,
-        "dcl": 567,
-        "load": 775
-       },
-       "vitals": {
-        "TTFB": 290.3
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 779,
-      "idleMs": 779,
-      "coldMs": 450,
-      "peakRssMB": 568.2,
-      "cpuSec": 1.78,
-      "dclMs": 567,
-      "ttfbMs": 166,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:cf-docs": {
-     "runs": [
-      {
-       "label": "A:cf-docs",
-       "coldMs": 490,
-       "wallMs": 2985,
-       "peakRssMB": 585.7,
-       "cpuSec": 1.67,
-       "loadMs": 613,
-       "idleMs": 781,
-       "title": "Cloudflare Developer Docs | Cloudflare Docs",
-       "textLen": 7903,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 105,
-        "dcl": 603,
-        "load": 606
-       },
-       "vitals": {
-        "TTFB": 105
-       },
-       "success": true
-      },
-      {
-       "label": "A:cf-docs",
-       "coldMs": 550,
-       "wallMs": 2872,
-       "peakRssMB": 581.8,
-       "cpuSec": 1.79,
-       "loadMs": 509,
-       "idleMs": 659,
-       "title": "Cloudflare Developer Docs | Cloudflare Docs",
-       "textLen": 7903,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 113,
-        "dcl": 462,
-        "load": 506
-       },
-       "vitals": {
-        "TTFB": 113.2
-       },
-       "success": true
-      },
-      {
-       "label": "A:cf-docs",
-       "coldMs": 452,
-       "wallMs": 2806,
-       "peakRssMB": 582.4,
-       "cpuSec": 1.39,
-       "loadMs": 432,
-       "idleMs": 681,
-       "title": "Cloudflare Developer Docs | Cloudflare Docs",
-       "textLen": 7903,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 78,
-        "dcl": 428,
-        "load": 430
-       },
-       "vitals": {
-        "TTFB": 77.8
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 509,
-      "idleMs": 681,
-      "coldMs": 490,
-      "peakRssMB": 582.4,
-      "cpuSec": 1.67,
-      "dclMs": 462,
-      "ttfbMs": 105,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:web.dev": {
-     "runs": [
-      {
-       "label": "A:web.dev",
-       "coldMs": 435,
-       "wallMs": 5420,
-       "peakRssMB": 963,
-       "cpuSec": 4.85,
-       "loadMs": 2045,
-       "idleMs": 2676,
-       "title": "web.dev",
-       "textLen": 6922,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 747,
-        "dcl": 1013,
-        "load": 2040
-       },
-       "vitals": {
-        "TTFB": 747.2
-       },
-       "success": true
-      },
-      {
-       "label": "A:web.dev",
-       "coldMs": 470,
-       "wallMs": 4867,
-       "peakRssMB": 965.7,
-       "cpuSec": 4.71,
-       "loadMs": 1842,
-       "idleMs": 2350,
-       "title": "web.dev",
-       "textLen": 6942,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 533,
-        "dcl": 796,
-        "load": 1828
-       },
-       "vitals": {
-        "TTFB": 533.3
-       },
-       "success": true
-      },
-      {
-       "label": "A:web.dev",
-       "coldMs": 411,
-       "wallMs": 4327,
-       "peakRssMB": 961.1,
-       "cpuSec": 4.2,
-       "loadMs": 1577,
-       "idleMs": 2068,
-       "title": "web.dev",
-       "textLen": 6942,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 522,
-        "dcl": 707,
-        "load": 1571
-       },
-       "vitals": {
-        "TTFB": 522
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 1842,
-      "idleMs": 2350,
-      "coldMs": 435,
-      "peakRssMB": 963,
-      "cpuSec": 4.71,
-      "dclMs": 796,
-      "ttfbMs": 533,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:wikipedia": {
-     "runs": [
-      {
-       "label": "A:wikipedia",
-       "coldMs": 415,
-       "wallMs": 3953,
-       "peakRssMB": 567.9,
-       "cpuSec": 1.31,
-       "loadMs": 1986,
-       "idleMs": 1986,
-       "title": "Web browser - Wikipedia",
-       "textLen": 20413,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 382,
-        "dcl": 1738,
-        "load": 1983
-       },
-       "vitals": {
-        "LCP": 1640,
-        "FCP": 1640,
-        "TTFB": 381.5,
-        "CLS": 0
-       },
-       "success": true
-      },
-      {
-       "label": "A:wikipedia",
-       "coldMs": 412,
-       "wallMs": 2265,
-       "peakRssMB": 570.7,
-       "cpuSec": 1.23,
-       "loadMs": 346,
-       "idleMs": 376,
-       "title": "Web browser - Wikipedia",
-       "textLen": 20413,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 60,
-        "dcl": 288,
-        "load": 341
-       },
-       "vitals": {
-        "LCP": 272,
-        "FCP": 272,
-        "TTFB": 60.2,
-        "CLS": 0.13
-       },
-       "success": true
-      },
-      {
-       "label": "A:wikipedia",
-       "coldMs": 456,
-       "wallMs": 2302,
-       "peakRssMB": 566.3,
-       "cpuSec": 1.14,
-       "loadMs": 319,
-       "idleMs": 356,
-       "title": "Web browser - Wikipedia",
-       "textLen": 20413,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 61,
-        "dcl": 297,
-        "load": 316
-       },
-       "vitals": {
-        "LCP": 308,
-        "FCP": 308,
-        "TTFB": 60.8,
-        "CLS": 0
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 346,
-      "idleMs": 376,
-      "coldMs": 415,
-      "peakRssMB": 567.9,
-      "cpuSec": 1.23,
-      "dclMs": 297,
-      "ttfbMs": 61,
-      "lcp": 308,
-      "fcp": 308,
-      "cls": 0,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:github-repo": {
-     "runs": [
-      {
-       "label": "A:github-repo",
-       "coldMs": 422,
-       "wallMs": 4197,
-       "peakRssMB": 668.2,
-       "cpuSec": 3.43,
-       "loadMs": 1459,
-       "idleMs": 2066,
-       "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
-       "textLen": 7984,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 464,
-        "dcl": 1395,
-        "load": 1456
-       },
-       "vitals": {
-        "TTFB": 464.2
-       },
-       "success": true
-      },
-      {
-       "label": "A:github-repo",
-       "coldMs": 447,
-       "wallMs": 3572,
-       "peakRssMB": 671.7,
-       "cpuSec": 3.15,
-       "loadMs": 1023,
-       "idleMs": 1481,
-       "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
-       "textLen": 7984,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 26,
-        "dcl": 936,
-        "load": 1020
-       },
-       "vitals": {
-        "TTFB": 26.4
-       },
-       "success": true
-      },
-      {
-       "label": "A:github-repo",
-       "coldMs": 433,
-       "wallMs": 3502,
-       "peakRssMB": 665.4,
-       "cpuSec": 3.21,
-       "loadMs": 1005,
-       "idleMs": 1439,
-       "title": "GitHub - servo/servo: Servo aims to empower developers with a lightweight, high-",
-       "textLen": 7984,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 29,
-        "dcl": 935,
-        "load": 1002
-       },
-       "vitals": {
-        "TTFB": 29
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 1023,
-      "idleMs": 1481,
-      "coldMs": 433,
-      "peakRssMB": 668.2,
-      "cpuSec": 3.21,
-      "dclMs": 936,
-      "ttfbMs": 29,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:hn": {
-     "runs": [
-      {
-       "label": "A:hn",
-       "coldMs": 491,
-       "wallMs": 2789,
-       "peakRssMB": 513.3,
-       "cpuSec": 0.68,
-       "loadMs": 822,
-       "idleMs": 822,
-       "title": "Hacker News",
-       "textLen": 3920,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 491,
-        "dcl": 693,
-        "load": 816
-       },
-       "vitals": {
-        "TTFB": 490.6
-       },
-       "success": true
-      },
-      {
-       "label": "A:hn",
-       "coldMs": 440,
-       "wallMs": 2545,
-       "peakRssMB": 514.1,
-       "cpuSec": 0.69,
-       "loadMs": 644,
-       "idleMs": 645,
-       "title": "Hacker News",
-       "textLen": 3920,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 575,
-        "dcl": 642,
-        "load": 642
-       },
-       "vitals": {
-        "TTFB": 574.8
-       },
-       "success": true
-      },
-      {
-       "label": "A:hn",
-       "coldMs": 422,
-       "wallMs": 2504,
-       "peakRssMB": 510.8,
-       "cpuSec": 0.65,
-       "loadMs": 602,
-       "idleMs": 602,
-       "title": "Hacker News",
-       "textLen": 3920,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 536,
-        "dcl": 563,
-        "load": 599
-       },
-       "vitals": {
-        "TTFB": 535.5
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 644,
-      "idleMs": 645,
-      "coldMs": 440,
-      "peakRssMB": 513.3,
-      "cpuSec": 0.68,
-      "dclMs": 642,
-      "ttfbMs": 536,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:mdn": {
-     "runs": [
-      {
-       "label": "A:mdn",
-       "coldMs": 461,
-       "wallMs": 3094,
-       "peakRssMB": 566.9,
-       "cpuSec": 1.55,
-       "loadMs": 349,
-       "idleMs": 973,
-       "title": "JavaScript | MDN",
-       "textLen": 6761,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 71,
-        "dcl": 315,
-        "load": 340
-       },
-       "vitals": {
-        "TTFB": 71
-       },
-       "success": true
-      },
-      {
-       "label": "A:mdn",
-       "coldMs": 481,
-       "wallMs": 3073,
-       "peakRssMB": 566.5,
-       "cpuSec": 1.31,
-       "loadMs": 209,
-       "idleMs": 828,
-       "title": "JavaScript | MDN",
-       "textLen": 6761,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 3,
-        "dcl": 185,
-        "load": 206
-       },
-       "vitals": {
-        "TTFB": 3.4
-       },
-       "success": true
-      },
-      {
-       "label": "A:mdn",
-       "coldMs": 433,
-       "wallMs": 2763,
-       "peakRssMB": 564.7,
-       "cpuSec": 1.29,
-       "loadMs": 236,
-       "idleMs": 846,
-       "title": "JavaScript | MDN",
-       "textLen": 6761,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 3,
-        "dcl": 231,
-        "load": 231
-       },
-       "vitals": {
-        "TTFB": 3.1
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 236,
-      "idleMs": 846,
-      "coldMs": 461,
-      "peakRssMB": 566.5,
-      "cpuSec": 1.31,
-      "dclMs": 231,
-      "ttfbMs": 3,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:amazon-product": {
-     "runs": [
-      {
-       "label": "A:amazon-product",
-       "coldMs": 481,
-       "wallMs": 2568,
-       "peakRssMB": 511.7,
-       "cpuSec": 0.71,
-       "loadMs": 536,
-       "idleMs": 536,
-       "title": "Page Not Found",
-       "textLen": 304,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 296,
-        "dcl": 329,
-        "load": 521
-       },
-       "vitals": {
-        "TTFB": 296
-       },
-       "success": true
-      },
-      {
-       "label": "A:amazon-product",
-       "coldMs": 420,
-       "wallMs": 2903,
-       "peakRssMB": 512,
-       "cpuSec": 0.59,
-       "loadMs": 237,
-       "idleMs": 237,
-       "title": "Page Not Found",
-       "textLen": 304,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 181,
-        "dcl": 212,
-        "load": 234
-       },
-       "vitals": {
-        "TTFB": 181.4
-       },
-       "success": true
-      },
-      {
-       "label": "A:amazon-product",
-       "coldMs": 433,
-       "wallMs": 2263,
-       "peakRssMB": 510.8,
-       "cpuSec": 0.64,
-       "loadMs": 249,
-       "idleMs": 249,
-       "title": "Page Not Found",
-       "textLen": 304,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 198,
-        "dcl": 216,
-        "load": 244
-       },
-       "vitals": {
-        "TTFB": 197.5
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 249,
-      "idleMs": 249,
-      "coldMs": 433,
-      "peakRssMB": 511.7,
-      "cpuSec": 0.64,
-      "dclMs": 216,
-      "ttfbMs": 198,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:bbc-news": {
-     "runs": [
-      {
-       "label": "A:bbc-news",
-       "coldMs": 417,
-       "wallMs": 3687,
-       "peakRssMB": 741.1,
-       "cpuSec": 3.61,
-       "loadMs": 682,
-       "idleMs": 1657,
-       "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
-       "textLen": 8641,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 89,
-        "dcl": 587,
-        "load": 679
-       },
-       "vitals": {
-        "TTFB": 88.6
-       },
-       "success": true
-      },
-      {
-       "label": "A:bbc-news",
-       "coldMs": 464,
-       "wallMs": 3606,
-       "peakRssMB": 742,
-       "cpuSec": 3.64,
-       "loadMs": 1452,
-       "idleMs": 1537,
-       "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
-       "textLen": 8641,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 62,
-        "dcl": 539,
-        "load": 1444
-       },
-       "vitals": {
-        "TTFB": 62
-       },
-       "success": true
-      },
-      {
-       "label": "A:bbc-news",
-       "coldMs": 414,
-       "wallMs": 3201,
-       "peakRssMB": 744,
-       "cpuSec": 2.99,
-       "loadMs": 1186,
-       "idleMs": 1188,
-       "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and aro",
-       "textLen": 8641,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 44,
-        "dcl": 484,
-        "load": 1183
-       },
-       "vitals": {
-        "TTFB": 44.3
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 1186,
-      "idleMs": 1537,
-      "coldMs": 417,
-      "peakRssMB": 742,
-      "cpuSec": 3.61,
-      "dclMs": 539,
-      "ttfbMs": 62,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "A:youtube": {
-     "runs": [
-      {
-       "label": "A:youtube",
-       "coldMs": 417,
-       "wallMs": 4639,
-       "peakRssMB": 775.9,
-       "cpuSec": 4.25,
-       "loadMs": 1875,
-       "idleMs": 2451,
-       "title": "YouTube",
-       "textLen": 1700,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 162,
-        "dcl": 1813,
-        "load": 1871
-       },
-       "vitals": {
-        "TTFB": 162.2
-       },
-       "success": true
-      },
-      {
-       "label": "A:youtube",
-       "coldMs": 451,
-       "wallMs": 6576,
-       "peakRssMB": 783.5,
-       "cpuSec": 4.43,
-       "loadMs": 1906,
-       "idleMs": 2496,
-       "title": "YouTube",
-       "textLen": 1700,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 122,
-        "dcl": 1853,
-        "load": 1903
-       },
-       "vitals": {
-        "TTFB": 122.4
-       },
-       "success": true
-      },
-      {
-       "label": "A:youtube",
-       "coldMs": 438,
-       "wallMs": 3792,
-       "peakRssMB": 824.5,
-       "cpuSec": 3.95,
-       "loadMs": 873,
-       "idleMs": 1645,
-       "title": "YouTube",
-       "textLen": 1730,
-       "expectFound": true,
-       "jsExecuted": true,
-       "nav": {
-        "ttfb": 135,
-        "dcl": 832,
-        "load": 864
-       },
-       "vitals": {
-        "TTFB": 134.7
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 1875,
-      "idleMs": 2451,
-      "coldMs": 438,
-      "peakRssMB": 783.5,
-      "cpuSec": 4.25,
-      "dclMs": 1813,
-      "ttfbMs": 135,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "B:next-node": {
-     "runs": [
-      {
-       "label": "B:next-node",
-       "coldMs": 433,
-       "wallMs": 5717,
-       "peakRssMB": 522.1,
-       "cpuSec": 0.98,
-       "loadMs": 827,
-       "idleMs": 829,
-       "streamed": true,
-       "streamedMs": 3,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 16,
-        "dcl": 822,
-        "load": 825
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "TTFB": 16.2
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 1119,
-       "clientNav": true,
-       "clientNavMs": 1003,
-       "success": true
-      },
-      {
-       "label": "B:next-node",
-       "coldMs": 411,
-       "wallMs": 4932,
-       "peakRssMB": 523.3,
-       "cpuSec": 0.9,
-       "loadMs": 821,
-       "idleMs": 821,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 16,
-        "dcl": 817,
-        "load": 818
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "TTFB": 15.7
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 1140,
-       "clientNav": true,
-       "clientNavMs": 1021,
-       "success": true
-      },
-      {
-       "label": "B:next-node",
-       "coldMs": 438,
-       "wallMs": 5707,
-       "peakRssMB": 521.2,
-       "cpuSec": 0.87,
-       "loadMs": 821,
-       "idleMs": 822,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 14,
-        "dcl": 819,
-        "load": 819
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3100/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "TTFB": 14.2
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 1133,
-       "clientNav": true,
-       "clientNavMs": 1007,
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 821,
-      "idleMs": 822,
-      "coldMs": 433,
-      "peakRssMB": 522.1,
-      "cpuSec": 0.9,
-      "dclMs": 819,
-      "ttfbMs": 16,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": 1,
-      "serverActionMs": 1133,
-      "clientNavMs": 1007
-     },
-     "successRuns": 3
-    },
-    "B:next-bun": {
-     "runs": [
-      {
-       "label": "B:next-bun",
-       "coldMs": 428,
-       "wallMs": 5739,
-       "peakRssMB": 522.1,
-       "cpuSec": 0.93,
-       "loadMs": 839,
-       "idleMs": 841,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 40,
-        "dcl": 834,
-        "load": 835
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "TTFB": 39.8
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 1121,
-       "clientNav": true,
-       "clientNavMs": 1015,
-       "success": true
-      },
-      {
-       "label": "B:next-bun",
-       "coldMs": 412,
-       "wallMs": 6263,
-       "peakRssMB": 523.6,
-       "cpuSec": 0.95,
-       "loadMs": 829,
-       "idleMs": 829,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 16,
-        "dcl": 824,
-        "load": 826
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "TTFB": 16.1
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 1125,
-       "clientNav": true,
-       "clientNavMs": 1016,
-       "success": true
-      },
-      {
-       "label": "B:next-bun",
-       "coldMs": 443,
-       "wallMs": 5736,
-       "peakRssMB": 522.9,
-       "cpuSec": 0.95,
-       "loadMs": 825,
-       "idleMs": 825,
-       "streamed": true,
-       "streamedMs": 2,
-       "hydrated": true,
-       "hydrationMs": 1,
-       "nav": {
-        "ttfb": 22,
-        "dcl": 820,
-        "load": 821
-       },
-       "img": {
-        "complete": true,
-        "w": 384,
-        "src": "http://127.0.0.1:3101/_next/image?url=%2Fpic.png&w=384&q=75"
-       },
-       "vitals": {
-        "TTFB": 21.6
-       },
-       "clickState": true,
-       "serverAction": true,
-       "serverActionMs": 1139,
-       "clientNav": true,
-       "clientNavMs": 1005,
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 829,
-      "idleMs": 829,
-      "coldMs": 428,
-      "peakRssMB": 522.9,
-      "cpuSec": 0.95,
-      "dclMs": 824,
-      "ttfbMs": 22,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": 1,
-      "serverActionMs": 1125,
-      "clientNavMs": 1015
-     },
-     "successRuns": 3
-    },
-    "C:turnstile-pass": {
-     "runs": [
-      {
-       "label": "C:turnstile-pass",
-       "coldMs": 489,
-       "wallMs": 16068,
-       "peakRssMB": 623.1,
-       "cpuSec": 0.99,
-       "loadMs": 296,
-       "final": "success",
-       "resolveMs": 3,
-       "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-pass",
-       "coldMs": 463,
-       "wallMs": 15992,
-       "peakRssMB": 622.2,
-       "cpuSec": 0.98,
-       "loadMs": 254,
-       "final": "success",
-       "resolveMs": 2,
-       "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-pass",
-       "coldMs": 428,
-       "wallMs": 15991,
-       "peakRssMB": 626.3,
-       "cpuSec": 0.95,
-       "loadMs": 286,
-       "final": "success",
-       "resolveMs": 6,
-       "raw": "{\"state\":\"success\",\"token\":\"XXXX.DUMMY.TOKEN.XXXX\"}",
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 286,
-      "idleMs": null,
-      "coldMs": 463,
-      "peakRssMB": 623.1,
-      "cpuSec": 0.98,
-      "dclMs": null,
-      "ttfbMs": null,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "C:turnstile-block": {
-     "runs": [
-      {
-       "label": "C:turnstile-block",
-       "coldMs": 443,
-       "wallMs": 15948,
-       "peakRssMB": 627.6,
-       "cpuSec": 1.23,
-       "loadMs": 216,
-       "final": "error",
-       "resolveMs": 4,
-       "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-block",
-       "coldMs": 480,
-       "wallMs": 15977,
-       "peakRssMB": 625.4,
-       "cpuSec": 1.29,
-       "loadMs": 231,
-       "final": "error",
-       "resolveMs": 2,
-       "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-block",
-       "coldMs": 432,
-       "wallMs": 15962,
-       "peakRssMB": 626.6,
-       "cpuSec": 1.27,
-       "loadMs": 208,
-       "final": "error",
-       "resolveMs": 2,
-       "raw": "{\"state\":\"error\",\"code\":\"600010\"}",
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 216,
-      "idleMs": null,
-      "coldMs": 443,
-      "peakRssMB": 626.6,
-      "cpuSec": 1.27,
-      "dclMs": null,
-      "ttfbMs": null,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "C:turnstile-interactive": {
-     "runs": [
-      {
-       "label": "C:turnstile-interactive",
-       "coldMs": 567,
-       "wallMs": 36298,
-       "peakRssMB": 628.2,
-       "cpuSec": 1.29,
-       "loadMs": 278,
-       "final": "no-callback({\"state\":\"rendered\"})",
-       "resolveMs": 20183,
-       "raw": "{\"state\":\"rendered\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-interactive",
-       "coldMs": 437,
-       "wallMs": 36109,
-       "peakRssMB": 626,
-       "cpuSec": 1.11,
-       "loadMs": 215,
-       "final": "no-callback({\"state\":\"rendered\"})",
-       "resolveMs": 20174,
-       "raw": "{\"state\":\"rendered\"}",
-       "success": true
-      },
-      {
-       "label": "C:turnstile-interactive",
-       "coldMs": 452,
-       "wallMs": 36186,
-       "peakRssMB": 627.7,
-       "cpuSec": 1.15,
-       "loadMs": 262,
-       "final": "no-callback({\"state\":\"rendered\"})",
-       "resolveMs": 20194,
-       "raw": "{\"state\":\"rendered\"}",
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 262,
-      "idleMs": null,
-      "coldMs": 452,
-      "peakRssMB": 627.7,
-      "cpuSec": 1.15,
-      "dclMs": null,
-      "ttfbMs": null,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    },
-    "D:features": {
-     "runs": [
-      {
-       "label": "D:features",
-       "coldMs": 426,
-       "wallMs": 1286,
-       "peakRssMB": 498.9,
-       "cpuSec": 0.64,
-       "loadMs": 72,
-       "featuresPassed": 44,
-       "featuresTotal": 45,
-       "features": {
-        "fetch": true,
-        "ReadableStream": true,
-        "TransformStream": true,
-        "CompressionStream": true,
-        "WebAssembly": true,
-        "WebAssembly.instantiateStreaming": true,
-        "wasm.run": true,
-        "structuredClone": true,
-        "crypto.subtle": true,
-        "crypto.randomUUID": true,
-        "Worker": true,
-        "SharedArrayBuffer": true,
-        "WebSocket": true,
-        "IntersectionObserver": true,
-        "ResizeObserver": true,
-        "MutationObserver": true,
-        "customElements": true,
-        "shadowDOM": true,
-        "indexedDB": true,
-        "localStorage": true,
-        "canvas2d": true,
-        "webgl": false,
-        "navigator.serviceWorker": true,
-        "Intl.Segmenter": true,
-        "es2022.at": true,
-        "es2023.toSorted": true,
-        "es2024.groupBy": true,
-        "es2024.withResolvers": true,
-        "es2025.Set.union": true,
-        "es2025.Iterator.helpers": true,
-        "es2025.RegExp.escape": true,
-        "es2025.Promise.try": true,
-        "es2025.Float16Array": true,
-        "es2026.Temporal": true,
-        "es2026.Array.fromAsync": true,
-        "css.grid": true,
-        "css.subgrid": true,
-        "css.has": true,
-        "css.container": true,
-        "css.nesting": true,
-        "css.oklch": true,
-        "css.anchor": true,
-        "viewTransition": true,
-        "layout.grid.computed": true,
-        "layout.flex.computed": true
-       },
-       "wasm": {
-        "bigInt": true,
-        "bulkMemory": true,
-        "exceptions": true,
-        "exceptionsFinal": true,
-        "extendedConst": true,
-        "gc": true,
-        "jsStringBuiltins": true,
-        "jspi": true,
-        "memory64": true,
-        "multiMemory": true,
-        "multiValue": true,
-        "mutableGlobals": true,
-        "referenceTypes": true,
-        "relaxedSimd": true,
-        "saturatedFloatToInt": true,
-        "signExtensions": true,
-        "simd": true,
-        "sourcePhaseImports": false,
-        "streamingCompilation": true,
-        "tailCall": true,
-        "threads": true,
-        "typeReflection": false,
-        "typedFunctionReferences": true,
-        "wideArithmetic": false,
-        "JSPI.Suspending": true,
-        "navigator.gpu": true,
-        "gpu.adapter": false
-       },
-       "success": true
-      },
-      {
-       "label": "D:features",
-       "coldMs": 414,
-       "wallMs": 1285,
-       "peakRssMB": 501,
-       "cpuSec": 0.61,
-       "loadMs": 68,
-       "featuresPassed": 44,
-       "featuresTotal": 45,
-       "features": {
-        "fetch": true,
-        "ReadableStream": true,
-        "TransformStream": true,
-        "CompressionStream": true,
-        "WebAssembly": true,
-        "WebAssembly.instantiateStreaming": true,
-        "wasm.run": true,
-        "structuredClone": true,
-        "crypto.subtle": true,
-        "crypto.randomUUID": true,
-        "Worker": true,
-        "SharedArrayBuffer": true,
-        "WebSocket": true,
-        "IntersectionObserver": true,
-        "ResizeObserver": true,
-        "MutationObserver": true,
-        "customElements": true,
-        "shadowDOM": true,
-        "indexedDB": true,
-        "localStorage": true,
-        "canvas2d": true,
-        "webgl": false,
-        "navigator.serviceWorker": true,
-        "Intl.Segmenter": true,
-        "es2022.at": true,
-        "es2023.toSorted": true,
-        "es2024.groupBy": true,
-        "es2024.withResolvers": true,
-        "es2025.Set.union": true,
-        "es2025.Iterator.helpers": true,
-        "es2025.RegExp.escape": true,
-        "es2025.Promise.try": true,
-        "es2025.Float16Array": true,
-        "es2026.Temporal": true,
-        "es2026.Array.fromAsync": true,
-        "css.grid": true,
-        "css.subgrid": true,
-        "css.has": true,
-        "css.container": true,
-        "css.nesting": true,
-        "css.oklch": true,
-        "css.anchor": true,
-        "viewTransition": true,
-        "layout.grid.computed": true,
-        "layout.flex.computed": true
-       },
-       "wasm": {
-        "bigInt": true,
-        "bulkMemory": true,
-        "exceptions": true,
-        "exceptionsFinal": true,
-        "extendedConst": true,
-        "gc": true,
-        "jsStringBuiltins": true,
-        "jspi": true,
-        "memory64": true,
-        "multiMemory": true,
-        "multiValue": true,
-        "mutableGlobals": true,
-        "referenceTypes": true,
-        "relaxedSimd": true,
-        "saturatedFloatToInt": true,
-        "signExtensions": true,
-        "simd": true,
-        "sourcePhaseImports": false,
-        "streamingCompilation": true,
-        "tailCall": true,
-        "threads": true,
-        "typeReflection": false,
-        "typedFunctionReferences": true,
-        "wideArithmetic": false,
-        "JSPI.Suspending": true,
-        "navigator.gpu": true,
-        "gpu.adapter": false
-       },
-       "success": true
-      },
-      {
-       "label": "D:features",
-       "coldMs": 415,
-       "wallMs": 1317,
-       "peakRssMB": 498.8,
-       "cpuSec": 0.61,
-       "loadMs": 77,
-       "featuresPassed": 44,
-       "featuresTotal": 45,
-       "features": {
-        "fetch": true,
-        "ReadableStream": true,
-        "TransformStream": true,
-        "CompressionStream": true,
-        "WebAssembly": true,
-        "WebAssembly.instantiateStreaming": true,
-        "wasm.run": true,
-        "structuredClone": true,
-        "crypto.subtle": true,
-        "crypto.randomUUID": true,
-        "Worker": true,
-        "SharedArrayBuffer": true,
-        "WebSocket": true,
-        "IntersectionObserver": true,
-        "ResizeObserver": true,
-        "MutationObserver": true,
-        "customElements": true,
-        "shadowDOM": true,
-        "indexedDB": true,
-        "localStorage": true,
-        "canvas2d": true,
-        "webgl": false,
-        "navigator.serviceWorker": true,
-        "Intl.Segmenter": true,
-        "es2022.at": true,
-        "es2023.toSorted": true,
-        "es2024.groupBy": true,
-        "es2024.withResolvers": true,
-        "es2025.Set.union": true,
-        "es2025.Iterator.helpers": true,
-        "es2025.RegExp.escape": true,
-        "es2025.Promise.try": true,
-        "es2025.Float16Array": true,
-        "es2026.Temporal": true,
-        "es2026.Array.fromAsync": true,
-        "css.grid": true,
-        "css.subgrid": true,
-        "css.has": true,
-        "css.container": true,
-        "css.nesting": true,
-        "css.oklch": true,
-        "css.anchor": true,
-        "viewTransition": true,
-        "layout.grid.computed": true,
-        "layout.flex.computed": true
-       },
-       "wasm": {
-        "bigInt": true,
-        "bulkMemory": true,
-        "exceptions": true,
-        "exceptionsFinal": true,
-        "extendedConst": true,
-        "gc": true,
-        "jsStringBuiltins": true,
-        "jspi": true,
-        "memory64": true,
-        "multiMemory": true,
-        "multiValue": true,
-        "mutableGlobals": true,
-        "referenceTypes": true,
-        "relaxedSimd": true,
-        "saturatedFloatToInt": true,
-        "signExtensions": true,
-        "simd": true,
-        "sourcePhaseImports": false,
-        "streamingCompilation": true,
-        "tailCall": true,
-        "threads": true,
-        "typeReflection": false,
-        "typedFunctionReferences": true,
-        "wideArithmetic": false,
-        "JSPI.Suspending": true,
-        "navigator.gpu": true,
-        "gpu.adapter": false
-       },
-       "success": true
-      }
-     ],
-     "median": {
-      "loadMs": 72,
-      "idleMs": null,
-      "coldMs": 415,
-      "peakRssMB": 498.9,
-      "cpuSec": 0.61,
-      "dclMs": null,
-      "ttfbMs": null,
-      "lcp": null,
-      "fcp": null,
-      "cls": null,
-      "hydrationMs": null,
-      "serverActionMs": null,
-      "clientNavMs": null
-     },
-     "successRuns": 3
-    }
-   }
-  }
- },
- "nextStartup": {
-  "node": 9,
-  "bun": 28
- },
- "finishedAt": "2026-11-12T12:36:54.637Z"
+  "nextStartup": {
+    "node": 9,
+    "bun": 28
+  },
+  "finishedAt": "2026-11-12T12:36:54.637Z"
 }

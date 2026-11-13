@@ -9,6 +9,7 @@ This progressive-disclosure umbrella skill routes to **122** official skills in 
 Use the unified `ai-os` MCP tool `skills_search` (or `agy collections inspect pro-max-fullstack`) to load any sub-skill on demand without bloating idle context.
 
 ## Unlocked Unified MCP Domains
+
 - `design_figma`
 - `n2b_rea`
 - `github_forge`
@@ -16,6 +17,7 @@ Use the unified `ai-os` MCP tool `skills_search` (or `agy collections inspect pr
 - `ai_triad`
 
 ## Indexed Official Sub-Skills (45 of 122 shown)
+
 - **`add-function-examples`**: Guide for adding new AI function examples, for testing specific features against the actual provider APIs. (`third_party/labs/vercel/ai/skills/add-function-examples/SKILL.md`)
 - **`add-harness-package`**: Guide for adding new AI SDK harness packages. Use when creating a new @ai-sdk/harness-<name> package that adapts a coding-agent ru (`third_party/labs/vercel/ai/skills/add-harness-package/SKILL.md`)
 - **`add-provider-package`**: Guide for adding first-party AI provider packages to the AI SDK. Use when creating a provider package under packages/ to integrate (`third_party/labs/vercel/ai/skills/add-provider-package/SKILL.md`)

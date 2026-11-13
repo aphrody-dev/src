@@ -1,0 +1,6 @@
+Material Symbols Rounded: <name>.svg (fill 1, 48 px, product tiles) and 24/<name>.svg, 24/<name>-fill.svg
+(weight 400, grade 0, 24 px, outline and fill: sprite and per-icon SVGs of `ay brand build`).
+Copyright Google LLC. Licensed under the Apache License, Version 2.0
+(https://www.apache.org/licenses/LICENSE-2.0).
+Source: https://github.com/google/material-design-icons/tree/10ecc14790612ca8fd164e3f4ffe9c16fc50d5b7/symbols/web
+Files are unmodified; refetch with `bun assets/brand/fetch.ts`.

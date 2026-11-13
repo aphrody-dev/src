@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Search engines can only show pages in their search results if those pages don't
 explicitly block indexing by search engine crawlers. Some HTTP headers and meta
 tags tell crawlers that a page shouldn't be indexed.
@@ -18,12 +19,12 @@ Only block indexing for content that you don't want to appear in search results.
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt) flags pages
 that search engines can't index:
 
-Lighthouse only checks for headers or elements that block *all* search engine
+Lighthouse only checks for headers or elements that block _all_ search engine
 crawlers. For example, the `<meta>` element below prevents all search engine
 crawlers (also known as robots) from accessing your page:
 
 ```html
-<meta name="robots" content="noindex"/>
+<meta name="robots" content="noindex" />
 ```
 
 This HTTP response header also blocks all crawlers:
@@ -35,7 +36,7 @@ X-Robots-Tag: noindex
 You might also have `<meta>` elements that block specific crawlers, such as:
 
 ```html
-<meta name="Googlebot" content="noindex"/>
+<meta name="Googlebot" content="noindex" />
 ```
 
 Lighthouse doesn't fail the audit for crawler-specific directives like this, but they can
@@ -65,13 +66,13 @@ X-Robots-Tag: noindex
 - Remove the following meta tag if it's present in the head of the page:
 
 ```html
-<meta name="robots" content="noindex">
+<meta name="robots" content="noindex" />
 ```
 
 - Avoid meta tags that block specific crawlers if these tags are present in the head of the page. For example:
 
 ```html
-<meta name="Googlebot" content="noindex">
+<meta name="Googlebot" content="noindex" />
 ```
 
 ## Add additional control (optional)

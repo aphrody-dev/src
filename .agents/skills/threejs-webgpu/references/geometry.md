@@ -19,11 +19,19 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 5);
 
 // A geometry is the shape; many meshes can share one geometry instance
-const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
+const mesh = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshNormalMaterial(),
+);
 scene.add(mesh);
 
 renderer.setAnimationLoop(animate);
@@ -76,7 +84,10 @@ new THREE.PolyhedronGeometry(vertices, indices, 1, 0);
 ```javascript
 // Lathe - a Vector2 profile rotated around the Y axis: points, segments, phiStart, phiLength
 const profile = [
-  new THREE.Vector2(0, 0), new THREE.Vector2(0.5, 0), new THREE.Vector2(0.5, 1), new THREE.Vector2(0, 1),
+  new THREE.Vector2(0, 0),
+  new THREE.Vector2(0.5, 0),
+  new THREE.Vector2(0.5, 1),
+  new THREE.Vector2(0, 1),
 ];
 new THREE.LatheGeometry(profile, 32);
 
@@ -87,13 +98,19 @@ shape.lineTo(1, 0);
 shape.lineTo(1, 1);
 shape.lineTo(0, 1);
 new THREE.ExtrudeGeometry(shape, {
-  steps: 1, depth: 1, bevelEnabled: true,
-  bevelThickness: 0.1, bevelSize: 0.1, bevelSegments: 3,
+  steps: 1,
+  depth: 1,
+  bevelEnabled: true,
+  bevelThickness: 0.1,
+  bevelSize: 0.1,
+  bevelSegments: 3,
 });
 
 // Tube - a circular sweep along a curve: path, tubularSegments, radius, radialSegments, closed
 const curve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0),
+  new THREE.Vector3(-1, 0, 0),
+  new THREE.Vector3(0, 1, 0),
+  new THREE.Vector3(1, 0, 0),
 ]);
 new THREE.TubeGeometry(curve, 64, 0.2, 8, false);
 ```
@@ -105,7 +122,9 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 // A .typeface.json font, from examples/fonts in the three.js repository
-const font = await new FontLoader().loadAsync("fonts/helvetiker_regular.typeface.json");
+const font = await new FontLoader().loadAsync(
+  "fonts/helvetiker_regular.typeface.json",
+);
 const geometry = new TextGeometry("Hello", {
   font: font,
   size: 1, // text size in world units
@@ -147,7 +166,9 @@ geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
 const colors = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0]);
 geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
-scene.add(new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: true })));
+scene.add(
+  new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: true })),
+);
 ```
 
 ### Attribute Types
@@ -156,11 +177,17 @@ scene.add(new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: t
 const count = 4;
 const geometry = new THREE.BufferGeometry();
 // Float32 for positions, normals, UVs and floating-point colors
-geometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+geometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(new Float32Array(count * 3), 3),
+);
 // Uint16 indices address vertices 0 to 65534 (65535 is the primitive-restart value); setIndex([...]) with a plain array picks Uint16 or Uint32 itself
 geometry.setIndex(new THREE.BufferAttribute(new Uint16Array(count), 1));
 // Uint8 colors need normalized = true (third argument) so bytes reach the shader as 0.0-1.0
-geometry.setAttribute("color", new THREE.BufferAttribute(new Uint8Array(count * 3), 3, true));
+geometry.setAttribute(
+  "color",
+  new THREE.BufferAttribute(new Uint8Array(count * 3), 3, true),
+);
 ```
 
 ### Updating a BufferGeometry
@@ -182,13 +209,38 @@ geometry.computeBoundingSphere();
 // One buffer holding position (3 floats) and uv (2 floats) per vertex
 const interleavedBuffer = new THREE.InterleavedBuffer(
   new Float32Array([
-    -1, -1, 0, 0, 0, 1, -1, 0, 1, 0, 1, 1, 0, 1, 1, -1, 1, 0, 0, 1, // four vertices: xyz + uv
+    -1,
+    -1,
+    0,
+    0,
+    0,
+    1,
+    -1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    -1,
+    1,
+    0,
+    0,
+    1, // four vertices: xyz + uv
   ]),
   5, // stride: floats per vertex
 );
 const geometry = new THREE.BufferGeometry();
-geometry.setAttribute("position", new THREE.InterleavedBufferAttribute(interleavedBuffer, 3, 0));
-geometry.setAttribute("uv", new THREE.InterleavedBufferAttribute(interleavedBuffer, 2, 3));
+geometry.setAttribute(
+  "position",
+  new THREE.InterleavedBufferAttribute(interleavedBuffer, 3, 0),
+);
+geometry.setAttribute(
+  "uv",
+  new THREE.InterleavedBufferAttribute(interleavedBuffer, 2, 3),
+);
 geometry.setIndex([0, 1, 2, 0, 2, 3]); // two triangles over the four vertices
 // BufferGeometryUtils.interleaveAttributes([position, normal, uv]) packs existing attributes this way
 ```
@@ -199,10 +251,16 @@ geometry.setIndex([0, 1, 2, 0, 2, 3]); // two triangles over the four vertices
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 // Edges where the two faces' normals differ by at least thresholdAngle (degrees; 15 here), plus open boundary edges
 const edges = new THREE.EdgesGeometry(boxGeometry, 15);
-const edgeLines = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+const edgeLines = new THREE.LineSegments(
+  edges,
+  new THREE.LineBasicMaterial({ color: 0xffffff }),
+);
 // Every triangle edge, diagonals included; an edge shared by two triangles is drawn once
 const wireframe = new THREE.WireframeGeometry(boxGeometry);
-const wireLines = new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({ color: 0xffffff }));
+const wireLines = new THREE.LineSegments(
+  wireframe,
+  new THREE.LineBasicMaterial({ color: 0xffffff }),
+);
 scene.add(edgeLines, wireLines);
 ```
 
@@ -210,7 +268,9 @@ scene.add(edgeLines, wireLines);
 
 ```javascript
 const count = 1000;
-const positions = new Float32Array(count * 3).map(() => (Math.random() - 0.5) * 10);
+const positions = new Float32Array(count * 3).map(
+  () => (Math.random() - 0.5) * 10,
+);
 const geometry = new THREE.BufferGeometry();
 geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 // sizeAttenuation (default true) shrinks points with depth under a perspective camera: a point spans size * (canvas CSS height / 2) / depth CSS pixels
@@ -225,7 +285,9 @@ Under WebGPURenderer the WebGPU backend draws points at one pixel whatever the m
 
 ```javascript
 const linePoints = [
-  new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0),
+  new THREE.Vector3(-1, 0, 0),
+  new THREE.Vector3(0, 1, 0),
+  new THREE.Vector3(1, 0, 0),
 ];
 const geometry = new THREE.BufferGeometry().setFromPoints(linePoints);
 const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
@@ -236,7 +298,12 @@ const loop = new THREE.LineLoop(geometry, material);
 scene.add(line, loop);
 
 // LineSegments draws independent pairs: vertex 0-1, 2-3, ...
-const segmentsGeometry = new THREE.BufferGeometry().setFromPoints([linePoints[0], linePoints[1], linePoints[1], linePoints[2]]);
+const segmentsGeometry = new THREE.BufferGeometry().setFromPoints([
+  linePoints[0],
+  linePoints[1],
+  linePoints[1],
+  linePoints[2],
+]);
 const segments = new THREE.LineSegments(segmentsGeometry, material);
 scene.add(segments);
 ```
@@ -254,7 +321,11 @@ const count = 1000;
 const instancedMesh = new THREE.InstancedMesh(geometry, material, count);
 const dummy = new THREE.Object3D();
 for (let i = 0; i < count; i++) {
-  dummy.position.set((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20);
+  dummy.position.set(
+    (Math.random() - 0.5) * 20,
+    (Math.random() - 0.5) * 20,
+    (Math.random() - 0.5) * 20,
+  );
   dummy.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
   dummy.scale.setScalar(0.5 + Math.random());
   dummy.updateMatrix();
@@ -264,7 +335,10 @@ instancedMesh.instanceMatrix.needsUpdate = true; // needed after changes once th
 
 // setColorAt creates instanceColor on first use; flag it after the loop
 for (let i = 0; i < count; i++) {
-  instancedMesh.setColorAt(i, new THREE.Color(Math.random(), Math.random(), Math.random()));
+  instancedMesh.setColorAt(
+    i,
+    new THREE.Color(Math.random(), Math.random(), Math.random()),
+  );
 }
 instancedMesh.instanceColor.needsUpdate = true;
 
@@ -318,15 +392,28 @@ const material = new THREE.MeshNormalMaterial();
 const maxInstanceCount = 1000;
 const maxVertexCount = 20000;
 const maxIndexCount = 20000;
-const batchedMesh = new THREE.BatchedMesh(maxInstanceCount, maxVertexCount, maxIndexCount, material);
+const batchedMesh = new THREE.BatchedMesh(
+  maxInstanceCount,
+  maxVertexCount,
+  maxIndexCount,
+  material,
+);
 const boxGeometryId = batchedMesh.addGeometry(new THREE.BoxGeometry(1, 1, 1));
-const sphereGeometryId = batchedMesh.addGeometry(new THREE.SphereGeometry(0.5, 16, 16));
+const sphereGeometryId = batchedMesh.addGeometry(
+  new THREE.SphereGeometry(0.5, 16, 16),
+);
 
 // A geometry renders only through its instances; added geometries need matching attributes and index state
 const boxInstanceId = batchedMesh.addInstance(boxGeometryId);
-batchedMesh.setMatrixAt(boxInstanceId, new THREE.Matrix4().setPosition(-2, 0, 0));
+batchedMesh.setMatrixAt(
+  boxInstanceId,
+  new THREE.Matrix4().setPosition(-2, 0, 0),
+);
 const sphereInstanceId = batchedMesh.addInstance(sphereGeometryId);
-batchedMesh.setMatrixAt(sphereInstanceId, new THREE.Matrix4().setPosition(2, 0, 0));
+batchedMesh.setMatrixAt(
+  sphereInstanceId,
+  new THREE.Matrix4().setPosition(2, 0, 0),
+);
 
 scene.add(batchedMesh);
 ```
@@ -388,7 +475,9 @@ for (let i = 0; i < morphPositions.length; i += 3) {
   morphPositions[i] *= 2; // stretch X
   morphPositions[i + 1] *= 0.5; // squash Y
 }
-geometry.morphAttributes.position = [new THREE.BufferAttribute(morphPositions, 3)];
+geometry.morphAttributes.position = [
+  new THREE.BufferAttribute(morphPositions, 3),
+];
 
 // Build the mesh after assigning morphAttributes so it picks up the targets
 const mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
@@ -425,7 +514,12 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111111); // the WebGPU canvas is transparent by default
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 5);
 renderer.setAnimationLoop(animate);
 
@@ -441,9 +535,13 @@ import * as THREE from "three/webgpu";
 import { instancedBufferAttribute } from "three/tsl";
 
 const count = 1000;
-const positions = new Float32Array(count * 3).map(() => (Math.random() - 0.5) * 10);
+const positions = new Float32Array(count * 3).map(
+  () => (Math.random() - 0.5) * 10,
+);
 const material = new THREE.PointsNodeMaterial({
-  positionNode: instancedBufferAttribute(new THREE.InstancedBufferAttribute(positions, 3)),
+  positionNode: instancedBufferAttribute(
+    new THREE.InstancedBufferAttribute(positions, 3),
+  ),
   size: 0.5, // depth-scaled like PointsMaterial; CSS pixels with sizeAttenuation: false; sizeNode for a node
 });
 const points = new THREE.Sprite(material);
@@ -459,13 +557,29 @@ import * as THREE from "three/webgpu";
 import { instancedBufferAttribute, positionLocal } from "three/tsl";
 
 const count = 1000;
-const jitter = new THREE.InstancedBufferAttribute(new Float32Array(count * 3).map(() => Math.random() - 0.5), 3);
+const jitter = new THREE.InstancedBufferAttribute(
+  new Float32Array(count * 3).map(() => Math.random() - 0.5),
+  3,
+);
 const material = new THREE.MeshBasicNodeMaterial();
-material.positionNode = positionLocal.add(instancedBufferAttribute(jitter).mul(0.5)); // per-instance data, no GLSL
-const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), material, count);
+material.positionNode = positionLocal.add(
+  instancedBufferAttribute(jitter).mul(0.5),
+); // per-instance data, no GLSL
+const mesh = new THREE.InstancedMesh(
+  new THREE.BoxGeometry(0.2, 0.2, 0.2),
+  material,
+  count,
+);
 const matrix = new THREE.Matrix4();
 for (let i = 0; i < count; i++) {
-  mesh.setMatrixAt(i, matrix.setPosition(Math.random() * 8 - 4, Math.random() * 8 - 4, Math.random() * 8 - 4));
+  mesh.setMatrixAt(
+    i,
+    matrix.setPosition(
+      Math.random() * 8 - 4,
+      Math.random() * 8 - 4,
+      Math.random() * 8 - 4,
+    ),
+  );
 }
 scene.add(mesh);
 ```

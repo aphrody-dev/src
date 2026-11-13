@@ -11,11 +11,34 @@
  *    VAULT_REPUSH_HOURS (6) to repair drift.
  */
 
-import { mkdir, open as fopen, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  open as fopen,
+  readdir,
+  readFile,
+  rename,
+  rm,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import { join } from "node:path";
 import { ageEncrypt, ageKeygen, ageRecipientOf } from "./age.ts";
-import { b3, b3Files, keyedFingerprint, masterKey, RESERVED } from "./crypto.ts";
-import { forgetHost, type Host, loadHosts, loadPolicy, loadRegistry, scopeOf, setRecipient } from "./hosts.ts";
+import {
+  b3,
+  b3Files,
+  keyedFingerprint,
+  masterKey,
+  RESERVED,
+} from "./crypto.ts";
+import {
+  forgetHost,
+  type Host,
+  loadHosts,
+  loadPolicy,
+  loadRegistry,
+  scopeOf,
+  setRecipient,
+} from "./hosts.ts";
 import { infraDir, vaultRoot, WIN } from "./paths.ts";
 import { assertName, getSecretBytes, listSecrets, setSecret } from "./store.ts";
 
@@ -36,18 +59,33 @@ async function readJson<T>(f: string, d: T): Promise<T> {
 
 /** Runs `cmd` on the host: mesh route first, then each fallback when ssh cannot connect (255). A
  *  stream stdin can only be consumed once: it is buffered when fallbacks exist. */
-export async function ssh(host: Host, cmd: string, stdin?: Uint8Array | ReadableStream, timeoutMs = 120_000) {
+export async function ssh(
+  host: Host,
+  cmd: string,
+  stdin?: Uint8Array | ReadableStream,
+  timeoutMs = 120_000,
+) {
   const routes = [host.ssh, ...host.fallback];
-  const input = stdin instanceof ReadableStream && routes.length > 1 ? await new Response(stdin).bytes() : stdin;
+  const input =
+    stdin instanceof ReadableStream && routes.length > 1
+      ? await new Response(stdin).bytes()
+      : stdin;
   let last = { code: 255, out: "", err: "no route" };
   for (const route of routes) {
-    const p = Bun.spawn(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=20", ...route, cmd], {
-      stdin: (input ?? "ignore") as never,
-      stdout: "pipe",
-      stderr: "pipe",
-      timeout: timeoutMs,
-    });
-    const [out, err, code] = await Promise.all([new Response(p.stdout).text(), new Response(p.stderr).text(), p.exited]);
+    const p = Bun.spawn(
+      ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=20", ...route, cmd],
+      {
+        stdin: (input ?? "ignore") as never,
+        stdout: "pipe",
+        stderr: "pipe",
+        timeout: timeoutMs,
+      },
+    );
+    const [out, err, code] = await Promise.all([
+      new Response(p.stdout).text(),
+      new Response(p.stderr).text(),
+      p.exited,
+    ]);
     last = { code, out: out.trim(), err: err.trim() };
     if (code !== 255) return last;
   }
@@ -60,15 +98,21 @@ async function withLock<T>(fn: () => Promise<T>): Promise<T> {
   await mkdir(stateDir(), { recursive: true, mode: 0o700 });
   const f = join(stateDir(), "sync.lock");
   try {
-    if (Date.now() - (await stat(f)).mtimeMs > 15 * 60_000) await rm(f, { force: true });
+    if (Date.now() - (await stat(f)).mtimeMs > 15 * 60_000)
+      await rm(f, { force: true });
   } catch {}
   let h = await fopen(f, "wx").catch(() => undefined);
   if (!h) {
     // A lock whose process is gone (task killed at its time limit) is taken over at once.
     const pid = Number(await readFile(f, "utf8").catch(() => "0"));
     let alive = false;
-    try { alive = pid > 0 && process.kill(pid, 0); } catch {}
-    if (!alive) { await rm(f, { force: true }); h = await fopen(f, "wx").catch(() => undefined); }
+    try {
+      alive = pid > 0 && process.kill(pid, 0);
+    } catch {}
+    if (!alive) {
+      await rm(f, { force: true });
+      h = await fopen(f, "wx").catch(() => undefined);
+    }
   }
   if (!h) throw new Error("vault sync: another sync is running");
   try {
@@ -83,7 +127,10 @@ async function withLock<T>(fn: () => Promise<T>): Promise<T> {
 // --- PC identity ----------------------------------------------------------------------------------
 
 /** Master key + PC age identity (both in the local layer); writes the PC recipient in hosts.toml. */
-export async function initPc(): Promise<{ recipient: string; created: boolean }> {
+export async function initPc(): Promise<{
+  recipient: string;
+  created: boolean;
+}> {
   await masterKey(true);
   let id = await getSecretBytes(PC_IDENTITY);
   let created = false;
@@ -111,8 +158,15 @@ export interface SealResult {
 }
 
 export async function sealOutbox(only?: string[]): Promise<SealResult[]> {
-  const [hosts, policy, registry, names] = await Promise.all([loadHosts(), loadPolicy(), loadRegistry(), listSecrets()]);
-  const remote = hosts.filter((h) => h.name !== "pc" && h.recipient && (!only || only.includes(h.name)));
+  const [hosts, policy, registry, names] = await Promise.all([
+    loadHosts(),
+    loadPolicy(),
+    loadRegistry(),
+    listSecrets(),
+  ]);
+  const remote = hosts.filter(
+    (h) => h.name !== "pc" && h.recipient && (!only || only.includes(h.name)),
+  );
   const results: SealResult[] = [];
   for (const host of remote) {
     const dir = outbox(host.name);
@@ -120,23 +174,41 @@ export async function sealOutbox(only?: string[]): Promise<SealResult[]> {
     const idxFile = join(stateDir(), `${host.name}.index.json`);
     const index = await readJson<Record<string, string>>(idxFile, {});
     const want = names.filter(
-      (n) => !RESERVED.has(n) && (registry[n]?.kind ?? "token") === "token" &&
-        scopeOf(n, registry[n]?.kind ?? "token", policy, registry).includes(host.name),
+      (n) =>
+        !RESERVED.has(n) &&
+        (registry[n]?.kind ?? "token") === "token" &&
+        scopeOf(n, registry[n]?.kind ?? "token", policy, registry).includes(
+          host.name,
+        ),
     );
-    const r: SealResult = { host: host.name, sealed: 0, unchanged: 0, removed: 0, total: want.length };
+    const r: SealResult = {
+      host: host.name,
+      sealed: 0,
+      unchanged: 0,
+      removed: 0,
+      total: want.length,
+    };
     for (const n of want) {
       const v = await getSecretBytes(n);
       if (!v) continue;
-      const fp = await keyedFingerprint(`sync|${host.name}|${host.recipient}|${n}`, v);
+      const fp = await keyedFingerprint(
+        `sync|${host.name}|${host.recipient}|${n}`,
+        v,
+      );
       const file = join(dir, `${n}.age`);
-      const exists = await stat(file).then(() => true, () => false);
+      const exists = await stat(file).then(
+        () => true,
+        () => false,
+      );
       if (index[n] === fp && exists) {
         r.unchanged++;
         v.fill(0);
         continue;
       }
       const tmp = join(dir, `.${n}.tmp`);
-      await writeFile(tmp, await ageEncrypt(v, [host.recipient]), { mode: 0o600 });
+      await writeFile(tmp, await ageEncrypt(v, [host.recipient]), {
+        mode: 0o600,
+      });
       await rename(tmp, file);
       v.fill(0);
       index[n] = fp;
@@ -144,7 +216,8 @@ export async function sealOutbox(only?: string[]): Promise<SealResult[]> {
     }
     for (const f of await readdir(dir)) {
       const n = f.replace(/\.age$/, "");
-      if (f === "MANIFEST" || (f.endsWith(".age") && want.includes(n))) continue;
+      if (f === "MANIFEST" || (f.endsWith(".age") && want.includes(n)))
+        continue;
       await rm(join(dir, f), { force: true });
       delete index[n];
       r.removed++;
@@ -161,12 +234,20 @@ export async function sealOutbox(only?: string[]): Promise<SealResult[]> {
 
 /** MANIFEST: BLAKE3 per envelope, a monotonic `# seq` (hosts refuse replays) and `# allow-empty` when
  *  the scope of the host is empty on purpose. `text` (without seq) is what idempotence compares. */
-async function manifest(host: string): Promise<{ text: string; files: string[] }> {
+async function manifest(
+  host: string,
+): Promise<{ text: string; files: string[] }> {
   const dir = outbox(host);
-  const files = (await readdir(dir)).filter((f) => f.endsWith(".age") && !f.startsWith(".")).sort();
+  const files = (await readdir(dir))
+    .filter((f) => f.endsWith(".age") && !f.startsWith("."))
+    .sort();
   const sums = await b3Files(files.map((f) => join(dir, f)));
-  const text = files.map((f) => `${sums.get(join(dir, f))}  ${f}`).join("\n") + (files.length ? "\n" : "# allow-empty\n");
-  await writeFile(join(dir, "MANIFEST"), `# seq ${Date.now()}\n${text}`, { mode: 0o600 });
+  const text =
+    files.map((f) => `${sums.get(join(dir, f))}  ${f}`).join("\n") +
+    (files.length ? "\n" : "# allow-empty\n");
+  await writeFile(join(dir, "MANIFEST"), `# seq ${Date.now()}\n${text}`, {
+    mode: 0o600,
+  });
   return { text, files };
 }
 
@@ -179,7 +260,9 @@ export interface PushResult {
   error?: string;
 }
 
-const TAR = WIN ? join(process.env.SystemRoot ?? "C:\\Windows", "System32", "tar.exe") : "tar";
+const TAR = WIN
+  ? join(process.env.SystemRoot ?? "C:\\Windows", "System32", "tar.exe")
+  : "tar";
 
 export async function push(host: Host, force = false): Promise<PushResult> {
   const m = await manifest(host.name);
@@ -187,15 +270,31 @@ export async function push(host: Host, force = false): Promise<PushResult> {
   const stFile = join(stateDir(), `${host.name}.pushed.json`);
   const last = await readJson<{ manifest?: string; at?: number }>(stFile, {});
   const repush = Number(process.env.VAULT_REPUSH_HOURS ?? 6) * 3600_000;
-  const base = { host: host.name, envelopes: m.files.length, manifest: mh.slice(0, 16) };
-  if (!force && last.manifest === mh && Date.now() - (last.at ?? 0) < repush) return { ...base, pushed: false };
-  const tar = Bun.spawn([TAR, "-cf", "-", "-C", outbox(host.name), "MANIFEST", ...m.files], { stdout: "pipe", stderr: "pipe" });
+  const base = {
+    host: host.name,
+    envelopes: m.files.length,
+    manifest: mh.slice(0, 16),
+  };
+  if (!force && last.manifest === mh && Date.now() - (last.at ?? 0) < repush)
+    return { ...base, pushed: false };
+  const tar = Bun.spawn(
+    [TAR, "-cf", "-", "-C", outbox(host.name), "MANIFEST", ...m.files],
+    { stdout: "pipe", stderr: "pipe" },
+  );
   const r = await ssh(host, `${REMOTE} receive`, tar.stdout);
   const tarCode = await tar.exited;
   if (tarCode !== 0 || r.code !== 0) {
-    return { ...base, pushed: false, error: (r.err || `tar ${tarCode}`).split("\n").slice(-1)[0] };
+    return {
+      ...base,
+      pushed: false,
+      error: (r.err || `tar ${tarCode}`).split("\n").slice(-1)[0],
+    };
   }
-  await writeFile(stFile, JSON.stringify({ manifest: mh, at: Date.now(), remote: r.out }), { mode: 0o600 });
+  await writeFile(
+    stFile,
+    JSON.stringify({ manifest: mh, at: Date.now(), remote: r.out }),
+    { mode: 0o600 },
+  );
   return { ...base, pushed: true, remote: r.out };
 }
 
@@ -203,9 +302,25 @@ export async function push(host: Host, force = false): Promise<PushResult> {
 export async function sync(opts: { force?: boolean; only?: string[] } = {}) {
   return withLock(async () => {
     const sealed = await sealOutbox(opts.only);
-    const hosts = (await loadHosts()).filter((h) => sealed.some((s) => s.host === h.name));
-    const pushed = await Promise.all(hosts.map((h) => push(h, opts.force).catch((e) => ({ host: h.name, pushed: false, envelopes: 0, manifest: "", error: (e as Error).message }))));
-    await writeFile(join(stateDir(), "last-sync.json"), JSON.stringify({ at: new Date().toISOString(), sealed, pushed }), { mode: 0o600 });
+    const hosts = (await loadHosts()).filter((h) =>
+      sealed.some((s) => s.host === h.name),
+    );
+    const pushed = await Promise.all(
+      hosts.map((h) =>
+        push(h, opts.force).catch((e) => ({
+          host: h.name,
+          pushed: false,
+          envelopes: 0,
+          manifest: "",
+          error: (e as Error).message,
+        })),
+      ),
+    );
+    await writeFile(
+      join(stateDir(), "last-sync.json"),
+      JSON.stringify({ at: new Date().toISOString(), sealed, pushed }),
+      { mode: 0o600 },
+    );
     return { sealed, pushed };
   });
 }
@@ -223,17 +338,38 @@ export async function installHost(name: string) {
   const h = await hostByName(name);
   if (h.os !== "linux") throw new Error(`${name}: not a Linux host`);
   const script = await readFile(join(infraDir(), "vault-host.sh"));
-  const a = await ssh(h, `mkdir -p ~/.local/libexec/aphrody && cat > ${REMOTE}.new && chmod 700 ${REMOTE}.new && mv -f ${REMOTE}.new ${REMOTE}`, script);
+  const a = await ssh(
+    h,
+    `mkdir -p ~/.local/libexec/aphrody && cat > ${REMOTE}.new && chmod 700 ${REMOTE}.new && mv -f ${REMOTE}.new ${REMOTE}`,
+    script,
+  );
   if (a.code !== 0) throw new Error(`${name}: install script: ${a.err}`);
-  for (const u of ["aphrody-vault-apply.service", "aphrody-vault-apply.timer"]) {
+  for (const u of [
+    "aphrody-vault-apply.service",
+    "aphrody-vault-apply.timer",
+  ]) {
     const unit = await readFile(join(infraDir(), "systemd", u));
-    const b = await ssh(h, `d=$([ "$(id -u)" = 0 ] && echo /etc/systemd/system || echo ~/.config/systemd/user); mkdir -p $d && cat > $d/${u}`, unit);
+    const b = await ssh(
+      h,
+      `d=$([ "$(id -u)" = 0 ] && echo /etc/systemd/system || echo ~/.config/systemd/user); mkdir -p $d && cat > $d/${u}`,
+      unit,
+    );
     if (b.code !== 0) throw new Error(`${name}: install ${u}: ${b.err}`);
   }
-  const tools = await ssh(h, "for t in age age-keygen b3sum systemd-creds tar flock; do command -v $t >/dev/null || echo $t; done");
-  if (tools.out) throw new Error(`${name}: missing tools: ${tools.out.split("\n").join(", ")}`);
-  const c = await ssh(h, `if [ "$(id -u)" = 0 ]; then S=; else S=--user; export XDG_RUNTIME_DIR=${"$"}{XDG_RUNTIME_DIR:-/run/user/$(id -u)}; loginctl show-user "$(id -un)" -p Linger | grep -q yes || echo "linger=no" >&2; fi; systemctl $S daemon-reload && systemctl $S enable --now aphrody-vault-apply.timer && systemctl $S is-active aphrody-vault-apply.timer`);
-  if (c.code !== 0 || c.out !== "active") throw new Error(`${name}: apply timer not active: ${c.err || c.out}`);
+  const tools = await ssh(
+    h,
+    "for t in age age-keygen b3sum systemd-creds tar flock; do command -v $t >/dev/null || echo $t; done",
+  );
+  if (tools.out)
+    throw new Error(
+      `${name}: missing tools: ${tools.out.split("\n").join(", ")}`,
+    );
+  const c = await ssh(
+    h,
+    `if [ "$(id -u)" = 0 ]; then S=; else S=--user; export XDG_RUNTIME_DIR=${"$"}{XDG_RUNTIME_DIR:-/run/user/$(id -u)}; loginctl show-user "$(id -un)" -p Linger | grep -q yes || echo "linger=no" >&2; fi; systemctl $S daemon-reload && systemctl $S enable --now aphrody-vault-apply.timer && systemctl $S is-active aphrody-vault-apply.timer`,
+  );
+  if (c.code !== 0 || c.out !== "active")
+    throw new Error(`${name}: apply timer not active: ${c.err || c.out}`);
   return { host: name, timer: c.out, linger: !/linger=no/.test(c.err) };
 }
 
@@ -243,7 +379,8 @@ export async function initHost(name: string, force = false) {
   const h = await hostByName(name);
   const r = await ssh(h, `${REMOTE} keygen${force ? " --force" : ""}`);
   const recipient = r.out.split("\n").pop() ?? "";
-  if (r.code !== 0 || !/^age1[0-9a-z]{58}$/.test(recipient)) throw new Error(`${name}: keygen failed: ${r.err}`);
+  if (r.code !== 0 || !/^age1[0-9a-z]{58}$/.test(recipient))
+    throw new Error(`${name}: keygen failed: ${r.err}`);
   await setRecipient(name, recipient);
   return { ...inst, recipient };
 }
@@ -265,16 +402,27 @@ export async function removeHost(name: string, force = false) {
   // Under the sync lock: a scheduled seal/push cannot recreate the outbox between purge and config.
   return withLock(async () => {
     const r = await ssh(h, `${REMOTE} decommission`);
-    if (r.code !== 0 && !force) throw new Error(`${name}: decommission failed (${r.err || r.code}); --force to remove locally only`);
+    if (r.code !== 0 && !force)
+      throw new Error(
+        `${name}: decommission failed (${r.err || r.code}); --force to remove locally only`,
+      );
     const cfg = await forgetHost(name);
     await rm(outbox(name), { recursive: true, force: true });
-    for (const f of [`${name}.index.json`, `${name}.pushed.json`]) await rm(join(stateDir(), f), { force: true });
-    return { host: name, remote: r.code === 0 ? r.out : `unreachable: ${r.err}`, ...cfg };
+    for (const f of [`${name}.index.json`, `${name}.pushed.json`])
+      await rm(join(stateDir(), f), { force: true });
+    return {
+      host: name,
+      remote: r.code === 0 ? r.out : `unreachable: ${r.err}`,
+      ...cfg,
+    };
   });
 }
 
 /** BLAKE3 of the credential on a host (decrypted there, piped into b3sum: never displayed). */
-export async function remoteFingerprint(name: string, secret: string): Promise<string> {
+export async function remoteFingerprint(
+  name: string,
+  secret: string,
+): Promise<string> {
   assertName(secret); // validated before it reaches the remote shell
   const r = await ssh(await hostByName(name), `${REMOTE} fp ${secret}`);
   if (r.code !== 0) throw new Error(`${name}: fp failed: ${r.err}`);
@@ -286,7 +434,9 @@ export async function remoteStatus(name: string): Promise<string> {
   return r.code === 0 ? r.out : `error: ${r.err}`;
 }
 
-export async function localFingerprint(secret: string): Promise<string | undefined> {
+export async function localFingerprint(
+  secret: string,
+): Promise<string | undefined> {
   const v = await getSecretBytes(secret);
   if (!v) return undefined;
   try {
@@ -301,7 +451,12 @@ export async function localFingerprint(secret: string): Promise<string | undefin
 export const TASK = "aphrody-vault-sync";
 export const PUSH_TASK = "aphrody-vault-push";
 
-const xmlEsc = (s: string) => s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+const xmlEsc = (s: string) =>
+  s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 
 /**
  * Two tasks:
@@ -311,10 +466,19 @@ const xmlEsc = (s: string) => s.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
  *   outbox/ (`sync --push-only`), so a host rebuilt or wiped while the session is closed is refilled.
  * Hidden (`conhost --headless` for the interactive one), one instance at a time, 10 minute limit.
  */
-export function taskXml(user: string, minutes: number, cli: string, kind: "sync" | "push" = "sync"): string {
+export function taskXml(
+  user: string,
+  minutes: number,
+  cli: string,
+  kind: "sync" | "push" = "sync",
+): string {
   const push = kind === "push";
-  const cmd = push ? process.execPath : join(process.env.SystemRoot ?? "C:\\Windows", "System32", "conhost.exe");
-  const args = push ? `run "${cli}" sync --push-only` : `--headless "${process.execPath}" run "${cli}" sync`;
+  const cmd = push
+    ? process.execPath
+    : join(process.env.SystemRoot ?? "C:\\Windows", "System32", "conhost.exe");
+  const args = push
+    ? `run "${cli}" sync --push-only`
+    : `--headless "${process.execPath}" run "${cli}" sync`;
   const u = xmlEsc(user);
   const triggers = push
     ? ""
@@ -347,38 +511,83 @@ async function registerTask(name: string, xml: string) {
   await mkdir(stateDir(), { recursive: true, mode: 0o700 });
   const file = join(stateDir(), `${name}.xml`);
   // schtasks /XML expects UTF-16 LE with BOM.
-  await writeFile(file, Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(xml, "utf16le")]));
-  const p = Bun.spawn(["schtasks", "/Create", "/TN", name, "/XML", file, "/F"], { stdout: "pipe", stderr: "pipe" });
-  const [out, err, code] = await Promise.all([new Response(p.stdout).text(), new Response(p.stderr).text(), p.exited]);
+  await writeFile(
+    file,
+    Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(xml, "utf16le")]),
+  );
+  const p = Bun.spawn(
+    ["schtasks", "/Create", "/TN", name, "/XML", file, "/F"],
+    { stdout: "pipe", stderr: "pipe" },
+  );
+  const [out, err, code] = await Promise.all([
+    new Response(p.stdout).text(),
+    new Response(p.stderr).text(),
+    p.exited,
+  ]);
   await rm(file, { force: true });
   return { task: name, code, out: (out + err).trim() };
 }
 
 export async function installTask(minutes = 5) {
-  if (!WIN) throw new Error("installTask: Windows only (hosts use aphrody-vault-apply.timer)");
+  if (!WIN)
+    throw new Error(
+      "installTask: Windows only (hosts use aphrody-vault-apply.timer)",
+    );
   const domain = process.env.USERDOMAIN;
   const name = process.env.USERNAME;
-  if (!domain || !name) throw new Error("installTask: USERDOMAIN/USERNAME absent");
+  if (!domain || !name)
+    throw new Error("installTask: USERDOMAIN/USERNAME absent");
   const user = `${domain}\\${name}`;
   const cli = join(import.meta.dir, "cli.ts");
   const sync = await registerTask(TASK, taskXml(user, minutes, cli, "sync"));
   if (sync.code !== 0) throw new Error(`schtasks ${TASK}: ${sync.out}`);
   // The S4U pusher refills hosts while the session is closed: every 15 min is enough.
-  const push = await registerTask(PUSH_TASK, taskXml(user, Math.max(minutes, 15), cli, "push"));
+  const push = await registerTask(
+    PUSH_TASK,
+    taskXml(user, Math.max(minutes, 15), cli, "push"),
+  );
   if (push.code !== 0) throw new Error(`schtasks ${PUSH_TASK}: ${push.out}`);
   return [sync, push];
 }
 
 /** Pushes what outbox/ already holds: no seal, no DPAPI, no secret in clear (S4U task). */
-export async function pushOnly(opts: { force?: boolean; only?: string[] } = {}) {
+export async function pushOnly(
+  opts: { force?: boolean; only?: string[] } = {},
+) {
   return withLock(async () => {
-    const hosts = (await loadHosts()).filter((h) => h.name !== "pc" && h.recipient && (!opts.only || opts.only.includes(h.name)));
-    // Only an outbox a seal has completed (MANIFEST written) is pushed.
-    const present = await Promise.all(hosts.map((h) => stat(join(outbox(h.name), "MANIFEST")).then(() => true, () => false)));
-    const pushed = await Promise.all(
-      hosts.filter((_, i) => present[i]).map((h) => push(h, opts.force).catch((e) => ({ host: h.name, pushed: false, envelopes: 0, manifest: "", error: (e as Error).message }))),
+    const hosts = (await loadHosts()).filter(
+      (h) =>
+        h.name !== "pc" &&
+        h.recipient &&
+        (!opts.only || opts.only.includes(h.name)),
     );
-    await writeFile(join(stateDir(), "last-push.json"), JSON.stringify({ at: new Date().toISOString(), pushed }), { mode: 0o600 });
+    // Only an outbox a seal has completed (MANIFEST written) is pushed.
+    const present = await Promise.all(
+      hosts.map((h) =>
+        stat(join(outbox(h.name), "MANIFEST")).then(
+          () => true,
+          () => false,
+        ),
+      ),
+    );
+    const pushed = await Promise.all(
+      hosts
+        .filter((_, i) => present[i])
+        .map((h) =>
+          push(h, opts.force).catch((e) => ({
+            host: h.name,
+            pushed: false,
+            envelopes: 0,
+            manifest: "",
+            error: (e as Error).message,
+          })),
+        ),
+    );
+    await writeFile(
+      join(stateDir(), "last-push.json"),
+      JSON.stringify({ at: new Date().toISOString(), pushed }),
+      { mode: 0o600 },
+    );
     return { pushed };
   });
 }

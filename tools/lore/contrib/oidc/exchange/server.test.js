@@ -22,18 +22,36 @@ const OTHER_REPOSITORY = "fedcba9876543210fedcba9876543210";
 const RESOURCE = `https://localhost/partitions/${REPOSITORY}`;
 
 const base64url = (data) => Buffer.from(data).toString("base64url");
-const decode = (token) => JSON.parse(Buffer.from(token.split(".")[1], "base64url"));
+const decode = (token) =>
+  JSON.parse(Buffer.from(token.split(".")[1], "base64url"));
 const now = () => Math.floor(Date.now() / 1000);
 
 function rsaKey(kid) {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
-  return { kid, privateKey, jwk: { ...publicKey.export({ format: "jwk" }), kid, alg: "RS256", use: "sig" } };
+  const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
+    modulusLength: 2048,
+  });
+  return {
+    kid,
+    privateKey,
+    jwk: {
+      ...publicKey.export({ format: "jwk" }),
+      kid,
+      alg: "RS256",
+      use: "sig",
+    },
+  };
 }
 
 function sign(key, claims, header = {}) {
-  const head = base64url(JSON.stringify({ alg: "RS256", kid: key.kid, ...header }));
+  const head = base64url(
+    JSON.stringify({ alg: "RS256", kid: key.kid, ...header }),
+  );
   const payload = base64url(JSON.stringify(claims));
-  const signature = crypto.sign("sha256", Buffer.from(`${head}.${payload}`), key.privateKey);
+  const signature = crypto.sign(
+    "sha256",
+    Buffer.from(`${head}.${payload}`),
+    key.privateKey,
+  );
   return `${head}.${payload}.${base64url(signature)}`;
 }
 
@@ -53,7 +71,12 @@ async function freePort() {
  * request reaches it on.
  */
 async function startProvider(t) {
-  const provider = { keys: [rsaKey("k1")], up: true, delayMs: 0, jwksRequests: 0 };
+  const provider = {
+    keys: [rsaKey("k1")],
+    up: true,
+    delayMs: 0,
+    jwksRequests: 0,
+  };
   const server = http.createServer(async (request, response) => {
     await new Promise((resolve) => setTimeout(resolve, provider.delayMs));
     if (!provider.up) {
@@ -62,10 +85,17 @@ async function startProvider(t) {
     }
     response.setHeader("content-type", "application/json");
     if (request.url === "/.well-known/openid-configuration") {
-      response.end(JSON.stringify({ issuer: provider.url, jwks_uri: `${provider.url}/jwks` }));
+      response.end(
+        JSON.stringify({
+          issuer: provider.url,
+          jwks_uri: `${provider.url}/jwks`,
+        }),
+      );
     } else if (request.url === "/jwks") {
       provider.jwksRequests += 1;
-      response.end(JSON.stringify({ keys: provider.keys.map((key) => key.jwk) }));
+      response.end(
+        JSON.stringify({ keys: provider.keys.map((key) => key.jwk) }),
+      );
     } else {
       response.writeHead(404).end();
     }
@@ -80,7 +110,13 @@ async function startProvider(t) {
 
 /** A login token from `provider` for `claims`, signed with its first key. */
 function loginToken(provider, claims = {}, key = provider.keys[0]) {
-  return sign(key, { iss: provider.issuer, sub: "alice", aud: AUDIENCE, exp: now() + 300, ...claims });
+  return sign(key, {
+    iss: provider.issuer,
+    sub: "alice",
+    aud: AUDIENCE,
+    exp: now() + 300,
+    ...claims,
+  });
 }
 
 /** Starts server.js with `env` and the grants `grants`, and stops it after the test. */
@@ -105,8 +141,13 @@ async function startService(t, provider, grants, env = {}) {
     fs.rmSync(dir, { recursive: true, force: true });
   });
   await new Promise((resolve, reject) => {
-    child.stdout.on("data", (data) => String(data).includes("Token exchange service") && resolve());
-    child.once("exit", (code) => reject(new Error(`server.js exited with ${code}`)));
+    child.stdout.on(
+      "data",
+      (data) => String(data).includes("Token exchange service") && resolve(),
+    );
+    child.once("exit", (code) =>
+      reject(new Error(`server.js exited with ${code}`)),
+    );
   });
   return { url: `http://127.0.0.1:${port}`, grantsFile };
 }
@@ -118,7 +159,10 @@ async function exchange(service, subjectToken, resource = RESOURCE) {
     subject_token: subjectToken,
     resource,
   });
-  const response = await fetch(`${service.url}/token`, { method: "POST", body: form });
+  const response = await fetch(`${service.url}/token`, {
+    method: "POST",
+    body: form,
+  });
   return { status: response.status, body: await response.json() };
 }
 
@@ -139,20 +183,31 @@ test("a valid login token gets a repository-scoped token signed with the service
   const jwks = await (await fetch(`${service.url}/jwks`)).json();
   const key = crypto.createPublicKey({ key: jwks.keys[0], format: "jwk" });
   const [h, p, s] = body.access_token.split(".");
-  assert.ok(crypto.verify("sha256", Buffer.from(`${h}.${p}`), key, Buffer.from(s, "base64url")));
+  assert.ok(
+    crypto.verify(
+      "sha256",
+      Buffer.from(`${h}.${p}`),
+      key,
+      Buffer.from(s, "base64url"),
+    ),
+  );
 
   const claims = decode(body.access_token);
   assert.equal(claims.iss, "http://localhost:8190");
   assert.deepEqual(claims.aud, [AUDIENCE]);
   assert.equal(claims.sub, "alice");
   assert.equal(claims.identity, "alice");
-  assert.deepEqual(claims.resources, [{ resource_id: `urc-${REPOSITORY}`, permission: ["write"] }]);
+  assert.deepEqual(claims.resources, [
+    { resource_id: `urc-${REPOSITORY}`, permission: ["write"] },
+  ]);
 });
 
 test("the discovery document names the service's own endpoints", async (t) => {
   const provider = await startProvider(t);
   const service = await startService(t, provider, aliceWrites);
-  const document = await (await fetch(`${service.url}/.well-known/openid-configuration`)).json();
+  const document = await (
+    await fetch(`${service.url}/.well-known/openid-configuration`)
+  ).json();
   assert.equal(document.issuer, "http://localhost:8190");
   assert.equal(document.token_endpoint, "http://localhost:8190/token");
   assert.equal(document.jwks_uri, "http://localhost:8190/jwks");
@@ -170,10 +225,15 @@ test("a login token the service can't verify is refused with invalid_grant", asy
     "four parts": `${valid}.x`,
     "header not JSON": `${base64url("{")}.${p}.c2ln`,
     "claims null": `${h}.${base64url("null")}.c2ln`,
-    "another algorithm": loginToken(provider).replace(h, base64url(JSON.stringify({ alg: "HS256", kid: "k1" }))),
+    "another algorithm": loginToken(provider).replace(
+      h,
+      base64url(JSON.stringify({ alg: "HS256", kid: "k1" })),
+    ),
     "bad signature": loginToken(provider, {}, stranger),
     "another issuer": loginToken(provider, { iss: "http://127.0.0.1:1" }),
-    "another audience": loginToken(provider, { aud: "https://elsewhere.google.com" }),
+    "another audience": loginToken(provider, {
+      aud: "https://elsewhere.google.com",
+    }),
     expired: loginToken(provider, { exp: now() - 10 }),
     "not yet valid": loginToken(provider, { nbf: now() + 300 }),
     "no sub": loginToken(provider, { sub: "" }),
@@ -189,14 +249,32 @@ test("a login token the service can't verify is refused with invalid_grant", asy
 
 test("a repository the caller has no grant on is refused with invalid_target", async (t) => {
   const provider = await startProvider(t);
-  const service = await startService(t, provider, { alice: { [OTHER_REPOSITORY]: ["write"] } });
+  const service = await startService(t, provider, {
+    alice: { [OTHER_REPOSITORY]: ["write"] },
+  });
   const token = loginToken(provider);
 
   assert.equal((await exchange(service, token)).body.error, "invalid_target");
-  for (const resource of [`https://localhost/partitions/${REPOSITORY.toUpperCase()}`, "https://localhost/other/x"]) {
-    assert.equal((await exchange(service, token, resource)).body.error, "invalid_target", resource);
+  for (const resource of [
+    `https://localhost/partitions/${REPOSITORY.toUpperCase()}`,
+    "https://localhost/other/x",
+  ]) {
+    assert.equal(
+      (await exchange(service, token, resource)).body.error,
+      "invalid_target",
+      resource,
+    );
   }
-  assert.equal((await exchange(service, token, `https://localhost/partitions/${OTHER_REPOSITORY}`)).status, 200);
+  assert.equal(
+    (
+      await exchange(
+        service,
+        token,
+        `https://localhost/partitions/${OTHER_REPOSITORY}`,
+      )
+    ).status,
+    200,
+  );
 });
 
 test("grants on * and on the repository merge, and unknown actions are ignored", async (t) => {
@@ -206,9 +284,14 @@ test("grants on * and on the repository merge, and unknown actions are ignored",
     bob: { "*": "write" },
   });
 
-  const alice = decode((await exchange(service, loginToken(provider))).body.access_token);
+  const alice = decode(
+    (await exchange(service, loginToken(provider))).body.access_token,
+  );
   assert.deepEqual(alice.resources[0].permission.sort(), ["admin", "write"]);
-  assert.equal((await exchange(service, loginToken(provider, { sub: "bob" }))).body.error, "invalid_target");
+  assert.equal(
+    (await exchange(service, loginToken(provider, { sub: "bob" }))).body.error,
+    "invalid_target",
+  );
 });
 
 test("grants name the caller by the identity the Lore server reads", async (t) => {
@@ -219,19 +302,35 @@ test("grants name the caller by the identity the Lore server reads", async (t) =
     "by-sub": { "*": ["write"] },
   });
   const cases = [
-    [{ sub: "by-sub", identity: "by-identity", "https://lore.org/claims/identity": "by-alias" }, "by-identity"],
-    [{ sub: "by-sub", "https://lore.org/claims/identity": "by-alias" }, "by-alias"],
+    [
+      {
+        sub: "by-sub",
+        identity: "by-identity",
+        "https://lore.org/claims/identity": "by-alias",
+      },
+      "by-identity",
+    ],
+    [
+      { sub: "by-sub", "https://lore.org/claims/identity": "by-alias" },
+      "by-alias",
+    ],
     [{ sub: "by-sub" }, "by-sub"],
     [{ sub: "by-sub", email: "by-identity" }, "by-sub"],
   ];
   for (const [claims, identity] of cases) {
-    const { status, body } = await exchange(service, loginToken(provider, claims));
+    const { status, body } = await exchange(
+      service,
+      loginToken(provider, claims),
+    );
     assert.equal(status, 200, identity);
     assert.equal(decode(body.access_token).identity, identity);
   }
 
   // An email address users may be able to change never names the caller to the grants.
-  const byEmail = await exchange(service, loginToken(provider, { sub: "nobody", email: "by-sub" }));
+  const byEmail = await exchange(
+    service,
+    loginToken(provider, { sub: "nobody", email: "by-sub" }),
+  );
   assert.equal(byEmail.body.error, "invalid_target");
 });
 
@@ -239,9 +338,15 @@ test("the issued token expires within five minutes, never past the login token, 
   const provider = await startProvider(t);
   const service = await startService(t, provider, aliceWrites);
 
-  const long = decode((await exchange(service, loginToken(provider, { exp: now() + 3600 }))).body.access_token);
+  const long = decode(
+    (await exchange(service, loginToken(provider, { exp: now() + 3600 }))).body
+      .access_token,
+  );
   assert.ok(long.exp - long.iat <= 300);
-  const short = await exchange(service, loginToken(provider, { exp: now() + 100.5 }));
+  const short = await exchange(
+    service,
+    loginToken(provider, { exp: now() + 100.5 }),
+  );
   const claims = decode(short.body.access_token);
   assert.ok(Number.isInteger(claims.exp));
   assert.ok(claims.exp <= now() + 101);
@@ -253,8 +358,13 @@ test("requests that arrive during the first key fetch wait for it", async (t) =>
   provider.delayMs = 300;
   const service = await startService(t, provider, aliceWrites);
 
-  const results = await Promise.all(Array.from({ length: 5 }, () => exchange(service, loginToken(provider))));
-  assert.deepEqual(results.map((result) => result.status), [200, 200, 200, 200, 200]);
+  const results = await Promise.all(
+    Array.from({ length: 5 }, () => exchange(service, loginToken(provider))),
+  );
+  assert.deepEqual(
+    results.map((result) => result.status),
+    [200, 200, 200, 200, 200],
+  );
   assert.equal(provider.jwksRequests, 1);
 });
 
@@ -286,14 +396,19 @@ test("a key the provider adds is fetched when a token names it", async (t) => {
   provider.keys.push(rotated);
   // Unknown key ids are refetched at most every ten seconds, which the first exchange started.
   await new Promise((resolve) => setTimeout(resolve, 10_500));
-  assert.equal((await exchange(service, loginToken(provider, {}, rotated))).status, 200);
+  assert.equal(
+    (await exchange(service, loginToken(provider, {}, rotated))).status,
+    200,
+  );
 });
 
 test("an issuer is compared through PROVIDER_URL, and the token's iss still has to match", async (t) => {
   const provider = await startProvider(t);
   const port = new URL(provider.url).port;
   provider.issuer = `http://localhost:${port}`;
-  const service = await startService(t, provider, aliceWrites, { PROVIDER_URL: provider.url });
+  const service = await startService(t, provider, aliceWrites, {
+    PROVIDER_URL: provider.url,
+  });
 
   assert.equal((await exchange(service, loginToken(provider))).status, 200);
   const other = loginToken(provider, { iss: provider.url });
@@ -311,9 +426,17 @@ test("a discovery document naming another issuer is refused without PROVIDER_URL
 
 test("the service doesn't start without its required settings", async () => {
   for (const missing of ["LOGIN_ISSUERS", "GRANTS_FILE"]) {
-    const env = { PATH: process.env.PATH, PORT: String(await freePort()), LOGIN_ISSUERS: "http://127.0.0.1:1", GRANTS_FILE: "/dev/null" };
+    const env = {
+      PATH: process.env.PATH,
+      PORT: String(await freePort()),
+      LOGIN_ISSUERS: "http://127.0.0.1:1",
+      GRANTS_FILE: "/dev/null",
+    };
     delete env[missing];
-    const child = spawn(process.execPath, [path.join(__dirname, "server.js")], { env, stdio: "ignore" });
+    const child = spawn(process.execPath, [path.join(__dirname, "server.js")], {
+      env,
+      stdio: "ignore",
+    });
     const code = await new Promise((resolve) => child.once("exit", resolve));
     assert.equal(code, 1, missing);
   }

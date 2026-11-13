@@ -3,6 +3,7 @@
 Moteur : relais ai-os `gemini_review` (antigravity), sur la carte d'ownership et le code de `crates/ay/src/low/steam.rs`, `packages/gaming/src/{native,steamcmd,proton}.ts`, `packages/upstream/src/mirror.ts`, `infra/gaming/downloads.toml`. Note : 12/20.
 
 Retenu et corrigé dans le même commit :
+
 - filtre des fichiers d'identifiants : nom testé tel quel puis sur le chemin résolu (`canonicalize`, liens et `..`), points et espaces finaux ignorés, flux ADS (`:`) refusés, en Rust et en TypeScript ;
 - détection du format : VDF binaire reconnu à l'octet de type de tête (0x00 à 0x02), plus à la présence d'un NUL ;
 - lecture bornée à 2 Gio ;

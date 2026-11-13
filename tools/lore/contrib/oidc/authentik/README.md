@@ -29,10 +29,10 @@ The login page accepts the user name or the email address, and asks for no conse
 
 ## The blueprint
 
-| User | Groups |
-| --- | --- |
-| `alice` (`alice@google.com`) | `admin` |
-| `bob` (`bob@google.com`) | `obliterate` |
+| User                            | Groups           |
+| ------------------------------- | ---------------- |
+| `alice` (`alice@google.com`)    | `admin`          |
+| `bob` (`bob@google.com`)        | `obliterate`     |
 | `ak-lore-ci-client_credentials` | `push-protected` |
 
 - Groups are named after the Lore actions: `admin`, `obliterate` and `push-protected`.

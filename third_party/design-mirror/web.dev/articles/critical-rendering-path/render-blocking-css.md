@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)
 
 Published: March 31, 2014
@@ -24,10 +25,11 @@ In the [render tree construction](https://web.dev/articles/critical-rendering-pa
 - Media types and media queries allow us to mark some CSS resources as non-render blocking.
 - The browser downloads all CSS resources, regardless of blocking or non-blocking behavior.
 
- The New York Times mobile page with CSS  The New York Times mobile page without CSS (FOUC)
+The New York Times mobile page with CSS The New York Times mobile page without CSS (FOUC)
 
 The prior example, showing the New York Times website with and without CSS, demonstrates why rendering is blocked until CSS is available---without CSS the page is relatively unusable. The experience on the right is often referred to as a [Flash of Unstyled Content (FOUC)](https://en.wikipedia.org/wiki/Flash_of_unstyled_content). The browser blocks rendering until it has both the DOM and the CSSOM.
-> ***CSS is a render-blocking resource. Get it to the client as soon and as quickly as possible to optimize the time to first render.***
+
+> _**CSS is a render-blocking resource. Get it to the client as soon and as quickly as possible to optimize the time to first render.**_
 
 However, what if we have some CSS styles that are only used under certain conditions, for example, when the page is being printed or being projected onto a large monitor? It would be nice if we didn't have to block rendering on these resources.
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)
 
 When you set a personal, business or family budget, you are setting a limit to your spending and making sure you stay within it. [Performance budgets](https://web.dev/articles/performance-budgets-101.md.txt) work in the same way, but for metrics that affect website performance.
@@ -31,17 +32,17 @@ Under the Audits panel in Chrome DevTools, you'll find [Lighthouse](https://deve
 
 Let's take a highly specialized search engine, Doggos.com, as an example. Doggos.com aims to index all dog-related things on the internet, and its most important pages are the home and results pages. Here are the FCP and TTI numbers measured for the site on desktop and mobile.
 
-| Desktop | FCP | TTI |
-|---|---|---|
-| Homepage | 1,680 ms | 5,550 ms |
-| Results page | 2,060 ms | 6,690 ms |
-[Desktop analysis of Doggos.com]
+| Desktop                          | FCP      | TTI      |
+| -------------------------------- | -------- | -------- |
+| Homepage                         | 1,680 ms | 5,550 ms |
+| Results page                     | 2,060 ms | 6,690 ms |
+| [Desktop analysis of Doggos.com] |
 
-| Mobile | FCP | TTI |
-|---|---|---|
-| Homepage | 1,800 ms | 6,150 ms |
-| Results page | 1,100 ms | 7,870 ms |
-[Mobile analysis of Doggos.com]
+| Mobile                          | FCP      | TTI      |
+| ------------------------------- | -------- | -------- |
+| Homepage                        | 1,800 ms | 6,150 ms |
+| Results page                    | 1,100 ms | 7,870 ms |
+| [Mobile analysis of Doggos.com] |
 
 ## Competitive analysis
 
@@ -61,33 +62,33 @@ Our niche search engine in this example has a handful of competitors and we'll f
 
 Create a chart with FCP and TTI times for all the similar websites and highlight the fastest in the bunch. A chart like this one gives you a clearer picture of how your website is doing compared to the competition.
 
-| Site/Homepage | FCP | TTI |
-|---|---|---|
-| goggles.com | **880 ms** | **3,150 ms** |
-| Doggos.com | 1,800 ms | 6,500 ms |
-| quackquackgo.com | 2,680 ms | 4,740 ms |
-| ding.xyz | 2,420 ms | 7,040 ms |
-[Competitive analysis of Doggos.com on 3G network]
+| Site/Homepage                                      | FCP        | TTI          |
+| -------------------------------------------------- | ---------- | ------------ |
+| goggles.com                                        | **880 ms** | **3,150 ms** |
+| Doggos.com                                         | 1,800 ms   | 6,500 ms     |
+| quackquackgo.com                                   | 2,680 ms   | 4,740 ms     |
+| ding.xyz                                           | 2,420 ms   | 7,040 ms     |
+| [Competitive analysis of Doggos.com on 3G network] |
 
- Doggos.com seems to be doing okay on the FCP metric but seriously lagging behind in TTI
+Doggos.com seems to be doing okay on the FCP metric but seriously lagging behind in TTI
 
 There's room for improvement and a good guideline for that is the [20% rule](https://www.smashingmagazine.com/2015/09/why-performance-matters-the-perception-of-time/#the-need-for-performance-optimization-the-20-rule). Research states that users recognize a difference in response times when it's greater than 20%. This means that if you want to be noticeably better than the best comparable site, you have to **be at least 20% faster**.
 
-| Measure | Current time | Budget (20% faster than competition) |
-|---|---|---|
-| FCP | 1,800 ms | 704 ms |
-| TTI | 6,500 ms | 2,520 ms |
-[Performance budget that would get Doggos.com ahead of the competition]
+| Measure                                                                 | Current time | Budget (20% faster than competition) |
+| ----------------------------------------------------------------------- | ------------ | ------------------------------------ |
+| FCP                                                                     | 1,800 ms     | 704 ms                               |
+| TTI                                                                     | 6,500 ms     | 2,520 ms                             |
+| [Performance budget that would get Doggos.com ahead of the competition] |
 
 If you are trying to optimize an existing site that goal may seem impossible to reach. This is not a sign for you to give up. Start with small steps and set a budget at 20% faster than your current speed. Keep optimizing from there.
 
 For Doggos.com, a revised budget could look like this.
 
-| Measure | Current time | Initial budget (20% faster than the current time) | Long-term goal (20% faster than competition) |
-|---|---|---|---|
-| FCP | 1,800 ms | 1,440 ms | 704 ms |
-| TTI | 6,500 ms | 5,200 ms | 2,520 ms |
-[Revised Doggos.com performance budget]
+| Measure                                 | Current time | Initial budget (20% faster than the current time) | Long-term goal (20% faster than competition) |
+| --------------------------------------- | ------------ | ------------------------------------------------- | -------------------------------------------- |
+| FCP                                     | 1,800 ms     | 1,440 ms                                          | 704 ms                                       |
+| TTI                                     | 6,500 ms     | 5,200 ms                                          | 2,520 ms                                     |
+| [Revised Doggos.com performance budget] |
 
 ## Combine different metrics
 
@@ -104,11 +105,11 @@ You can have a bigger budget for the desktop experience, but don't go wild. The 
 
 Here are a few examples based on TTI budgets:
 
-| Network | Device | JS | Images | CSS | HTML | Fonts | Total | Time to Interactive budget |
-|---|---|---|---|---|---|---|---|---|
-| Slow 3G | Moto G4 | 100 | 30 | 10 | 10 | 20 | \~170 KB | 5s |
-| Slow 4G | Moto G4 | 200 | 50 | 35 | 30 | 30 | \~345 KB | 3s |
-| WiFi | Desktop | 300 | 250 | 50 | 50 | 100 | \~750 KB | 2s |
+| Network | Device  | JS  | Images | CSS | HTML | Fonts | Total    | Time to Interactive budget |
+| ------- | ------- | --- | ------ | --- | ---- | ----- | -------- | -------------------------- |
+| Slow 3G | Moto G4 | 100 | 30     | 10  | 10   | 20    | \~170 KB | 5s                         |
+| Slow 4G | Moto G4 | 200 | 50     | 35  | 30   | 30    | \~345 KB | 3s                         |
+| WiFi    | Desktop | 300 | 250    | 50  | 50   | 100   | \~750 KB | 2s                         |
 
 > [!NOTE]
 > **Note:** The recommended sizes are for the critical-path resources.
@@ -130,7 +131,7 @@ When you try to build a great site, **set Lighthouse performance score budget to
 Ask yourself what level of interaction you expect on your site. If it's a news website, users' primary goal is to read content so you should focus on rendering quickly and keeping FCP low. Doggos.com visitors want to click on relevant links as soon as possible, so the top priority is low TTI.
 
 Find out exactly what part of your audience browses on desktop vs. on mobile devices and prioritize accordingly. One way to figure this out is to check what your audience is doing on competitors' websites, through the [Chrome User Experience report](https://developer.chrome.com/blog/chrome-ux-report-looker-studio-dashboard) dashboard.
- Device distribution data from Chrome User Experience report
+Device distribution data from Chrome User Experience report
 
 ## Next steps
 

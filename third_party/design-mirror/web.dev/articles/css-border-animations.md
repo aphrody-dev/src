@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Looking at several ways to animate a border in CSS
 
- Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
+Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
 
 ## Setting borders
 
@@ -46,16 +47,15 @@ border: var(--border-size) dotted lime;
  */
 background-image:
   linear-gradient(to right, rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.5)),
-
   conic-gradient(
     from 45deg,
     #d53e33 0deg 90deg,
     #fbb300 90deg 180deg,
     #377af5 180deg 270deg,
     #399953 270deg 360deg
-  )
-;
+  );
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/dymZzyZ?height=485&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen dymZzyZ by web-dot-dev on Codepen"></iframe>
 
 ### Sizing the backgrounds with `background-origin`
@@ -78,8 +78,10 @@ Don't
 ```css
 /* Manually add or offset the size of the border where needed */
 background-position: calc(var(--border-size) * -1) calc(var(--border-size) * -1);
-background-size: calc(var(--border-size) * 2 + 100%) calc(var(--border-size) * 2 + 100%);
+background-size: calc(var(--border-size) * 2 + 100%)
+  calc(var(--border-size) * 2 + 100%);
 ```
+
 Do
 
 ```css
@@ -104,10 +106,11 @@ Browser Support
 
 ```css
 background-clip:
-  padding-box, /* Clip white semi-transparent to the padding-box */
-  border-box /* Clip colored boxes to the border-box (default) */
-;
+  padding-box,
+  /* Clip white semi-transparent to the padding-box */ border-box
+    /* Clip colored boxes to the border-box (default) */;
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JjLOyoJ?height=785&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JjLOyoJ by web-dot-dev on Codepen"></iframe>
 
 Finally, make the border `transparent` to have the full effect.
@@ -115,6 +118,7 @@ Finally, make the border `transparent` to have the full effect.
 ```css
 border: 0.3rem dotted transparent;
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/mdxqMyj?height=485&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen mdxqMyj by web-dot-dev on Codepen"></iframe>
 
 ### Animation
@@ -180,16 +184,16 @@ It allows for more simplified code as you do not need to deal with overlapping b
 border: 0.5rem solid transparent;
 
 /* Paint an image in the border */
-border-image:
-  conic-gradient(
+border-image: conic-gradient(
     from var(--angle),
     #d53e33 0deg 90deg,
     #fbb300 90deg 180deg,
     #377af5 180deg 270deg,
     #399953 270deg 360deg
-  ) 1
-;
+  )
+  1;
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/oNqoeXo?height=485&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen oNqoeXo by web-dot-dev on Codepen"></iframe>
 
 However, you'll notice a few things no longer work with this approach:

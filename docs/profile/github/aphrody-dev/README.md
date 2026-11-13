@@ -9,13 +9,13 @@ projects they belong to.
 
 ### Upstream pull requests
 
-| Project | Pull request | State |
-| :-- | :-- | :-- |
-| oven-sh/bun | [#48787](https://github.com/oven-sh/bun/pull/48787) build: pass the .bind.ts schema list to the codegen scripts in a file | open |
-| oven-sh/bun | [#48786](https://github.com/oven-sh/bun/pull/48786) docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples | open |
-| oven-sh/bun | [#48784](https://github.com/oven-sh/bun/pull/48784) build: xwin 0.10.0, which reads the current Visual Studio manifest | open |
-| agentclientprotocol/agent-client-protocol | [#2804](https://github.com/agentclientprotocol/agent-client-protocol/pull/2804) docs(protocol): mark availableCommands as required in slash commands page | open |
-| a2aproject/A2A | [#2452](https://github.com/a2aproject/A2A/pull/2452) docs(spec): add required messageId to Message examples | open |
+| Project                                   | Pull request                                                                                                                                              | State |
+| :---------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| oven-sh/bun                               | [#48787](https://github.com/oven-sh/bun/pull/48787) build: pass the .bind.ts schema list to the codegen scripts in a file                                 | open  |
+| oven-sh/bun                               | [#48786](https://github.com/oven-sh/bun/pull/48786) docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples                              | open  |
+| oven-sh/bun                               | [#48784](https://github.com/oven-sh/bun/pull/48784) build: xwin 0.10.0, which reads the current Visual Studio manifest                                    | open  |
+| agentclientprotocol/agent-client-protocol | [#2804](https://github.com/agentclientprotocol/agent-client-protocol/pull/2804) docs(protocol): mark availableCommands as required in slash commands page | open  |
+| a2aproject/A2A                            | [#2452](https://github.com/a2aproject/A2A/pull/2452) docs(spec): add required messageId to Message examples                                               | open  |
 
 <sub>State as of 2026-11-13 (<code>docs/profile/stats.json</code>).</sub>
 

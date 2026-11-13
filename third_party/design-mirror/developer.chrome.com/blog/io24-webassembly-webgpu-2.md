@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 This document is a continuation of [WebAssembly and WebGPU enhancements for faster Web AI, part 1](https://developer.chrome.com/blog/io24-webassembly-webgpu-1.md.txt). We recommend you read this post or [watch the talk at IO 24 before continuing](https://www.youtube.com/watch?v=VYJZGa9m34w).
 
- Austin Eng [GitHub](https://github.com/austinEng)  Deepti Gandluri [GitHub](https://github.com/dtig)  François Beaufort [GitHub](https://github.com/beaufortfrancois)
+Austin Eng [GitHub](https://github.com/austinEng) Deepti Gandluri [GitHub](https://github.com/dtig) François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## WebGPU
 
@@ -43,7 +44,7 @@ This feature increases efficiency in a few ways:
 
 - **Increased parallelism**: Modern GPUs are able to fit more values simultaneously in the GPU's execution units, allowing it to perform a greater number of parallel computations. For example, a GPU that supports up to 5 trillion f32 floating-point operations per second might support 10 trillion f16 floating-point operations per second.
 
- With `shader-f16`, Hugging Face's [WebGPU benchmark for text embedding](https://huggingface.co/spaces/Xenova/webgpu-embedding-benchmark) benchmark runs the benchmark 3 times faster than f32 on Apple M1 Max laptop.
+With `shader-f16`, Hugging Face's [WebGPU benchmark for text embedding](https://huggingface.co/spaces/Xenova/webgpu-embedding-benchmark) benchmark runs the benchmark 3 times faster than f32 on Apple M1 Max laptop.
 
 [WebLLM](https://webllm.mlc.ai/) is a project which can run multiple large language models. It uses [Apache TVM](https://tvm.apache.org/), an open source machine learning compiler framework.
 
@@ -55,11 +56,11 @@ Applications must first confirm that the GPU adaptor supports f16, and if it's a
 // main.js
 
 const adapter = await navigator.gpu.requestAdapter();
-const supportsF16 = adapter.features.has('shader-f16');
+const supportsF16 = adapter.features.has("shader-f16");
 if (supportsF16) {
   // Use f16.
   const device = await adapter.requestDevice({
-    requiredFeatures: ['shader-f16'],
+    requiredFeatures: ["shader-f16"],
   });
   initApp(device);
 }
@@ -101,14 +102,14 @@ For larger matrices with more operations, packed integer dot products can help r
 For each of the outputs in the result vector, we perform two packed dot product operations using the WebGPU Shading Language built-in `dot4U8Packed`, and then add the results together. In total, for the entire matrix-vector multiplication, we don't perform any data conversion. We execute 8 packed dot products and 4 integer additions.
 
 We tested packed integer dot products with 8-bit data on a variety of consumer GPUs. Compared to 16-bit floating point, we can see that 8-bit is 1.6 to 2.8 times faster. When we additionally use packed integer dot products, the performance is even better. It's 1.7 to 2.9 times faster.
- Chart 1: Matrix vector speedup, comparing f16 to U8 and U8 with dot4U8Packed.
+Chart 1: Matrix vector speedup, comparing f16 to U8 and U8 with dot4U8Packed.
 
 Check for browser support with the `wgslLanguageFeatures` property. If the GPU doesn't natively support packed dot products, then the browser polyfills its own implementation.
 
 ```javascript
 // main.js
 
-if (navigator.gpu.wgslLanguageFeatures.has('packed_4x8_integer_dot_product')) {
+if (navigator.gpu.wgslLanguageFeatures.has("packed_4x8_integer_dot_product")) {
   // Use dot4U8Packed, dot4I8Packed builtin
   // functions in the shaders.
 }
@@ -169,10 +170,10 @@ We [surveyed support](https://github.com/gpuweb/gpuweb/issues/4195) in underlyin
 To evaluate the performance of subgroup operations, in a real application, we integrated experimental support for subgroups into MediaPipe and tested it with Chrome's prototype for subgroup operations.
 
 We used subgroups in GPU kernels of the prefill phase of the large language model, so I'm only reporting the speedup for the prefill phase. On an Intel GPU, we see that subgroups perform two-and-a-half times faster than baseline. However, these improvements aren't consistent across different GPUs.
- Chart 2. Subgroups make prefill run 2.5x faster on Intel Tiger Lake GT2 GPU, with experimental support in Chrome and Mediapipe.
+Chart 2. Subgroups make prefill run 2.5x faster on Intel Tiger Lake GT2 GPU, with experimental support in Chrome and Mediapipe.
 
 The next chart shows the results of applying subgroups to optimize a matrix multiply microbenchmark across multiple consumer GPUs. Matrix multiplication is one of the heavier operations in large language models. The data show that on many of the GPUs, subgroups increase the speed two, five, and even thirteen times the baseline. However, notice that on the first GPU, subgroups aren't much better at all.
- Chart 3. Applying subgroups for matrix multiplication may further increase performance.
+Chart 3. Applying subgroups for matrix multiplication may further increase performance.
 
 ### GPU optimization is difficult
 
@@ -186,7 +187,7 @@ Important: You should expect different performance characteristics on different 
 In the following chart, we've taken the same matrix multiply algorithm, but added another dimension to further demonstrate the impact of various optimization strategies, and the complexity and variance across different GPUs. We've introduced a new technique here, which we'll call "Swizzle." Swizzle optimizes the memory access patterns to be more optimal for the hardware.
 
 You can see that the memory swizzle has a significant impact; it's sometimes even more impactful than subgroups. On GPU 6, swizzle provides a 12x speedup, while subgroups provide a 13x speedup. Combined, they have an incredible 26x speedup. For other GPUs, sometimes swizzle and subgroups combined perform better than either one alone. And on other GPUs, exclusively using swizzle performs the best.
- Chart 4.
+Chart 4.
 
 Tuning and optimizing GPU algorithms to work well on every piece of hardware, can require a lot of expertise. But thankfully there is a tremendous amount of talented work going into higher level libraries frameworks, like [Mediapipe](https://developers.google.com/mediapipe), [Transformers.js](https://github.com/xenova/transformers.js/tree/v3), [Apache TVM](https://tvm.apache.org/), [ONNX Runtime Web](https://github.com/microsoft/onnxruntime/blob/main/js/web/docs/webgpu-operators.md), and more.
 

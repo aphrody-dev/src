@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sam Dutton [X](https://twitter.com/sw12) [GitHub](https://github.com/samdutton) [Mastodon](https://techhub.social/@samdutton) [Bluesky](https://bsky.app/profile/samdutton.bsky.social) [Homepage](https://samdutton.com)
 
 It's important to understand what using your app or site feels like when
@@ -121,8 +122,8 @@ more reliable methods to set network timeouts. This can be achieved using
 
 ```javascript
 workboxSW.router.registerRoute(
-  '/path/to/image',
-  workboxSW.strategies.networkFirst({networkTimeoutSeconds: 3}),
+  "/path/to/image",
+  workboxSW.strategies.networkFirst({ networkTimeoutSeconds: 3 }),
 );
 ```
 

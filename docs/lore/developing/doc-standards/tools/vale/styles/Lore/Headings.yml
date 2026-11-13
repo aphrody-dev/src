@@ -5,7 +5,7 @@ level: warning
 scope: heading
 match: $sentence
 indicators:
-  - ':'
+  - ":"
 exceptions:
   - ADR
   - anyhow

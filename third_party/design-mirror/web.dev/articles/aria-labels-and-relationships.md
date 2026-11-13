@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Using ARIA labels to create accessible element descriptions
 
- Alice Boxhall [X](https://twitter.com/sundress)  Dave Gash  Meggin Kearney
+Alice Boxhall [X](https://twitter.com/sundress) Dave Gash Meggin Kearney
 
 ## Labels
 
@@ -50,7 +51,7 @@ element. So, for example, if an element has both an `aria-labelledby` and an
 
 ## Relationships
 
-`aria-labelledby` is an example of a *relationship attribute* . A relationship
+`aria-labelledby` is an example of a _relationship attribute_ . A relationship
 attribute creates a semantic relationship between elements on the page
 regardless of their DOM relationship. In the case of `aria-labelledby`, that
 relationship is "this element is labelled by that element".

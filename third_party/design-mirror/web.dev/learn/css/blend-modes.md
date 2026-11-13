@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 024: Blend Modes](https://thecsspodcast.libsyn.com/024-blend-modes-1)
 
 [Duotone](https://en.wikipedia.org/wiki/Duotone) is a popular color treatment for photography
@@ -95,11 +96,12 @@ darker---most often producing a darker result.
   mix-blend-mode: multiply;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/vYgRdOy?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen vYgRdOy by web-dot-dev on Codepen"></iframe>
 
 ### Screen
 
-Using `screen` multiplies the *light* values---an inverse effect to `multiply`,
+Using `screen` multiplies the _light_ values---an inverse effect to `multiply`,
 and will most often produce a brighter result.
 
 ```css
@@ -107,6 +109,7 @@ and will most often produce a brighter result.
   mix-blend-mode: screen;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JjELpYo?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JjELpYo by web-dot-dev on Codepen"></iframe>
 
 ### Overlay
@@ -120,6 +123,7 @@ Mid-range colors, such as a 50% gray, are unaffected.
   mix-blend-mode: overlay;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/BaprYom?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen BaprYom by web-dot-dev on Codepen"></iframe>
 
 ### Darken
@@ -135,6 +139,7 @@ With `darken` and `lighten`, new color values are often created from this compar
   mix-blend-mode: darken;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/dyNmdGM?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen dyNmdGM by web-dot-dev on Codepen"></iframe>
 
 ### Lighten
@@ -146,6 +151,7 @@ Using `lighten` does the exact opposite of `darken`.
   mix-blend-mode: lighten;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/OJWvQNO?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen OJWvQNO by web-dot-dev on Codepen"></iframe>
 
 ### Color dodge
@@ -158,6 +164,7 @@ Pure black colors see no effect from this mode.
   mix-blend-mode: color-dodge;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/abpYqpz?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen abpYqpz by web-dot-dev on Codepen"></iframe>
 
 ### Color burn
@@ -170,6 +177,7 @@ but increases contrast, resulting in more saturated mid-tones and reduced highli
   mix-blend-mode: color-burn;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/gOgevmG?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen gOgevmG by web-dot-dev on Codepen"></iframe>
 
 ### Hard light
@@ -184,6 +192,7 @@ as if it were screened. If it is darker, it's multiplied.
   mix-blend-mode: hard-light;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/ZELxreN?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen ZELxreN by web-dot-dev on Codepen"></iframe>
 
 ### Soft light
@@ -196,6 +205,7 @@ It works in very much the same way with less contrast.
   mix-blend-mode: soft-light;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/OJWvQmQ?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen OJWvQmQ by web-dot-dev on Codepen"></iframe>
 
 ### Difference
@@ -211,6 +221,7 @@ Differences in the values will invert.
   mix-blend-mode: difference;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/mdRxXwM?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen mdRxXwM by web-dot-dev on Codepen"></iframe>
 
 ### Exclusion
@@ -224,6 +235,7 @@ it will return 50% gray, resulting in a softer output with less contrast.
   mix-blend-mode: exclusion;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/JjELpmb?height=450&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen JjELpmb by web-dot-dev on Codepen"></iframe>
 
 ## Non-separable blend modes
@@ -241,6 +253,7 @@ and applies it to the saturation and luminosity of the backdrop color.
   mix-blend-mode: hue;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/BaprYGO?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen BaprYGO by web-dot-dev on Codepen"></iframe>
 
 ### Saturation
@@ -254,6 +267,7 @@ to the hue and luminosity of the backdrop color.
   mix-blend-mode: saturation;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/QWdmQoP?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen QWdmQoP by web-dot-dev on Codepen"></iframe>
 
 ### Color
@@ -266,6 +280,7 @@ and the luminosity of the backdrop color.
   mix-blend-mode: color;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/jOyzZRo?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen jOyzZRo by web-dot-dev on Codepen"></iframe>
 
 ### Luminosity
@@ -278,6 +293,7 @@ It creates a color with the luminosity of the source color and the hue and satur
   mix-blend-mode: luminosity;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zYNWWOK?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zYNWWOK by web-dot-dev on Codepen"></iframe>
 
 ## The `isolation` property
@@ -298,7 +314,7 @@ which will prevent it from blending with a backdrop layer.
 As you learned in the [z-index module](https://web.dev/learn/css/z-index.md.txt), when you create a new stacking context,
 that layer becomes the base layer.
 This means that parent-level blend modes will no longer apply,
-but elements inside of an element with `isolation: isolate` set can *still* blend.
+but elements inside of an element with `isolation: isolate` set can _still_ blend.
 
 Note that this doesn't work with `background-blend-mode`
 because the background property is already isolated.

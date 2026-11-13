@@ -4,12 +4,12 @@ Date: 2026-11-13. Command: `ay upstream` (`packages/upstream`, run by bun). Conf
 
 ## 1. Chosen model, based on forks that last
 
-| Project | Mechanism found (source read on 2026-11-13) | What we keep |
-|---|---|---|
-| Electron | `patches/config.json` (patch folder -> repository), one `.patch` per commit, order in `.patches`; `git-import-patches` (`git am`) and `git-export-patches` (`format-patch --keep-subject --no-stat --no-signature --zero-commit --full-index`); each patch justifies its reason: temporary (link to the upstream review), build, or incompatible functional change (`electron/electron` `docs/development/patches.md`, `script/lib/git.py` as of 2026-10-15) | "series" model for Chromium; same export options (`ay upstream export`); file names by the same rule (`munge_subject_to_filename`) |
-| ungoogled-chromium | `patches/series` (quilt), `upstream-fixes/` folder for fixes meant for upstream, `devutils/validate_patches.py` against the real tree | check that patches apply on upstream at each pass, explicit separation of what goes upstream |
-| Brave | one `.patch` per modified Chromium file, `npm run update_patches`, `build/commands/lib/applyPatches.js` | rejected: one patch per file does not match a PR, and the unit here is the PR |
-| Yocto | trailer `Upstream-Status: Pending | Submitted [where] | Backport [where] | Denied | Inappropriate [reason]` (docs.yoctoproject.org, contributor guide, Patch Upstream Status) | status vocabulary, as is |
+| Project            | Mechanism found (source read on 2026-11-13)                                                                                                                                                                                                                                                                                                                                                                                                                  | What we keep                                                                                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Electron           | `patches/config.json` (patch folder -> repository), one `.patch` per commit, order in `.patches`; `git-import-patches` (`git am`) and `git-export-patches` (`format-patch --keep-subject --no-stat --no-signature --zero-commit --full-index`); each patch justifies its reason: temporary (link to the upstream review), build, or incompatible functional change (`electron/electron` `docs/development/patches.md`, `script/lib/git.py` as of 2026-10-15) | "series" model for Chromium; same export options (`ay upstream export`); file names by the same rule (`munge_subject_to_filename`) |
+| ungoogled-chromium | `patches/series` (quilt), `upstream-fixes/` folder for fixes meant for upstream, `devutils/validate_patches.py` against the real tree                                                                                                                                                                                                                                                                                                                        | check that patches apply on upstream at each pass, explicit separation of what goes upstream                                       |
+| Brave              | one `.patch` per modified Chromium file, `npm run update_patches`, `build/commands/lib/applyPatches.js`                                                                                                                                                                                                                                                                                                                                                      | rejected: one patch per file does not match a PR, and the unit here is the PR                                                      |
+| Yocto              | trailer `Upstream-Status: Pending                                                                                                                                                                                                                                                                                                                                                                                                                            | Submitted [where]                                                                                                                  | Backport [where] | Denied | Inappropriate [reason]` (docs.yoctoproject.org, contributor guide, Patch Upstream Status) | status vocabulary, as is |
 
 Two models, one per forge:
 
@@ -18,13 +18,13 @@ Two models, one per forge:
 
 ## 2. Statuses
 
-| Status (`Upstream-Status`) | Meaning | Automatic action |
-|---|---|---|
-| `Pending` | to be proposed | `ay upstream check` then `ay upstream pr` |
-| `Submitted [url]` + `Upstream-PR` | proposed (PR or CL) | state read live (gh api, Gerrit REST) |
-| `Backport [url]` | present upstream | removed at the next `sync` |
-| `Denied [reason]` | refused | to be reworked or moved to `Inappropriate` |
-| `Inappropriate [reason]` | Aphrody-specific | kept; `check` refuses to make a PR of it |
+| Status (`Upstream-Status`)        | Meaning             | Automatic action                           |
+| --------------------------------- | ------------------- | ------------------------------------------ |
+| `Pending`                         | to be proposed      | `ay upstream check` then `ay upstream pr`  |
+| `Submitted [url]` + `Upstream-PR` | proposed (PR or CL) | state read live (gh api, Gerrit REST)      |
+| `Backport [url]`                  | present upstream    | removed at the next `sync`                 |
+| `Denied [reason]`                 | refused             | to be reworked or moved to `Inappropriate` |
+| `Inappropriate [reason]`          | Aphrody-specific    | kept; `check` refuses to make a PR of it   |
 
 The status is written in `infra/upstream/status/<stack>.toml` (key = patch name), by `ay upstream mark`. It can also live in the commit message (`--trailer`), but rewriting the shared branch for a status makes every agent rebase: the register is the default path. A merged PR is detected live; a patch that becomes empty on the new base (change already upstream) is removed, like a patch with status `Backport`.
 
@@ -57,14 +57,14 @@ On the Chromium side, `git cl upload` requires a local branch with an upstream: 
 
 ## 5. CI and schedule
 
-| What | Where | When | Load |
-|---|---|---|---|
-| `sync bun --push` then `gc bun` | prd, user `agent`, `~/agents/src` (`infra/upstream/install.sh`, unit `aphrody-upstream.timer`) | every day 05:30 UTC (+ 0 to 20 min) | git only, `Nice=19`, idle I/O |
-| `sync chromium --push` (series check + GitHub mirror) | fr1, user `ubuntu`, checkout `/srv/chromium/src` | same timer | fetch + temporary index |
-| build and tests of the Chromium subset | fr1, `infra/upstream/chromium-verify.sh`, dedicated checkout `/srv/chromium/upstream` (never the factory's) | after each change of the series; does nothing while it is empty | `nice -n 19 ionice -c3`, NativeLink pool; targets = test executables that depend on the touched files (`gn refs --testonly`), at most 8, then `git cl presubmit` |
-| bun upstream CI on the ephemeral head | the fork's GitHub Actions: `format.yml`, `lint.yml`, `rust-lints.yml`, `source-lints.yml` from oven-sh/bun, enabled on `aphrody-labs/bun` on 2026-11-13 and run by `ay upstream pr --lint` | before each PR | GitHub runners |
-| full bun build and tests | oven-sh's Buildkite once the PR is open; on the fork side, the `native` and `aphrody windows` workflows (native build and bun Windows agents) | at PR time | — |
-| `ay upstream` tests | `.github/workflows/ci.yml` (`bun test packages/upstream`) | every push to `src` | — |
+| What                                                  | Where                                                                                                                                                                                      | When                                                            | Load                                                                                                                                                             |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sync bun --push` then `gc bun`                       | prd, user `agent`, `~/agents/src` (`infra/upstream/install.sh`, unit `aphrody-upstream.timer`)                                                                                             | every day 05:30 UTC (+ 0 to 20 min)                             | git only, `Nice=19`, idle I/O                                                                                                                                    |
+| `sync chromium --push` (series check + GitHub mirror) | fr1, user `ubuntu`, checkout `/srv/chromium/src`                                                                                                                                           | same timer                                                      | fetch + temporary index                                                                                                                                          |
+| build and tests of the Chromium subset                | fr1, `infra/upstream/chromium-verify.sh`, dedicated checkout `/srv/chromium/upstream` (never the factory's)                                                                                | after each change of the series; does nothing while it is empty | `nice -n 19 ionice -c3`, NativeLink pool; targets = test executables that depend on the touched files (`gn refs --testonly`), at most 8, then `git cl presubmit` |
+| bun upstream CI on the ephemeral head                 | the fork's GitHub Actions: `format.yml`, `lint.yml`, `rust-lints.yml`, `source-lints.yml` from oven-sh/bun, enabled on `aphrody-labs/bun` on 2026-11-13 and run by `ay upstream pr --lint` | before each PR                                                  | GitHub runners                                                                                                                                                   |
+| full bun build and tests                              | oven-sh's Buildkite once the PR is open; on the fork side, the `native` and `aphrody windows` workflows (native build and bun Windows agents)                                              | at PR time                                                      | —                                                                                                                                                                |
+| `ay upstream` tests                                   | `.github/workflows/ci.yml` (`bun test packages/upstream`)                                                                                                                                  | every push to `src`                                             | —                                                                                                                                                                |
 
 Nothing compiles on the workstation.
 
@@ -80,20 +80,20 @@ Exception to `AGENTS.md` (decision of 2026-11-13, also recorded in `AGENTS.md`):
 
 bun: `aphrody-labs/bun` = `oven-sh/bun` `9ea3c693a2` ("Bump to 1.4.5") + 15 patches; the minifier docs patch (no visible effect: the published page already has its title) was removed from the fork on 2026-11-13.
 
-| # | Patch | Status | Review | Owner |
-|---|---|---|---|---|
-| 1 | child_process: expose the parent-end pipe fd through stream._handle | proposed (port) | oven-sh/bun#39760 (robobun), open | upstream |
-| 2 | build: pass the .bind.ts schema list to the codegen scripts in a file | proposed | oven-sh/bun#48787, open (section 8) | upstream |
-| 4, 5, 15 | ci: native release build ; ci(native): sysroot ; ci(native): dispatch only | Aphrody-specific (fork CI) | - | native build |
-| 6 | upgrade: unpack the Windows release in-process and check canary downloads against the API digest | to be proposed | - | bun Windows |
-| 7 | completions: print the script for bash, zsh and fish on Windows (Fixes #25042) | to be proposed | - | bun Windows |
-| 8 | sys(windows): report ENOENT for an empty path | proposed (port) | oven-sh/bun#38052, open | upstream |
-| 9 | node:fs: resolve a relative path that normalizes to nothing to the cwd on Windows | proposed (port) | oven-sh/bun#45410, open | upstream |
-| 10 | import.meta.main: compare the main module's key as a URL in every executable | proposed (port) | oven-sh/bun#48698, open | upstream |
-| 11 | shell: skip a dead bin link for the script words bun, bunx and node (Windows) | proposed (port) | oven-sh/bun#45742, open | upstream |
-| 12 | ci(aphrody): cross-compile bun.exe for Windows x64 and run the fork's Windows regression tests | Aphrody-specific | - | bun Windows |
-| 13 | build: xwin 0.10.0, which reads the current Visual Studio manifest | proposed | oven-sh/bun#48784, open | bun Windows |
-| 14 | docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples | proposed | oven-sh/bun#48786, open | bun audit |
+| #        | Patch                                                                                            | Status                     | Review                              | Owner        |
+| -------- | ------------------------------------------------------------------------------------------------ | -------------------------- | ----------------------------------- | ------------ |
+| 1        | child_process: expose the parent-end pipe fd through stream._handle                              | proposed (port)            | oven-sh/bun#39760 (robobun), open   | upstream     |
+| 2        | build: pass the .bind.ts schema list to the codegen scripts in a file                            | proposed                   | oven-sh/bun#48787, open (section 8) | upstream     |
+| 4, 5, 15 | ci: native release build ; ci(native): sysroot ; ci(native): dispatch only                       | Aphrody-specific (fork CI) | -                                   | native build |
+| 6        | upgrade: unpack the Windows release in-process and check canary downloads against the API digest | to be proposed             | -                                   | bun Windows  |
+| 7        | completions: print the script for bash, zsh and fish on Windows (Fixes #25042)                   | to be proposed             | -                                   | bun Windows  |
+| 8        | sys(windows): report ENOENT for an empty path                                                    | proposed (port)            | oven-sh/bun#38052, open             | upstream     |
+| 9        | node:fs: resolve a relative path that normalizes to nothing to the cwd on Windows                | proposed (port)            | oven-sh/bun#45410, open             | upstream     |
+| 10       | import.meta.main: compare the main module's key as a URL in every executable                     | proposed (port)            | oven-sh/bun#48698, open             | upstream     |
+| 11       | shell: skip a dead bin link for the script words bun, bunx and node (Windows)                    | proposed (port)            | oven-sh/bun#45742, open             | upstream     |
+| 12       | ci(aphrody): cross-compile bun.exe for Windows x64 and run the fork's Windows regression tests   | Aphrody-specific           | -                                   | bun Windows  |
+| 13       | build: xwin 0.10.0, which reads the current Visual Studio manifest                               | proposed                   | oven-sh/bun#48784, open             | bun Windows  |
+| 14       | docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples                         | proposed                   | oven-sh/bun#48786, open             | bun audit    |
 
 Linux stacks (2026-11-13): `linux-cachyos` (1 patch, `_llvm_prefix`), `cachyos-pkgbuilds`, `kernel-patches`, `liquorix`, `scx` (empty series), "series" model, patches in `infra/upstream/patches/<stack>/`, synchronized on prd with bun; patchsets tracked without a fork in `infra/linux/patchsets.toml` (`docs/linux/PATCHSETS.md`).
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: June 3, 2025
@@ -51,11 +52,21 @@ const adapter = await navigator.gpu.requestAdapter();
 
 for (const { size, properties } of adapter.info.memoryHeaps) {
   console.log(size); // memory heap size in bytes
-  if (properties & GPUHeapProperty.DEVICE_LOCAL)  { /* ... */ }
-  if (properties & GPUHeapProperty.HOST_VISIBLE)  { /* ... */ }
-  if (properties & GPUHeapProperty.HOST_COHERENT) { /* ... */ }
-  if (properties & GPUHeapProperty.HOST_UNCACHED) { /* ... */ }
-  if (properties & GPUHeapProperty.HOST_CACHED)   { /* ... */ }
+  if (properties & GPUHeapProperty.DEVICE_LOCAL) {
+    /* ... */
+  }
+  if (properties & GPUHeapProperty.HOST_VISIBLE) {
+    /* ... */
+  }
+  if (properties & GPUHeapProperty.HOST_COHERENT) {
+    /* ... */
+  }
+  if (properties & GPUHeapProperty.HOST_UNCACHED) {
+    /* ... */
+  }
+  if (properties & GPUHeapProperty.HOST_CACHED) {
+    /* ... */
+  }
 }
 ```
 
@@ -95,10 +106,10 @@ The GPUExternalTexture `isZeroCopy` non-standardized boolean attribute lets you 
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-const video = document.querySelector('video');
+const video = document.querySelector("video");
 const externalTexture = device.importExternalTexture({ source: video });
 
 if (externalTexture.isZeroCopy) {
-  console.log('Video frame was accessed directly by the GPU');
+  console.log("Video frame was accessed directly by the GPU");
 }
 ```

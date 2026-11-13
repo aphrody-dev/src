@@ -25,7 +25,7 @@ Copy [`_template.md`](_template.md) to `docs/release-notes/<summary>.md`:
   `sync-keeps-view-escapes.md`. Don't name it after a branch, a ticket or a person.
 - Set `type`. The release puts the note under the matching heading.
 - Write the bullets as they should read in the release notes, each as
-  `` - `code-area`: description ``, where the code area is the crate or component that changed,
+  ``- `code-area`: description``, where the code area is the crate or component that changed,
   such as `lore-server`. Continuation
   lines are indented by two spaces, and there are no blank lines between bullets. Remove the
   template's comments.

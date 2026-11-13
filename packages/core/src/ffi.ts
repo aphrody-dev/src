@@ -1,7 +1,15 @@
 // bun:ffi bridge to crates/core-capi (`aphrody_core_capi` shared library, core_* symbols).
 // Contract: include/aphrody_core.h. Every returned string is JSON owned by the library and
 // released with core_free right after it is copied into a JS string.
-import { CString, FFIType, JSCallback, dlopen, ptr, suffix, type Pointer } from "bun:ffi";
+import {
+  CString,
+  FFIType,
+  JSCallback,
+  dlopen,
+  ptr,
+  suffix,
+  type Pointer,
+} from "bun:ffi";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -14,10 +22,22 @@ const symbols = {
   core_free: { args: [FFIType.ptr], returns: FFIType.void },
   core_languages: { args: [], returns: FFIType.ptr },
   core_parse_json: { args: [FFIType.ptr, FFIType.ptr], returns: FFIType.ptr },
-  core_query_json: { args: [FFIType.ptr, FFIType.ptr, FFIType.ptr], returns: FFIType.ptr },
-  core_blake3_hex: { args: [FFIType.ptr, FFIType.u64, FFIType.ptr], returns: FFIType.i32 },
-  core_index_json: { args: [FFIType.ptr, FFIType.ptr, FFIType.i32], returns: FFIType.ptr },
-  core_index_each: { args: [FFIType.ptr, FFIType.ptr, FFIType.i32, FFIType.ptr], returns: FFIType.ptr },
+  core_query_json: {
+    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr],
+    returns: FFIType.ptr,
+  },
+  core_blake3_hex: {
+    args: [FFIType.ptr, FFIType.u64, FFIType.ptr],
+    returns: FFIType.i32,
+  },
+  core_index_json: {
+    args: [FFIType.ptr, FFIType.ptr, FFIType.i32],
+    returns: FFIType.ptr,
+  },
+  core_index_each: {
+    args: [FFIType.ptr, FFIType.ptr, FFIType.i32, FFIType.ptr],
+    returns: FFIType.ptr,
+  },
 } as const;
 
 type CoreLib = ReturnType<typeof dlopen<typeof symbols>>;
@@ -58,7 +78,9 @@ export function loadCore(): { lib: CoreLib; path: string } | null {
 
 export class CoreUnavailableError extends Error {
   constructor() {
-    super(`${CORE_LIB_FILE} not found (set APHRODY_CORE_LIB or build crates/core-capi)`);
+    super(
+      `${CORE_LIB_FILE} not found (set APHRODY_CORE_LIB or build crates/core-capi)`,
+    );
   }
 }
 
@@ -81,7 +103,8 @@ function take(lib: CoreLib, p: Pointer | null): string {
 
 function json<T>(lib: CoreLib, p: Pointer | null): T {
   const v = JSON.parse(take(lib, p));
-  if (v && typeof v === "object" && "error" in v && Object.keys(v).length === 1) throw new Error(v.error);
+  if (v && typeof v === "object" && "error" in v && Object.keys(v).length === 1)
+    throw new Error(v.error);
   return v as T;
 }
 
@@ -141,12 +164,22 @@ export function languages(): string[] {
 
 export function parse(path: string, content: string): AstFileSummary {
   const lib = need();
-  return json(lib, lib.symbols.core_parse_json(ptr(cstr(path)), ptr(cstr(content))));
+  return json(
+    lib,
+    lib.symbols.core_parse_json(ptr(cstr(path)), ptr(cstr(content))),
+  );
 }
 
 export function query(path: string, content: string, sexpr: string): unknown[] {
   const lib = need();
-  return json(lib, lib.symbols.core_query_json(ptr(cstr(path)), ptr(cstr(content)), ptr(cstr(sexpr))));
+  return json(
+    lib,
+    lib.symbols.core_query_json(
+      ptr(cstr(path)),
+      ptr(cstr(content)),
+      ptr(cstr(sexpr)),
+    ),
+  );
 }
 
 const hexOut = new Uint8Array(65);
@@ -156,7 +189,11 @@ const one = new Uint8Array(1);
 export function blake3Hex(input: string | Uint8Array): string {
   const lib = need();
   const bytes = typeof input === "string" ? Buffer.from(input, "utf8") : input;
-  const rc = lib.symbols.core_blake3_hex(ptr(bytes.byteLength ? bytes : one), BigInt(bytes.byteLength), ptr(hexOut));
+  const rc = lib.symbols.core_blake3_hex(
+    ptr(bytes.byteLength ? bytes : one),
+    BigInt(bytes.byteLength),
+    ptr(hexOut),
+  );
   if (rc !== 0) throw new Error(`core_blake3_hex failed: ${rc}`);
   return new TextDecoder().decode(hexOut.subarray(0, 64));
 }
@@ -164,9 +201,15 @@ export function blake3Hex(input: string | Uint8Array): string {
 export type HashAlgo = "blake3" | "blake2b256";
 
 /** Content hash: BLAKE3 when the library loads, else Bun's native BLAKE2b-256. The algo is reported, never faked. */
-export function contentHash(input: string | Uint8Array): { algo: HashAlgo; hex: string } {
+export function contentHash(input: string | Uint8Array): {
+  algo: HashAlgo;
+  hex: string;
+} {
   if (loadCore()) return { algo: "blake3", hex: blake3Hex(input) };
-  return { algo: "blake2b256", hex: Bun.CryptoHasher.hash("blake2b256", input, "hex") };
+  return {
+    algo: "blake2b256",
+    hex: Bun.CryptoHasher.hash("blake2b256", input, "hex"),
+  };
 }
 
 export interface IndexOptions {
@@ -178,21 +221,40 @@ export interface IndexOptions {
 export function index(root: string, opts: IndexOptions = {}): CoreIndex {
   const lib = need();
   const inc = (opts.includes ?? []).join(";");
-  return json(lib, lib.symbols.core_index_json(ptr(cstr(root)), ptr(cstr(inc)), opts.followIgnore === false ? 0 : 1));
+  return json(
+    lib,
+    lib.symbols.core_index_json(
+      ptr(cstr(root)),
+      ptr(cstr(inc)),
+      opts.followIgnore === false ? 0 : 1,
+    ),
+  );
 }
 
 /** Streams each indexed file through a JSCallback (same thread), returns the stats. */
-export function indexEach(root: string, onFile: (f: IndexedFile) => void, opts: IndexOptions = {}): IndexStats {
+export function indexEach(
+  root: string,
+  onFile: (f: IndexedFile) => void,
+  opts: IndexOptions = {},
+): IndexStats {
   const lib = need();
-  const cb = new JSCallback((p: Pointer) => onFile(JSON.parse(new CString(p).toString())), {
-    args: [FFIType.ptr],
-    returns: FFIType.void,
-  });
+  const cb = new JSCallback(
+    (p: Pointer) => onFile(JSON.parse(new CString(p).toString())),
+    {
+      args: [FFIType.ptr],
+      returns: FFIType.void,
+    },
+  );
   try {
     const inc = (opts.includes ?? []).join(";");
     return json(
       lib,
-      lib.symbols.core_index_each(ptr(cstr(root)), ptr(cstr(inc)), opts.followIgnore === false ? 0 : 1, cb.ptr),
+      lib.symbols.core_index_each(
+        ptr(cstr(root)),
+        ptr(cstr(inc)),
+        opts.followIgnore === false ? 0 : 1,
+        cb.ptr,
+      ),
     );
   } finally {
     cb.close();

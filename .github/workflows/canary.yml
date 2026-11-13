@@ -22,7 +22,7 @@ jobs:
       CARGO_TERM_COLOR: never
       CARGO_TARGET_DIR: ${{ github.workspace }}/../canary-target
       HEAVY_WAIT_MAX: "2700"
-      TARGET: x86_64-unknown-linux-gnu  # chromium-157 toolchain ships no musl std (run 43368108045)
+      TARGET: x86_64-unknown-linux-gnu # chromium-157 toolchain ships no musl std (run 43368108045)
     steps:
       - name: Resolve green SHA
         # workflow_run = the commit ci just passed; schedule/dispatch = newest green ci on main, never raw HEAD.

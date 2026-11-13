@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: June 17, 2026
@@ -22,14 +23,15 @@ Immediates provide a fast path for tiny, highly dynamic variables. Use uniform b
 In your WGSL shader, the `<immediate>` address space lets you define immediate data that can be passed directly to the pass encoder. Call [`setImmediates()`](https://gpuweb.github.io/gpuweb/#dom-gpubindingcommandsmixin-setimmediates) in JavaScript before a draw call to provide this data without binding a group. To check for support, feature-detect the `immediate_address_space` WGSL language extension through `navigator.gpu.wgslLanguageFeatures`. See the following example and the [intent to ship](https://groups.google.com/a/chromium.org/g/blink-dev/c/8LdEcW1CkNo/m/rrV3CUyGAAAJ).
 
 ```javascript
-if (!navigator.gpu.wgslLanguageFeatures.has('immediate_address_space')) {
-   throw new Error(`WGSL immediate address space is not available`);
+if (!navigator.gpu.wgslLanguageFeatures.has("immediate_address_space")) {
+  throw new Error(`WGSL immediate address space is not available`);
 }
 
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-const module = device.createShaderModule({ code: `
+const module = device.createShaderModule({
+  code: `
   requires immediate_address_space;
 
   var<immediate> color: vec4f;
@@ -49,14 +51,17 @@ const module = device.createShaderModule({ code: `
 // By using layout: 'auto', WebGPU will automatically infer the `immediateSize`
 // required by the pipeline layout from the WGSL module.
 const pipeline = device.createRenderPipeline({
-  layout: 'auto',
+  layout: "auto",
   vertex: { module },
   fragment: { module, targets: [{ format }] },
 });
 myRenderPassEncoder.setPipeline(pipeline);
 
 // Send immediate data to the GPU, then issue a draw call
-myRenderPassEncoder.setImmediates(/*rangeOffset=*/0, new Float32Array([255, 0, 0, 255]));
+myRenderPassEncoder.setImmediates(
+  /*rangeOffset=*/ 0,
+  new Float32Array([255, 0, 0, 255]),
+);
 myRenderPassEncoder.draw(3);
 myRenderPassEncoder.end();
 ```

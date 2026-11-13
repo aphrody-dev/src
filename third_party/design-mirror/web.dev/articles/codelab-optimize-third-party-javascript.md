@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)
 
 > [!IMPORTANT]
@@ -31,7 +32,7 @@ The included sample app features a simple web page with three features coming fr
 
 - A social media sharing widget
 
- Third-party resources in the sample app.
+Third-party resources in the sample app.
 
 You'll start by measuring the performance of the app and then apply each technique to improve different aspects of app performance.
 
@@ -99,7 +100,7 @@ The sample app has a YouTube video embedded in an [iframe](https://developer.moz
 2. Press \`Control+Shift+J\` (or \`Command+Option+J\` on Mac) to open DevTools.
 3. Click the **Network** tab.
 4. Select the **Disable cache** checkbox.
-5. Select *Fast 3G* in the **Throttling** dropdown menu.
+5. Select _Fast 3G_ in the **Throttling** dropdown menu.
 6. Reload the page.
 
 The **Network** panel reveals that the page made a total of 28 requests and transferred almost 1 MB of compressed resources.
@@ -123,7 +124,14 @@ One way to implement lazy loading is by using the [Intersection Observer](https:
 To lazy-load the video iframe, you must first prevent it from loading in the usual way. Do that by replacing the `src` attribute with the `data-src` attribute to specify the video URL:
 
 ```html
-<iframe width="560" height="315" data-src="https://www.youtube.com/embed/lS9D6w1GzGY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe
+  width="560"
+  height="315"
+  data-src="https://www.youtube.com/embed/lS9D6w1GzGY"
+  frameborder="0"
+  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+></iframe>
 ```
 
 `data-src` is a [data attribute](https://developer.mozilla.org/docs/Learn/HTML/Howto/Use_data_attributes), which allows you to store extra information on standard HTML elements. A data attribute can be named anything, as long as it starts with "data-".
@@ -142,7 +150,7 @@ To get started, create a new file and name it `lazy-load.js`:
 Add the script tag to your document head:
 
 ```html
- <script src="/lazy-load.js" defer></script>
+<script src="/lazy-load.js" defer></script>
 ```
 
 In `lazy-load.js`, create a new `IntersectionObserver` and pass it a callback function to run:
@@ -156,7 +164,7 @@ Now give `observer` a target element to watch (the video iframe in this case) by
 
 ```javascript
 // the element that you want to watch
-const element = document.querySelector('iframe');
+const element = document.querySelector("iframe");
 
 // register the element with the observe method
 observer.observe(element);
@@ -222,7 +230,7 @@ The Lighthouse audit you ran in the first step suggested in **Preconnect to requ
 Since the YouTube video is now lazy-loaded, that leaves only staticxx.facebook.com, the source of the social media sharing widget. Establishing an early connection to this domain is as simple as adding a `<link>` tag to the document's `<head>`:
 
 ```html
-  <link rel="preconnect" href="https://staticxx.facebook.com">
+<link rel="preconnect" href="https://staticxx.facebook.com" />
 ```
 
 ## Reevaluate performance

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Rick Viscomi [GitHub](https://github.com/rviscomi) [Bluesky](https://bsky.app/profile/rviscomi.dev) [Homepage](https://developer.chrome.com/rviscomi.dev/)
 
 The raw data of the Chrome UX Report ([CrUX](https://developer.chrome.com/docs/crux.md.txt)) is available on [BigQuery](https://console.cloud.google.com/bigquery?p=chrome-ux-report), a database on Google Cloud. Using BigQuery requires a [GCP project](https://developer.chrome.com/docs/crux/bigquery.md.txt#accessing_the_dataset_in_gcp) and basic knowledge of SQL.
@@ -41,10 +42,10 @@ There are also datasets for every country. For example, `chrome-ux-report.countr
 
 Within each dataset there are tables for every month since 201710. New tables for the previous calendar month are published regularly.
 
-The structure of the data tables (also known as the *schema*) contains:
+The structure of the data tables (also known as the _schema_) contains:
 
 - The origin, for example `origin = 'https://www.example.com'`, which represents the aggregate user experience distribution for all pages on that website
-- The connection speed at the time of page load, for example, `effective_connection_type.name = '4G'` (*removed from February 2025*)
+- The connection speed at the time of page load, for example, `effective_connection_type.name = '4G'` (_removed from February 2025_)
 - The device type, for example `form_factor.name = 'desktop'`
 - The UX metrics themselves
   - `first_paint` (FP)
@@ -136,15 +137,15 @@ ORDER BY
 Here, we see that the percent of fast FCP experiences varies by a few percentage points each month.
 
 | yyyymm | fast_fcp |
-|---|---|
-| 202206 | 69.77% |
-| 202205 | 70.71% |
-| 202204 | 69.04% |
-| 202203 | 69.82% |
-| 202202 | 67.75% |
-| 202201 | 58.96% |
-| 202112 | 41.69% |
-| ... | ... |
+| ------ | -------- |
+| 202206 | 69.77%   |
+| 202205 | 70.71%   |
+| 202204 | 69.04%   |
+| 202203 | 69.82%   |
+| 202202 | 67.75%   |
+| 202201 | 58.96%   |
+| 202112 | 41.69%   |
+| ...    | ...      |
 
 With these techniques, you're able to look up the performance for an origin, calculate the percent of fast experiences, and track it over time. As a next step, try querying for two or more origins and comparing their performance.
 

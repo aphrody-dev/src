@@ -48,11 +48,11 @@ and setup writes both files anew. Start the server again after that, and log the
 
 ## The setup
 
-| User | Project roles |
-| --- | --- |
-| `alice` (`alice@google.com`) | `admin` |
-| `bob` (`bob@google.com`) | `obliterate` |
-| `lore-ci`, a machine user | `push-protected` |
+| User                         | Project roles    |
+| ---------------------------- | ---------------- |
+| `alice` (`alice@google.com`) | `admin`          |
+| `bob` (`bob@google.com`)     | `obliterate`     |
+| `lore-ci`, a machine user    | `push-protected` |
 
 - The project `lore-project` has roles named after the Lore actions: `admin`, `obliterate` and
   `push-protected`.

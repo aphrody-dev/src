@@ -52,13 +52,13 @@ To eliminate AI-generated mediocrity and maintain sovereign software taste:
 
 Target performance envelope for all production deployments:
 
-| Metric | Target | Enforced Invariant |
-| :--- | :--- | :--- |
-| **First Contentful Paint (FCP)** | `< 200 ms` | Server-rendered HTML streamed directly via Bun v1.4.4. |
-| **Largest Contentful Paint (LCP)** | `< 1.2 s` | Zero heavy client-side hydrate waterfalls; critical CSS inlined. |
-| **Interaction to Next Paint (INP)** | `< 50 ms` | Native DOM event delegation; zero blocking JavaScript loops. |
-| **Cumulative Layout Shift (CLS)** | `0.00` | Explicit `width` and `height` attributes on all images and canvases. |
-| **First Input Delay (FID)** | `< 16 ms` | Sub-frame execution; compute offloaded to Web Workers or WASM. |
+| Metric                              | Target     | Enforced Invariant                                                   |
+| :---------------------------------- | :--------- | :------------------------------------------------------------------- |
+| **First Contentful Paint (FCP)**    | `< 200 ms` | Server-rendered HTML streamed directly via Bun v1.4.4.               |
+| **Largest Contentful Paint (LCP)**  | `< 1.2 s`  | Zero heavy client-side hydrate waterfalls; critical CSS inlined.     |
+| **Interaction to Next Paint (INP)** | `< 50 ms`  | Native DOM event delegation; zero blocking JavaScript loops.         |
+| **Cumulative Layout Shift (CLS)**   | `0.00`     | Explicit `width` and `height` attributes on all images and canvases. |
+| **First Input Delay (FID)**         | `< 16 ms`  | Sub-frame execution; compute offloaded to Web Workers or WASM.       |
 
 ---
 
@@ -82,6 +82,7 @@ sequenceDiagram
 ```
 
 ### 4.1 Playwright End-to-End Validation
+
 - Every route and modal must have an automated test verifying:
   1. Successful HTTP 200 response with correct content-type header.
   2. Document title and meta description presence.
@@ -89,11 +90,13 @@ sequenceDiagram
   4. Responsive viewport behavior (desktop 1920x1080, tablet 768x1024, mobile 375x667).
 
 ### 4.2 Lighthouse Audits
+
 - **Performance**: `>= 95`
 - **Accessibility**: `100` (ARIA labels, keyboard focus indicators, color contrast)
 - **Best Practices**: `100` (HTTPS, secure headers, modern image formats WebP/AVIF)
 - **SEO**: `100` (Semantic tags, OpenGraph, JSON-LD schema)
 
 ### 4.3 Agent-Browser Visual Verification
+
 - Use `agent-browser` / `browser_navigate` to inspect the visual rendering.
 - Verify typography rendering, layout alignment, and absence of broken asset links before committing.

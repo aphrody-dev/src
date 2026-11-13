@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The browser's [renderer process](https://developer.chrome.com/blog/inside-browser-part3.md.txt)
 is what turns your code into a web page that your users can interact with.
 By default, the [main thread](https://developer.mozilla.org/docs/Glossary/Main_thread)

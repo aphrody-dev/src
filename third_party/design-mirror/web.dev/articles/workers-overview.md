@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 How web workers and service workers can improve the performance of your site, and when to use a web worker versus a service worker.
 
- Andrew Guan [GitHub](https://github.com/AndrewKGuan)  Demián Renzulli [X](https://twitter.com/drenzulli) [GitHub](https://github.com/demianrenzulli)
+Andrew Guan [GitHub](https://github.com/AndrewKGuan) Demián Renzulli [X](https://twitter.com/drenzulli) [GitHub](https://github.com/demianrenzulli)
 
 This overview explains how web workers and service workers can improve the performance of your website, and when to use a web worker versus a service worker. Check out the rest of [this series](https://web.dev/articles/workers-overview.md.txt#next-steps) for
 specific patterns of window and service worker communication.
@@ -82,7 +83,7 @@ complete episodes to listen to them while offline. A service worker, and, in
 particular, the [Background Fetch API](https://developer.chrome.com/blog/background-fetch)
 can be used to that end. That way, if the user closes the tab while the episode
 is downloading, the task won't be interrupted.
- The UI is updated to indicate the progress of a download (left). Thanks to service workers, the operation can continue running when all tabs have been closed (right).
+The UI is updated to indicate the progress of a download (left). Thanks to service workers, the operation can continue running when all tabs have been closed (right).
 
 ## Tools and libraries
 

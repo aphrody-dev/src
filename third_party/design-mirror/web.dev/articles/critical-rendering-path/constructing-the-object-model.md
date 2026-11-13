@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ilya Grigorik [X](https://twitter.com/igrigorik) [Homepage](https://igvita.com/)
 
 Published: March 31, 2014
@@ -47,7 +48,7 @@ and a single image. How does the browser process this page?
 1. **Conversion:** The browser reads the raw bytes of HTML off the disk or network, and translates them to individual characters based on specified encoding of the file (for example, UTF-8).
 2. **Tokenizing:** The browser converts strings of characters into distinct tokens---as specified by the [W3C HTML5 standard](http://www.w3.org/TR/html5/) for example, `<html>`, `<body>`---and other strings within angle brackets. Each token has a special meaning and its own set of rules.
 3. **Lexing:** The emitted tokens are converted into "objects," which define their properties and rules.
-4. **DOM construction:** Finally, because the HTML markup defines relationships between different tags (some tags are contained within other tags) the created objects are linked in a tree data structure that also captures the parent-child relationships defined in the original markup: the *HTML* object is a parent of the *body* object, the *body* is a parent of the *paragraph* object, until the entire representation of the document is built.
+4. **DOM construction:** Finally, because the HTML markup defines relationships between different tags (some tags are contained within other tags) the created objects are linked in a tree data structure that also captures the parent-child relationships defined in the original markup: the _HTML_ object is a parent of the _body_ object, the _body_ is a parent of the _paragraph_ object, until the entire representation of the document is built.
 
 **The final output of this entire process is the Document Object Model (DOM)
 of our simple page, which the browser uses for all further processing of the

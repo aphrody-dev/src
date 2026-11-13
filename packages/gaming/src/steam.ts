@@ -58,8 +58,13 @@ export type VdfFormat = "auto" | "text" | "binary" | "appinfo";
 
 /** Parses a KeyValues file to JSON (text, binary, or appinfo.vdf with an optional app). The Rust
  * side refuses credential files as well. */
-export function readVdf(path: string, format: VdfFormat = "auto", app?: number): unknown {
-  if (isSecretFile(path)) throw new Error(`${path} holds credentials; not read`);
+export function readVdf(
+  path: string,
+  format: VdfFormat = "auto",
+  app?: number,
+): unknown {
+  if (isSecretFile(path))
+    throw new Error(`${path} holds credentials; not read`);
   return steamJson([
     "vdf",
     path,
@@ -94,7 +99,13 @@ export interface LaunchEnv {
 
 export function launchEnv(
   app: number,
-  o: { root?: string; prefix?: string; installPath?: string; cacheRoot?: string; gamemode?: boolean } = {},
+  o: {
+    root?: string;
+    prefix?: string;
+    installPath?: string;
+    cacheRoot?: string;
+    gamemode?: boolean;
+  } = {},
 ): LaunchEnv {
   const args = ["env", String(app)];
   if (o.prefix) args.push("--prefix", o.prefix);

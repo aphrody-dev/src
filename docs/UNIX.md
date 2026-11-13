@@ -1,6 +1,7 @@
 # Sovereign Unix Distribution: Omarchy + CachyOS + Arch Linux GitLab WSL2 Engine
 
 Production-grade Rust 2024 Unix distribution and native WSL2 runtime fusing:
+
 - **Omarchy (`omacom`)**: Aether theme compiler (23 canonical themes + 2 sovereign themes), 16 built-in Quickshell plugins, and streaming search over the 6,443-source community plugin marketplace.
 - **CachyOS (`CachyOS` + `cachyos-wsl`)**: Raptor Lake (`x86-64-v3` AVX2/FMA3/BMI2) `[cachyos-v3]` repositories, Linux `7.4` BORE / `sched-ext` / `dkms-clang` / NVIDIA `sm_89` kernel patch series, `ananicy-cpp`, and Proton-CachyOS `/dev/ntsync` gaming orchestration.
 - **Arch Linux GitLab (`gitlab.archlinux.org/archlinux`)**: Unified `devtools` / `pkgctl` clean-chroot PKGBUILD synthesis and reproducible `.wsl` image builder.

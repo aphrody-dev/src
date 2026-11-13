@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: December 2, 2022, Last updated: October 29, 2026
@@ -30,7 +31,7 @@ The Chrome team has brought back full prerendering of future pages that a user i
 
 In the past, Chrome supported the `<link rel="prerender" href="/next-page">` resource hint, however it was not broadly supported beyond Chrome, and it wasn't a very expressive API.
 
-This legacy prerendering using the link `rel=prerender` hint was deprecated in favor of [NoState Prefetch](https://developer.chrome.com/blog/nostate-prefetch.md.txt), which instead fetched the resources needed by the future page, but did not fully prerender the page nor execute JavaScript. NoState Prefetch does help improve page performance by improving the resource loading, but won't deliver an *instant* page load like a full prerender would.
+This legacy prerendering using the link `rel=prerender` hint was deprecated in favor of [NoState Prefetch](https://developer.chrome.com/blog/nostate-prefetch.md.txt), which instead fetched the resources needed by the future page, but did not fully prerender the page nor execute JavaScript. NoState Prefetch does help improve page performance by improving the resource loading, but won't deliver an _instant_ page load like a full prerender would.
 
 The Chrome team has now reintroduced full prerendering back into Chrome. To avoid complications with existing usage, and to allow for future expansion of prerendering, this new prerender mechanism won't use the `<link rel="prerender"...>` syntax, which remains in place for NoState Prefetch, with a view of retiring this at some point in the future.
 
@@ -48,7 +49,7 @@ In each of these cases, a prerender behaves as if the page has been opened in an
 As the prerendered page is opened in a hidden state, [a number of APIs that cause intrusive behaviors](https://wicg.github.io/nav-speculation/prerendering.html#intrusive-behaviors) (for example, prompts) are not activated in this state, and are instead delayed until the page is activated. In the small number of cases where this is not yet possible, the prerender is canceled. The Chrome team is working on exposing prerender cancellation reasons as an API, and also enhancing DevTools capabilities to make identifying such edge cases easier.
 
 > [!NOTE]
-> **Note:** Prerendered pages should be treated as a hint and a progressive enhancement. Unlike `preload`, prerender is a speculative *hint* and the browser may choose not to act upon the hint based on user settings, current memory usage, or other heuristics.
+> **Note:** Prerendered pages should be treated as a hint and a progressive enhancement. Unlike `preload`, prerender is a speculative _hint_ and the browser may choose not to act upon the hint based on user settings, current memory usage, or other heuristics.
 
 ### Impact of prerendering
 
@@ -66,14 +67,14 @@ See the [Measuring performance](https://developer.chrome.com/docs/web-platform/p
 ### View Chrome's address bar predictions
 
 For the first use case, you can view Chrome's predictions for URLs in the `chrome://predictors` page:
- Chrome Predictors page.
+Chrome Predictors page.
 
 Green lines indicate enough confidence to trigger prerendering. In this example typing "s" gives a reasonable confidence (amber), but once you type "sh" then Chrome has enough confidence that you nearly always navigate to `https://sheets.google.com`.
 
 This screenshot was taken in a relatively fresh Chrome install, and filtering out zero confidence predictions, but if you view your own predictors you will likely see considerably more entries, and potentially more characters required to reach a high enough confidence level.
 
 These predictors are also what drive the address bar suggested options you may have noticed:
- Address bar 'Typeahead' feature.
+Address bar 'Typeahead' feature.
 
 Chrome will continually update its predictors based on your typing and selections.
 
@@ -90,11 +91,13 @@ Speculation rules can be based on lists of URLs:
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "urls": ["next.html", "next2.html"]
-  }]
-}
+  {
+    "prerender": [
+      {
+        "urls": ["next.html", "next2.html"]
+      }
+    ]
+  }
 </script>
 ```
 
@@ -104,19 +107,21 @@ Speculation rules can also be "document rules" using the `where` syntax. This sp
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "where": {
-      "and": [
-        { "href_matches": "/*" },
-        { "not": {"href_matches": "/wp-admin"}},
-        { "not": {"href_matches": "/*\\?*(^|&)add-to-cart=*"}},
-        { "not": {"selector_matches": ".do-not-prerender"}},
-        { "not": {"selector_matches": "[rel~=nofollow]"}}
-      ]
-    }
-  }]
-}
+  {
+    "prerender": [
+      {
+        "where": {
+          "and": [
+            { "href_matches": "/*" },
+            { "not": { "href_matches": "/wp-admin" } },
+            { "not": { "href_matches": "/*\\?*(^|&)add-to-cart=*" } },
+            { "not": { "selector_matches": ".do-not-prerender" } },
+            { "not": { "selector_matches": "[rel~=nofollow]" } }
+          ]
+        }
+      }
+    ]
+  }
 </script>
 ```
 
@@ -154,14 +159,16 @@ The `moderate` option is a middle ground, and many sites could benefit from the 
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "where": {
-      "href_matches": "/*"
-    },
-    "eagerness": "moderate"
-  }]
-}
+  {
+    "prerender": [
+      {
+        "where": {
+          "href_matches": "/*"
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
 </script>
 ```
 
@@ -171,11 +178,13 @@ Speculation rules can also be used to just prefetch pages, without a full preren
 
 ```html
 <script type="speculationrules">
-{
-  "prefetch": [{
-    "urls": ["next.html", "next2.html"]
-  }]
-}
+  {
+    "prefetch": [
+      {
+        "urls": ["next.html", "next2.html"]
+      }
+    ]
+  }
 </script>
 ```
 
@@ -194,11 +203,13 @@ The Chrome team is also working on adding [`prerender_until_script`](https://git
 
 ```html
 <script type="speculationrules">
-{
-  "prerender_until_script": [{
-    "urls": ["next.html", "next2.html"]
-  }]
-}
+  {
+    "prerender_until_script": [
+      {
+        "urls": ["next.html", "next2.html"]
+      }
+    ]
+  }
 </script>
 ```
 
@@ -212,16 +223,16 @@ This would avoid the risks of unintended side effects from JavaScript executing,
 
 Chrome has limits in place to prevent overuse of the Speculation Rules API:
 
-| eagerness | Prefetch | Prerender |
-|---|---|---|
-| `immediate` | 50 | 10 |
-| `eager` / `moderate` on mobile | 6 (FIFO) | 2 (FIFO) |
-| `eager` / `moderate` on desktop | 2 (FIFO) | 2 (FIFO) |
-| `conservative` | 2 (FIFO) | 2 (FIFO) |
+| eagerness                       | Prefetch | Prerender |
+| ------------------------------- | -------- | --------- |
+| `immediate`                     | 50       | 10        |
+| `eager` / `moderate` on mobile  | 6 (FIFO) | 2 (FIFO)  |
+| `eager` / `moderate` on desktop | 2 (FIFO) | 2 (FIFO)  |
+| `conservative`                  | 2 (FIFO) | 2 (FIFO)  |
 
 Speculation limits in Chrome.
 
-The `eager`, `moderate` and `conservative` settings---which depend on user interaction---work in a [First In, First Out (FIFO) manner](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)): after reaching the limit, a new speculation will cause the oldest speculation to be canceled and replaced by the newer one to conserve memory.
+The `eager`, `moderate` and `conservative` settings---which depend on user interaction---work in a [First In, First Out (FIFO) manner](<https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)>): after reaching the limit, a new speculation will cause the oldest speculation to be canceled and replaced by the newer one to conserve memory.
 
 A canceled speculation can be triggered again---for example by hovering over that link again---which will result in that URL being re-speculated, pushing out the oldest speculation. In this case the previous speculation will have cached any cacheable resources in the HTTP Cache for that URL so speculationing a further time should have a reduced cost. This is why the limit is set to the modest threshold of 2 by default. We use a higher threshold of 6 for prefetch on mobile as there is no "hover", the alternative mobile viewport heuristics are less accurate, and prefetch is less costly than prerender (we keep the 2 limit for prerender on mobile).
 
@@ -304,12 +315,16 @@ It is also possible to add "tags" in the speculation rules JSON syntax at the ov
 ```json
 {
   "tag": "my-rules",
-  "prefetch": [{
+  "prefetch": [
+    {
       "urls": ["next.html"]
-  }],
-  "prerender": [{
+    }
+  ],
+  "prerender": [
+    {
       "urls": ["next2.html"]
-  }]
+    }
+  ]
 }
 ```
 
@@ -317,14 +332,18 @@ Or at either the individual rule level:
 
 ```json
 {
-  "prefetch": [{
-    "tag": "my-prefetch-rules",
-    "urls": ["next.html"]
-  }],
-  "prerender": [{
-    "tag": "my-prerender-rules",
-    "urls": ["next2.html"]
-  }]
+  "prefetch": [
+    {
+      "tag": "my-prefetch-rules",
+      "urls": ["next.html"]
+    }
+  ],
+  "prerender": [
+    {
+      "tag": "my-prerender-rules",
+      "urls": ["next2.html"]
+    }
+  ]
 }
 ```
 
@@ -355,13 +374,15 @@ Browser Support
 Speculation rules can also include a `target_hint` field, which contains a [valid browsing context name or keyword](https://html.spec.whatwg.org/#valid-browsing-context-name-or-keyword) indicating where the page expects the prerendered content to be activated:
 
 ```html
-<script type=speculationrules>
-{
-  "prerender": [{
-    "target_hint": "_blank",
-    "urls": ["next.html"]
-  }]
-}
+<script type="speculationrules">
+  {
+    "prerender": [
+      {
+        "target_hint": "_blank",
+        "urls": ["next.html"]
+      }
+    ]
+  }
 </script>
 ```
 
@@ -393,11 +414,13 @@ Multiple speculation rules can also be added to the same page, and they append t
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "urls": ["one.html", "two.html"]
-  }]
-}
+  {
+    "prerender": [
+      {
+        "urls": ["one.html", "two.html"]
+      }
+    ]
+  }
 </script>
 ```
 
@@ -405,18 +428,22 @@ Multiple speculation rules can also be added to the same page, and they append t
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [{
-    "urls": ["one.html"]
-  }]
-}
+  {
+    "prerender": [
+      {
+        "urls": ["one.html"]
+      }
+    ]
+  }
 </script>
 <script type="speculationrules">
-{
-  "prerender": [{
-    "urls": ["two.html"]
-  }]
-}
+  {
+    "prerender": [
+      {
+        "urls": ["two.html"]
+      }
+    ]
+  }
 </script>
 ```
 
@@ -424,16 +451,16 @@ Multiple speculation rules can also be added to the same page, and they append t
 
 ```html
 <script type="speculationrules">
-{
-  "prerender": [
-    {
-      "urls": ["one.html"]
-    },
-    {
-      "urls": ["two.html"]
-    }
-  ]
-}
+  {
+    "prerender": [
+      {
+        "urls": ["one.html"]
+      },
+      {
+        "urls": ["two.html"]
+      }
+    ]
+  }
 </script>
 ```
 
@@ -448,7 +475,7 @@ Browser Support
 
 [Source](https://developer.mozilla.org/docs/Web/HTTP/Reference/Headers/No-Vary-Search)
 
-When prefetching or prerendering a page, certain URL parameters (technically known as *search parameters*) may be unimportant to the page actually delivered by the server, and only used by client side JavaScript.
+When prefetching or prerendering a page, certain URL parameters (technically known as _search parameters_) may be unimportant to the page actually delivered by the server, and only used by client side JavaScript.
 
 For example, [UTM parameters](https://en.wikipedia.org/wiki/UTM_parameters) are used by Google Analytics for campaign measurement, but usually don't result in different pages being delivered from the server. This means that `page1.html?utm_content=123` and `page1.html?utm_content=456` will deliver the same page from the server, so the same page can be reused from the cache.
 
@@ -465,12 +492,14 @@ Speculation rules support using `expects_no_vary_search` to indicate where a `No
 
 ```html
 <script type="speculationrules">
-{
-  "prefetch": [{
-    "urls": ["/products"],
-    "expects_no_vary_search": "params=(\"id\")"
-  }]
-}
+  {
+    "prefetch": [
+      {
+        "urls": ["/products"],
+        "expects_no_vary_search": "params=(\"id\")"
+      }
+    ]
+  }
 </script>
 
 <a href="/products?id=123">Product 123</a>
@@ -508,14 +537,18 @@ Given those current limitations, one pattern that can improve your users experie
 ```html
 <script type="speculationrules">
   {
-    "prerender": [{
-      "where": { "href_matches": "/*" },
-      "eagerness": "moderate"
-    }],
-    "prefetch": [{
-      "where": { "not": { "href_matches": "/*" } },
-      "eagerness": "moderate"
-    }]
+    "prerender": [
+      {
+        "where": { "href_matches": "/*" },
+        "eagerness": "moderate"
+      }
+    ],
+    "prefetch": [
+      {
+        "where": { "not": { "href_matches": "/*" } },
+        "eagerness": "moderate"
+      }
+    ]
   }
 </script>
 ```
@@ -527,8 +560,11 @@ The restriction to prevent cross-origin speculations for cross-origin links by d
 You can feature detect Speculation Rules API support with standard HTML checks:
 
 ```javascript
-if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
-  console.log('Your browser supports the Speculation Rules API.');
+if (
+  HTMLScriptElement.supports &&
+  HTMLScriptElement.supports("speculationrules")
+) {
+  console.log("Your browser supports the Speculation Rules API.");
 }
 ```
 
@@ -537,19 +573,21 @@ if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')
 This is an example of adding a `prerender` speculation rule with JavaScript:
 
 ```javascript
-if (HTMLScriptElement.supports &&
-    HTMLScriptElement.supports('speculationrules')) {
-  const specScript = document.createElement('script');
-  specScript.type = 'speculationrules';
+if (
+  HTMLScriptElement.supports &&
+  HTMLScriptElement.supports("speculationrules")
+) {
+  const specScript = document.createElement("script");
+  specScript.type = "speculationrules";
   specRules = {
     prerender: [
       {
-        urls: ['/next.html'],
+        urls: ["/next.html"],
       },
     ],
   };
   specScript.textContent = JSON.stringify(specRules);
-  console.log('added speculation rules to: next.html');
+  console.log("added speculation rules to: next.html");
   document.body.append(specScript);
 }
 ```
@@ -563,7 +601,7 @@ Similarly, direct editing the **Elements** panel in Chrome DevTools to add the `
 ### Add speculation rules through a tag manager
 
 To add speculation rules using a tag manager like Google Tag Manager (GTM) requires these to be inserted through JavaScript, rather than adding the `<script type = "speculationrules">` element though GTM directly for the same reasons as mentioned previously:
- Adding Speculation Rules through Google Tag Manager.
+Adding Speculation Rules through Google Tag Manager.
 
 Note this example uses `var` as GTM does not support `const`.
 
@@ -626,19 +664,19 @@ The `document.prerendering` API will return `true` while the page is prerenderin
 
 Once a prerendered document is activated, `PerformanceNavigationTiming`'s `activationStart` will also be set to a non-zero time representing the time between when the prerender was started and the document was actually activated.
 
-You can have a function to check for *prerendering* and *prerendered* pages like the following:
+You can have a function to check for _prerendering_ and _prerendered_ pages like the following:
 
 ```javascript
 function pagePrerendered() {
   return (
     document.prerendering ||
-    self.performance?.getEntriesByType?.('navigation')[0]?.activationStart > 0
+    self.performance?.getEntriesByType?.("navigation")[0]?.activationStart > 0
   );
 }
 ```
 
 The easiest way to see if a page was prerendered (either in full or partially) is to open DevTools after the page is activated and type `performance.getEntriesByType('navigation')[0].activationStart` in the console. If a non-zero value is returned, you know the page was prerendered:
- Testing prerender in the console.
+Testing prerender in the console.
 
 > [!TIP]
 > **Tip:** Additional Chrome DevTools debugging features are available for debugging prefetched and prerendered pages. See the [Debugging speculation rules post](https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules.md.txt) for more details.
@@ -648,7 +686,7 @@ When the page is activated by the user viewing the page, the `prerenderingchange
 Using these APIs, frontend JavaScript can detect and act upon prerendered pages appropriately.
 
 > [!WARNING]
-> **Warning:** The [`PerformanceNavigationTiming.type`](https://developer.mozilla.org/docs/Web/API/PerformanceNavigationTiming/type) doesn't use the `prerender` value, that was for the older, original `<link rel="prerender"...>` navigation type. This may change in future but for now, clients should use the `document.prerendering` API to identify *prerendering* pages and a non-zero `PerformanceNavigationTiming.activationStart` field to identify *prerendered* pages that have since been activated.
+> **Warning:** The [`PerformanceNavigationTiming.type`](https://developer.mozilla.org/docs/Web/API/PerformanceNavigationTiming/type) doesn't use the `prerender` value, that was for the older, original `<link rel="prerender"...>` navigation type. This may change in future but for now, clients should use the `document.prerendering` API to identify _prerendering_ pages and a non-zero `PerformanceNavigationTiming.activationStart` field to identify _prerendered_ pages that have since been activated.
 
 ## Impact on analytics
 
@@ -668,7 +706,7 @@ This could be achieved by using a `Promise` which waits for the `prerenderingcha
 // which is needed for prerendered pages.
 const whenActivated = new Promise((resolve) => {
   if (document.prerendering) {
-    document.addEventListener('prerenderingchange', resolve, {once: true});
+    document.addEventListener("prerenderingchange", resolve, { once: true });
   } else {
     resolve();
   }
@@ -688,7 +726,7 @@ An alternative approach is to delay analytic activities until the page is first 
 // Set up a promise for when the page is first made visible
 const whenFirstVisible = new Promise((resolve) => {
   if (document.hidden) {
-    document.addEventListener('visibilitychange', resolve, {once: true});
+    document.addEventListener("visibilitychange", resolve, { once: true });
   } else {
     resolve();
   }
@@ -719,12 +757,12 @@ You can change this to a dynamically inserted script element which only inserts 
 ```javascript
 async function addScript(scriptUrl) {
   await whenActivated;
-  const script = document.createElement('script');
-  script.src = 'scriptUrl';
+  const script = document.createElement("script");
+  script.src = "scriptUrl";
   document.body.appendChild(script);
 }
 
-addScript('https://example.com/app/script.js');
+addScript("https://example.com/app/script.js");
 ```
 
 This can be useful to hold back distinct scripts that include analytics, or render content based on state or other variables that can change during the span of a visit. For example, recommendations, or login state, or shopping basket icons could all be held back to ensure the most up to date information is presented.
@@ -749,9 +787,9 @@ Whether a page is prerendered can be seen with a non-zero `activationStart` entr
 
 ```javascript
 // Set Custom Dimension for Prerender status
-gtag('set', { 'dimension1': pagePrerendered() });
+gtag("set", { dimension1: pagePrerendered() });
 // Initialise GA - including sending page view by default
-gtag('config', 'G-12345678-1');
+gtag("config", "G-12345678-1");
 ```
 
 This will allow your analytics to show how many navigation are prerendered compared to other types of navigation, and also allow you to correlation any performance metrics or business metrics to these different navigation types. Faster pages means happier users, which can often have real impact on business measures as our [case studies](https://web.dev/case-studies) show.
@@ -760,7 +798,7 @@ As you measure the business impact of prerendering pages for instant navigations
 
 #### Measure hit rates
 
-In addition to measuring the impact of pages that are visited after a prerender, it is also important to measure pages that are prerendered and *not* subsequently visited. This could imply you are prerendering too much, and using up valuable resources of the user for little benefit.
+In addition to measuring the impact of pages that are visited after a prerender, it is also important to measure pages that are prerendered and _not_ subsequently visited. This could imply you are prerendering too much, and using up valuable resources of the user for little benefit.
 
 This can be measured by firing an analytics event when speculation rules are inserted---after checking the browser supports prerendering using `HTMLScriptElement.supports('speculationrules')`---to indicate that prerender was requested. (Note that just because a prerender was requested, does not indicate that a prerender was started or completed as, as noted previously, a prerender is a hint to the browser and it may choose not to prerender pages on user settings, current memory usage, or other heuristics.)
 
@@ -791,4 +829,4 @@ Prerendering is in active development by the Chrome team, and there are plenty o
 
 ## Acknowledgements
 
-*Thumbnail image by [Marc-Olivier Jodoin](https://unsplash.com/@marcojodoin) on [Unsplash](https://unsplash.com/photos/NqOInJ-ttqM)*
+_Thumbnail image by [Marc-Olivier Jodoin](https://unsplash.com/@marcojodoin) on [Unsplash](https://unsplash.com/photos/NqOInJ-ttqM)_

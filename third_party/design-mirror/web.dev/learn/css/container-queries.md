@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 With [media queries](https://web.dev/learn/design/media-queries.md.txt) you can adjust layouts based on the size of the viewport or the type of device being used. [Container queries](https://developer.mozilla.org/docs/Web/CSS/CSS_containment/Container_queries) allow you to make more specific adjustments to elements based on the size and state of their ancestors, or containers.
 
 <iframe src="https:///frame/learn/css/container-queries/index_d4944f7b8a2fa9281042fbdeabb8d4d974b3486dcc2af5bd8a3d0c32d0c56356.frame" class="framebox inherit-locale " allow="clipboard-write https://" allowfullscreen is-upgraded></iframe>
@@ -92,7 +93,7 @@ Size feature conditions can also be written with a colon and a single value to t
 You can also combine multiple conditions by using keywords like `and` and `or`, or chaining multiple conditions together with operators.
 
 ```css
-@container (inline-size > 40em) and (orientation: landscape)  {
+@container (inline-size > 40em) and (orientation: landscape) {
   /*...*/
 }
 
@@ -115,7 +116,7 @@ To target specific containers, even if they are not the nearest ancestor, you ca
   container-type: inline-size;
 }
 
-@container main-sidebar (inline-size > 20em)  {
+@container main-sidebar (inline-size > 20em) {
   .button-group {
     display: flex;
     padding-inline: 1.25em;
@@ -160,6 +161,7 @@ button {
   padding: 2cqi 5cqi;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/LEpdoNV?height=250&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen LEpdoNV by web-dot-dev on Codepen">
 </iframe>
 
@@ -187,7 +189,7 @@ You can nest container queries inside of selectors.
 
 @container my-container (min-inline-size: 22em) {
   .my-element {
-     /* styles to apply when element's is wider than 22em */
+    /* styles to apply when element's is wider than 22em */
   }
 }
 ```
@@ -197,7 +199,7 @@ Or nest them inside of other container queries or at-rules.
 ```css
 @container my-container (min-inline-size: 22em) {
   .my-element {
-      /* styles to apply when element's is wider than 22em */
+    /* styles to apply when element's is wider than 22em */
   }
 }
 ```
@@ -206,7 +208,7 @@ Or nest them inside of other container queries or at-rules.
 @layer base {
   @container my-container (min-inline-size: 22em) {
     .my-element {
-    /* styles to apply */
+      /* styles to apply */
     }
   }
 }

@@ -7,8 +7,9 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Some websites claim that allowing users to paste passwords reduces security.
-However, password pasting actually *improves* security
+However, password pasting actually _improves_ security
 because it enables the use of password managers.
 
 Password managers typically generate strong passwords for users,
@@ -53,9 +54,9 @@ within the `paste` event listener
 that's associated with the password input element:
 
 ```javascript
-let input = document.querySelector('input');
+let input = document.querySelector("input");
 
-input.addEventListener('paste', (e) => {
+input.addEventListener("paste", (e) => {
   e.preventDefault(); // This is what prevents pasting.
 });
 ```

@@ -4,39 +4,39 @@ Sources: code.claude.com/docs (computer-use, setup, env-vars), Microsoft Learn (
 
 ## 1. What keeps Claude Code away from NT today
 
-| Layer | Cost / problem | Source |
-|---|---|---|
-| Claude Code (Bun/JS binary) → Bash tool | one shell process per command + snapshot replay | setup docs [V], observed snapshot |
-| bash.exe (Git Bash = MSYS2) | POSIX emulation (emulated fork, cygpath) | replaced by niubash 1.5.0: 16.3 ms vs 19.2 ms (nt-03) |
-| PowerShell tool | heavy pwsh startup | disabled (CLAUDE_CODE_USE_POWERSHELL_TOOL=0) |
-| CreateProcessW per command | Windows process creation cost + Defender scan | Defender exclusions already set; per-command measurement [NV] (requires a clean Windows) |
-| output through pipes, not ConPTY | no TTY; output truncated at BASH_MAX_OUTPUT_LENGTH (30000 by default, max 150000) | env-vars docs [V] |
-| GUI | CLI `computer-use` = **macOS only**; on Windows only in Claude Desktop | computer-use docs [V] |
-| screenshots | downscale + model round trip: slowest method, used as a last resort (MCP > Bash > Chrome > computer use) | computer-use docs [V] |
+| Layer                                   | Cost / problem                                                                                           | Source                                                                                   |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Claude Code (Bun/JS binary) → Bash tool | one shell process per command + snapshot replay                                                          | setup docs [V], observed snapshot                                                        |
+| bash.exe (Git Bash = MSYS2)             | POSIX emulation (emulated fork, cygpath)                                                                 | replaced by niubash 1.5.0: 16.3 ms vs 19.2 ms (nt-03)                                    |
+| PowerShell tool                         | heavy pwsh startup                                                                                       | disabled (CLAUDE_CODE_USE_POWERSHELL_TOOL=0)                                             |
+| CreateProcessW per command              | Windows process creation cost + Defender scan                                                            | Defender exclusions already set; per-command measurement [NV] (requires a clean Windows) |
+| output through pipes, not ConPTY        | no TTY; output truncated at BASH_MAX_OUTPUT_LENGTH (30000 by default, max 150000)                        | env-vars docs [V]                                                                        |
+| GUI                                     | CLI `computer-use` = **macOS only**; on Windows only in Claude Desktop                                   | computer-use docs [V]                                                                    |
+| screenshots                             | downscale + model round trip: slowest method, used as a last resort (MCP > Bash > Chrome > computer use) | computer-use docs [V]                                                                    |
 
 ## 2. Most direct path to "all of Windows like a human"
 
 Precision order imposed by Claude Code itself: MCP > Bash > Claude in Chrome > computer use. So the target is a **persistent native MCP server** that talks to Win32/UIA, not screenshots.
 
-| Need | NT/Win32 API (Learn) | Latency note |
-|---|---|---|
-| read the UI | UI Automation `IUIAutomation` + **CacheRequest** (bulk fetch, 1 cross-process call for N properties) | without cache: 1 cross-process call per property [V] |
-| react to changes | UIA events (`AddAutomationEventHandler`) with cache request, on a non-UI thread | avoids polling [V] |
-| text | `TextRange::GetText(-1)` in chunks | no cache for TextPattern [V] |
-| act | UIA patterns (Invoke, Value, Toggle); fallback `SendInput` | Invoke without mouse [V learn.microsoft.com uiauto-implementinginvoke]; without focus [NV] (source not found: Learn does not guarantee it) |
-| see | Windows.Graphics.Capture / DXGI Desktop Duplication, only if UIA is not enough | [NV] (source not found: not searched, outside light network scope) |
-| tool discovery | MCP on Windows: ODR `odr.exe mcp list/add`, File Explorer and Settings connectors; build ≥ 26220.7262 (this PC: 28120) | servers contained by default; unpackaged = "Reduce protections for agent connectors" [V] |
+| Need             | NT/Win32 API (Learn)                                                                                                   | Latency note                                                                                                                               |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| read the UI      | UI Automation `IUIAutomation` + **CacheRequest** (bulk fetch, 1 cross-process call for N properties)                   | without cache: 1 cross-process call per property [V]                                                                                       |
+| react to changes | UIA events (`AddAutomationEventHandler`) with cache request, on a non-UI thread                                        | avoids polling [V]                                                                                                                         |
+| text             | `TextRange::GetText(-1)` in chunks                                                                                     | no cache for TextPattern [V]                                                                                                               |
+| act              | UIA patterns (Invoke, Value, Toggle); fallback `SendInput`                                                             | Invoke without mouse [V learn.microsoft.com uiauto-implementinginvoke]; without focus [NV] (source not found: Learn does not guarantee it) |
+| see              | Windows.Graphics.Capture / DXGI Desktop Duplication, only if UIA is not enough                                         | [NV] (source not found: not searched, outside light network scope)                                                                         |
+| tool discovery   | MCP on Windows: ODR `odr.exe mcp list/add`, File Explorer and Settings connectors; build ≥ 26220.7262 (this PC: 28120) | servers contained by default; unpackaged = "Reduce protections for agent connectors" [V]                                                   |
 
 ## 3. Existing (gh api, aphrody-labs forks)
 
-| Repository | Language | State | Use |
-|---|---|---|---|
-| CursorTouch/Windows-MCP (11.5k ★, push 2026-11-12) | Python | active | functional UIA + input reference; Python = startup latency, to be rewritten |
-| microsoft/UFO (10.2k ★) | Python | active | Microsoft UIA + vision agent, control tree model |
-| microsoft/mcp-on-windows-samples | JS/C# | 2026-06 | ODR registration, MCP host |
-| microsoft/winappCli (+ skill `winappcli:winapp-ui-automation` installed) | — | active | UI inspection/click already available in this session |
-| microsoft/windows-rs | Rust | active | UIA/Win32 bindings for the rewrite |
-| microsoft/WinAppDriver | — | frozen 2025-04 | to ignore |
+| Repository                                                               | Language | State          | Use                                                                         |
+| ------------------------------------------------------------------------ | -------- | -------------- | --------------------------------------------------------------------------- |
+| CursorTouch/Windows-MCP (11.5k ★, push 2026-11-12)                       | Python   | active         | functional UIA + input reference; Python = startup latency, to be rewritten |
+| microsoft/UFO (10.2k ★)                                                  | Python   | active         | Microsoft UIA + vision agent, control tree model                            |
+| microsoft/mcp-on-windows-samples                                         | JS/C#    | 2026-06        | ODR registration, MCP host                                                  |
+| microsoft/winappCli (+ skill `winappcli:winapp-ui-automation` installed) | —        | active         | UI inspection/click already available in this session                       |
+| microsoft/windows-rs                                                     | Rust     | active         | UIA/Win32 bindings for the rewrite                                          |
+| microsoft/WinAppDriver                                                   | —        | frozen 2025-04 | to ignore                                                                   |
 
 ## 4. Plan (high level; low-level implementation = session nt-03)
 
@@ -52,16 +52,17 @@ nt-03 wired `agent-desktop mcp --headed` 1.2.0 (Rust, 67 tools, UIA cache + Wind
 
 MCP `tools/call` round-trip bench (tools/bench-mcp/bench.ts, bun, persistent stdio, median, this PC):
 
-| Tool | median | p90 | response |
-|---|---|---|---|
-| initialize | 7.3 ms | — | — |
-| desktop_version | 9.7 ms | 10.3 ms | 463 B |
-| desktop_clipboard_get | 10.0 ms | 10.3 ms | 1 KB |
-| desktop_list_windows | 25.5 ms | 27.7 ms | 1.6 KB |
-| desktop_snapshot (WindowsTerminal, interactive_only) | 90.6 ms | 95.6 ms | 13 KB |
-| desktop_screenshot (2560x1440 screen) | 313 ms | 333 ms | 368 KB |
+| Tool                                                 | median  | p90     | response |
+| ---------------------------------------------------- | ------- | ------- | -------- |
+| initialize                                           | 7.3 ms  | —       | —        |
+| desktop_version                                      | 9.7 ms  | 10.3 ms | 463 B    |
+| desktop_clipboard_get                                | 10.0 ms | 10.3 ms | 1 KB     |
+| desktop_list_windows                                 | 25.5 ms | 27.7 ms | 1.6 KB   |
+| desktop_snapshot (WindowsTerminal, interactive_only) | 90.6 ms | 95.6 ms | 13 KB    |
+| desktop_screenshot (2560x1440 screen)                | 313 ms  | 333 ms  | 368 KB   |
 
 Findings: a floor of about 10 ms even for `desktop_version`, which does nothing, so a server-side overhead per call (unknown cause); MCP mode saves no time compared with the CLI (list_windows 25.5 vs 25.7 ms); a screenshot costs 30 times more than a UIA snapshot. Patch priorities: per-call floor, capture (format/scale, reuse the frame pool), targeted snapshot. ODR blocked: `odr mcp list` → "MCP surface is not enabled".
 
 ## 6. Low-level state (nt-03, 2026-11-12)
+
 Claude Code runs as admin (integrity S-1-16-12288); Sudo for Windows Inline, ConsentPromptBehaviorAdmin=0 (elevation without prompt); WT Niubash profile elevate=true by default. Reproducible via C:\src\configuration (README, shell.dsc.winget, machine.export.dsc.winget 161 packages, apply-user.ts --check, forks-aphrody-labs.sh). Windows MCP surface / agentic features: not enabled, owner decision.

@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 How to use the Google Fonts CSS API to efficiently deliver web fonts.
 
- Jimmy Mooney [X](https://twitter.com/jimmy0x52) [GitHub](https://github.com/jimmy0x52) [LinkedIn](https://www.linkedin.com/in/jimmymooney/) [Homepage](https://www.jimmymooney.com/)
+Jimmy Mooney [X](https://twitter.com/jimmy0x52) [GitHub](https://github.com/jimmy0x52) [LinkedIn](https://www.linkedin.com/in/jimmymooney/) [Homepage](https://www.jimmymooney.com/)
 
 Over the years, a lot has changed with [web fonts](https://fonts.google.com/knowledge/glossary/web_font) technology. What used to be a niche practice that required an image of text or a [Flash](https://en.wikipedia.org/wiki/Scalable_Inman_Flash_Replacement) plug-in (and that compromised your website's search engine optimization) is now a standard practice across the web. Once upon a time, you had to load an entire font before the page loaded---with styles and characters you may not have even used---but even that has become a thing of the past.
 
@@ -22,13 +23,16 @@ All this happens by including a single line of HTML in your code.
 ## How to use the Google Fonts CSS API
 
 The [Google Fonts CSS API documentation](https://developers.google.com/fonts/docs/getting_started) sums it up nicely:
->
+
 > You don't need to do any programming; all you have to do is add a special stylesheet link to your HTML document, then refer to the font in a CSS style.
 
 The minimum you need to do is include a single line in your HTML, like this:
 
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
+<link
+  href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+  rel="stylesheet"
+/>
 ```
 
 When you request a font from the API, you specify which family or families you would like and, optionally, their weights, styles, subsets, and [many other options](https://developers.google.com/fonts/docs/getting_started). The API will then handle your request in one of two ways:
@@ -48,7 +52,10 @@ need.
 The Google Fonts CSS API can create very small font files (called subsets), generated in real time, to serve your users only the text and styles required by your website. Instead of serving up an entire font, you can request specific characters using the [`text`](https://developers.google.com/fonts/docs/getting_started#optimizing_your_font_requests) parameter.
 
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap&text=RobtMn" rel="stylesheet" />
+<link
+  href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap&text=RobtMn"
+  rel="stylesheet"
+/>
 ```
 
 The CSS API also provides additional web font optimizations to your users automatically, without any API parameters. The API will serve your users CSS files with [`unicode-range`](https://developer.mozilla.org/docs/Web/CSS/@font-face/unicode-range) already enabled ([if supported by their web browser](https://caniuse.com/font-unicode-range)), so they load the fonts for only the specific characters your website needs.

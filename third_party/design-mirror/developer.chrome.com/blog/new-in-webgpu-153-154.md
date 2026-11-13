@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: September 15, 2026
@@ -58,7 +59,8 @@ if (!navigator.gpu.wgslLanguageFeatures.has("swizzle_assignment")) {
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   requires swizzle_assignment;
 
   @vertex

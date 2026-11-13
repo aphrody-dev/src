@@ -44,7 +44,13 @@ sitemaps = ["https://vercel.com/sitemap.xml"]
 mode = "index"
 license = "Vercel Terms of Service (propriétaire)"
 license_evidence = "https://vercel.com/legal/terms : Vercel conserve tous les droits sur les Services et leur documentation"
-include = ['^/geist', '^/(features|products)(/|$)', '^/docs/(frameworks|image-optimization|speed-insights|incremental-static-regeneration|edge-network|caching|cdn|fonts|functions|rendering|observability|analytics|web-analytics|accessibility|seo)', '^/(font|design)(/|$)', '^/guides/.*(performance|core-web-vitals|seo|accessib|image|font|lcp|inp|cls)']
+include = [
+  '^/geist',
+  '^/(features|products)(/|$)',
+  '^/docs/(frameworks|image-optimization|speed-insights|incremental-static-regeneration|edge-network|caching|cdn|fonts|functions|rendering|observability|analytics|web-analytics|accessibility|seo)',
+  '^/(font|design)(/|$)',
+  '^/guides/.*(performance|core-web-vitals|seo|accessib|image|font|lcp|inp|cls)',
+]
 exclude = ['^/api/', '^/blog/authors', '^/changelog/authors']
 delay_ms = 1500
 
@@ -56,7 +62,9 @@ mode = "mirror"
 license = "CC-BY-4.0 (texte), Apache-2.0 (exemples de code)"
 license_evidence = "pied de page de chaque page : « Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License »"
 attribution = "Google LLC et les auteurs cités, web.dev"
-include = ['^/(learn/(accessibility|performance|design|html|css|forms|images)|explore/(accessible|fast|learn-core-web-vitals|seo|webassembly|progressive-web-apps)|articles/[^/]*(a11y|accessib|aria|focus|contrast|color|keyboard|screen-reader|alt|label|semantic|landmark|headings|seo|crawl|structured-data|canonical|robots|sitemap|meta|vitals|lcp|inp|cls|fid|ttfb|fcp|tbt|long-task|interaction|responsiveness|layout-shift|optimize|lighthouse|crux|rum|performance|preload|preconnect|fetch-priority|lazy|font|image|render|hydration|bfcache|prerender|speculation|content-visibility|webgpu|gpu|wasm|webassembly|simd|threads|offscreen|worker|view-transition|scroll|animation)[^/]*)(/|$)']
+include = [
+  '^/(learn/(accessibility|performance|design|html|css|forms|images)|explore/(accessible|fast|learn-core-web-vitals|seo|webassembly|progressive-web-apps)|articles/[^/]*(a11y|accessib|aria|focus|contrast|color|keyboard|screen-reader|alt|label|semantic|landmark|headings|seo|crawl|structured-data|canonical|robots|sitemap|meta|vitals|lcp|inp|cls|fid|ttfb|fcp|tbt|long-task|interaction|responsiveness|layout-shift|optimize|lighthouse|crux|rum|performance|preload|preconnect|fetch-priority|lazy|font|image|render|hydration|bfcache|prerender|speculation|content-visibility|webgpu|gpu|wasm|webassembly|simd|threads|offscreen|worker|view-transition|scroll|animation)[^/]*)(/|$)',
+]
 exclude = ['\?', '/i18n/']
 delay_ms = 800
 
@@ -68,6 +76,9 @@ mode = "mirror"
 license = "CC-BY-4.0 (texte), Apache-2.0 (exemples de code)"
 license_evidence = "pied de page de chaque page : « Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License »"
 attribution = "Google LLC et les auteurs cités, developer.chrome.com"
-include = ['^/docs/(web-platform/webgpu|lighthouse/(accessibility|seo|performance|best-practices)|crux|performance|devtools/(performance|accessibility|lighthouse)|web-platform/(view-transitions|scroll-driven|prerender|long-animation|bfcache))', '^/blog/[^/]*(webgpu|gpu|wasm|webassembly|inp|lcp|cls|vitals|crux|loaf|long-animation|soft-nav|speculation|prerender|view-transition|scroll-driven|a11y|accessib|seo)[^/]*(/|$)']
+include = [
+  '^/docs/(web-platform/webgpu|lighthouse/(accessibility|seo|performance|best-practices)|crux|performance|devtools/(performance|accessibility|lighthouse)|web-platform/(view-transitions|scroll-driven|prerender|long-animation|bfcache))',
+  '^/blog/[^/]*(webgpu|gpu|wasm|webassembly|inp|lcp|cls|vitals|crux|loaf|long-animation|soft-nav|speculation|prerender|view-transition|scroll-driven|a11y|accessib|seo)[^/]*(/|$)',
+]
 exclude = ['\?', '/i18n/']
 delay_ms = 800

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: September 19, 2023, Last updated: September 16, 2025
@@ -65,6 +66,7 @@ function applyFilter(videoFrame) {
   // Finally, submit commands to GPU
 }
 ```
+
 <iframe height="420" style="width: 100%;" scrolling="no" title="Untitled" src="https://codepen.io/web-dot-dev/embed/dPoBPeW?default-tab=js%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true" allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi">
 See the Pen <a href="https://codepen.io/web-dot-dev/pen/dPoBPeW">
 Untitled</a> by web.dev (<a href="https://codepen.io/web-dot-dev">@web-dot-dev</a>)
@@ -84,7 +86,7 @@ On the other hand, WebGPU requires you to manage the canvas yourself. For exampl
 Check out the [WebGPU Multiple Canvases demo](https://jsgist.org/?src=bcb94d8b67b19f71a9792966da827af7).
 
 On a side note, browsers currently have a limit on the number of WebGL canvases per page. At the time of writing, Chrome and Safari can only use up to 16 WebGL canvases simultaneously; Firefox can create up to 200 of them. On the other hand, there is no limit on the number of WebGPU canvases per page.
- The maximum number of WebGL canvases in Safari, Chrome, and Firefox (from left to right) - [demo](https://codepen.io/web-dot-dev/pen/JodQoQN).
+The maximum number of WebGL canvases in Safari, Chrome, and Firefox (from left to right) - [demo](https://codepen.io/web-dot-dev/pen/JodQoQN).
 
 ## Helpful error messages
 
@@ -127,7 +129,7 @@ In WebGPU, buffers and textures are immutable. This means that you cannot change
 ## Space convention differences
 
 In WebGL, the Z [clip space](https://developer.mozilla.org/docs/Web/API/WebGL_API/WebGL_model_view_projection#clip_space) range is from -1 to 1. In WebGPU, the Z clip space range is from 0 to 1. This means that objects with a z value of 0 are the closest to the camera, while objects with a z value of 1 are the furthest away.
- Z clip space ranges in WebGL and WebGPU.
+Z clip space ranges in WebGL and WebGPU.
 
 WebGL uses the OpenGL convention, where the Y axis is up and the Z axis is towards the viewer. WebGPU uses the Metal convention, where the Y axis is down and the Z axis is out of the screen. Note that the Y axis direction is down in framebuffer coordinate, viewport coordinate and fragment/pixel coordinate. In clip space, the Y axis direction is still up as in WebGL.
 

@@ -7,13 +7,12 @@ cargo-features = ["codegen-backend", "panic-immediate-abort"]
 resolver = "3"
 members = [
   "crates/*",
+  # Explicit members outside crates/ (they win over `exclude`): one Cargo.lock, one target dir (docs/infra/CACHE.md).
+  "packages/env-kit/loaders/rust",
+  "packages/vault/native",
+  "tools/build-model",
 ]
-exclude = [
-  "third_party",
-  "apps",
-  "packages",
-  "infra",
-]
+exclude = ["third_party", "apps", "packages", "infra"]
 
 [workspace.package]
 version = "0.3.0"
@@ -27,6 +26,7 @@ homepage = "https://labs.aphrody.com"
 [workspace.dependencies]
 # First-party crates
 archguard = { version = "0.1.0", path = "crates/archguard" }
+aphrody-design-shared = { version = "0.3.0", path = "crates/aphrody-design-shared" }
 corelib = { version = "0.3.0", package = "aphrody-corelib", path = "crates/corelib", default-features = false }
 depot-cli = { version = "0.3.0", path = "crates/depot-cli" }
 depot-core = { version = "0.3.0", path = "crates/depot-core" }
@@ -48,22 +48,22 @@ gamescope-wgsl = { version = "0.1.0", path = "crates/gamescope-wgsl" }
 stack-bench = { version = "0.1.0", path = "crates/bench" }
 xtk = { version = "0.1.0", path = "crates/xtask" }
 # Labs (merged from C:\labs): Lore VCS, APM, conformance harness, aphrody CLI
-lore = { version = "0.13.1-nightly", path = "crates/lore" , package = "aphrody-lore" }
-lore-aws = { version = "0.13.1-nightly", path = "crates/lore-aws" , package = "aphrody-lore-aws" }
-lore-base = { version = "0.13.1-nightly", path = "crates/lore-base" , package = "aphrody-lore-base" }
-lore-credential = { version = "0.13.1-nightly", path = "crates/lore-credential" , package = "aphrody-lore-credential" }
-lore-error-set = { version = "0.1.0", path = "crates/lore-error-set" , package = "aphrody-lore-error-set" }
-lore-error-set-macro = { version = "0.1.0", path = "crates/lore-error-set-macro" , package = "aphrody-lore-error-set-macro" }
-lore-hashicorp = { version = "0.13.1-nightly", path = "crates/lore-hashicorp" , package = "aphrody-lore-hashicorp" }
-lore-io = { version = "0.13.1-nightly", path = "crates/lore-io" , package = "aphrody-lore-io" }
-lore-macro = { version = "0.13.1-nightly", path = "crates/lore-macro" , package = "aphrody-lore-macro" }
-lore-notification = { version = "0.13.1-nightly", path = "crates/lore-notification" , package = "aphrody-lore-notification" }
-lore-proto = { version = "0.1.67", path = "crates/lore-proto" , package = "aphrody-lore-proto" }
-lore-revision = { version = "0.13.1-nightly", path = "crates/lore-revision" , package = "aphrody-lore-revision" }
-lore-server = { version = "0.13.1-nightly", path = "crates/lore-server" , package = "aphrody-lore-server" }
-lore-storage = { version = "0.13.1-nightly", path = "crates/lore-storage" , package = "aphrody-lore-storage" }
-lore-telemetry = { version = "0.13.1-nightly", path = "crates/lore-telemetry" , package = "aphrody-lore-telemetry" }
-lore-transport = { version = "0.13.1-nightly", path = "crates/lore-transport" , package = "aphrody-lore-transport" }
+lore = { version = "0.13.1-nightly", path = "crates/lore", package = "aphrody-lore" }
+lore-aws = { version = "0.13.1-nightly", path = "crates/lore-aws", package = "aphrody-lore-aws" }
+lore-base = { version = "0.13.1-nightly", path = "crates/lore-base", package = "aphrody-lore-base" }
+lore-credential = { version = "0.13.1-nightly", path = "crates/lore-credential", package = "aphrody-lore-credential" }
+lore-error-set = { version = "0.1.0", path = "crates/lore-error-set", package = "aphrody-lore-error-set" }
+lore-error-set-macro = { version = "0.1.0", path = "crates/lore-error-set-macro", package = "aphrody-lore-error-set-macro" }
+lore-hashicorp = { version = "0.13.1-nightly", path = "crates/lore-hashicorp", package = "aphrody-lore-hashicorp" }
+lore-io = { version = "0.13.1-nightly", path = "crates/lore-io", package = "aphrody-lore-io" }
+lore-macro = { version = "0.13.1-nightly", path = "crates/lore-macro", package = "aphrody-lore-macro" }
+lore-notification = { version = "0.13.1-nightly", path = "crates/lore-notification", package = "aphrody-lore-notification" }
+lore-proto = { version = "0.1.67", path = "crates/lore-proto", package = "aphrody-lore-proto" }
+lore-revision = { version = "0.13.1-nightly", path = "crates/lore-revision", package = "aphrody-lore-revision" }
+lore-server = { version = "0.13.1-nightly", path = "crates/lore-server", package = "aphrody-lore-server" }
+lore-storage = { version = "0.13.1-nightly", path = "crates/lore-storage", package = "aphrody-lore-storage" }
+lore-telemetry = { version = "0.13.1-nightly", path = "crates/lore-telemetry", package = "aphrody-lore-telemetry" }
+lore-transport = { version = "0.13.1-nightly", path = "crates/lore-transport", package = "aphrody-lore-transport" }
 # Media (merged from C:\Users\aphro\tv)
 tv-core = { version = "0.3.0", path = "crates/tv-core" }
 tv-ffmpeg = { version = "0.3.0", path = "crates/tv-ffmpeg" }
@@ -78,7 +78,13 @@ unic-langid = "0.9.6"
 base64 = "0.23.1"
 bitflags = "2.13.2"
 blake3 = { version = "1.8.7", features = ["mmap", "rayon"] }
-clap = { version = "4.6.7", features = ["derive", "env", "cargo", "string", "unicode"] }
+clap = { version = "4.6.7", features = [
+  "derive",
+  "env",
+  "cargo",
+  "string",
+  "unicode",
+] }
 regex = "1.13.1"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
@@ -86,7 +92,11 @@ thiserror = "2.0.21"
 toml = "=1.2.1+spec-1.1.0"
 toml_edit = "0.25.19"
 tracing = { version = "0.1.44", features = ["release_max_level_debug"] }
-tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt", "json"] }
+tracing-subscriber = { version = "0.3.23", features = [
+  "env-filter",
+  "fmt",
+  "json",
+] }
 windows-sys = { version = "0.61.2", features = [
   "Win32_Foundation",
   "Win32_System_Console",
@@ -123,7 +133,13 @@ egui = { version = "0.37", default-features = false }
 gix = { version = "0.90.0", default-features = false, features = ["default"] }
 globset = "0.4.21"
 goblin = "0.10.7"
-iced-x86 = { version = "1.22.0", features = ["std", "decoder", "intel", "fast_fmt", "instr_info"] }
+iced-x86 = { version = "1.22.0", features = [
+  "std",
+  "decoder",
+  "intel",
+  "fast_fmt",
+  "instr_info",
+] }
 ignore = "0.4.34"
 image = { version = "0.25.10", default-features = false }
 js-sys = "0.3.107"
@@ -168,7 +184,10 @@ axum = "0.8.9"
 # derive macro, which its semver guarantees do not cover.
 bitcode = "=0.6.9"
 bytes = { version = "1.12.1", features = ["serde"] }
-chrono = { version = "0.4.45", default-features = false, features = ["alloc", "clock"] }
+chrono = { version = "0.4.45", default-features = false, features = [
+  "alloc",
+  "clock",
+] }
 clap-markdown = "0.1.5"
 config = { version = "0.15.27", features = ["toml"], default-features = false }
 ctor = "1.0.13"
@@ -196,7 +215,9 @@ indexmap = "2.14.2"
 infer = "0.22.0"
 io-uring = "0.7.16"
 # PEM keys are never parsed; `use_pem` would pull in a second `pem`.
-jsonwebtoken = { version = "11.1.0", default-features = false, features = ["rust_crypto"] }
+jsonwebtoken = { version = "11.1.0", default-features = false, features = [
+  "rust_crypto",
+] }
 # The OS secure stores the token store keeps its encryption keys in, one per platform.
 keyring-core = "1.0.1"
 apple-native-keyring-store = { version = "1.0.2", features = ["keychain"] }
@@ -204,26 +225,26 @@ linux-keyutils-keyring-store = "1.0.0"
 windows-native-keyring-store = { version = "1.1.0", default-features = false }
 libc = "0.2.191"
 lz4-sys = "=1.11.1+lz4-1.10.0"
-zstd-sys = { version = "2.1.2", default-features = false, features = ["experimental"] }
+zstd-sys = { version = "2.1.2", default-features = false, features = [
+  "experimental",
+] }
 mockall = "0.15.0"
 opentelemetry = "0.33.1"
-opentelemetry-otlp = { version = "0.33.1", default-features = false, features = [
-    "grpc-tonic",
-    "tls-ring",
-    "tls-roots",
-    "trace",
-    "metrics",
-    "logs",
-    "internal-logs",
-] }
+opentelemetry-otlp = { version = "0.33.1", default-features = false, features = ["grpc-tonic", "tls-ring", "tls-roots", "trace", "metrics", "logs", "internal-logs"] }
 opentelemetry_sdk = { version = "0.33.1", features = ["rt-tokio"] }
-opentelemetry-semantic-conventions = { version = "0.33.1", features = ["semconv_experimental"] }
+opentelemetry-semantic-conventions = { version = "0.33.1", features = [
+  "semconv_experimental",
+] }
 parking_lot = { version = "0.13.0", features = ["arc_lock"] }
 pin-project = "1.1.13"
 proc-macro2 = "1.0.107"
 prost = "0.14.5"
 prost-types = "0.14.5"
-quinn = { version = "0.11.12", default-features = false, features = ["runtime-tokio", "rustls-ring", "bloom"] }
+quinn = { version = "0.11.12", default-features = false, features = [
+  "runtime-tokio",
+  "rustls-ring",
+  "bloom",
+] }
 quinn-proto = { version = "0.11.19", default-features = false }
 quote = "1.0.47"
 rand = "0.10.3"
@@ -231,48 +252,69 @@ rand_distr = "0.6.0"
 tempfile = "3.27.0"
 rcgen = "0.14.10"
 reqwest = { version = "0.13.5", default-features = false, features = [
-    "rustls-no-provider",
-    "charset",
-    "http2",
-    "system-proxy",
-    "form",
+  "rustls-no-provider",
+  "charset",
+  "http2",
+  "system-proxy",
+  "form",
 ] }
 ring = { version = "0.17.14", features = ["std"] }
 # We configure rustls to not bring in aws-lc-sys, which seems to have build issues on Windows.
 rustls = { version = "0.23.46", default-features = false, features = [
-    "std",
-    "logging",
-    "ring",
+  "std",
+  "logging",
+  "ring",
 ] }
 rustls-pki-types = "1.16.0"
 rustls-native-certs = "0.8.5"
-smallvec = { version = "1.16.5", features = ["const_generics", "union", "write"] }
+smallvec = { version = "1.16.5", features = [
+  "const_generics",
+  "union",
+  "write",
+] }
 serde_bytes = "0.11.19"
-serde_with = { version = "3.24.0", default-features = false, features = ["alloc", "macros"] }
+serde_with = { version = "3.24.0", default-features = false, features = [
+  "alloc",
+  "macros",
+] }
 saphyr-parser = "0.3.4"
 sha2 = "0.11.1"
 serial_test = { version = "4.0.1" }
 socket2 = "0.6.5"
 syn = "3.0.10"
-sysinfo = { version = "0.40.3", default-features = false, features = ["disk", "system", "linux-tmpfs"] }
+sysinfo = { version = "0.40.3", default-features = false, features = [
+  "disk",
+  "system",
+  "linux-tmpfs",
+] }
 temp-env = "0.3.6"
 tokio = { version = "1.54.1", features = [
-    "fs",
-    "io-util",
-    "macros",
-    "net",
-    "parking_lot",
-    "rt",
-    "rt-multi-thread",
-    "signal",
-    "sync",
-    "time",
+  "fs",
+  "io-util",
+  "macros",
+  "net",
+  "parking_lot",
+  "rt",
+  "rt-multi-thread",
+  "signal",
+  "sync",
+  "time",
 ] }
-tokio-metrics = { version = "0.5.2", default-features = false, features = ["rt"] }
-tokio-stream = { version = "0.1.19", default-features = false, features = ["sync"] }
+tokio-metrics = { version = "0.5.2", default-features = false, features = [
+  "rt",
+] }
+tokio-stream = { version = "0.1.19", default-features = false, features = [
+  "sync",
+] }
 tokio-util = { version = "0.7.20", default-features = false, features = ["rt"] }
 trybuild = "1.0.122"
-tonic = { version = "0.14.9", default-features = false, features = ["codegen", "router", "server", "tls-native-roots", "tls-webpki-roots"] }
+tonic = { version = "0.14.9", default-features = false, features = [
+  "codegen",
+  "router",
+  "server",
+  "tls-native-roots",
+  "tls-webpki-roots",
+] }
 tonic-prost = "0.14.9"
 tonic-prost-build = "0.14.9"
 tower = { version = "0.5.3", default-features = false }
@@ -283,7 +325,9 @@ urlencoding = "2.1.3"
 uuid = { version = "1.29.2", default-features = false, features = ["v4", "v7"] }
 webpki-roots = "1.0.12"
 x509-parser = "0.18.1"
-xxhash-rust = { version = "0.8.19", default-features = false, features = ["xxh3"] }
+xxhash-rust = { version = "0.8.19", default-features = false, features = [
+  "xxh3",
+] }
 adblock = "0.13.5"
 argon2 = "0.6.0"
 aws-config = { version = "1.13.2", default-features = false }
@@ -305,6 +349,10 @@ dotenvy = "0.15.7"
 ed25519-dalek = "3.0.0"
 flate2 = "1.1.11"
 getrandom = "0.4.3"
+# packages/vault/native (aphrody-vault).
+age = { version = "0.12.1", default-features = false }
+aes-gcm = "0.11.1"
+zeroize = "1.9.1"
 glob = "0.3.4"
 h2 = "0.4.20"
 h3 = "0.0.8"
@@ -353,7 +401,6 @@ winresource = "0.1.34"
 zip = { version = "9.5.1", default-features = false }
 zstd = "0.14.3"
 bstr = { version = "1.13.1", default-features = false }
-
 
 
 [workspace.lints.rust]

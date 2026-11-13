@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 JavaScript often triggers visual changes. Sometimes that's directly through style manipulations, and sometimes it's calculations that result in visual changes, like searching or sorting data. Badly-timed or long-running JavaScript is a common cause of performance issues. You should look to minimize its impact where you can.
 
 Paul Lewis [X](https://twitter.com/aerotwist) [Homepage](https://aerotwist.com/)
@@ -43,18 +44,18 @@ will run at the start of a frame is to use `requestAnimationFrame`.
 
 ```javascript
 /**
-    * If run as a requestAnimationFrame callback, this
-    * will be run at the start of the frame.
-    */
+ * If run as a requestAnimationFrame callback, this
+ * will be run at the start of the frame.
+ */
 function updateScreen(time) {
-    // Make visual updates here.
+  // Make visual updates here.
 }
 
 requestAnimationFrame(updateScreen);
 ```
 
 Frameworks or samples may use `setTimeout` or `setInterval` to do visual changes like animations,
-but the problem with this is that the callback will run at *some point* in the frame, possibly right
+but the problem with this is that the callback will run at _some point_ in the frame, possibly right
 at the end, and that can often have the effect of causing us to miss a frame, resulting in jank.
 
 In fact, jQuery used to use `setTimeout` for its `animate` behavior. It was changed to use
@@ -85,9 +86,9 @@ dataSortWorker.postMesssage(dataToSort);
 
 // The main thread is now free to continue working on other things...
 
-dataSortWorker.addEventListener('message', function(evt) {
-    var sortedData = evt.data;
-    // Update data on screen...
+dataSortWorker.addEventListener("message", function (evt) {
+  var sortedData = evt.data;
+  // Update data on screen...
 });
 ```
 

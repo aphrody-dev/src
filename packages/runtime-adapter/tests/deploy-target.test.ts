@@ -2,7 +2,9 @@ import { expect, test } from "bun:test";
 import { join } from "node:path";
 import { cronToCalendar, render } from "../../../scripts/deploy-target";
 
-const toml = Bun.TOML.parse(await Bun.file(join(import.meta.dir, "../../../infra/deploy.toml")).text()) as Record<string, any>;
+const toml = Bun.TOML.parse(
+  await Bun.file(join(import.meta.dir, "../../../infra/deploy.toml")).text(),
+) as Record<string, any>;
 
 test("downloads renders for all three targets from infra/deploy.toml", () => {
   const cf = render("downloads", "cf", toml)["cloudflare.config.ts"]!;
@@ -14,7 +16,8 @@ test("downloads renders for all three targets from infra/deploy.toml", () => {
   const usa = toml.nodes.usa.mesh_ip;
   expect(vps["downloads.conf"]).toContain(`proxy_pass http://${usa}:8797`);
   expect(vps["downloads.service"]).toContain("Environment=STORAGE=s3");
-  for (const f of Object.values({ ...vps, ...v })) expect(f).not.toMatch(/SECRET_ACCESS_KEY=|CRON_SECRET=/);
+  for (const f of Object.values({ ...vps, ...v }))
+    expect(f).not.toMatch(/SECRET_ACCESS_KEY=|CRON_SECRET=/);
 });
 
 test("commercial apps are refused on Vercel Hobby", () => {

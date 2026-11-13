@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sam Dutton [X](https://twitter.com/sw12) [GitHub](https://github.com/samdutton) [Mastodon](https://techhub.social/@samdutton) [Bluesky](https://bsky.app/profile/samdutton.bsky.social) [Homepage](https://samdutton.com)
 
 Once you've audited a site, make sure to package the results in a digestible form.
@@ -18,7 +19,7 @@ Once you've audited a site, make sure to package the results in a digestible for
 - Order results by priority.
 - Leave out results if they're not relevant or interesting.
 - Where possible present numerical data as charts or graphs.
-- Avoid a wall of data --- site reviews should not be boring.   
+- Avoid a wall of data --- site reviews should not be boring.
 
 **Be sensitive to the people on the receiving end of your audit.**
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Many sites provide different versions of a page based on a user's language or
 region. `hreflang` links tell search engines the URLs for all the versions of
 a page so that they can display the correct version for each language or region.
@@ -60,8 +61,9 @@ keyword:
 **Option 2:** Add `Link` headers to your HTTP response:
 
 ```html
-Link: <https://example.com>; rel="alternate"; hreflang="en", <https://es.example.com>;
-rel="alternate"; hreflang="es", <https://de.example.com>; rel="alternate"; hreflang="de"
+Link: <https://example.com>; rel="alternate"; hreflang="en",
+<https://es.example.com>; rel="alternate"; hreflang="es",
+<https://de.example.com>; rel="alternate"; hreflang="de"
 ```
 
 **Option 3:** Add language version information to your [sitemap](https://support.google.com/webmasters/answer/156184).

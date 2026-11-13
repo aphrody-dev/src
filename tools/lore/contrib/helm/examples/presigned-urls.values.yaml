@@ -2,7 +2,7 @@
 # First: kubectl create secret generic lore-presign --from-literal=hmac=$(openssl rand -hex 32)
 image:
   repository: ghcr.io/epicgames/lore/loreserver
-  tag: ""  # empty = the chart's appVersion
+  tag: "" # empty = the chart's appVersion
 
 presignedUrl:
   enabled: true

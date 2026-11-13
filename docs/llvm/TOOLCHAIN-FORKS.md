@@ -4,13 +4,13 @@ Décision du propriétaire : mingw, vcpkg, zig et le compilateur Rust sont fork�
 
 ## Forks (aphrody-labs)
 
-| Upstream | Fork | Rôle |
-|---|---|---|
-| llvm/llvm-project | llvm-project | clang, lld et compiler-rt partagés (révision Chromium) |
-| rust-lang/rust, rust-lang/cargo | rust, cargo | rustc sur le LLVM de Chromium, cargo patché (build-std, cranelift) |
-| mingw-w64/mingw-w64, mstorsjo/llvm-mingw | mingw-w64, llvm-mingw | CRT et en-têtes Win32 libres, nécessaires à LiberNT/ReactOS et à `*-windows-gnullvm` |
-| codeberg.org/ziglang/zig (GitHub figé en 0.15.1) | zig (miroir) | `zig cc` pour glibc ciblée, base C du cross-compile |
-| microsoft/vcpkg, microsoft/vcpkg-tool | vcpkg, vcpkg-tool | triplets LLVM (infra/vcpkg, validés sur fr2) |
+| Upstream                                         | Fork                    | Rôle                                                                                          |
+| ------------------------------------------------ | ----------------------- | --------------------------------------------------------------------------------------------- |
+| llvm/llvm-project                                | llvm-project            | clang, lld et compiler-rt partagés (révision Chromium)                                        |
+| rust-lang/rust, rust-lang/cargo                  | rust, cargo             | rustc sur le LLVM de Chromium, cargo patché (build-std, cranelift)                            |
+| mingw-w64/mingw-w64, mstorsjo/llvm-mingw         | mingw-w64, llvm-mingw   | CRT et en-têtes Win32 libres, nécessaires à LiberNT/ReactOS et à `*-windows-gnullvm`          |
+| codeberg.org/ziglang/zig (GitHub figé en 0.15.1) | zig (miroir)            | `zig cc` pour glibc ciblée, base C du cross-compile                                           |
+| microsoft/vcpkg, microsoft/vcpkg-tool            | vcpkg, vcpkg-tool       | triplets LLVM (infra/vcpkg, validés sur fr2)                                                  |
 | torvalds/linux, LiberNT/LiberNT, reactos/reactos | linux, LiberNT, reactos | noyaux construits avec clang (Linux : `LLVM=1` [NV], ReactOS/LiberNT : clang-cl partiel [NV]) |
 
 ## Patchs visés (ordre de gain)

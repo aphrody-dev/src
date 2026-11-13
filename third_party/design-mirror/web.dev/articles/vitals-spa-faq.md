@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Answers to common questions about SPAs, Core Web Vitals, and how Core Web Vitals treats these.
 
- Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)  Yoav Weiss [X](https://twitter.com/yoavweiss) [GitHub](https://github.com/yoavweiss)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/) Yoav Weiss [X](https://twitter.com/yoavweiss) [GitHub](https://github.com/yoavweiss) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: September 14, 2021, Last updated: October 13, 2026
 
@@ -63,7 +64,7 @@ from app to app:
 - Some SPAs always load content from the network, whereas others preload all content upfront so that route changes load instantly from memory.
 
 These differences make defining and identifying what constitutes an SPA route
-change, or even an SPA itself, very difficult to do *at scale*.
+change, or even an SPA itself, very difficult to do _at scale_.
 
 In some cases an SPA route change is logically identical to an MPA page load,
 and in such cases it would be great if the existing Core Web Vitals metrics
@@ -135,7 +136,7 @@ When aggregating the scores of all pages in an origin, individual fast pages can
 improve the 75th percentile for the origin as a whole. However, when aggregating
 by individual pages, the scores of one page won't affect the scores of the
 next. In other words, when aggregating the scores of an MPA by page, fast cache
-loads seen on the checkout page will *not* improve the scores of slow initial
+loads seen on the checkout page will _not_ improve the scores of slow initial
 loads experienced on the site's [landing
 page](https://en.wikipedia.org/wiki/Landing_page).
 
@@ -172,7 +173,7 @@ One of the goals of the Web Vitals initiative is to promote and incentivize good
 user experiences across as many aspects of loading and using a web page as
 possible. We don't want to encourage scenarios where bad experiences are
 justified if you can have enough good experiences to make up for them. Users
-want pages to load fast *and* transition to new content fast, and we've tried to
+want pages to load fast _and_ transition to new content fast, and we've tried to
 design metrics that favor those types of experiences.
 
 ### We switched our site from an MPA to an SPA and our scores regressed. Is that expected?

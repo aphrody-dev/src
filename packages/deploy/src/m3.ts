@@ -35,7 +35,10 @@ export function readBrand(root: string): Brand {
     (_, attr: string, slot: string) =>
       `style="${attr}:${role[slot] ?? "currentColor"}"`,
   );
-  mark = mark.replace('<path style="fill:var(--aphrody-bolt', '<path class="bolt" style="fill:var(--aphrody-bolt');
+  mark = mark.replace(
+    '<path style="fill:var(--aphrody-bolt',
+    '<path class="bolt" style="fill:var(--aphrody-bolt',
+  );
   if (mark && !/aria-hidden/.test(mark))
     mark = mark.replace("<svg", '<svg aria-hidden="true"');
   return { name: b.name ?? "Aphrody", mark };

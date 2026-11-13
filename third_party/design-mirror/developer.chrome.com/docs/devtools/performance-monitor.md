@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Dale St. Marthe [LinkedIn](https://www.linkedin.com/in/dale-st-marthe)
 
 Use the **Performance monitor** to quickly get an idea of your site's load and runtime performance.
@@ -29,7 +30,7 @@ To open the **Performance monitor** panel:
 1. [Open DevTools](https://developer.chrome.com/docs/devtools/open.md.txt).
 2. Open the **Command menu** by pressing:
    - macOS: <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
-   - Windows, Linux, ChromeOS: <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> 
+   - Windows, Linux, ChromeOS: <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
 3. Start typing `Performance monitor`, select **Show Performance monitor** , and press <kbd>Enter</kbd>. DevTools displays the **Performance monitor** panel at the bottom of your DevTools window.
 
 Alternatively, in the top right corner, select **More options** \> **More tools** \> **Performance monitor**.

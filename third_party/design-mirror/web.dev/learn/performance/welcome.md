@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 # Welcome to Learn Performance!
 
 Web performance is a crucial aspect of web development that focuses on the speed
@@ -99,7 +100,7 @@ Images and `<iframe>` elements can consume significant
 bandwidth and CPU processing time. However, not all images and
 `<iframe>` elements need to be loaded during the initial page
 load, and can be deferred to a later time in which the user is likeliest to
-see them. This technique is known as *lazy loading* . In this module,
+see them. This technique is known as _lazy loading_ . In this module,
 lazy loading images and `<iframe>` elements is explained so
 you can get your pages to load faster and only consume bandwidth and
 processing time only when needed.
@@ -109,14 +110,14 @@ processing time only when needed.
 While much of performance deals with what you can do to optimize and eliminate
 unnecessary resources, it may seem a bit paradoxical to suggest that some
 resources should be loaded before they're needed. However, there are some
-cases in which it *might* be appropriate to load certain resources
+cases in which it _might_ be appropriate to load certain resources
 ahead of time. In this module, this aspect of performance is explored, as
 prefetching, prerendering, and service worker precaching are discussed.
 
 ### [An overview of web workers](https://web.dev/learn/performance/web-worker-overview)
 
 Much of what the user sees in the browser occurs on a single thread known as
-the *main thread*. However, there are opportunities where you can start
+the _main thread_. However, there are opportunities where you can start
 up new threads to do computationally expensive work so that the main thread
 can accommodate important user-facing tasks. The API that does this is known
 as the Web Worker API, and in this module, the basics of it are covered.

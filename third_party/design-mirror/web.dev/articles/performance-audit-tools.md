@@ -7,20 +7,21 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sam Dutton [X](https://twitter.com/sw12) [GitHub](https://github.com/samdutton) [Mastodon](https://techhub.social/@samdutton) [Bluesky](https://bsky.app/profile/samdutton.bsky.social) [Homepage](https://samdutton.com)
 
 There are several core objectives for building a performant, resilient site with low data cost.
 
 For each objective, you need an audit.
 
-| **Objective** | **Why?** | **What to test for?** |
-|---|---|---|
-| Ensure privacy, security and data integrity, and enable powerful API usage | [Why HTTPS Matters](https://developers.google.com/web/fundamentals/security/encrypt-in-transit/why-https) | HTTPS implemented for all site pages/routes and assets. |
-| Improve load performance | [53% of users abandon sites](https://www.doubleclickbygoogle.com/articles/mobile-speed-matters/) that take longer than three seconds to load | JavaScript and CSS that could be loaded asynchronously or deferred. Set goals for time to interactive and payload size: for example TTI on 3G. [Set a performance budget](https://infrequently.org/2017/10/can-you-afford-it-real-world-web-performance-budgets/). |
-| Reduce page weight | • Reduce data cost for users with capped data plans • Reduce web app storage requirements --- particularly important for users on low-spec devices • Reduce hosting and serving costs • Improve serving performance, reliability and resilience | Set a page weight budget: for example, first load under 400 kB. Check for heavy JavaScript. Check file sizes to find bloated images, media, HTML, CSS and JavaScript. Find images that could be lazy loaded, and check for unused code with [coverage tools](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage). |
-| Reduce resource requests | • Reduce [latency issues](https://www.igvita.com/2012/07/19/latency-the-new-web-performance-bottleneck/) • Reduce serving costs • Improve serving performance, reliability and resilience | Look for excessive or unnecessary requests for any type of resource. For example: files that are loaded repeatedly, JavaScript that is loaded in multiple versions, CSS that is never used, images that are never viewed (or could be lazy loaded). |
-| Optimize memory usage | [Memory can become the new bottleneck](https://timkadlec.com/2013/11/why-we-need-responsive-images-part-deux/), especially on mobile devices | Use the Chrome Task Manager to compare your site against others for memory usage when loading the home page and using other site features. |
-| Reduce CPU load | Mobile devices have limited CPU, especially low-spec devices | Check for heavy JavaScript. Find unused JavaScript and CSS with [coverage tools](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage). Check for [excessive DOM size](https://developers.google.com/web/tools/lighthouse/audits/dom-size) and scripts that run unnecessarily on first load. Look for JavaScript loaded in multiple versions, or libraries that could be avoided with minor refactoring. |
+| **Objective**                                                              | **Why?**                                                                                                                                                                                                                                        | **What to test for?**                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ensure privacy, security and data integrity, and enable powerful API usage | [Why HTTPS Matters](https://developers.google.com/web/fundamentals/security/encrypt-in-transit/why-https)                                                                                                                                       | HTTPS implemented for all site pages/routes and assets.                                                                                                                                                                                                                                                                                                                                                                               |
+| Improve load performance                                                   | [53% of users abandon sites](https://www.doubleclickbygoogle.com/articles/mobile-speed-matters/) that take longer than three seconds to load                                                                                                    | JavaScript and CSS that could be loaded asynchronously or deferred. Set goals for time to interactive and payload size: for example TTI on 3G. [Set a performance budget](https://infrequently.org/2017/10/can-you-afford-it-real-world-web-performance-budgets/).                                                                                                                                                                    |
+| Reduce page weight                                                         | • Reduce data cost for users with capped data plans • Reduce web app storage requirements --- particularly important for users on low-spec devices • Reduce hosting and serving costs • Improve serving performance, reliability and resilience | Set a page weight budget: for example, first load under 400 kB. Check for heavy JavaScript. Check file sizes to find bloated images, media, HTML, CSS and JavaScript. Find images that could be lazy loaded, and check for unused code with [coverage tools](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage).                                                                                      |
+| Reduce resource requests                                                   | • Reduce [latency issues](https://www.igvita.com/2012/07/19/latency-the-new-web-performance-bottleneck/) • Reduce serving costs • Improve serving performance, reliability and resilience                                                       | Look for excessive or unnecessary requests for any type of resource. For example: files that are loaded repeatedly, JavaScript that is loaded in multiple versions, CSS that is never used, images that are never viewed (or could be lazy loaded).                                                                                                                                                                                   |
+| Optimize memory usage                                                      | [Memory can become the new bottleneck](https://timkadlec.com/2013/11/why-we-need-responsive-images-part-deux/), especially on mobile devices                                                                                                    | Use the Chrome Task Manager to compare your site against others for memory usage when loading the home page and using other site features.                                                                                                                                                                                                                                                                                            |
+| Reduce CPU load                                                            | Mobile devices have limited CPU, especially low-spec devices                                                                                                                                                                                    | Check for heavy JavaScript. Find unused JavaScript and CSS with [coverage tools](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage). Check for [excessive DOM size](https://developers.google.com/web/tools/lighthouse/audits/dom-size) and scripts that run unnecessarily on first load. Look for JavaScript loaded in multiple versions, or libraries that could be avoided with minor refactoring. |
 
 There is a wide range of tools and techniques for auditing websites:
 
@@ -47,7 +48,7 @@ If you're not sure how to do this, work through the Chrome DevTools network pane
 Similar tools are available for
 [Firefox](https://developer.mozilla.org/docs/Tools/Network_Monitor),
 [Safari](https://developer.apple.com/library/content/documentation/AppleApplications/Conceptual/Safari_Developer_Guide/Instruments/Instruments.html#//apple_ref/doc/uid/TP40007874-CH4-SW1),
-[Internet Explorer](https://web.dev/%3Chttps://msdn.microsoft.com/library/gg130952(v=vs.85).aspx%3E) and
+[Internet Explorer](<https://web.dev/%3Chttps://msdn.microsoft.com/library/gg130952(v=vs.85).aspx%3E>) and
 [Edge](https://docs.microsoft.com/microsoft-edge/f12-devtools-guide/network).
 
 Remember to keep a record of results before you make changes. For network requests, that can be as
@@ -88,7 +89,7 @@ assets and layouts for different devices. You may need to test on actual hardwar
 not just with device simulation.
 
 > [!NOTE]
-> **Note:** **You can often use browser tools to spot problems simply by checking network responses and ordering by size.** For example: the 349KB PNG here looked like it could be a problem:  Sure enough, it turned out the image was 1600px wide, whereas the maximum display width of the element was only 400px. Decompressed, the image needed over 4MB of memory, which is a lot on a mobile phone. Resaving the image as an 800px wide JPEG (to cope with 400px display width on 2x screens) and optimizing with [ImageOptim](https://imageoptim.com/) resulted in a 17KB file: compare the [original PNG](https://drive.google.com/open?id=0B9xlQg9Xpugsb0VpQldsN3YwSEE) with the [optimized JPEG](https://drive.google.com/open?id=0B9xlQg9XpugsTlBVNlQ1bUdQa0U).
+> **Note:** **You can often use browser tools to spot problems simply by checking network responses and ordering by size.** For example: the 349KB PNG here looked like it could be a problem: Sure enough, it turned out the image was 1600px wide, whereas the maximum display width of the element was only 400px. Decompressed, the image needed over 4MB of memory, which is a lot on a mobile phone. Resaving the image as an 800px wide JPEG (to cope with 400px display width on 2x screens) and optimizing with [ImageOptim](https://imageoptim.com/) resulted in a 17KB file: compare the [original PNG](https://drive.google.com/open?id=0B9xlQg9Xpugsb0VpQldsN3YwSEE) with the [optimized JPEG](https://drive.google.com/open?id=0B9xlQg9XpugsTlBVNlQ1bUdQa0U).
 >
 > <br />
 >
@@ -100,7 +101,7 @@ Before you make changes, keep a record of memory and CPU usage.
 
 In Chrome you can access the Task Manager from the Window menu. This is a simple way to check a
 web page's requirements.
- Chrome's Task Manager --- watch out for memory and CPU hogs!
+Chrome's Task Manager --- watch out for memory and CPU hogs!
 
 ## Test first and subsequent load performance
 
@@ -116,7 +117,7 @@ caching, time to first byte, and if your site makes effective use of CDNs.
 
 - **WebPagetest** : [test results each have their own URL](https://www.webpagetest.org/result/170428_NW_cc5afd75a2041f7e09984f33e4a4ae14/).
 - **Pagespeed Insights** : the [online](https://developers.google.com/speed/pagespeed/insights) Pagespeed Insights tool [now includes Chrome User Experience report data](https://webmasters.googleblog.com/2018/01/real-world-data-in-pagespeed-insights.html?m=1) highlighting real-world performance stats.
-- **Lighthouse** : save reports from the Chrome DevTools Audit panel by clicking on the download button: 
+- **Lighthouse** : save reports from the Chrome DevTools Audit panel by clicking on the download button:
 
 ## Test for core Progressive Web App requirements
 
@@ -130,7 +131,7 @@ You can download a Lighthouse report as JSON or, if you're using the
 [Lighthouse Chrome Extension](https://chrome.google.com/webstore/detail/lighthouse/blipmdconlkpinefehnmjammfjpmpbjk),
 share the report as a GitHub Gist: click on the share button, select Open in Viewer, then click on
 the share button again in the new window and Save as Gist.
- Export a report to a gist from the Lighthouse Chrome Extension --- click the share button
+Export a report to a gist from the Lighthouse Chrome Extension --- click the share button
 
 ## Use analytics, event tracking and business metrics to track real-world performance
 

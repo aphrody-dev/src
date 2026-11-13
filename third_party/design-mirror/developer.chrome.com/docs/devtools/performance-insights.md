@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Jecelyn Yeen [X](https://twitter.com/jecfish) [GitHub](https://github.com/jecfish) [Bluesky](https://bsky.app/profile/jec.fish) [Homepage](https://jec.fish/)  Sofia Emelianova [GitHub](https://github.com/sofiayem)
+
+Jecelyn Yeen [X](https://twitter.com/jecfish) [GitHub](https://github.com/jecfish) [Bluesky](https://bsky.app/profile/jec.fish) [Homepage](https://jec.fish/) Sofia Emelianova [GitHub](https://github.com/sofiayem)
 
 > [!CAUTION]
 > **Caution:** The **Performance insights** panel is [deprecated](https://developer.chrome.com/blog/insights-panel-deprecation.md.txt) and removed from DevTools starting with Chrome version 132. We recommend you use the [Performance \> Insights](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#insights) tab instead. To learn more, see [Performance tooling in 2024 and beyond](https://developer.chrome.com/blog/perf-tooling-2024.md.txt#the_experimental_performance_insights_panel_will_be_deprecated).
@@ -46,11 +47,7 @@ This tutorial teaches you how to measure and understand your page load performan
 1. [Open DevTools](https://developer.chrome.com/docs/devtools/open.md.txt).
 2. Click on **More options** \> **More tools** \> **Performance insights**.
 
-   
-
    Alternatively, use the [Command Menu](https://developer.chrome.com/docs/devtools/command-menu.md.txt) to open the **Performance insights** panel.
-
-   
 
 ## Record performance
 
@@ -59,14 +56,10 @@ The **Performance insights** panel can record general and use-case-driven (for e
 1. [Open this demo page](https://coffee-cart.app/?ad=1) in a new tab and, on the page, [open the Performance insights panel](https://developer.chrome.com/docs/devtools/performance-insights.md.txt#open).
 2. You can throttle the network and CPU while recording. For this tutorial, check **Disable cache** and set **CPU** to **4x slowdown** in the drop-down menu:
 
-   
-
    > [!IMPORTANT]
    > **Key point:** Throttling is relative to your computer's capabilities. For example, the 4x slowdown option makes your CPU operate 4 times slower than usual. DevTools can't truly simulate the CPUs of mobile devices because the architecture of mobile devices is very different from that of desktops and laptops.
 
 3. Click **Measure page load**. DevTools records performance metrics while the page reloads and then automatically stops the recording a couple seconds after the page load has finished.
-
-   
 
    > [!IMPORTANT]
    > **Key point:** If you want to measure general performance of your web page, use **Start recording** . Interact with the page and click **Stop recording** manually to stop recording.
@@ -128,12 +121,12 @@ To view the [subparts of LCP render time](https://web.dev/articles/optimize-lcp#
 
 LCP render time consists of the following subparts:
 
-| LCP sub-part | Description |
-|---|---|
+| LCP sub-part              | Description                                                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | Time to first byte (TTFB) | The time from when the user initiates loading the page until when the browser receives the first byte of the HTML document response. |
-| Resource load delay | The delta between TTFB and when the browser starts loading the LCP resource. |
-| Resource load time | The time it takes to load the LCP resource itself. |
-| Element render delay | The delta between when the LCP resource finishes loading until the LCP element is fully rendered. |
+| Resource load delay       | The delta between TTFB and when the browser starts loading the LCP resource.                                                         |
+| Resource load time        | The time it takes to load the LCP resource itself.                                                                                   |
+| Element render delay      | The delta between when the LCP resource finishes loading until the LCP element is fully rendered.                                    |
 
 If an LCP element doesn't require a resource load to render, the resource load delay and time are omitted. For example, in case the element is a text node rendered with a system font.
 
@@ -184,11 +177,11 @@ Check out [this demo page](https://jec.fish/demo/perf-measure) that calculates t
 
 To view user timings:
 
-1. Mark places in your application with [`performance.mark()`](https://web.dev/articles/usertiming#using_mark()).
-2. Measure the elapsed time between marks with [`performance.measure()`](https://web.dev/articles/usertiming#calculating_measurements_with_measure()).
+1. Mark places in your application with [`performance.mark()`](<https://web.dev/articles/usertiming#using_mark()>).
+2. Measure the elapsed time between marks with [`performance.measure()`](<https://web.dev/articles/usertiming#calculating_measurements_with_measure()>).
 3. [Record performance](https://developer.chrome.com/docs/devtools/performance-insights.md.txt#record).
 4. View the measurements on the **Timings** track. If you can't see the track, check **User timings** in [Settings](https://developer.chrome.com/docs/devtools/performance-insights.md.txt#settings).
-5. To view details, click the timing on the track. 
+5. To view details, click the timing on the track.
 
 ## Customize the UI
 
@@ -206,5 +199,5 @@ To load a recording, select **Import** .
 
 To delete a recording:
 
-1. Click **Delete** . A confirmation dialog opens. 
+1. Click **Delete** . A confirmation dialog opens.
 2. In the dialog, click **Delete** to confirm the deletion.

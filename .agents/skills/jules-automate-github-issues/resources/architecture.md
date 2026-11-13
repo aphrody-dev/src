@@ -17,6 +17,7 @@ flowchart LR
 **Script:** `fleet-analyze.ts`
 
 Fetches all open GitHub issues using the Octokit API with ETag caching. Formats them into a structured markdown document that includes:
+
 - Issue number, title, author, labels
 - State, timestamps, reactions
 - Full description body
@@ -42,6 +43,7 @@ Creates a Jules session that performs deep code-level triage:
 **Script:** `fleet-dispatch.ts` (built in)
 
 Before dispatching, the orchestrator validates ownership:
+
 - Builds a map of every file claimed by each task (source, new, and test files)
 - Throws if any file appears in more than one task
 - This prevents merge conflicts when parallel PRs land
@@ -51,13 +53,14 @@ Before dispatching, the orchestrator validates ownership:
 **Script:** `fleet-dispatch.ts`
 
 Spawns parallel Jules sessions using `jules.all()`:
+
 - Each task gets its own session with a self-contained, code-rich prompt
 - Sessions target the same base branch
 - Session IDs are written to `.fleet/{date}/sessions.json` for the merge phase
 
 ## Phase 5: Merge
 
-**Script:** `fleet-merge.ts` *(local)* / `fleet-merge.yml` *(GitHub Action)*
+**Script:** `fleet-merge.ts` _(local)_ / `fleet-merge.yml` _(GitHub Action)_
 
 Processes fleet PRs sequentially in risk order (lowest first):
 

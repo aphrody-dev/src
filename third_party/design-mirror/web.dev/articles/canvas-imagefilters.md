@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Ilmari Heikkinen [X](https://twitter.com/ilmarihei) [Homepage](http://fhtr.org/)
 
 ## Introduction
@@ -17,7 +18,7 @@ and run your filter on them. You can then write the result onto a new
 canvas (or heck, just reuse the old one.)
 
 Sounds simple? Good. Let's get cracking!
- The original test image
+The original test image
 
 ## Processing pixels
 
@@ -25,18 +26,18 @@ First, retrieve the image pixels:
 
 ```javascript
 Filters = {};
-Filters.getPixels = function(img) {
-var c = this.getCanvas(img.width, img.height);
-var ctx = c.getContext('2d');
-ctx.drawImage(img);
-return ctx.getImageData(0,0,c.width,c.height);
+Filters.getPixels = function (img) {
+  var c = this.getCanvas(img.width, img.height);
+  var ctx = c.getContext("2d");
+  ctx.drawImage(img);
+  return ctx.getImageData(0, 0, c.width, c.height);
 };
 
-Filters.getCanvas = function(w,h) {
-var c = document.createElement('canvas');
-c.width = w;
-c.height = h;
-return c;
+Filters.getCanvas = function (w, h) {
+  var c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  return c;
 };
 ```
 
@@ -171,11 +172,7 @@ To maintain the brightness of the image, the sum of the matrix values should
 be one.
 
 ```javascript
-Filters.filterImage(Filters.convolute, image,
-[  0, -1,  0,
--1,  5, -1,
-  0, -1,  0 ]
-);
+Filters.filterImage(Filters.convolute, image, [0, -1, 0, -1, 5, -1, 0, -1, 0]);
 ```
 
 Here's an another example of a convolution filter, the box blur. The box
@@ -186,11 +183,17 @@ matrix contributes an equal amount to the output image and the sum of the
 weights is one.
 
 ```javascript
-Filters.filterImage(Filters.convolute, image,
-[ 1/9, 1/9, 1/9,
-1/9, 1/9, 1/9,
-1/9, 1/9, 1/9 ]
-);
+Filters.filterImage(Filters.convolute, image, [
+  1 / 9,
+  1 / 9,
+  1 / 9,
+  1 / 9,
+  1 / 9,
+  1 / 9,
+  1 / 9,
+  1 / 9,
+  1 / 9,
+]);
 ```
 
 We can make more complex image filters by combining existing filters. For

@@ -46,9 +46,9 @@ scaling of new clean nodes to spread client induced dynamic memory load from par
 
 - Good, because larger max size means more content-defined chunk borders and less max size fragments
 - Good, because maximum memory pressure is still within reasonable limits
-`256KiB * 10k fragment requests in flight = 2.45GiB`
-with an expected chunk size of 64KiB
-`64KiB * 10k fragment requests in flight = 625MiB`
+  `256KiB * 10k fragment requests in flight = 2.45GiB`
+  with an expected chunk size of 64KiB
+  `64KiB * 10k fragment requests in flight = 625MiB`
 - Bad, because we increase the expected memory pressure on client
 
 As an example, fragmenting precompiled binaries for a large project (7k files, ~8GiB data) yields the
@@ -139,9 +139,9 @@ Chunk size distribution:
 
 - Bad, because there is a significant number of fragments defined by max size limit
 - Good, because maximum memory pressure is kept low
-`64KiB * 10k fragment requests in flight = 625MiB`
-with an expected chunk size of 38KiB
-`38KiB * 10k fragment requests in flight = 371MiB`
+  `64KiB * 10k fragment requests in flight = 625MiB`
+  with an expected chunk size of 38KiB
+  `38KiB * 10k fragment requests in flight = 371MiB`
 
 Fragment size distribution and stats of the same data set as above
 

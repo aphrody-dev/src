@@ -13,12 +13,16 @@ rustc-wrapper = ""
 # metrics, uuid_unstable for uuid IntoBytes/FromBytes) MUST be repeated in any
 # [target.*] rustflags block. Lints belong in [workspace.lints].
 rustflags = [
-    # Parallel rustc frontend (nightly).
-    "-Zthreads=16",
-    "--cfg", "tokio_unstable",
-    "-C", "force-unwind-tables=yes",
-    "-C", "force-frame-pointers=yes",
-    "--cfg", "uuid_unstable",
+  # Parallel rustc frontend (nightly).
+  "-Zthreads=16",
+  "--cfg",
+  "tokio_unstable",
+  "-C",
+  "force-unwind-tables=yes",
+  "-C",
+  "force-frame-pointers=yes",
+  "--cfg",
+  "uuid_unstable",
 ]
 rustdocflags = ["--cfg", "tokio_unstable"]
 
@@ -39,15 +43,22 @@ incompatible-rust-versions = "allow"
 # multi-binary crates about 10% faster than link.exe.
 linker = "rust-lld.exe"
 rustflags = [
-    "-Zthreads=16",
-    "--cfg", "tokio_unstable",
-    "-C", "force-unwind-tables=yes",
-    "-C", "force-frame-pointers=yes",
-    "-C", "target-feature=+crt-static",
-    "-C", "split-debuginfo=packed",
-    # Reproducible links (stable proc-macro DLL bytes for sccache).
-    "-C", "link-arg=/Brepro",
-    "--cfg", "uuid_unstable",
+  "-Zthreads=16",
+  "--cfg",
+  "tokio_unstable",
+  "-C",
+  "force-unwind-tables=yes",
+  "-C",
+  "force-frame-pointers=yes",
+  "-C",
+  "target-feature=+crt-static",
+  "-C",
+  "split-debuginfo=packed",
+  # Reproducible links (stable proc-macro DLL bytes for sccache).
+  "-C",
+  "link-arg=/Brepro",
+  "--cfg",
+  "uuid_unstable",
 ]
 
 # Linux x86_64: nothing to set; nightly links with the bundled rust-lld. [build] flags apply.
@@ -56,29 +67,44 @@ rustflags = [
 # Portable baseline. Graviton3+/Neoverse V1: add --config .cargo/neoverse-512tvb.toml
 # --features lore-base/neoverse-512tvb.
 rustflags = [
-    "--cfg", "tokio_unstable",
-    "-C", "force-unwind-tables=yes",
-    "-C", "force-frame-pointers=yes",
-    "-C", "split-debuginfo=off",
-    "--cfg", "uuid_unstable",
+  "--cfg",
+  "tokio_unstable",
+  "-C",
+  "force-unwind-tables=yes",
+  "-C",
+  "force-frame-pointers=yes",
+  "-C",
+  "split-debuginfo=off",
+  "--cfg",
+  "uuid_unstable",
 ]
 
 [target.x86_64-apple-darwin]
 rustflags = [
-    "--cfg", "tokio_unstable",
-    "-C", "force-unwind-tables=yes",
-    "-C", "force-frame-pointers=yes",
-    "-C", "split-debuginfo=packed",
-    "--cfg", "uuid_unstable",
+  "--cfg",
+  "tokio_unstable",
+  "-C",
+  "force-unwind-tables=yes",
+  "-C",
+  "force-frame-pointers=yes",
+  "-C",
+  "split-debuginfo=packed",
+  "--cfg",
+  "uuid_unstable",
 ]
 
 [target.aarch64-apple-darwin]
 rustflags = [
-    "--cfg", "tokio_unstable",
-    "-C", "force-unwind-tables=yes",
-    "-C", "force-frame-pointers=yes",
-    "-C", "split-debuginfo=packed",
-    "--cfg", "uuid_unstable",
+  "--cfg",
+  "tokio_unstable",
+  "-C",
+  "force-unwind-tables=yes",
+  "-C",
+  "force-frame-pointers=yes",
+  "-C",
+  "split-debuginfo=packed",
+  "--cfg",
+  "uuid_unstable",
 ]
 
 [env]

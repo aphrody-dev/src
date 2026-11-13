@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Johannes Henkel [X](https://twitter.com/powdercloud) [GitHub](https://github.com/powdercloud) [Mastodon](https://mastodon.social/@powdercloud)  Jasmine Yan [GitHub](https://github.com/jazyan)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+
+Johannes Henkel [X](https://twitter.com/powdercloud) [GitHub](https://github.com/powdercloud) [Mastodon](https://mastodon.social/@powdercloud) Jasmine Yan [GitHub](https://github.com/jazyan) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: Feb 7, 2023, Last updated: Apr 11, 2025
 
@@ -89,44 +90,50 @@ containing the 75th percentile (p75) and histogram density values.
     },
     "metrics": {
       "largest_contentful_paint": {
-        "histogramTimeseries": [{
-            "start": 0, "end": 2500, "densities": [
-              0.9190, 0.9203, 0.9194, 0.9195, 0.9183, 0.9187
-            ]
-          }, {
-            "start": 2500, "end": 4000, "densities": [
-              0.0521, 0.0513, 0.0518, 0.0518, 0.0526, 0.0527
-            ]
-          },  {
-            "start": 4000, "densities": [
-              0.0288, 0.0282, 0.0286, 0.0285, 0.0290, 0.0285
-            ]
+        "histogramTimeseries": [
+          {
+            "start": 0,
+            "end": 2500,
+            "densities": [0.919, 0.9203, 0.9194, 0.9195, 0.9183, 0.9187]
+          },
+          {
+            "start": 2500,
+            "end": 4000,
+            "densities": [0.0521, 0.0513, 0.0518, 0.0518, 0.0526, 0.0527]
+          },
+          {
+            "start": 4000,
+            "densities": [0.0288, 0.0282, 0.0286, 0.0285, 0.029, 0.0285]
           }
         ],
         "percentilesTimeseries": {
-          "p75s": [
-            1362, 1352, 1344, 1356, 1366, 1377
-          ]
+          "p75s": [1362, 1352, 1344, 1356, 1366, 1377]
         }
       }
       // ...
     },
-    "collectionPeriods": [{
+    "collectionPeriods": [
+      {
         "firstDate": { "year": 2022, "month": 7, "day": 10 },
         "lastDate": { "year": 2022, "month": 8, "day": 6 }
-      }, {
+      },
+      {
         "firstDate": { "year": 2022, "month": 7, "day": 17 },
         "lastDate": { "year": 2022, "month": 8, "day": 13 }
-      }, {
+      },
+      {
         "firstDate": { "year": 2022, "month": 7, "day": 24 },
         "lastDate": { "year": 2022, "month": 8, "day": 20 }
-      }, {
+      },
+      {
         "firstDate": { "year": 2022, "month": 7, "day": 31 },
         "lastDate": { "year": 2022, "month": 8, "day": 27 }
-      }, {
+      },
+      {
         "firstDate": { "year": 2022, "month": 8, "day": 7 },
         "lastDate": { "year": 2022, "month": 9, "day": 3 }
-      }, {
+      },
+      {
         "firstDate": { "year": 2022, "month": 8, "day": 14 },
         "lastDate": { "year": 2022, "month": 9, "day": 10 }
       }

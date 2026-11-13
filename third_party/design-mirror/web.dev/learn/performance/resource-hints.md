@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In the last module about [optimizing resource loading](https://web.dev/learn/performance/optimize-resource-loading.md.txt), you learned how various
 page resources such as CSS and JavaScript can affect page load speed, and how
 you can optimize them and their delivery to speed up the rendering of a page.
@@ -37,17 +38,17 @@ where you are fetching critical resources. For example, you may be hosting your
 images or assets on a CDN or other cross-origin:
 
 ```html
-<link rel="preconnect" href="https://example.com">
+<link rel="preconnect" href="https://example.com" />
 ```
 
 By using `preconnect`, you anticipate that the browser plans to connect to a
-specific cross-origin server in the *very near future*, and that the browser
+specific cross-origin server in the _very near future_, and that the browser
 should open that connection as soon as possible, ideally before waiting for the
 HTML parser or preload scanner to do so.
 
 If you have a large amount of cross-origin resources on a page, use `preconnect`
 for those resources which are the most critical to the current page.
- A visualization of connection timings as seen in the network panel of Chrome DevTools. The timings within the red box are those involved in setting up a connection with a cross-origin server, which `preconnect` can alleviate by establishing connections sooner, rather than at the time of discovery of the cross-origin resource.
+A visualization of connection timings as seen in the network panel of Chrome DevTools. The timings within the red box are those involved in setting up a connection with a cross-origin server, which `preconnect` can alleviate by establishing connections sooner, rather than at the time of discovery of the cross-origin resource.
 
 A [common use case for `preconnect` is Google Fonts](https://almanac.httparchive.org/en/2021/resource-hints#fig-14). Google Fonts recommends
 that you `preconnect` to the `https://fonts.googleapis.com` domain that serves
@@ -55,8 +56,8 @@ the `@font-face` declarations and to the `https://fonts.gstatic.com` domain that
 serves the font files.
 
 ```html
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 ```
 
 The `crossorigin` attribute is used to indicate whether a resource must be
@@ -76,15 +77,15 @@ establish connections to many cross-origin servers at once. If you're concerned
 that you may be overusing `preconnect`, a much less costly resource hint is the
 `dns-prefetch` hint.
 
-Per its name, `dns-prefetch` doesn't establish a *connection* to a cross-origin
-server, but rather just performs the [DNS lookup](https://en.wikipedia.org/wiki/Domain_Name_System#Address_resolution_mechanism) for it ahead of time. A *DNS
-lookup* occurs when a domain name is resolved to its underlying IP address.
+Per its name, `dns-prefetch` doesn't establish a _connection_ to a cross-origin
+server, but rather just performs the [DNS lookup](https://en.wikipedia.org/wiki/Domain_Name_System#Address_resolution_mechanism) for it ahead of time. A _DNS
+lookup_ occurs when a domain name is resolved to its underlying IP address.
 While layers of DNS caches at the device and network levels help to make this a
 generally fast process, it still takes some amount of time.
 
 ```html
-<link rel="dns-prefetch" href="https://fonts.googleapis.com">
-<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+<link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 ```
 
 DNS lookups are fairly inexpensive, and because of their relatively small cost,
@@ -102,7 +103,7 @@ The `preload` directive is used to initiate an early request for a resource
 required for rendering the page:
 
 ```html
-<link rel="preload" href="/lcp-image.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="/lcp-image.jpg" as="image" fetchpriority="high" />
 ```
 
 `preload` directives should be limited to late-discovered critical resources. The most common use cases are font files, CSS files fetched through `@import` declarations, or CSS `background-image` resources that are likely to be [Largest Contentful Paint (LCP) candidates](https://web.dev/articles/lcp.md.txt#what-elements-are-considered) or other LCP resources that are not discoverable in the initial HTML (for example, if loaded by JavaScript). In such cases, these files wouldn't be discovered by the preload scanner as the resource is referenced in external resources.
@@ -115,11 +116,11 @@ required for rendering the page:
 Similarly to `preconnect`, the `preload` directive requires the `crossorigin`
 attribute if you are preloading a CORS resource---such as fonts. If you don't add
 the `crossorigin` attribute---or add it for non-CORS requests---then the resource
-is downloaded by the browser *twice*, wasting bandwidth that could have been
+is downloaded by the browser _twice_, wasting bandwidth that could have been
 better spent on other resources.
 
 ```html
-<link rel="preload" href="/font.woff2" as="font" crossorigin>
+<link rel="preload" href="/font.woff2" as="font" crossorigin />
 ```
 
 > [!IMPORTANT]
@@ -142,7 +143,7 @@ The `prefetch` directive is used to initiate a low priority request for a
 resource likely to be used for future navigations:
 
 ```html
-<link rel="prefetch" href="/next-page.css" as="style">
+<link rel="prefetch" href="/next-page.css" as="style" />
 ```
 
 This directive largely follows the same format as the `preload` directive, only
@@ -168,14 +169,8 @@ increase the priority of a resource. You can use the attribute with `<link>`,
 
 ```html
 <div class="gallery">
-  <div class="poster">
-    
-  </div>
-  <div class="thumbnails">
-    
-    
-    
-  </div>
+  <div class="poster"></div>
+  <div class="thumbnails"></div>
 </div>
 ```
 
@@ -206,7 +201,7 @@ Opens a connection to a cross-origin server, including the DNS lookup, as well a
 What does the Fetch Priority API let you do?
 Specify the priority at which the current page's HTML is downloaded. Try again. Specify the relative priority for `<link>`, ``, and `<script>` elements. Correct!
 When should you use the `prefetch` hint?
-For any and all resources or pages the user could need, whether or not they actually need them in the future. Try again. When you have *high confidence* that the resources or pages you intend to prefetch are needed by the user. Correct! If the user has not stated an explicit preference for reduced data usage. Correct!
+For any and all resources or pages the user could need, whether or not they actually need them in the future. Try again. When you have _high confidence_ that the resources or pages you intend to prefetch are needed by the user. Correct! If the user has not stated an explicit preference for reduced data usage. Correct!
 
 ## Up next: Image performance
 

@@ -15,8 +15,8 @@
 //   platform: web
 // Output format: sass_vars
 
-@use 'md-sys-color';
-@use 'md-sys-state';
+@use "md-sys-color";
+@use "md-sys-state";
 
 /// md.comp.radio-button.disabled.selected.icon.opacity (Disabled / Icon)
 $disabled-selected-icon-opacity: 0.38;

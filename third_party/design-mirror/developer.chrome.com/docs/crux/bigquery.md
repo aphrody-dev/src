@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how CrUX data is structured on BigQuery.
 
 ## Introduction
@@ -85,84 +86,84 @@ The raw tables have the following schema:
 
 ## Materialized table schema
 
-Materialized tables are provided for easier access to summary data by a number of key dimensions. No histograms are provided, instead performance data is aggregated into fractions by performance assessment and the 75th percentile value. A set of example rows from the `metrics_summary` table are shown in this example:  
+Materialized tables are provided for easier access to summary data by a number of key dimensions. No histograms are provided, instead performance data is aggregated into fractions by performance assessment and the 75th percentile value. A set of example rows from the `metrics_summary` table are shown in this example:
 
-| yyyymm | origin | fast_lcp | avg_lcp | slow_lcp | p75_lcp |
-|---|---|---|---|---|---|
-| 202204 | https://example.com | 0.9056 | 0.0635 | 0.0301 | 1600 |
-| 202203 | https://example.com | 0.9209 | 0.052 | 0.0274 | 1400 |
-| 202202 | https://example.com | 0.9169 | 0.0545 | 0.0284 | 1500 |
-| 202201 | https://example.com | 0.9072 | 0.0626 | 0.0298 | 1500 |
+| yyyymm | origin              | fast_lcp | avg_lcp | slow_lcp | p75_lcp |
+| ------ | ------------------- | -------- | ------- | -------- | ------- |
+| 202204 | https://example.com | 0.9056   | 0.0635  | 0.0301   | 1600    |
+| 202203 | https://example.com | 0.9209   | 0.052   | 0.0274   | 1400    |
+| 202202 | https://example.com | 0.9169   | 0.0545  | 0.0284   | 1500    |
+| 202201 | https://example.com | 0.9072   | 0.0626  | 0.0298   | 1500    |
 
 This shows that in the 202204 dataset, 90.56% of real-user experiences on `https://example.com` met the criteria for [good LCP](https://web.dev/articles/defining-core-web-vitals-thresholds#refresher:_core_web_vitals_metrics_and_thresholds), and that the coarse 75th percentile LCP value was 1,600ms. This is slightly slower than previous months.
 
 Four materialized tables are provided:
 
 [`metrics_summary`](https://developer.chrome.com/docs/crux/bigquery#schema-metrics-summary)
-:   key metrics by month and origin
+: key metrics by month and origin
 
 [`device_summary`](https://developer.chrome.com/docs/crux/bigquery#schema-device-summary)
-:   key metrics by month, origin and device type
+: key metrics by month, origin and device type
 
 [`country_summary`](https://developer.chrome.com/docs/crux/bigquery#schema-country-summary)
-:   key metrics by month, origin, device type and country
+: key metrics by month, origin, device type and country
 
 [`origin_summary`](https://developer.chrome.com/docs/crux/bigquery#schema-origin-summary)
-:   a list of all origins included in the dataset
+: a list of all origins included in the dataset
 
 ### `metrics_summary`
 
 The `metrics_summary` table contains summary statistics for each origin and each monthly dataset:
 
 `yyyymm`
-:   Month of the data collection period
+: Month of the data collection period
 
 `origin`
-:   URL of the site origin
+: URL of the site origin
 
 `rank`
-:   Coarse popularity ranking (as of [March 2021](https://developer.chrome.com/docs/crux/release-notes#202103))
+: Coarse popularity ranking (as of [March 2021](https://developer.chrome.com/docs/crux/release-notes#202103))
 
 `[small|medium|large]_cls`
-:   fraction of traffic by CLS thresholds
+: fraction of traffic by CLS thresholds
 
 `[fast|avg|slow]_<metric>`
-:   fraction of traffic by performance thresholds
+: fraction of traffic by performance thresholds
 
 `[low|medium|high]_rtt`
-:   fraction of traffic by RTT thresholds
+: fraction of traffic by RTT thresholds
 
 `p75_<metric>`
-:   75th percentile value of performance metrics (milliseconds)
+: 75th percentile value of performance metrics (milliseconds)
 
 `notification_permission_[accept|deny|ignore|dismiss]`
-:   fraction of notification permission behaviors
+: fraction of notification permission behaviors
 
 `[desktop|phone|tablet]Density`
-:   fraction of traffic by form factor
+: fraction of traffic by form factor
 
 `[_4G|_3G|_2G|slow2G|offline]Density`
-:   fraction of traffic by effective connection type *(calculated from `rtt` histograms [from February 2025](https://developer.chrome.com/blog/crux-2025-02), with no offline)*
+: fraction of traffic by effective connection type _(calculated from `rtt` histograms [from February 2025](https://developer.chrome.com/blog/crux-2025-02), with no offline)_
 
 `navigation_type_[navigate|navigate_cache|reload|restore|back_forward|back_forward_cache|prerender]`
-:   fraction of navigation types
+: fraction of navigation types
 
 ### `device_summary`
 
 The `device_summary` table contains aggregated statistics by month, origin, country and device. In addition to the `metrics_summary` columns there is:
 
 `device`
-:   Device [form factor](https://developer.chrome.com/docs/crux/methodology#form-factor-dimension)
+: Device [form factor](https://developer.chrome.com/docs/crux/methodology#form-factor-dimension)
 
 ### `country_summary`
 
 The `country_summary` table contains aggregated statistics by month, origin, country and device. In addition to the `metrics_summary` columns there is:
 
 `country_code`
-:   [Two-letter country code](https://developer.chrome.com/docs/crux/methodology#country-dimension)
+: [Two-letter country code](https://developer.chrome.com/docs/crux/methodology#country-dimension)
 
 `device`
-:   Device [form factor](https://developer.chrome.com/docs/crux/methodology#form-factor-dimension)
+: Device [form factor](https://developer.chrome.com/docs/crux/methodology#form-factor-dimension)
 
 ### `origin_summary`
 

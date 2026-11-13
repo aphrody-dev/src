@@ -17,14 +17,15 @@ Note révisée : 11,5 / 20 (+1,0 pt par rapport à 10,5/20 — plafond autonome 
 Ta réfutation sur F9 est validée sans réserve : sur un espace à faible entropie (prénom, patronyme, identifiant court ou préfixe @live.fr), publier dans un dépôt public un condensat même salé crée un oracle de confirmation instantané par attaque par dictionnaire. Le couple secret GitHub Actions (APHRODY_PII_TERMS) + coffre local DPAPI en mode fail-closed avec sortie limitée à fichier:ligne est cryptographiquement et opérationnellement supérieur. De même, geler la suppression irréversible des 893 runs Actions (F5) dans l'attente d'un accord explicite est la bonne décision de gouvernance, même si l'audit de surface ne peut créditer ce point qu'une fois les journaux effectivement purgés.
 
 Barème actualisé (F1–F10)
-Domaine évalué	Évolution constatée	Responsable du reliquat	Score
-1. Infra DNS, CT & Registrar (F3, F8)	Inchangé, surface propre.	—	4,00 / 4
-2. Identité Forge & Surface Web (F6, F10)	+0,25 pt : CV.pdf validé en profondeur (191 flux zlib + brut + /Info = 0 hit sur 8 termes). Sonde .map partielle (3 hôtes sur 5, nom fixe boot.js.map).	Agent (+0,25 pt)	3,75 / 4
-3. Registres tiers, OAuth & Mail (F2, F4, F7)	+0,00 pt : @live.fr toujours servi en clair sur registry.npmjs.org, console OAuth Google bloquée sans 2SV, règle mail non verrouillée techniquement.	Propriétaire (+5,00 pts)	1,00 / 6
-4. Garde-fous CI & Logs Actions (F5, F9)	+0,75 pt : identity.ts check câblé (just check + judge.yml), testé fail-closed sur 8 termes. Reste 3 angles morts dans le script (F9) et les 893 runs toujours en ligne (F5).	Agent (+0,25 pt) + GO Proprio (+1,00 pt)	2,75 / 4
-5. Historique Git public (F1)	Risque des 33 commits et du diff 92418460 accepté sous contrainte main-only.	Plafond structurel	0,00 / 2
-TOTAL	Reste à prendre vers 18/20 : +6,50 pts (0,50 agent + 1,00 sur GO + 5,00 propriétaire)	—	11,5 / 20
-1. Ce qui reste à la main immédiate de l'agent (doit être fait — +0,50 pt + préparation)
+Domaine évalué Évolution constatée Responsable du reliquat Score
+
+1. Infra DNS, CT & Registrar (F3, F8) Inchangé, surface propre. — 4,00 / 4
+2. Identité Forge & Surface Web (F6, F10) +0,25 pt : CV.pdf validé en profondeur (191 flux zlib + brut + /Info = 0 hit sur 8 termes). Sonde .map partielle (3 hôtes sur 5, nom fixe boot.js.map). Agent (+0,25 pt) 3,75 / 4
+3. Registres tiers, OAuth & Mail (F2, F4, F7) +0,00 pt : @live.fr toujours servi en clair sur registry.npmjs.org, console OAuth Google bloquée sans 2SV, règle mail non verrouillée techniquement. Propriétaire (+5,00 pts) 1,00 / 6
+4. Garde-fous CI & Logs Actions (F5, F9) +0,75 pt : identity.ts check câblé (just check + judge.yml), testé fail-closed sur 8 termes. Reste 3 angles morts dans le script (F9) et les 893 runs toujours en ligne (F5). Agent (+0,25 pt) + GO Proprio (+1,00 pt) 2,75 / 4
+5. Historique Git public (F1) Risque des 33 commits et du diff 92418460 accepté sous contrainte main-only. Plafond structurel 0,00 / 2
+   TOTAL Reste à prendre vers 18/20 : +6,50 pts (0,50 agent + 1,00 sur GO + 5,00 propriétaire) — 11,5 / 20
+6. Ce qui reste à la main immédiate de l'agent (doit être fait — +0,50 pt + préparation)
 
 Aucun identifiant personnel, OTP ou acte destructif n'est requis pour fermer ces écarts et atteindre le plafond autonome de 12,0 / 20 :
 
@@ -51,7 +52,7 @@ Préparation F5 (artefacts et caches Actions) : interroger en lecture seule les 
 Audit DNS F7 (SPF/DMARC) : vérifier en lecture seule (dig TXT aphrody.com et _dmarc.aphrody.com) la politique DMARC active et réévaluer la présence de include:_spf.google.com. Utiliser contact@aphrody.com comme identité Google Cloud / OAuth ne nécessite pas d'autoriser les serveurs SMTP de Google dans le SPF si 100 % des e-mails légitimes sortent par OVH et Resend : retirer _spf.google.com avec un DMARC strict empêche techniquement un envoi accidentel depuis Gmail de passer pour légitime.
 
 2. Ce qui relève du propriétaire (décision ou identifiants privés — +6,00 pts)
-A. Déblocable par un simple « GO » donné à l'agent (+1,00 pt → 13,0 / 20)
+   A. Déblocable par un simple « GO » donné à l'agent (+1,00 pt → 13,0 / 20)
 
 F5 — Purge des 893 exécutions GitHub Actions (+1,00 pt) : dès validation explicite du propriétaire autorisant la destruction des historiques CI antérieurs à 2026-11-13T04:10Z, l'agent exécute lui-même la suppression des runs, artefacts et caches pré-assainissement via le jeton gh déjà disponible, puis vérifie qu'aucun run antérieur ne subsiste.
 

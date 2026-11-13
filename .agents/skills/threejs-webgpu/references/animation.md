@@ -19,10 +19,18 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0.5, 3);
 
-const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
+const mesh = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshNormalMaterial(),
+);
 scene.add(mesh);
 
 const timer = new THREE.Timer();
@@ -70,10 +78,17 @@ Track names follow `nodeName.objectName[objectIndex].propertyName[propertyIndex]
 new THREE.NumberKeyframeTrack(".material.opacity", [0, 1], [1, 0]);
 
 // Vector track (value size 3: x, y, z per keyframe)
-new THREE.VectorKeyframeTrack(".position", [0, 1, 2], [0, 0, 0, 1, 2, 0, 0, 0, 0]);
+new THREE.VectorKeyframeTrack(
+  ".position",
+  [0, 1, 2],
+  [0, 0, 0, 1, 2, 0, 0, 0, 0],
+);
 
 // Rotation track (value size 4): quaternion x, y, z, w per keyframe, not Euler angles
-const q2 = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
+const q2 = new THREE.Quaternion().setFromAxisAngle(
+  new THREE.Vector3(0, 1, 0),
+  Math.PI,
+);
 new THREE.QuaternionKeyframeTrack(
   ".quaternion",
   [0, 1],
@@ -114,7 +129,11 @@ morphTrack.settings = { inTangents: [0, 0, 1, 1], outTangents: [0, 1, 1, 0] };
 ## AnimationMixer
 
 ```javascript
-const track = new THREE.NumberKeyframeTrack(".rotation[y]", [0, 2], [0, Math.PI * 2]);
+const track = new THREE.NumberKeyframeTrack(
+  ".rotation[y]",
+  [0, 2],
+  [0, Math.PI * 2],
+);
 const clip = new THREE.AnimationClip("spin", 2, [track]);
 
 // One mixer per animated root; it reaches the root and all descendants
@@ -134,8 +153,12 @@ function animate() {
 renderer.setAnimationLoop(animate);
 
 // Events fire on the mixer while it updates; "finished" needs LoopOnce or finite repetitions
-mixer.addEventListener("finished", (e) => console.log("finished:", e.action.getClip().name));
-mixer.addEventListener("loop", (e) => console.log("looped:", e.action.getClip().name));
+mixer.addEventListener("finished", (e) =>
+  console.log("finished:", e.action.getClip().name),
+);
+mixer.addEventListener("loop", (e) =>
+  console.log("looped:", e.action.getClip().name),
+);
 ```
 
 ## AnimationAction
@@ -377,7 +400,11 @@ mixer.clipAction(breathClip).play(); // adds its offsets on top of the base pose
 
 ```javascript
 const clip = new THREE.AnimationClip("walk", 2, [
-  new THREE.NumberKeyframeTrack(".rotation[y]", [0, 1, 2], [0, Math.PI, Math.PI * 2]),
+  new THREE.NumberKeyframeTrack(
+    ".rotation[y]",
+    [0, 1, 2],
+    [0, Math.PI, Math.PI * 2],
+  ),
 ]);
 
 const walk = THREE.AnimationClip.findByName([clip], "walk"); // name lookup
@@ -440,7 +467,12 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111418); // the WebGPU canvas is transparent by default
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 2, 3);
 camera.lookAt(0, 0, 0);
 

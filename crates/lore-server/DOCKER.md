@@ -31,9 +31,9 @@ using `scripts/server/make-certs.sh`.
 The publish workflow packages the `loreserver` binaries from a published release — it compiles
 nothing — and pushes two variants to `ghcr.io/epicgames/lore/loreserver`:
 
-| Tag | Platforms |
-| --- | --- |
-| `X.Y.Z`, `X.Y`, `latest` | `linux/amd64` only |
+| Tag                                                 | Platforms                          |
+| --------------------------------------------------- | ---------------------------------- |
+| `X.Y.Z`, `X.Y`, `latest`                            | `linux/amd64` only                 |
 | `X.Y.Z-graviton`, `X.Y-graviton`, `latest-graviton` | `linux/arm64` tuned for Graviton3+ |
 
 **On Graviton3 or newer**, pull `-graviton` for a native arm64 image. **Anywhere else**, pull the
@@ -102,11 +102,11 @@ docker run \
 
 ## Ports
 
-| Port  | Protocol | Service        |
-|-------|----------|----------------|
-| 41337 | TCP      | gRPC           |
-| 41337 | UDP      | QUIC           |
-| 41339 | TCP      | HTTP           |
+| Port  | Protocol | Service |
+| ----- | -------- | ------- |
+| 41337 | TCP      | gRPC    |
+| 41337 | UDP      | QUIC    |
+| 41339 | TCP      | HTTP    |
 
 ## Configuration
 

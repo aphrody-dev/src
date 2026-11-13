@@ -575,10 +575,7 @@
         "debugData": {
           "type": "debugdata",
           "impact": "minor",
-          "tags": [
-            "cat.aria",
-            "best-practice"
-          ]
+          "tags": ["cat.aria", "best-practice"]
         }
       }
     },
@@ -1235,11 +1232,7 @@
         "debugData": {
           "type": "debugdata",
           "impact": "minor",
-          "tags": [
-            "cat.semantics",
-            "wcag2aaa",
-            "wcag249"
-          ]
+          "tags": ["cat.semantics", "wcag2aaa", "wcag249"]
         }
       }
     },
@@ -2442,10 +2435,7 @@
     }
   },
   "configSettings": {
-    "output": [
-      "json",
-      "html"
-    ],
+    "output": ["json", "html"],
     "maxWaitForFcp": 30000,
     "maxWaitForLoad": 30000,
     "pauseAfterFcpMs": 1000,
@@ -2505,10 +2495,7 @@
       "title": "Accessibility",
       "description": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/articles/how-to-review) is also encouraged.",
       "manualDescription": "These items address areas which an automated testing tool cannot cover. Learn more in our guide on [conducting an accessibility review](https://web.dev/articles/how-to-review).",
-      "supportedModes": [
-        "navigation",
-        "snapshot"
-      ],
+      "supportedModes": ["navigation", "snapshot"],
       "auditRefs": [
         {
           "id": "accesskeys",
@@ -2886,11 +2873,7 @@
     },
     "best-practices": {
       "title": "Best Practices",
-      "supportedModes": [
-        "navigation",
-        "timespan",
-        "snapshot"
-      ],
+      "supportedModes": ["navigation", "timespan", "snapshot"],
       "auditRefs": [
         {
           "id": "is-on-https",
@@ -3005,10 +2988,7 @@
       "title": "SEO",
       "description": "These checks ensure that your page is following basic search engine optimization advice. There are many additional factors Lighthouse does not score here that may affect your search ranking, including performance on [Core Web Vitals](https://web.dev/explore/vitals). [Learn more about Google Search Essentials](https://support.google.com/webmasters/answer/35769).",
       "manualDescription": "Run these additional validators on your site to check additional SEO best practices.",
-      "supportedModes": [
-        "navigation",
-        "snapshot"
-      ],
+      "supportedModes": ["navigation", "snapshot"],
       "auditRefs": [
         {
           "id": "is-crawlable",
@@ -3071,10 +3051,7 @@
     "agentic-browsing": {
       "title": "Agentic Browsing",
       "description": "These checks ensure high-quality, [browsable websites for AI agents](https://goo.gle/lighthouse-agentic-web) and validate the correctness of WebMCP integrations. This category is still under development and subject to change.",
-      "supportedModes": [
-        "navigation",
-        "snapshot"
-      ],
+      "supportedModes": ["navigation", "snapshot"],
       "categoryScoreDisplayMode": "fraction",
       "auditRefs": [
         {
@@ -4177,9 +4154,7 @@
   "i18n": {
     "rendererFormattedStrings": {},
     "icuMessagePaths": {
-      "core/audits/is-on-https.js | title": [
-        "audits[is-on-https].title"
-      ],
+      "core/audits/is-on-https.js | title": ["audits[is-on-https].title"],
       "core/audits/is-on-https.js | description": [
         "audits[is-on-https].description"
       ],
@@ -4189,9 +4164,7 @@
       "core/audits/is-on-https.js | columnResolution": [
         "audits[is-on-https].details.headings[1].label"
       ],
-      "core/audits/redirects-http.js | title": [
-        "audits[redirects-http].title"
-      ],
+      "core/audits/redirects-http.js | title": ["audits[redirects-http].title"],
       "core/audits/redirects-http.js | description": [
         "audits[redirects-http].description"
       ],
@@ -4256,9 +4229,7 @@
       "core/audits/image-size-responsive.js | columnExpected": [
         "audits[image-size-responsive].details.headings[4].label"
       ],
-      "core/audits/deprecations.js | title": [
-        "audits.deprecations.title"
-      ],
+      "core/audits/deprecations.js | title": ["audits.deprecations.title"],
       "core/audits/deprecations.js | description": [
         "audits.deprecations.description"
       ],
@@ -4284,24 +4255,16 @@
       "core/audits/valid-source-maps.js | columnMapURL": [
         "audits[valid-source-maps].details.headings[1].label"
       ],
-      "core/audits/csp-xss.js | title": [
-        "audits[csp-xss].title"
-      ],
-      "core/audits/csp-xss.js | description": [
-        "audits[csp-xss].description"
-      ],
+      "core/audits/csp-xss.js | title": ["audits[csp-xss].title"],
+      "core/audits/csp-xss.js | description": ["audits[csp-xss].description"],
       "core/audits/csp-xss.js | columnDirective": [
         "audits[csp-xss].details.headings[1].label"
       ],
       "core/audits/csp-xss.js | columnSeverity": [
         "audits[csp-xss].details.headings[2].label"
       ],
-      "core/audits/has-hsts.js | title": [
-        "audits[has-hsts].title"
-      ],
-      "core/audits/has-hsts.js | description": [
-        "audits[has-hsts].description"
-      ],
+      "core/audits/has-hsts.js | title": ["audits[has-hsts].title"],
+      "core/audits/has-hsts.js | description": ["audits[has-hsts].description"],
       "core/audits/has-hsts.js | columnDirective": [
         "audits[has-hsts].details.headings[1].label"
       ],
@@ -4520,9 +4483,7 @@
       "core/audits/accessibility/button-name.js | description": [
         "audits[button-name].description"
       ],
-      "core/audits/accessibility/bypass.js | title": [
-        "audits.bypass.title"
-      ],
+      "core/audits/accessibility/bypass.js | title": ["audits.bypass.title"],
       "core/audits/accessibility/bypass.js | description": [
         "audits.bypass.description"
       ],
@@ -4538,9 +4499,7 @@
       "core/audits/accessibility/definition-list.js | description": [
         "audits[definition-list].description"
       ],
-      "core/audits/accessibility/dlitem.js | title": [
-        "audits.dlitem.title"
-      ],
+      "core/audits/accessibility/dlitem.js | title": ["audits.dlitem.title"],
       "core/audits/accessibility/dlitem.js | description": [
         "audits.dlitem.description"
       ],
@@ -4634,9 +4593,7 @@
       "core/audits/accessibility/label-content-name-mismatch.js | description": [
         "audits[label-content-name-mismatch].description"
       ],
-      "core/audits/accessibility/label.js | title": [
-        "audits.label.title"
-      ],
+      "core/audits/accessibility/label.js | title": ["audits.label.title"],
       "core/audits/accessibility/label.js | description": [
         "audits.label.description"
       ],
@@ -4658,9 +4615,7 @@
       "core/audits/accessibility/link-in-text-block.js | description": [
         "audits[link-in-text-block].description"
       ],
-      "core/audits/accessibility/list.js | title": [
-        "audits.list.title"
-      ],
+      "core/audits/accessibility/list.js | title": ["audits.list.title"],
       "core/audits/accessibility/list.js | description": [
         "audits.list.description"
       ],
@@ -4772,15 +4727,11 @@
       "core/audits/accessibility/svg-img-alt.js | description": [
         "audits[svg-img-alt].description"
       ],
-      "core/audits/dobetterweb/doctype.js | title": [
-        "audits.doctype.title"
-      ],
+      "core/audits/dobetterweb/doctype.js | title": ["audits.doctype.title"],
       "core/audits/dobetterweb/doctype.js | description": [
         "audits.doctype.description"
       ],
-      "core/audits/dobetterweb/charset.js | title": [
-        "audits.charset.title"
-      ],
+      "core/audits/dobetterweb/charset.js | title": ["audits.charset.title"],
       "core/audits/dobetterweb/charset.js | description": [
         "audits.charset.description"
       ],
@@ -4820,9 +4771,7 @@
       "core/audits/dobetterweb/paste-preventing-inputs.js | description": [
         "audits[paste-preventing-inputs].description"
       ],
-      "core/audits/baseline.js | title": [
-        "audits.baseline.title"
-      ],
+      "core/audits/baseline.js | title": ["audits.baseline.title"],
       "core/audits/baseline.js | description": [
         {
           "values": {
@@ -4849,9 +4798,7 @@
       "core/audits/seo/http-status-code.js | description": [
         "audits[http-status-code].description"
       ],
-      "core/audits/seo/link-text.js | title": [
-        "audits[link-text].title"
-      ],
+      "core/audits/seo/link-text.js | title": ["audits[link-text].title"],
       "core/audits/seo/link-text.js | description": [
         "audits[link-text].description"
       ],
@@ -4864,9 +4811,7 @@
       "core/audits/seo/crawlable-anchors.js | columnFailingLink": [
         "audits[crawlable-anchors].details.headings[0].label"
       ],
-      "core/audits/seo/is-crawlable.js | title": [
-        "audits[is-crawlable].title"
-      ],
+      "core/audits/seo/is-crawlable.js | title": ["audits[is-crawlable].title"],
       "core/audits/seo/is-crawlable.js | description": [
         "audits[is-crawlable].description"
       ],
@@ -4884,15 +4829,11 @@
           "path": "audits[robots-txt].explanation"
         }
       ],
-      "core/audits/seo/hreflang.js | title": [
-        "audits.hreflang.title"
-      ],
+      "core/audits/seo/hreflang.js | title": ["audits.hreflang.title"],
       "core/audits/seo/hreflang.js | description": [
         "audits.hreflang.description"
       ],
-      "core/audits/seo/canonical.js | title": [
-        "audits.canonical.title"
-      ],
+      "core/audits/seo/canonical.js | title": ["audits.canonical.title"],
       "core/audits/seo/canonical.js | description": [
         "audits.canonical.description"
       ],

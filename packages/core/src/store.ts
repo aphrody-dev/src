@@ -30,7 +30,9 @@ export function openStore(path: string): Database {
 
 /** Replaces the rows of every file in `files` (incremental: untouched paths stay). */
 export function writeFiles(db: Database, files: Iterable<IndexedFile>): number {
-  const del = ["files", "symbols", "refs", "imports"].map((t) => db.prepare(`DELETE FROM ${t} WHERE path = ?`));
+  const del = ["files", "symbols", "refs", "imports"].map((t) =>
+    db.prepare(`DELETE FROM ${t} WHERE path = ?`),
+  );
   const insF = db.prepare("INSERT INTO files VALUES (?,?,?,?,?,?,?,?,?)");
   const insS = db.prepare("INSERT INTO symbols VALUES (?,?,?,?,?,?,?)");
   const insR = db.prepare("INSERT INTO refs VALUES (?,?,?,?)");
@@ -40,12 +42,37 @@ export function writeFiles(db: Database, files: Iterable<IndexedFile>): number {
     for (const f of files) {
       for (const d of del) d.run(f.path);
       const s = f.summary;
-      insF.run(f.path, f.language, f.layer, f.feature, f.hash, s?.line_count ?? null, s?.byte_count ?? null, s?.parse_errors ?? null, s ? 1 : 0);
+      insF.run(
+        f.path,
+        f.language,
+        f.layer,
+        f.feature,
+        f.hash,
+        s?.line_count ?? null,
+        s?.byte_count ?? null,
+        s?.parse_errors ?? null,
+        s ? 1 : 0,
+      );
       if (s) {
         for (const y of s.symbols)
-          insS.run(f.path, y.name, y.kind, y.span.start_line, y.parent_scope ?? null, y.signature ?? null, y.doc ?? null);
-        for (const c of s.calls) insR.run(f.path, c.callee, c.caller_scope ?? null, c.span.start_line);
-        for (const i of s.imports) insI.run(f.path, i.source_module, i.imported_symbols.join(","), i.span.start_line);
+          insS.run(
+            f.path,
+            y.name,
+            y.kind,
+            y.span.start_line,
+            y.parent_scope ?? null,
+            y.signature ?? null,
+            y.doc ?? null,
+          );
+        for (const c of s.calls)
+          insR.run(f.path, c.callee, c.caller_scope ?? null, c.span.start_line);
+        for (const i of s.imports)
+          insI.run(
+            f.path,
+            i.source_module,
+            i.imported_symbols.join(","),
+            i.span.start_line,
+          );
       }
       n++;
     }
@@ -55,11 +82,9 @@ export function writeFiles(db: Database, files: Iterable<IndexedFile>): number {
 
 export function writeIndex(db: Database, idx: CoreIndex): void {
   writeFiles(db, idx.files);
-  db.prepare("INSERT OR REPLACE INTO meta VALUES ('root', ?), ('stats', ?), ('indexed_at', ?)").run(
-    idx.root,
-    JSON.stringify(idx.stats),
-    new Date().toISOString(),
-  );
+  db.prepare(
+    "INSERT OR REPLACE INTO meta VALUES ('root', ?), ('stats', ?), ('indexed_at', ?)",
+  ).run(idx.root, JSON.stringify(idx.stats), new Date().toISOString());
 }
 
 export interface Classification {

@@ -15,7 +15,13 @@ name = "net"
 path = "src/main.rs"
 
 [dependencies]
-tokio = { workspace = true, features = ["io-util", "macros", "net", "rt", "time"] }
+tokio = { workspace = true, features = [
+  "io-util",
+  "macros",
+  "net",
+  "rt",
+  "time",
+] }
 rustls = { workspace = true, features = ["logging", "ring", "std", "tls12"] }
 tokio-rustls = { workspace = true, features = ["ring"] }
 rustls-platform-verifier = { workspace = true }
@@ -24,7 +30,11 @@ http = { workspace = true }
 bytes = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
-hickory-resolver = { workspace = true, features = ["https-ring", "rustls-platform-verifier", "tokio"] }
+hickory-resolver = { workspace = true, features = [
+  "https-ring",
+  "rustls-platform-verifier",
+  "tokio",
+] }
 quinn = { workspace = true, features = ["runtime-tokio", "rustls-ring"] }
 h3 = { workspace = true }
 h3-quinn = { workspace = true }

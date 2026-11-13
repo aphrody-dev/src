@@ -1279,15 +1279,8 @@
     {
       "name": "cards",
       "source": "https://m3.material.io/components/cards/specs",
-      "variants": [
-        "Elevated card",
-        "Filled card",
-        "Outlined card"
-      ],
-      "anatomy": [
-        "1. Conteneur",
-        "2. Contour (outlined uniquement)"
-      ],
+      "variants": ["Elevated card", "Filled card", "Outlined card"],
+      "anatomy": ["1. Conteneur", "2. Contour (outlined uniquement)"],
       "states": [
         "Enabled, hovered, focused, pressed, dragged, disabled",
         "Carte non actionnable : ni survol ni ondulation"
@@ -1498,10 +1491,7 @@
     {
       "name": "dialogs",
       "source": "https://m3.material.io/components/dialogs/specs",
-      "variants": [
-        "Basic dialog",
-        "Full-screen dialog"
-      ],
+      "variants": ["Basic dialog", "Full-screen dialog"],
       "anatomy": [
         "1. Conteneur",
         "2. Icône (facultative, basic)",
@@ -1512,10 +1502,7 @@
         "7. Scrim (basic)",
         "Full-screen : en-tête avec icône de fermeture, titre, bouton texte de validation"
       ],
-      "states": [
-        "Ouvert / fermé",
-        "Contenu défilant si dépassement"
-      ],
+      "states": ["Ouvert / fermé", "Contenu défilant si dépassement"],
       "measures": {
         "md-comp-dialog.container-shape": "28px",
         "md-comp-dialog.with-icon-icon-size": "24px",
@@ -1545,17 +1532,9 @@
     {
       "name": "divider",
       "source": "https://m3.material.io/components/divider/specs",
-      "variants": [
-        "Full-width",
-        "Inset",
-        "Middle-inset"
-      ],
-      "anatomy": [
-        "1. Ligne de séparation"
-      ],
-      "states": [
-        "Aucun état interactif"
-      ],
+      "variants": ["Full-width", "Inset", "Middle-inset"],
+      "anatomy": ["1. Ligne de séparation"],
+      "states": ["Aucun état interactif"],
       "measures": {
         "md-comp-divider.thickness": "1px",
         "full-width": "100%",
@@ -1580,17 +1559,8 @@
         "Couleur surface container (déprécié)",
         "Configurations baseline : avec icône, sans icône"
       ],
-      "anatomy": [
-        "Conteneur",
-        "Texte du libellé",
-        "Icône (facultative)"
-      ],
-      "states": [
-        "enabled",
-        "hovered (élévation 4)",
-        "focused",
-        "pressed"
-      ],
+      "anatomy": ["Conteneur", "Texte du libellé", "Icône (facultative)"],
+      "states": ["enabled", "hovered (élévation 4)", "focused", "pressed"],
       "measures": {
         "small.container-height": "56dp",
         "small.container-shape": "16dp",
@@ -1684,10 +1654,7 @@
         "Couleurs : primary container (défaut), secondary container, tertiary container, primary, secondary, tertiary",
         "Couleur surface (déprécié)"
       ],
-      "anatomy": [
-        "Conteneur",
-        "Icône"
-      ],
+      "anatomy": ["Conteneur", "Icône"],
       "states": [
         "enabled",
         "hovered (couche d'état 8 %, élévation 4)",
@@ -1731,10 +1698,7 @@
         "Largeurs : default, narrow, wide",
         "Jeux de tokens filled/tonal/outlined baseline (déprécié)"
       ],
-      "anatomy": [
-        "Icône",
-        "Conteneur (invisible au repos pour standard)"
-      ],
+      "anatomy": ["Icône", "Conteneur (invisible au repos pour standard)"],
       "states": [
         "enabled",
         "disabled",
@@ -1884,9 +1848,7 @@
         "Indicateur actif (forme animée)",
         "Conteneur (configuration contained)"
       ],
-      "states": [
-        "actif (animation continue)"
-      ],
+      "states": ["actif (animation continue)"],
       "measures": {
         "container-width": "48dp",
         "container-height": "48dp",
@@ -2041,13 +2003,7 @@
         "Voile (scrim, version modale)",
         "Icône"
       ],
-      "states": [
-        "enabled",
-        "hovered",
-        "focused",
-        "pressed",
-        "selected"
-      ],
+      "states": ["enabled", "hovered", "focused", "pressed", "selected"],
       "measures": {
         "container-width": "360dp",
         "container-height": "100%",
@@ -2145,10 +2101,7 @@
         "Piste",
         "Indicateur de fin (stop indicator, linéaire)"
       ],
-      "states": [
-        "determinate",
-        "indeterminate"
-      ],
+      "states": ["determinate", "indeterminate"],
       "measures": {
         "active-indicator-thickness": "4dp",
         "track-thickness": "4dp",
@@ -2180,9 +2133,7 @@
     {
       "name": "radio-button",
       "source": "https://m3.material.io/components/radio-button/specs",
-      "variants": [
-        "Radio button (variante unique)"
-      ],
+      "variants": ["Radio button (variante unique)"],
       "anatomy": [
         "Cercle extérieur",
         "Point intérieur (sélectionné)",
@@ -2328,12 +2279,7 @@
         "6. Boutons d'action en bas (facultatifs)",
         "7. Scrim (modal)"
       ],
-      "states": [
-        "enabled",
-        "hovered",
-        "focused",
-        "pressed (ripple)"
-      ],
+      "states": ["enabled", "hovered", "focused", "pressed (ripple)"],
       "measures": {
         "docked-container-width": "256px",
         "max-width": "400dp",
@@ -2677,13 +2623,7 @@
         "8. Champs de saisie heure/minute (conteneur, texte, texte d'aide) — variante input",
         "9. Conteneur"
       ],
-      "states": [
-        "enabled",
-        "hover",
-        "focus",
-        "pressed",
-        "selected"
-      ],
+      "states": ["enabled", "hover", "focus", "pressed", "selected"],
       "measures": {
         "container-shape": "28px",
         "container-elevation": "6px",
@@ -2727,9 +2667,7 @@
         "1. Conteneur",
         "2. Éléments placés dans les emplacements (boutons icônes, boutons, champs texte, FAB)"
       ],
-      "states": [
-        "aucun état propre : les états sont ceux des éléments placés"
-      ],
+      "states": ["aucun état propre : les états sont ceux des éléments placés"],
       "measures": {
         "container-height": "64px",
         "docked.leading-trailing-space": "16px",

@@ -1,0 +1,7 @@
+system	seconds_to_marker	marker	image
+arch	26.187	login:	Arch-Linux-x86_64-cloudimg.qcow2
+debian	130.463	login:	debian-13-genericcloud-amd64.qcow2
+ubuntu	13.229	login:	ubuntu-26.10-minimal-cloudimg-amd64.img
+fedora	16.725	login:	Fedora-Cloud-Base-Generic-45-1.4.x86_64.qcow2
+alpine	22.317	login:	generic_alpine-3.24.1-x86_64-bios-tiny-r0.qcow2
+accel=kvm

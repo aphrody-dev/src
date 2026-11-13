@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The form you build is for people.
 People use different devices.
 Some use a mouse, some a touch device, some the keyboard,
@@ -81,7 +82,7 @@ you learned how to show error messages in case of invalid data entry.
 
 ```html
 <label for="name">Name</label>
-<input type="text" name="name" id="name" required>
+<input type="text" name="name" id="name" required />
 ```
 
 For example, if a field has a `required` attribute, and invalid data is entered, the browser shows

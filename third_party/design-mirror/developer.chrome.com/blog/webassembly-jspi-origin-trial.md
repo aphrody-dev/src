@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Thomas Steiner [GitHub](https://github.com/tomayac) [LinkedIn](https://www.linkedin.com/in/thomassteinerlinkedin) [Mastodon](https://toot.cafe/@tomayac) [Bluesky](https://bsky.app/profile/tomayac.com) [Homepage](https://blog.tomayac.com/)
 
 JavaScript Promise Integration (JSPI) is an API that allows synchronous
@@ -58,7 +59,7 @@ emcc -O3 badfib.c -o index.html -s ASYNCIFY=2
 You can feature-detect JSPI support from JavaScript as follows:
 
 ```javascript
-if ('Suspender' in WebAssembly) {
+if ("Suspender" in WebAssembly) {
   // JSPI is supported.
 }
 ```

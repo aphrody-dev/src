@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The Opportunities section of your Lighthouse report lists
 all stylesheets with unused CSS with a potential savings of 2 KiB or more.
 Remove the unused CSS
@@ -50,7 +51,7 @@ the more time that a browser might potentially need to spend calculating the sty
 
 The Coverage tab of Chrome DevTools can help you discover critical and uncritical CSS.
 See [View used and unused CSS with the Coverage tab](https://developer.chrome.com/docs/devtools/css/reference.md.txt#coverage).
- Chrome DevTools: Coverage tab.
+Chrome DevTools: Coverage tab.
 
 ## Inline critical CSS and defer non-critical CSS
 

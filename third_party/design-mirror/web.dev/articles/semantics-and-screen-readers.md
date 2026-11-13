@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Rob Dodson [X](https://twitter.com/rob_dodson) [GitHub](https://github.com/robdodson) [Homepage](https://robdodson.me)
 
-Have you ever stopped to wonder *how* assistive technology, such as a screen
+Have you ever stopped to wonder _how_ assistive technology, such as a screen
 reader, knows what to announce to users? The answer is that these technologies
 rely on developers marking up their pages with **semantic** HTML. But what are
 semantics, and how do screen readers use them?
@@ -17,9 +18,9 @@ semantics, and how do screen readers use them?
 ## Affordances and semantics
 
 Before diving into semantics, it's helpful to understand affordances. An
-*affordance* is any object that offers its user the opportunity to perform an
+_affordance_ is any object that offers its user the opportunity to perform an
 action. A classic example is the teapot:
- A teapot's handle is a natural affordance.
+A teapot's handle is a natural affordance.
 
 This teapot doesn't need an instruction manual. Instead, its physical design
 conveys to the user how it should be operated. It has a handle, and because
@@ -34,7 +35,7 @@ But for users who are unable to see the screen, these visual affordances aren't
 conveyed to them. Therefore, you need to make sure that your interface is
 constructed in a way that can convey these same affordances to assistive
 technology. This non-visual exposure of a UI element's affordances is called
-its *semantics*.
+its _semantics_.
 
 ## Write semantic HTML
 
@@ -73,12 +74,12 @@ or `placeholder`, whether or not the element is associated with an actual
 `<label>` element, and if the element has any ARIA attributes such as
 `aria-label` and `aria-labelledby`.
 
-Some elements *may* have a **value** . For example, `<input type="text">` may
+Some elements _may_ have a **value** . For example, `<input type="text">` may
 have a value that reflects whatever the user has typed into the text field.
 
-Some elements *may* also have a **state** , which conveys their current status.
-For example, a `<select>` element can be in either an *expanded* or a
-*collapsed* state, depending on if it's open or closed.
+Some elements _may_ also have a **state** , which conveys their current status.
+For example, a `<select>` element can be in either an _expanded_ or a
+_collapsed_ state, depending on if it's open or closed.
 
 ### The accessibility tree
 

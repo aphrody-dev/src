@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In the first section, you learned how to build a basic form.
 This section is all about best practices.
 In this module, learn about user experience (UX),
@@ -153,7 +154,14 @@ Do they need to enter at least eight characters for a password? Tell them.
 
 ```html
 <label for="password">Password (required)</label>
-<input required minlength="8" type="password" id="password" name="password" aria-describedby="password-minlength">
+<input
+  required
+  minlength="8"
+  type="password"
+  id="password"
+  name="password"
+  aria-describedby="password-minlength"
+/>
 <span id="password-minlength">Enter at least eight characters</span>
 ```
 
@@ -161,7 +169,7 @@ Do they need to enter at least eight characters for a password? Tell them.
 
 ```html
 <label for="name">Name (required)</label>
-<input name="name" id="name" required>
+<input name="name" id="name" required />
 ```
 
 If a field is mandatory, make it obvious! [The Anatomy of Accessible Forms](https://www.deque.com/blog/anatomy-of-accessible-forms-required-form-fields/)

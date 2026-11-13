@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 004: The Cascade](https://thecsspodcast.libsyn.com/004-the-cascade)
 
 CSS stands for Cascading Stylesheets.
@@ -22,6 +23,7 @@ button {
   color: blue;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/GRrgMOm?height=200&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen GRrgMOm by web-dot-dev on Codepen"></iframe>
 
 Understanding the cascade algorithm helps you understand how the browser resolves conflicts like this.
@@ -81,6 +83,7 @@ the initial declaration will be honored, and the font-size will be 1.5rem
   font-size: clamp(1.5rem, 1rem + 3vw, 2rem);
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/xxgbPMP?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen xxgbPMP by web-dot-dev on Codepen"></iframe>
 
 > [!NOTE]
@@ -194,29 +197,39 @@ rules from various origins:
 #### User-agent style
 
 ```css
-h1 { margin-block-start: 0.83em; }
+h1 {
+  margin-block-start: 0.83em;
+}
 ```
 
 #### Bootstrap
 
 ```css
-h1 { margin-block-start: 20px; }
+h1 {
+  margin-block-start: 20px;
+}
 ```
 
 #### Page Author styles
 
 ```css
-h1 { margin-block-start: 2ch; }
+h1 {
+  margin-block-start: 2ch;
+}
 
 @media (max-width: 480px) {
-  h1 { margin-block-start: 1ch; }
+  h1 {
+    margin-block-start: 1ch;
+  }
 }
 ```
 
 #### User custom style
 
 ```css
-h1 { margin-block-start: 2rem !important; }
+h1 {
+  margin-block-start: 2rem !important;
+}
 ```
 
 Then, given the following HTML:

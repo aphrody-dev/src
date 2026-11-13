@@ -27,7 +27,7 @@ Silesia corpus (202 MiB tar archive, 3 iterations averaged).
 ## Benchmark results
 
 | Algorithm              | Ratio | Compress (MiB/s) | Decompress (MiB/s) |
-|------------------------|------:|-----------------:|-------------------:|
+| ---------------------- | ----: | ---------------: | -----------------: |
 | LZ4 default            | 47.6% |            718.7 |             2494.5 |
 | LZ4 HC 4               | 37.7% |            114.7 |             2494.3 |
 | LZ4 HC 9               | 36.7% |             49.4 |             2494.2 |

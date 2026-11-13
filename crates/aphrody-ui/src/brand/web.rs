@@ -76,6 +76,8 @@ pub struct Capture {
     /// `captures/<id>.webm` exists (lossless VP9 recording): encode AV1 + VP9 and a poster.
     #[serde(default)]
     pub video: bool,
+    /// Still taken elsewhere in the repo (e.g. docs/proofs/...), relative to the root, instead of captures/<id>.png.
+    pub file: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -233,6 +235,7 @@ pub(super) fn run(cx: &mut Ctx<'_>, m: &Manifest, brand_dir: &Path) -> Result<()
     captures(cx, m, &st)?;
     environment(cx, m, &st)?;
     super::model::models(cx, m, &st.tmp)?;
+    super::pet::pet(cx, m, &st.tmp)?;
     gpu(cx, m, &st)?;
     let _ = fs::remove_dir_all(&st.tmp);
     manifest(cx, m)
@@ -504,7 +507,7 @@ fn captures(cx: &mut Ctx<'_>, m: &Manifest, st: &Stage<'_>) -> Result<()> {
     let Some(im) = &m.images else { return Ok(()) };
     let dir = st.brand_dir.join("captures");
     for c in &m.capture {
-        let still = dir.join(format!("{}.png", c.id));
+        let still = c.file.as_ref().map_or_else(|| dir.join(format!("{}.png", c.id)), |f| st.root.join(f));
         if !still.is_file() {
             cx.report.warnings.push(format!("capture {}: {} missing (bun assets/brand/capture.ts)", c.id, still.display()));
             continue;

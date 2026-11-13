@@ -38,20 +38,19 @@ Correction :
 
 TypeScript
 if (t === "integer" ? !Number.isInteger(value) : t === "number" ? typeof value !== "number" || !Number.isFinite(value) : t && t !== kind)
-  return [`${path}: expected ${t}, got ${kind}`];
+return [`${path}: expected ${t}, got ${kind}`];
 // ...
 if (kind === "object") {
-  const o = value as Record<string, unknown>;
-  const props = schema.properties ?? {};
-  for (const k of schema.required ?? [])
-    if (!Object.hasOwn(o, k) || o[k] === undefined) out.push(`${path}.${k}: required`);
-  for (const [k, v] of Object.entries(o)) {
-    if (v === undefined && !(schema.required ?? []).includes(k)) continue;
-    if (Object.hasOwn(props, k)) out.push(...validate(props[k]!, v, `${path}.${k}`));
-    else if (schema.additionalProperties === false) out.push(`${path}.${k}: unexpected`);
-  }
+const o = value as Record<string, unknown>;
+const props = schema.properties ?? {};
+for (const k of schema.required ?? [])
+if (!Object.hasOwn(o, k) || o[k] === undefined) out.push(`${path}.${k}: required`);
+for (const [k, v] of Object.entries(o)) {
+if (v === undefined && !(schema.required ?? []).includes(k)) continue;
+if (Object.hasOwn(props, k)) out.push(...validate(props[k]!, v, `${path}.${k}`));
+else if (schema.additionalProperties === false) out.push(`${path}.${k}: unexpected`);
 }
-
+}
 
 packages/ai-os/src/llm/generate.ts (lignes 45–46, 83–105) — Crash TypeError sur noms d'outils hérités, content: undefined sur retour void, et AbortSignal ignoré
 
@@ -61,11 +60,10 @@ Correction :
 
 TypeScript
 const stringify = (v: unknown): string =>
-  typeof v === "string" ? v : JSON.stringify(v ?? null);
+typeof v === "string" ? v : JSON.stringify(v ?? null);
 // ... dans la boucle for (const call of r.toolCalls) :
 o.signal?.throwIfAborted();
 const t = o.tools && Object.hasOwn(o.tools, call.name) ? o.tools[call.name] : undefined;
-
 
 packages/ai-os/src/llm/model.ts (lignes 4, 96–110, 128–139, 149–153, 182–225) — Contrat manquant, IDs d'outils dupliqués, silence sur erreurs HTTP 200, et validation absente
 
@@ -138,7 +136,6 @@ console.error(`[tool] ${t.call.name} ${(JSON.stringify(t.error ?? t.output) ?? "
 // adapter INSTRUCTIONS selon o.model.tools, ajouter signal?: AbortSignal dans RunOptions,
 // et partager/mettre en cache l'instance Memory + indexation par home.
 
-
 packages/ai-os/src/gateway/index.ts (lignes 54, 58, 80–85, 88–130) — Faille d'authentification critique sur /channels/:id, timeout Bun à 10 s, fuite mémoire et collision de session OpenAI
 
 Défaut :
@@ -183,14 +180,13 @@ return t.run(input);
 // Dans mcpRpc tools/call (lignes 138–143) :
 const isObj = v !== null && typeof v === "object" && !Array.isArray(v);
 return ok(r.id, complete({
-  content: [{ type: "text", text: text(v) }],
-  ...(isObj ? { structuredContent: v } : {}),
-  isError: false,
+content: [{ type: "text", text: text(v) }],
+...(isObj ? { structuredContent: v } : {}),
+isError: false,
 }));
 
 // Dans dispatch() : rejeter [] avec fail(null, -32600, ...), valider chaque élément
 // (objet + jsonrpc === "2.0" + typeof method === "string"), et retourner null si r.id === undefined sur erreur.
-
 
 packages/ai-os/src/relay/agent-tools.ts (lignes 14–28, 37–60, 84, 104–112) — Escalade de répertoire via cwd, crash base absente et duplication des constructeurs de schéma
 
@@ -228,7 +224,7 @@ Défaut :
 
 Lignes 111 et 119 : startTui appelle process.exit(0) en sortie de boucle et sur SIGINT, tuant brutalement le processus hôte ou le lanceur bun test lorsqu'on lui injecte o.input / o.output (pourtant prévus aux lignes 13–14). Sur SIGINT, busy(false) n'est même pas appelé pour nettoyer le spinner ni annuler le run() en cours.
 
-Lignes 22–35 : renderMarkdown traite le texte ligne par ligne sans détecter les blocs de code ``` : les commentaires # ... (Bash, Python, TOML) perdent leur #  (ligne 26), et les expressions régulières gras/italique s'appliquent à l'intérieur du code en ligne `...`.
+Lignes 22–35 : renderMarkdown traite le texte ligne par ligne sans détecter les blocs de code ``` : les commentaires # ... (Bash, Python, TOML) perdent leur # (ligne 26), et les expressions régulières gras/italique s'appliquent à l'intérieur du code en ligne `...`.
 
 Lignes 31 et 66 : _tools: ${r.toolCalls.join(", ")}_ échoue systématiquement à passer en italique dès qu'un nom d'outil contient un underscore (memory_search, agent_run, etc.), car [^_]+ refuse _, laissant les underscores bruts à l'écran.
 

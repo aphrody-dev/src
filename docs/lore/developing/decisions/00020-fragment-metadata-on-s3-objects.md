@@ -18,7 +18,7 @@ cost an S3 request, and moving it removed that request. No ADR records this chan
 has never been superseded.
 
 The consequence is that an S3 object holds one representation of some content while a separate
-`DynamoDB` record describes which representation that is. The S3 key is the *content* hash, but two
+`DynamoDB` record describes which representation that is. The S3 key is the _content_ hash, but two
 writers may legitimately hold different valid representations of the same content — LZ4 and Zstd of
 the same bytes — and both address the same key. The object and the record are written independently
 and are required to agree. They can fail to:
@@ -152,7 +152,7 @@ What that cost, concretely:
 - **Reconstructing a fragment for an abandoned object by probing codecs does not work.** The natural
   repair — read the orphaned bytes, try each codec, keep the one that decompresses — was implemented
   and then disproved by execution. `decompress_into` validates the result against `size_content`, and
-  Oodle takes the raw size as an *input* rather than discovering it, so a probe cannot distinguish
+  Oodle takes the raw size as an _input_ rather than discovering it, so a probe cannot distinguish
   "wrong codec" from "wrong size". It was replaced by reclaiming the object outright.
 - **Telling an in-flight upload from a crashed one has no sound answer.** The implementation decides
   by the object's age via `Last-Modified`, which is a heuristic: it must treat a missing or

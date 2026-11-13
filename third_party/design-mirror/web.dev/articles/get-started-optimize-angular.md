@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Want to make your Angular site as fast and accessible as possible? You've come to the right place!
 
- Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/)
+Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/)
 
 ## What's Angular?
 
@@ -26,7 +27,7 @@ This collection focuses on five major areas for optimizing an Angular applicatio
 
 Each post in the collection will describe techniques that you can directly apply to your own applications.
 
-## What's *not* in this collection?
+## What's _not_ in this collection?
 
 This collection assumes that you're already familiar with Angular and TypeScript. If you're not feeling confident with them yet, check out the TypeScript [documentation](https://www.typescriptlang.org/docs/home.html) and the [Getting Started with Angular](https://angular.io/start) guide on [angular.io](https://angular.io).
 

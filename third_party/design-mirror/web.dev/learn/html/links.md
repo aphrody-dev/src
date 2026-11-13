@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In the introduction to attributes, we shared an example of how attributes are
 added to the opening tag. The example used the `<a>` tag, but neither the
 element nor the specific attributes introduced in that example were discussed.
@@ -75,8 +76,11 @@ no email address, to allow site visitors to invite their own friends. In our lin
 URL to the registration:
 
 ```html
-<a href="mailto:?subject=Join%20me%21&body=You%20need%20to%20show%20your%20human%20that%20you%20can%27t%20be%20owned%21%20Sign%20up%20for%20Machine%20Learning%20workshop.%20We%20are%20taking%20over%20the%20world.%20http%3A%2F%2Fwww.machinelearning.com%23reg
-">Tell a machine</a>
+<a
+  href="mailto:?subject=Join%20me%21&body=You%20need%20to%20show%20your%20human%20that%20you%20can%27t%20be%20owned%21%20Sign%20up%20for%20Machine%20Learning%20workshop.%20We%20are%20taking%20over%20the%20world.%20http%3A%2F%2Fwww.machinelearning.com%23reg
+"
+  >Tell a machine</a
+>
 ```
 
 The question mark (`?`) separates the `mailto:` and the email address, if any, from the query term. Within the query,
@@ -103,7 +107,10 @@ SVGOMG, the SVG Optimizer, uses the `download` attribute to suggest a filename f
 creates. When `hal.svg` is optimized, SVGOMG's download link opening tag is similar to:
 
 ```html
-<a href="blob:https://jakearchibald.github.io/944a5fc8-fdb3-458a-91ee-cdd5964b6646" download="hal.svg">
+<a
+  href="blob:https://jakearchibald.github.io/944a5fc8-fdb3-458a-91ee-cdd5964b6646"
+  download="hal.svg"
+></a>
 ```
 
 There's also a demo of a [`<canvas>` that creates a downloadable PNG data URL](https://developer.mozilla.org/docs/Web/HTML/Element/a#using_the_download_attribute_to_save_a_canvas_as_a_png).
@@ -168,15 +175,26 @@ In this example, we include the URL of the translated page as the value of the `
 attribute provides the language of the translations:
 
 ```html
-<a href="/fr" hreflang="fr-FR" rel="alternate" lang="fr-FR">atelier d'apprentissage mechanique</a>
-<a href="/pt" hreflang="pt-BR" rel="alternate" lang="pt-BR">oficina de aprendizado de máquina</a>
+<a href="/fr" hreflang="fr-FR" rel="alternate" lang="fr-FR"
+  >atelier d'apprentissage mechanique</a
+>
+<a href="/pt" hreflang="pt-BR" rel="alternate" lang="pt-BR"
+  >oficina de aprendizado de máquina</a
+>
 ```
 
 If the French translation is a PDF, you can provide the type attribute with the PDF MIME type of the linked resource. While the
 MIME type is purely advisory, informing the user that a link will open a document of a different format is always a good idea.
 
 ```html
-<a href="/fr.pdf" hreflang="fr-FR" rel="alternate" lang="fr-FR" type="application/x-pdf">atelier d'apprentissage mechanique (pdf).</a>
+<a
+  href="/fr.pdf"
+  hreflang="fr-FR"
+  rel="alternate"
+  lang="fr-FR"
+  type="application/x-pdf"
+  >atelier d'apprentissage mechanique (pdf).</a
+>
 ```
 
 ## Track link clicks
@@ -202,9 +220,9 @@ The `links` attribute returns an `HTMLCollection` matching `a` and `area` elemen
 ```javascript
 let a = document.links[0]; // obtain the first link in the document
 
-a.href = 'newpage.html'; // change the destination URL of the link
-a.protocol = 'ftp'; // change just the scheme part of the URL
-a.setAttribute('href', 'https://machinelearningworkshop.com/'); // change the attribute content directly
+a.href = "newpage.html"; // change the destination URL of the link
+a.protocol = "ftp"; // change just the scheme part of the URL
+a.setAttribute("href", "https://machinelearningworkshop.com/"); // change the attribute content directly
 ```
 
 In this section, you learned all about links. The next section covers lists,

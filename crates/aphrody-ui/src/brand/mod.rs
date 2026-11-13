@@ -22,6 +22,7 @@
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../packages/design/tokens/tokens.rs"));
 
 mod model;
+mod pet;
 mod web;
 
 /// `0xRRGGBBAA` of tokens.rs to the `0xAARRGGBB` used here.

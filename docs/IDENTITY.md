@@ -11,12 +11,12 @@ Single source: [`identity.toml`](../identity.toml) at the repository root (`just
 
 ## Availability evidence (2026-11-12)
 
-| Check | Result |
-|---|---|
-| crates.io `aphrody` (exact) | not published; search `q=aphrody` returns 191 crates, none named exactly `aphrody` |
-| npm `aphrody` (unscoped, exact) | not published |
-| npm scope `@aphrody` | owned by the project owner: 652 packages, all published by `<npm-owner>` |
-| crates.io `aphrody-*` | about 190 older crates already published by the owner |
+| Check                           | Result                                                                             |
+| ------------------------------- | ---------------------------------------------------------------------------------- |
+| crates.io `aphrody` (exact)     | not published; search `q=aphrody` returns 191 crates, none named exactly `aphrody` |
+| npm `aphrody` (unscoped, exact) | not published                                                                      |
+| npm scope `@aphrody`            | owned by the project owner: 652 packages, all published by `<npm-owner>`           |
+| crates.io `aphrody-*`           | about 190 older crates already published by the owner                              |
 
 Names already taken by the owner's older crates and therefore not reused: `aphrody-render`,
 `aphrody-engine`, `aphrody-web` (the members are `renderer`, `js` and `webapi` instead). Before adding a
@@ -33,12 +33,12 @@ member, check `https://crates.io/api/v1/crates/aphrody-<dir>`.
 
 Created: forks `aphrody-labs/lore`, `aphrody-labs/UnrealEngine` (private). Nothing published.
 
-| Registry | Item | Notes |
-|---|---|---|
-| GitHub | repository `aphrody-labs/src` | this monorepo (moved from `aphrody-dev/src` on 2026-11-13); `aphrody-labs/labs` was merged into it on 2026-11-12 |
-| crates.io | crate `aphrody` | names are held only by publishing; publish `crates/ay` 0.0.x when ready (`publish = false` until then) |
-| npm | `@aphrody/cli` and per-platform packages | scope already owned; publish with the first binary release |
-| DNS | `labs.aphrody.com` records | homepage and conformance dashboard |
+| Registry  | Item                                     | Notes                                                                                                            |
+| --------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| GitHub    | repository `aphrody-labs/src`            | this monorepo (moved from `aphrody-dev/src` on 2026-11-13); `aphrody-labs/labs` was merged into it on 2026-11-12 |
+| crates.io | crate `aphrody`                          | names are held only by publishing; publish `crates/ay` 0.0.x when ready (`publish = false` until then)           |
+| npm       | `@aphrody/cli` and per-platform packages | scope already owned; publish with the first binary release                                                       |
+| DNS       | `labs.aphrody.com` records               | homepage and conformance dashboard                                                                               |
 
 ## Anonymous public identity
 

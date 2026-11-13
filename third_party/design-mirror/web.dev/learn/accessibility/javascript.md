@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 JavaScript plays a major role in almost everything we create---from smaller
 dynamic components to full products running on a JavaScript framework, such as
 React or Angular.
@@ -40,6 +41,7 @@ Don't
 ```html
 <div role="button" tabindex="0" onclick="doAction()">Click me!</div>
 ```
+
 Do
 
 ```html
@@ -90,27 +92,29 @@ You can use the element
 to set the content:
 
 ```javascript
-document.querySelector("#banner").innerHTML = '<p>You are now signed in</p>';
+document.querySelector("#banner").innerHTML = "<p>You are now signed in</p>";
 ```
 
 You can apply CSS in a similar way, with
 [`setAttribute`](https://developer.mozilla.org/docs/Web/API/Element/setAttribute):
 
 ```javascript
-document.querySelector("#banner").setAttribute("style", "border-color:#0000ff;");
+document
+  .querySelector("#banner")
+  .setAttribute("style", "border-color:#0000ff;");
 ```
 
 With great power comes great responsibility. Unfortunately, JavaScript
 injection of HTML and CSS has historically been misused to create inaccessible
 content. Some common misuses are listed here:
 
-| Possible misuse | Correct use |
-|---|---|
-| Render large chunks of non-semantic HTML | Render smaller pieces of semantic HTML |
-| Not allowing time for dynamic content to be recognized by assistive technology | Using a `setTimeout()` time delay to allow users to hear the full message |
-| Applying style attributes for `onFocus()` dynamically | Use `:focus` for the related elements in your CSS stylesheet |
-| Applying inline styles may cause user stylesheets to not be read properly | Keep your styles in CSS files to keep the consistency of the theme |
-| Creating very large JavaScript files that slow down overall site performance | Use less JavaScript. You may be able to perform similar functions in CSS (such as animations or sticky navigation), which parse faster and are more performant |
+| Possible misuse                                                                | Correct use                                                                                                                                                    |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Render large chunks of non-semantic HTML                                       | Render smaller pieces of semantic HTML                                                                                                                         |
+| Not allowing time for dynamic content to be recognized by assistive technology | Using a `setTimeout()` time delay to allow users to hear the full message                                                                                      |
+| Applying style attributes for `onFocus()` dynamically                          | Use `:focus` for the related elements in your CSS stylesheet                                                                                                   |
+| Applying inline styles may cause user stylesheets to not be read properly      | Keep your styles in CSS files to keep the consistency of the theme                                                                                             |
+| Creating very large JavaScript files that slow down overall site performance   | Use less JavaScript. You may be able to perform similar functions in CSS (such as animations or sticky navigation), which parse faster and are more performant |
 
 For CSS, toggle CSS classes instead adding inline styles, as this
 allows for reusability and simplicity. Use hidden content on the page and

@@ -8,14 +8,14 @@ If you are writing a long-form artifact (multi-page tutorial, system-model expla
 
 The folder picks the doc type. The doc type sets the structure.
 
-| Reader intent | Folder | Doc type |
-| --- | --- | --- |
-| "Walk me through learning X." | `docs/tutorials/` | Tutorial |
-| "I have a goal — give me the recipe." | `docs/how-to/` | How-To |
-| "What does each option/flag do?" | `docs/reference/` | Reference |
-| "Help me understand X / why X is so." | `docs/explanation/` | Explanation |
-| "How's this part of Lore actually built?" (contributor) | `docs/developing/internals/` | Internals |
-| "Why did the project choose X?" (contributor) | `docs/developing/decisions/` | ADR |
+| Reader intent                                                          | Folder                            | Doc type      |
+| ---------------------------------------------------------------------- | --------------------------------- | ------------- |
+| "Walk me through learning X."                                          | `docs/tutorials/`                 | Tutorial      |
+| "I have a goal — give me the recipe."                                  | `docs/how-to/`                    | How-To        |
+| "What does each option/flag do?"                                       | `docs/reference/`                 | Reference     |
+| "Help me understand X / why X is so."                                  | `docs/explanation/`               | Explanation   |
+| "How's this part of Lore actually built?" (contributor)                | `docs/developing/internals/`      | Internals     |
+| "Why did the project choose X?" (contributor)                          | `docs/developing/decisions/`      | ADR           |
 | "How do I write code that conforms to Lore conventions?" (contributor) | `docs/developing/code-standards/` | Code-Standard |
 
 If you are unsure which folder applies, open a draft pull request with your best guess; maintainers will redirect.
@@ -26,14 +26,14 @@ Depth: [`canon/doc-types.md`](canon/doc-types.md) defines all seven types, their
 
 Each user-facing doc type has a template file at the folder root:
 
-| Folder | Template |
-| --- | --- |
-| `docs/tutorials/` | [`tutorial-template.md`](../../tutorials/tutorial-template.md) |
-| `docs/how-to/` | [`how-to-template.md`](../../how-to/how-to-template.md) |
-| `docs/reference/` | [`reference-template.md`](../../reference/reference-template.md) |
-| `docs/explanation/` | [`explanation-template.md`](../../explanation/explanation-template.md) |
-| `docs/developing/decisions/` | [`adr-template.md`](../decisions/adr-template.md) |
-| `docs/developing/internals/` | Inline in [`canon/doc-types.md`](canon/doc-types.md) § Internals § Template |
+| Folder                            | Template                                                                        |
+| --------------------------------- | ------------------------------------------------------------------------------- |
+| `docs/tutorials/`                 | [`tutorial-template.md`](../../tutorials/tutorial-template.md)                  |
+| `docs/how-to/`                    | [`how-to-template.md`](../../how-to/how-to-template.md)                         |
+| `docs/reference/`                 | [`reference-template.md`](../../reference/reference-template.md)                |
+| `docs/explanation/`               | [`explanation-template.md`](../../explanation/explanation-template.md)          |
+| `docs/developing/decisions/`      | [`adr-template.md`](../decisions/adr-template.md)                               |
+| `docs/developing/internals/`      | Inline in [`canon/doc-types.md`](canon/doc-types.md) § Internals § Template     |
 | `docs/developing/code-standards/` | Inline in [`canon/doc-types.md`](canon/doc-types.md) § Code-Standard § Template |
 
 Copy, rename to a lowercase, hyphenated filename describing the topic (`resolving-merge-conflicts.md`, not `Resolving Merge Conflicts.md`).

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 You may already be familiar with the core concept of a content delivery network (CDN): a network of distributed but interconnected
 servers that quickly and efficiently delivers assets to users. When a file is uploaded to a CDN provider, a duplicate will be created
 on the other nodes of the CDN network around the world. When a user requests a file, the data will be sent by the node geographically
@@ -71,7 +72,6 @@ As complex as this process might sound, implementation couldn't be much simpler:
 image URL enables this feature:
 
 ```html
-
 <!-- 250 KB-->
 
 <!-- 134 KB-->

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 [Digital accessibility](https://www.w3.org/WAI/fundamentals/accessibility-intro/)
 means designing and building your digital offerings so that, regardless of a
 person's mental or physical ability, they can still interact with your website,
@@ -32,7 +33,7 @@ to follow the latest version of the
 
 Testing your digital product against an accessibility standard and conformance
 level is commonly referred to as an
-*[accessibility audit](https://www.w3.org/WAI/test-evaluate/)*.
+_[accessibility audit](https://www.w3.org/WAI/test-evaluate/)_.
 An accessibility audit uses various methodologies, techniques, and tools,
 including design, automated, manual, and assistive technology (AT) testing.
 
@@ -64,8 +65,7 @@ applicable to your role and project.
 
 In terms of accessibility, WCAG is considered the "gold standard" for
 conformance testing. The
-[first draft of WCAG](https://www.w3.org/TR/WAI-WEBCONTENT/) was released in
-1999. The current version is [WCAG 2.2](https://www.w3.org/TR/WCAG22/).
+[first draft of WCAG](https://www.w3.org/TR/WAI-WEBCONTENT/) was released in 1999. The current version is [WCAG 2.2](https://www.w3.org/TR/WCAG22/).
 [WCAG 3.0](https://www.w3.org/WAI/standards-guidelines/wcag/wcag3-intro/) has an
 exploratory draft as of May 2024, but is not expected to be a completed W3C
 standard for a few more years.
@@ -115,7 +115,7 @@ If you are new to this field, start with the principles of
 WCAG---[Perceivable, Operable, Understandable, and Robust (POUR)](https://www.w3.org/WAI/fundamentals/accessibility-principles/).
 By applying POUR principles to your digital products, you can focus on how your
 products are used by real humans, including people with disabilities.
- Perceivable, Operable, Understandable, and Robust all connect to one another.
+Perceivable, Operable, Understandable, and Robust all connect to one another.
 
 ### Perceivable
 

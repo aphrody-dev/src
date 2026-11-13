@@ -1,5 +1,10 @@
-import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
-import {Img} from 'remotion';
+import {
+  AbsoluteFill,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
+import { Img } from "remotion";
 
 interface ScreenSlideProps {
   imageSrc: string;
@@ -17,7 +22,7 @@ export const ScreenSlide: React.FC<ScreenSlideProps> = ({
   height,
 }) => {
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
+  const { fps } = useVideoConfig();
 
   // Zoom in animation
   const zoom = spring({
@@ -56,9 +61,9 @@ export const ScreenSlide: React.FC<ScreenSlideProps> = ({
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: '#000',
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: "#000",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       {/* Screen Image */}
@@ -66,18 +71,18 @@ export const ScreenSlide: React.FC<ScreenSlideProps> = ({
         style={{
           transform: `scale(${zoom})`,
           opacity,
-          maxWidth: '90%',
-          maxHeight: '80%',
-          position: 'relative',
+          maxWidth: "90%",
+          maxHeight: "80%",
+          position: "relative",
         }}
       >
         <Img
           src={imageSrc}
           style={{
-            width: '100%',
-            height: 'auto',
-            borderRadius: '8px',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+            width: "100%",
+            height: "auto",
+            borderRadius: "8px",
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
           }}
         />
       </div>
@@ -85,22 +90,22 @@ export const ScreenSlide: React.FC<ScreenSlideProps> = ({
       {/* Text Overlay */}
       <div
         style={{
-          position: 'absolute',
-          bottom: '10%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          textAlign: 'center',
+          position: "absolute",
+          bottom: "10%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          textAlign: "center",
           opacity: textOpacity,
-          width: '80%',
+          width: "80%",
         }}
       >
         <h1
           style={{
-            fontSize: '48px',
-            fontWeight: 'bold',
-            color: '#fff',
-            margin: '0 0 12px 0',
-            textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
+            fontSize: "48px",
+            fontWeight: "bold",
+            color: "#fff",
+            margin: "0 0 12px 0",
+            textShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
           }}
         >
           {title}
@@ -108,10 +113,10 @@ export const ScreenSlide: React.FC<ScreenSlideProps> = ({
         {description && (
           <p
             style={{
-              fontSize: '24px',
-              color: '#ddd',
+              fontSize: "24px",
+              color: "#ddd",
               margin: 0,
-              textShadow: '0 1px 5px rgba(0, 0, 0, 0.5)',
+              textShadow: "0 1px 5px rgba(0, 0, 0, 0.5)",
             }}
           >
             {description}

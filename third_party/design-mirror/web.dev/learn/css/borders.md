@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 016: Borders](https://thecsspodcast.libsyn.com/016-borders)
 
 In the [box model](https://web.dev/learn/css/box-model.md.txt) module,
@@ -47,7 +48,7 @@ they will be lightened to then provide a darker second color.
 Browser behaviour can vary for other border styles too,
 so it's important to test your site in different browsers.
 A common example of this difference is how each browser renders the `dotted` and `dashed` styles.
- Borders displayed in Chrome, Firefox, and Safari.
+Borders displayed in Chrome, Firefox, and Safari.
 
 To set border style on each side of your box,
 you can use
@@ -65,7 +66,7 @@ shorthand property to define all the parts of your border in one declaration.
 
 ```css
 .my-element {
-    border: 1px solid red;
+  border: 1px solid red;
 }
 ```
 
@@ -83,15 +84,16 @@ the color will be that computed value unless you explicitly set it.
 
 ```css
 .my-element {
-    color: blue;
-    border: solid; /* Will be a blue border */
+  color: blue;
+  border: solid; /* Will be a blue border */
 }
 
 .my-element {
-    color: blue;
-    border: solid yellow;
+  color: blue;
+  border: solid yellow;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/yLgovoX?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen yLgovoX by web-dot-dev on Codepen"></iframe>
 
 To set a border color on each side of your box,
@@ -129,10 +131,11 @@ You have this capability with borders, too:
 
 ```css
 .my-element {
-    border: 2px dotted;
-    border-inline-end: 2px solid red;
+  border: 2px dotted;
+  border-inline-end: 2px solid red;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/poRraBp?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen poRraBp by web-dot-dev on Codepen"></iframe>
 
 In this example, `.my-element` has all sides defined as having a `2px`,
@@ -153,9 +156,10 @@ To give a box rounded corners use the
 
 ```css
 .my-element {
-    border-radius: 1em;
+  border-radius: 1em;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/LYxjQoK?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen LYxjQoK by web-dot-dev on Codepen"></iframe>
 
 This shorthand adds a consistent border to each corner of your box.
@@ -171,9 +175,10 @@ which follows the order: top left, top right, bottom right then bottom left.
 
 ```css
 .my-element {
-    border-radius: 1em 2em 3em 4em;
+  border-radius: 1em 2em 3em 4em;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/yLgovdK?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen yLgovdK by web-dot-dev on Codepen"></iframe>
 
 By defining a single value for a corner,
@@ -186,9 +191,10 @@ You can define both properties, per corner like this:
 
 ```css
 .my-element {
-    border-top-left-radius: 1em 2em;
+  border-top-left-radius: 1em 2em;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/WNRqoPM?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen WNRqoPM by web-dot-dev on Codepen"></iframe>
 
 This adds a `border-top-left-top` value of `1em`,
@@ -202,10 +208,11 @@ This enables you to get creative and make some complex shapes.
 
 ```css
 .my-element {
-    border: 2px solid;
+  border: 2px solid;
   border-radius: 95px 155px 148px 103px / 48px 95px 130px 203px;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/abpyqeM?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen abpyqeM by web-dot-dev on Codepen"></iframe>
 
 ## Border images
@@ -226,6 +233,7 @@ how far the border is outset from the edge and how it should repeat.
   border-image-repeat: stretch stretch;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zYNdWNX?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zYNdWNX by web-dot-dev on Codepen"></iframe>
 
 The [`border-image-width`](https://developer.mozilla.org/docs/Web/CSS/border-image-width)
@@ -241,11 +249,11 @@ The [`border-image-source`](https://developer.mozilla.org/docs/Web/CSS/border-im
 
 ```css
 .my-element {
-    border-image-source: url('path/to/image.png');
+  border-image-source: url("path/to/image.png");
 }
 
 .my-element {
-    border-image-source: linear-gradient(to bottom, #000, #fff);
+  border-image-source: linear-gradient(to bottom, #000, #fff);
 }
 ```
 
@@ -257,8 +265,8 @@ It works like the `margin` shorthand where you define the top, right, bottom and
 
 ```css
 .my-element {
-    border-image: url('image.jpg');
-    border-image-slice: 61 58 51 48;
+  border-image: url("image.jpg");
+  border-image-slice: 61 58 51 48;
 }
 ```
 

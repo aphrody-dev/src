@@ -243,8 +243,12 @@ service_tokens = [
 ]
 retire_tokens = ["fleet-agents"] # shared bidirectional token (Gemini review 2026-11-13)
 apps = [
-  { name = "fr2-ssh", type = "ssh", domain = "ssh-fr2.aphrody.com", tokens = ["fleet-agents-prd"] },
-  { name = "prd-ssh", type = "ssh", domain = "ssh-prd.aphrody.com", tokens = ["fleet-agents-fr2"] },
+  { name = "fr2-ssh", type = "ssh", domain = "ssh-fr2.aphrody.com", tokens = [
+    "fleet-agents-prd",
+  ] },
+  { name = "prd-ssh", type = "ssh", domain = "ssh-prd.aphrody.com", tokens = [
+    "fleet-agents-fr2",
+  ] },
   # 502 before the migration, now served by prd: owner-only until the app has its own auth.
   { name = "aphrody-admin", type = "self_hosted", domain = "admin.aphrody.com" },
   { name = "aphrody-control", type = "self_hosted", domain = "control.aphrody.com" },

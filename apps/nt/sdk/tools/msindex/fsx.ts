@@ -2,7 +2,8 @@
 import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-export const isDir = (p: string) => Boolean(statSync(p, { throwIfNoEntry: false })?.isDirectory());
+export const isDir = (p: string) =>
+  Boolean(statSync(p, { throwIfNoEntry: false })?.isDirectory());
 export const dirs = (p: string) =>
   isDir(p)
     ? readdirSync(p, { withFileTypes: true })
@@ -13,7 +14,9 @@ export const dirs = (p: string) =>
 export function files(dir: string, re: RegExp, skip?: RegExp): string[] {
   const out: string[] = [];
   const walk = (d: string) => {
-    for (const e of readdirSync(d, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
+    for (const e of readdirSync(d, { withFileTypes: true }).sort((a, b) =>
+      a.name < b.name ? -1 : 1,
+    )) {
       const p = join(d, e.name);
       if (skip?.test(p)) continue;
       if (e.isDirectory()) walk(p);
@@ -23,7 +26,10 @@ export function files(dir: string, re: RegExp, skip?: RegExp): string[] {
   if (isDir(dir)) walk(dir);
   return out;
 }
-export const sha256 = async (file: string) => new Bun.CryptoHasher("sha256").update(await Bun.file(file).bytes()).digest("hex");
+export const sha256 = async (file: string) =>
+  new Bun.CryptoHasher("sha256")
+    .update(await Bun.file(file).bytes())
+    .digest("hex");
 export const slash = (p: string) => p.replaceAll("\\", "/");
 export const git = (repo: string, ...a: string[]) =>
   Bun.spawnSync(["git", "-C", repo, ...a])

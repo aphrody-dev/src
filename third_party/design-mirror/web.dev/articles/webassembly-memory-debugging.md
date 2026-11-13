@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 While JavaScript is fairly forgiving in cleaning up after itself, static languages are definitely not...
 
- Ingvar Stepanyan [X](https://twitter.com/RReverser) [GitHub](https://github.com/RReverser) [Homepage](https://rreverser.com/)
+Ingvar Stepanyan [X](https://twitter.com/RReverser) [GitHub](https://github.com/RReverser) [Homepage](https://rreverser.com/)
 
 [Squoosh.app](https://squoosh.app/) is a PWA that illustrates just how much different image codecs
 and settings can improve image file size without significantly affecting quality. However, it's also
@@ -89,7 +90,7 @@ export async function process(data: ImageData, opts: QuantizeOptions) {
   return new ImageData(
     new Uint8ClampedArray(result.view),
     result.width,
-    result.height
+    result.height,
   );
 }
 ```
@@ -100,7 +101,7 @@ JavaScript!
 
 In Emscripten, `typed_memory_view` returns a JavaScript `Uint8Array` backed by the WebAssembly (Wasm)
 memory buffer, with `byteOffset` and `byteLength` set to the given pointer and length. The main
-point is that this is a TypedArray *view* into a WebAssembly memory buffer, rather than a
+point is that this is a TypedArray _view_ into a WebAssembly memory buffer, rather than a
 JavaScript-owned copy of the data.
 
 When we call `free_result` from JavaScript, it, in turn, calls a standard C function `free` to mark
@@ -262,11 +263,12 @@ to manually free any memory and call destructors from the JavaScript side once y
 object. For Embind specifically, the [official
 docs](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html#memory-management)
 suggest to call a `.delete()` method on exposed C++ classes:
+
 > JavaScript code must explicitly delete any C++ object handles it has received, or the Emscripten
 > heap will grow indefinitely.
 >
 > ```javascript
-> var x = new Module.MyClass;
+> var x = new Module.MyClass();
 > x.method();
 > x.delete();
 > ```
@@ -447,7 +449,7 @@ But, since we're already using Embind in Emscripten to interact with JavaScript,
 make the API even safer by hiding C++ memory management details altogether!
 
 For that, let's move the `new Uint8ClampedArray(...)` part from JavaScript to the C++ side with
-Embind. Then, we can use it to clone the data into the JavaScript memory even *before* returning
+Embind. Then, we can use it to clone the data into the JavaScript memory even _before_ returning
 from the function:
 
     class RawImage {
@@ -480,7 +482,7 @@ from the function:
 > **Note:** In this case we can return `Uint8ClampedArray`, because JavaScript already knows the width and height of the resulting image. If this wasn't the case, then we could return an `ImageData` instance instead, which is functionally equivalent to our previous `RawImage` wrapper, but is a standard JavaScript-owned object: `ts // ... val js_result = Uint8ClampedArray.new_(typed_memory_view( image_width * image_height * 4, result )); free(result); return ImageData.new_(js_result, image_width, image_height); } `
 
 Note how, with a single change, we both ensure that the resulting byte array is owned by JavaScript
-and not backed by WebAssembly memory, ***and*** get rid of the previously leaked `RawImage` wrapper
+and not backed by WebAssembly memory, _**and**_ get rid of the previously leaked `RawImage` wrapper
 too.
 
 Now JavaScript doesn't have to worry about freeing data at all anymore, and can use the result like

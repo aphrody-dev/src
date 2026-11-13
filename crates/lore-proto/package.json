@@ -1,9 +1,9 @@
 {
-    "name": "@ucs/urc-proto",
-    "version": "0.1.67",
-    "description": "Proto files package",
-    "files": [
-        "proto/*"
-    ],
-    "private": true
+  "name": "@ucs/urc-proto",
+  "version": "0.1.67",
+  "description": "Proto files package",
+  "files": [
+    "proto/*"
+  ],
+  "private": true
 }

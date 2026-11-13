@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The Application Cache, also known as AppCache,
 is [deprecated](https://html.spec.whatwg.org/multipage/browsers.html#offline).
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: Sep 9, 2025
@@ -16,7 +17,7 @@ We're planning on deprecating the [CrUX Dashboard](https://developer.chrome.com/
 ## Why we're deprecating the CrUX Dashboard
 
 The [CrUX Dashboard](https://developer.chrome.com/docs/crux/dashboard.md.txt) is a Looker Studio-based dashboard created and maintained by the Chrome team to provide a summary of a site's monthly [Chrome User Experience Report (CrUX)](https://developer.chrome.com/docs/crux.md.txt) data.
- The CrUX Dashboard
+The CrUX Dashboard
 
 With the launch of [the Core Web Vitals initiative](https://web.dev/articles/vitals) in 2020, interest in CrUX exploded! Usage of tools that provided easy access to Core Web Vitals data for popular sites also dramatically increased. Unfortunately the CrUX Dashboard has struggled to meet this demand and has suffered frequent outages, particularly on the second Tuesday of the month when we release the new monthly data.
 
@@ -31,7 +32,7 @@ The History API included weekly data, rather than monthly data, to allow a more 
 With the History API in place, we started seeing more and more third-party tools adopting this for real-time dashboards---much more so than they had the BigQuery dataset.
 
 In 2024 [we introduced CrUX Vis](https://groups.google.com/a/chromium.org/g/chrome-ux-report-announce/c/ApfdCpPfR7U/m/y27sj0smCQAJ) as our own, first-party web application built on top of the CrUX History API:
- CrUX Vis - a web application for viewing historical CrUX data
+CrUX Vis - a web application for viewing historical CrUX data
 
 This provided much of the same functionality as the CrUX Dashboard in a more scalable fashion and with quicker load times.
 
@@ -81,38 +82,38 @@ To switch away from the CrUX connector, to allow the CrUX Dashboard to continue 
    ```
 
    (feel free to change the default origin from `developer.chrome.com` in both places)
-    Lookerstudio custom query data connection
+   Lookerstudio custom query data connection
    1. Add a parameter and enter the following details:
 
-    Edit parameter screen
+   Edit parameter screen
    1. Click **Connect**
    2. On the next screen change all **Number** types to **Numeric-\>Percent** except for the **p75_** fields, the **rank** field, and the **Record Count** field.
 
-    Data source fields
+   Data source fields
    1. The changes will automatically be saved.
+
 3. Switch over the Chrome Dashboard.
 
    > [!IMPORTANT]
    > **Important:** The following steps only work for the [Chrome-maintained, read-only, CrUX Dashboard](https://developer.chrome.com/docs/crux/dashboard.md.txt#access_the_crux_dashboard), which has been updated as part of writing this blog post to make the migration as easy as possible. If you are working on your own copy of the dashboard you may have to take extra steps to repoint fields to the new data source.
-
    1. Make sure you're using the latest CrUX Dashboard then make a copy of the dashboard using the three dots menu in the top right hand corner:
 
-    Three dots menu in Lookerstudio
+   Three dots menu in Lookerstudio
    1. You will be presented with the following option:
 
-    Copy this report dialog
+   Copy this report dialog
 
    Change both to your new Dataset:
-    Selecting mapping data sources
+   Selecting mapping data sources
    1. When the report is created select **Manage variables (parameters)** in the **Resource** menu:
 
-    Manage variables (parameters) menu option
+   Manage variables (parameters) menu option
    1. Click the Pencil edit button next to the name and remove the prefix (`ds117.` in this example)
 
-    Edit parameter name
+   Edit parameter name
    1. Also tick the Modify in URL checkbox to allow you to provide the origin in the URL
 
-    Manage variables screen
+   Manage variables screen
    1. Click the **CLOSE** button in the top right hand corner.
    2. Double-click the "Copy of CrUX Dashboard v2" title in the top left hand corner to give it a new name.
    3. Under the Share button share the chart as you see fit. Note that each view of the charts will use your Bigquery project account, which can amount charges so be sure who you want to share this with. Screenshots or PDF extracts of the dashboard may be more appropriate for some users to save on costs.

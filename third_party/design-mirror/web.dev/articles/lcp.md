@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+
+Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: August 8, 2019, Last updated: September 4, 2025
 
@@ -31,7 +32,7 @@ LCP reports the render time of the largest [image, text block, or video](https:/
 ### What is a good LCP score?
 
 To provide a good user experience, sites should strive to have Largest Contentful Paint of **2.5 seconds** or less. To ensure you're hitting this target for most of your users, a good threshold to measure is the **75th percentile** of page loads, segmented across mobile and desktop devices.
- A good LCP value is 2.5 seconds or less.
+A good LCP value is 2.5 seconds or less.
 
 To learn more about the research and methodology behind this recommendation, see: [Defining the Core Web Vitals metrics thresholds](https://web.dev/articles/defining-core-web-vitals-thresholds.md.txt).
 
@@ -44,7 +45,7 @@ considered for Largest Contentful Paint are:
 - `` elements (the [first frame presentation time](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md) is used for animated content such as GIFs or animated PNGs)
 - `<image>` elements inside an `<svg>` element
 - `<video>` elements (the poster image load time or [first frame presentation time](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md) for videos is used---whichever is earlier)
-- An element with a background image loaded using the [`url()`](https://developer.mozilla.org/docs/Web/CSS/url()) function, (as opposed to a [CSS gradient](https://developer.mozilla.org/docs/Web/CSS/CSS_Images/Using_CSS_gradients))
+- An element with a background image loaded using the [`url()`](<https://developer.mozilla.org/docs/Web/CSS/url()>) function, (as opposed to a [CSS gradient](https://developer.mozilla.org/docs/Web/CSS/CSS_Images/Using_CSS_gradients))
 - [Block-level](https://developer.mozilla.org/docs/Web/HTML/Block-level_elements) elements containing text nodes or other inline-level text element children.
 
 Note that restricting the elements to this limited set was intentional in order to reduce complexity. Additional elements (like the full `<svg>` support) may be added in the future as more research is conducted.
@@ -56,9 +57,9 @@ As well as only considering some elements, LCP measurements use heuristics to ex
 - Elements that cover the full viewport, that are likely considered as background rather than content
 - Placeholder images or other images with a low entropy, that likely don't reflect the true content of the page
 
-Browsers are likely to continue to improve these heuristics to ensure we match user expectations of what the largest *contentful* element is.
+Browsers are likely to continue to improve these heuristics to ensure we match user expectations of what the largest _contentful_ element is.
 
-These "contentful" heuristics may differ from those used by [First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt), which may consider some of these elements, such as placeholder images or full viewport images, even if they are ineligible to be LCP candidates. Despite both using "contentful" in their name, the aim of these metrics is different. FCP measures when *any content* is painted to screen and LCP when the *main content* is painted so LCP is intented to be more selective.
+These "contentful" heuristics may differ from those used by [First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt), which may consider some of these elements, such as placeholder images or full viewport images, even if they are ineligible to be LCP candidates. Despite both using "contentful" in their name, the aim of these metrics is different. FCP measures when _any content_ is painted to screen and LCP when the _main content_ is painted so LCP is intented to be more selective.
 
 ### How is an element's size determined?
 
@@ -99,7 +100,7 @@ For analysis purposes, you should only report the most recently dispatched `Perf
 
 For security reasons, the render timestamp of images was not originally exposed for cross-origin images that lack the [`Timing-Allow-Origin`](https://developer.mozilla.org/docs/Web/HTTP/Headers/Timing-Allow-Origin) header. Instead, only their load time was exposed (since this is already exposed through many other web APIs).
 
-The *load time* will usually be slightly after the resource download ends ([`responseEnd` in Resource Timing](https://developer.mozilla.org/docs/Web/API/PerformanceResourceTiming/responseEnd)) as it takes time for the browser to process the resource after the download completes, even before it starts to render it. However, where the LCP resource is preloaded, or the rendering is delayed, there can be a larger gap between the load time and the render time.
+The _load time_ will usually be slightly after the resource download ends ([`responseEnd` in Resource Timing](https://developer.mozilla.org/docs/Web/API/PerformanceResourceTiming/responseEnd)) as it takes time for the browser to process the resource after the download completes, even before it starts to render it. However, where the LCP resource is preloaded, or the rendering is delayed, there can be a larger gap between the load time and the render time.
 
 This can lead to the seemingly impossible situation where LCP is reported by web APIs as earlier than FCP. This is not the case but only appears so due to this security restriction.
 
@@ -116,19 +117,19 @@ This means images that are initially rendered off-screen and then transition on-
 ### Examples
 
 Here are some examples of when the Largest Contentful Paint occurs on a few popular websites:
- An LCP timeline from cnn.com.  An LCP timeline from techcrunch.com.
+An LCP timeline from cnn.com. An LCP timeline from techcrunch.com.
 
 In both of the timelines, the largest element changes as content loads. In the first example, new content is added to the DOM and that changes what element is the largest. In the second example, the layout changes and content that was previously the largest is removed from the viewport.
 
 While it's often the case that late-loading content is larger than content already on the page, that's not necessarily the case. The next two examples show the LCP occurring before the page fully loads.
- An LCP timeline from instagram.com.
+An LCP timeline from instagram.com.
 
 In this example, the Instagram logo is loaded relatively early and it remains the largest element even as other content is progressively shown.
 
 > [!NOTE]
 > **Note:** In the first frame of the Instagram timeline, you may notice the camera logo does not have a green box around it. That's because it's an `<svg>` element, and `<svg>` elements are not considered LCP candidates at this time (though `` elements are, as are individual `<image>` elements within `<svg>` elements). The first LCP candidate is the text in the second frame.
 
- An LCP timeline from google.com.
+An LCP timeline from google.com.
 
 In this Google Search results page example, the largest element is a paragraph of text that is displayed before any of the images or logo finish loading. Since all the individual images are smaller than this paragraph, it remains the largest element throughout the load process.
 
@@ -157,9 +158,9 @@ To measure LCP in JavaScript, you can use the [Largest Contentful Paint API](htt
 ```javascript
 new PerformanceObserver((entryList) => {
   for (const entry of entryList.getEntries()) {
-    console.log('LCP candidate:', entry.startTime, entry);
+    console.log("LCP candidate:", entry.startTime, entry);
   }
-}).observe({type: 'largest-contentful-paint', buffered: true});
+}).observe({ type: "largest-contentful-paint", buffered: true });
 ```
 
 > [!WARNING]
@@ -180,7 +181,7 @@ The following section lists the differences between what the API reports and how
 Rather than memorizing all these subtle differences, developers can use the [`web-vitals` JavaScript library](https://github.com/GoogleChrome/web-vitals) to measure LCP, which handles these differences for you (where possible---note the iframe issue is not covered):
 
 ```javascript
-import {onLCP} from 'web-vitals';
+import { onLCP } from "web-vitals";
 
 // Measure and log LCP as soon as it's available.
 onLCP(console.log);

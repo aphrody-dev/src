@@ -648,7 +648,9 @@ export function startForgeServer(port: number = 4000) {
           path?: string;
           content?: string;
         };
-        return Response.json(ffiTreeSitterSymbols(body.path || "lib.rs", body.content || ""));
+        return Response.json(
+          ffiTreeSitterSymbols(body.path || "lib.rs", body.content || ""),
+        );
       }
 
       if (url.pathname === "/api/depot/ingest") {

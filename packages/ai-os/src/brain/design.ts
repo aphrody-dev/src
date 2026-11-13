@@ -4,7 +4,13 @@
 import { existsSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 
-type DesignEntry = { id: string; source: "doc"; scope: "design"; title: string; text: string };
+type DesignEntry = {
+  id: string;
+  source: "doc";
+  scope: "design";
+  title: string;
+  text: string;
+};
 
 function* files(dir: string, ext: string): Generator<string> {
   if (!existsSync(dir)) return;
@@ -15,7 +21,8 @@ function* files(dir: string, ext: string): Generator<string> {
   }
 }
 
-const rel = (root: string, p: string) => relative(root, p).replaceAll("\\", "/");
+const rel = (root: string, p: string) =>
+  relative(root, p).replaceAll("\\", "/");
 
 export async function designEntries(root: string): Promise<DesignEntry[]> {
   const out: DesignEntry[] = [];
@@ -46,7 +53,10 @@ export async function designEntries(root: string): Promise<DesignEntry[]> {
       source: "doc",
       scope: "design",
       title: `${j.site} (${j.mode}, ${j.license})`,
-      text: j.urls.map((u) => u.url).join("\n").slice(0, 60_000),
+      text: j.urls
+        .map((u) => u.url)
+        .join("\n")
+        .slice(0, 60_000),
     });
   }
   for (const p of files(join(root, "third_party/design-mirror"), ".md")) {

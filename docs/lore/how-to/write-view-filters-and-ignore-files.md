@@ -4,10 +4,10 @@ Lore has two filters with one syntax. A [view filter](../glossary.md#view-filter
 
 ## One syntax, two files
 
-| | View filter | Ignore file |
-| --- | --- | --- |
-| **Lives in** | `.lore/view` in the [instance](../glossary.md#repository-instance) | `.loreignore` at the repository root, and `.lore/ignore` in the instance |
-| **Set with** | `lore clone --view <file>`, then only `lore sync --view <file>`. Never edit `.lore/view`. | Editing the files. Commit `.loreignore` to share it. |
+|                | View filter                                                                                                                                                                   | Ignore file                                                                                                                                                                                                                                                    |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lives in**   | `.lore/view` in the [instance](../glossary.md#repository-instance)                                                                                                            | `.loreignore` at the repository root, and `.lore/ignore` in the instance                                                                                                                                                                                       |
+| **Set with**   | `lore clone --view <file>`, then only `lore sync --view <file>`. Never edit `.lore/view`.                                                                                     | Editing the files. Commit `.loreignore` to share it.                                                                                                                                                                                                           |
 | **Applies to** | Clone, sync, branch switch, and reset. Stage, and unstage outside a layer mount, see only what it keeps unless forced. Status lists what it keeps and what is staged past it. | Status, stage, dirty marking, locks, and the sizes `lore file info` reports, for paths neither committed nor staged (with `--revision`, paths that revision doesn't hold), and the destination of `lore stage move`. Not clone, sync, branch switch, or reset. |
 
 - `.lore/ignore` holds exclusions for your instance alone, and is never committed. Its rules win over re-inclusions in `.loreignore`. Lore skips a `!` re-inclusion in it with a warning.
@@ -36,28 +36,28 @@ Samples/Demo/demo.txt
 Samples/Demo/docs
 ```
 
-| Rule | Matches | Example |
-| --- | --- | --- |
-| `# text` | Nothing. Blank lines are skipped too. | `# Build output` |
-| `\#name`, `\!name` | A name starting with `#` or `!` | `\#notes.txt` |
-| `!rule` | Re-includes what an earlier rule excluded. The last matching rule wins. | `*.cpp` then `!core.cpp` keeps `core.cpp` |
-| `/path` | That path from the root | `/Docs/` matches `Docs/`, not `Engine/Docs/` |
-| `name` | That name at any depth, when the rule has no `/` except a trailing one | `core.cpp` matches `Engine/Source/Runtime/core.cpp` |
-| `a/b` | That path from the root: a `/` in the middle anchors too | `Engine/Docs/` |
-| `rule/` | Directories only | `Docs/` matches the directories `Docs/` and `Engine/Docs/`, not the file `Samples/Demo/docs` |
-| `*` | Any characters within one path component | `/Engine/Source/Runtime/*.cpp` matches `core.cpp`, not `Private/impl.cpp` |
-| `?` | One character within a component | `/Engine/Source/*/core.?pp` matches `Runtime/core.cpp` |
-| `**` | Any number of components | `/Engine/**/Build/` matches `Engine/Build/` |
+| Rule               | Matches                                                                 | Example                                                                                      |
+| ------------------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `# text`           | Nothing. Blank lines are skipped too.                                   | `# Build output`                                                                             |
+| `\#name`, `\!name` | A name starting with `#` or `!`                                         | `\#notes.txt`                                                                                |
+| `!rule`            | Re-includes what an earlier rule excluded. The last matching rule wins. | `*.cpp` then `!core.cpp` keeps `core.cpp`                                                    |
+| `/path`            | That path from the root                                                 | `/Docs/` matches `Docs/`, not `Engine/Docs/`                                                 |
+| `name`             | That name at any depth, when the rule has no `/` except a trailing one  | `core.cpp` matches `Engine/Source/Runtime/core.cpp`                                          |
+| `a/b`              | That path from the root: a `/` in the middle anchors too                | `Engine/Docs/`                                                                               |
+| `rule/`            | Directories only                                                        | `Docs/` matches the directories `Docs/` and `Engine/Docs/`, not the file `Samples/Demo/docs` |
+| `*`                | Any characters within one path component                                | `/Engine/Source/Runtime/*.cpp` matches `core.cpp`, not `Private/impl.cpp`                    |
+| `?`                | One character within a component                                        | `/Engine/Source/*/core.?pp` matches `Runtime/core.cpp`                                       |
+| `**`               | Any number of components                                                | `/Engine/**/Build/` matches `Engine/Build/`                                                  |
 
 A path no rule matches keeps its directory's verdict.
 
 ## Directories: `/a`, `/a/`, and `/a/**`
 
-| Rule | As an exclusion | As a re-inclusion |
-| --- | --- | --- |
-| `/a` | Drops `a` and everything in it | Brings back `a` and everything in it |
-| `/a/` | The same, if `a` is a directory | The same, if `a` is a directory |
-| `/a/**` | Drops everything in `a`. Leaves `a/` empty on disk under a view, and stages it empty under an ignore file. | Brings back everything in `a` |
+| Rule    | As an exclusion                                                                                            | As a re-inclusion                    |
+| ------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `/a`    | Drops `a` and everything in it                                                                             | Brings back `a` and everything in it |
+| `/a/`   | The same, if `a` is a directory                                                                            | The same, if `a` is a directory      |
+| `/a/**` | Drops everything in `a`. Leaves `a/` empty on disk under a view, and stages it empty under an ignore file. | Brings back everything in `a`        |
 
 Write `/a/` and `!/a/` for a directory.
 

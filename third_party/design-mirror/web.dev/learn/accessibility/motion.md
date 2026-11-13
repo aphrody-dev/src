@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Have you ever been riding in a car, boat, or plane and suddenly felt the world
 spin? Or had a migraine so bad that animations on your phone or tablet,
 created to "delight" you, suddenly make you sick? Or perhaps you've always been

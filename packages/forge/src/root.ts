@@ -4,7 +4,11 @@ import { existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
 function git(args: string[], cwd: string): string | null {
-  const r = Bun.spawnSync(["git", ...args], { cwd, stdout: "pipe", stderr: "ignore" });
+  const r = Bun.spawnSync(["git", ...args], {
+    cwd,
+    stdout: "pipe",
+    stderr: "ignore",
+  });
   const out = r.success ? r.stdout.toString().trim() : "";
   return out || null;
 }
@@ -15,7 +19,9 @@ export function resolveSrcRoot(from: string = import.meta.dir): string {
     if (existsSync(join(d, "identity.toml"))) return d;
     if (dirname(d) === d) break;
   }
-  const top = git(["rev-parse", "--show-superproject-working-tree"], from) ?? git(["rev-parse", "--show-toplevel"], from);
+  const top =
+    git(["rev-parse", "--show-superproject-working-tree"], from) ??
+    git(["rev-parse", "--show-toplevel"], from);
   return top ? resolve(top) : resolve(from, "..", "..", "..");
 }
 

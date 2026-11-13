@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Dave Tapuska [X](https://twitter.com/dtapuska) [GitHub](https://github.com/dtapuska)
 
 ## TL;DR
@@ -104,9 +105,9 @@ application if you use this API.
 [Video](https://www.youtube.com/watch?v=ihbhkXrfm4A)
 
 Instead of receiving a single event, you can access the array of historical
-events that caused the event. [Android](https://developer.android.com/reference/android/view/MotionEvent.html#getHistoricalX(int,%20int)),
+events that caused the event. [Android](<https://developer.android.com/reference/android/view/MotionEvent.html#getHistoricalX(int,%20int)>),
 [iOS](https://developer.apple.com/reference/uikit/uievent/1613808-coalescedtouchesfortouch),
-and [Windows](https://msdn.microsoft.com/library/windows/desktop/hh454886(v=vs.85).aspx)
+and [Windows](<https://msdn.microsoft.com/library/windows/desktop/hh454886(v=vs.85).aspx>)
 all have very similar APIs in their native SDKs and we are exposing a similar
 API to the web.
 
@@ -114,19 +115,20 @@ Typically a drawing app may have drawn a point by looking at the offsets on the
 event:
 
 ```javascript
-window.addEventListener("pointermove", function(event) {
-    drawPoint(event.pageX, event.pageY);
+window.addEventListener("pointermove", function (event) {
+  drawPoint(event.pageX, event.pageY);
 });
 ```
 
 This code can easily be changed to use the array of events:
 
 ```javascript
-window.addEventListener("pointermove", function(event) {
-    var events = 'getCoalescedEvents' in event ? event.getCoalescedEvents() : [event];
-    for (let e of events) {
+window.addEventListener("pointermove", function (event) {
+  var events =
+    "getCoalescedEvents" in event ? event.getCoalescedEvents() : [event];
+  for (let e of events) {
     drawPoint(e.pageX, e.pageY);
-    }
+  }
 });
 ```
 

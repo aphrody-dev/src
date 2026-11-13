@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The pros and cons of using consistent or different expiry logic across the service worker cache and HTTP cache layers.
 
- Jonathan Chen [X](https://twitter.com/jonchenn) [GitHub](https://github.com/jonchenn)
+Jonathan Chen [X](https://twitter.com/jonchenn) [GitHub](https://github.com/jonchenn)
 
 While service workers and PWAs are becoming standards of modern web applications, resource caching
 has become more complex than ever. This article covers the big picture of browser caching,
@@ -51,22 +52,22 @@ reinventing the wheel. For example, you can
 [register resource URL paths with a single line of regular expression code](https://developer.chrome.com/docs/workbox/modules/workbox-routing#how-to-register-a-regular-expression-route).
 
 ```javascript
-import {registerRoute} from 'workbox-routing';
+import { registerRoute } from "workbox-routing";
 
-registerRoute(new RegExp('styles/.*\\.css'), callbackHandler);
+registerRoute(new RegExp("styles/.*\\.css"), callbackHandler);
 ```
 
 #### Service worker caching strategies and use cases
 
 The next table outlines common service worker caching strategies and when each strategy is useful.
 
-| **Strategies** | **Freshness rationale** | **Use cases** |
-|---|---|---|
-| **[Network only](https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#network-only)** | The content has to be up-to-date at all times. | - Payments and checkouts - Balance statements |
-| **[Network falling back to cache](https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#network-falling-back-to-cache)** | It's preferable to serve the fresh content. However if the network fails or is unstable, it's acceptable to serve slightly old content. | - Timely data - Prices and rates (requires disclaimers) - Order statuses |
-| **[Stale-while-revalidate](https://web.dev/case-studies/ads-case-study-stale-while-revalidate.md.txt)** | It's okay to serve cached content right away, but updated cached content should be used in the future. | - News feeds - Product listing pages - Messages |
-| **[Cache first, fall back to network](https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#cache-then-network)** | The content is non-critical and can be served from the cache for performance gains, but the service worker should occasionally check for updates. | - App shells - Common resources |
-| **[Cache only](https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#cache-only)** | The content rarely changes. | - Static content |
+| **Strategies**                                                                                                                                         | **Freshness rationale**                                                                                                                           | **Use cases**                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **[Network only](https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#network-only)**                                   | The content has to be up-to-date at all times.                                                                                                    | - Payments and checkouts - Balance statements                            |
+| **[Network falling back to cache](https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#network-falling-back-to-cache)** | It's preferable to serve the fresh content. However if the network fails or is unstable, it's acceptable to serve slightly old content.           | - Timely data - Prices and rates (requires disclaimers) - Order statuses |
+| **[Stale-while-revalidate](https://web.dev/case-studies/ads-case-study-stale-while-revalidate.md.txt)**                                                | It's okay to serve cached content right away, but updated cached content should be used in the future.                                            | - News feeds - Product listing pages - Messages                          |
+| **[Cache first, fall back to network](https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#cache-then-network)**        | The content is non-critical and can be served from the cache for performance gains, but the service worker should occasionally check for updates. | - App shells - Common resources                                          |
+| **[Cache only](https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#cache-only)**                                       | The content rarely changes.                                                                                                                       | - Static content                                                         |
 
 #### Additional benefits of service worker caching
 
@@ -109,11 +110,11 @@ layers.
 To demonstrate the pros and cons, we'll look at 3 scenarios: long-term, medium-term, and
 short-term.
 
-| Scenarios | Long-term caching | Medium-term caching | Short-term caching |
-|---|---|---|---|
+| Scenarios                       | Long-term caching              | Medium-term caching    | Short-term caching            |
+| ------------------------------- | ------------------------------ | ---------------------- | ----------------------------- |
 | Service worker caching strategy | Cache, falling back to network | Stale-while-revalidate | Network falling back to cache |
-| Service worker cache TTL | **30 days** | **1 day** | **10 mins** |
-| HTTP cache max-age | **30 days** | **1 day** | **10 mins** |
+| Service worker cache TTL        | **30 days**                    | **1 day**              | **10 mins**                   |
+| HTTP cache max-age              | **30 days**                    | **1 day**              | **10 mins**                   |
 
 #### Scenario: Long-term caching (cache, falling back to network)
 
@@ -150,11 +151,11 @@ unstable. On the other hand, the HTTP cache is not reliable when the network is 
 To demonstrate the pros and cons, we'll again look at long-term, medium-term, and short-term
 scenarios.
 
-| Scenarios | Long-term caching | Medium-term caching | Short-term caching |
-|---|---|---|---|
+| Scenarios                       | Long-term caching              | Medium-term caching    | Short-term caching            |
+| ------------------------------- | ------------------------------ | ---------------------- | ----------------------------- |
 | Service worker caching strategy | Cache, falling back to network | Stale-while-revalidate | Network falling back to cache |
-| Service worker cache TTL | **90 days** | **30 days** | **1 day** |
-| HTTP cache max-age | **30 days** | **1 day** | **10 mins** |
+| Service worker cache TTL        | **90 days**                    | **30 days**            | **1 day**                     |
+| HTTP cache max-age              | **30 days**                    | **1 day**              | **10 mins**                   |
 
 #### Scenario: Long-term caching (cache, falling back to network)
 

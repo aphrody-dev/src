@@ -7,12 +7,13 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Largest Contentful Paint (LCP) is one of the metrics
 tracked in the **Performance** section of the Lighthouse report.
 Each metric captures some aspect of page load speed.
 
 Lighthouse displays LCP in seconds:
- The Lighthouse Largest Contentful Paint score
+The Lighthouse Largest Contentful Paint score
 
 ## What LCP measures
 
@@ -27,11 +28,11 @@ Lighthouse extracts LCP data from [Chrome's tracing tool](https://www.chromium.o
 
 The following table shows how to interpret your LCP score on mobile:
 
-| LCP time (in seconds) | Color-coding |
-|---|---|
-| 0-2.5 | Green (fast) |
-| 2.5-4 | Orange (moderate) |
-| Over 4 | Red (slow) |
+| LCP time (in seconds) | Color-coding      |
+| --------------------- | ----------------- |
+| 0-2.5                 | Green (fast)      |
+| 2.5-4                 | Orange (moderate) |
+| Over 4                | Red (slow)        |
 
 Lighthouse mobile LCP thresholds
 
@@ -39,11 +40,11 @@ The [Web Vitals initiative](https://web.dev/articles/vitals) recommends [the sam
 
 The following table shows how to interpret your LCP score on desktop:
 
-| LCP time (in seconds) | Color-coding |
-|---|---|
-| 0-1.2 | Green (fast) |
-| 1.2-2.4 | Orange (moderate) |
-| Over 2.4 | Red (slow) |
+| LCP time (in seconds) | Color-coding      |
+| --------------------- | ----------------- |
+| 0-1.2                 | Green (fast)      |
+| 1.2-2.4               | Orange (moderate) |
+| Over 2.4              | Red (slow)        |
 
 Lighthouse desktop LCP thresholds
 
@@ -56,12 +57,12 @@ If the LCP is an image, the timing can be broken down into four subparts.
 Knowing which subparts take the longest can help you [optimize your LCP](https://web.dev/optimize-lcp/).
 Lighthouse will display the LCP element along with the subpart breakdown in the "Largest Contentful Paint element" diagnostic.
 
-| LCP subpart | Description |
-|---|---|
+| LCP subpart               | Description                                                                                                                                                                                  |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Time to first byte (TTFB) | The time from when the user initiates loading the page until when the browser receives the first byte of the HTML document response. [Learn more about TTFB](https://web.dev/articles/ttfb). |
-| Load delay | The delta between TTFB and when the browser starts loading the LCP resource. |
-| Load time | The time it takes to load the LCP resource itself. |
-| Render delay | The delta between when the LCP resource finishes loading until the LCP element is fully rendered. |
+| Load delay                | The delta between TTFB and when the browser starts loading the LCP resource.                                                                                                                 |
+| Load time                 | The time it takes to load the LCP resource itself.                                                                                                                                           |
+| Render delay              | The delta between when the LCP resource finishes loading until the LCP element is fully rendered.                                                                                            |
 
 ## Resources
 

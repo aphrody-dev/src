@@ -7,13 +7,14 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 [`Trusted Types`](https://developer.mozilla.org/docs/Web/API/Trusted_Types_API) are a web platform security feature that helps [prevent certain DOM-based XSS attacks](https://web.dev/articles/trusted-types), by blocking risky injection points (like `.innerHTML`) from using unvalidated string values. If a risky injection point is blocked, a violation is raised.
 
 The [`Content-Security-Policy` (CSP)](https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Security-Policy) header utilizes the `require-trusted-types-for` directive to enforce Trusted Types.
 
 ## How the Lighthouse audit fails
 
- Lighthouse report warning that either the CSP response header was missing or the Trusted Types directive to mitigate DOM-based XSS.
+Lighthouse report warning that either the CSP response header was missing or the Trusted Types directive to mitigate DOM-based XSS.
 
 The audit will pass if the CSP header is set together with the `require-trusted-types-for` directive and script as its value. The audit will fail if the CSP header is not set or it is set but missing the Trusted Types directive.
 

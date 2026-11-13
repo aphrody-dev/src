@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 A form is an element that allows a user to provide data into a field or a group
 of fields. Forms can be a single field or a complex, multi-step form with
 multiple fields per page, input validation, and a CAPTCHA.
@@ -75,9 +76,9 @@ readers.
 
 ```html
 <form id="sundae-order-form">
-  <p>Name: <input type="name" autocomplete="name"></p>
-  <p>Telephone: <input type="tel" autocomplete="tel"></p>
-  <p>Email address: <input type="email" autocomplete="email"></p>
+  <p>Name: <input type="name" autocomplete="name" /></p>
+  <p>Telephone: <input type="tel" autocomplete="tel" /></p>
+  <p>Email address: <input type="email" autocomplete="email" /></p>
 </form>
 ```
 
@@ -100,9 +101,19 @@ fill out the fields in the form.
 
 ```html
 <form id="sundae-order-form">
-  <p><label>Name (required): <input type="name" autocomplete="name" required></label></p>
-  <p><label>Telephone (required): <input type="tel" autocomplete="tel" required></label></p>
-  <p><label>Email address: <input type="email" autocomplete="email"></label></p>
+  <p>
+    <label
+      >Name (required): <input type="name" autocomplete="name" required
+    /></label>
+  </p>
+  <p>
+    <label
+      >Telephone (required): <input type="tel" autocomplete="tel" required
+    /></label>
+  </p>
+  <p>
+    <label>Email address: <input type="email" autocomplete="email" /></label>
+  </p>
 </form>
 ```
 

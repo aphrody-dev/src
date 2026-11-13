@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)
 
 A [Long Task](https://developer.mozilla.org/docs/Web/API/Long_Tasks_API) is
@@ -18,7 +19,7 @@ page unresponsive to user input, even if it looks ready. Clicks and taps often
 don't work because interactive features like event listeners and click handlers
 haven't yet been attached to UI elements. Because of this, Long Tasks can
 greatly increase your [Time to Interactive](https://web.dev/articles/tti.md.txt).
- A Lighthouse Report showing a poor TTI.
+A Lighthouse Report showing a poor TTI.
 
 Chrome DevTools can now [visualize Long Tasks](https://developer.chrome.com/blog/new-in-devtools-74/#longtasks),
 making it easier to see tasks that need optimizing.
@@ -42,7 +43,7 @@ Until now, you've needed to manually look for "long yellow blocks" of script
 over 50ms long in [Chrome DevTools](https://developer.chrome.com/docs/devtools)
 or use the [Long Tasks API](https://calendar.perfplanet.com/2017/tracking-cpu-with-long-tasks-api/)
 to figure out what tasks were delaying interactivity.
- The yellow bars indicate task length.
+The yellow bars indicate task length.
 
 To help ease your performance auditing workflow,
 [DevTools now visualizes Long Tasks](https://developer.chrome.com/blog/new-in-devtools-74/#longtasks).
@@ -61,7 +62,7 @@ drawer beneath, select **Bottom-Up** and **Group by Activity**. This lets you
 see what activities contributed the most (in total) to the task taking so long
 to complete. In the following example, the cause of the delay looks like a
 costly set of DOM queries.
- DevTools shows the causes of long tasks in this menu.
+DevTools shows the causes of long tasks in this menu.
 
 ## What are common ways to optimize Long Tasks?
 

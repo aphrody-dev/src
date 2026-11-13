@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { View, Text, Image, Pressable, StyleSheet, Platform } from 'react-native';
-import { colors, shadows } from '../src/theme';
+import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  StyleSheet,
+  Platform,
+} from "react-native";
+import { colors, shadows } from "../src/theme";
 
 /**
  * Gold Standard: ActivityCard
@@ -25,7 +32,7 @@ import { colors, shadows } from '../src/theme';
 export interface ActivityCardProps {
   readonly id: string;
   readonly username: string;
-  readonly action: 'MERGED' | 'COMMIT';
+  readonly action: "MERGED" | "COMMIT";
   readonly timestamp: string;
   readonly avatarUrl: string;
   readonly repoName: string;
@@ -40,7 +47,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
   repoName,
   onPress,
 }) => {
-  const isMerged = action === 'MERGED';
+  const isMerged = action === "MERGED";
 
   return (
     <Pressable
@@ -92,9 +99,9 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     gap: 16,
     borderRadius: 8,
     padding: 16,
@@ -105,11 +112,11 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   leftContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 16,
     flex: 1,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   avatar: {
     width: 40,
@@ -117,15 +124,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   textContent: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
     columnGap: 8,
     rowGap: 4,
     flex: 1,
   },
   username: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 14,
   },
   badge: {
@@ -141,7 +148,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   badgeTextMerged: {
     color: colors.badgeMergedText,
@@ -158,7 +165,7 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: "400",
     opacity: 0.5,
     flexShrink: 0,
   },

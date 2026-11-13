@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 When loading scripts, it takes time for the browser to evaluate them prior to execution, which can cause long tasks. Learn how script evaluation works, and what you can do to keep it from causing long tasks during page load.
 
- Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 When it comes to optimizing [Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt), most of the advice you'll encounter is to optimize interactions themselves. For example, in the [optimize long tasks guide](https://web.dev/articles/optimize-long-tasks.md.txt), techniques such as yielding with `setTimeout` and others are discussed. These techniques are beneficial, as they allow the main thread some breathing room by avoiding long tasks, which can allow more opportunities for interactions and other activity to run sooner, rather than if they had to wait for a single long task.
 
@@ -18,11 +19,11 @@ However, what about the long tasks that come from loading scripts themselves? Th
 ## What is script evaluation?
 
 If you've profiled an application that ships a lot of JavaScript, you may have seen long tasks where the culprit is labeled **Evaluate Script**.
- Script evaluation work as shown in the performance profiler in Chrome DevTools. In this case, the work is enough to cause a long task that blocks the main thread from taking on other work---including tasks that drive user interactions.
+Script evaluation work as shown in the performance profiler in Chrome DevTools. In this case, the work is enough to cause a long task that blocks the main thread from taking on other work---including tasks that drive user interactions.
 
 Script evaluation is a necessary part of executing JavaScript in the browser, as JavaScript is compiled [just-in-time before execution](https://en.wikipedia.org/wiki/Just-in-time_compilation). When a script is evaluated, it is first parsed for errors. If the parser doesn't find errors, the script is then compiled into [bytecode](https://en.wikipedia.org/wiki/Bytecode), and then can continue onto execution.
 
-Though necessary, script evaluation can be problematic, as users may try to interact with a page shortly after it initially renders. However, just because a page has *rendered* doesn't mean that the page has finished *loading* . Interactions that take place during load can be delayed because the page is busy evaluating scripts. While there's no guarantee that an interaction can take place at this point in time---as a script responsible for it may not have loaded yet---there could be interactions dependent on JavaScript that *are* ready, or the interactivity doesn't depend on JavaScript at all.
+Though necessary, script evaluation can be problematic, as users may try to interact with a page shortly after it initially renders. However, just because a page has _rendered_ doesn't mean that the page has finished _loading_ . Interactions that take place during load can be delayed because the page is busy evaluating scripts. While there's no guarantee that an interaction can take place at this point in time---as a script responsible for it may not have loaded yet---there could be interactions dependent on JavaScript that _are_ ready, or the interactivity doesn't depend on JavaScript at all.
 
 > [!NOTE]
 > **Note:** One metric that might give you insight into whether you have excessive script evaluation occurring during page load is [Total Blocking Time (TBT)](https://web.dev/articles/tbt.md.txt), as it is a [load responsiveness](https://web.dev/articles/user-centric-performance-metrics.md.txt#types_of_metrics) metric. [Because TBT correlates well with INP](https://almanac.httparchive.org/en/2022/performance#inp-and-tbt), a page with a high TBT is a reasonable indicator that there may be high INP values during load that may be tied to script evaluation work.
@@ -34,11 +35,11 @@ How tasks responsible for script evaluation are kicked off depends on whether th
 ### Scripts loaded with the `<script>` element
 
 > [!IMPORTANT]
-> **Important:** this section deals with loading scripts using the `<script>` element *without* the `type=module` attribute.
+> **Important:** this section deals with loading scripts using the `<script>` element _without_ the `type=module` attribute.
 
-The number of tasks dispatched to evaluate scripts generally has a direct relationship with the number of `<script>` elements on a page. Each `<script>` element kicks off a task to evaluate the requested script so it can be parsed, compiled, and executed. **This is the case for Chromium-based browsers, Safari, *and* Firefox.**
+The number of tasks dispatched to evaluate scripts generally has a direct relationship with the number of `<script>` elements on a page. Each `<script>` element kicks off a task to evaluate the requested script so it can be parsed, compiled, and executed. **This is the case for Chromium-based browsers, Safari, _and_ Firefox.**
 
-Why does this matter? Say you're using a bundler to manage your production scripts, and you've configured it to bundle everything your page needs to run into a single script. If this is the case for your website, you can expect that there will be a single task dispatched to evaluate that script. Is this a bad thing? Not necessarily---unless that script is *huge*.
+Why does this matter? Say you're using a bundler to manage your production scripts, and you've configured it to bundle everything your page needs to run into a single script. If this is the case for your website, you can expect that there will be a single task dispatched to evaluate that script. Is this a bad thing? Not necessarily---unless that script is _huge_.
 
 You can break up script evaluation work by avoiding loading large chunks of JavaScript, and load more individual, smaller scripts using additional `<script>` elements.
 
@@ -46,7 +47,7 @@ You can break up script evaluation work by avoiding loading large chunks of Java
 > **Key point:** As devices vary in their capability, it's very difficult to define a set limit for how large individual scripts should be. To achieve a decent balance between compression efficiency, download time, and script evaluation time, a limit of 100 kilobytes per individual script is a good target.
 
 While you should always strive to load as little JavaScript as possible during page load, splitting up your scripts ensures that, instead of one large task that may block the main thread, you have a greater number of smaller tasks that won't block the main thread at all---or at least less than what you started with.
- Multiple tasks spawned to evaluate scripts as a result of multiple `<script>` elements present in the page's HTML. This is preferable to sending one large script bundle to users, which is more likely to block the main thread.
+Multiple tasks spawned to evaluate scripts as a result of multiple `<script>` elements present in the page's HTML. This is preferable to sending one large script bundle to users, which is more likely to block the main thread.
 
 You can think of breaking up tasks for script evaluation as being somewhat similar to [yielding during event callbacks that run during an interaction](https://web.dev/articles/optimize-long-tasks.md.txt#use_asyncawait_to_create_yield_points). However, with script evaluation, the yielding mechanism breaks up the JavaScript you load into multiple smaller scripts, rather than a smaller number of larger scripts than are more likely to block the main thread.
 
@@ -63,10 +64,10 @@ It's now possible to load ES modules natively in the browser with the [`type=mod
 #### Chromium-based browsers
 
 In browsers such as Chrome---or those derived from it---loading ES modules using the `type=module` attribute produces different sorts of tasks than you'd normally see when not using `type=module`. For example, a task for each module script will run that involves activity labeled as **Compile module**.
- Module loading behavior in Chromium-based browsers. Each module script will spawn a **Compile module** call to compile their contents prior to evaluation.
+Module loading behavior in Chromium-based browsers. Each module script will spawn a **Compile module** call to compile their contents prior to evaluation.
 
 Once the modules have compiled, any code that subsequently runs in them will kick off activity labeled as **Evaluate module**.
- When code in a module runs, that module will be evaluated just-in-time.
+When code in a module runs, that module will be evaluated just-in-time.
 
 The effect here---in Chrome and related browsers, at least---is that the compilation steps are broken up when using ES modules. This is a clear win in terms of managing long tasks; however, the resulting module evaluation work that results still means you're incurring some unavoidable cost. While you should strive to ship as little JavaScript as possible, using ES modules---regardless of the browser---provides the following benefits:
 
@@ -92,7 +93,7 @@ Dynamic `import()` calls behave similarly in all major browser engines: the scri
 
 [Web workers](https://developer.mozilla.org/docs/Web/API/Web_Workers_API) are a special JavaScript use case. Web workers are registered on the main thread, and the code within the worker then runs on its own thread. This is hugely beneficial in the sense that---while the code that registers the web worker runs on the main thread---the code within the web worker doesn't. This reduces main thread congestion, and can help keep the main thread more responsive to user interactions.
 
-In addition to reducing main thread work, web workers *themselves* can load external scripts to be used in the worker context, either through [`importScripts`](https://developer.mozilla.org/docs/Web/API/WorkerGlobalScope/importScripts) or static `import` statements in browsers that support [module workers](https://web.dev/articles/module-workers.md.txt). The result is that any script requested by a web worker is evaluated off the main thread.
+In addition to reducing main thread work, web workers _themselves_ can load external scripts to be used in the worker context, either through [`importScripts`](https://developer.mozilla.org/docs/Web/API/WorkerGlobalScope/importScripts) or static `import` statements in browsers that support [module workers](https://web.dev/articles/module-workers.md.txt). The result is that any script requested by a web worker is evaluated off the main thread.
 
 > [!NOTE]
 > **Read to learn more:** [Use web workers to run JavaScript off the browser's main thread](https://web.dev/articles/off-main-thread.md.txt).
@@ -125,13 +126,13 @@ If you're shipping ES modules in production and loading them with the `type=modu
 
 ```javascript
 // a.js
-import {b} from './b.js';
+import { b } from "./b.js";
 
 // b.js
-import {c} from './c.js';
+import { c } from "./c.js";
 ```
 
-If your ES modules are not bundled together, the preceding code results in a network request chain: when `a.js` is requested from a `<script>` element, another network request is dispatched for `b.js`, which then involves *another* request for `c.js`. One way to avoid this is to use a bundler---but be sure you're configuring your bundler to break up scripts to spread out script evaluation work.
+If your ES modules are not bundled together, the preceding code results in a network request chain: when `a.js` is requested from a `<script>` element, another network request is dispatched for `b.js`, which then involves _another_ request for `c.js`. One way to avoid this is to use a bundler---but be sure you're configuring your bundler to break up scripts to spread out script evaluation work.
 
 If you don't want to use a bundler, then another way to get around nested module calls is to use the [`modulepreload` resource hint](https://developer.chrome.com/blog/modulepreload), which will preload ES modules ahead of time to avoid network request chains.
 

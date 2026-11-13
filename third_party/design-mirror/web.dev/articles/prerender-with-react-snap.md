@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Not server-side rendering but still want to speed up the performance of your React site? Try pre-rendering!
 
- Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
+Houssein Djirdeh [X](https://twitter.com/hdjirdeh) [GitHub](https://github.com/housseindjirdeh) [Homepage](https://houssein.me/)
 
 [`react-snap`](https://github.com/stereobooster/react-snap) is a third-party
 library that pre-renders pages on your site into static HTML files. This can
@@ -39,7 +40,7 @@ Time to First Byte.
 **Pre-rendering** is a separate technique that is less complex than server
 rendering, but also provides a way to improve First Paint times in your
 application. A headless browser, or a browser without a user interface, is used
-to generate static HTML files of every route during *build time*. These files
+to generate static HTML files of every route during _build time_. These files
 can then be shipped along with the JavaScript bundles that are needed for the
 application.
 
@@ -66,7 +67,7 @@ This would automatically run the `react-snap` command every time a new build of
 the applications made (`npm build`).
 
 > [!NOTE]
-> **Note:** `npm` supports *pre* and *post* commands for main and arbitrary scripts which will always run directly before or after the original script respectively. You can learn more in the [npm documentation](https://docs.npmjs.com/misc/scripts).
+> **Note:** `npm` supports _pre_ and _post_ commands for main and arbitrary scripts which will always run directly before or after the original script respectively. You can learn more in the [npm documentation](https://docs.npmjs.com/misc/scripts).
 
 The last thing you will need to do is change how the application is booted.
 Change the `src/index.js` file to the following:

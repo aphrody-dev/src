@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Combine Google tools to audit, improve and monitor your website effectively.
 
- Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)  Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social)  Antoine Bisch [X](https://twitter.com/AntoineBisch) [GitHub](https://github.com/antoinebisch) [LinkedIn](https://www.linkedin.com/in/antoinebisch/)  Elizabeth Sweeny [X](https://twitter.com/egsweeny) [GitHub](https://github.com/egsweeny)  Garima Mimani [GitHub](https://github.com/garimamimani)
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com) Addy Osmani [X](https://twitter.com/addyosmani) [GitHub](https://github.com/addyosmani) [Bluesky](https://bsky.app/profile/addyosmani.bsky.social) Antoine Bisch [X](https://twitter.com/AntoineBisch) [GitHub](https://github.com/antoinebisch) [LinkedIn](https://www.linkedin.com/in/antoinebisch/) Elizabeth Sweeny [X](https://twitter.com/egsweeny) [GitHub](https://github.com/egsweeny) Garima Mimani [GitHub](https://github.com/garimamimani)
 
 Published: May 28, 2020
 
@@ -22,7 +23,7 @@ A workflow for improving Core Web Vitals for your website will be explored in th
 Core Web Vitals are specifically designed to measure how users experience your website---they are [user centric metrics](https://web.dev/articles/user-centric-performance-metrics.md.txt). Lab-based tools such as Lighthouse are diagnostic tools to highlight potential performance problems and best practices. Lab-based tools are run under certain, predefined conditions and may not reflect the real-life Core Web Vitals measurements your users experience.
 
 > [!IMPORTANT]
-> [**Lab data**](https://web.dev/articles/lab-and-field-data-differences.md.txt#lab_data) describes how *hypothetical* users *may* experience your website. [**Field data**](https://web.dev/articles/lab-and-field-data-differences.md.txt#field_data) describes how *real* users *actually* experienced your website. Field data is also known as Real User Monitoring (RUM), and is typically collected by monitoring real user experiences using JavaScript on the pages they load, and reporting various metrics to an analytics solution.
+> [**Lab data**](https://web.dev/articles/lab-and-field-data-differences.md.txt#lab_data) describes how _hypothetical_ users _may_ experience your website. [**Field data**](https://web.dev/articles/lab-and-field-data-differences.md.txt#field_data) describes how _real_ users _actually_ experienced your website. Field data is also known as Real User Monitoring (RUM), and is typically collected by monitoring real user experiences using JavaScript on the pages they load, and reporting various metrics to an analytics solution.
 
 For example, Lighthouse is a lab-based tool that runs tests with simulated throttling in a simulated desktop or mobile environment. While such simulations of slower network and device conditions are helpful when trying to diagnose performance problems, [they're just a single slice](https://web.dev/articles/lab-and-field-data-differences.md.txt) of the large variety in network conditions and device capabilities, and so may not reflect what users on your sites are experiening.
 
@@ -32,15 +33,15 @@ In short, while lab-based tools can give an indication of potential performance 
 
 Google measures Core Web Vitals through the [Chrome User Experience Report (CrUX)](https://developer.chrome.com/docs/crux). This is a public dataset collected from real Chrome users. It is the backbone of many Google and third-party tools which report a site's Core Web Vitals.
 
-CrUX has its limitations, though. It can often tell you *when* there is a problem, but often has insufficient data to tell you *why*.
+CrUX has its limitations, though. It can often tell you _when_ there is a problem, but often has insufficient data to tell you _why_.
 
 ### Collect your own field data if possible
 
-The best dataset for improving website performance in the field is the one *you* build. That starts with collecting field data from your website's visitors. How you do this depends on the size of your organization, and whether you want to pay for [a third-party solution](https://en.wikipedia.org/wiki/Real_user_monitoring#RUM_software) or create your own.
+The best dataset for improving website performance in the field is the one _you_ build. That starts with collecting field data from your website's visitors. How you do this depends on the size of your organization, and whether you want to pay for [a third-party solution](https://en.wikipedia.org/wiki/Real_user_monitoring#RUM_software) or create your own.
 
 Paid solutions will almost certainly measure Core Web Vitals (and other performance metrics) and usually provide a variety of tools to dig into the resulting data. In large organizations with significant resources, this may be the preferred method.
 
-However, you may not be part of a large organization---or even one with the means to afford a third-party solution. In these cases, Google's [`web-vitals` library](https://github.com/GoogleChrome/web-vitals) will help you gather *all* Web Vitals. However, you'll be responsible for how that data is reported, stored, and analyzed.
+However, you may not be part of a large organization---or even one with the means to afford a third-party solution. In these cases, Google's [`web-vitals` library](https://github.com/GoogleChrome/web-vitals) will help you gather _all_ Web Vitals. However, you'll be responsible for how that data is reported, stored, and analyzed.
 
 > [!NOTE]
 > If you're building your own metrics collection and reporting system, this [guide of best practices](https://web.dev/articles/vitals-field-measurement-best-practices.md.txt) is worth a read to avoid common pitfalls.
@@ -52,7 +53,7 @@ If you're already using Google Analytics, but you haven't started collecting you
 Regardless of whether you're collecting your own field data, there are several Google tools that may be useful in analyzing Core Web Vitals. Before establishing a workflow, a high-level overview of each tool can help you to understand which tools may---or may not---be best for you.
 
 > [!NOTE]
-> As you continue, understand that it's not necessary for you to use *all* of the tools in this guide---only those that you believe will help you in improving your website's Core Web Vitals.
+> As you continue, understand that it's not necessary for you to use _all_ of the tools in this guide---only those that you believe will help you in improving your website's Core Web Vitals.
 
 ### Chrome User Experience Report (CrUX)
 
@@ -62,11 +63,11 @@ CrUX is available as a monthly [BigQuery dataset](https://developer.chrome.com/d
 
 #### When to use CrUX
 
-Even if you gather your own field data, CrUX is still useful. Though CrUX represents a subset of Chrome users, it's helpful to compare your website's field data to see how it aligns with its CrUX data. There are advantages and disadvantages to each, which [can result in differences](https://web.dev/articles/crux-and-rum-differences.md.txt). If you don't gather *any* field data for your website, CrUX is especially valuable to provide a high-level overview---provided your website is represented in its dataset.
+Even if you gather your own field data, CrUX is still useful. Though CrUX represents a subset of Chrome users, it's helpful to compare your website's field data to see how it aligns with its CrUX data. There are advantages and disadvantages to each, which [can result in differences](https://web.dev/articles/crux-and-rum-differences.md.txt). If you don't gather _any_ field data for your website, CrUX is especially valuable to provide a high-level overview---provided your website is represented in its dataset.
 
 You can use CrUX directly, or using another tool (including those mentioned below). Using the CrUX dataset directly, either using BigQuery or the API, is useful to expose data that is not shown in other tools---for example country-level data is often not available on other tools, or to view the [additional metrics in CrUX](https://developer.chrome.com/docs/crux/methodology/metrics) which again are often not surfaced in other tooling.
 
-#### When *not* to use CrUX
+#### When _not_ to use CrUX
 
 CrUX only represents Chrome users, and even then, [only a subset of Chrome users](https://developer.chrome.com/docs/crux/methodology/#user_eligibility). A full RUM solution can include more experiences across Chrome and other browsers where they support the Web Vital metrics.
 
@@ -78,7 +79,7 @@ Finally, as a public dataset, CrUX is limited to how much information it can mak
 
 ### PageSpeed Insights (PSI)
 
-[PSI](https://pagespeed.web.dev/) is a tool that reports field data from CrUX *and* lab from Lighthouse for a given page. See those individual sections for more details.
+[PSI](https://pagespeed.web.dev/) is a tool that reports field data from CrUX _and_ lab from Lighthouse for a given page. See those individual sections for more details.
 
 #### When to use PSI
 
@@ -88,7 +89,7 @@ PSI also provides Lighthouse data, which gives useful recommendations to improve
 
 Since Lighthouse is run from the server, it can form a more consistent baseline than running Lighthouse from DevTools.
 
-#### When *not* to use PSI
+#### When _not_ to use PSI
 
 PSI is only available for public URLs. It cannot be used on development sites that are not publicly accessible.
 
@@ -108,7 +109,7 @@ A valuable feature of Search Console is that it groups similar pages (for exampl
 
 Search Console is well-suited for both developers and those in non-developer roles to assess both search and page performance in ways other Google tools don't. Its presentation of CrUX data and grouping of pages by similarity offers novel insight into how performance improvements impact entire categories of pages.
 
-#### When *not* to use Search Console
+#### When _not_ to use Search Console
 
 Search Console may not be a fit for projects that use different third-party tools which group pages by similarity, or if a website isn't represented in the CrUX dataset.
 
@@ -130,9 +131,9 @@ Lighthouse is excellent for finding performance improvement opportunities during
 > [!CAUTION]
 > Don't rely solely on Lighthouse CI during production deployments, as you may miss performance regressions that you'd otherwise catch in local and staging environments during development with Lighthouse.
 
-#### When *not* to use Lighthouse
+#### When _not_ to use Lighthouse
 
-Lighthouse (or Lighthouse CI) **is *not* a substitute for field data**. Lighthouse is primarily a diagnostic tool listing potential issues and best practices from a predefined page load. The recommendations it surfaces may not always match the performance experienced by your users.
+Lighthouse (or Lighthouse CI) **is _not_ a substitute for field data**. Lighthouse is primarily a diagnostic tool listing potential issues and best practices from a predefined page load. The recommendations it surfaces may not always match the performance experienced by your users.
 
 > [!IMPORTANT]
 > **Always concentrate on field Core Web Vitals over Lighthouse metrics and scores** . In particular, the Performance Score of Lighthouse is a broad measure of that lab test and [often does not correlate](https://philipwalton.com/articles/my-challenge-to-the-web-performance-community/) with field Core Web Vitals.
@@ -157,7 +158,7 @@ The live metrics view can be used to quickly understand the current performance 
 
 The trace view is particularly useful to debug responsiveness issues affecting INP. Once a poorly responding interaction is identified and repeatable, the Performance panel can provide a wealth of data as to what is going on in the browser to help understand the issue, from main thread blocking, to JavaScript call stacks, to rendering work.
 
-#### When *not* to use the Performance panel
+#### When _not_ to use the Performance panel
 
 The Performance panel is a developer tool that primarily provides lab data---though with some field context from CrUX. It's not a substitute for field data.
 
@@ -171,7 +172,7 @@ When working to improve the user experience, it's best to think of the process a
 2. Debug and optimize.
 3. Monitor with continuous integration tools to catch and prevent regressions.
 
- Three step workflow
+Three step workflow
 
 ### Step 1: Evaluate website health and identify opportunities for improvement
 
@@ -185,7 +186,7 @@ Whether you analyze field data you collect yourself or CrUX data, this first ste
 
 #### Analyze site performance with PageSpeed Insights
 
- Analyze site performance with PageSpeed Insights
+Analyze site performance with PageSpeed Insights
 
 PageSpeed Insights displays the CrUX data covering the last 28 days of user experience data at the 75th percentile. This means that if 75% of user experiences meet the [threshold set for a given metric](https://web.dev/articles/defining-core-web-vitals-thresholds.md.txt), then the experience is considered "good".
 
@@ -203,7 +204,7 @@ For responsiveness, look at the INP scores. Look at the TBT audits in Lighthouse
 
 #### Identify poorly performing pages in Search Console
 
- Identify poorly performing pages in Search Console
+Identify poorly performing pages in Search Console
 
 While PSI is useful when you have a specific URL you want to test or the site as a whole, Search Console can help target your efforts to particular types of pages. This is particularly useful if many pages share common themes or technologies and Search Console can successfully identify these.
 
@@ -244,21 +245,21 @@ A key point is to validate that the Lighthouse audit replicates the issues you a
 When the Lighthouse metrics suggest a similar problem as the one you are trying to solve, the wealth of information in its audits can help identify issues and suggest solutions.
 
 You can filter the audits to just the Core Web Vitals you are interested in to focus on fixes for issues related to a specific metric:
- Lighthouse filter options
+Lighthouse filter options
 
 For INP, use the TBT audits to identify issues that can potentially affect those metrics, but be aware that without interactions, Lighthouse is limited in how much it can diagnose.
 
 #### Analyze in real time with the Chrome DevTools live metrics screen
 
-The Chrome DevTools live metrics screen in the Performance panel shows Core Web Vitals in real time during page load *and* while browsing a page. Because of this, it can capture INP as well as layout shifts that occur after load. It is also possible to see more detailed information on each metric:
- Live metrics view in Chrome DevTools Performance panel
+The Chrome DevTools live metrics screen in the Performance panel shows Core Web Vitals in real time during page load _and_ while browsing a page. Because of this, it can capture INP as well as layout shifts that occur after load. It is also possible to see more detailed information on each metric:
+Live metrics view in Chrome DevTools Performance panel
 
 This view gives a lot of helpful information to help identify performance issues, and can even pull in field information from CrUX. For even more information you can drill down with a trace.
 
 #### Drill down with the Performance panel
 
 The Performance panel in Chrome DevTools lets you record a profile (or trace) of all page behavior during a recorded period of time.
- Chrome DevTools Performance Panel trace
+Chrome DevTools Performance Panel trace
 
 Performance insights are available in the **Insights** side panel. This also shows the Core Web Vital metrics along with the field values for those when available.
 
@@ -278,12 +279,12 @@ See [debug performance in the field](https://web.dev/articles/debug-performance-
 
 ### Step 3: Monitor for changes
 
- Google's tools for monitoring changes
+Google's tools for monitoring changes
 
 Once you have fixed any issues, you want to ensure they have the required effect and that new issues don't disrupt your Core Web Vitals. This requires monitoring for performance issues as part of developer workflow to prevent performance issues being released to production, and monitoring the field data regularly to ensure this is the case.
 
 > [!NOTE]
-> [Research by Google](https://youtu.be/YJGCZCaIZkQ?t=112) has shown that most performance improvements tend to regress within six months. A website needs continuous monitoring in both the lab *and* the field to identify worsening trends in Core Web Vitals and other performance metrics to avoid regressions.
+> [Research by Google](https://youtu.be/YJGCZCaIZkQ?t=112) has shown that most performance improvements tend to regress within six months. A website needs continuous monitoring in both the lab _and_ the field to identify worsening trends in Core Web Vitals and other performance metrics to avoid regressions.
 
 #### Monitor for performance requisitions in continuous integration (CI) environments
 
@@ -296,7 +297,7 @@ While you should aim to catch and fix all performance issues before they make it
 For sites without a RUM solution, you can use the [various CrUX tools](https://developer.chrome.com/docs/crux/methodology/tools) as a basic trend analysis of field data.
 
 > [!NOTE]
-> Even if your website is represented in CrUX, you should still collect your own field data, since CrUX doesn't include *all* users of Chrome or even other browsers---but it's certainly a good place to start in the absence of any field data.
+> Even if your website is represented in CrUX, you should still collect your own field data, since CrUX doesn't include _all_ users of Chrome or even other browsers---but it's certainly a good place to start in the absence of any field data.
 
 ## Conclusion
 

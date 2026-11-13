@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+
+Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: May 25, 2023, Last updated: October 16, 2026
 
@@ -32,8 +33,8 @@ With back/forward cache (bfcache), instead of destroying a page when the user na
 How many times have you visited a website and clicked a link to go to another page, only to realize it's not what you wanted and click the back button? In that moment, bfcache can make a big difference in how fast the previous page loads:
 
 |---|---|
-| ***Without* bfcache enabled** | A new request is initiated to load the previous page, and, depending on how well that page has been [optimized](https://web.dev/explore/reliable#the-options-in-your-caching-toolbox) for repeat visits, the browser might have to re-download, re-parse, and re-execute some (or all) of resources it just downloaded. |
-| ***With* bfcache enabled** | Loading the previous page is *essentially instant*, because the entire page can be restored from memory, without having to go to the network at all. |
+| **_Without_ bfcache enabled** | A new request is initiated to load the previous page, and, depending on how well that page has been [optimized](https://web.dev/explore/reliable#the-options-in-your-caching-toolbox) for repeat visits, the browser might have to re-download, re-parse, and re-execute some (or all) of resources it just downloaded. |
+| **_With_ bfcache enabled** | Loading the previous page is _essentially instant_, because the entire page can be restored from memory, without having to go to the network at all. |
 
 Check out this video of bfcache in action to understand the speed up it can bring to navigations:
 [Video](https://www.youtube.com/watch?v=cuPsdRckkF0) Using bfcache makes pages load much more quickly during back and forward navigation.
@@ -82,11 +83,11 @@ The newer [Page Lifecycle](https://developer.chrome.com/blog/page-lifecycle-api)
 The `pageshow` event fires right after the `load` event when the page is initially loading and any time the page is restored from bfcache. The `pageshow` event has a [`persisted`](https://developer.mozilla.org/docs/Web/API/PageTransitionEvent/persisted) property, which is `true` if the page was restored from bfcache and `false` otherwise. You can use the `persisted` property to distinguish regular page loads from bfcache restores. For example:
 
 ```javascript
-window.addEventListener('pageshow', (event) => {
+window.addEventListener("pageshow", (event) => {
   if (event.persisted) {
-    console.log('This page was restored from the bfcache.');
+    console.log("This page was restored from the bfcache.");
   } else {
-    console.log('This page was loaded normally.');
+    console.log("This page was loaded normally.");
   }
 });
 ```
@@ -99,19 +100,19 @@ For details on bfcache measurement best practices, see [How bfcache affects anal
 
 The `pagehide` event fires either when a page unloads or when the browser tries to put it in the bfcache.
 
-The `pagehide` event also has a `persisted` property. If it's `false`, you can be confident a that page isn't about to enter the bfcache. However, `persisted` being `true` doesn't guarantee that a page will be cached. It means the browser *intends* to cache the page, but there may be other factors that make it impossible to cache.
+The `pagehide` event also has a `persisted` property. If it's `false`, you can be confident a that page isn't about to enter the bfcache. However, `persisted` being `true` doesn't guarantee that a page will be cached. It means the browser _intends_ to cache the page, but there may be other factors that make it impossible to cache.
 
 ```javascript
-window.addEventListener('pagehide', (event) => {
+window.addEventListener("pagehide", (event) => {
   if (event.persisted) {
-    console.log('This page *might* be entering the bfcache.');
+    console.log("This page *might* be entering the bfcache.");
   } else {
-    console.log('This page will unload normally and be discarded.');
+    console.log("This page will unload normally and be discarded.");
   }
 });
 ```
 
-Similarly, the `freeze` event fires immediately after the `pagehide` event if `persisted` is `true`, but that only means the browser *intends* to cache the page. It might still have to discard it for a number of reasons explained later.
+Similarly, the `freeze` event fires immediately after the `pagehide` event if `persisted` is `true`, but that only means the browser _intends_ to cache the page. It might still have to discard it for a number of reasons explained later.
 
 ## Optimize your pages for bfcache
 
@@ -123,17 +124,17 @@ The following sections outline the best practices to make it as likely as possib
 
 The most important way to optimize for bfcache in all browsers is to never use the `unload` event. Ever!
 
-The `unload` event is problematic for browsers because it predates bfcache and many pages on the internet operate under the (reasonable) assumption that a page won't continue to exist after the `unload` event has fired. This presents a challenge because many of those pages were *also* built with the assumption that the `unload` event would fire any time a user is navigating away, which is no longer true (and [hasn't been true for a long time](https://developer.chrome.com/blog/page-lifecycle-api/#the-unload-event)).
+The `unload` event is problematic for browsers because it predates bfcache and many pages on the internet operate under the (reasonable) assumption that a page won't continue to exist after the `unload` event has fired. This presents a challenge because many of those pages were _also_ built with the assumption that the `unload` event would fire any time a user is navigating away, which is no longer true (and [hasn't been true for a long time](https://developer.chrome.com/blog/page-lifecycle-api/#the-unload-event)).
 
 So browsers are faced with a dilemma, they have to choose between something that can improve the user experience---but might also risk breaking the page.
 
 Chrome has now [deprecated the `unload` event](https://developer.chrome.com/blog/unload-deprecated-in-chrome), so it will no longer fire in Chrome, except on iOS where all browsers use the WebKit rendering engine, and so behave like Safari.
 
-On desktop, Firefox (and in the past, Chrome) have chosen to make pages ineligible for bfcache if they add an `unload` listener, which is less risky but also disqualifies *a lot* of pages. Safari will attempt to cache some pages with an `unload` event listener, but to reduce potential breakage it won't run the `unload` event when a user is navigating away, which makes the event very unreliable.
+On desktop, Firefox (and in the past, Chrome) have chosen to make pages ineligible for bfcache if they add an `unload` listener, which is less risky but also disqualifies _a lot_ of pages. Safari will attempt to cache some pages with an `unload` event listener, but to reduce potential breakage it won't run the `unload` event when a user is navigating away, which makes the event very unreliable.
 
 On mobile, Safari (and in the past, Chrome) does attempt to cache pages with an `unload` event listener since the risk of breakage is lower due to the fact that the `unload` event has always been extremely unreliable on mobile. Firefox treats pages that use `unload` as ineligible for the bfcache, except on iOS, where all browsers use the WebKit rendering engine, and so behave like Safari.
 
-Instead of using the `unload` event, use the `pagehide` event. The `pagehide` event fires in all cases where the `unload` event fires, and it *also* fires when a page is put in the bfcache.
+Instead of using the `unload` event, use the `pagehide` event. The `pagehide` event fires in all cases where the `unload` event fires, and it _also_ fires when a page is put in the bfcache.
 
 In fact, [Lighthouse](https://developer.chrome.com/docs/lighthouse) has a [`no-unload-listeners` audit](https://github.com/GoogleChrome/lighthouse/pull/11085), which will warn developers if any JavaScript on their pages (including that from third-party libraries) adds an `unload` event listener.
 
@@ -165,31 +166,33 @@ changes and then remove them immediately after the unsaved changes are saved.
 Don't
 
 ```javascript
-window.addEventListener('beforeunload', (event) => {
+window.addEventListener("beforeunload", (event) => {
   if (pageHasUnsavedChanges()) {
     event.preventDefault();
-    return event.returnValue = 'Are you sure you want to exit?';
+    return (event.returnValue = "Are you sure you want to exit?");
   }
 });
 ```
+
 This code adds a `beforeunload` listener unconditionally. Do
 
 ```javascript
 function beforeUnloadListener(event) {
   event.preventDefault();
-  return event.returnValue = 'Are you sure you want to exit?';
-};
+  return (event.returnValue = "Are you sure you want to exit?");
+}
 
 // A function that invokes a callback when the page has unsaved changes.
 onPageHasUnsavedChanges(() => {
-  window.addEventListener('beforeunload', beforeUnloadListener);
+  window.addEventListener("beforeunload", beforeUnloadListener);
 });
 
 // A function that invokes a callback when the page's unsaved changes are resolved.
 onAllChangesSaved(() => {
-  window.removeEventListener('beforeunload', beforeUnloadListener);
+  window.removeEventListener("beforeunload", beforeUnloadListener);
 });
 ```
+
 This code only adds the `beforeunload` listener when it's needed (and removes it when it's not).
 
 ### Minimize use of `Cache-Control: no-store`
@@ -217,7 +220,7 @@ Another, more critical example is if a user signs out of a site on a public comp
 To avoid situations like this, it's good to always update the page after a `pageshow` event if `event.persisted` is `true`:
 
 ```javascript
-window.addEventListener('pageshow', (event) => {
+window.addEventListener("pageshow", (event) => {
   if (event.persisted) {
     // Do any checks and updates to the page
   }
@@ -276,8 +279,8 @@ let dbPromise;
 function openDB() {
   if (!dbPromise) {
     dbPromise = new Promise((resolve, reject) => {
-      const req = indexedDB.open('my-db', 1);
-      req.onupgradeneeded = () => req.result.createObjectStore('keyval');
+      const req = indexedDB.open("my-db", 1);
+      req.onupgradeneeded = () => req.result.createObjectStore("keyval");
       req.onerror = () => reject(req.error);
       req.onsuccess = () => resolve(req.result);
     });
@@ -286,15 +289,15 @@ function openDB() {
 }
 
 // Close the connection to the database when the user leaves.
-window.addEventListener('pagehide', () => {
+window.addEventListener("pagehide", () => {
   if (dbPromise) {
-    dbPromise.then(db => db.close());
+    dbPromise.then((db) => db.close());
     dbPromise = null;
   }
 });
 
 // Open the connection when the page is loaded or restored from bfcache.
-window.addEventListener('pageshow', () => openDB());
+window.addEventListener("pageshow", () => openDB());
 ```
 
 ### Test to ensure your pages are cacheable
@@ -307,13 +310,13 @@ To test a page:
 2. In DevTools, go to **Application** -\> **Back-forward Cache**.
 3. Click the **Run Test** button. DevTools then tries to navigate away and back to determine whether the page can be restored from bfcache.
 
- The **Back-forward Cache** panel in DevTools.
+The **Back-forward Cache** panel in DevTools.
 
 If the test is successful, the panel reports "Restored from back-forward cache".
- A successfully restored page.
+A successfully restored page.
 
 If it's unsuccessful, the panel indicates the reason why. If the reason is something you can address as a developer, the panel marks it as **Actionable**.
- A failed bfcache test with an actionable result.
+A failed bfcache test with an actionable result.
 
 In this example, the use of an `unload` event listener makes the page [ineligible](https://web.dev/articles/bfcache.md.txt#never-use-the-unload-event) for bfcache. You can fix that by switching from `unload` to using `pagehide`:
 Do
@@ -321,6 +324,7 @@ Do
 ```javascript
 window.addEventListener('pagehide', ...);
 ```
+
 Don't
 
 ```javascript
@@ -342,12 +346,12 @@ The following example shows how to do this with Google Analytics. Other analytic
 ```javascript
 // Send a pageview when the page is first loaded.
 // This happens by default just by loading gtag
-gtag('config', 'TAG_ID');
+gtag("config", "TAG_ID");
 
-window.addEventListener('pageshow', (event) => {
+window.addEventListener("pageshow", (event) => {
   // Send another pageview if the page is restored from bfcache.
   if (event.persisted) {
-    gtag('event', 'page_view');
+    gtag("event", "page_view");
   }
 });
 ```
@@ -422,7 +426,7 @@ The [web-vitals](https://github.com/GoogleChrome/web-vitals) JavaScript library 
 
 ## Additional resources
 
-- [Firefox Caching](https://developer.mozilla.org/Firefox/Releases/1.5/Using_Firefox_1.5_caching) *(bfcache in Firefox)*
-- [Page Cache](https://webkit.org/blog/427/webkit-page-cache-i-the-basics/) *(bfcache in Safari)*
-- [Back/forward cache: web exposed behavior](https://docs.google.com/document/d/1JtDCN9A_1UBlDuwkjn1HWxdhQ1H2un9K4kyPLgBqJUc/edit?usp=sharing) *(bfcache differences across browsers)*
-- [Performance Game Changer: Browser Back/Forward Cache](https://www.smashingmagazine.com/2022/05/performance-game-changer-back-forward-cache/) *(a case study from Smashing Magazine showing dramatic Core Web Vitals improvements by enabling bfcache)*
+- [Firefox Caching](https://developer.mozilla.org/Firefox/Releases/1.5/Using_Firefox_1.5_caching) _(bfcache in Firefox)_
+- [Page Cache](https://webkit.org/blog/427/webkit-page-cache-i-the-basics/) _(bfcache in Safari)_
+- [Back/forward cache: web exposed behavior](https://docs.google.com/document/d/1JtDCN9A_1UBlDuwkjn1HWxdhQ1H2un9K4kyPLgBqJUc/edit?usp=sharing) _(bfcache differences across browsers)_
+- [Performance Game Changer: Browser Back/Forward Cache](https://www.smashingmagazine.com/2022/05/performance-game-changer-back-forward-cache/) _(a case study from Smashing Magazine showing dramatic Core Web Vitals improvements by enabling bfcache)_

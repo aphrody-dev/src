@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
 
 The View Transition API gives you the power to create seamless visual transitions between different views on your website. This creates a more visually engaging user experience for users as they navigate your site, regardless of whether it's built as a multi-page application (MPA) or a single-page application (SPA).
@@ -19,7 +20,7 @@ Typical situations where you would use view transitions include:
 
 Transitions created with the View Transition API. [Try the demo site](https://http203-playlist.netlify.app/). Requires Chrome 111 or greater.
 
-*** ** * ** ***
+---
 
 ## Implement view transitions
 
@@ -33,11 +34,11 @@ Both types of view transition rely on the very same building blocks and principl
 
 The one thing that's different between both types is how you trigger them.
 
-*** ** * ** ***
+---
 
 ## Same-document view transitions
 
-When a view transition runs on a single document it is called a *same-document view transition*. This is typically the case in single-page applications (SPAs). Same-document view transitions are supported in Chrome from Chrome 111.
+When a view transition runs on a single document it is called a _same-document view transition_. This is typically the case in single-page applications (SPAs). Same-document view transitions are supported in Chrome from Chrome 111.
 
 Browser Support
 
@@ -76,11 +77,11 @@ Refer to the dedicated documentation page to learn all there is to know about sa
 
 [Build same-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/same-document.md.txt)
 
-*** ** * ** ***
+---
 
 ## Cross-document view transitions
 
-When a view transition occurs between two different documents it is called a *cross-document view transition*. This is typical for MPAs. Cross-document view transitions are supported in Chrome 126 and greater.
+When a view transition occurs between two different documents it is called a _cross-document view transition_. This is typical for MPAs. Cross-document view transitions are supported in Chrome 126 and greater.
 
 Browser Support
 

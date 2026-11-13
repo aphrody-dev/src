@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)  Michal Mocny [X](https://twitter.com/mmocny) [GitHub](https://github.com/mmocny) [Bluesky](https://bsky.app/profile/https://bsky.app/profile/mmocny.com)
+
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com) Michal Mocny [X](https://twitter.com/mmocny) [GitHub](https://github.com/mmocny) [Bluesky](https://bsky.app/profile/https://bsky.app/profile/mmocny.com)
 
 Published: April 20, 2026
 

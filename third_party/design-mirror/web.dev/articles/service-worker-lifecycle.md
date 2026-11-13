@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Jake Archibald [X](https://twitter.com/jaffathecake) [Homepage](https://jakearchibald.com/)
 
 > [!CAUTION]
@@ -46,13 +47,14 @@ Take this HTML:
 <!DOCTYPE html>
 An image will appear here in 3 seconds:
 <script>
-  navigator.serviceWorker.register('/sw.js')
-    .then(reg => console.log('SW registered!', reg))
-    .catch(err => console.log('Boo!', err));
+  navigator.serviceWorker
+    .register("/sw.js")
+    .then((reg) => console.log("SW registered!", reg))
+    .catch((err) => console.log("Boo!", err));
 
   setTimeout(() => {
     const img = new Image();
-    img.src = '/dog.svg';
+    img.src = "/dog.svg";
     document.body.appendChild(img);
   }, 3000);
 </script>
@@ -63,26 +65,26 @@ It registers a service worker, and adds image of a dog after 3 seconds.
 Here's its service worker, `sw.js`:
 
 ```javascript
-self.addEventListener('install', event => {
-  console.log('V1 installing...');
+self.addEventListener("install", (event) => {
+  console.log("V1 installing...");
 
   // cache a cat SVG
   event.waitUntil(
-    caches.open('static-v1').then(cache => cache.add('/cat.svg'))
+    caches.open("static-v1").then((cache) => cache.add("/cat.svg")),
   );
 });
 
-self.addEventListener('activate', event => {
-  console.log('V1 now ready to handle fetches!');
+self.addEventListener("activate", (event) => {
+  console.log("V1 now ready to handle fetches!");
 });
 
-self.addEventListener('fetch', event => {
+self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
   // serve the cat SVG from the cache if the request is
   // same-origin and the path is '/dog.svg'
-  if (url.origin == location.origin && url.pathname == '/dog.svg') {
-    event.respondWith(caches.match('/cat.svg'));
+  if (url.origin == location.origin && url.pathname == "/dog.svg") {
+    event.respondWith(caches.match("/cat.svg"));
   }
 });
 ```
@@ -90,7 +92,7 @@ self.addEventListener('fetch', event => {
 It caches an image of a cat, and serves it whenever there's a request for `/dog.svg`. However, if you [run the above example](https://service-worker-lifecycle-demos.glitch.me/main/), you'll see a dog the first time you load the page. Hit refresh, and you'll see the cat.
 
 > [!NOTE]
-> **Note:** Cats are better than dogs. They just *are*.
+> **Note:** Cats are better than dogs. They just _are_.
 
 ### Scope and control
 
@@ -116,13 +118,13 @@ If your promise rejects, this signals the install failed, and the browser throws
 
 Once your service worker is ready to control clients and handle functional events like `push` and `sync`, you'll get an `activate` event. But that doesn't mean the page that called `.register()` will be controlled.
 
-The first time you load [the demo](https://service-worker-lifecycle-demos.glitch.me/main/), even though `dog.svg` is requested long after the service worker activates, it doesn't handle the request, and you still see the image of the dog. The default is *consistency* , if your page loads without a service worker, neither will its subresources. If you load [the demo](https://service-worker-lifecycle-demos.glitch.me/main/) a second time (in other words, refresh the page), it'll be controlled. Both the page and the image will go through `fetch` events, and you'll see a cat instead.
+The first time you load [the demo](https://service-worker-lifecycle-demos.glitch.me/main/), even though `dog.svg` is requested long after the service worker activates, it doesn't handle the request, and you still see the image of the dog. The default is _consistency_ , if your page loads without a service worker, neither will its subresources. If you load [the demo](https://service-worker-lifecycle-demos.glitch.me/main/) a second time (in other words, refresh the page), it'll be controlled. Both the page and the image will go through `fetch` events, and you'll see a cat instead.
 
 ### clients.claim
 
 You can take control of uncontrolled clients by calling `clients.claim()` within your service worker once it's activated.
 
-Here's [a variation of the demo above](https://service-worker-lifecycle-demos.glitch.me/claimed/) which calls `clients.claim()` in its `activate` event. You *should* see a cat the first time. I say "should", because this is timing sensitive. You'll only see a cat if the service worker activates and `clients.claim()` takes effect before the image tries to load.
+Here's [a variation of the demo above](https://service-worker-lifecycle-demos.glitch.me/claimed/) which calls `clients.claim()` in its `activate` event. You _should_ see a cat the first time. I say "should", because this is timing sensitive. You'll only see a cat if the service worker activates and `clients.claim()` takes effect before the image tries to load.
 
 If you use your service worker to load pages differently than they'd load via the network, `clients.claim()` can be troublesome, as your service worker ends up controlling some clients that loaded without it.
 
@@ -136,7 +138,7 @@ In brief:
 - An update is triggered if any of the following happens:
   - A navigation to an in-scope page.
   - A functional events such as `push` and `sync`, unless there's been an update check within the previous 24 hours.
-  - Calling `.register()` *only if* the service worker URL has changed. However, you should [avoid changing the worker URL](https://web.dev/articles/service-worker-lifecycle.md.txt#avoid-url-change).
+  - Calling `.register()` _only if_ the service worker URL has changed. However, you should [avoid changing the worker URL](https://web.dev/articles/service-worker-lifecycle.md.txt#avoid-url-change).
 - Most browsers, including [Chrome 68 and later](https://developer.chrome.com/blog/fresher-sw), default to ignoring caching headers when checking for updates of the registered service worker script. They still respect caching headers when fetching resources loaded inside a service worker via `importScripts()`. You can override this default behavior by setting the [`updateViaCache`](https://developers.google.com/web/updates/2018/06/fresher-sw/#updateviacache) option when registering your service worker.
 - Your service worker is considered updated if it's byte-different to the one the browser already has. (We're extending this to include imported scripts/modules too.)
 - The updated service worker is launched alongside the existing one, and gets its own `install` event.
@@ -147,40 +149,45 @@ In brief:
 Let's say we changed our service worker script to respond with a picture of a horse rather than a cat:
 
 ```javascript
-const expectedCaches = ['static-v2'];
+const expectedCaches = ["static-v2"];
 
-self.addEventListener('install', event => {
-  console.log('V2 installing...');
+self.addEventListener("install", (event) => {
+  console.log("V2 installing...");
 
   // cache a horse SVG into a new cache, static-v2
   event.waitUntil(
-    caches.open('static-v2').then(cache => cache.add('/horse.svg'))
+    caches.open("static-v2").then((cache) => cache.add("/horse.svg")),
   );
 });
 
-self.addEventListener('activate', event => {
+self.addEventListener("activate", (event) => {
   // delete any caches that aren't in expectedCaches
   // which will get rid of static-v1
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.map(key => {
-        if (!expectedCaches.includes(key)) {
-          return caches.delete(key);
-        }
-      })
-    )).then(() => {
-      console.log('V2 now ready to handle fetches!');
-    })
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.map((key) => {
+            if (!expectedCaches.includes(key)) {
+              return caches.delete(key);
+            }
+          }),
+        ),
+      )
+      .then(() => {
+        console.log("V2 now ready to handle fetches!");
+      }),
   );
 });
 
-self.addEventListener('fetch', event => {
+self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
   // serve the horse SVG from the cache if the request is
   // same-origin and the path is '/dog.svg'
-  if (url.origin == location.origin && url.pathname == '/dog.svg') {
-    event.respondWith(caches.match('/horse.svg'));
+  if (url.origin == location.origin && url.pathname == "/dog.svg") {
+    event.respondWith(caches.match("/horse.svg"));
   }
 });
 ```
@@ -226,12 +233,12 @@ If you pass a promise to `event.waitUntil()` it'll buffer functional events (`fe
 
 The waiting phase means you're only running one version of your site at once, but if you don't need that feature, you can make your new service worker activate sooner by calling `self.skipWaiting()`.
 
-This causes your service worker to kick out the current active worker and activate itself as soon as it enters the waiting phase (or immediately if it's already in the waiting phase). It *doesn't* cause your worker to skip installing, just waiting.
+This causes your service worker to kick out the current active worker and activate itself as soon as it enters the waiting phase (or immediately if it's already in the waiting phase). It _doesn't_ cause your worker to skip installing, just waiting.
 
 It doesn't really matter when you call `skipWaiting()`, as long as it's during or before waiting. It's pretty common to call it in the `install` event:
 
 ```javascript
-self.addEventListener('install', event => {
+self.addEventListener("install", (event) => {
   self.skipWaiting();
 
   event.waitUntil(
@@ -252,7 +259,7 @@ But you may want to call it as a results of a `postMessage()` to the service wor
 As I mentioned earlier, the browser checks for updates automatically after navigations and functional events, but you can also trigger them manually:
 
 ```javascript
-navigator.serviceWorker.register('/sw.js').then(reg => {
+navigator.serviceWorker.register("/sw.js").then((reg) => {
   // sometime later...
   reg.update();
 });
@@ -272,7 +279,7 @@ It can land you with a problem like this:
 
 If you do the above, the user never gets `sw-v2.js`, because `sw-v1.js` is serving the old version of `index.html` from its cache. You've put yourself in a position where you need to update your service worker in order to update your service worker. Ew.
 
-However, for [the demo above](https://service-worker-lifecycle-demos.glitch.me/main/v2.html), I *have* changed the URL of the service worker. This is so, for the sake of the demo, you can switch between the versions. It isn't something I'd do in production.
+However, for [the demo above](https://service-worker-lifecycle-demos.glitch.me/main/v2.html), I _have_ changed the URL of the service worker. This is so, for the sake of the demo, you can switch between the versions. It isn't something I'd do in production.
 
 ## Making development easy
 
@@ -301,17 +308,17 @@ If you force-reload the page (shift-reload) it bypasses the service worker entir
 
 ## Handling updates
 
-The service worker was designed as part of the [extensible web](https://extensiblewebmanifesto.org/). The idea is that we, as browser developers, acknowledge that we are not better at web development than web developers. And as such, we shouldn't provide narrow high-level APIs that solve a particular problem using patterns *we* like, and instead give you access to the guts of the browser and let you do it how you want, in a way that works best for *your* users.
+The service worker was designed as part of the [extensible web](https://extensiblewebmanifesto.org/). The idea is that we, as browser developers, acknowledge that we are not better at web development than web developers. And as such, we shouldn't provide narrow high-level APIs that solve a particular problem using patterns _we_ like, and instead give you access to the guts of the browser and let you do it how you want, in a way that works best for _your_ users.
 
 So, to enable as many patterns as we can, the whole update cycle is observable:
 
 ```javascript
-navigator.serviceWorker.register('/sw.js').then(reg => {
+navigator.serviceWorker.register("/sw.js").then((reg) => {
   reg.installing; // the installing worker, or undefined
   reg.waiting; // the waiting worker, or undefined
   reg.active; // the active worker, or undefined
 
-  reg.addEventListener('updatefound', () => {
+  reg.addEventListener("updatefound", () => {
     // A wild service worker has appeared in reg.installing!
     const newWorker = reg.installing;
 
@@ -323,13 +330,13 @@ navigator.serviceWorker.register('/sw.js').then(reg => {
     // "redundant"  - discarded. Either failed install, or it's been
     //                replaced by a newer version
 
-    newWorker.addEventListener('statechange', () => {
+    newWorker.addEventListener("statechange", () => {
       // newWorker.state has changed
     });
   });
 });
 
-navigator.serviceWorker.addEventListener('controllerchange', () => {
+navigator.serviceWorker.addEventListener("controllerchange", () => {
   // This fires when the service worker controlling this page
   // changes, eg a new worker has skipped waiting and become
   // the new active worker.

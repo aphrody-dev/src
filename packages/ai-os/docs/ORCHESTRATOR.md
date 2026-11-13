@@ -6,13 +6,13 @@ The orchestrator runs a graph of steps computed at run time, in parallel, on the
 
 ## Layers
 
-| Layer | Owner | Role |
-| --- | --- | --- |
-| `packages/ai-os/src/orch` | ai-os (this document) | graph, routing, failover, repair, lifecycle, guardrails |
-| `infra/agents/runner.ts`, `infra/agents/fleet.toml`, `docs/agents/AGENT-FIRST.md` | labs-1b | execution on the hosts: one tmux session per host (one window per role), queue `var/agents/queue`, commit bounded to paths, acceptance check |
-| `src/llm` | ai-os | discovered providers and models (`llm_models`, `llm_ask`) |
-| `src/relay` | ai-os | tools `orch_run`, `orch_engines`, `fleet_status`, `gemini_review` (MCP, A2A, JSON-RPC) |
-| ssh, WireGuard, cloudflared | infra agent (`ay auth`, `docs/infra/AUTH.md`) | access to the hosts; the orchestrator creates no tunnel |
+| Layer                                                                             | Owner                                         | Role                                                                                                                                         |
+| --------------------------------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/ai-os/src/orch`                                                         | ai-os (this document)                         | graph, routing, failover, repair, lifecycle, guardrails                                                                                      |
+| `infra/agents/runner.ts`, `infra/agents/fleet.toml`, `docs/agents/AGENT-FIRST.md` | labs-1b                                       | execution on the hosts: one tmux session per host (one window per role), queue `var/agents/queue`, commit bounded to paths, acceptance check |
+| `src/llm`                                                                         | ai-os                                         | discovered providers and models (`llm_models`, `llm_ask`)                                                                                    |
+| `src/relay`                                                                       | ai-os                                         | tools `orch_run`, `orch_engines`, `fleet_status`, `gemini_review` (MCP, A2A, JSON-RPC)                                                       |
+| ssh, WireGuard, cloudflared                                                       | infra agent (`ay auth`, `docs/infra/AUTH.md`) | access to the hosts; the orchestrator creates no tunnel                                                                                      |
 
 Hosts: `infra/agents/fleet.toml` (`[hosts.*]`, roles, runner checkout), cross-referenced with `infra/deploy.toml` (`ssh_alias`, `role`). A node with role `build` (fr1, reserved for Chromium and LLVM) is excluded outright. Cap per host: `ORCH_MAX_AGENTS_<HOST>`, otherwise `ORCH_MAX_AGENTS`, otherwise 3 locally and 2 remotely.
 
@@ -77,17 +77,17 @@ All commands write JSON to stdout. Events go out as JSONL on stderr (except with
 }
 ````
 
-| Field | Effect |
-| --- | --- |
-| `do` | `cmd`: sh line run in the host checkout, or in `$HOME` with `"repo": false`; `agent`: sub-agent; `tool`: relay tool |
-| `deps`, `{{id}}` | graph order; `{{id}}` receives the output of step `id` (20,000 characters at most) |
-| `hosts` | allowed hosts, in order of preference; by default, those whose `fleet.toml` lists the role, local host first |
-| `needs` | declared needs for routing (next section) |
-| `check`, `commit` | passed to the runner: acceptance check, then commit limited to the `paths` prefixes |
-| `expand` | the output may add steps (`{"steps":[…]}`). Their identifiers are prefixed by the parent's. They inherit its restrictions (external effect, commit paths). Additions are bounded by `maxSteps` and `maxDepth` |
-| `out` | the output is written to a file, under `docs/reviews/` or `var/` only |
-| `effect: "external"` | publication, sending or spending: the step is held (see "External effects checkpoint") |
-| `onFail` | `fix` (default for `cmd`) opens a fix ticket; `continue` lets the dependents through; `stop` skips them |
+| Field                | Effect                                                                                                                                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `do`                 | `cmd`: sh line run in the host checkout, or in `$HOME` with `"repo": false`; `agent`: sub-agent; `tool`: relay tool                                                                                           |
+| `deps`, `{{id}}`     | graph order; `{{id}}` receives the output of step `id` (20,000 characters at most)                                                                                                                            |
+| `hosts`              | allowed hosts, in order of preference; by default, those whose `fleet.toml` lists the role, local host first                                                                                                  |
+| `needs`              | declared needs for routing (next section)                                                                                                                                                                     |
+| `check`, `commit`    | passed to the runner: acceptance check, then commit limited to the `paths` prefixes                                                                                                                           |
+| `expand`             | the output may add steps (`{"steps":[…]}`). Their identifiers are prefixed by the parent's. They inherit its restrictions (external effect, commit paths). Additions are bounded by `maxSteps` and `maxDepth` |
+| `out`                | the output is written to a file, under `docs/reviews/` or `var/` only                                                                                                                                         |
+| `effect: "external"` | publication, sending or spending: the step is held (see "External effects checkpoint")                                                                                                                        |
+| `onFail`             | `fix` (default for `cmd`) opens a fix ticket; `continue` lets the dependents through; `stop` skips them                                                                                                       |
 
 Execution of an `agent` step:
 
@@ -120,15 +120,15 @@ The result is the `providers` list of the v1 task, which the runner tries in ord
 
 ## Failover and repair
 
-| Class (`classify.ts`) | Signal | Action |
-| --- | --- | --- |
-| `quota` | 402, credits, account quota, `RESOURCE_EXHAUSTED` | 15 min cooldown doubled on each failure, next provider without waiting |
-| `throttle` | 429 / rate limit without quota text | one retry after `Retry-After` (60 s at most), then next provider |
-| `auth` | expired session, 401/403 | set aside 6 h on this host, next provider |
-| `missing` | binary or checkout absent (127) | next host; no fix ticket |
-| `context`, `policy` | context exceeded, content refusal | next provider |
-| `timeout`, `overload` | timeout, 5xx, network | one retry, then next provider |
-| `task` | the engine answered, the task failed | `cmd`: fix ticket; `agent`: next provider |
+| Class (`classify.ts`) | Signal                                            | Action                                                                 |
+| --------------------- | ------------------------------------------------- | ---------------------------------------------------------------------- |
+| `quota`               | 402, credits, account quota, `RESOURCE_EXHAUSTED` | 15 min cooldown doubled on each failure, next provider without waiting |
+| `throttle`            | 429 / rate limit without quota text               | one retry after `Retry-After` (60 s at most), then next provider       |
+| `auth`                | expired session, 401/403                          | set aside 6 h on this host, next provider                              |
+| `missing`             | binary or checkout absent (127)                   | next host; no fix ticket                                               |
+| `context`, `policy`   | context exceeded, content refusal                 | next provider                                                          |
+| `timeout`, `overload` | timeout, 5xx, network                             | one retry, then next provider                                          |
+| `task`                | the engine answered, the task failed              | `cmd`: fix ticket; `agent`: next provider                              |
 
 When no provider on a host answers, the step moves to the next host in `hosts`. An already queued task is withdrawn (`queue/failed`) if all its attempts are `provider_unavailable`.
 
@@ -136,15 +136,15 @@ Fix ticket: a failed `cmd` step spawns `<id>#fix<n>`, an `agent` step. It takes 
 
 ## Guardrails
 
-| Limit | Default | Variable |
-| --- | --- | --- |
-| steps, generated ones included | 48 | `ORCH_MAX_STEPS` |
-| expansion depth | 3 | `ORCH_MAX_DEPTH` |
-| budget in $ (sum of the `budget_usd` handed to the queue; the runner applies them through `--max-budget-usd`) | 20 | `ORCH_BUDGET_USD` |
-| tokens of direct executions | 2,000,000 | `ORCH_TOKEN_BUDGET` |
-| deadline | 4 h | `ORCH_DEADLINE_MS` |
-| consecutive failures before stopping | 4 | `ORCH_MAX_FAILS` |
-| simultaneous agents per host | 3 locally, 2 remotely | `ORCH_MAX_AGENTS[_<HOST>]` |
+| Limit                                                                                                         | Default               | Variable                   |
+| ------------------------------------------------------------------------------------------------------------- | --------------------- | -------------------------- |
+| steps, generated ones included                                                                                | 48                    | `ORCH_MAX_STEPS`           |
+| expansion depth                                                                                               | 3                     | `ORCH_MAX_DEPTH`           |
+| budget in $ (sum of the `budget_usd` handed to the queue; the runner applies them through `--max-budget-usd`) | 20                    | `ORCH_BUDGET_USD`          |
+| tokens of direct executions                                                                                   | 2,000,000             | `ORCH_TOKEN_BUDGET`        |
+| deadline                                                                                                      | 4 h                   | `ORCH_DEADLINE_MS`         |
+| consecutive failures before stopping                                                                          | 4                     | `ORCH_MAX_FAILS`           |
+| simultaneous agents per host                                                                                  | 3 locally, 2 remotely | `ORCH_MAX_AGENTS[_<HOST>]` |
 
 Other guardrails:
 
@@ -205,40 +205,40 @@ Product variants:
 
 Run `20261113T013445-proof-fleet-vycu` (26.8 s, ok), after the runners were put into service on pc, prd and fr2: the `agent` steps go through the v1 queues.
 
-| Step | Host | Attempts |
-| --- | --- | --- |
-| pc-gemini | pc | queue: `agy:gemini-4-carbon-high` excluded (quota cooldown learned in the previous run), `agy` ok |
-| pc-claude | pc | queue: `claude` ok |
-| prd-agent | prd | queue: `claude` excluded on prd (auth cooldown learned), routed to `opencode`, ok |
-| prd-sys, fr2-sys | prd, fr2 | commands in parallel, `nice=19` |
-| plan | pc | queue: `claude` ok; plan.disk-prd and plan.disk-fr2 generated at run time, ok |
-| publish | — | `held` |
+| Step             | Host     | Attempts                                                                                          |
+| ---------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| pc-gemini        | pc       | queue: `agy:gemini-4-carbon-high` excluded (quota cooldown learned in the previous run), `agy` ok |
+| pc-claude        | pc       | queue: `claude` ok                                                                                |
+| prd-agent        | prd      | queue: `claude` excluded on prd (auth cooldown learned), routed to `opencode`, ok                 |
+| prd-sys, fr2-sys | prd, fr2 | commands in parallel, `nice=19`                                                                   |
+| plan             | pc       | queue: `claude` ok; plan.disk-prd and plan.disk-fr2 generated at run time, ok                     |
+| publish          | —        | `held`                                                                                            |
 
 Run `20261113T010749-proof-fleet-p9kk` (14.9 s, direct execution, before the runners):
 
-| Step | Host | Attempts |
-| --- | --- | --- |
-| pc-gemini | pc | `agy:gemini-4-carbon-high` quota (exhausted), then `agy` ok |
-| pc-claude | pc | `claude` ok |
-| prd-agent | prd then pc | `prd/claude` auth (OAuth session expired on prd), then `pc/claude` ok |
-| prd-sys | prd | ok: `nproc=8 nice=19`, tmux 3.8, bun 1.4.4 |
-| fr2-sys | fr2 | ok: `nproc=6 nice=19`, tmux 3.7b, bun 1.4.4 |
-| plan | pc | `claude` ok; two steps generated at run time: plan.disk-prd (prd) and plan.disk-fr2 (fr2), both ok |
-| publish | — | `held`: external effect without a rule, queued in `var/agents/outbox/` |
+| Step      | Host        | Attempts                                                                                           |
+| --------- | ----------- | -------------------------------------------------------------------------------------------------- |
+| pc-gemini | pc          | `agy:gemini-4-carbon-high` quota (exhausted), then `agy` ok                                        |
+| pc-claude | pc          | `claude` ok                                                                                        |
+| prd-agent | prd then pc | `prd/claude` auth (OAuth session expired on prd), then `pc/claude` ok                              |
+| prd-sys   | prd         | ok: `nproc=8 nice=19`, tmux 3.8, bun 1.4.4                                                         |
+| fr2-sys   | fr2         | ok: `nproc=6 nice=19`, tmux 3.7b, bun 1.4.4                                                        |
+| plan      | pc          | `claude` ok; two steps generated at run time: plan.disk-prd (prd) and plan.disk-fr2 (fr2), both ok |
+| publish   | —           | `held`: external effect without a rule, queued in `var/agents/outbox/`                             |
 
 Gemini review (Carbon High, gemini.google.com): 9.5/20, verdict and follow-ups in `docs/reviews/gemini-2026-11-13-orch.md`.
 
 ## Comparison with reference projects (survey of 2026-11-13)
 
-| Project | What is taken | Source |
-| --- | --- | --- |
-| opencode @c5a1532 | model registry with cost, context, `tool_call`, `reasoning` (models.dev); error classes separating quota (402, or 429 with a quota text) and throttle (429); sub-agents declared as data, without recursive delegation | `third_party/opencode`: `packages/core/src/models-dev/v1.ts:9-60`, `packages/ai/src/provider-error.ts:230-266`, `packages/ai/src/schema/errors.ts:69-215`, `packages/core/src/plugin/agent.ts:55-95` |
-| opencode (counter-example) | its "small model" chosen from a hard-coded list of families: not taken | `packages/core/src/model.ts:307-319` |
-| OpenRouter | `models` as a fallback list; `provider.only` / `ignore` / `sort`; 402 = credits (no retry), 429 and 503 with `Retry-After` | https://openrouter.ai/docs/guides/routing/model-fallbacks, https://openrouter.ai/docs/guides/routing/provider-selection, https://openrouter.ai/docs/api/reference/errors-and-debugging |
-| Vercel AI SDK @2ebc78b, AI Gateway | provider registry addressed by `provider:model`; `isRetryable` for 408, 409, 429 and ≥ 500; `Retry-After` bounded at 60 s; `gateway.models` / `order`; attempts traced per model | `third_party/vercel-ai`: `packages/ai/src/registry/provider-registry.ts:176-199`, `packages/provider/src/errors/api-call-error.ts:28-32`, `packages/ai/src/util/retry-with-exponential-backoff.ts:27-66`, `packages/gateway/src/gateway-provider-options.ts:58-145`; https://vercel.com/docs/ai-gateway/models-and-providers/model-fallbacks |
-| Google ADK js @13912a9, python @df9f9d0 | router called back after each failure with the keys already tried; fallback only before any output; sequential, parallel and bounded loop (`maxIterations`); agent used as a tool | `third_party/adk-js`: `core/src/utils/failover_utils.ts:22-75`, `core/src/agents/loop_agent.ts:22,88`; `third_party/adk-python`: `src/google/adk/models/_fallback_model.py:207-280` |
-| A2A | agent card with skills and capabilities (served by the relay) | `third_party/adk-js/core/src/a2a/agent_card.ts:379-459` |
-| OpenAI Agents SDK js @7589b9c | bounded `maxTurns` with a typed error; input and output guardrails; agents used as tools (`asTool`) | `third_party/openai-agents-js`: `packages/agents-core/src/runner/constants.ts:2`, `packages/agents-core/src/agent.ts:355-447,765` |
-| Claude Agent SDK 0.3.323 (npm, 2026-11-12) | `fallbackModel`, `maxTurns`, `maxBudgetUsd`, PreToolUse hooks, `permissionMode`. The SDK launches the Claude Code binary (`spawn`, `--output-format stream-json`) and embeds Claude Code 2.1.323 as per-platform optional dependencies. ai-os therefore drives the `claude` CLI directly (2.1.322 on the PC): no npm dependency, in line with the package rule | `npm view @anthropic-ai/claude-agent-sdk` (version 0.3.323, `claudeCodeVersion` 2.1.323, peer `zod`, `@anthropic-ai/sdk`, `@modelcontextprotocol/sdk`); types read from the 0.3.312 package (`sdk.d.ts`) |
-| Cursor | parallel, isolated cloud agents; explicit model or default user → team → system; "Auto" mode criteria not published | https://cursor.com/docs/cloud-agent, https://cursor.com/docs/cloud-agent/api/endpoints, https://cursor.com/docs/models |
-| LiteLLM Router @a7052ea8 | per-deployment cooldown after failures (429, 401, 402, 404, 408, 5xx); distinct fallbacks for context overflow and content refusal; routing by cost and by latency | `third_party/litellm`: `litellm/router_utils/cooldown_handlers.py:285-331`, `litellm/router_utils/fallback_event_handlers.py:265-275`, `litellm/router.py:80-115` |
+| Project                                    | What is taken                                                                                                                                                                                                                                                                                                                                                  | Source                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| opencode @c5a1532                          | model registry with cost, context, `tool_call`, `reasoning` (models.dev); error classes separating quota (402, or 429 with a quota text) and throttle (429); sub-agents declared as data, without recursive delegation                                                                                                                                         | `third_party/opencode`: `packages/core/src/models-dev/v1.ts:9-60`, `packages/ai/src/provider-error.ts:230-266`, `packages/ai/src/schema/errors.ts:69-215`, `packages/core/src/plugin/agent.ts:55-95`                                                                                                                                         |
+| opencode (counter-example)                 | its "small model" chosen from a hard-coded list of families: not taken                                                                                                                                                                                                                                                                                         | `packages/core/src/model.ts:307-319`                                                                                                                                                                                                                                                                                                         |
+| OpenRouter                                 | `models` as a fallback list; `provider.only` / `ignore` / `sort`; 402 = credits (no retry), 429 and 503 with `Retry-After`                                                                                                                                                                                                                                     | https://openrouter.ai/docs/guides/routing/model-fallbacks, https://openrouter.ai/docs/guides/routing/provider-selection, https://openrouter.ai/docs/api/reference/errors-and-debugging                                                                                                                                                       |
+| Vercel AI SDK @2ebc78b, AI Gateway         | provider registry addressed by `provider:model`; `isRetryable` for 408, 409, 429 and ≥ 500; `Retry-After` bounded at 60 s; `gateway.models` / `order`; attempts traced per model                                                                                                                                                                               | `third_party/vercel-ai`: `packages/ai/src/registry/provider-registry.ts:176-199`, `packages/provider/src/errors/api-call-error.ts:28-32`, `packages/ai/src/util/retry-with-exponential-backoff.ts:27-66`, `packages/gateway/src/gateway-provider-options.ts:58-145`; https://vercel.com/docs/ai-gateway/models-and-providers/model-fallbacks |
+| Google ADK js @13912a9, python @df9f9d0    | router called back after each failure with the keys already tried; fallback only before any output; sequential, parallel and bounded loop (`maxIterations`); agent used as a tool                                                                                                                                                                              | `third_party/adk-js`: `core/src/utils/failover_utils.ts:22-75`, `core/src/agents/loop_agent.ts:22,88`; `third_party/adk-python`: `src/google/adk/models/_fallback_model.py:207-280`                                                                                                                                                          |
+| A2A                                        | agent card with skills and capabilities (served by the relay)                                                                                                                                                                                                                                                                                                  | `third_party/adk-js/core/src/a2a/agent_card.ts:379-459`                                                                                                                                                                                                                                                                                      |
+| OpenAI Agents SDK js @7589b9c              | bounded `maxTurns` with a typed error; input and output guardrails; agents used as tools (`asTool`)                                                                                                                                                                                                                                                            | `third_party/openai-agents-js`: `packages/agents-core/src/runner/constants.ts:2`, `packages/agents-core/src/agent.ts:355-447,765`                                                                                                                                                                                                            |
+| Claude Agent SDK 0.3.323 (npm, 2026-11-12) | `fallbackModel`, `maxTurns`, `maxBudgetUsd`, PreToolUse hooks, `permissionMode`. The SDK launches the Claude Code binary (`spawn`, `--output-format stream-json`) and embeds Claude Code 2.1.323 as per-platform optional dependencies. ai-os therefore drives the `claude` CLI directly (2.1.322 on the PC): no npm dependency, in line with the package rule | `npm view @anthropic-ai/claude-agent-sdk` (version 0.3.323, `claudeCodeVersion` 2.1.323, peer `zod`, `@anthropic-ai/sdk`, `@modelcontextprotocol/sdk`); types read from the 0.3.312 package (`sdk.d.ts`)                                                                                                                                     |
+| Cursor                                     | parallel, isolated cloud agents; explicit model or default user → team → system; "Auto" mode criteria not published                                                                                                                                                                                                                                            | https://cursor.com/docs/cloud-agent, https://cursor.com/docs/cloud-agent/api/endpoints, https://cursor.com/docs/models                                                                                                                                                                                                                       |
+| LiteLLM Router @a7052ea8                   | per-deployment cooldown after failures (429, 401, 402, 404, 408, 5xx); distinct fallbacks for context overflow and content refusal; routing by cost and by latency                                                                                                                                                                                             | `third_party/litellm`: `litellm/router_utils/cooldown_handlers.py:285-331`, `litellm/router_utils/fallback_event_handlers.py:265-275`, `litellm/router.py:80-115`                                                                                                                                                                            |

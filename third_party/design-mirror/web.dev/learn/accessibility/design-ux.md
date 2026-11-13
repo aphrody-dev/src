@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Think about your favorite website or app. What makes it your favorite? Now,
 think about a website or app you dislike. What do you not like about it? How
 users interact with your design and their experience on your website and app can
@@ -31,13 +32,13 @@ that design to others.
 
 There are seven accessibility-focused inclusive design principles:
 
-1. *Provide comparable experience*: Ensure your interface provides an equal experience for all, so people can accomplish tasks in a way that suits their needs without undermining the quality of the content.
-2. *Consider the situation*: Make sure your interface delivers a valuable experience to people, regardless of their circumstances.
-3. *Be consistent*: Use familiar conventions and apply them in a logical manner.
-4. *Give control*: Ensure people can access and interact with content in their preferred way.
-5. *Offer choice*: Consider providing different ways for people to complete tasks, especially those that are complex or non-standard.
-6. *Prioritize content*: Help users focus on core tasks, features, and information by arranging these elements in the preferred order within the content and layout.
-7. *Add value*: Consider the purpose and significance of features and how they improve the experience for different users.
+1. _Provide comparable experience_: Ensure your interface provides an equal experience for all, so people can accomplish tasks in a way that suits their needs without undermining the quality of the content.
+2. _Consider the situation_: Make sure your interface delivers a valuable experience to people, regardless of their circumstances.
+3. _Be consistent_: Use familiar conventions and apply them in a logical manner.
+4. _Give control_: Ensure people can access and interact with content in their preferred way.
+5. _Offer choice_: Consider providing different ways for people to complete tasks, especially those that are complex or non-standard.
+6. _Prioritize content_: Help users focus on core tasks, features, and information by arranging these elements in the preferred order within the content and layout.
+7. _Add value_: Consider the purpose and significance of features and how they improve the experience for different users.
 
 ## Personas
 
@@ -58,7 +59,7 @@ focused on specific user groups.
 > meet one Deaf person, then you've met one Deaf person---not all of us."
 > Meryl Evans from the ID24 talk [Deaf
 > Tech: Travel Through Time from Past to Future](https://youtu.be/yrwKWtJdZ_c/).
- Part of the Persona Spectrum from [Microsoft's Inclusive 101 Toolkit](https://www.microsoft.com/design/inclusive/).
+> Part of the Persona Spectrum from [Microsoft's Inclusive 101 Toolkit](https://www.microsoft.com/design/inclusive/).
 
 Personas can be used as an inclusive design tool when you incorporate people
 with disabilities into your personas. There are many different ways to do this.
@@ -68,9 +69,9 @@ reflect the dynamic reality of situational, temporary, and permanent
 disabilities.
 
 No matter how you incorporate people with disabilities into your personas, they
-should *not* be based on real people or stereotypes. And personas are never a
+should _not_ be based on real people or stereotypes. And personas are never a
 substitute for user testing.
-Persona: Jane Bennet Check out an example of a persona that supports specific use cases. 
+Persona: Jane Bennet Check out an example of a persona that supports specific use cases.
 
 - **Name**: Jane Bennet
 - **Age**: 57 years old
@@ -103,6 +104,7 @@ factors. Many accessibility advocates are
 [against using disability simulator tools](https://sheribyrnehaber.medium.com/simulating-disabilities-d03986e05c1b)
 and recommend seeking out movies, demos, tutorials, and other content created by
 people with disabilities, and learning about their experiences first-hand.
+
 > "I think we need to be completely honest that any simulation activity does
 > not impact some of the most important understandings we want the sighted to
 > know in their heart and their head. Blindness is not the characteristic that
@@ -132,16 +134,16 @@ a huge impact that can be made before even one line of code is written.
 Similar to the original set of heuristics, there are ten accessibility
 heuristics to consider when planning your design.
 
-1. *Interaction methods and modalities*: Users can efficiently interact with the system using the input method of their choosing (such as a mouse, keyboard, touch, etc.).
-2. *Navigation and wayfinding*: Users can navigate, find content, and determine where they are, at all times, within the system.
-3. *Structure and semantics*: Users can make sense of the structure of the content on each page and understand how to operate within the system.
-4. *Error prevention and states*: Interactive controls have persistent, meaningful instructions to help prevent mistakes, and provide users with clear error states which indicate what the problems are and how to fix them whenever errors are returned.
-5. *Contrast and legibility*: Users can easily distinguish and read text and other meaningful information.
-6. *Language and readability*: Users can easily read and understand the content.
-7. *Predictability and consistency*: Users can predict each element's purpose. It's clear how each element relates to the system as a whole.
-8. *Timing and preservation*: Users are given enough time to complete their tasks and don't lose information if their time (i.e., a session) runs out.
-9. *Movement and flashing*: Users can stop elements on the page that move, flash, or are animated. Users shouldn't be distracted or otherwise harmed by these elements.
-10. *Visual and auditory alternatives*: Users can access text-based alternatives for any visual or auditory content which conveys information.
+1. _Interaction methods and modalities_: Users can efficiently interact with the system using the input method of their choosing (such as a mouse, keyboard, touch, etc.).
+2. _Navigation and wayfinding_: Users can navigate, find content, and determine where they are, at all times, within the system.
+3. _Structure and semantics_: Users can make sense of the structure of the content on each page and understand how to operate within the system.
+4. _Error prevention and states_: Interactive controls have persistent, meaningful instructions to help prevent mistakes, and provide users with clear error states which indicate what the problems are and how to fix them whenever errors are returned.
+5. _Contrast and legibility_: Users can easily distinguish and read text and other meaningful information.
+6. _Language and readability_: Users can easily read and understand the content.
+7. _Predictability and consistency_: Users can predict each element's purpose. It's clear how each element relates to the system as a whole.
+8. _Timing and preservation_: Users are given enough time to complete their tasks and don't lose information if their time (i.e., a session) runs out.
+9. _Movement and flashing_: Users can stop elements on the page that move, flash, or are animated. Users shouldn't be distracted or otherwise harmed by these elements.
+10. _Visual and auditory alternatives_: Users can access text-based alternatives for any visual or auditory content which conveys information.
 
 Once you have a basic understanding of these accessibility heuristics, you can
 apply it to a persona or design using the accessibility heuristics worksheet
@@ -151,15 +153,15 @@ when you gather multiple perspectives.
 An example accessibility heuristic review for the navigation and wayfinding
 checkpoint could look like the following:
 
-| Checkpoints for navigation and wayfinding | Excels (+2 pt) | Passes (+1 pt) | Fails (-1 pt) | N/A (0 pt) |
-|---|---|---|---|---|
-| Is a clear, visible indicator set on all active elements as they receive focus? |   |   |   |   |
-| Does the page have meaningful title text, with page-specific information first? |   |   |   |   |
-| Are the page title element and H1 the same or similar? |   |   |   |   |
-| Are there meaningful headings for each major section? |   |   |   |   |
-| Is the links' purpose defined from the link text alone or its immediate context? |   |   |   |   |
-| Is a skip link provided at the very top of the page and is it revealed on focus? |   |   |   |   |
-| Does the organization of navigational elements facilitate wayfinding? |   |   |   |   |
+| Checkpoints for navigation and wayfinding                                        | Excels (+2 pt) | Passes (+1 pt) | Fails (-1 pt) | N/A (0 pt) |
+| -------------------------------------------------------------------------------- | -------------- | -------------- | ------------- | ---------- |
+| Is a clear, visible indicator set on all active elements as they receive focus?  |                |                |               |            |
+| Does the page have meaningful title text, with page-specific information first?  |                |                |               |            |
+| Are the page title element and H1 the same or similar?                           |                |                |               |            |
+| Are there meaningful headings for each major section?                            |                |                |               |            |
+| Is the links' purpose defined from the link text alone or its immediate context? |                |                |               |            |
+| Is a skip link provided at the very top of the page and is it revealed on focus? |                |                |               |            |
+| Does the organization of navigational elements facilitate wayfinding?            |                |                |               |            |
 
 After everyone on the team looks at the page or component and conducts their
 accessibility heuristic review, the totals are tallied up for each checkpoint.
@@ -184,7 +186,7 @@ labels to streamline the process and keep the design as the main focus.
 The following design illustrations examples are from
 [Indeed.com's accessibility annotations kit](https://www.figma.com/community/file/953682768192596304)
 for Figma.
- Action button design differs based on state: default, focus, hover, active, and disabled.  Three icons have alt text highlighted. The icons for "save job" and "not interested" act as buttons, therefore the alt text is critical to understanding action. The icon next to "Apply with your Indeed resume" is purely decorative and therefore doesn't need alt text.  Multiple input labels can be associated with each input, to help users understand context.
+Action button design differs based on state: default, focus, hover, active, and disabled. Three icons have alt text highlighted. The icons for "save job" and "not interested" act as buttons, therefore the alt text is critical to understanding action. The icon next to "Apply with your Indeed resume" is purely decorative and therefore doesn't need alt text. Multiple input labels can be associated with each input, to help users understand context.
 
 Depending on your design program, you should have multiple
 [accessibility annotation starter kits](https://www.figma.com/community/tag/a11y/popular)

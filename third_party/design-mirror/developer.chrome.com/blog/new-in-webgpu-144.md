@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: January 7, 2026
@@ -24,7 +25,9 @@ This language extension can be feature-detected using `navigator.gpu.wgslLanguag
 
 ```javascript
 if (!navigator.gpu.wgslLanguageFeatures.has("subgroup_id")) {
-  throw new Error(`WGSL subgroup_id and num_subgroups built-in values are not available`);
+  throw new Error(
+    `WGSL subgroup_id and num_subgroups built-in values are not available`,
+  );
 }
 
 const adapter = await navigator.gpu.requestAdapter();
@@ -33,7 +36,8 @@ if (!adapter.features.has("subgroups")) {
 }
 const device = await adapter.requestDevice({ requiredFeatures: ["subgroups"] });
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   enable subgroups;
   requires subgroup_id;
 
@@ -59,7 +63,8 @@ if (!navigator.gpu.wgslLanguageFeatures.has("uniform_buffer_standard_layout")) {
 const adapter = await navigator.gpu.requestAdapter();
 const device = await adapter.requestDevice();
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   requires uniform_buffer_standard_layout;
 
   struct S {

@@ -29,8 +29,8 @@ application's exported environment, read
   `capture_browser_scenario` that signs in and opens them, with
   `"capture": {"after_each_step": ["accessibility"]}` (`"dom"` for markup).
   Read a step's tree with `inspect_analysis_view`, `view: {kind:
-  "browser-scenario", collection: "text", step_index, artifact:
-  "accessibility", offset: 0, limit: 2048}`, paging with `offset`. Capture
+"browser-scenario", collection: "text", step_index, artifact:
+"accessibility", offset: 0, limit: 2048}`, paging with `offset`. Capture
   options are only `after_each_step`, `at_end`, `events`, `network` and
   `limits`.
 

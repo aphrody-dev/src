@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In a previous module, you learned
 [how to use the `<form>` element](https://web.dev/learn/forms/form-element.md.txt).
 In this module, you learn how a form works, and when to use a form.
@@ -50,7 +51,7 @@ The `<form>` is a container for interactive form controls.
 ```html
 <form method="post">
   <label for="name">Name</label>
-  <input type="text" name="name" id="name">
+  <input type="text" name="name" id="name" />
   <button formaction="/name">Save</button>
 </form>
 ```
@@ -89,9 +90,9 @@ Show form One possible solution is using this form:
 
 ```html
 <form method="post" action="/color">
-    <label for="color">What is your favorite color?</label>
-    <input type="text" name="color" id="color">
-    <button>Save</button>
+  <label for="color">What is your favorite color?</label>
+  <input type="text" name="color" id="color" />
+  <button>Save</button>
 </form>
 ```
 
@@ -129,7 +130,7 @@ Use `<input type="file">` to enable people to upload and submit files if necessa
 
 ```html
 <label for="file">Choose file to upload</label>
-<input type="file" id="file" name="file" multiple>
+<input type="file" id="file" name="file" multiple />
 ```
 
 First, add an `<input>` element with `type="file"` to your form.
@@ -141,9 +142,7 @@ attribute on your form. The default value is
 `application/x-www-form-urlencoded`.
 
 ```html
-<form method="post" enctype="multipart/form-data">
-...
-</form>
+<form method="post" enctype="multipart/form-data">...</form>
 ```
 
 To make sure files can be submitted, change it to `multipart/form-data`.

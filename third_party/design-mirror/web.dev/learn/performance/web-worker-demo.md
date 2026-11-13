@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 **Try it:** This section relies on a [demo](https://chrome.dev/learn-performance-exif-worker/with-worker.html) to illustrate how a web worker can be used to offload work from the main thread onto a separate thread. Check it out and follow along!
 
 In the last module, an [overview of web workers](https://web.dev/learn/performance/web-worker-overview.md.txt) was given. Web workers can
@@ -41,7 +42,7 @@ web worker. To do this, perform the following steps:
 5. Paste [this image link](https://upload.wikimedia.org/wikipedia/commons/5/59/Vespula_germanica_Richard_Bartz.jpg)---or another one of your choosing that contains Exif metadata---in the field and click the **Get that JPEG!** button.
 6. Once the interface populates with Exif metadata, click **Record** again to stop recording.
 
- Main thread activity in the image metadata extractor app. Note that all of the activity occurs on the main thread.
+Main thread activity in the image metadata extractor app. Note that all of the activity occurs on the main thread.
 
 Note that---aside from other threads that may be present, such as rasterizer
 threads and so on---everything in the app occurs on the main thread. On the main
@@ -55,7 +56,7 @@ thread, the following happens:
 Now contrast that with an implementation of the same behavior---but using a web
 worker!
 
-### What the main thread looks like *with* a web worker
+### What the main thread looks like _with_ a web worker
 
 Now that you've seen what things look like to extract the Exif metadata from a
 JPEG file on the main thread, take a look at what it looks like when a web
@@ -68,9 +69,9 @@ worker is in the mix:
 5. Paste [this image link](https://upload.wikimedia.org/wikipedia/commons/5/59/Vespula_germanica_Richard_Bartz.jpg) in the field and click the **Get that JPEG!** button.
 6. Once the interface populates with Exif metadata, click the **record button** again to stop recording.
 
- Main thread activity in the image metadata extractor app. Note that there is an additional web worker thread where most of the work is done.
+Main thread activity in the image metadata extractor app. Note that there is an additional web worker thread where most of the work is done.
 
-This is the power of a web worker. Rather than doing *everything* on the main
+This is the power of a web worker. Rather than doing _everything_ on the main
 thread, everything but populating the metadata viewer with HTML is done on a
 separate thread. This means that the main thread is freed up to do other work.
 
@@ -98,19 +99,19 @@ enter the picture:
 // scripts.js
 
 // Register the Exif reader web worker:
-const exifWorker = new Worker('/js/with-worker/exif-worker.js');
+const exifWorker = new Worker("/js/with-worker/exif-worker.js");
 
 // We have to send image requests through this proxy due to CORS limitations:
-const imageFetchPrefix = 'https://res.cloudinary.com/demo/image/fetch/';
+const imageFetchPrefix = "https://res.cloudinary.com/demo/image/fetch/";
 
 // Necessary elements we need to select:
-const imageFetchPanel = document.getElementById('image-fetch');
-const imageExifDataPanel = document.getElementById('image-exif-data');
-const exifDataPanel = document.getElementById('exif-data');
-const imageInput = document.getElementById('image-url');
+const imageFetchPanel = document.getElementById("image-fetch");
+const imageExifDataPanel = document.getElementById("image-exif-data");
+const exifDataPanel = document.getElementById("exif-data");
+const imageInput = document.getElementById("image-url");
 
 // What to do when the form is submitted.
-document.getElementById('image-form').addEventListener('submit', event => {
+document.getElementById("image-form").addEventListener("submit", (event) => {
   // Don't let the form submit by default:
   event.preventDefault();
 
@@ -119,11 +120,11 @@ document.getElementById('image-form').addEventListener('submit', event => {
 });
 
 // This listens for the Exif metadata to come back from the web worker:
-exifWorker.addEventListener('message', ({ data }) => {
+exifWorker.addEventListener("message", ({ data }) => {
   // This populates the Exif metadata viewer:
   exifDataPanel.innerHTML = data.message;
-  imageFetchPanel.style.display = 'none';
-  imageExifDataPanel.style.display = 'block';
+  imageFetchPanel.style.display = "none";
+  imageExifDataPanel.style.display = "block";
 });
 ```
 
@@ -136,11 +137,11 @@ messaging pipeline to the main thread:
 // exif-worker.js
 
 // Import the exif-reader script:
-importScripts('/js/with-worker/exifreader.js');
+importScripts("/js/with-worker/exifreader.js");
 
 // Set up a messaging pipeline to send the Exif data to the `window`:
-self.addEventListener('message', ({ data }) => {
-  getExifDataFromImage(data).then(status => {
+self.addEventListener("message", ({ data }) => {
+  getExifDataFromImage(data).then((status) => {
     self.postMessage(status);
   });
 });
@@ -160,55 +161,64 @@ displayed to the user:
 // NOTE: these promises are simplified for readability, and don't include
 // rejections on failures. Check out the complete web worker code:
 // https://chrome.dev/learn-performance-exif-worker/js/with-worker/exif-worker.js
-const readBlobAsArrayBuffer = blob => new Promise(resolve => {
-  const reader = new FileReader();
+const readBlobAsArrayBuffer = (blob) =>
+  new Promise((resolve) => {
+    const reader = new FileReader();
 
-  reader.onload = () => {
-    resolve(reader.result);
-  };
+    reader.onload = () => {
+      resolve(reader.result);
+    };
 
-  reader.readAsArrayBuffer(blob);
-});
+    reader.readAsArrayBuffer(blob);
+  });
 
 // Takes the Exif metadata and converts it to a markup string to
 // display in the Exif metadata viewer in the DOM:
-const exifToMarkup = exif => Object.entries(exif).map(([exifNode, exifData]) => {
-  return `
+const exifToMarkup = (exif) =>
+  Object.entries(exif)
+    .map(([exifNode, exifData]) => {
+      return `
     <details>
       <summary>
         <h2>${exifNode}</h2>
       </summary>
-      <p>${exifNode === 'base64' ? `` : typeof exifData.value === 'undefined' ? exifData : exifData.description || exifData.value}</p>
+      <p>${exifNode === "base64" ? `` : typeof exifData.value === "undefined" ? exifData : exifData.description || exifData.value}</p>
     </details>
   `;
-}).join('');
+    })
+    .join("");
 
 // Fetches a partial image and gets its Exif data
-const getExifDataFromImage = imageUrl => new Promise(resolve => {
-  fetch(imageUrl, {
-    headers: {
-      // Use a range request to only download the first 64 KiB of an image.
-      // This ensures bandwidth isn't wasted by downloading what may be a huge
-      // JPEG file when all that's needed is the metadata.
-      'Range': `bytes=0-${2 ** 10 * 64}`
-    }
-  }).then(response => {
-    if (response.ok) {
-      return response.clone().blob();
-    }
-  }).then(responseBlob => {
-    readBlobAsArrayBuffer(responseBlob).then(arrayBuffer => {
-      const tags = ExifReader.load(arrayBuffer, {
-        expanded: true
-      });
+const getExifDataFromImage = (imageUrl) =>
+  new Promise((resolve) => {
+    fetch(imageUrl, {
+      headers: {
+        // Use a range request to only download the first 64 KiB of an image.
+        // This ensures bandwidth isn't wasted by downloading what may be a huge
+        // JPEG file when all that's needed is the metadata.
+        Range: `bytes=0-${2 ** 10 * 64}`,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.clone().blob();
+        }
+      })
+      .then((responseBlob) => {
+        readBlobAsArrayBuffer(responseBlob).then((arrayBuffer) => {
+          const tags = ExifReader.load(arrayBuffer, {
+            expanded: true,
+          });
 
-      resolve({
-        status: true,
-        message: Object.values(tags).map(tag => exifToMarkup(tag)).join('')
+          resolve({
+            status: true,
+            message: Object.values(tags)
+              .map((tag) => exifToMarkup(tag))
+              .join(""),
+          });
+        });
       });
-    });
   });
-});
 ```
 
 It's a bit to read, but this is also a fairly involved use case for web workers.

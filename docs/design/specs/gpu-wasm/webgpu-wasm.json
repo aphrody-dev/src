@@ -238,10 +238,7 @@
       "level": "MUST",
       "rule": "Une UI rendue au GPU garde un arbre DOM accessible (rôles, noms, focus) synchronisé, et respecte les specs a11y et perf : le canvas seul n'est pas accessible. Règle maison.",
       "value": {
-        "see": [
-          "web.a11y",
-          "web.core-web-vitals"
-        ]
+        "see": ["web.a11y", "web.core-web-vitals"]
       }
     },
     {

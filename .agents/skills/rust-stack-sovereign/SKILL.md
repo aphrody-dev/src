@@ -22,4 +22,5 @@ Activate this skill when working on authentication, zero-JS SSR UI components (`
    Always pass `FFIType.u64` (with `BigInt(byteLength)`) for Rust `usize` parameters so `bun check` and 64-bit Windows MS-x64 ABI match cleanly.
 
 ## Progressive Disclosure Reference
+
 - Full C-ABI symbol signatures (`rs_blake3_hex`, `rs_auth_issue_jwt`, `rs_auth_verify_jwt`, `rs_ui_render_card`) and crate module layout: see [`references/ffi-and-modules.md`](./references/ffi-and-modules.md).

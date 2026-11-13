@@ -5,13 +5,13 @@ mobile (accessibilité, bonnes pratiques, SEO, navigation par agents ; la perfor
 cet outil) et `performance_start_trace` à froid (cache ignoré) pour LCP et CLS. Rapports bruts dans `before/`
 et `after/` (`*.lighthouse.json|html`, `*.trace.json.gz`, captures `*.png`).
 
-| Site | Avant (A11y / BP / SEO / Agents) | Avant LCP, CLS | Après (A11y / BP / SEO / Agents) | Après LCP, CLS |
-|---|---|---|---|---|
-| aphrody.com | 90 / 100 / 100 / 67 | 169 ms, 0,30 | 100 / 100 / 100 / 100 | 236 ms, 0,00 |
-| aphrody.app | 94 / 96 / 92 / 23 | CLS 0,095 (Lighthouse) | 100 / 100 / 100 / 100 | 235 ms, 0,00 |
-| yolo.aphrody.app | 100 / 100 / 100 / 100 (1 audit en échec) | | 100 / 100 / 100 / 100 (0 échec) | |
-| rosegriffon.fr | 100 / 100 / 100 / 100 | 972 ms, 0,37 à 768 px (0,47 dans une fenêtre medium) | 100 / 100 / 100 / 100 | 954 ms, 0,03 à 768 px |
-| cdn.rosegriffon.fr | non auditable : la racine répond 404 (CDN de fichiers, pas de page) | | inchangé | |
+| Site               | Avant (A11y / BP / SEO / Agents)                                    | Avant LCP, CLS                                       | Après (A11y / BP / SEO / Agents) | Après LCP, CLS        |
+| ------------------ | ------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------------- | --------------------- |
+| aphrody.com        | 90 / 100 / 100 / 67                                                 | 169 ms, 0,30                                         | 100 / 100 / 100 / 100            | 236 ms, 0,00          |
+| aphrody.app        | 94 / 96 / 92 / 23                                                   | CLS 0,095 (Lighthouse)                               | 100 / 100 / 100 / 100            | 235 ms, 0,00          |
+| yolo.aphrody.app   | 100 / 100 / 100 / 100 (1 audit en échec)                            |                                                      | 100 / 100 / 100 / 100 (0 échec)  |                       |
+| rosegriffon.fr     | 100 / 100 / 100 / 100                                               | 972 ms, 0,37 à 768 px (0,47 dans une fenêtre medium) | 100 / 100 / 100 / 100            | 954 ms, 0,03 à 768 px |
+| cdn.rosegriffon.fr | non auditable : la racine répond 404 (CDN de fichiers, pas de page) |                                                      | inchangé                         |                       |
 
 ## Causes et corrections
 

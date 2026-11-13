@@ -43,7 +43,7 @@ typemap = "ue"
 submit_threads = 4
 sync_threads = 4
 
-[tool.p4.configurables]   # the performance settings from the Perforce article's SDP configuration
+[tool.p4.configurables] # the performance settings from the Perforce article's SDP configuration
 "net.parallel.max" = 20
 "net.parallel.threads" = 4
 "net.parallel.submit.threads" = 4

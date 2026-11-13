@@ -16,7 +16,9 @@ import {
   synthesizeRepoUrls,
 } from "../src/triforge.ts";
 
-const SUBMODULES = parseGitmodules(readFileSync(srcPath(".gitmodules"), "utf-8")).length;
+const SUBMODULES = parseGitmodules(
+  readFileSync(srcPath(".gitmodules"), "utf-8"),
+).length;
 const REPOS = SUBMODULES + 1;
 
 describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
@@ -27,7 +29,13 @@ describe("Tri-Forge Repository Inventory & URL Synthesis", () => {
 
     const names = specs.map((s) => s.name);
     expect(names[0]).toBe("src");
-    for (const n of ["shenron", "rosegriffon", "bench", "ring3-agent", "rust-stack"]) {
+    for (const n of [
+      "shenron",
+      "rosegriffon",
+      "bench",
+      "ring3-agent",
+      "rust-stack",
+    ]) {
       expect(names).toContain(n);
     }
 
@@ -138,7 +146,11 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
     );
     const pkg = JSON.parse(pkgRaw);
     // Zero third-party deps: only workspace packages of this monorepo.
-    expect(Object.values(pkg.dependencies || {}).every((v) => String(v).startsWith("workspace:"))).toBe(true);
+    expect(
+      Object.values(pkg.dependencies || {}).every((v) =>
+        String(v).startsWith("workspace:"),
+      ),
+    ).toBe(true);
     expect(Object.keys(pkg.devDependencies || {}).length).toBe(0);
     expect(pkgRaw.includes("bunx")).toBe(false);
   });
@@ -170,7 +182,10 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
     expect(compose).toContain("2224:22");
     expect(compose).toContain("archlinux-pkgctl");
 
-    const gitlabCi = readFileSync(srcPath("infra", "gitlab", "gitlab-ci.yml"), "utf-8");
+    const gitlabCi = readFileSync(
+      srcPath("infra", "gitlab", "gitlab-ci.yml"),
+      "utf-8",
+    );
     expect(gitlabCi).toContain("lint-anti-slop");
     expect(gitlabCi).toContain("build-bun-rust-go");
     expect(gitlabCi).toContain("test-gate");
@@ -178,7 +193,10 @@ describe("Sovereign GitLab Infra, .gitlab-ci.yml & cloudbuild.yaml Validation", 
     expect(gitlabCi).toContain("wck-seo-100");
     expect(gitlabCi).toContain("triforge-mirror");
 
-    const cloudbuild = readFileSync(srcPath("infra", "gcloud", "cloudbuild.yaml"), "utf-8");
+    const cloudbuild = readFileSync(
+      srcPath("infra", "gcloud", "cloudbuild.yaml"),
+      "utf-8",
+    );
     expect(cloudbuild).toContain("europe-west1");
     expect(cloudbuild).toContain("us-central1");
     expect(cloudbuild).toContain("bunos");

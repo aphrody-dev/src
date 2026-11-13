@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how business decision makers and non-developers can improve Core Web Vitals.
 
- Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 ## Introduction
 
@@ -27,11 +28,11 @@ At the same time, many performance issues require developers to implement techni
 
 The Core Web Vitals are a set of three metrics designed to measure a page's user experience---and in particular how fast the page feels to users. Each of these has a three letter abbreviation:
 
-- [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt) measures *loading* performance: how much time, in seconds, it takes for the page's most prominent content to appear after a page has started loading.
-- [Cumulative Layout Shift (CLS)](https://web.dev/articles/cls.md.txt) measures *visual stability* of a page: how much the content moves around while loading.
+- [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt) measures _loading_ performance: how much time, in seconds, it takes for the page's most prominent content to appear after a page has started loading.
+- [Cumulative Layout Shift (CLS)](https://web.dev/articles/cls.md.txt) measures _visual stability_ of a page: how much the content moves around while loading.
 - [Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt): how quickly the page responds to clicks, taps, and keyboard interactions.
 
-Each metric measures a different facet of the user experience. Google also provides recommended thresholds for each metric, and user experiences less than the lower threshold is considered *good* , and user experiences higher than the upper threshold are considered *poor* . Between these thresholds, a page is considered to be in the *needs improvement* range. Keep in mind that, with these metrics, lower numbers are better.
+Each metric measures a different facet of the user experience. Google also provides recommended thresholds for each metric, and user experiences less than the lower threshold is considered _good_ , and user experiences higher than the upper threshold are considered _poor_ . Between these thresholds, a page is considered to be in the _needs improvement_ range. Keep in mind that, with these metrics, lower numbers are better.
 
 ## How are the Core Web Vitals measured?
 
@@ -52,7 +53,7 @@ If your platform provides an integrated RUM solution, it can provide much more d
 ### PageSpeed Insights
 
 For a quick view which requires no setup, you can use [PageSpeed Insights (PSI)](https://pagespeed.web.dev/). Type in the URL and click analyze. If your site is included in CrUX, you should quickly be presented with a "Discover what your real users are experiencing" section:
- PageSpeed Insights shows the Core Web Vitals real users experienced.
+PageSpeed Insights shows the Core Web Vitals real users experienced.
 
 This shows how real Chrome users have experienced your website over the last 28 days. You'll see the three Core Web Vitals at the top, along with other supporting metrics beneath (including the pending INP metric). Only the Core Web Vitals count in the overall passed or failed assessment at the top of the page, but the other metrics can be useful in troubleshooting problems with Core Web Vitals, as will be shown in the next section.
 
@@ -65,7 +66,7 @@ These figures should give a broad indicator of how your site is performing and w
 [Google Search Console (GSC)](https://developers.google.com/search/docs/monitor-debug/search-console-start) is for site owners only, so it requires registration and verification of site ownership in order to be used. It provides details on how Google Search views your site.
 
 Unlike PageSpeed Insights, GSC lists all the pages that Google Search is aware of on your site, and provides Core Web Vitals details for all of them:
- Google Search Console Core Web Vitals report.
+Google Search Console Core Web Vitals report.
 
 Pages are gathered into [URL Groups](https://support.google.com/webmasters/answer/9205520#page_groups) to allow you to see if certain categories of pages (for example, Product Detail Pages, Blog pages, and so on) have Core Web Vitals issues. As these are usually built on similar technologies or templates, there may be a common cause to any issues in these pages.
 
@@ -77,10 +78,10 @@ When we say "non-developers" we are referring to those using site-builder platfo
 
 ### Largest Contentful Paint (LCP) issues
 
-LCP aims to measure *loading speed* of web pages by measuring the time from when a link is clicked, until the largest piece of content (typically a banner image or a headline) appears in the browser.
- The LCP element is the largest element when the page is loaded---highlighted in green in this example.
+LCP aims to measure _loading speed_ of web pages by measuring the time from when a link is clicked, until the largest piece of content (typically a banner image or a headline) appears in the browser.
+The LCP element is the largest element when the page is loaded---highlighted in green in this example.
 
-For a *good* page experience, a web page should aim to show this content within 2.5 seconds of the link being clicked. If this takes over 4 seconds, this is considered a *poor* experience.
+For a _good_ page experience, a web page should aim to show this content within 2.5 seconds of the link being clicked. If this takes over 4 seconds, this is considered a _poor_ experience.
 
 Some of the common issues affecting LCP that business decision makers can influence are given in the next sections.
 
@@ -118,7 +119,7 @@ At the same time, media assets can contribute to a rich visual experience for th
 
 ##### Use web-optimized images
 
-Then there is the size of media assets. Many images on the web are served at too high of a resolution. Ensure any media partners or design agencies supply *web-optimized images* rather than the full sized *print-quality images* they often provide. You can use a service like [TinyJPG](https://tinyjpg.com/) to quickly remove unnecessary data from images before uploading them. Many web platforms will attempt to automatically optimize images on upload, but since they don't know the dimensions those images will be displayed at on the user's device, providing smaller images to start with can yield significant gains.
+Then there is the size of media assets. Many images on the web are served at too high of a resolution. Ensure any media partners or design agencies supply _web-optimized images_ rather than the full sized _print-quality images_ they often provide. You can use a service like [TinyJPG](https://tinyjpg.com/) to quickly remove unnecessary data from images before uploading them. Many web platforms will attempt to automatically optimize images on upload, but since they don't know the dimensions those images will be displayed at on the user's device, providing smaller images to start with can yield significant gains.
 
 ##### Be extra careful with videos
 
@@ -132,7 +133,7 @@ Many A/B testing solutions delay when a website is first displayed to the user u
 
 A/B testing can provide invaluable feedback before launching new changes, but the cost to page performance must be weighed up against any potential benefits they bring.
 
-Regardless of your infrastructure, *anyone* running A/B tests should *always* keep the following best practices in mind:
+Regardless of your infrastructure, _anyone_ running A/B tests should _always_ keep the following best practices in mind:
 
 - Limit A/B testing tools to only those pages that are part of the test rather than delaying all pages, when most pages may not be running an A/B test at any particular time.
 - Limit A/B testing to a subset of users to avoid impacting the majority of users.
@@ -141,16 +142,16 @@ Regardless of your infrastructure, *anyone* running A/B tests should *always* ke
 
 ### Cumulative Layout Shift (CLS) issues
 
-CLS measures the *visual stability* of a page---how much the page's content shifts around as content is loaded. This can be distracting if a user has started reading a web page, but then loses their place as more content or ads slot into place. It can also result in users unintentionally clicking on the wrong content if the page's layout shifts excessively. Be very careful with dynamic content that loads later, and can move some of the initial page content.
+CLS measures the _visual stability_ of a page---how much the page's content shifts around as content is loaded. This can be distracting if a user has started reading a web page, but then loses their place as more content or ads slot into place. It can also result in users unintentionally clicking on the wrong content if the page's layout shifts excessively. Be very careful with dynamic content that loads later, and can move some of the initial page content.
 A screencast illustrating how layout instability can negatively affect users.
 
-This is [measured with a mathematical formula](https://web.dev/articles/cls.md.txt#layout_shift_score) that calculates how much content is shifted, and how much it is shifted by. It is expressed as a unitless fraction with a value of 0.1 or less being seen as *good* and a value of 0.25 or higher as *poor*.
+This is [measured with a mathematical formula](https://web.dev/articles/cls.md.txt#layout_shift_score) that calculates how much content is shifted, and how much it is shifted by. It is expressed as a unitless fraction with a value of 0.1 or less being seen as _good_ and a value of 0.25 or higher as _poor_.
 
 Some of the common issues affecting CLS that business decision makers can influence are given in the next sections.
 
 #### Check how your images load as your scroll a page
 
-Many templates avoid loading images further down the page to give more resources to images which are onscreen during the initial page load. The images are then loaded as the user scrolls down. This image loading technique is known as *lazy loading*.
+Many templates avoid loading images further down the page to give more resources to images which are onscreen during the initial page load. The images are then loaded as the user scrolls down. This image loading technique is known as _lazy loading_.
 
 Page templates should reserve space for lazy loaded images so that, if a user scrolls very fast before the image gets a chance to load, the content around it does not shift around. If your template or platform does not do this, consider switching to one that does.
 
@@ -164,12 +165,12 @@ Avoid adding alerts and banners to the top of the page after page load---for exa
 
 ### Interaction to Next Paint (INP) issues
 
-INP measures the *responsiveness* of a page, which assesses whether pages quickly respond to interactions such as clicks, taps, and keyboard inputs. Pages that don't respond quickly to user input often feel sluggish, and can be frustrating for users.
+INP measures the _responsiveness_ of a page, which assesses whether pages quickly respond to interactions such as clicks, taps, and keyboard inputs. Pages that don't respond quickly to user input often feel sluggish, and can be frustrating for users.
 An example of poor versus good responsiveness. At left, long tasks block the accordion from opening. This causes the user to click multiple times, thinking the experience is broken. When the main thread catches up, it processes the delayed inputs, resulting in the accordion opening and closing unexpectedly.
 
-INP measures the entirety of each and every qualifying interaction during the life of a page, and reports the worst interaction. INP has a *good* threshold of 200 milliseconds, and a *poor* threshold of 500 milliseconds.
+INP measures the entirety of each and every qualifying interaction during the life of a page, and reports the worst interaction. INP has a _good_ threshold of 200 milliseconds, and a _poor_ threshold of 500 milliseconds.
 
-Responsiveness metrics---and in particular INP---are tricky metrics to optimize. When these metrics are in the *poor* threshold, it is usually because interactions are delayed by the web page trying to do too much, so the main solutions here involve removing unnecessary code to make lighter pages.
+Responsiveness metrics---and in particular INP---are tricky metrics to optimize. When these metrics are in the _poor_ threshold, it is usually because interactions are delayed by the web page trying to do too much, so the main solutions here involve removing unnecessary code to make lighter pages.
 
 Some of the common issues affecting INP that business decision makers can influence are given in the next sections.
 

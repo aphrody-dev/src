@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Preload routes ahead of time to speed up users' navigation.
 
- Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/)
+Minko Gechev [X](https://twitter.com/mgechev) [GitHub](https://github.com/mgechev) [Homepage](https://blog.mgechev.com/)
 
 [Route-level code splitting](https://web.dev/articles/route-level-code-splitting-in-angular.md.txt) can help you reduce the initial load time of an application by delaying the JavaScript associated with routes that aren't initially needed. This way, the Angular router waits until a user navigates to a given route before triggering a network request to download the associated JavaScript.
 
@@ -24,7 +25,7 @@ The Angular router provides a configuration property called `preloadingStrategy`
 - `PreloadAllModules`, which preloads all lazy-loaded routes, as the name implies
 - `QuicklinkStrategy`, which preloads only the routes associated with links on the current page.
 
-*The rest of this post refers to a sample Angular app. You can find the source code [on GitHub](https://github.com/mgechev/route-preloading-web-dev).*
+_The rest of this post refers to a sample Angular app. You can find the source code [on GitHub](https://github.com/mgechev/route-preloading-web-dev)._
 
 ### Using the `PreloadAllModules` strategy
 

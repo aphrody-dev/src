@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Wesley Hales [X](https://twitter.com/wesleyhales) [Homepage](http://wesleyhales.com/)
 
 ## Introduction
@@ -24,7 +25,7 @@ The unfortunate thing is that most front-end developers are dishing this animati
 
 2. Power Consumption --- Obviously, when hardware kicks in, so does the battery. When developing for mobile, developers are forced to take the wide array of device constraints into consideration while writing mobile web apps. This will be even more prevalent as browser makers start to enable access to more and more device hardware.
 
-3. Conflicts --- I encountered glitchy behaviour when applying hardware acceleration to parts of the page that were already accelerated. So knowing if you have overlapping acceleration is *very* important.
+3. Conflicts --- I encountered glitchy behaviour when applying hardware acceleration to parts of the page that were already accelerated. So knowing if you have overlapping acceleration is _very_ important.
 
 To make user interaction smooth and as close to native as possible, we must make the browser work for us. Ideally, we want the mobile device CPU to set up the initial animation, then have the GPU responsible for only compositing different layers during the animation process. This is what translate3d, scale3d and translateZ do --- they give the animated elements their own layer, thus allowing the device to render everything together smoothly. To find out more about accelerated compositing and how WebKit works, Ariya Hidayat has [a lot of good info](http://ariya.blogspot.com/2011/07/fluid-animation-with-accelerated.html) on [his blog](http://ariya.blogspot.com/).
 
@@ -83,31 +84,31 @@ function slideTo(id) {
   //1.) the page we are bringing into focus dictates how
   // the current page will exit. So let's see what classes
   // our incoming page is using. We know it will have stage[right|left|etc...]
-  var classes = getElement(id).className.split(' ');
+  var classes = getElement(id).className.split(" ");
 
   //2.) decide if the incoming page is assigned to right or left
   // (-1 if no match)
-  var stageType = classes.indexOf('stage-left');
+  var stageType = classes.indexOf("stage-left");
 
   //3.) on initial page load focusPage is null, so we need
   // to set the default page which we're currently seeing.
   if (FOCUS_PAGE == null) {
     // use home page
-    FOCUS_PAGE = getElement('home-page');
+    FOCUS_PAGE = getElement("home-page");
   }
 
   //4.) decide how this focused page should exit.
   if (stageType > 0) {
-    FOCUS_PAGE.className = 'page transition stage-right';
+    FOCUS_PAGE.className = "page transition stage-right";
   } else {
-    FOCUS_PAGE.className = 'page transition stage-left';
+    FOCUS_PAGE.className = "page transition stage-left";
   }
 
   //5. refresh/set the global variable
   FOCUS_PAGE = getElement(id);
 
   //6. Bring in the new page.
-  FOCUS_PAGE.className = 'page transition stage-center';
+  FOCUS_PAGE.className = "page transition stage-center";
 }
 ```
 
@@ -134,7 +135,7 @@ Note that hardware acceleration tricks do not provide any speed improvement unde
 
 ```css
 /* iOS/android phone landscape screen width*/
-@media screen and (max-device-width: 480px) and (orientation:landscape) {
+@media screen and (max-device-width: 480px) and (orientation: landscape) {
   .stage-left {
     left: -480px;
   }
@@ -160,7 +161,9 @@ When dealing with touch events and transitions, the first thing you'll want is t
 ```javascript
 function pageMove(event) {
   // get position after transform
-  var curTransform = new WebKitCSSMatrix(window.getComputedStyle(page).webkitTransform);
+  var curTransform = new WebKitCSSMatrix(
+    window.getComputedStyle(page).webkitTransform,
+  );
   var pagePosition = curTransform.m41;
 }
 ```
@@ -171,19 +174,19 @@ Next we want to figure out which direction the user is flipping and set a thresh
 
 ```javascript
 if (pagePosition >= 0) {
- //moving current page to the right
- //so means we're flipping backwards
-   if ((pagePosition > pageFlipThreshold) || (swipeTime < swipeThreshold)) {
-     //user wants to go backward
-     slideDirection = 'right';
-   } else {
-     slideDirection = null;
-   }
+  //moving current page to the right
+  //so means we're flipping backwards
+  if (pagePosition > pageFlipThreshold || swipeTime < swipeThreshold) {
+    //user wants to go backward
+    slideDirection = "right";
+  } else {
+    slideDirection = null;
+  }
 } else {
   //current page is sliding to the left
-  if ((swipeTime < swipeThreshold) || (pagePosition < pageFlipThreshold)) {
+  if (swipeTime < swipeThreshold || pagePosition < pageFlipThreshold) {
     //user wants to go forward
-    slideDirection = 'left';
+    slideDirection = "left";
   } else {
     slideDirection = null;
   }
@@ -196,14 +199,14 @@ To position the page and make the animations look native while a finger is touch
 
 ```javascript
 function positionPage(end) {
-  page.style.webkitTransform = 'translate3d('+ currentPos + 'px, 0, 0)';
+  page.style.webkitTransform = "translate3d(" + currentPos + "px, 0, 0)";
   if (end) {
-    page.style.WebkitTransition = 'all .4s ease-out';
+    page.style.WebkitTransition = "all .4s ease-out";
     //page.style.WebkitTransition = 'all .4s cubic-bezier(0,.58,.58,1)'
   } else {
-    page.style.WebkitTransition = 'all .2s ease-out';
+    page.style.WebkitTransition = "all .2s ease-out";
   }
-  page.style.WebkitUserSelect = 'none';
+  page.style.WebkitUserSelect = "none";
 }
 ```
 
@@ -212,14 +215,14 @@ I tried to play around with cubic-bezier to give the best native feel to the tra
 Finally, to make the navigation happen, we must call our previously defined `slideTo()` methods that we used in the last demo.
 
 ```javascript
-track.ontouchend = function(event) {
+track.ontouchend = function (event) {
   pageMove(event);
-  if (slideDirection == 'left') {
-    slideTo('products-page');
-  } else if (slideDirection == 'right') {
-    slideTo('home-page');
+  if (slideDirection == "left") {
+    slideTo("products-page");
+  } else if (slideDirection == "right") {
+    slideTo("home-page");
   }
-}
+};
 ```
 
 ### Rotating
@@ -230,13 +233,11 @@ NOTE: The rotate transition isn't rendered correctly on most versions of Android
 The markup (basic concept of front and back):
 
 ```html
-<div id="front" class="normal">
-...
-</div>
+<div id="front" class="normal">...</div>
 <div id="back" class="flipped">
-    <div id="contact-page" class="page">
-        <h1>Contact Page</h1>
-    </div>
+  <div id="contact-page" class="page">
+    <h1>Contact Page</h1>
+  </div>
 </div>
 ```
 
@@ -245,22 +246,22 @@ The JavaScript:
 ```javascript
 function flip(id) {
   // get a handle on the flippable region
-  var front = getElement('front');
-  var back = getElement('back');
+  var front = getElement("front");
+  var back = getElement("back");
 
   // again, just a simple way to see what the state is
-  var classes = front.className.split(' ');
-  var flipped = classes.indexOf('flipped');
+  var classes = front.className.split(" ");
+  var flipped = classes.indexOf("flipped");
 
   if (flipped >= 0) {
     // already flipped, so return to original
-    front.className = 'normal';
-    back.className = 'flipped';
+    front.className = "normal";
+    back.className = "flipped";
     FLIPPED = false;
   } else {
     // do the flip
-    front.className = 'flipped';
-    back.className = 'normal';
+    front.className = "flipped";
+    back.className = "normal";
     FLIPPED = true;
   }
 }
@@ -276,7 +277,7 @@ The CSS:
   width: 100%;
   height: 100%;
   -webkit-backface-visibility: hidden;
-  -webkit-transition-duration: .5s;
+  -webkit-transition-duration: 0.5s;
   -webkit-transform-style: preserve-3d;
 }
 
@@ -352,7 +353,9 @@ And here is the detail page (child) located in a separate html file (/demo2/home
 ```html
 <div id="home-page" class="page">
   <h1>Home Page</h1>
-  <a href="demo2/home-detail.html" class="fetch">Find out more about the home page!</a>
+  <a href="demo2/home-detail.html" class="fetch"
+    >Find out more about the home page!</a
+  >
 </div>
 ```
 
@@ -392,18 +395,18 @@ var fetchAndCache = function() {
 We ensure proper asynchronous post-processing through the use of the "AJAX" object. There is a more advanced explanation of using localStorage within an AJAX call in [Working Off the Grid with HTML5 Offline](http://www.html5rocks.com/en/mobile/workingoffthegrid.html). In this example, you see the basic usage of caching on each request and providing the cached objects when the server returns anything but a successful (200) response.
 
 ```javascript
-function processRequest () {
+function processRequest() {
   if (req.readyState == 4) {
     if (req.status == 200) {
       if (supports_local_storage()) {
         localStorage[url] = req.responseText;
       }
-      if (callback) callback(req.responseText,url);
+      if (callback) callback(req.responseText, url);
     } else {
       // There is an error of some kind, use our cached copy (if available).
       if (!!localStorage[url]) {
         // We have some data cached, return that to the callback.
-        callback(localStorage[url],url);
+        callback(localStorage[url], url);
         return;
       }
     }
@@ -419,14 +422,14 @@ From the spec:
 The sandbox attribute, when specified, enables a set of extra restrictions on any content hosted by the iframe. Its value must be an unordered set of unique space-separated tokens that are ASCII case-insensitive. The allowed values are allow-forms, allow-same-origin, allow-scripts, and allow-top-navigation. When the attribute is set, the content is treated as being from a unique origin, forms and scripts are disabled, links are prevented from targeting other browsing contexts, and plugins are disabled.
 
 ```javascript
-var insertPages = function(text, originalLink) {
+var insertPages = function (text, originalLink) {
   var frame = getFrame();
   //write the ajax response text to the frame and let
   //the browser do the work
   frame.write(text);
 
   //now we have a DOM to work with
-  var incomingPages = frame.getElementsByClassName('page');
+  var incomingPages = frame.getElementsByClassName("page");
 
   var pageCount = incomingPages.length;
   for (var i = 0; i < pageCount; i++) {
@@ -435,16 +438,18 @@ var insertPages = function(text, originalLink) {
     var newPage = incomingPages[0];
 
     //stage the new pages to the left by default
-    newPage.className = 'page stage-left';
+    newPage.className = "page stage-left";
 
     //find out where to insert
-    var location = newPage.parentNode.id == 'back' ? 'back' : 'front';
+    var location = newPage.parentNode.id == "back" ? "back" : "front";
 
     try {
       // mobile safari will not allow nodes to be transferred from one DOM to another so
       // we must use adoptNode()
-      document.getElementById(location).appendChild(document.adoptNode(newPage));
-    } catch(e) {
+      document
+        .getElementById(location)
+        .appendChild(document.adoptNode(newPage));
+    } catch (e) {
       // todo graceful degradation?
     }
   }
@@ -453,7 +458,7 @@ var insertPages = function(text, originalLink) {
 
 Safari correctly refuses to implicitly move a node from one document to another. An error is raised if the new child node was created in a different document. So here we use `adoptNode` and all is well.
 
-So why iframe? Why not just use innerHTML? Even though innerHTML is now part of the HTML5 spec, it is a dangerous practice to insert the response from a server (evil or good) into an unchecked area. During the writing of this article, I couldn't find *anyone* using anything but innerHTML. I know JQuery uses it at it's core with an append fallback on exception only. And JQuery Mobile uses it as well. However I haven't done any heavy testing in regards to innerHTML ["stops working randomly"](http://martinkou.blogspot.com/2011/05/alternative-workaround-for-mobile.html), but it would be very interesting to see all the platforms this affects. It would also be interesting to see which approach is more performant... I've heard claims from both sides on this as well.
+So why iframe? Why not just use innerHTML? Even though innerHTML is now part of the HTML5 spec, it is a dangerous practice to insert the response from a server (evil or good) into an unchecked area. During the writing of this article, I couldn't find _anyone_ using anything but innerHTML. I know JQuery uses it at it's core with an append fallback on exception only. And JQuery Mobile uses it as well. However I haven't done any heavy testing in regards to innerHTML ["stops working randomly"](http://martinkou.blogspot.com/2011/05/alternative-workaround-for-mobile.html), but it would be very interesting to see all the platforms this affects. It would also be interesting to see which approach is more performant... I've heard claims from both sides on this as well.
 
 ## Network type detection, handling, and profiling
 
@@ -473,25 +478,37 @@ The following code provides:
 Again, all of these features require very little code. First we detect our events and loading scenarios:
 
 ```javascript
-window.addEventListener('load', function(e) {
- if (navigator.onLine) {
-  // new page load
-  processOnline();
- } else {
-   // the app is probably already cached and (maybe) bookmarked...
-   processOffline();
- }
-}, false);
+window.addEventListener(
+  "load",
+  function (e) {
+    if (navigator.onLine) {
+      // new page load
+      processOnline();
+    } else {
+      // the app is probably already cached and (maybe) bookmarked...
+      processOffline();
+    }
+  },
+  false,
+);
 
-window.addEventListener("offline", function(e) {
-  // we just lost our connection and entered offline mode, disable eternal link
-  processOffline(e.type);
-}, false);
+window.addEventListener(
+  "offline",
+  function (e) {
+    // we just lost our connection and entered offline mode, disable eternal link
+    processOffline(e.type);
+  },
+  false,
+);
 
-window.addEventListener("online", function(e) {
-  // just came back online, enable links
-  processOnline(e.type);
-}, false);
+window.addEventListener(
+  "online",
+  function (e) {
+    // just came back online, enable links
+    processOnline(e.type);
+  },
+  false,
+);
 ```
 
 In the EventListeners above, we must tell our code if it is being called from an event or an actual page request or refresh. The main reason is because the body `onload` event won't be fired when switching between the online and offline modes.
@@ -500,7 +517,6 @@ Next, we have a simple check for an `ononline` or `onload` event. This code rese
 
 ```javascript
 function processOnline(eventType) {
-
   setupApp();
   checkAppCache();
 
@@ -523,17 +539,17 @@ function processOffline() {
   disabledLinks = getUnconvertedLinks(document);
 
   // helper for onlcick below
-  var onclickHelper = function(e) {
-    return function(f) {
-      alert('This app is currently offline and cannot access the hotness');return false;
-    }
+  var onclickHelper = function (e) {
+    return function (f) {
+      alert("This app is currently offline and cannot access the hotness");
+      return false;
+    };
   };
 
   for (var i = 0; i < disabledLinks.length; i++) {
     if (disabledLinks[i].onclick == null) {
       //alert user we're not online
       disabledLinks[i].onclick = onclickHelper(disabledLinks[i].href);
-
     }
   }
 }
@@ -542,35 +558,35 @@ function processOffline() {
 OK, so on to the good stuff. Now that our app knows what connected state it's in, we can also check the type of connection when it's online and adjust accordingly. I have listed typical North American providers download and latencies in the comments for each connection.
 
 > [!WARNING]
-> **Warning:**   
+> **Warning:**  
 > The `type` property used in the example below has been removed from the Network Information API. Use the `bandwidth` property instead.
 
 ```javascript
-function setupApp(){
+function setupApp() {
   // create a custom object if navigator.connection isn't available
-  var connection = navigator.connection || {'type':'0'};
+  var connection = navigator.connection || { type: "0" };
   if (connection.type == 2 || connection.type == 1) {
-      //wifi/ethernet
-      //Coffee Wifi latency: ~75ms-200ms
-      //Home Wifi latency: ~25-35ms
-      //Coffee Wifi DL speed: ~550kbps-650kbps
-      //Home Wifi DL speed: ~1000kbps-2000kbps
-      fetchAndCache(true);
+    //wifi/ethernet
+    //Coffee Wifi latency: ~75ms-200ms
+    //Home Wifi latency: ~25-35ms
+    //Coffee Wifi DL speed: ~550kbps-650kbps
+    //Home Wifi DL speed: ~1000kbps-2000kbps
+    fetchAndCache(true);
   } else if (connection.type == 3) {
-  //edge
-      //ATT Edge latency: ~400-600ms
-      //ATT Edge DL speed: ~2-10kbps
-      fetchAndCache(false);
+    //edge
+    //ATT Edge latency: ~400-600ms
+    //ATT Edge DL speed: ~2-10kbps
+    fetchAndCache(false);
   } else if (connection.type == 2) {
-      //3g
-      //ATT 3G latency: ~400ms
-      //Verizon 3G latency: ~150-250ms
-      //ATT 3G DL speed: ~60-100kbps
-      //Verizon 3G DL speed: ~20-70kbps
-      fetchAndCache(false);
+    //3g
+    //ATT 3G latency: ~400ms
+    //Verizon 3G latency: ~150-250ms
+    //ATT 3G DL speed: ~60-100kbps
+    //Verizon 3G DL speed: ~20-70kbps
+    fetchAndCache(false);
   } else {
-  //unknown
-      fetchAndCache(true);
+    //unknown
+    fetchAndCache(true);
   }
 }
 ```

@@ -20,10 +20,10 @@ Filename-to-slug transformation examples:
 
 The site build infers these from the file's path.
 
-| Property | Derived from |
-| --- | --- |
-| Doc type (Tutorial / How-To / Reference / Explanation / Internals / ADR / Code-Standard / Landing) | The folder the file lives in. See `../canon/doc-types.md`. |
-| Audience (user-facing / contributor) | Anything under `docs/developing/` is contributor; everything else is user-facing. |
+| Property                                                                                           | Derived from                                                                      |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Doc type (Tutorial / How-To / Reference / Explanation / Internals / ADR / Code-Standard / Landing) | The folder the file lives in. See `../canon/doc-types.md`.                        |
+| Audience (user-facing / contributor)                                                               | Anything under `docs/developing/` is contributor; everything else is user-facing. |
 
 ## Navigation
 

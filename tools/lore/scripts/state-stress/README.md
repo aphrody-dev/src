@@ -65,14 +65,14 @@ where production runs one command per exclusive claim; `listing` runs the stage'
 beside served writers; and the renames of `exclusive` change a name's hash beside other writers,
 which no caller does.
 
-| Mix | What runs together |
-| --- | --- |
-| `exclusive` | The changes under an exclusive claim, as staging, committing and the filesystem scan make them: checked creates, adds, a scan's directory chains, adds discarded, renames, marks, clears, rewrites, in-place and owned changes, links pinned again, listings through a link and collections of dirty paths through it. |
-| `exclusive-across-blocks` | The same, with the discards' directories in one node block and the nodes added into them in the next. |
-| `shared` | The C API's verbs under a shared claim: adds, modifies, deletes and their restores, moves after the batch plan's walk or walking for themselves, deletes of added subtrees queued pending, a batch delete of tracked and added subtrees spread over futures of its own beside adds into them, beside has-children reads and collections of dirty paths; then the pending queue drained alone. |
-| `served-settle` | VFS requests on a served tree: creates, removals, renames over a committed file, renames of files and of directories holding local content, renames refused a directory holding none, marks, copy-ups, creates and a rename contending for one name, RMDIRs, a rename leaving its directory clean children other than the committed ones; beside a settle of a directory they change, then settles of the directories they move none of, one of which must clear. |
-| `served-swap-copy`, `served-swap-detach`, `served-swap-rewrite`, `served-flip` | The same requests, beside a swap to another revision copying a directory in, detaching a clean directory or rewriting a clean file, or beside a commit turning a dirty file clean. |
-| `listing` | Walks, listings by the VFS and by the stage, reads since a marked listing, has-children reads, collections of dirty paths, name and path reads, and creates and renames through a listing's proof of absence, beside served changes of the directories they read. |
+| Mix                                                                            | What runs together                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `exclusive`                                                                    | The changes under an exclusive claim, as staging, committing and the filesystem scan make them: checked creates, adds, a scan's directory chains, adds discarded, renames, marks, clears, rewrites, in-place and owned changes, links pinned again, listings through a link and collections of dirty paths through it.                                                                                                                                            |
+| `exclusive-across-blocks`                                                      | The same, with the discards' directories in one node block and the nodes added into them in the next.                                                                                                                                                                                                                                                                                                                                                             |
+| `shared`                                                                       | The C API's verbs under a shared claim: adds, modifies, deletes and their restores, moves after the batch plan's walk or walking for themselves, deletes of added subtrees queued pending, a batch delete of tracked and added subtrees spread over futures of its own beside adds into them, beside has-children reads and collections of dirty paths; then the pending queue drained alone.                                                                     |
+| `served-settle`                                                                | VFS requests on a served tree: creates, removals, renames over a committed file, renames of files and of directories holding local content, renames refused a directory holding none, marks, copy-ups, creates and a rename contending for one name, RMDIRs, a rename leaving its directory clean children other than the committed ones; beside a settle of a directory they change, then settles of the directories they move none of, one of which must clear. |
+| `served-swap-copy`, `served-swap-detach`, `served-swap-rewrite`, `served-flip` | The same requests, beside a swap to another revision copying a directory in, detaching a clean directory or rewriting a clean file, or beside a commit turning a dirty file clean.                                                                                                                                                                                                                                                                                |
+| `listing`                                                                      | Walks, listings by the VFS and by the stage, reads since a marked listing, has-children reads, collections of dirty paths, name and path reads, and creates and renames through a listing's proof of absence, beside served changes of the directories they read.                                                                                                                                                                                                 |
 
 ## Running
 
@@ -88,11 +88,11 @@ python3 scripts/state-stress/stress.py all --minutes 20   # chaos and soak 20 mi
 
 The modes:
 
-| Mode | What it does |
-| --- | --- |
-| `chaos` | Processes of `state_stress chaos`, `--jobs` at a time, each for `--chunk` seconds on a seed of its own drawn from the campaign's, over every mix or those `--mix` names. Each process cycles through its mixes, every run on random rounds, a random order, a random number of workers up to twice the cores, a random share of scheduling points that yield, and a random variant of those `--variant` names that the mix runs. |
-| `scenarios` | lore-revision's scenarios, the C API's, then lore-revision's unit tests built with the scheduling points, once each. |
-| `soak` | `scenarios` again and again until the time is up, so the explorations' runs meet a machine under their own load. |
+| Mode        | What it does                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chaos`     | Processes of `state_stress chaos`, `--jobs` at a time, each for `--chunk` seconds on a seed of its own drawn from the campaign's, over every mix or those `--mix` names. Each process cycles through its mixes, every run on random rounds, a random order, a random number of workers up to twice the cores, a random share of scheduling points that yield, and a random variant of those `--variant` names that the mix runs. |
+| `scenarios` | lore-revision's scenarios, the C API's, then lore-revision's unit tests built with the scheduling points, once each.                                                                                                                                                                                                                                                                                                             |
+| `soak`      | `scenarios` again and again until the time is up, so the explorations' runs meet a machine under their own load.                                                                                                                                                                                                                                                                                                                 |
 
 Useful options:
 
@@ -136,14 +136,14 @@ Results go to `target/state-stress/results/<mode>-<time>-<pid>/`:
 - on stdout, `NOTE seed <seed>`; before each run, `NOTE running <run>`, its mix, variant, rounds,
   workers, share of yielding points and seed; after it, `RUN <run> ok`, or ending with its failure's
   class; at the end, `COVERAGE mix <mix> <runs> <passed>`, `COVERAGE variant <variant> <runs>
-  <passed>`, `COVERAGE outcome dropped <count>` and `COVERAGE outcome failed <count>` for the calls
+<passed>`, `COVERAGE outcome dropped <count>` and `COVERAGE outcome failed <count>` for the calls
   the passing runs dropped and failed, `COVERAGE record <mix> <record> <count>` for
   the records the passing runs made, and `COVERAGE holder <mix> <record> <count>` for those of a
   served mix's holder; `COVERAGE call <kind> <count>` for the operations' calls; `COVERAGE arm
-  <arm> <count>` for the branches races sent operations down; a `COVERAGE-GAP record <mix>
-  <record>`, or `COVERAGE-GAP holder <mix> <record>` for a swap's or a flip's mix, for each record
+<arm> <count>` for the branches races sent operations down; a `COVERAGE-GAP record <mix>
+<record>`, or `COVERAGE-GAP holder <mix> <record>` for a swap's or a flip's mix, for each record
   a mix exists to make that none of its passing runs made; and `REPORT runs <n> failed <n> yields
-  <n> contentions <n>`;
+<n> contentions <n>`;
 - on stderr, `VIOLATION <mix>-<class>: <detail> (<run>)` for each finding of a failed run, its
   class one of `log` (a record or a point with no task, or one pushed into a full buffer), `calls`
   (a record held by no operation's call, or by two), `model` (the model's replay of a burst) and

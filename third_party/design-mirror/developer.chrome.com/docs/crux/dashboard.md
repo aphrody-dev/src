@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Published: Nov 10, 2022, Last updated: Sep 9, 2025
 
 The CrUX Dashboard is a [Looker Studio](https://cloud.google.com/looker-studio) (formerly Data Studio) dashboard that links to the raw origin-level CrUX data on [BigQuery](https://developer.chrome.com/docs/crux/bigquery.md.txt) and then visualizes the data for you. It eliminates the need for users of the dashboard to write any queries or generate any charts. Everything is built for you; all you need is to provide an origin and the dashboard will be generated for you.
@@ -33,7 +34,7 @@ Some common issues with origins are providing the wrong protocol, for example `h
 ## Use a Custom Search Engine to access the Dashboard
 
 An alternative way, for those frequently visiting different domains, is to set up a custom Search Engine in Chrome which Lets you pass a search term---the origin in this case---to a URL. To do this go into Chrome Settings using the three dots menu in the top right of Chrome. Once in Settings choose the "Search engine" option.
- Chrome settings for Search Engines.
+Chrome settings for Search Engines.
 
 From here expand the "Manage search engines and site search", scroll to "Site Search" click the "Add" button and enter the following details:
 
@@ -41,15 +42,15 @@ From here expand the "Manage search engines and site search", scroll to "Site Se
 - Shortcut: `crux`
 - URL with %s in place of query: `https://lookerstudio.google.com/c/u/0/reporting/bbc5698d-57bb-4969-9e07-68810b9fa348/page/keDQB?params=%7B%22origin%22:%22%s%22%7D`
 
- Chrome 'Add search engine' dialog.
+Chrome 'Add search engine' dialog.
 
 After this, when you type `crux` and press `tab` in the search bar you will now be able to enter an origin, and Chrome will navigate to the CrUX Dashboard for that origin.
- Using a custom search engine in Chrome address bar.
+Using a custom search engine in Chrome address bar.
 
 If you omit the protocol, HTTPS is assumed. Subdomains matter, for example `https://developers.google.com` and `https://www.google.com` are considered to be different origins.
 
 If the origin exists in CrUX, you'll be taken to the dashboard, populated with the CrUX data for this origin:
- Example CrUX Dashboard.
+Example CrUX Dashboard.
 
 ## Dashboard overview
 
@@ -66,14 +67,14 @@ The monthly datasets are released on the second Tuesday of every month. For exam
 ### Core Web Vitals overview
 
 The first page is an overview of the origin's monthly [Core Web Vitals](https://web.dev/articles/vitals) performance. These are the most important UX metrics that Google recommends you focus on.
- CrUX Dashboard Core Web Vitals overview.
+CrUX Dashboard Core Web Vitals overview.
 
 Use the Core Web Vitals page to understand how the origin is experienced by desktop and phone users. By default, the most recent month at the time you created the dashboard is selected. To change between older or newer monthly releases, use the **Month** filter at the top of the page.
 
 ### Metric performance
 
 After the Core Web Vitals page, you'll find standalone pages for all [metrics](https://developer.chrome.com/docs/crux/methodology/metrics.md.txt) in the CrUX dataset.
- CrUX Dashboard LCP page.
+CrUX Dashboard LCP page.
 
 Atop each page is the **Device** filter, which you can use to restrict the form factors included in the experience data. For example, you can drill down specifically into phone experiences. This setting persists across pages.
 
@@ -81,7 +82,7 @@ The primary visualizations on these pages are the monthly distributions of exper
 
 The most recent month's percentages of "good" and "poor" experiences are shown above the chart along with an indicator of the percent difference from the previous month. For this origin, "good" LCP experiences fell by 0.8% to 83.25% month-over-month, the p75 number had 0 movement and stayed at 1,500 month-over-month, and the "poor" LCP experiences increased by 3.6% (shown in red as an increase here is bad) to 7.42%. Note the percentage movements are actual percentage movements, and not percentage point movements---for example 83.93% to 83.25% is a 0.68 percentage point movement, or 0.8% decrease of the 83.93% previous total.
 
-Additionally, for metrics like LCP and other Core Web Vitals that provide explicit percentile recommendations, you'll find the "P75" metric between the "good" and "poor" percentages. This value corresponds to the origin's 75th percentile of user experiences. In other words, 75% of experiences are better than this value. One thing to note is that this applies to the overall distribution across *all devices* on the origin. Toggling specific devices with the **Device** filter won't recalculate the percentile.
+Additionally, for metrics like LCP and other Core Web Vitals that provide explicit percentile recommendations, you'll find the "P75" metric between the "good" and "poor" percentages. This value corresponds to the origin's 75th percentile of user experiences. In other words, 75% of experiences are better than this value. One thing to note is that this applies to the overall distribution across _all devices_ on the origin. Toggling specific devices with the **Device** filter won't recalculate the percentile.
 
 #### Technical caveats about percentiles
 
@@ -96,14 +97,14 @@ Corresponding P75 values in tools like PageSpeed Insights are not based on the p
 There are two [dimensions](https://developer.chrome.com/docs/crux/methodology/dimensions.md.txt) included on the user demographic pages: devices and effective connection types (ECTs). These pages illustrate the distribution of page views across the entire origin for users in each demographic.
 
 The device distribution page shows you the breakdown of phone, desktop, and tablet users over time:
- CrUX Dashboard device page.
+CrUX Dashboard device page.
 
 Many origins tend to have little to no tablet data so you'll often see "0%" hanging off the edge of the chart.
 
 Similarly, the ECT distribution page shows you the breakdown of 4G, 3G, 2G, slow 2G, and offline experiences.
 
 > [!IMPORTANT]
-> **Key term:** Effective connection types are considered *effective* because they're based on bandwidth measurements on users' devices, and don't imply any particular technology used. For example, a desktop user on fast Wi-Fi may be labelled as 4G while a slower mobile connection might be labelled as 2G.
+> **Key term:** Effective connection types are considered _effective_ because they're based on bandwidth measurements on users' devices, and don't imply any particular technology used. For example, a desktop user on fast Wi-Fi may be labelled as 4G while a slower mobile connection might be labelled as 2G.
 
 The distributions for these dimensions are calculated using segments of the [First Contentful Paint](https://web.dev/articles/fcp) (FCP) histogram data.
 

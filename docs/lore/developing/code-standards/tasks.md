@@ -7,17 +7,17 @@ This document defines the rules for spawning and managing async tasks across the
 Defined in `lore-base/src/runtime.rs`. All task spawning MUST use these macros (or the crate-specific alternatives
 described below) to ensure `LORE_CONTEXT` propagation.
 
-| Macro | Purpose |
-| --- | --- |
-| `lore_spawn!(task)` | Spawn async task |
-| `lore_spawn!("name", task)` | Spawn named async task |
-| `lore_spawn!(joinset, task)` | Spawn into JoinSet |
-| `lore_spawn!(joinset, "name", task)` | Spawn named task into JoinSet |
-| `lore_spawn_blocking!(task)` | Spawn blocking task with context |
-| `lore_spawn_blocking_nocontext!(task)` | Spawn blocking task without context |
-| `lore_spawn_guarded!(task)` | Spawn task that must complete before runtime shutdown |
-| `lore_drain_tasks!(tasks, err)` | Drain JoinSet, propagate first error |
-| `lore_limit_drain_tasks!(tasks, max, err)` | Non-blocking drain with bounded concurrency |
+| Macro                                      | Purpose                                               |
+| ------------------------------------------ | ----------------------------------------------------- |
+| `lore_spawn!(task)`                        | Spawn async task                                      |
+| `lore_spawn!("name", task)`                | Spawn named async task                                |
+| `lore_spawn!(joinset, task)`               | Spawn into JoinSet                                    |
+| `lore_spawn!(joinset, "name", task)`       | Spawn named task into JoinSet                         |
+| `lore_spawn_blocking!(task)`               | Spawn blocking task with context                      |
+| `lore_spawn_blocking_nocontext!(task)`     | Spawn blocking task without context                   |
+| `lore_spawn_guarded!(task)`                | Spawn task that must complete before runtime shutdown |
+| `lore_drain_tasks!(tasks, err)`            | Drain JoinSet, propagate first error                  |
+| `lore_limit_drain_tasks!(tasks, max, err)` | Non-blocking drain with bounded concurrency           |
 
 All `lore_spawn!` variants automatically propagate `LORE_CONTEXT` if one is set in the calling task. If no context is
 set, the task is spawned without context scoping.

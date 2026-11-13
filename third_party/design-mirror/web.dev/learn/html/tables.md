@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 HTML tables display tabular data with rows and columns. You should choose to
 use a `<table>` based on the content you're displaying and your users'
 needs relative to that content. If data is being presented, compared, sorted,
@@ -83,7 +84,9 @@ What we have so far:
 
 ```html
 <table>
-  <caption>MLW Students</caption>
+  <caption>
+    MLW Students
+  </caption>
   <thead></thead>
   <tbody></tbody>
   <tfoot></tfoot>
@@ -175,11 +178,16 @@ should be included:
 
 ```html
 <table>
-  <caption>Table Caption</caption>
+  <caption>
+    Table Caption
+  </caption>
   <colgroup>
-    <col/>
+    <col />
   </colgroup>
-  <thead>...
+  <thead>
+    ...
+  </thead>
+</table>
 ```
 
 `<colgroup>` and `<col>` have no [semantic meaning](https://web.dev/learn/accessibility/structure.md.txt),

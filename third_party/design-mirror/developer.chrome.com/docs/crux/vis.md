@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 CrUX Vis is a dashboard that visualizes the weekly historical data from the [CrUX History API](https://developer.chrome.com/docs/crux/history-api).
 
 ## Access CrUX Vis
@@ -51,12 +52,12 @@ Each page has a **Controls** section which lets you switch:
 - Time periods
 - Display: 75th percentile, distributions, or both
 
- Controls section of the CrUX Vis.
+Controls section of the CrUX Vis.
 
 ### Core Web Vitals
 
 The first page is an overview of the URL or origin's [Core Web Vitals](https://web.dev/articles/vitals) performance. These are the most important UX metrics that Google recommends you focus on.
- Core Web Vitals page of CrUX Vis.
+Core Web Vitals page of CrUX Vis.
 
 Use the Core Web Vitals page to understand how the URL or origin is experienced by users and which metrics need work, either because they are under recommended limits, or because they are regressing.
 
@@ -65,7 +66,7 @@ The page includes links to the next three sections to explore further.
 ### Loading Performance
 
 The Loading Performance pages includes all loading-related metrics in CrUX History API.
- Loading Performance page of CrUX Vis.
+Loading Performance page of CrUX Vis.
 
 This page includes the following metrics:
 
@@ -81,7 +82,7 @@ This page includes the following metrics:
 ### Interactivity
 
 The Interactivity page includes all interactivity-related metrics in CrUX History API.
- Interactivity page of CrUX Vis.
+Interactivity page of CrUX Vis.
 
 This page includes the following metrics:
 
@@ -91,7 +92,7 @@ This page includes the following metrics:
 ### Visual Stability
 
 The Visual Stability page includes all visual stability-related metrics in CrUX History API.
- Visual Stability page of CrUX Vis.
+Visual Stability page of CrUX Vis.
 
 This page includes the following metrics:
 
@@ -101,7 +102,7 @@ This page includes the following metrics:
 ### Ad Metrics
 
 The Ad Metrics page includes all ad-related metrics in CrUX History API.
- Ad metrics page of CrUX Vis.
+Ad metrics page of CrUX Vis.
 
 This page includes the following metrics:
 
@@ -115,7 +116,7 @@ For more information about ad metrics, see [ad metrics documentation](https://de
 ### All Metrics
 
 The All Metrics page includes all metrics in CrUX History API in one place:
- All Metrics page of CrUX Vis.
+All Metrics page of CrUX Vis.
 
 This page includes the following metrics:
 

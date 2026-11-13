@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 Published: October 21, 2024, Last updated: Sep 9, 2025
@@ -88,13 +89,13 @@ Sites may therefore see a reduction in page loads in their analytics when they s
 
 ```javascript
 // Send a pageview when the page is first loaded.
-gtag('event', 'page_view');
+gtag("event", "page_view");
 
 // Send another pageview if the page is restored from bfcache.
-window.addEventListener('pageshow', (event) => {
+window.addEventListener("pageshow", (event) => {
   if (event.persisted) {
     // Page was restored from bfcache, sent another page view.
-    gtag('event', 'page_view');
+    gtag("event", "page_view");
   }
 });
 ```

@@ -7,24 +7,23 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Learn how to optimize for the Time to First Byte metric.
 
- Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)  Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com) Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 Published: January 19, 2023, Last updated: November 28, 2025
 
 [Time to First Byte (TTFB)](https://web.dev/articles/ttfb.md.txt) is a foundational web performance metric that precedes every other meaningful user experience metric such as [First Contentful Paint (FCP)](https://web.dev/articles/fcp.md.txt) and [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt). This means that high TTFB values add time to the metrics that follow it.
 
 It's recommended that your server responds to navigation requests quickly enough so that the **75th percentile** of users experience an FCP [within the "good" threshold](https://web.dev/articles/fcp.md.txt#what_is_a_good_fcp_score). As a rough guide, most sites should strive to have a TTFB of **0.8 seconds or less**.
- Good TTFB values are 0.8 seconds or less, poor values are greater than 1.8 seconds
+Good TTFB values are 0.8 seconds or less, poor values are greater than 1.8 seconds
 
 > [!IMPORTANT]
 >
 > **Key point:** TTFB is not a [Core Web Vitals](https://web.dev/articles/vitals.md.txt) metric, so it's not absolutely necessary that sites meet the "good" TTFB threshold, provided that it doesn't impede their ability to score well on the metrics that matter.
 >
->
 > Websites vary in how they deliver content. A low TTFB is crucial for getting markup out to the client as soon as possible. However, if a website delivers the initial markup quickly, but that markup then requires JavaScript to populate it with meaningful content---as is the the case with Single Page Applications (SPAs)---then achieving the lowest possible TTFB is especially important so that the client-rendering of markup can occur sooner.
->
 >
 > Conversely, a server-rendered site that requires less client-side work could have a higher TTFB, but better FCP and LCP values than an entirely client-rendered experience. This is why the TTFB thresholds are a rough guide and should be weighed against how your site delivers its core content.
 
@@ -35,10 +34,10 @@ Before you can optimize TTFB, you need to observe how it affects your website's 
 [PageSpeed Insights](https://pagespeed.web.dev/) is one way to get both field and lab information for public websites that are available in the [Chrome User Experience Report](https://developer.chrome.com/docs/crux).
 
 TTFB for real users is shown in the top **Discover what your real users are experiencing** section:
- PageSpeed Insights real user data.
+PageSpeed Insights real user data.
 
 For lab data, TTFB issues are shown in the [Document request latency](https://developer.chrome.com/docs/performance/insights/document-latency) insight:
- PageSpeed Insights Document request latency insight.
+PageSpeed Insights Document request latency insight.
 
 > [!IMPORTANT]
 > **Key point:** The server response time audit in Lighthouse excludes DNS lookup and redirect times, so it only represents a subset of TTFB.
@@ -108,7 +107,7 @@ In the field, any page with a `Server-Timing` response header set populates the 
 
 ```javascript
 // Get the serverTiming entry for the first navigation request:
-performance.getEntries('navigation')[0].serverTiming.forEach(entry => {
+performance.getEntries("navigation")[0].serverTiming.forEach((entry) => {
   // Log the server timing data:
   console.log(entry.name, entry.description, entry.duration);
 });
@@ -116,12 +115,12 @@ performance.getEntries('navigation')[0].serverTiming.forEach(entry => {
 
 In the lab, data from the `Server-Timing` response header is visualized in the
 **Timings** panel of the **Network** tab in Chrome DevTools:
- Server-Timing header values in the Network tab of Chrome DevTools.
+Server-Timing header values in the Network tab of Chrome DevTools.
 
 Here, `Server-Timing` is used to measure whether a request for a resource has hit the CDN cache, and how long it takes for the request to hit the CDN's edge server and then the origin.
 
 Server timings are also surfaced in the Network track of the **Performance** panel in Chrome DevTools:
- Server-Timing header values in the Network track of the Performance panel of Chrome DevTools.
+Server-Timing header values in the Network track of the Performance panel of Chrome DevTools.
 
 Once you've determined that you have a problematic TTFB by analyzing the data available, then you can move onto fixing the problem.
 
@@ -153,7 +152,7 @@ There are many hosting providers that take care of these things for you, but if 
 
 The topic [CDN usage](https://web.dev/articles/content-delivery-networks.md.txt) is a well-worn one, but for good reason: you could have a very well-optimized application backend, but users located far from your origin server may still experience high TTFB in the field.
 
-CDNs solve the problem of user proximity from your origin server by using a distributed network of servers that cache resources on servers that are physically closer to your users. These servers are called *edge servers*.
+CDNs solve the problem of user proximity from your origin server by using a distributed network of servers that cache resources on servers that are physically closer to your users. These servers are called _edge servers_.
 
 CDN providers may also offer benefits beyond edge servers:
 
@@ -184,7 +183,7 @@ The impact of cached content does not just affect those using CDNs. Server infra
 
 ### Avoid multiple page redirects
 
-One common contributor to a high TTFB is [redirects](https://developer.mozilla.org/docs/Web/HTTP/Redirections). Redirects occur when a navigation request for a document receives a response that informs the browser that the resource exists at another location. One redirect can certainly add unwanted latency to a navigation request, but it can certainly get worse if that redirect points to another resource that results in *another* redirect---and so on. This can particularly impact sites that receive high volumes of visitors from advertisements or newsletters, since they often redirect through analytics services for measurement purposes. Eliminating redirects under your direct control can help to achieve a good TTFB.
+One common contributor to a high TTFB is [redirects](https://developer.mozilla.org/docs/Web/HTTP/Redirections). Redirects occur when a navigation request for a document receives a response that informs the browser that the resource exists at another location. One redirect can certainly add unwanted latency to a navigation request, but it can certainly get worse if that redirect points to another resource that results in _another_ redirect---and so on. This can particularly impact sites that receive high volumes of visitors from advertisements or newsletters, since they often redirect through analytics services for measurement purposes. Eliminating redirects under your direct control can help to achieve a good TTFB.
 
 There are two types of redirects:
 
@@ -216,8 +215,8 @@ Another way to ensure markup is streamed to the browser quickly is to rely on [s
 
 The [Service Worker API](https://developer.mozilla.org/docs/Web/API/Service_Worker_API) can have a big impact on the TTFB for both documents and the resources they load. The reason for this is that a service worker acts as a proxy between the browser and the server---but whether there is an impact on your website's TTFB depends on how you set up your service worker, and if that setup aligns with your application requirements.
 
-- **Use a [stale-while-revalidate strategy](https://developer.chrome.com/docs/workbox/caching-strategies-overview#stale-while-revalidate) for assets.** If an asset is in the service worker cache, be it a document or a resource the document requires, the stale-while-revalidate strategy services that resource from the cache *first* , then downloads that asset in the background and serves it from the cache for future interactions.
-  - If you have document resources that don't change very often, using a stale-while-revalidate strategy can make a page's TTFB nearly instant. However, this doesn't work so well if your website sends dynamically generated markup---such as markup that changes based on whether a user is authenticated. In such cases, you'll always want to hit the network *first*, so the document is as fresh as possible.
+- **Use a [stale-while-revalidate strategy](https://developer.chrome.com/docs/workbox/caching-strategies-overview#stale-while-revalidate) for assets.** If an asset is in the service worker cache, be it a document or a resource the document requires, the stale-while-revalidate strategy services that resource from the cache _first_ , then downloads that asset in the background and serves it from the cache for future interactions.
+  - If you have document resources that don't change very often, using a stale-while-revalidate strategy can make a page's TTFB nearly instant. However, this doesn't work so well if your website sends dynamically generated markup---such as markup that changes based on whether a user is authenticated. In such cases, you'll always want to hit the network _first_, so the document is as fresh as possible.
   - If your document loads non-critical resources that change with some frequency, but fetching the stale resource won't greatly affect the user experience---such as select images or other resources that aren't critical---the TTFB for those resources can be greatly reduced using a stale-while-revalidate strategy.
 - **Use [the app shell model](https://developer.chrome.com/blog/app-shell) for client-rendered applications.** This model fits best for SPAs where the "shell" of the page can be delivered instantly from the service worker cache, and the dynamic content of the page is populated and rendered later on in the page lifecycle.
 
@@ -234,6 +233,6 @@ One downside to 103 Early Hints is that, like caching, they can mask the "real" 
 
 ## Conclusion
 
-Since there are so many combinations of backend application stacks, there's no one article that can encapsulate *everything* you can do to lower your website's TTFB. However, these are some options you can explore to try and get things going just a little bit faster on the server side of things.
+Since there are so many combinations of backend application stacks, there's no one article that can encapsulate _everything_ you can do to lower your website's TTFB. However, these are some options you can explore to try and get things going just a little bit faster on the server side of things.
 
 As with optimizing every metric, the approach is largely similar: measure your TTFB in the field, use lab tools to drill down into the causes, and then apply optimizations where possible. While some techniques may not be viable for your situation, some likely are. As always, you'll need to keep a close eye on your field data, and make adjustments as needed to ensure the fastest possible user experience.

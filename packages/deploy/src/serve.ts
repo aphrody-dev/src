@@ -1,6 +1,8 @@
-// Serve one immutable deployment from R2 (Workers runtime). Used by the platform Worker for previews and
-// production aliases, and by the apps/aphrody edge Worker for aphrody.com. Supports the `_headers` file
-// (Cloudflare Pages syntax, `*` wildcard, later rules win), directory indexes, `404.html`, ranges and ETags.
+// The only static server of the repo (serveStatic): an R2 prefix served as a site. Used by the platform
+// Worker for previews and production aliases (serveDeployment), by the apps/aphrody edge Worker for
+// aphrody.com and by apps/r2-site (cdn, downloads, creator, shell). Supports the `_headers` file (Cloudflare
+// Pages syntax, `*` wildcard, later rules win), directory indexes, SPA fallback, `404.html`, ranges and ETags.
+// /_static/* and /brand/v<N>/* are immutable; a 404 is never cached beyond 60 s.
 import { keys, type ProjectState } from "./state.ts";
 
 export interface R2Like {
@@ -44,7 +46,7 @@ export function parseHeaders(text: string): Rule[] {
 async function rules(bucket: R2Like, base: string): Promise<Rule[]> {
   const hit = RULES.get(base);
   if (hit) return hit;
-  const obj = await bucket.get(`${base}/_headers`);
+  const obj = await bucket.get(`${base}/_headers`.replace(/^\/+/, ""));
   const r = obj ? parseHeaders(await obj.text()) : [];
   if (RULES.size > 64) RULES.clear();
   RULES.set(base, r);
@@ -133,57 +135,103 @@ export async function serveDeployment(
   return res;
 }
 
-async function fromR2(
+/** Options of {@link serveStatic}. `prefix` is the key prefix of the site in the bucket ("" = bucket root). */
+export interface StaticOptions {
+  prefix: string;
+  /** Unknown extensionless paths fall back to `<prefix>/index.html` (status 200). */
+  spa?: boolean;
+  /** Every response readable cross-origin: CORS, CORP cross-origin, Timing-Allow-Origin. */
+  crossOrigin?: boolean;
+  /** Headers set after the `_headers` rules (e.g. x-robots-tag on previews). */
+  extra?: Record<string, string>;
+}
+
+/** Content-addressed or versioned segments: the bytes behind such a URL never change. */
+export const IMMUTABLE = /^\/(?:_static\/|brand\/v\d+\/)/;
+export const BRAND = /^\/brand\/v\d+\//;
+export const IMMUTABLE_CC = "public, max-age=31536000, immutable";
+export const CROSS_ORIGIN: Record<string, string> = {
+  "access-control-allow-origin": "*",
+  "cross-origin-resource-policy": "cross-origin",
+  "timing-allow-origin": "*",
+};
+const MAX_404 = 60;
+
+/** A 404 is never cached longer than 60 s, whatever `_headers` says. */
+export function cap404(cc: string | null): string {
+  if (!cc || /immutable/i.test(cc)) return "public, max-age=0, must-revalidate";
+  const m = cc.match(/(?:s-)?max-age=(\d+)/gi);
+  if (m?.some((x) => Number(x.split("=")[1]) > MAX_404))
+    return `public, max-age=${MAX_404}`;
+  return cc;
+}
+
+const key = (k: string) => k.replace(/^\/+/, "");
+
+/** The one static server of the repo: an R2 prefix as a site. Ranges (206), conditional requests (304 by
+ * ETag), `_headers`, directory indexes, extensionless `/x` -> `/x/index.html`, SPA fallback, `404.html`. */
+export async function serveStatic(
   bucket: R2Like,
-  project: string,
-  sha: string,
   req: Request,
-  extra: Record<string, string> = {},
+  o: StaticOptions,
 ): Promise<Response> {
+  const cors = o.crossOrigin ? CROSS_ORIGIN : {};
+  if (req.method === "OPTIONS" && o.crossOrigin)
+    return new Response(null, {
+      status: 204,
+      headers: {
+        ...cors,
+        "access-control-allow-methods": "GET, HEAD, OPTIONS",
+        "access-control-allow-headers": "*",
+        "access-control-max-age": "86400",
+      },
+    });
   if (req.method !== "GET" && req.method !== "HEAD")
-    return new Response("method not allowed", { status: 405, headers: SEC });
+    return new Response("method not allowed", {
+      status: 405,
+      headers: { ...SEC, allow: "GET, HEAD" },
+    });
   const url = new URL(req.url);
-  const base = keys.base(project, sha);
+  const base = o.prefix.replace(/\/+$/, "");
   let path: string;
   try {
     path = decodeURIComponent(url.pathname);
   } catch {
     return new Response("bad request", { status: 400, headers: SEC });
   }
-  if (path.includes("..") || path.includes("\0"))
-    return new Response("not found", { status: 404, headers: SEC });
+  const notFound = () =>
+    new Response("not found", {
+      status: 404,
+      headers: { ...SEC, ...cors, ...o.extra, "cache-control": cap404(null) },
+    });
+  if (path.includes("..") || path.includes("\0")) return notFound();
   if (path.endsWith("/")) path += "index.html";
   const opts = { range: req.headers, onlyIf: req.headers };
-  let obj = await bucket.get(base + path, opts);
-  if (!obj && !path.split("/").pop()!.includes("."))
-    obj = await bucket.get(`${base}${path}/index.html`, opts);
+  const get = (k: string) => bucket.get(key(k), opts);
+  let obj = await get(base + path);
+  const leaf = !path.split("/").pop()!.includes(".");
+  if (!obj && leaf) obj = await get(`${base}${path}/index.html`);
+  if (!obj && leaf && o.spa) obj = await get(`${base}/index.html`);
   let status = 200;
   if (!obj) {
-    obj = await bucket.get(`${base}/404.html`);
+    obj = await bucket.get(key(`${base}/404.html`));
     status = 404;
-    if (!obj)
-      return new Response("not found", {
-        status,
-        headers: { ...SEC, ...extra },
-      });
+    if (!obj) return notFound();
   }
   const h = new Headers(SEC);
-  obj.writeHttpMetadata(h);
+  obj.writeHttpMetadata?.(h);
   for (const r of await rules(bucket, base))
     if (r.re.test(url.pathname)) for (const [k, v] of r.h) h.set(k, v);
-  for (const [k, v] of Object.entries(extra)) h.set(k, v);
-  h.set("x-aphrody-deploy", `${project}@${sha.slice(0, 12)}`);
-  h.set("etag", obj.httpEtag);
+  for (const [k, v] of Object.entries(o.extra ?? {})) h.set(k, v);
+  if (status === 200 && IMMUTABLE.test(url.pathname))
+    h.set("cache-control", IMMUTABLE_CC);
+  for (const [k, v] of Object.entries(
+    o.crossOrigin || BRAND.test(url.pathname) ? CROSS_ORIGIN : {},
+  ))
+    h.set(k, v);
+  const etag = obj.httpEtag ?? obj.etag;
+  if (etag) h.set("etag", etag);
   h.set("accept-ranges", "bytes");
-  if (!("body" in obj)) return new Response(null, { status: 304, headers: h });
-  if (obj.range && req.headers.has("range") && status === 200) {
-    const { offset = 0, length = obj.size } = obj.range;
-    h.set(
-      "content-range",
-      `bytes ${offset}-${offset + length - 1}/${obj.size}`,
-    );
-    status = 206;
-  }
   if (!h.has("cache-control"))
     h.set(
       "cache-control",
@@ -191,9 +239,34 @@ async function fromR2(
         ? "public, max-age=0, must-revalidate"
         : "public, max-age=3600",
     );
+  if (status === 404) h.set("cache-control", cap404(h.get("cache-control")));
+  const inm = req.headers.get("if-none-match");
+  if (status === 200 && (!("body" in obj) || (inm && etag && inm === etag)))
+    return new Response(null, { status: 304, headers: h });
+  if (obj.range && req.headers.has("range") && status === 200) {
+    const { offset = 0, length = obj.size - offset } = obj.range;
+    h.set(
+      "content-range",
+      `bytes ${offset}-${offset + length - 1}/${obj.size}`,
+    );
+    status = 206;
+  }
   return new Response(req.method === "HEAD" ? null : obj.body, {
     status,
     headers: h,
+  });
+}
+
+function fromR2(
+  bucket: R2Like,
+  project: string,
+  sha: string,
+  req: Request,
+  extra: Record<string, string> = {},
+): Promise<Response> {
+  return serveStatic(bucket, req, {
+    prefix: keys.base(project, sha),
+    extra: { ...extra, "x-aphrody-deploy": `${project}@${sha.slice(0, 12)}` },
   });
 }
 

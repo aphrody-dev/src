@@ -24,7 +24,7 @@
 
 image:
   repository: ghcr.io/epicgames/lore/loreserver
-  tag: ""  # empty = the chart's appVersion
+  tag: "" # empty = the chart's appVersion
 
 topology:
   mode: tiered
@@ -34,14 +34,14 @@ handler:
   persistence:
     type: hostPath
     hostPath:
-      path: /mnt/nvme/lore-handler   # the node's mounted NVMe directory
+      path: /mnt/nvme/lore-handler # the node's mounted NVMe directory
       type: DirectoryOrCreate
 
 data:
   persistence:
-    type: pvc            # keep the authoritative store durable
+    type: pvc # keep the authoritative store durable
     size: 500Gi
-    storageClass: ""     # your durable class (e.g. an EBS io2 class)
+    storageClass: "" # your durable class (e.g. an EBS io2 class)
 
 # Pin pods to nodes that have the local NVMe. (nodeSelector currently applies to
 # both tiers; label your NVMe nodes accordingly.)

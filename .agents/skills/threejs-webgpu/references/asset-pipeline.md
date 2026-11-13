@@ -34,7 +34,12 @@ const sun = new THREE.DirectionalLight(0xffffff, 2); // glTF PBR materials rende
 sun.position.set(3, 5, 2);
 scene.add(sun, new THREE.HemisphereLight(0xffffff, 0x444444, 1.5));
 
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(2, 1.5, 3);
 camera.lookAt(0, 0, 0);
 
@@ -212,8 +217,9 @@ import * as THREE from "three/webgpu";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
 // renderer is an initialized WebGPURenderer (its init() was awaited)
-const gltfLoader = new GLTFLoader()
-  .setKTX2Loader(new KTX2Loader().detectSupport(renderer));
+const gltfLoader = new GLTFLoader().setKTX2Loader(
+  new KTX2Loader().detectSupport(renderer),
+);
 const gltf = await gltfLoader.loadAsync("model.opt.glb");
 scene.add(gltf.scene);
 ```

@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Jason Michelson [GitHub](https://github.com/jsontm) [LinkedIn](https://www.linkedin.com/in/jasonmichelson)  Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
+
+Jason Michelson [GitHub](https://github.com/jsontm) [LinkedIn](https://www.linkedin.com/in/jasonmichelson) Bramus [X](https://twitter.com/bramus) [GitHub](https://github.com/bramus) [Mastodon](https://front-end.social/@bramus) [Bluesky](https://bsky.app/profile/bram.us) [Homepage](https://www.bram.us/)
 
 Published: Aug 28, 2025
 
@@ -43,14 +44,12 @@ Render blocking is a technique that pairs well with cross-document view transiti
 
 ```html
 <!-- Link tag in the <head> of the incoming document -->
-<link blocking="render" href="#target-id" rel="expect">
+<link blocking="render" href="#target-id" rel="expect" />
 ```
 
 ```html
 <!-- Element you want to animate in the <body> of the incoming document -->
-<div id="target-id">
-  some content
-</div>
+<div id="target-id">some content</div>
 ```
 
 In some cases, being precise about which element you render block on was not sufficient. Certain devices or connections would still see added latency even when render blocking on an element near the beginning of the DOM tree. To handle those cases we wrote a watchdog timer script to remove the `HTMLLinkElement` after a certain amount of time has elapsed to force unblock rendering of the incoming document.
@@ -60,7 +59,7 @@ A simple way to do this is as follows:
 ```javascript
 function unblockRendering() {
   const renderBlockingElements = document.querySelectorAll(
-    'link[blocking=render]',
+    "link[blocking=render]",
   );
   for (const element of renderBlockingElements) {
     element.remove();

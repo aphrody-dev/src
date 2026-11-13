@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Rendering HTML with JavaScript is different than rendering HTML that's sent by the server---and that can affect performance. Learn the difference in this guide, and what you can do to preserve your website's rendering performance---especially where interactions are concerned.
 
- Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
+Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 Parsing and rendering of HTML is something that browsers do very well by default for websites that use the browser's built-in navigation logic---sometimes called "traditional page loads" or "hard navigations". Such websites are sometimes called multi-page applications (MPAs).
 
@@ -24,8 +25,8 @@ The navigation pattern used in traditional page loads involves receiving HTML fr
 1. The browser sends a navigation request for the URL provided.
 2. The server responds with HTML in chunks.
 
-The last step of these is key. It's also one of the most fundamental performance optimizations in the server/browser exchange, and is known as *streaming*. If the server can begin sending HTML as soon as possible, and the browser doesn't wait for the entire response to arrive, the browser can process HTML in chunks as it arrives.
- Parsing and rendering of HTML provided by the server as visualized in the performance panel of Chrome DevTools. The tasks involved in parsing HTML and rendering it are split into chunks.
+The last step of these is key. It's also one of the most fundamental performance optimizations in the server/browser exchange, and is known as _streaming_. If the server can begin sending HTML as soon as possible, and the browser doesn't wait for the entire response to arrive, the browser can process HTML in chunks as it arrives.
+Parsing and rendering of HTML provided by the server as visualized in the performance panel of Chrome DevTools. The tasks involved in parsing HTML and rendering it are split into chunks.
 
 Like most things that happen in the browser, parsing HTML occurs within tasks. When HTML is streamed from the server to the browser, the browser optimizes parsing of that HTML by doing so a bit at a time as bits of that stream arrive in chunks. The consequence is that the browser yields to the main thread periodically after processing each chunk, which avoids [long tasks](https://web.dev/articles/long-tasks-devtools.md.txt#what_are_long_tasks). This means that other work can occur while HTML is being parsed, including the incremental rendering work necessary to present a page to the user, as well as processing user interactions that may occur during the page's crucial startup period. This approach translates to a better [Interaction to Next Paint (INP)](https://web.dev/articles/inp.md.txt) score for the page.
 
@@ -41,14 +42,14 @@ There are a few common ways of creating HTML or adding to the DOM through JavaSc
 
 1. The [`innerHTML` property](https://developer.mozilla.org/docs/Web/API/Element/innerHTML) allows you to set the content on an existing element via a string, which the browser parses into DOM.
 2. The [`document.createElement` method](https://developer.mozilla.org/docs/Web/API/Document/createElement) allows you to create new elements to be added to the DOM without using any browser HTML parsing.
-3. The [`document.write` method](https://developer.mozilla.org/docs/Web/API/Document/write) allows you to write HTML to the document (and the browser parses it, just like in approach #1). Due to [a number of reasons](https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#document.write()), however, **usage of `document.write` is strongly discouraged.**
+3. The [`document.write` method](https://developer.mozilla.org/docs/Web/API/Document/write) allows you to write HTML to the document (and the browser parses it, just like in approach #1). Due to [a number of reasons](<https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#document.write()>), however, **usage of `document.write` is strongly discouraged.**
 
- Parsing and rendering of HTML through JavaScript on the client as visualized in the performance panel of Chrome DevTools. The tasks involved in parsing and rendering it are not chunked up, resulting in a long task that blocks the main thread.
+Parsing and rendering of HTML through JavaScript on the client as visualized in the performance panel of Chrome DevTools. The tasks involved in parsing and rendering it are not chunked up, resulting in a long task that blocks the main thread.
 
 The consequences of creating HTML/DOM through client-side JavaScript can be significant:
 
 - Unlike HTML streamed by the server in response to a navigation request, JavaScript tasks on the client are not automatically chunked up, which may result in long tasks that block the main thread. This means that your page's INP can be negatively affected if you're creating too much HTML/DOM at a time on the client.
-- If HTML is created on the client during startup, resources referenced within it [will *not* be discovered by the browser preload scanner](https://web.dev/articles/preload-scanner.md.txt#rendering_markup_with_client-side_javascript). This will certainly have a negative effect on a page's [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt). While this is not a runtime performance issue (instead it's an issue of network delay in fetching important resources), you don't want your website's LCP to be affected by sidestepping this fundamental browser performance optimization.
+- If HTML is created on the client during startup, resources referenced within it [will _not_ be discovered by the browser preload scanner](https://web.dev/articles/preload-scanner.md.txt#rendering_markup_with_client-side_javascript). This will certainly have a negative effect on a page's [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp.md.txt). While this is not a runtime performance issue (instead it's an issue of network delay in fetching important resources), you don't want your website's LCP to be affected by sidestepping this fundamental browser performance optimization.
 
 ## What you can do about the performance impact of client-side rendering
 
@@ -82,7 +83,7 @@ This is an advanced technique---one that may not work easily with every use case
 
 When you use this technique successfully, you aren't creating HTML on the client, but the instant loading of content partials from the cache will give the impression that your site is loading quickly. Websites using this approach can feel almost like an SPA, but without the downfalls of client-side rendering. It also [reduces the amount of HTML you're requesting from the server](https://philipwalton.com/articles/smaller-html-payloads-with-service-workers/).
 
-In short, a streaming service worker architecture doesn't *replace* the browser's built-in navigation logic---it *adds* to it. For more information on how to achieve this with [Workbox](https://developer.chrome.com/docs/workbox), read [Faster multipage applications with streams](https://developer.chrome.com/docs/workbox/faster-multipage-applications-with-streams).
+In short, a streaming service worker architecture doesn't _replace_ the browser's built-in navigation logic---it _adds_ to it. For more information on how to achieve this with [Workbox](https://developer.chrome.com/docs/workbox), read [Faster multipage applications with streams](https://developer.chrome.com/docs/workbox/faster-multipage-applications-with-streams).
 
 ## Conclusion
 

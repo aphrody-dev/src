@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 GDE Enrique Fernandez Guerra on open sourcing his NGO HelpDev.
 
- Monika Janota
+Monika Janota
 
 **Monika:** Let's start by learning a bit about you. What was your journey as a developer? What are you up to now?
 

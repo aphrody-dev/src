@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Right from the start, the World Wide Web was designed to be independent of
 your choice of hardware and operating system.
 As long as you can connect to the internet, the World Wide Web is accessible
@@ -31,7 +32,7 @@ In the early 1990s, when the web was first becoming popular,
 most monitors had screen dimensions of 640 pixels wide by 480 pixels tall.
 These were convex cathode ray tubes,
 unlike the flat liquid crystal displays we have now.
- The Microsoft website in the late 90s designed for a width of 640 pixels. Screenshot from [archive.org](https://archive.org)
+The Microsoft website in the late 90s designed for a width of 640 pixels. Screenshot from [archive.org](https://archive.org)
 
 In the formative days of early web design,
 it was a safe bet to design web pages with a width of 640 pixels.
@@ -39,13 +40,13 @@ But while other technologies like phones and cameras were miniaturizing,
 screens were getting bigger (and eventually, flatter).
 Before long, most screens had dimensions of 800 by 600 pixels.
 Web designs changed accordingly. Designers and developers started assuming that 800 pixels was a safe default.
- The Microsoft website in the early 2000s designed for a width of 800 pixels. Screenshot from [archive.org](https://archive.org)
+The Microsoft website in the early 2000s designed for a width of 800 pixels. Screenshot from [archive.org](https://archive.org)
 
 Then the screens got bigger again. 1024 by 768 became the default.
 It felt like an arms race between web designers and hardware manufacturers.
 
 ​​
- The Microsoft website in the mid 2000s designed for a width of 1024 pixels. Screenshot from [archive.org](https://archive.org)
+The Microsoft website in the mid 2000s designed for a width of 1024 pixels. Screenshot from [archive.org](https://archive.org)
 
 Whether it was 640, 800, or 1024 pixels,
 choosing one specific width to design for was called fixed-width design.
@@ -56,12 +57,12 @@ If a visitor to your site has a wider screen than the width you have chosen,
 then there's wasted space on the screen.
 You can center the content of your pages to distribute that space more evenly
 (instead of having empty space on one side) but you still wouldn't be taking full advantage of the available space.
- The Yahoo website from the early 2000s as experienced in a browser that's wider than the site's 800 pixel wide design. Screenshot from [archive.org](https://archive.org)
+The Yahoo website from the early 2000s as experienced in a browser that's wider than the site's 800 pixel wide design. Screenshot from [archive.org](https://archive.org)
 
 Similarly, if a visitor arrives with a narrower screen than the width you've chosen,
 then your content won't fit horizontally.
 The browser generates a crawlbar---the horizontal equivalent of a scrollbar---and the user has to move the whole page left and right to see all the content.
- The Yahoo website from the early 2000s as experienced in a browser that's narrower than the site's 800 pixel wide design. Screenshot from [archive.org](https://archive.org) <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/RwZjwoQ?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe>
+The Yahoo website from the early 2000s as experienced in a browser that's narrower than the site's 800 pixel wide design. Screenshot from [archive.org](https://archive.org) <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/RwZjwoQ?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe>
 
 ### Liquid layouts
 
@@ -73,7 +74,7 @@ These were called liquid layouts.
 But while a liquid layout can look good across a wide range of widths, it worsens at the extremes.
 On a wide screen the layout looks stretched.
 On a narrow screen the layout looks squashed. Both scenarios aren't ideal.
- Wikipedia's liquid layout from the mid 2000s as experienced in a narrow browser window. Screenshot from [archive.org](https://archive.org)  Wikipedia's liquid layout from the mid 2000s as experienced in a wide browser window. Screenshot from [archive.org](https://archive.org)
+Wikipedia's liquid layout from the mid 2000s as experienced in a narrow browser window. Screenshot from [archive.org](https://archive.org) Wikipedia's liquid layout from the mid 2000s as experienced in a wide browser window. Screenshot from [archive.org](https://archive.org)
 
 You can mitigate these problems by using `min-width` and `max-width` for your layout.
 But then at any size below the minimum width or above the maximum width you've got the same issues you'd have with a fixed-width layout.
@@ -81,7 +82,7 @@ On a wide screen there'd be unused space going to waste.
 On a narrow screen, the user would have to move the whole page left and right to see everything.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/YzxEzpE?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;"></iframe> Open [the liquid layout example](https://codepen.io/web-dot-dev/pen/YzxEzpE) in a new browser window to see how changing the size of the window stretches the design.
 
-The word *liquid* is just one of the terms used to describe this kind of layout.
+The word _liquid_ is just one of the terms used to describe this kind of layout.
 These kinds of designs were also called fluid layouts or flexible layouts.
 The terminology was as fluid as the technique.
 
@@ -148,7 +149,7 @@ If you use responsive design, you need to tell the browser not to do that scalin
 You can do that with a `meta` element in the `head` of the web page:
 
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 ```
 
 There are two values, separated by commas.
@@ -158,7 +159,7 @@ This tells the browser to assume the width of the website is the same as the wid
 The second value is `initial-scale=1`.
 This tells the browser how much or how little scaling to do.
 With a responsive design, you don't want the browser to do any scaling at all.
- The phone on the left shows how the layout looks before the meta tag is in place, when compared to the layout on the right.
+The phone on the left shows how the layout looks before the meta tag is in place, when compared to the layout on the right.
 
 With that `meta` element in place, your web pages are ready to be responsive.
 

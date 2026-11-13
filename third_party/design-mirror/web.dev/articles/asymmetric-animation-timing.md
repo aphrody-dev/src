@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Breaking symmetry provides contrast and appeal to your projects. Learn when and how to apply this to your projects.
 
 Paul Lewis [X](https://twitter.com/aerotwist) [Homepage](https://aerotwist.com/)

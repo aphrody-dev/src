@@ -12,12 +12,12 @@ This page documents the configuration surface only. To stand up a server step by
 
 ## CLI flags
 
-| Flag | Argument | Environment fallback | Default | Description |
-| --- | --- | --- | --- | --- |
-| `--config` | `<DIR>` | `LORE_CONFIG_PATH` | `lore-server/config` (relative to the working directory) | Directory of TOML config files layered over the built-in defaults. |
-| `--env` | `<ENV>` | `LORE_ENV` | `local` | Environment name selecting the `<environment>.toml` override to load. |
-| `--help`, `-h` | none | none | none | Print help and exit. |
-| `--version`, `-V` | none | none | none | Print the version and exit. |
+| Flag              | Argument | Environment fallback | Default                                                  | Description                                                           |
+| ----------------- | -------- | -------------------- | -------------------------------------------------------- | --------------------------------------------------------------------- |
+| `--config`        | `<DIR>`  | `LORE_CONFIG_PATH`   | `lore-server/config` (relative to the working directory) | Directory of TOML config files layered over the built-in defaults.    |
+| `--env`           | `<ENV>`  | `LORE_ENV`           | `local`                                                  | Environment name selecting the `<environment>.toml` override to load. |
+| `--help`, `-h`    | none     | none                 | none                                                     | Print help and exit.                                                  |
+| `--version`, `-V` | none     | none                 | none                                                     | Print the version and exit.                                           |
 
 ### `--config`
 
@@ -31,12 +31,12 @@ Selects which `<environment>.toml` file the server layers over the defaults. Def
 
 The server layers the following files from the config directory over the built-in defaults. The config directory is whatever `--config` / `LORE_CONFIG_PATH` names, or the relative `lore-server/config` path when neither is set. Each file is optional; a missing file — or a missing config directory — is silently skipped. Sources merge field by field rather than replacing one another wholesale: each later source overrides only the individual fields it sets and leaves every other field intact. When two files set **different** fields, both apply; when they set the **same** field, the later source wins.
 
-| Order | Source | When it loads |
-| --- | --- | --- |
-| 1 | Built-in `default.toml` | Always. Baked into the binary at compile time. |
-| 2 | `<environment>.toml` | When present in the config directory. The environment comes from `--env` / `LORE_ENV` (default `local`). |
-| 3 | `local.toml` | When present in the config directory. If it exists, `local.toml` is applied as the last file layer, and will override every file above it. |
-| 4 | `LORE__`-prefixed environment variables | Always. Overrides every file layer (see [Environment-variable overrides](#environment-variable-overrides)). |
+| Order | Source                                  | When it loads                                                                                                                              |
+| ----- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1     | Built-in `default.toml`                 | Always. Baked into the binary at compile time.                                                                                             |
+| 2     | `<environment>.toml`                    | When present in the config directory. The environment comes from `--env` / `LORE_ENV` (default `local`).                                   |
+| 3     | `local.toml`                            | When present in the config directory. If it exists, `local.toml` is applied as the last file layer, and will override every file above it. |
+| 4     | `LORE__`-prefixed environment variables | Always. Overrides every file layer (see [Environment-variable overrides](#environment-variable-overrides)).                                |
 
 For example, with `--env dev`, the server reads `default.toml` (baked in), then `dev.toml`, then `local.toml`, then applies environment variables.
 For the complete loading sequence — including advanced region-scoped overlays and other power-user layers — see the inline documentation in the `loreserver` configuration source.
@@ -53,11 +53,11 @@ For the complete loading sequence — including advanced region-scoped overlays 
 
 Any scalar field can be overridden with an environment variable prefixed `LORE__`. Nested keys use a double-underscore (`__`) separator that maps to the TOML table path; single underscores inside a field name are preserved (so `presigned_url_hmac_key` stays intact). The entire variable name is matched case-insensitively — both the `LORE__` prefix and the segments after it may be in any case.
 
-| Field | Environment variable |
-| --- | --- |
-| `topology.provider` | `LORE__TOPOLOGY__PROVIDER` |
+| Field                                | Environment variable                         |
+| ------------------------------------ | -------------------------------------------- |
+| `topology.provider`                  | `LORE__TOPOLOGY__PROVIDER`                   |
 | `server.http.presigned_url_hmac_key` | `LORE__SERVER__HTTP__PRESIGNED_URL_HMAC_KEY` |
-| `immutable_store.local.path` | `LORE__IMMUTABLE_STORE__LOCAL__PATH` |
+| `immutable_store.local.path`         | `LORE__IMMUTABLE_STORE__LOCAL__PATH`         |
 
 Environment-variable overrides apply last, after every file layer, so they win over anything in the config directory.
 
@@ -84,26 +84,26 @@ With no config files loaded, the server runs as a self-contained, single-node in
 
 The `[server]` table and its sub-tables configure the network endpoints, graceful-shutdown behavior, and the disk space check on the local stores.
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `server.connection_close_timeout_seconds` | `5` | Seconds to wait for open connections to close after a shutdown signal. |
-| `server.runtime_shutdown_timeout_seconds` | `25` | Seconds to wait for the async runtime to shut down after connections close. Accepts the alias `shutdown_delay_seconds`. |
-| `server.trust_unsigned_identity` | `false` | Without `[server.auth]`, take the caller's identity from an unsigned bearer token on gRPC, HTTP and QUIC. See [Unsigned identity](#unsigned-identity). The server refuses to start if it is set beside `[server.auth]`. |
-| `server.upstream_connections` | `4` | Storage connections the server opens to the [upstream](../glossary.md#upstream) of a `remote` immutable or mutable store for each identity it authenticates there as (see [Remote store mode](#remote-store-mode)), from `1` to `10`; `0` reads as `1`. The connections belong to the upstream and the identity, not to a repository: every repository the server reaches there as that identity shares them, as do its QUIC, gRPC and socket handlers. |
+| Field                                     | Default | Description                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `server.connection_close_timeout_seconds` | `5`     | Seconds to wait for open connections to close after a shutdown signal.                                                                                                                                                                                                                                                                                                                                                                                  |
+| `server.runtime_shutdown_timeout_seconds` | `25`    | Seconds to wait for the async runtime to shut down after connections close. Accepts the alias `shutdown_delay_seconds`.                                                                                                                                                                                                                                                                                                                                 |
+| `server.trust_unsigned_identity`          | `false` | Without `[server.auth]`, take the caller's identity from an unsigned bearer token on gRPC, HTTP and QUIC. See [Unsigned identity](#unsigned-identity). The server refuses to start if it is set beside `[server.auth]`.                                                                                                                                                                                                                                 |
+| `server.upstream_connections`             | `4`     | Storage connections the server opens to the [upstream](../glossary.md#upstream) of a `remote` immutable or mutable store for each identity it authenticates there as (see [Remote store mode](#remote-store-mode)), from `1` to `10`; `0` reads as `1`. The connections belong to the upstream and the identity, not to a repository: every repository the server reaches there as that identity shares them, as do its QUIC, gRPC and socket handlers. |
 
 ### Advertised endpoints
 
 `[environment.endpoint]` defines the external service endpoints advertised for the client.
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `auth_url` | none | The authentication service clients log in at and exchange tokens with. Setting it requires `[server.auth]`. If `auth_url` and `[server.auth]` are not set, starts the server unauthenticated. |
-| `user_url` | none | A user directory served over `lore.user.v1.UserService`, which clients use to resolve user IDs to display names, and back. If not set, clients speak the `UrcAuthApi` `GetUserInfo` and `GetUserId` RPCs to `auth_url` instead. If neither is set, clients fall back to an offline resolver that returns user IDs as names. When set, the server also calls `lore.user.v1.RepositoryRegistryService` there: its repository catalog lists repositories with `RepositoryList` by default (see `repository_catalog`), and it registers the repositories it creates and deletes with `RepositoryRegister` and `RepositoryUnregister` instead of the `RebacApi` `CreateResource` and `DeleteResource` calls to `auth_url`. A refused `RepositoryRegister` fails the create, and a refused `RepositoryUnregister` the delete. |
-| `storage_url` | none | The endpoint advertised for the storage service. If not set, clients use the server they connected to. |
-| `repository_url` | none | The endpoint advertised for the repository service. If not set, clients use the server they connected to. |
-| `revision_url` | none | The endpoint advertised for the revision service. If not set, clients use the server they connected to. |
-| `lock_url` | none | The endpoint advertised for the lock service. If not set, clients use the server they connected to. |
-| `notification_url` | none | The endpoint advertised for the notification service. If not set, clients use the server they connected to. |
+| Field              | Default | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `auth_url`         | none    | The authentication service clients log in at and exchange tokens with. Setting it requires `[server.auth]`. If `auth_url` and `[server.auth]` are not set, starts the server unauthenticated.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `user_url`         | none    | A user directory served over `lore.user.v1.UserService`, which clients use to resolve user IDs to display names, and back. If not set, clients speak the `UrcAuthApi` `GetUserInfo` and `GetUserId` RPCs to `auth_url` instead. If neither is set, clients fall back to an offline resolver that returns user IDs as names. When set, the server also calls `lore.user.v1.RepositoryRegistryService` there: its repository catalog lists repositories with `RepositoryList` by default (see `repository_catalog`), and it registers the repositories it creates and deletes with `RepositoryRegister` and `RepositoryUnregister` instead of the `RebacApi` `CreateResource` and `DeleteResource` calls to `auth_url`. A refused `RepositoryRegister` fails the create, and a refused `RepositoryUnregister` the delete. |
+| `storage_url`      | none    | The endpoint advertised for the storage service. If not set, clients use the server they connected to.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `repository_url`   | none    | The endpoint advertised for the repository service. If not set, clients use the server they connected to.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `revision_url`     | none    | The endpoint advertised for the revision service. If not set, clients use the server they connected to.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `lock_url`         | none    | The endpoint advertised for the lock service. If not set, clients use the server they connected to.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `notification_url` | none    | The endpoint advertised for the notification service. If not set, clients use the server they connected to.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 ```toml
 [environment.endpoint]
@@ -117,9 +117,9 @@ A client connected over `lores://` refuses to connect if the server advertises a
 
 `[server.local_store_monitor]` configures the periodic check of the disk space left to the local stores (see [Store settings](#store-settings)). Only stores the server writes at are watched, so a `[local]` block left in a remote deployment's configuration is ignored, as is a composite immutable tier that names a path other than the first local tier's — every local tier is handed the store the first one creates.
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `check_interval_seconds` | `30` | Seconds between checks. `0` turns the check off. |
+| Field                       | Default       | Description                                                                     |
+| --------------------------- | ------------- | ------------------------------------------------------------------------------- |
+| `check_interval_seconds`    | `30`          | Seconds between checks. `0` turns the check off.                                |
 | `low_space_threshold_bytes` | `10737418240` | Warn while free space on a volume holding a local store is below this (10 GiB). |
 
 The reading is taken per volume, not per store: stores sharing a filesystem are checked once and named together in a single warning. The first check runs at startup, so a server starting on a full volume says so immediately. A store path that matches no mounted filesystem is warned about once and goes unmonitored until a mount covers it again.
@@ -130,55 +130,55 @@ At startup the server also reports where each local store lands, warning when th
 
 `[server.quic]` is the public-facing QUIC endpoint that clients push to and clone from. `[server.quic_internal]` is the internal replication endpoint, opt-in per environment and requiring mutual TLS. Both use the same field set.
 
-| Field | Default (`server.quic`) | Description |
-| --- | --- | --- |
-| `enabled` | `true` (`quic`), `false` (`quic_internal`) | Whether to start this QUIC endpoint. |
-| `host` | `0.0.0.0` | Bind address. |
-| `port` | `41337` (`quic`), `41340` (`quic_internal`) | Listen port. |
-| `verify_client_certs` | `false` (`quic`), `true` (`quic_internal`) | Require client certificates (mutual TLS); `false` accepts unverified clients. The compile-time fallback is `true`, but the shipped `default.toml` sets the public endpoint to `false` so token (JWT) auth carries verification. `quic_internal` omits the key and so keeps the `true` default. |
-| `idle_timeout` | `30000` | Connection idle timeout in milliseconds. |
-| `keep_alive` | `500` | Keep-alive interval in milliseconds. |
-| `max_bidi_streams` | `8` | Maximum concurrent bidirectional streams per connection. |
-| `num_listeners` | `1` | Accept tasks per socket. One keeps up, as an accept task only hands each connection to a task of its own. |
-| `num_sockets` | `16`, or one per processor on a machine with fewer (`quic`); `4` (`quic_internal`) | UDP sockets bound to `port` with `SO_REUSEPORT`, each with its own QUIC endpoint and receive buffer of about 2.9 MiB. Linux hands each datagram to one socket by a hash of its source and destination, which spreads the clients across the sockets; other platforms bind one. Each socket asks the kernel for a 512 KiB receive buffer, which Linux caps at `net.core.rmem_max`. The sockets share the limits on connections not yet accepted, 65,536 attempts and 100 MiB of buffered datagrams. A client whose address changes mid-connection can reach another socket, whose endpoint resets the connection; the client reconnects. |
-| `transport_bits_per_second` | `1073741824` (`quic`), `10737418240` (`quic_internal`) | Transport bandwidth estimate in bits per second. |
-| `transport_rtt` | `100` (`quic`), `220` (`quic_internal`) | Expected round-trip time in milliseconds. Together with `transport_bits_per_second` it sizes the receive and send windows of every connection the endpoint accepts: how much a client may have in flight, and how much of a response the server holds until it is acknowledged. One value serves every client, so set it for the most distant one; a window sized too short limits a distant client's throughput, and a nearer client never fills a larger one. Each connection may buffer up to one window in each direction, so a larger value raises the server's worst-case memory per connection. The internal endpoint's default covers peers in other regions. |
-| `initial_cwnd_bytes` | none (`quic`), `1048576` (`quic_internal`) | Congestion window, in bytes, that each accepted connection starts with: how much the server sends before the peer's first acknowledgements arrive. The congestion controller may cap it at the send window derived from `transport_bits_per_second` and `transport_rtt`. When unset, `quic` uses the congestion controller's own default and `quic_internal` always uses `1048576`. At least `2400`. |
-| `handler_timeout_seconds` | `50` | Per-request handler timeout. Guards against handlers that hang indefinitely. |
-| `connection_message_limit` | none | Maximum in-flight messages per connection. When unset, the server falls back to `500` for the public endpoint and `50000` for the internal endpoint. |
+| Field                       | Default (`server.quic`)                                                            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| --------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`                   | `true` (`quic`), `false` (`quic_internal`)                                         | Whether to start this QUIC endpoint.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `host`                      | `0.0.0.0`                                                                          | Bind address.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `port`                      | `41337` (`quic`), `41340` (`quic_internal`)                                        | Listen port.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `verify_client_certs`       | `false` (`quic`), `true` (`quic_internal`)                                         | Require client certificates (mutual TLS); `false` accepts unverified clients. The compile-time fallback is `true`, but the shipped `default.toml` sets the public endpoint to `false` so token (JWT) auth carries verification. `quic_internal` omits the key and so keeps the `true` default.                                                                                                                                                                                                                                                                                                                                                                        |
+| `idle_timeout`              | `30000`                                                                            | Connection idle timeout in milliseconds.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `keep_alive`                | `500`                                                                              | Keep-alive interval in milliseconds.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `max_bidi_streams`          | `8`                                                                                | Maximum concurrent bidirectional streams per connection.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `num_listeners`             | `1`                                                                                | Accept tasks per socket. One keeps up, as an accept task only hands each connection to a task of its own.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `num_sockets`               | `16`, or one per processor on a machine with fewer (`quic`); `4` (`quic_internal`) | UDP sockets bound to `port` with `SO_REUSEPORT`, each with its own QUIC endpoint and receive buffer of about 2.9 MiB. Linux hands each datagram to one socket by a hash of its source and destination, which spreads the clients across the sockets; other platforms bind one. Each socket asks the kernel for a 512 KiB receive buffer, which Linux caps at `net.core.rmem_max`. The sockets share the limits on connections not yet accepted, 65,536 attempts and 100 MiB of buffered datagrams. A client whose address changes mid-connection can reach another socket, whose endpoint resets the connection; the client reconnects.                               |
+| `transport_bits_per_second` | `1073741824` (`quic`), `10737418240` (`quic_internal`)                             | Transport bandwidth estimate in bits per second.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `transport_rtt`             | `100` (`quic`), `220` (`quic_internal`)                                            | Expected round-trip time in milliseconds. Together with `transport_bits_per_second` it sizes the receive and send windows of every connection the endpoint accepts: how much a client may have in flight, and how much of a response the server holds until it is acknowledged. One value serves every client, so set it for the most distant one; a window sized too short limits a distant client's throughput, and a nearer client never fills a larger one. Each connection may buffer up to one window in each direction, so a larger value raises the server's worst-case memory per connection. The internal endpoint's default covers peers in other regions. |
+| `initial_cwnd_bytes`        | none (`quic`), `1048576` (`quic_internal`)                                         | Congestion window, in bytes, that each accepted connection starts with: how much the server sends before the peer's first acknowledgements arrive. The congestion controller may cap it at the send window derived from `transport_bits_per_second` and `transport_rtt`. When unset, `quic` uses the congestion controller's own default and `quic_internal` always uses `1048576`. At least `2400`.                                                                                                                                                                                                                                                                  |
+| `handler_timeout_seconds`   | `50`                                                                               | Per-request handler timeout. Guards against handlers that hang indefinitely.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `connection_message_limit`  | none                                                                               | Maximum in-flight messages per connection. When unset, the server falls back to `500` for the public endpoint and `50000` for the internal endpoint.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 #### Certificate block
 
 Each QUIC endpoint takes an optional `[server.quic.certificate]` (or `[server.quic_internal.certificate]`) block. A configured block is always used as given. When it is omitted, the server generates an ephemeral certificate (see [Zero-config defaults](#zero-config-defaults)) on the public endpoint, and on the internal endpoint when `verify_client_certs = false` — there the certificate only has to satisfy the handshake, since no client is being verified. The internal endpoint with `verify_client_certs = true` has no such fallback: mutual TLS is the authentication, so a missing certificate fails startup. The block as a whole is optional, but when it is present `cert_file` and `pkey_file` are both required — only `cert_chain` is individually optional.
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `cert_file` | none | Path to the PEM-encoded server certificate. |
-| `pkey_file` | none | Path to the PEM-encoded private key. |
-| `cert_chain` | none | Path to PEM-encoded CA certificate(s) used to verify client certificates (and also appended to the chain the server presents). Required on any endpoint with `verify_client_certs = true`; the internal endpoint enforces this at startup. |
+| Field        | Default | Description                                                                                                                                                                                                                                |
+| ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `cert_file`  | none    | Path to the PEM-encoded server certificate.                                                                                                                                                                                                |
+| `pkey_file`  | none    | Path to the PEM-encoded private key.                                                                                                                                                                                                       |
+| `cert_chain` | none    | Path to PEM-encoded CA certificate(s) used to verify client certificates (and also appended to the chain the server presents). Required on any endpoint with `verify_client_certs = true`; the internal endpoint enforces this at startup. |
 
 ### HTTP endpoint
 
 `[server.http]` configures the HTTP endpoint that serves the health check and, when enabled, presigned URLs.
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `enabled` | `true` | Whether to start the HTTP endpoint. |
-| `health_only` | `false` | Serve only `/health_check`, without repository or presigned URL routes. Requires `enabled = true`. |
-| `host` | `0.0.0.0` | Bind address. |
-| `port` | `41339` | Listen port. |
-| `max_file_size` | `10485760` | Maximum upload size in bytes (10 MiB). |
-| `request_timeout_seconds` | `300` | Overall request timeout. |
-| `request_body_timeout_seconds` | `3600` | Request-body read timeout. |
-| `available_interval_seconds` | `30` | Interval between store-availability probes. |
-| `available_timeout_seconds` | `5` | Timeout for each store-availability probe. |
-| `store_health_check` | `false` | Whether the health check also probes the store. |
-| `presigned_url_hmac_key` | none | Optional hex-encoded HMAC key that enables the presigned URL feature. See below. |
-| `presigned_url_min_ttl_seconds` | `1` | Minimum lifetime a presigned URL may request. |
-| `presigned_url_default_ttl_seconds` | `3600` | Default presigned URL lifetime. |
-| `presigned_url_max_ttl_seconds` | `86400` | Maximum presigned URL lifetime. |
-| `presigned_url_extra_content_types` | `[]` | Content types added to the default set. See below. |
-| `presigned_url_denied_content_types` | `[]` | Content types removed from that set. See below. |
+| Field                                | Default    | Description                                                                                        |
+| ------------------------------------ | ---------- | -------------------------------------------------------------------------------------------------- |
+| `enabled`                            | `true`     | Whether to start the HTTP endpoint.                                                                |
+| `health_only`                        | `false`    | Serve only `/health_check`, without repository or presigned URL routes. Requires `enabled = true`. |
+| `host`                               | `0.0.0.0`  | Bind address.                                                                                      |
+| `port`                               | `41339`    | Listen port.                                                                                       |
+| `max_file_size`                      | `10485760` | Maximum upload size in bytes (10 MiB).                                                             |
+| `request_timeout_seconds`            | `300`      | Overall request timeout.                                                                           |
+| `request_body_timeout_seconds`       | `3600`     | Request-body read timeout.                                                                         |
+| `available_interval_seconds`         | `30`       | Interval between store-availability probes.                                                        |
+| `available_timeout_seconds`          | `5`        | Timeout for each store-availability probe.                                                         |
+| `store_health_check`                 | `false`    | Whether the health check also probes the store.                                                    |
+| `presigned_url_hmac_key`             | none       | Optional hex-encoded HMAC key that enables the presigned URL feature. See below.                   |
+| `presigned_url_min_ttl_seconds`      | `1`        | Minimum lifetime a presigned URL may request.                                                      |
+| `presigned_url_default_ttl_seconds`  | `3600`     | Default presigned URL lifetime.                                                                    |
+| `presigned_url_max_ttl_seconds`      | `86400`    | Maximum presigned URL lifetime.                                                                    |
+| `presigned_url_extra_content_types`  | `[]`       | Content types added to the default set. See below.                                                 |
+| `presigned_url_denied_content_types` | `[]`       | Content types removed from that set. See below.                                                    |
 
 #### `presigned_url_hmac_key`
 
@@ -202,15 +202,15 @@ Some types can never be allowed, because a browser executes them as a document a
 
 Each entry must be a bare `type/subtype` drawn from the RFC 9110 token character set. Any of the following stops the server from starting:
 
-| Rejected entry | Example |
-| --- | --- |
-| Empty or whitespace-only | `""` |
-| A parameter | `text/plain; charset=utf-8` |
-| A comma-joined list | `image/png,image/gif` |
-| A wildcard | `image/*`, `*/*` |
-| Whitespace inside the value | `text / html`, `image/pn g` |
-| A control character or any non-ASCII character | `image/pñg` |
-| Not exactly one `type` and one `subtype` | `png`, `image/`, `image/png/extra` |
+| Rejected entry                                 | Example                            |
+| ---------------------------------------------- | ---------------------------------- |
+| Empty or whitespace-only                       | `""`                               |
+| A parameter                                    | `text/plain; charset=utf-8`        |
+| A comma-joined list                            | `image/png,image/gif`              |
+| A wildcard                                     | `image/*`, `*/*`                   |
+| Whitespace inside the value                    | `text / html`, `image/pn g`        |
+| A control character or any non-ASCII character | `image/pñg`                        |
+| Not exactly one `type` and one `subtype`       | `png`, `image/`, `image/png/extra` |
 
 > [!NOTE]
 > These are array fields, so they cannot be set through a `LORE__` environment variable, and a later config layer replaces the whole array rather than merging it.
@@ -226,21 +226,21 @@ the same fields.
 > [!NOTE]
 > `[server.grpc]`'s default port `41337` is the same number as `[server.quic]`, but the two do not conflict: gRPC listens on TCP and QUIC on UDP.
 
-| Field | Default (`server.grpc`) | Description |
-| --- | --- | --- |
-| `host` | `0.0.0.0` | Bind address. |
-| `port` | `41337` (`grpc`), `41340` (`grpc_internal`) | Listen port. |
-| `request_handler_timeout_seconds` | `50` | Per-request handler timeout in seconds. Keep below any upstream load-balancer timeout. |
-| `http2_keepalive_interval_seconds` | none | HTTP/2 keep-alive PING interval in seconds. Unset by default. |
-| `http2_keepalive_timeout_seconds` | none | HTTP/2 keep-alive PING timeout in seconds. Unset by default. |
-| `certificate` | none | Optional `[server.grpc.certificate]` / `[server.grpc_internal.certificate]` block — same fields as the [Certificate block](#certificate-block). When present, the endpoint serves TLS. |
+| Field                              | Default (`server.grpc`)                     | Description                                                                                                                                                                            |
+| ---------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `host`                             | `0.0.0.0`                                   | Bind address.                                                                                                                                                                          |
+| `port`                             | `41337` (`grpc`), `41340` (`grpc_internal`) | Listen port.                                                                                                                                                                           |
+| `request_handler_timeout_seconds`  | `50`                                        | Per-request handler timeout in seconds. Keep below any upstream load-balancer timeout.                                                                                                 |
+| `http2_keepalive_interval_seconds` | none                                        | HTTP/2 keep-alive PING interval in seconds. Unset by default.                                                                                                                          |
+| `http2_keepalive_timeout_seconds`  | none                                        | HTTP/2 keep-alive PING timeout in seconds. Unset by default.                                                                                                                           |
+| `certificate`                      | none                                        | Optional `[server.grpc.certificate]` / `[server.grpc_internal.certificate]` block — same fields as the [Certificate block](#certificate-block). When present, the endpoint serves TLS. |
 
 `[server.grpc_internal]` additionally honors two fields that `[server.grpc]` ignores:
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `enabled` | `false` | Whether to start the replication endpoint. Set `true` to opt in. |
-| `verify_client_certs` | `true` | Require client certificates (mutual TLS). The endpoint refuses to start unless this is `true` with a full certificate triple (`cert_file` + `pkey_file` + `cert_chain`), or explicitly set to `false` to accept unverified clients. |
+| Field                 | Default | Description                                                                                                                                                                                                                         |
+| --------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`             | `false` | Whether to start the replication endpoint. Set `true` to opt in.                                                                                                                                                                    |
+| `verify_client_certs` | `true`  | Require client certificates (mutual TLS). The endpoint refuses to start unless this is `true` with a full certificate triple (`cert_file` + `pkey_file` + `cert_chain`), or explicitly set to `false` to accept unverified clients. |
 
 ### gRPC public services
 
@@ -250,10 +250,10 @@ Every service block accepts `enabled` and a `general` namespace. A block may
 also define service-specific fields. A `general` field affects only the
 services named in its description:
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `enabled` | `true` | Whether the public router registers this service. Set `false` and every RPC on it answers `UNIMPLEMENTED`. |
-| `general.max_encoding_message_size` | unset | Maximum encoded gRPC response size in bytes. When unset, the gRPC framework default applies. Honored by `lock_service`. |
+| Field                               | Default | Description                                                                                                             |
+| ----------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `enabled`                           | `true`  | Whether the public router registers this service. Set `false` and every RPC on it answers `UNIMPLEMENTED`.              |
+| `general.max_encoding_message_size` | unset   | Maximum encoded gRPC response size in bytes. When unset, the gRPC framework default applies. Honored by `lock_service`. |
 
 Use `lock_service.general.max_encoding_message_size` instead of
 `lock_service.max_encoding_message_size`, which current servers ignore. During
@@ -266,15 +266,15 @@ servers are upgraded.
 An absent block means enabled. A present block without `enabled` also means
 enabled. Restrict a deployment by disabling every service it must not serve:
 
-| Block | Registers |
-| --- | --- |
-| `admin_service` | `urc.rpc.AdminService` (`ServerInfo`, `Obliterate`) |
-| `storage_service` | `urc.rpc.StorageService` and `lore.storage.v1.StorageService` |
-| `revision_service` | `urc.rpc.RevisionService` and `lore.revision.v1.RevisionService` |
-| `repository_service` | `urc.rpc.RepositoryService` and `lore.repository.v1.RepositoryService` |
-| `environment_service` | `urc.rpc.EnvironmentService` and `lore.environment.v1.EnvironmentService` |
-| `thin_client_service` | `lore.thin_client.v1.ThinClientService`. Every RPC it serves is a read. |
-| `lock_service` | `urc.lock.LockService`. Also requires `[lock_store]` at a mode other than `none`. |
+| Block                  | Registers                                                                                                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `admin_service`        | `urc.rpc.AdminService` (`ServerInfo`, `Obliterate`)                                                                                                                                                         |
+| `storage_service`      | `urc.rpc.StorageService` and `lore.storage.v1.StorageService`                                                                                                                                               |
+| `revision_service`     | `urc.rpc.RevisionService` and `lore.revision.v1.RevisionService`                                                                                                                                            |
+| `repository_service`   | `urc.rpc.RepositoryService` and `lore.repository.v1.RepositoryService`                                                                                                                                      |
+| `environment_service`  | `urc.rpc.EnvironmentService` and `lore.environment.v1.EnvironmentService`                                                                                                                                   |
+| `thin_client_service`  | `lore.thin_client.v1.ThinClientService`. Every RPC it serves is a read.                                                                                                                                     |
+| `lock_service`         | `urc.lock.LockService`. Also requires `[lock_store]` at a mode other than `none`.                                                                                                                           |
 | `notification_service` | `lore.notification.NotificationService`. Registers for local notification mode, the default when `[notification]` is absent. Notification plugins provide a sender but do not register this public service. |
 
 One block gates a whole proto family. The legacy `urc.rpc` services are not
@@ -334,7 +334,7 @@ directory. The server does not load the example in place.
 >
 > A service added in a later release defaults to enabled. It therefore mounts on
 > a restricted deployment without an edit. Check the `Registered public gRPC
-> services` line after an upgrade.
+services` line after an upgrade.
 
 ```toml
 [server.http]
@@ -382,15 +382,15 @@ its own `[lock_store]` is at a mode other than `none`; otherwise it answers
 the peer. The defaults suit a long-lived connection that sits idle between
 forwards; tune them to the path the peer is actually reached over:
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `url` | none (required) | The peer's internal gRPC endpoint, for example `https://peer.google.com:41340`. |
-| `certs` | none | Optional certificate block for mutual TLS to the peer — same fields as the [Certificate block](#certificate-block). The peer's `[server.grpc_internal]` requires client certificates unless it sets `verify_client_certs = false`. |
-| `connect_timeout_seconds` | `5` | Ceiling on the TCP connect, divided across the addresses the URL resolves to. It covers neither DNS resolution nor the TLS handshake, so it is not a bound on the whole of establishing a connection. |
-| `request_timeout_seconds` | `40` | Deadline for each forwarded request. Keep below the `request_handler_timeout_seconds` of the endpoint doing the forwarding, so that handler outlives the call it forwards. |
-| `tcp_keepalive_seconds` | `30` | TCP keep-alive probe interval. Holds open any NAT or proxy flow state on the path while the channel is idle between requests. |
-| `http2_keepalive_interval_seconds` | `20` | HTTP/2 keep-alive PING interval. Keep below the idle timeout of anything on the path that reaps idle connections. Pings are sent while the channel is idle, not only while requests are in flight. |
-| `http2_keepalive_timeout_seconds` | `10` | How long a keep-alive PING may go unanswered before the connection is dropped and redialled. |
+| Field                              | Default         | Description                                                                                                                                                                                                                        |
+| ---------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `url`                              | none (required) | The peer's internal gRPC endpoint, for example `https://peer.google.com:41340`.                                                                                                                                                    |
+| `certs`                            | none            | Optional certificate block for mutual TLS to the peer — same fields as the [Certificate block](#certificate-block). The peer's `[server.grpc_internal]` requires client certificates unless it sets `verify_client_certs = false`. |
+| `connect_timeout_seconds`          | `5`             | Ceiling on the TCP connect, divided across the addresses the URL resolves to. It covers neither DNS resolution nor the TLS handshake, so it is not a bound on the whole of establishing a connection.                              |
+| `request_timeout_seconds`          | `40`            | Deadline for each forwarded request. Keep below the `request_handler_timeout_seconds` of the endpoint doing the forwarding, so that handler outlives the call it forwards.                                                         |
+| `tcp_keepalive_seconds`            | `30`            | TCP keep-alive probe interval. Holds open any NAT or proxy flow state on the path while the channel is idle between requests.                                                                                                      |
+| `http2_keepalive_interval_seconds` | `20`            | HTTP/2 keep-alive PING interval. Keep below the idle timeout of anything on the path that reaps idle connections. Pings are sent while the channel is idle, not only while requests are in flight.                                 |
+| `http2_keepalive_timeout_seconds`  | `10`            | How long a keep-alive PING may go unanswered before the connection is dropped and redialled.                                                                                                                                       |
 
 ```toml
 [server.grpc_public_services.forwarded_requests.client]
@@ -411,30 +411,30 @@ repository_get = true
 
 When `[server.auth]` is present, `jwt_issuer` and `jwt_audience` are both mandatory and the server refuses to start without them: A deployment that verifies tokens without pinning issuer would accept tokens from any issuer. And a deployment that doesn't pin the audience would accept tokens minted for any service.
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `jwt_issuer` | required | Accepted JWT `iss` values, as a string or an array. Tokens whose issuer matches no entry are rejected. Two entries are for the duration of an issuer's `iss` cutover if the issuer is changed. The validator accepts tokens minted under both the old and the new value while both are in flight. |
-| `jwt_audience` | required | Array of accepted JWT `aud` values. A token's audience must match one entry. |
-| `jwt_typ` | none | Accepted JWT `typ` header values, as a string or an array. When set, a token whose header carries no `typ`, or a `typ` that doesn't match any of the entries, is rejected. If unset, the token value is not checked. `jwt_typ = "at+jwt"` is the RFC 9068 access-token profile for OAuth2/OIDC deployments, and should be used for OIDC-compliant setups. Values compare as media types: case-insensitively, and with or without the `application/` prefix, so `at+jwt` also accepts `application/at+jwt`. |
-| `jwk` | none | The optional `[server.auth.jwk]` override sub-table below. |
-| `oidc` | none | The optional `[server.auth.oidc]` sub-table below, which configures the OIDC provider info shown to clients. |
-| `permission_claim` | none | Dotted path of the JWT claim carrying the caller's allowed actions, e.g. `realm_access.roles` (Keycloak) or `groups` (Dex). When using `GlobalGrantsAuthorizer` (Tier 1), this JWT claim defines where the user's global permissions are read from. When `resource_claim` is set and `ResourceGrantsAuthorizer` (Tier 2) is in use, it instead names the field inside each resource entry holding the per-partition actions, defaulting to `permission`. |
-| `implicit_actions` | `["write"]` | Actions every token holder gets under `GlobalGrantsAuthorizer` (Tier 1), added to those `permission_claim` carries and to `read`, which any token implies. Set `[]` to grant `write` through a role only, or, without `permission_claim`, to make the server read-only. Any of `read`, `write`, `owner`, `admin`, `migrate`, `push-protected`, `obliterate` and `presign` may be listed; any other name is a configuration error. The server refuses to start with it set beside `resource_claim` or `auth_url`, where it would do nothing. |
-| `resource_claim` | none | Dotted path of the JWT claim carrying per-repository resource grants. If this is set, enables the granular `ResourceGrantsAuthorizer` (Tier 2) authorizer. |
-| `resource_id_claim` | `resource_id` | The field inside each resource entry that names the resource, for providers whose entry shape cannot be changed. Keycloak's UMA `authorization.permissions` entries carry the resource name in `rsname`, for example: set `resource_claim = "authorization.permissions"`, `resource_id_claim = "rsname"` and `permission_claim = "scopes"` to read them. Tier 2 only. |
-| `resource_id_template` | `urc-{id}` | Template that renders a repository id into the corresponding resource name. `{id}` is replaced by the repository id. When verifying permissions with `ResourceGrantsAuthorizer` (Tier 2), uses this string to search for the matching resource entry in the JWT. |
-| `resource_wildcard` | `urc-*` | The resource name that matches every repository. |
-| `baseline_access` | `denied` | What the `baseline` repository catalog answers to `lore repository list`: `denied` (the default) lists none, `reachable` lists every partition ID the server holds. Gates listing of the IDs only, never grants access to the contents. `denied` blocks no operation on a partition the caller holds a grant for. Not consulted by the `auth_service` or `user_service` catalogs. A server with no `[server.auth]` lists everything it holds. |
-| `repository_catalog` | derived | Which catalog answers `lore repository list`: `user_service` fetches the list from `RepositoryList` on the `lore.user.v1.RepositoryRegistryService` at `[environment.endpoint] user_url`, and requires `user_url`. `auth_service` fetches the list from `UrcAuthApi` gRPC service's `LookupUserPermissions`. `baseline` fetches the list from the server's own store, based on `baseline_access` configuration rule. When unset, uses `user_service` if `[environment.endpoint] user_url` is set, else `auth_service` if `auth_url` is set, and `baseline` otherwise. Both remote catalogs forward the caller's own token. A listing of more than 100,000 partitions fails with `RESOURCE_EXHAUSTED`. Set this to `auth_service` to keep an auth-service catalog on a deployment authorizing from token claims, or set it to `baseline` to list from the server store on a `UrcAuthApi` deployment. |
-| `repository_catalog_url` | `auth_url` | The `UrcAuthApi` endpoint the `auth_service` catalog asks. The `user_service` catalog ignores it and asks `user_url`. Defaults to `[environment.endpoint] auth_url`. This is required with `repository_catalog = "auth_service"` when `auth_url` is unset. The catalog forwards the caller's own token, so the endpoint must accept the tokens this server verifies. |
+| Field                    | Default       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `jwt_issuer`             | required      | Accepted JWT `iss` values, as a string or an array. Tokens whose issuer matches no entry are rejected. Two entries are for the duration of an issuer's `iss` cutover if the issuer is changed. The validator accepts tokens minted under both the old and the new value while both are in flight.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `jwt_audience`           | required      | Array of accepted JWT `aud` values. A token's audience must match one entry.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `jwt_typ`                | none          | Accepted JWT `typ` header values, as a string or an array. When set, a token whose header carries no `typ`, or a `typ` that doesn't match any of the entries, is rejected. If unset, the token value is not checked. `jwt_typ = "at+jwt"` is the RFC 9068 access-token profile for OAuth2/OIDC deployments, and should be used for OIDC-compliant setups. Values compare as media types: case-insensitively, and with or without the `application/` prefix, so `at+jwt` also accepts `application/at+jwt`.                                                                                                                                                                                                                                                                                                                                                                                          |
+| `jwk`                    | none          | The optional `[server.auth.jwk]` override sub-table below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `oidc`                   | none          | The optional `[server.auth.oidc]` sub-table below, which configures the OIDC provider info shown to clients.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `permission_claim`       | none          | Dotted path of the JWT claim carrying the caller's allowed actions, e.g. `realm_access.roles` (Keycloak) or `groups` (Dex). When using `GlobalGrantsAuthorizer` (Tier 1), this JWT claim defines where the user's global permissions are read from. When `resource_claim` is set and `ResourceGrantsAuthorizer` (Tier 2) is in use, it instead names the field inside each resource entry holding the per-partition actions, defaulting to `permission`.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `implicit_actions`       | `["write"]`   | Actions every token holder gets under `GlobalGrantsAuthorizer` (Tier 1), added to those `permission_claim` carries and to `read`, which any token implies. Set `[]` to grant `write` through a role only, or, without `permission_claim`, to make the server read-only. Any of `read`, `write`, `owner`, `admin`, `migrate`, `push-protected`, `obliterate` and `presign` may be listed; any other name is a configuration error. The server refuses to start with it set beside `resource_claim` or `auth_url`, where it would do nothing.                                                                                                                                                                                                                                                                                                                                                         |
+| `resource_claim`         | none          | Dotted path of the JWT claim carrying per-repository resource grants. If this is set, enables the granular `ResourceGrantsAuthorizer` (Tier 2) authorizer.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `resource_id_claim`      | `resource_id` | The field inside each resource entry that names the resource, for providers whose entry shape cannot be changed. Keycloak's UMA `authorization.permissions` entries carry the resource name in `rsname`, for example: set `resource_claim = "authorization.permissions"`, `resource_id_claim = "rsname"` and `permission_claim = "scopes"` to read them. Tier 2 only.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `resource_id_template`   | `urc-{id}`    | Template that renders a repository id into the corresponding resource name. `{id}` is replaced by the repository id. When verifying permissions with `ResourceGrantsAuthorizer` (Tier 2), uses this string to search for the matching resource entry in the JWT.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `resource_wildcard`      | `urc-*`       | The resource name that matches every repository.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `baseline_access`        | `denied`      | What the `baseline` repository catalog answers to `lore repository list`: `denied` (the default) lists none, `reachable` lists every partition ID the server holds. Gates listing of the IDs only, never grants access to the contents. `denied` blocks no operation on a partition the caller holds a grant for. Not consulted by the `auth_service` or `user_service` catalogs. A server with no `[server.auth]` lists everything it holds.                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `repository_catalog`     | derived       | Which catalog answers `lore repository list`: `user_service` fetches the list from `RepositoryList` on the `lore.user.v1.RepositoryRegistryService` at `[environment.endpoint] user_url`, and requires `user_url`. `auth_service` fetches the list from `UrcAuthApi` gRPC service's `LookupUserPermissions`. `baseline` fetches the list from the server's own store, based on `baseline_access` configuration rule. When unset, uses `user_service` if `[environment.endpoint] user_url` is set, else `auth_service` if `auth_url` is set, and `baseline` otherwise. Both remote catalogs forward the caller's own token. A listing of more than 100,000 partitions fails with `RESOURCE_EXHAUSTED`. Set this to `auth_service` to keep an auth-service catalog on a deployment authorizing from token claims, or set it to `baseline` to list from the server store on a `UrcAuthApi` deployment. |
+| `repository_catalog_url` | `auth_url`    | The `UrcAuthApi` endpoint the `auth_service` catalog asks. The `user_service` catalog ignores it and asks `user_url`. Defaults to `[environment.endpoint] auth_url`. This is required with `repository_catalog = "auth_service"` when `auth_url` is unset. The catalog forwards the caller's own token, so the endpoint must accept the tokens this server verifies.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 The caller's identity, recorded as the creator of what the caller makes and compared wherever an identity is checked, is read from the token: its `identity` claim, or the namespaced alias `https://lore.org/claims/identity`, where the issuer mints one, and `sub` otherwise. No setting names it.
 
 `[server.auth.jwk]`:
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `endpoint` | none | URL of the JWKS (JSON Web Key Set) endpoint, as an override for providers with non-standard discovery. When unset and `jwt_issuer` is an issuer URL, the server resolves the endpoint through OIDC discovery: it fetches `<jwt_issuer>/.well-known/openid-configuration` (the first jwt_issuer entry, when several issuers are configured) and takes `jwks_uri` from it. The server fetches and caches signing keys at startup and re-fetches on an unknown key ID. If this is unset, and `jwt_issuer` has no issuer URL, this is a startup error. |
+| Field      | Default | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `endpoint` | none    | URL of the JWKS (JSON Web Key Set) endpoint, as an override for providers with non-standard discovery. When unset and `jwt_issuer` is an issuer URL, the server resolves the endpoint through OIDC discovery: it fetches `<jwt_issuer>/.well-known/openid-configuration` (the first jwt_issuer entry, when several issuers are configured) and takes `jwks_uri` from it. The server fetches and caches signing keys at startup and re-fetches on an unknown key ID. If this is unset, and `jwt_issuer` has no issuer URL, this is a startup error. |
 
 ```toml
 # Presence of `[server.auth]` enables JWT verification. By default the
@@ -449,15 +449,15 @@ jwt_audience = ["lore-service"]
 
 When this table is present, the environment service advertises an OIDC provider to clients. `GlobalGrantsAuthorizer` (Tier 1) and `ResourceGrantsAuthorizer` (Tier 2) require it, since without `[environment.endpoint] auth_url` clients have no other way to log in. If `auth_url` is set, it is optional, and advertises the OIDC path next to the auth service during a migration. The advertised OIDC issuer is the first `jwt_issuer` entry, which must be an issuer URL.
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `client_id` | required | The public client ID clients present to the provider. |
-| `scopes` | `[]` | Default scopes clients request at an interactive (device) login. Empty leaves the choice to the client. |
-| `client_credentials_scopes` | `[]` | Scopes clients request when they log in with the client credentials grant, `lore auth login --client-id`. Set it for a provider that adds the claims Lore reads only for a requested scope. Empty requests no scope, which leaves the client's default scopes to the provider. `scopes` doesn't apply to this grant. Clients from the release that adds this setting on send the scopes; older clients send none. |
-| `preferred` | `false` | Whether a client should use OIDC auth rather than at `auth_url`, if both are configured. Used during migration to route clients to the old auth by default, while allowing testing of the new OIDC auth. |
-| `token_exchange_issuer` | `jwt_issuer` | The issuer of the RFC 8693 token-exchange endpoint that mints partition-scoped tokens. Set it only when a separate token service does the exchange, as an http or https issuer URL. If `jwt_issuer` lists it, the `jwt_issuer` keys verify its tokens. Otherwise, the server verifies a token naming the service as `iss` against the service's own keys, found through `<token_exchange_issuer>/.well-known/openid-configuration`, and every other token against the `jwt_issuer` keys. It fetches the service's keys at startup and doesn't start if it can't. `jwt_audience` and `jwt_typ` apply to the service's tokens too, and `[server.auth.jwk].endpoint` to the `jwt_issuer` keys only. Tier 2. |
-| `resource_template` | none | Template string for mapping a partition to an RFC 8707 resource, for example `https://lore.google.com/partitions/{id}`. `{id}` is replaced by the partition ID. Tier 2. |
-| `scope_template` | none | Template string for mapping a partition to a scope value, for example `partition:{id}`. For OIDC providers that use scope for token exchange, not `resource`. Tier 2. |
+| Field                       | Default      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| --------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `client_id`                 | required     | The public client ID clients present to the provider.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `scopes`                    | `[]`         | Default scopes clients request at an interactive (device) login. Empty leaves the choice to the client.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `client_credentials_scopes` | `[]`         | Scopes clients request when they log in with the client credentials grant, `lore auth login --client-id`. Set it for a provider that adds the claims Lore reads only for a requested scope. Empty requests no scope, which leaves the client's default scopes to the provider. `scopes` doesn't apply to this grant. Clients from the release that adds this setting on send the scopes; older clients send none.                                                                                                                                                                                                                                                                                        |
+| `preferred`                 | `false`      | Whether a client should use OIDC auth rather than at `auth_url`, if both are configured. Used during migration to route clients to the old auth by default, while allowing testing of the new OIDC auth.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `token_exchange_issuer`     | `jwt_issuer` | The issuer of the RFC 8693 token-exchange endpoint that mints partition-scoped tokens. Set it only when a separate token service does the exchange, as an http or https issuer URL. If `jwt_issuer` lists it, the `jwt_issuer` keys verify its tokens. Otherwise, the server verifies a token naming the service as `iss` against the service's own keys, found through `<token_exchange_issuer>/.well-known/openid-configuration`, and every other token against the `jwt_issuer` keys. It fetches the service's keys at startup and doesn't start if it can't. `jwt_audience` and `jwt_typ` apply to the service's tokens too, and `[server.auth.jwk].endpoint` to the `jwt_issuer` keys only. Tier 2. |
+| `resource_template`         | none         | Template string for mapping a partition to an RFC 8707 resource, for example `https://lore.google.com/partitions/{id}`. `{id}` is replaced by the partition ID. Tier 2.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `scope_template`            | none         | Template string for mapping a partition to a scope value, for example `partition:{id}`. For OIDC providers that use scope for token exchange, not `resource`. Tier 2.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 `ResourceGrantsAuthorizer` (Tier 2, `resource_claim` set) requires one of `resource_template` and `scope_template`. The templates are mutually exclusive.
 
@@ -483,17 +483,17 @@ The identity names the caller and grants nothing: permissions stay as described 
 
 `[server.uds]` serves the containers of one machine over stream sockets in the filesystem, one socket per container: Unix domain sockets on Linux and macOS, and `AF_UNIX` sockets on Windows. A server that does so is the machine's [machine server](../glossary.md#machine-server); [Run a machine server for containers](../how-to/run-a-machine-server-for-containers.md) sets one up. A client reaches a socket through a `lore-unix://<upstream host>/<repository>` remote, with `LORE_UDS_SOCKET` naming the socket (see the [Lore CLI configuration reference](lore-cli-config.md#environment-variables)). A connection that opens with the storage handshake speaks the storage protocol, and the server answers it from its stores with the same storage service as `[server.quic]`. A connection that opens with the HTTP/2 client preface carries gRPC over plaintext HTTP/2, which the server forwards to the host each request names (see [Forwarded gRPC](#forwarded-grpc)). The server closes a connection that opens with neither. The table does nothing unless it sets `enabled = true`.
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `enabled` | `false` | Whether to serve the sockets. |
-| `sockets` | `[]` | Socket paths, one per container, each in a directory bind-mounted into its container. A relative path resolves against the server's working directory. See [Socket files](#socket-files). |
-| `socket_mode` | `0o666` | Permission bits of each socket file on Unix. On Windows, a mode that lets others write (`0o002`) lets the machine's users connect to the socket; otherwise the socket keeps what its directory grants. |
-| `credits` | `4000` | Requests a connection may have in handling. The server states it in its handshake, and a client never has more requests outstanding. |
-| `credit_bytes` | `268435456` | Bytes a connection may hold (256 MiB): its request bodies in handling, the largest response, `262480` bytes, for each read (`Get`, `GetResolved`) in handling, and its responses the socket has not taken yet. The server states it in its handshake. |
-| `max_connections_per_socket` | `64` | Connections a socket holds at once, storage and gRPC alike, which the container's processes share. The server closes a connection past the limit as it accepts it. A closed connection counts until its requests in handling finish. |
-| `socket_bytes` | `1073741824` | Bytes all of a socket's connections may hold together (1 GiB): request bodies of `4096` bytes or more in handling, the largest response for each read in handling, and responses not yet written. Smaller request bodies count against their connection's `credits` and `credit_bytes` only, so a socket may have up to `max_connections_per_socket` times `credits` of those requests in handling, `256000` by default. |
-| `handler_timeout_seconds` | `50` | Longest the server handles one storage request before it answers `SlowDown`, from `1` to `65535`. The server states it in its handshake. |
-| `forward` | `{}` | Hosts gRPC is forwarded to: a table from the host name a request names to the URL the server reaches that host at. See [Forwarded gRPC](#forwarded-grpc). |
+| Field                        | Default      | Description                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ---------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `enabled`                    | `false`      | Whether to serve the sockets.                                                                                                                                                                                                                                                                                                                                                                                            |
+| `sockets`                    | `[]`         | Socket paths, one per container, each in a directory bind-mounted into its container. A relative path resolves against the server's working directory. See [Socket files](#socket-files).                                                                                                                                                                                                                                |
+| `socket_mode`                | `0o666`      | Permission bits of each socket file on Unix. On Windows, a mode that lets others write (`0o002`) lets the machine's users connect to the socket; otherwise the socket keeps what its directory grants.                                                                                                                                                                                                                   |
+| `credits`                    | `4000`       | Requests a connection may have in handling. The server states it in its handshake, and a client never has more requests outstanding.                                                                                                                                                                                                                                                                                     |
+| `credit_bytes`               | `268435456`  | Bytes a connection may hold (256 MiB): its request bodies in handling, the largest response, `262480` bytes, for each read (`Get`, `GetResolved`) in handling, and its responses the socket has not taken yet. The server states it in its handshake.                                                                                                                                                                    |
+| `max_connections_per_socket` | `64`         | Connections a socket holds at once, storage and gRPC alike, which the container's processes share. The server closes a connection past the limit as it accepts it. A closed connection counts until its requests in handling finish.                                                                                                                                                                                     |
+| `socket_bytes`               | `1073741824` | Bytes all of a socket's connections may hold together (1 GiB): request bodies of `4096` bytes or more in handling, the largest response for each read in handling, and responses not yet written. Smaller request bodies count against their connection's `credits` and `credit_bytes` only, so a socket may have up to `max_connections_per_socket` times `credits` of those requests in handling, `256000` by default. |
+| `handler_timeout_seconds`    | `50`         | Longest the server handles one storage request before it answers `SlowDown`, from `1` to `65535`. The server states it in its handshake.                                                                                                                                                                                                                                                                                 |
+| `forward`                    | `{}`         | Hosts gRPC is forwarded to: a table from the host name a request names to the URL the server reaches that host at. See [Forwarded gRPC](#forwarded-grpc).                                                                                                                                                                                                                                                                |
 
 When a connection reaches `credits`, `credit_bytes` or `socket_bytes`, the server stops reading it until a handler finishes or a response is written, and the socket's own buffer holds the client back. The server never answers `SlowDown` for these limits.
 
@@ -545,11 +545,11 @@ sockets = ["/var/run/lore/build-1/lore.sock", "/var/run/lore/build-2/lore.sock"]
 
 Lore Server keeps three stores: an immutable store for content-addressed fragments, a mutable store for branch pointers, and a lock store for distributed locking. Each is configured by a top-level table — `[immutable_store]`, `[mutable_store]`, `[lock_store]` — whose `mode` field selects the backend.
 
-| Table | `mode` default | Available modes |
-| --- | --- | --- |
-| `[immutable_store]` | `local` | `local`, `composite`, `replicated`, `remote`, or a plugin name such as `aws`. |
-| `[mutable_store]` | `local` | `local`, `remote`, or a plugin name such as `aws`. |
-| `[lock_store]` | `local` | `local`, `none`, or a plugin name such as `aws` (DynamoDB). |
+| Table               | `mode` default | Available modes                                                               |
+| ------------------- | -------------- | ----------------------------------------------------------------------------- |
+| `[immutable_store]` | `local`        | `local`, `composite`, `replicated`, `remote`, or a plugin name such as `aws`. |
+| `[mutable_store]`   | `local`        | `local`, `remote`, or a plugin name such as `aws`.                            |
+| `[lock_store]`      | `local`        | `local`, `none`, or a plugin name such as `aws` (DynamoDB).                   |
 
 `lock_store.mode = "none"` builds no lock store, so `LockService` does not register. The mode exists because `default.toml` sets `[lock_store]` and a layered configuration cannot remove a key a lower layer supplied.
 
@@ -559,17 +559,17 @@ Each mode reads its settings from a matching sub-table. The `local` mode uses `[
 
 `[immutable_store.local]` and `[mutable_store.local]` configure the on-disk local stores. The mutable store accepts only `path` and `flush_delay_seconds`; the immutable store accepts the full set below.
 
-| Field | Default | Applies to | Description |
-| --- | --- | --- | --- |
-| `path` | derived `<temp>/lore-server` | both | Filesystem location for the store. When empty, the server derives a path under the system temporary directory at startup (ephemeral — see [Zero-config defaults](#zero-config-defaults)). |
-| `flush_delay_seconds` | `10` | both | Seconds between background flushes to disk. In the immutable store, index writes pending after a capacity eviction pass are also spread across this interval, group by group, except in maintenance mode, where they are written as the pass ends. If the server stops before a group's writes reach disk, the entries evicted from that group are back when it restarts. |
-| `max_capacity` | none | immutable | Maximum number of entries before eviction. |
-| `max_size` | none | immutable | Maximum total store size in bytes before background compaction reclaims space. Compaction rewrites a group's packfiles only once at least 10% of their bytes are no longer referenced. |
-| `eviction_delay` | none | immutable | Interval in milliseconds between eviction passes. Defaults to 10 s when unset. |
-| `compaction_delay` | none | immutable | Interval in milliseconds between compaction passes. Defaults to 24 h when unset. |
-| `target_capacity_percentage` | `70` | immutable | Capacity-utilization target (percent) that eviction reclaims down to. Applies only when `max_capacity` is set; 0 or ≥100 is treated as `70`. |
-| `target_size_percentage` | `70` | immutable | Size-utilization target (percent) that compaction reclaims down to. Applies only when `max_size` is set; 0 or ≥100 is treated as `70`. |
-| `compaction_parallel_groups` | `8` | immutable | Number of compaction groups processed in parallel. |
+| Field                        | Default                      | Applies to | Description                                                                                                                                                                                                                                                                                                                                                               |
+| ---------------------------- | ---------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `path`                       | derived `<temp>/lore-server` | both       | Filesystem location for the store. When empty, the server derives a path under the system temporary directory at startup (ephemeral — see [Zero-config defaults](#zero-config-defaults)).                                                                                                                                                                                 |
+| `flush_delay_seconds`        | `10`                         | both       | Seconds between background flushes to disk. In the immutable store, index writes pending after a capacity eviction pass are also spread across this interval, group by group, except in maintenance mode, where they are written as the pass ends. If the server stops before a group's writes reach disk, the entries evicted from that group are back when it restarts. |
+| `max_capacity`               | none                         | immutable  | Maximum number of entries before eviction.                                                                                                                                                                                                                                                                                                                                |
+| `max_size`                   | none                         | immutable  | Maximum total store size in bytes before background compaction reclaims space. Compaction rewrites a group's packfiles only once at least 10% of their bytes are no longer referenced.                                                                                                                                                                                    |
+| `eviction_delay`             | none                         | immutable  | Interval in milliseconds between eviction passes. Defaults to 10 s when unset.                                                                                                                                                                                                                                                                                            |
+| `compaction_delay`           | none                         | immutable  | Interval in milliseconds between compaction passes. Defaults to 24 h when unset.                                                                                                                                                                                                                                                                                          |
+| `target_capacity_percentage` | `70`                         | immutable  | Capacity-utilization target (percent) that eviction reclaims down to. Applies only when `max_capacity` is set; 0 or ≥100 is treated as `70`.                                                                                                                                                                                                                              |
+| `target_size_percentage`     | `70`                         | immutable  | Size-utilization target (percent) that compaction reclaims down to. Applies only when `max_size` is set; 0 or ≥100 is treated as `70`.                                                                                                                                                                                                                                    |
+| `compaction_parallel_groups` | `8`                          | immutable  | Number of compaction groups processed in parallel.                                                                                                                                                                                                                                                                                                                        |
 
 > [!NOTE]
 > The `composite` mode layers a local cache tier over a durable plugin tier (for example, a local cache in front of S3). It reads `[immutable_store.composite.local]` and `[immutable_store.composite.durable]`, where the durable tier names a plugin mode such as `aws`, or `remote` (see [Remote store mode](#remote-store-mode)). Composite and replicated store internals are out of scope here.
@@ -580,11 +580,11 @@ The lock store's `local` mode takes no sub-table — it uses an in-process, in-m
 
 The `remote` mode keeps a store at another Lore server, the upstream, which the server reaches as a client does: the immutable store reads and writes content there, and the mutable store loads and stores mutable keys there, but lists none. `[immutable_store] mode = "remote"` reads `[immutable_store.remote]`, `[mutable_store] mode = "remote"` reads `[mutable_store.remote]`, and a composite store's durable tier in `remote` mode reads `[immutable_store.composite.durable.remote]`. The server refuses to start in `remote` mode without the table. How many storage connections it opens to the upstream follows `server.upstream_connections` (see [Server and endpoint settings](#server-and-endpoint-settings)).
 
-| Field | Default | Applies to | Description |
-| --- | --- | --- | --- |
-| `remote_url` | required | both | URL of the upstream as a client names it, without a repository, for example `lores://lore.google.com:41337`. |
-| `verify` | `false` | immutable | Whether the store checks each payload the upstream serves against its address, decoding and hashing it. When `false`, the store trusts the upstream and checks only a payload's sizes. Either way, a client checks each payload it fetches from the server against its address, except a client that trusts its remote (`--trust-remote`, or `trust_remote` or `skip_verify` through the C API), which checks only the sizes. A client that finds a payload corrupt asks the server to heal it: the server drops its own copy only if that copy is corrupt, and asks the upstream to heal only where its own copy was corrupt or missing. |
-| `auth_url` | none | immutable | Despite its name, the identity the store authenticates at the upstream as, not a URL. The server uses the login stored for that identity in the token store of the user it runs as. When unset, the store uses the first identity stored there that the upstream accepts. The `remote` mutable store ignores the field and always uses that first identity. |
+| Field        | Default  | Applies to | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------------ | -------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `remote_url` | required | both       | URL of the upstream as a client names it, without a repository, for example `lores://lore.google.com:41337`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `verify`     | `false`  | immutable  | Whether the store checks each payload the upstream serves against its address, decoding and hashing it. When `false`, the store trusts the upstream and checks only a payload's sizes. Either way, a client checks each payload it fetches from the server against its address, except a client that trusts its remote (`--trust-remote`, or `trust_remote` or `skip_verify` through the C API), which checks only the sizes. A client that finds a payload corrupt asks the server to heal it: the server drops its own copy only if that copy is corrupt, and asks the upstream to heal only where its own copy was corrupt or missing. |
+| `auth_url`   | none     | immutable  | Despite its name, the identity the store authenticates at the upstream as, not a URL. The server uses the login stored for that identity in the token store of the user it runs as. When unset, the store uses the first identity stored there that the upstream accepts. The `remote` mutable store ignores the field and always uses that first identity.                                                                                                                                                                                                                                                                               |
 
 ```toml
 [mutable_store]
@@ -598,13 +598,13 @@ remote_url = "lores://lore.google.com:41337"
 
 `[topology]` selects how the server discovers its peers. The `provider` field is the selector.
 
-| `provider` | Discovery model | Configuration |
-| --- | --- | --- |
-| `none` (default) | Single-node mode, no peers. | None. |
-| `fixed` | Static, built-in peer list. | `[topology.fixed]`. |
-| `rotating_id_fixed` | Static peer list whose IDs rotate on an interval (built-in). | `[topology.rotating_id_fixed]`. |
-| `composite` | Merges peers from one or more topology sources (built-in). | `[topology.composite]`. |
-| `consul` | Dynamic service discovery (plugin). | Configured via `[plugins.consul]`. See [Plugin backends](#plugin-backends). |
+| `provider`          | Discovery model                                              | Configuration                                                               |
+| ------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `none` (default)    | Single-node mode, no peers.                                  | None.                                                                       |
+| `fixed`             | Static, built-in peer list.                                  | `[topology.fixed]`.                                                         |
+| `rotating_id_fixed` | Static peer list whose IDs rotate on an interval (built-in). | `[topology.rotating_id_fixed]`.                                             |
+| `composite`         | Merges peers from one or more topology sources (built-in).   | `[topology.composite]`.                                                     |
+| `consul`            | Dynamic service discovery (plugin).                          | Configured via `[plugins.consul]`. See [Plugin backends](#plugin-backends). |
 
 When `[topology]` is omitted entirely, the server runs in single-node mode, the same as `provider = "none"`.
 
@@ -620,10 +620,10 @@ provider = "fixed"
 peers = [{ address = "192.168.1.10", port = 41340, locality = "SameRegion" }]
 ```
 
-| Field | Description |
-| --- | --- |
-| `address` | Peer hostname or IP address. |
-| `port` | Peer port. |
+| Field      | Description                                                                  |
+| ---------- | ---------------------------------------------------------------------------- |
+| `address`  | Peer hostname or IP address.                                                 |
+| `port`     | Peer port.                                                                   |
 | `locality` | Peer locality relative to this server: either `SameRegion` or `OtherRegion`. |
 
 ### Rotating-ID fixed topology
@@ -666,13 +666,13 @@ Backends beyond the built-in store modes and topology providers documented above
 
 Five kinds of backend can be supplied by a plugin, each chosen by a different field:
 
-| Plugin kind | Selector | Built-in alternatives |
-| --- | --- | --- |
-| Immutable store | `immutable_store.mode` | `local`, `composite`, `replicated`, `remote` |
-| Mutable store | `mutable_store.mode` | `local`, `remote` |
-| Lock store | `lock_store.mode` | `local`, `none` |
-| Topology | `topology.provider` | `none`, `fixed`, `rotating_id_fixed`, `composite` |
-| Notification | `notification.mode` | `local` |
+| Plugin kind     | Selector               | Built-in alternatives                             |
+| --------------- | ---------------------- | ------------------------------------------------- |
+| Immutable store | `immutable_store.mode` | `local`, `composite`, `replicated`, `remote`      |
+| Mutable store   | `mutable_store.mode`   | `local`, `remote`                                 |
+| Lock store      | `lock_store.mode`      | `local`, `none`                                   |
+| Topology        | `topology.provider`    | `none`, `fixed`, `rotating_id_fixed`, `composite` |
+| Notification    | `notification.mode`    | `local`                                           |
 
 When a selector names a plugin rather than a built-in, the server hands that plugin its `[plugins.<name>]` table as raw configuration and lets the plugin parse it. The field names and defaults of `[plugins.<name>]` are therefore owned by the plugin — and by the binary that compiles it in — not by `loreserver`. If no plugin of that name is registered, startup fails with `PluginNotFound`; a malformed plugin table fails with `PluginConfigError`; and a plugin that starts but cannot reach its backend fails with `PluginInitError`.
 
@@ -681,7 +681,7 @@ When a selector names a plugin rather than a built-in, the server hands that plu
 This repository ships two reference plugin implementations as source. Both require a derived server binary that registers them; neither is compiled into `loreserver`.
 
 - **`lore-aws`** backs the immutable store with Amazon S3 and DynamoDB, and the mutable and lock stores with DynamoDB. AWS credentials come from the SDK's default credential chain (environment, profile, instance role), not from the config file.
-- **`lore-hashicorp`** provides a Consul topology that discovers peers from a service catalog. It only *reads* the catalog — each server must be registered in Consul externally (by your orchestrator or a Consul agent) — returns only passing or healthy nodes, and re-polls on a fixed interval.
+- **`lore-hashicorp`** provides a Consul topology that discovers peers from a service catalog. It only _reads_ the catalog — each server must be registered in Consul externally (by your orchestrator or a Consul agent) — returns only passing or healthy nodes, and re-polls on a fixed interval.
 
 > [!NOTE]
 > Per-field configuration for these plugins depends on the binary that registers them and is out of scope for this page. A dedicated Server plugins guide — covering the plugin registry, the factory traits, and how to build a server binary with plugins compiled in — is planned.
@@ -700,7 +700,7 @@ Hooks fire at these points:
 
 A hook's pre-handler runs before the operation, and the operation waits for it. A pre-handler still running after 1 second, or after the timeout the hook sets for itself, is cancelled and the operation fails with `UNAVAILABLE`, so the client can retry. On the v1 `BranchPush`, `BranchCreate`, and `BranchDelete` RPCs, a pre-handler sees the branch name and whether the caller is a service account.
 
-A hook can veto an operation by returning an error, log or audit it, or trigger an external notification. The example below sketches a compliance hook that denies pushes to protected branch patterns and posts to a webhook on failure. It is illustrative — `deny_patterns`, `allowed_users`, and `webhook_url` are fields a *custom* compliance hook would define; the stock `loreserver` ships no such hook (see note below):
+A hook can veto an operation by returning an error, log or audit it, or trigger an external notification. The example below sketches a compliance hook that denies pushes to protected branch patterns and posts to a webhook on failure. It is illustrative — `deny_patterns`, `allowed_users`, and `webhook_url` are fields a _custom_ compliance hook would define; the stock `loreserver` ships no such hook (see note below):
 
 ```toml
 # Illustrative only — requires a custom "compliance" hook compiled in.
@@ -711,27 +711,27 @@ allowed_users = ["admin", "release-bot"]
 webhook_url = "https://compliance.google.com/notify"
 ```
 
-| Field | Description |
-| --- | --- |
-| `enabled` | Whether the hook is active. Defaults to `false`. |
+| Field                | Description                                                                                                                                                                  |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`            | Whether the hook is active. Defaults to `false`.                                                                                                                             |
 | Hook-specific fields | Each hook defines its own fields — for example `deny_patterns`, `allowed_users`, and `webhook_url` for a compliance hook, or per-event webhook URLs for a notification hook. |
 
 > [!NOTE]
-> The base `loreserver` binary registers no hooks. A `[hooks.<name>]` table is matched by name against hooks compiled into the binary: a *disabled* table for an unknown hook is ignored, but an **enabled** table naming a hook that isn't compiled in aborts server startup. Custom hooks implement the `Hook` and `HookFactory` traits in Rust and are wired in by `build.rs` at compile time (the registry is populated at startup).
+> The base `loreserver` binary registers no hooks. A `[hooks.<name>]` table is matched by name against hooks compiled into the binary: a _disabled_ table for an unknown hook is ignored, but an **enabled** table naming a hook that isn't compiled in aborts server startup. Custom hooks implement the `Hook` and `HookFactory` traits in Rust and are wired in by `build.rs` at compile time (the registry is populated at startup).
 
 ## Telemetry settings
 
 `[telemetry.logger]` configures log output. `[telemetry.exporter]` configures the OpenTelemetry (OTLP) exporter. `[telemetry.metrics]` and `[telemetry.traces]` tune metric collection intervals and trace sampling.
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `telemetry.logger.format` | `json` (shipped default) | Log line format. One of `ansi`, `json`, or `text`. |
-| `telemetry.logger.output` | `stdout` | Log destination. One of `stdout`, `stderr`, or a `{ file = "<path>" }` table. |
-| `telemetry.logger.enable_otlp` | `false` | Forward logs over OTLP in addition to the local output. |
-| `telemetry.exporter.endpoint` | none | OTLP collector endpoint, for example `http://collector:4317`. |
-| `telemetry.exporter.queue_size` | none | Export queue size. |
-| `telemetry.exporter.timeout` | none | Export timeout in milliseconds. |
-| `telemetry.additional_labels` | none | Extra key-value labels attached to exported telemetry. |
+| Field                           | Default                  | Description                                                                   |
+| ------------------------------- | ------------------------ | ----------------------------------------------------------------------------- |
+| `telemetry.logger.format`       | `json` (shipped default) | Log line format. One of `ansi`, `json`, or `text`.                            |
+| `telemetry.logger.output`       | `stdout`                 | Log destination. One of `stdout`, `stderr`, or a `{ file = "<path>" }` table. |
+| `telemetry.logger.enable_otlp`  | `false`                  | Forward logs over OTLP in addition to the local output.                       |
+| `telemetry.exporter.endpoint`   | none                     | OTLP collector endpoint, for example `http://collector:4317`.                 |
+| `telemetry.exporter.queue_size` | none                     | Export queue size.                                                            |
+| `telemetry.exporter.timeout`    | none                     | Export timeout in milliseconds.                                               |
+| `telemetry.additional_labels`   | none                     | Extra key-value labels attached to exported telemetry.                        |
 
 > [!NOTE]
 > `[telemetry.exporter]` is optional as a whole, but when the table is present all three fields (`endpoint`, `queue_size`, `timeout`) are required — they have no individual defaults. Logs, metrics, and traces are exported over OTLP only when `[telemetry.exporter]` is configured; `telemetry.logger.enable_otlp` forwards logs only in that case.
@@ -742,18 +742,18 @@ webhook_url = "https://compliance.google.com/notify"
 
 `[telemetry.metrics]`:
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `export_interval_millis` | `30000` | Interval in milliseconds between samples of the async (Tokio) runtime metrics. |
+| Field                    | Default | Description                                                                                                                        |
+| ------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `export_interval_millis` | `30000` | Interval in milliseconds between samples of the async (Tokio) runtime metrics.                                                     |
 | `sample_interval_millis` | `10000` | Interval in milliseconds at which the OTLP reader exports metrics to the collector; also paces local-store memory-stats reporting. |
 
 `[telemetry.traces]`:
 
-| Field | Default | Description |
-| --- | --- | --- |
-| `sample_rate` | `0.05` | Fraction of traces sampled. |
-| `sample_rate_low_tier` | `0.001` | Sampling fraction applied to low-tier (high-volume) traces. |
-| `service_name` | none | Service name reported on exported traces. Falls back to `lore` when unset. |
+| Field                  | Default | Description                                                                |
+| ---------------------- | ------- | -------------------------------------------------------------------------- |
+| `sample_rate`          | `0.05`  | Fraction of traces sampled.                                                |
+| `sample_rate_low_tier` | `0.001` | Sampling fraction applied to low-tier (high-volume) traces.                |
+| `service_name`         | none    | Service name reported on exported traces. Falls back to `lore` when unset. |
 
 > [!NOTE]
 > Both sample rates must fall within `[0.0, 1.0]` inclusive, or the server refuses to start with a configuration error.
@@ -762,8 +762,8 @@ webhook_url = "https://compliance.google.com/notify"
 
 `[notification]` selects the notification backend.
 
-| Field | Default | Description |
-| --- | --- | --- |
+| Field               | Default | Description                                                                                                    |
+| ------------------- | ------- | -------------------------------------------------------------------------------------------------------------- |
 | `notification.mode` | `local` | Notification backend. `local` uses in-process broadcast channels; any other value names a notification plugin. |
 
 ## Examples

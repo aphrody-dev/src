@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
 
 > [!CAUTION]
@@ -33,13 +34,13 @@ To understand how it was created and how well it performs you can use Chrome Dev
 
 With the animation running, open the Performance tab in Chrome DevTools and record a few seconds of the animation.
 You should see in the Summary that the browser is not doing any Layout or Paint operations when running this animation.
- The summary after profiling the wizard animation.
+The summary after profiling the wizard animation.
 
 To find out how this animation was achieved without causing layout and paint,
 inspect any of the moving elements in Chrome DevTools.
 You can use the **Animations Panel** to locate the various animated elements,
 clicking on any element will highlight it in the DOM.
- Viewing and selecting items in the Chrome DevTools Animation Panel.
+Viewing and selecting items in the Chrome DevTools Animation Panel.
 
 For example select the triangle,
 and watch how the box of the element transforms during its journey into the air,
@@ -57,24 +58,24 @@ using borders to create the shape.
 
 ```css
 .triangle {
-    position: absolute;
-    bottom: -62px;
-    left: -10px;
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
+  position: absolute;
+  bottom: -62px;
+  left: -10px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
 }
 
 .triangle::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: -10px;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 28px 48px 28px;
-    border-color: transparent transparent #89beb3 transparent;
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -10px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 28px 48px 28px;
+  border-color: transparent transparent #89beb3 transparent;
 }
 ```
 
@@ -111,6 +112,7 @@ which does not cause the browser to do layout or paint operations (which are the
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi" loading="lazy" src="https://glitch.com/embed/#!/embed/animation-breakdown1-2?attributionHidden=true&amp;sidebarCollapsed=true&amp;previewSize=100" style="height: 100%; width: 100%; border: 0;" title="animation-breakdown1-2 on Glitch"></iframe>
 
 Each of the different moving parts of this animation uses similar techniques.
@@ -132,7 +134,7 @@ Stop the recording,
 in the waterfall you should see that there are no entries for **Recalculate Style**.
 You now know that this animation does not cause style recalculation,
 and therefore layout and paint operations.
- The Firefox DevTools Waterfall.
+The Firefox DevTools Waterfall.
 
 Staying in Firefox DevTools inspect the circle to see how this animation works.
 The `<div>` with a class of `pulsating-circle` marks the position of the circle,
@@ -140,12 +142,12 @@ however it does not draw a circle itself.
 
 ```css
 .pulsating-circle {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    width: 30px;
-    height: 30px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 30px;
+  height: 30px;
 }
 ```
 
@@ -157,24 +159,25 @@ which animates `transform: scale`, and `opacity`.
 
 ```css
 .pulsating-circle::before {
-    content: '';
-    position: relative;
-    display: block;
-    width: 300%;
-    height: 300%;
-    box-sizing: border-box;
-    margin-left: -100%;
-    margin-top: -100%;
-    border-radius: 45px;
-    background-color: #01a4e9;
-    animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  content: "";
+  position: relative;
+  display: block;
+  width: 300%;
+  height: 300%;
+  box-sizing: border-box;
+  margin-left: -100%;
+  margin-top: -100%;
+  border-radius: 45px;
+  background-color: #01a4e9;
+  animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
 @keyframes pulse-ring {
   0% {
     transform: scale(0.33);
   }
-  80%, 100% {
+  80%,
+  100% {
     opacity: 0;
   }
 }
@@ -190,7 +193,7 @@ The animation `pulse-dot` uses `transform: scale` to grow and shrink the dot dur
 
 ```css
 .pulsating-circle::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -200,7 +203,8 @@ The animation `pulse-dot` uses `transform: scale` to grow and shrink the dot dur
   background-color: white;
   border-radius: 15px;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-  animation: pulse-dot 1.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
+  animation: pulse-dot 1.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s
+    infinite;
 }
 
 @keyframes pulse-dot {

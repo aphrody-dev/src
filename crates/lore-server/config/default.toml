@@ -26,7 +26,7 @@ runtime_shutdown_timeout_seconds = 25
 # Seconds between checks. 0 turns the check off.
 check_interval_seconds = 30
 # Warn while free space on a volume holding a local store is below this.
-low_space_threshold_bytes = 10_737_418_240  # 10 GiB
+low_space_threshold_bytes = 10_737_418_240 # 10 GiB
 
 # public facing server settings
 [server.quic]
@@ -44,8 +44,8 @@ max_bidi_streams = 8
 # Used on Linux and Android only; other platforms bind one socket.
 # Unset: 16, or one per processor on a machine with fewer.
 # num_sockets = 16
-transport_bits_per_second = 1_073_741_824  # 1 gbit/s
-transport_rtt = 100  # 100 ms
+transport_bits_per_second = 1_073_741_824 # 1 gbit/s
+transport_rtt = 100 # 100 ms
 # Window each connection starts sending responses with. Unset, the congestion controller's own
 # default applies.
 # initial_cwnd_bytes = 262_144
@@ -68,12 +68,12 @@ max_bidi_streams = 8
 # Few peers, and each peer's traffic stays on one socket, so a handful is enough.
 # Used on Linux and Android only; other platforms bind one socket.
 num_sockets = 4
-transport_bits_per_second = 10_737_418_240  # 10 gbit/s
+transport_bits_per_second = 10_737_418_240 # 10 gbit/s
 # Sizes each connection's receive and send windows, which cap how much a client may have in
 # flight and how much of a response the server holds until it is acknowledged. The same value
 # applies to clients in this region and other regions, so it is sized for the most distant peers.
 # Each connection may buffer up to one window in each direction.
-transport_rtt = 220  # 220 ms
+transport_rtt = 220 # 220 ms
 # Window each connection starts sending responses with. Defaults to 1 MiB.
 # initial_cwnd_bytes = 1_048_576
 handler_timeout_seconds = 50

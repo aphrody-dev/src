@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)  Noam Rosenthal [X](https://twitter.com/nomsternom) [GitHub](https://github.com/noamr) [Mastodon](https://indieweb.social/@nomster)
+
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com) Noam Rosenthal [X](https://twitter.com/nomsternom) [GitHub](https://github.com/noamr) [Mastodon](https://indieweb.social/@nomster)
 
 The [Long Animation Frames API](https://w3c.github.io/long-animation-frames/) (LoAF-pronounced Lo-Af) is an update to the [Long Tasks API](https://w3c.github.io/longtasks/) to provide a better understanding of slow user interface (UI) updates. This can be useful to identify slow animation frames which are likely to affect the [Interaction to Next Paint (INP)](https://web.dev/articles/inp) Core Web Vital metric which measures responsiveness, or to identify other UI jank which affects [smoothness](https://web.dev/articles/smoothness).
 
@@ -42,7 +43,7 @@ const observer = new PerformanceObserver((list) => {
   console.log(list.getEntries());
 });
 
-observer.observe({ type: 'longtask', buffered: true });
+observer.observe({ type: "longtask", buffered: true });
 ```
 
 Long tasks are likely to cause responsiveness issues. If a user tries to interact with a page---for example, click a button, or open a menu---but the main thread is already dealing with a long task, then the [user's interaction is delayed](https://web.dev/articles/optimize-input-delay#what_is_input_delay) waiting for that task to be completed.
@@ -99,7 +100,7 @@ The [Long Animation Frames API](https://w3c.github.io/long-animation-frames/) (L
 
 Good responsiveness means that a page responds quickly to interactions made with it. That involves being able to paint any updates needed by the user in a timely manner, and avoiding blocking these updates from happening. For INP, [it is recommended to respond in 200 milliseconds or less](https://web.dev/articles/inp#what_is_a_good_inp_score), but for other updates (for example, animations) even 200 milliseconds may be too long.
 
-The Long Animation Frames API is an alternative approach to measuring blocking work. Rather than measuring the individual *tasks* , the Long Animation Frames API---as its name suggests---measures *long animation frames*. A long animation frame is when a rendering update is delayed beyond 50 milliseconds (the same as the threshold for the Long Tasks API).
+The Long Animation Frames API is an alternative approach to measuring blocking work. Rather than measuring the individual _tasks_ , the Long Animation Frames API---as its name suggests---measures _long animation frames_. A long animation frame is when a rendering update is delayed beyond 50 milliseconds (the same as the threshold for the Long Tasks API).
 
 Long animation frames are measured from the start of tasks which require a render. Where the first task in a potential long animation frame does not require a render, the long animation frame is ended upon completion of the non-rendering task and a new potential long animation frame is started with the next task. Such non-rendering long animation frame are still included in the Long Animation Frames API when greater than 50 milliseconds (with a `renderStart` time of 0) to allow measuring of potentially blocking work.
 
@@ -110,13 +111,13 @@ const observer = new PerformanceObserver((list) => {
   console.log(list.getEntries());
 });
 
-observer.observe({ type: 'long-animation-frame', buffered: true });
+observer.observe({ type: "long-animation-frame", buffered: true });
 ```
 
 Previous long animation frames can also be queried from the [Performance Timeline](https://www.w3.org/TR/performance-timeline/#performance-timeline) like so:
 
 ```javascript
-const loafs = performance.getEntriesByType('long-animation-frame');
+const loafs = performance.getEntriesByType("long-animation-frame");
 ```
 
 However, there is [a `maxBufferSize` for performance entries](https://w3c.github.io/timing-entrytypes-registry/#registry) after which newer entries are dropped, so the PerformanceObserver approach is the recommended approach. The `long-animation-frame` buffer size is set to 200, the same as for `long-tasks`.
@@ -140,7 +141,7 @@ A further advantage of this alternative view on long tasks, is the ability to pr
 
 A long animation frame may be made up of a number of tasks. The `blockingDuration` is the sum of task durations longer than 50 milliseconds (including the final render duration within the longest task).
 
-For example, if a long animation frame was made up of two tasks of 55 milliseconds and 65 milliseconds followed by a render of 20 milliseconds, then the `duration` would be approximately 140 milliseconds with a `blockingDuration` of (55 - 50) + (65 + 20 - 50) = 40 milliseconds. For 40 milliseconds during this 140 millisecond long animation frame, the frame was considered *blocked* from handling input.
+For example, if a long animation frame was made up of two tasks of 55 milliseconds and 65 milliseconds followed by a render of 20 milliseconds, then the `duration` would be approximately 140 milliseconds with a `blockingDuration` of (55 - 50) + (65 + 20 - 50) = 40 milliseconds. For 40 milliseconds during this 140 millisecond long animation frame, the frame was considered _blocked_ from handling input.
 
 #### Whether to look at `duration` or `blockingDuration`
 
@@ -154,13 +155,13 @@ However, a lot of long animation frames, regardless of `blockingDuration` indica
 
 The previously mentioned timestamps allow the long animation frame to be divided into timings:
 
-| Timing | Calculation |
-|---|---|
-| Start Time | `startTime` |
-| End Time | `startTime + duration` |
-| Work duration | `renderStart ? renderStart - startTime : duration` |
-| Render duration | `renderStart ? (startTime + duration) - renderStart: 0` |
-| Render: Pre-layout duration | `styleAndLayoutStart ? styleAndLayoutStart - renderStart : 0` |
+| Timing                            | Calculation                                                              |
+| --------------------------------- | ------------------------------------------------------------------------ |
+| Start Time                        | `startTime`                                                              |
+| End Time                          | `startTime + duration`                                                   |
+| Work duration                     | `renderStart ? renderStart - startTime : duration`                       |
+| Render duration                   | `renderStart ? (startTime + duration) - renderStart: 0`                  |
+| Render: Pre-layout duration       | `styleAndLayoutStart ? styleAndLayoutStart - renderStart : 0`            |
 | Render: Style and Layout duration | `styleAndLayoutStart ? (startTime + duration) - styleAndLayoutStart : 0` |
 
 ### Better script attribution
@@ -212,7 +213,7 @@ Where provided, the source entries allows developers to know exactly how each sc
 > [!IMPORTANT]
 > **Key point:**
 >
-> Note the source locations will be the script *entry point*, rather than necessarily the precise location in the script that took up the most time. For example, if an event handler calls a library, which calls a function which is slow, the event handler will be reported in the LoAF entry, not the library nor the function.
+> Note the source locations will be the script _entry point_, rather than necessarily the precise location in the script that took up the most time. For example, if an event handler calls a library, which calls a function which is slow, the event handler will be reported in the LoAF entry, not the library nor the function.
 >
 > The source entries may not be provided in certain scenarios including `no-cors cross-origin` scripts or if the callback is not defined in user code.
 
@@ -264,7 +265,7 @@ The Long Animation Frames API is designed to be used in the field to gather impo
 You can use the following code to test if the API is supported:
 
 ```javascript
-if (PerformanceObserver.supportedEntryTypes.includes('long-animation-frame')) {
+if (PerformanceObserver.supportedEntryTypes.includes("long-animation-frame")) {
   // Monitor LoAFs
 }
 ```
@@ -274,10 +275,10 @@ if (PerformanceObserver.supportedEntryTypes.includes('long-animation-frame')) {
 The most obvious use case for the Long Animation Frames API is to to help diagnose and fix [Interaction to Next Paint (INP)](https://web.dev/articles/inp) issues, and that was one of the key reasons the Chrome team developed this API. A [good INP](https://web.dev/articles/inp#good-score) is where all interactions are responded to in 200 milliseconds or less from interaction until the frame is painted, and since the Long Animation Frames API measures all frames that take 50ms or more, most problematic INPs should include LoAF data to help you diagnose those interactions.
 
 The "INP LoAF" is the LoAF which includes the INP interaction, as shown in the following diagram:
- A page may have many LoAFs, one of which is related to the INP interaction.
+A page may have many LoAFs, one of which is related to the INP interaction.
 
 In some cases it's possible for an INP event to span two LoAFs---typically if the interaction happens after the frame has started the rendering part of the previous frame, and so the event handler is processed in the next frame:
- A page may have many LoAFs, one or more of which may be related to the INP interaction.
+A page may have many LoAFs, one or more of which may be related to the INP interaction.
 
 It's even possible that it may span more than two LoAFs in some rare circumstances.
 
@@ -285,7 +286,7 @@ Recording the LoAF(s) data associated with the INP interaction lets you to get [
 
 It can also be helpful to understand unexplained [**processing duration**](https://web.dev/articles/optimize-inp#optimize_event_callbacks) and [**presentation delay**](https://web.dev/articles/optimize-inp#minimize_presentation_delay) if your event handlers are not reproducing the values seen for those as other scripts may be running for your users which may not be included in your own testing.
 
-There is [no direct API to link an INP entry with its related LoAF entry or entries](https://github.com/w3c/long-animation-frames/issues/5), though it is possible to do so in code by comparing the start and end times of each (see the [*WhyNp* example script](https://gist.github.com/noamr/316bd48157ab35e4f632a8c2583281b7)). The [`web-vitals` library](https://github.com/GoogleChrome/web-vitals) includes all intersecting LoAFs in [the `longAnimationFramesEntries` property of the INP attribution interface](https://github.com/GoogleChrome/web-vitals#inpattribution) from v4.
+There is [no direct API to link an INP entry with its related LoAF entry or entries](https://github.com/w3c/long-animation-frames/issues/5), though it is possible to do so in code by comparing the start and end times of each (see the [_WhyNp_ example script](https://gist.github.com/noamr/316bd48157ab35e4f632a8c2583281b7)). The [`web-vitals` library](https://github.com/GoogleChrome/web-vitals) includes all intersecting LoAFs in [the `longAnimationFramesEntries` property of the INP attribution interface](https://github.com/GoogleChrome/web-vitals#inpattribution) from v4.
 
 Once you have linked the LoAF entry or entries, you can include information with INP attribution. The `scripts` object contains some of the most valuable information as it can show what else was running in those frames so beaconing back that data to your analytics service will allow you to understand more about why interactions were slow.
 
@@ -296,7 +297,7 @@ Reporting LoAFs for the INP interaction is a good way to find the what is the mo
 One downside to only looking at the INP LoAF(s), is you may miss other potential areas for improvements that may cause future INP issues. This can lead to a feeling of chasing your tail where you fix an INP issue expecting to see a huge improvement, only to find the next slowest interaction is only a small amount better than that so your INP doesn't improve much.
 
 So rather than only looking at the INP LoAF, you may want to consider all LoAFs across the page lifetime:
- Looking at all LoAFs can help identify future INP problems.
+Looking at all LoAFs can help identify future INP problems.
 
 However, each LoAF entry contains considerable data, so you will likely want to restrict your analysis to only some LoAFs. Additionally, as the long animation frame entries can be quite large, developers should decide what data from the entry should be sent to analytics. For example, the summary times of the entry and perhaps the script names, or some other minimum set of other contextual data that may be deemed necessary.
 
@@ -323,9 +324,10 @@ The following code logs all LoAF entries with a `blockingDuration` greater than 
 ```javascript
 const REPORTING_THRESHOLD_MS = 100;
 
-const observer = new PerformanceObserver(list => {
+const observer = new PerformanceObserver((list) => {
   for (const entry of list.getEntries()) {
-    if (entry.blockingDuration > REPORTING_THRESHOLD_MS &&
+    if (
+      entry.blockingDuration > REPORTING_THRESHOLD_MS &&
       entry.firstUIEventTimestamp > 0
     ) {
       // Example here logs to console, but could also report back to analytics
@@ -333,7 +335,7 @@ const observer = new PerformanceObserver(list => {
     }
   }
 });
-observer.observe({ type: 'long-animation-frame', buffered: true });
+observer.observe({ type: "long-animation-frame", buffered: true });
 ```
 
 #### Observe long animation frames with high blocking durations
@@ -345,7 +347,7 @@ The following code logs all LoAF entries with a blocking duration greater than 1
 ```javascript
 const REPORTING_THRESHOLD_MS = 100;
 
-const observer = new PerformanceObserver(list => {
+const observer = new PerformanceObserver((list) => {
   for (const entry of list.getEntries()) {
     if (entry.blockingDuration > REPORTING_THRESHOLD_MS) {
       // Example here logs to console, but could also report back to analytics
@@ -353,7 +355,7 @@ const observer = new PerformanceObserver(list => {
     }
   }
 });
-observer.observe({ type: 'long-animation-frame', buffered: true });
+observer.observe({ type: "long-animation-frame", buffered: true });
 ```
 
 #### Observe long animation frames during critical UI updates to improve smoothness
@@ -365,7 +367,7 @@ Since, this can get quite noisy you may want to restrict measurements of these t
 ```javascript
 const REPORTING_THRESHOLD_MS = 100;
 
-const observer = new PerformanceObserver(list => {
+const observer = new PerformanceObserver((list) => {
   if (measureImportantUIupdate) {
     for (const entry of list.getEntries()) {
       if (entry.duration > REPORTING_THRESHOLD_MS) {
@@ -375,7 +377,7 @@ const observer = new PerformanceObserver(list => {
     }
   }
 });
-observer.observe({ type: 'long-animation-frame', buffered: true });
+observer.observe({ type: "long-animation-frame", buffered: true });
 
 async function doUIUpdatesWithMeasurements() {
   measureImportantUIupdate = true;
@@ -392,12 +394,13 @@ Rather than having a set threshold, sites may want to collect data on the longes
 MAX_LOAFS_TO_CONSIDER = 10;
 let longestBlockingLoAFs = [];
 
-const observer = new PerformanceObserver(list => {
-  longestBlockingLoAFs = longestBlockingLoAFs.concat(list.getEntries()).sort(
-    (a, b) => b.blockingDuration - a.blockingDuration
-  ).slice(0, MAX_LOAFS_TO_CONSIDER);
+const observer = new PerformanceObserver((list) => {
+  longestBlockingLoAFs = longestBlockingLoAFs
+    .concat(list.getEntries())
+    .sort((a, b) => b.blockingDuration - a.blockingDuration)
+    .slice(0, MAX_LOAFS_TO_CONSIDER);
 });
-observer.observe({ type: 'long-animation-frame', buffered: true });
+observer.observe({ type: "long-animation-frame", buffered: true });
 ```
 
 These strategies can also be combined---only look at the 10 worst LoAFs, with interactions, longer than 100 milliseconds.
@@ -417,32 +420,38 @@ This may work particularly well for customizable platforms where themes or plugi
 The execution time of common scripts---or third-party origins---in long animation frames could be summed up and reported back to identify common contributors to long animation frames across a site or a collection of sites. For example to look at URLs:
 
 ```javascript
-const observer = new PerformanceObserver(list => {
-  const allScripts = list.getEntries().flatMap(entry => entry.scripts);
-  const scriptSource = [...new Set(allScripts.map(script => script.sourceURL))];
-  const scriptsBySource= scriptSource.map(sourceURL => ([sourceURL,
-      allScripts.filter(script => script.sourceURL === sourceURL)
-  ]));
+const observer = new PerformanceObserver((list) => {
+  const allScripts = list.getEntries().flatMap((entry) => entry.scripts);
+  const scriptSource = [
+    ...new Set(allScripts.map((script) => script.sourceURL)),
+  ];
+  const scriptsBySource = scriptSource.map((sourceURL) => [
+    sourceURL,
+    allScripts.filter((script) => script.sourceURL === sourceURL),
+  ]);
   const processedScripts = scriptsBySource.map(([sourceURL, scripts]) => ({
     sourceURL,
     count: scripts.length,
-    totalDuration: scripts.reduce((subtotal, script) => subtotal + script.duration, 0)
+    totalDuration: scripts.reduce(
+      (subtotal, script) => subtotal + script.duration,
+      0,
+    ),
   }));
   processedScripts.sort((a, b) => b.totalDuration - a.totalDuration);
   // Example here logs to console, but could also report back to analytics
   console.table(processedScripts);
 });
 
-observer.observe({type: 'long-animation-frame', buffered: true});
+observer.observe({ type: "long-animation-frame", buffered: true });
 ```
 
 And example of this output is:
 
-| `(index)` | `sourceURL` | `count` | `totalDuration` |
-|---|---|---|---|
-| `0` | `'https://example.consent.com/consent.js'` | `1` | `840` |
-| `1` | `'https://example.com/js/analytics.js'` | `7` | `628` |
-| `2` | `'https://example.chatapp.com/web-chat.js'` | `1` | `5` |
+| `(index)` | `sourceURL`                                 | `count` | `totalDuration` |
+| --------- | ------------------------------------------- | ------- | --------------- |
+| `0`       | `'https://example.consent.com/consent.js'`  | `1`     | `840`           |
+| `1`       | `'https://example.com/js/analytics.js'`     | `7`     | `628`           |
+| `2`       | `'https://example.chatapp.com/web-chat.js'` | `1`     | `5`             |
 
 ## Use the Long Animation Frames API in tooling
 
@@ -455,7 +464,7 @@ You can surface long animation frames in DevTools using the [`performance.measur
 ```javascript
 const observer = new PerformanceObserver((list) => {
   for (const entry of list.getEntries()) {
-    performance.measure('LoAF', {
+    performance.measure("LoAF", {
       start: entry.startTime,
       end: entry.startTime + entry.duration,
       detail: {
@@ -464,16 +473,17 @@ const observer = new PerformanceObserver((list) => {
           track: "Long animation frames",
           trackGroup: "Performance Timeline",
           color: "tertiary-dark",
-          tooltipText: 'LoAF'
-        }
-      }
+          tooltipText: "LoAF",
+        },
+      },
     });
   }
 });
 
-observer.observe({ type: 'long-animation-frame', buffered: true });
+observer.observe({ type: "long-animation-frame", buffered: true });
 ```
- Showing long Animation frame data in DevTools.
+
+Showing long Animation frame data in DevTools.
 
 Longer term, long animation frames will likely be incorporated into DevTools itself, but the previous code snippet allows it to be surfaced there in the meantime.
 
@@ -497,7 +507,7 @@ While the Long Tasks API may benefit from some of the features of LoAF (such as 
 
 This may indicate that the long animation frame was not due to JavaScipt, but instead due to large render work.
 
-This can also happen when the long animation frame *is* due to JavaScript but where the script attribution cannot be provided for [various privacy reasons as noted previously](https://developer.chrome.com/docs/web-platform/long-animation-frames.md.txt#script-attribution) (primarily that JavaScript not owned by the page).
+This can also happen when the long animation frame _is_ due to JavaScript but where the script attribution cannot be provided for [various privacy reasons as noted previously](https://developer.chrome.com/docs/web-platform/long-animation-frames.md.txt#script-attribution) (primarily that JavaScript not owned by the page).
 
 ### Why do I have script entries but no, or limited, source information?
 
@@ -509,11 +519,18 @@ For example, the default Google Tag Manager script to add to the page:
 
 ```html
 <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+<script>
+  (function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s),
+      dl = l != "dataLayer" ? "&l=" + l : "";
+    j.async = true;
+    j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(window, document, "script", "dataLayer", "GTM-XXXXXXX");
+</script>
 <!-- End Google Tag Manager -->
 ```
 
@@ -537,4 +554,4 @@ The scope of the Long Animation Frames API extends beyond just INP though, and i
 
 ## Acknowledgements
 
-*Thumbnail image by [Henry Be](https://unsplash.com/@henry_be) on [Unsplash](https://unsplash.com/photos/MWP9cxS4uCg).*
+_Thumbnail image by [Henry Be](https://unsplash.com/@henry_be) on [Unsplash](https://unsplash.com/photos/MWP9cxS4uCg)._

@@ -6,154 +6,49 @@
       "id": "aphrody-labs",
       "title": "aphrody-labs",
       "rows": [
-        [
-          "Active public source repositories",
-          "44"
-        ],
-        [
-          "Public forks",
-          "623"
-        ],
-        [
-          "Monorepo",
-          "aphrody-labs/src"
-        ]
+        ["Active public source repositories", "44"],
+        ["Public forks", "623"],
+        ["Monorepo", "aphrody-labs/src"]
       ],
       "languages": [
-        [
-          "Rust",
-          38564918
-        ],
-        [
-          "Python",
-          3796389
-        ],
-        [
-          "TypeScript",
-          3021873
-        ],
-        [
-          "C",
-          763564
-        ],
-        [
-          "JavaScript",
-          650218
-        ],
-        [
-          "Shell",
-          326356
-        ],
-        [
-          "PowerShell",
-          66554
-        ],
-        [
-          "HCL",
-          49513
-        ],
-        [
-          "CSS",
-          45039
-        ],
-        [
-          "C#",
-          43543
-        ],
-        [
-          "Just",
-          32368
-        ],
-        [
-          "WGSL",
-          31058
-        ],
-        [
-          "HTML",
-          28043
-        ],
-        [
-          "Nushell",
-          26817
-        ],
-        [
-          "C++",
-          23472
-        ],
-        [
-          "Go Template",
-          16672
-        ],
-        [
-          "Fluent",
-          15915
-        ],
-        [
-          "Dockerfile",
-          15331
-        ],
-        [
-          "BitBake",
-          12420
-        ],
-        [
-          "Go",
-          9052
-        ],
-        [
-          "CMake",
-          8270
-        ],
-        [
-          "Lua",
-          6666
-        ],
-        [
-          "Cuda",
-          6186
-        ],
-        [
-          "Nix",
-          4620
-        ],
-        [
-          "Ruby",
-          3300
-        ],
-        [
-          "Nu",
-          1548
-        ],
-        [
-          "Batchfile",
-          940
-        ],
-        [
-          "DIGITAL Command Language",
-          880
-        ],
-        [
-          "Handlebars",
-          403
-        ]
+        ["Rust", 38564918],
+        ["Python", 3796389],
+        ["TypeScript", 3021873],
+        ["C", 763564],
+        ["JavaScript", 650218],
+        ["Shell", 326356],
+        ["PowerShell", 66554],
+        ["HCL", 49513],
+        ["CSS", 45039],
+        ["C#", 43543],
+        ["Just", 32368],
+        ["WGSL", 31058],
+        ["HTML", 28043],
+        ["Nushell", 26817],
+        ["C++", 23472],
+        ["Go Template", 16672],
+        ["Fluent", 15915],
+        ["Dockerfile", 15331],
+        ["BitBake", 12420],
+        ["Go", 9052],
+        ["CMake", 8270],
+        ["Lua", 6666],
+        ["Cuda", 6186],
+        ["Nix", 4620],
+        ["Ruby", 3300],
+        ["Nu", 1548],
+        ["Batchfile", 940],
+        ["DIGITAL Command Language", 880],
+        ["Handlebars", 403]
       ]
     },
     {
       "id": "aphrody-dev",
       "title": "aphrody-dev upstream work",
       "rows": [
-        [
-          "Pull requests to upstream projects",
-          "5"
-        ],
-        [
-          "Merged upstream",
-          "0"
-        ],
-        [
-          "Upstream repositories",
-          "3"
-        ]
+        ["Pull requests to upstream projects", "5"],
+        ["Merged upstream", "0"],
+        ["Upstream repositories", "3"]
       ],
       "languages": []
     }

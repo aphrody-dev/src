@@ -44,16 +44,16 @@ handler:
     # matches the data tier (500Gi); size to your cache working set. Lore is very
     # IO-sensitive here — prefer a fast local/NVMe storage class.
     size: 500Gi
-    storageClass: ""  # "" = cluster default (no AWS assumption). Point at a local-volume class for node-local NVMe.
+    storageClass: "" # "" = cluster default (no AWS assumption). Point at a local-volume class for node-local NVMe.
     accessMode: ReadWriteOnce
     # type=hostPath fields (a raw directory on the node, e.g. a mounted NVMe):
     hostPath:
-      path: ""   # required when type=hostPath, e.g. /mnt/nvme/lore-handler; no default
-      type: DirectoryOrCreate   # HostPathType: DirectoryOrCreate | Directory | ...
+      path: "" # required when type=hostPath, e.g. /mnt/nvme/lore-handler; no default
+      type: DirectoryOrCreate # HostPathType: DirectoryOrCreate | Directory | ...
     # type=emptyDir fields:
     emptyDir:
-      medium: ""       # "" (node disk) or "Memory" (tmpfs)
-      sizeLimit: ""    # e.g. 200Gi; "" = no limit
+      medium: "" # "" (node disk) or "Memory" (tmpfs)
+      sizeLimit: "" # e.g. 200Gi; "" = no limit
   # store: as data.store below, but safe to enable — this tier is a cache in
   # front of the durable store, so an evicted fragment is re-fetched, not lost.
   store:
@@ -87,11 +87,11 @@ data:
     # Lore needs very performant disk for any production deployment. Use a storage
     # class with low latency and high throughput (e.g. EBS io2 with provisioned
     # IOPS). Direct-attached NVMe instance storage is recommended whenever possible.
-    storageClass: ""  # "" = cluster default (no AWS assumption)
+    storageClass: "" # "" = cluster default (no AWS assumption)
     accessMode: ReadWriteOnce
     # type=hostPath fields:
     hostPath:
-      path: ""   # required when type=hostPath, e.g. /mnt/nvme/lore-data; no default
+      path: "" # required when type=hostPath, e.g. /mnt/nvme/lore-data; no default
       type: DirectoryOrCreate
     # type=emptyDir fields:
     emptyDir:
@@ -105,10 +105,10 @@ data:
   # only authoritative copy — enable it only where the store is deliberately a
   # cache, and note that aged-out content fails to read, it does not read slowly.
   store:
-    maxSize: ""                 # payload bytes, k8s quantity ("200Gi"). Bounds disk.
-    maxCapacity: 0              # fragment count. Server floors it at 1048576.
-    compactionDelaySeconds: 0   # maxSize pass. Set whenever maxSize is; server default 86400.
-    evictionDelaySeconds: 0     # maxCapacity pass. Server default 10.
+    maxSize: "" # payload bytes, k8s quantity ("200Gi"). Bounds disk.
+    maxCapacity: 0 # fragment count. Server floors it at 1048576.
+    compactionDelaySeconds: 0 # maxSize pass. Set whenever maxSize is; server default 86400.
+    evictionDelaySeconds: 0 # maxCapacity pass. Server default 10.
 
 # nameOverride / fullnameOverride: name the objects the chart creates. Otherwise
 # names follow the release name, collapsing the chart name only when the release
@@ -150,14 +150,14 @@ envFrom: []
 # Switch to LoadBalancer explicitly for a stable external address (needs a
 # UDP-capable LB, e.g. an AWS NLB via loadBalancerClass).
 service:
-  type: NodePort   # NodePort | LoadBalancer | ClusterIP
+  type: NodePort # NodePort | LoadBalancer | ClusterIP
   # nodePorts: optionally pin the assigned NodePorts (30000–32767). Leave empty to
   # let Kubernetes assign them; the install notes print whatever is assigned.
   nodePorts:
-    quic: ""   # UDP — the client data path (clone/push/pull)
-    grpc: ""   # TCP — admin/revision API (shares the QUIC port number)
-    http: ""   # TCP — /health_check
-  loadBalancerClass: ""  # e.g. service.k8s.aws/nlb to force an AWS NLB (type=LoadBalancer)
+    quic: "" # UDP — the client data path (clone/push/pull)
+    grpc: "" # TCP — admin/revision API (shares the QUIC port number)
+    http: "" # TCP — /health_check
+  loadBalancerClass: "" # e.g. service.k8s.aws/nlb to force an AWS NLB (type=LoadBalancer)
   # tags: supplemental key/value tags applied to the AWS load balancer via the
   # aws-load-balancer-additional-resource-tags annotation, e.g. ownership or
   # cost-allocation tags your organisation requires. Provide these in a custom
@@ -190,7 +190,7 @@ service:
 replication:
   enabled: false
   port: 41340
-  verifyClientCerts: true   # mutual TLS; requires the cert chain below
+  verifyClientCerts: true # mutual TLS; requires the cert chain below
   # service: publish port 41340 on its own Service so peers OUTSIDE this cluster
   # can reach it. Without this, 41340 is only on the headless Service, which has
   # no external address — so cross-cluster peers cannot connect and you must
@@ -200,26 +200,26 @@ replication:
   # peer networks (loadBalancerSourceRanges / an internal-only LB annotation).
   service:
     enabled: false
-    type: LoadBalancer          # LoadBalancer | NodePort | ClusterIP
-    annotations: {}             # e.g. service.beta.kubernetes.io/aws-load-balancer-scheme: internal
-    loadBalancerClass: ""       # e.g. service.k8s.aws/nlb (needs TCP+UDP on one port)
-    loadBalancerSourceRanges: []  # CIDRs allowed to reach 41340; empty = no restriction
+    type: LoadBalancer # LoadBalancer | NodePort | ClusterIP
+    annotations: {} # e.g. service.beta.kubernetes.io/aws-load-balancer-scheme: internal
+    loadBalancerClass: "" # e.g. service.k8s.aws/nlb (needs TCP+UDP on one port)
+    loadBalancerSourceRanges: [] # CIDRs allowed to reach 41340; empty = no restriction
     externalTrafficPolicy: Local
     # nodePorts: pin the assigned NodePorts (30000–32767) when type=NodePort.
     nodePorts:
-      quic: ""   # UDP — quic_internal
-      grpc: ""   # TCP — replication gRPC
+      quic: "" # UDP — quic_internal
+      grpc: "" # TCP — replication gRPC
   tls:
-    secretName: ""          # Secret with the cert, key, and CA chain (keys below)
+    secretName: "" # Secret with the cert, key, and CA chain (keys below)
     certKey: tls.crt
     keyKey: tls.key
     caKey: ca.crt
   topology:
-    provider: none          # none | fixed | consul
+    provider: none # none | fixed | consul
     fixed:
       # peers: [{ address: lore-0.other-cluster.example, port: 41340, locality: OtherRegion }]
       peers: []
-    consul: {}              # [plugins.consul] key/values (needs the consul plugin in the image)
+    consul: {} # [plugins.consul] key/values (needs the consul plugin in the image)
 
 # tls: certificate configuration. QUIC always encrypts (there is no plaintext
 # QUIC), so "insecure" means an untrusted self-signed cert that clients reach with
@@ -255,12 +255,12 @@ tls:
   #
   # Cannot be used with tls.mode=ephemeral. The install fails if you try.
   grpcTls: false
-  extraSANs: []          # SANs (external IP/DNS) for a chart-managed cert so clients can verify via lores:// (selfSigned/certManager). Ignored for ephemeral.
-  existingSecret: ""     # name of an existing kubernetes.io/tls Secret; required when mode=secret
-  certKey: tls.crt       # key in the Secret holding the cert (mode=secret; also the key name written for selfSigned/certManager)
-  keyKey: tls.key        # key in the Secret holding the private key
-  issuerName: ""         # cert-manager Issuer/ClusterIssuer (mode=certManager). "" = chart makes a self-signed Issuer (untrusted); set a real CA Issuer for a trusted lores:// cert
-  duration: 87600h       # 10y, for chart-managed cert (selfSigned/certManager)
+  extraSANs: [] # SANs (external IP/DNS) for a chart-managed cert so clients can verify via lores:// (selfSigned/certManager). Ignored for ephemeral.
+  existingSecret: "" # name of an existing kubernetes.io/tls Secret; required when mode=secret
+  certKey: tls.crt # key in the Secret holding the cert (mode=secret; also the key name written for selfSigned/certManager)
+  keyKey: tls.key # key in the Secret holding the private key
+  issuerName: "" # cert-manager Issuer/ClusterIssuer (mode=certManager). "" = chart makes a self-signed Issuer (untrusted); set a real CA Issuer for a trusted lores:// cert
+  duration: 87600h # 10y, for chart-managed cert (selfSigned/certManager)
 
 # auth: client authentication.
 #
@@ -301,11 +301,11 @@ auth:
 # These are starter defaults — increase substantially for production use.
 resources:
   requests:
-    cpu: "2"       # starter default; increase for production
-    memory: 8Gi    # starter default; increase for production
+    cpu: "2" # starter default; increase for production
+    memory: 8Gi # starter default; increase for production
   limits:
-    cpu: "2"       # starter default; increase for production
-    memory: 8Gi    # starter default; increase for production
+    cpu: "2" # starter default; increase for production
+    memory: 8Gi # starter default; increase for production
 
 # persistentVolumeClaimRetentionPolicy: optional StatefulSet PVC retention policy
 persistentVolumeClaimRetentionPolicy: {}
@@ -387,8 +387,8 @@ readinessProbe:
 presignedUrl:
   enabled: false
   hmacKeySecret:
-    name: ""   # name of a Secret holding the hex HMAC key
-    key: ""    # key within that Secret
+    name: "" # name of a Secret holding the hex HMAC key
+    key: "" # key within that Secret
   minTtlSeconds: 1
   defaultTtlSeconds: 3600
   maxTtlSeconds: 86400
@@ -399,21 +399,21 @@ presignedUrl:
 # emitted and the server uses its built-in defaults.
 telemetry:
   exporter:
-    endpoint: ""       # e.g. http://otel-collector.observability.svc.cluster.local:4317 — set this to enable OTLP export
+    endpoint: "" # e.g. http://otel-collector.observability.svc.cluster.local:4317 — set this to enable OTLP export
     queueSize: 2048
     timeoutMs: 5000
   logger:
-    enableOtlp: false  # also forward logs over OTLP (only takes effect when exporter.endpoint set)
-    format: json       # ansi | json | text
-    output: stdout     # stdout | stderr  (file output: use config.extra)
+    enableOtlp: false # also forward logs over OTLP (only takes effect when exporter.endpoint set)
+    format: json # ansi | json | text
+    output: stdout # stdout | stderr  (file output: use config.extra)
   metrics:
     exportIntervalMillis: 30000
     sampleIntervalMillis: 10000
   traces:
     sampleRate: 0.05
     sampleRateLowTier: 0.001
-    serviceName: ""    # optional; identifies this service in traces
-  additionalLabels: {}  # extra key/value labels on all exported telemetry
+    serviceName: "" # optional; identifies this service in traces
+  additionalLabels: {} # extra key/value labels on all exported telemetry
 
 # config.extra: raw TOML appended to local.toml as a last-layer escape hatch.
 # It is appended AFTER every block the chart renders, so it must START WITH ITS OWN

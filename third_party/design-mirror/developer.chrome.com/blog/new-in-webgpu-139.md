@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 Published: July 30, 2025
@@ -46,7 +47,7 @@ if (device.features.has("texture-compression-astc-sliced-3d")) {
 ```
 
 Explore 3D brain scans by checking out the [Volume Rendering - Texture 3D WebGPU sample](https://webgpu.github.io/webgpu-samples/?sample=volumeRenderingTexture3D) and see the [chromestatus entry](https://chromestatus.com/feature/5080855386783744).
- A brain scan image from a 3D texture with ASTC compressed format.
+A brain scan image from a 3D texture with ASTC compressed format.
 
 ## New "core-features-and-limits" feature
 
@@ -61,7 +62,7 @@ For a detailed explanation and usage in WebGPU compatibility mode, refer to the 
 WebGPU is a powerful API designed for modern graphics, aligning with technologies like Vulkan, Metal, and Direct3D 12. However, a significant number of devices still lack support for these newer APIs. For example, on Windows, 31% of Chrome users don't have Direct3D 11.1 or higher. On Android, 15% of Android users don't have Vulkan 1.1, including 10% who don't have Vulkan at all.
 
 This creates a challenge for developers who want to maximize their application's reach. They're often forced to develop multiple implementations (for example, WebGPU and WebGL), accept a more limited audience with core WebGPU, or stick to WebGL, missing out on WebGPU's advanced features like GPU compute.
- WebGPU compatibility mode expanded reach.
+WebGPU compatibility mode expanded reach.
 
 WebGPU compatibility mode offers a solution by providing an opt-in, slightly restricted version of the WebGPU API. This mode is designed to run older graphics APIs like OpenGL ES 3.1 and Direct3D11, significantly expanding your application's reach to devices that don't support modern, explicit graphics APIs required by core WebGPU.
 
@@ -77,7 +78,7 @@ const adapter = await navigator.gpu.requestAdapter({
 
 const hasCore = adapter?.features.has("core-features-and-limits");
 const device = await adapter?.requestDevice({
-  requiredFeatures: (hasCore ? ["core-features-and-limits"] : []),
+  requiredFeatures: hasCore ? ["core-features-and-limits"] : [],
 });
 
 if (device?.features.has("core-features-and-limits")) {

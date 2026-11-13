@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 In the previous modules, you learned how to optimize HTML, CSS, JavaScript,
 and media resources. In this module, discover some methods to optimize web
 fonts.
@@ -62,7 +63,12 @@ does not wait until the font is needed on the page.
 ```html
 <!-- The `crossorigin` attribute is required for fonts-even
      self-hosted ones, as fonts are considered CORS resources. -->
-<link rel="preload" as="font" href="/fonts/OpenSans-Regular-webfont.woff2" crossorigin>
+<link
+  rel="preload"
+  as="font"
+  href="/fonts/OpenSans-Regular-webfont.woff2"
+  crossorigin
+/>
 ```
 
 > [!NOTE]
@@ -73,9 +79,8 @@ does not wait until the font is needed on the page.
 > `preload` directives may download fonts that are not needed for
 > the current page
 >
->
 > Additionally, it's also important to note that fonts are CORS resources. As
-> such, you *must* specify the `crossorigin` attribute when
+> such, you _must_ specify the `crossorigin` attribute when
 > preloading fonts, even if they're self-hosted.
 
 ### Inline `@font-face` declarations
@@ -94,7 +99,7 @@ hint, as the browser only downloads the fonts necessary to render the current
 page. This eliminates the risk of downloading unused fonts.
 
 > [!IMPORTANT]
-> **Important:** Inlining font files *themselves* into your CSS---or any other resource---is not recommended, as the [base64
+> **Important:** Inlining font files _themselves_ into your CSS---or any other resource---is not recommended, as the [base64
 > encoding](https://developer.mozilla.org/docs/Glossary/Base64) scheme required to do so results in a larger payload and inlining it may well delay the discovery of other critical resources by [delaying the
 > preload scanner](https://web.dev/articles/preload-scanner#inlining_too_many_resources).
 
@@ -118,8 +123,8 @@ This overhead can be reduced using the `preconnect` resource hint. By using
 sooner than the browser ordinarily would:
 
 ```html
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 ```
 
 The preceding HTML snippet hints the browser to establish a connection to
@@ -141,7 +146,7 @@ format is often the only one needed for full compatibility across modern
 browsers.
 
 > [!NOTE]
-> **Note:** The only time you might need to use other formats---such as WOFF, EOT, and TTF---is if you need to support legacy browsers. If you *don't need* to support legacy browsers, there's no reason to rely on web font formats other than WOFF2.
+> **Note:** The only time you might need to use other formats---such as WOFF, EOT, and TTF---is if you need to support legacy browsers. If you _don't need_ to support legacy browsers, there's no reason to rely on web font formats other than WOFF2.
 
 ### Subset your web fonts
 
@@ -171,7 +176,7 @@ your website. For example, if you have a display web font on your site that only
 needs a small number of characters needed for the phrase "Welcome", you can
 request that subset through Google Fonts through the following URL:
 `https://fonts.googleapis.com/css?family=Monoton&text=Welcome`. This can
-*significantly* reduce the amount of web font data needed for a single typeface
+_significantly_ reduce the amount of web font data needed for a single typeface
 on your website, if such extreme subsetting can be useful on your website.
 
 ## Font rendering

@@ -1,4 +1,4 @@
-import { vercel } from "../../../packages/runtime-adapter/src/index";
+import { vercel } from "@aphrody/runtime-adapter";
 import app from "./app";
 
 export default vercel(app);

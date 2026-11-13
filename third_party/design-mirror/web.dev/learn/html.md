@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The dialog element is a useful element for representing any kind of dialog in
 HTML, find out how it works.
 
@@ -32,9 +33,9 @@ set (or if the form itself has `method="dialog"` set), and the [`HTMLDialogEleme
 The `HTMLDialogElement` has three main methods, along with all the methods inherited from [`HTMLElement`](https://web.dev/learn/html/apis.md.txt).
 
 ```javascript
-dialog.show() /* opens the dialog */
-dialog.showModal() /* opens the dialog as a modal */
-dialog.close() /* closes the dialog */
+dialog.show(); /* opens the dialog */
+dialog.showModal(); /* opens the dialog as a modal */
+dialog.close(); /* closes the dialog */
 ```
 
 Because this `<dialog>` was opened with the [`HTMLDialogElement.showModal()`](https://developer.mozilla.org/docs/Web/API/HTMLDialogElement/showModal)

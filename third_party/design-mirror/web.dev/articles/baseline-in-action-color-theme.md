@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 David A. Herron [Homepage](https://www.oddbird.net/authors/davidh/)
 
 Published: December 11, 2025
@@ -69,14 +70,15 @@ html {
 > **Note:** In this demo, both the origin color (`--base-color`) and the output colors are in the OkLCh color space. You could define your origin color in any format, though, and the output color will be in whichever color space you use for the manipulation.
 
 ```css
-  html {
-    /* Input color in the rgb color space*/
-    --base-color: teal;
+html {
+  /* Input color in the rgb color space*/
+  --base-color: teal;
 
-     /* Output color in oklch. Computes to oklch(0.543123 0.0927099 314.769) */
-     --triadic-color-primary: oklch(from var(--base-color) l c calc(h + 120));
-  }
+  /* Output color in oklch. Computes to oklch(0.543123 0.0927099 314.769) */
+  --triadic-color-primary: oklch(from var(--base-color) l c calc(h + 120));
+}
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/NPNoXmp?height=384&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen XJXEOEg by web-dot-dev on Codepen">
 </iframe>
 
@@ -128,9 +130,11 @@ By default, this would be 50% of each color, but you can make either color more 
 
 ```css
 html {
-  --background-mix-base-80: color-mix(in oklab,
+  --background-mix-base-80: color-mix(
+    in oklab,
     var(--background-color) 80%,
-    var(--base-color));
+    var(--base-color)
+  );
   --surface-light: var(--background-mix-base-80);
 }
 ```
@@ -156,8 +160,8 @@ Once you have a set of colors to work with, you'll want an efficient way to appl
 You can instantly tell the browser that your site can be viewed in "light", "dark", or both modes with the `color-scheme` property. This property tells the browser in which color schemes an element can be comfortably rendered.
 
 ```css
- html {
-   color-scheme: light dark;
+html {
+  color-scheme: light dark;
 }
 ```
 
@@ -173,7 +177,7 @@ To give user agents earlier notice that your page supports light and dark modes,
 ```html
 <head>
   <!-- ... -->
-   <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light dark" />
 </head>
 ```
 
@@ -200,7 +204,7 @@ As an author, you might be used to setting a page's colors with a `prefers-color
 }
 ```
 
-This works great for colors and styles controlled by the *author* , but as mentioned in the previous section, you would still need `color-scheme` to update the colors of the browser UI.
+This works great for colors and styles controlled by the _author_ , but as mentioned in the previous section, you would still need `color-scheme` to update the colors of the browser UI.
 
 Changing the page's colors with a `prefers-color-scheme` query also means some code duplication since you have to define colors for each mode separately.
 
@@ -215,9 +219,15 @@ html {
   color-scheme: light dark;
   /* Color custom property values for both light and dark modes */
   --base-color: light-dark(oklch(43.7% 0.075 224), oklch(89.2% 0.069 224));
-  --background-color: light-dark(oklch(95.5% 0 162), oklch(22.635% 0.01351 291.83));
+  --background-color: light-dark(
+    oklch(95.5% 0 162),
+    oklch(22.635% 0.01351 291.83)
+  );
   --accent-color: oklch(from var(--base-color) l c calc(h + 120));
-  --active-color: light-dark(var(--action-color-light), var(--action-color-dark));
+  --active-color: light-dark(
+    var(--action-color-light),
+    var(--action-color-dark)
+  );
   /* ... */
 }
 ```
@@ -256,10 +266,10 @@ html {
   }
 
   &[data-scheme="green"] {
-      --base-color-light: oklch(48.052% 0.11875 151.945);
-      --base-color-dark: oklch(92.124% 0.13356 151.558);
-      color-scheme: light dark;
-   }
+    --base-color-light: oklch(48.052% 0.11875 151.945);
+    --base-color-dark: oklch(92.124% 0.13356 151.558);
+    color-scheme: light dark;
+  }
 }
 ```
 
@@ -276,13 +286,13 @@ Since the `--base-color` is used as the base of so many of the other colors in t
 
 ```css
 @property --base-color-light {
-  syntax: '<color>';
+  syntax: "<color>";
   inherits: false;
   initial-value: oklch(43.7% 0.075 224);
 }
 
 @property --base-color-dark {
-  syntax: '<color>';
+  syntax: "<color>";
   inherits: false;
   initial-value: oklch(89.2% 0.069 224);
 }
@@ -300,7 +310,11 @@ Registering certain properties this way also allows for smoothly animating color
 
 ```css
 .main-heading {
-  background: linear-gradient(in oklch 90deg, var(--text-color) 50%, oklch(from var(--base-color) l c var(--header-hue)));
+  background: linear-gradient(
+    in oklch 90deg,
+    var(--text-color) 50%,
+    oklch(from var(--base-color) l c var(--header-hue))
+  );
   background-clip: text;
   color: transparent;
   animation: header-hue-switch 5s ease-in-out infinite alternate;
@@ -327,7 +341,7 @@ With a registered `--header-hue` custom property, this animation is able to happ
 
 ```css
 @property --header-hue {
-  syntax: '<number>';
+  syntax: "<number>";
   inherits: false;
   initial-value: 100;
 }

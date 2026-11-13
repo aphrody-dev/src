@@ -7,22 +7,26 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 When your JavaScript takes a long time to execute,
 it slows down your page performance in several ways:
 
 - **Network cost**
 
   More bytes equals longer download times.
+
 - **Parse and compile cost**
 
   JavaScript gets parsed and compiled on the main thread.
   When the main thread is busy, the page can't respond to user input.
+
 - **Execution cost**
 
   JavaScript is also executed on the main thread.
   If your page runs a lot of code before it's really needed,
   that also delays your [Time To Interactive](https://web.dev/articles/tti),
   which is one of the key metrics related to how users perceive your page speed.
+
 - **Memory cost**
 
   If your JavaScript holds on to a lot of references,

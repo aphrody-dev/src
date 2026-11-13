@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Using the alt attribute to provide text alternatives for images
 
- Alice Boxhall [X](https://twitter.com/sundress)  Dave Gash  Meggin Kearney
+Alice Boxhall [X](https://twitter.com/sundress) Dave Gash Meggin Kearney
 
 Images are an important component of most web pages, and are of course a
 particular sticking point for low-vision users. We must consider the role an
@@ -18,8 +19,9 @@ Take a look at this image.
 
 ```html
 <article>
-    <h2>Study shows 9 out of 10 cats quietly judging their owners as they sleep</h2>
-    
+  <h2>
+    Study shows 9 out of 10 cats quietly judging their owners as they sleep
+  </h2>
 </article>
 ```
 
@@ -44,7 +46,7 @@ the article.
 A couple of comments about `alt`:
 
 - `alt` allows you to specify a simple string to be used any time the image isn't available, such as when the image fails to load, or is accessed by web crawling bot, or is encountered by a screen reader.
-- `alt` differs from `title`, or any type of caption, in that it is *only* used if the image is not available.
+- `alt` differs from `title`, or any type of caption, in that it is _only_ used if the image is not available.
 
 Writing useful alt text is a bit of an art. In order for a string to be a usable
 text alternative, it needs to convey the same concept as the image, in the same

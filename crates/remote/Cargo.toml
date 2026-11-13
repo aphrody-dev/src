@@ -20,4 +20,12 @@ serde = { workspace = true }
 toml = { workspace = true }
 russh = { workspace = true, features = ["flate2", "ring", "rsa"] }
 russh-sftp = { workspace = true }
-tokio = { workspace = true, features = ["fs", "io-std", "io-util", "macros", "net", "rt-multi-thread", "time"] }
+tokio = { workspace = true, features = [
+  "fs",
+  "io-std",
+  "io-util",
+  "macros",
+  "net",
+  "rt-multi-thread",
+  "time",
+] }

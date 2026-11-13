@@ -29,9 +29,20 @@ todo = "deny"
 [features]
 default = []
 depot = [
-    "dep:anyhow", "dep:bytes", "dep:clap", "dep:dirs-next", "dep:hex",
-    "dep:steamroom", "dep:steamroom-client", "dep:tokio", "dep:tracing",
-    "dep:tracing-subscriber", "dep:zip", "dep:reqwest", "dep:libc", "dep:qrcode"
+  "dep:anyhow",
+  "dep:bytes",
+  "dep:clap",
+  "dep:dirs-next",
+  "dep:hex",
+  "dep:steamroom",
+  "dep:steamroom-client",
+  "dep:tokio",
+  "dep:tracing",
+  "dep:tracing-subscriber",
+  "dep:zip",
+  "dep:reqwest",
+  "dep:libc",
+  "dep:qrcode",
 ]
 
 [dependencies]
@@ -57,7 +68,10 @@ reqwest = { workspace = true, optional = true }
 libc = { workspace = true, optional = true }
 
 [target.'cfg(windows)'.dependencies]
-windows = { workspace = true, features = ["Win32_Foundation", "Win32_System_Registry"] }
+windows = { workspace = true, features = [
+  "Win32_Foundation",
+  "Win32_System_Registry",
+] }
 
 [dev-dependencies]
 tempfile = { workspace = true }

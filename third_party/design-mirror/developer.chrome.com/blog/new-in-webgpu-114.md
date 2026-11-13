@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## Optimize JavaScript
@@ -14,7 +15,7 @@ François Beaufort [GitHub](https://github.com/beaufortfrancois)
 Chromium contributors sped up WebGPU performance for [`GPUComputePassEncoder`](https://developer.mozilla.org/docs/Web/API/GPUComputePassEncoder), [`GPURenderPassEncoder`](https://developer.mozilla.org/docs/Web/API/GPURenderPassEncoder), and [`GPUCommandEncoder`](https://developer.mozilla.org/docs/Web/API/GPUCommandEncoder) methods by reducing the overhead of making calls from generated code in V8 JavaScript engine to C++ handlers in Blink rendering engine. See [issue chromium:1417558](https://bugs.chromium.org/p/chromium/issues/detail?id=1417558).
 
 The following microbenchmark shows CPU time of calls from JavaScript decreasing from around 0.5 ms per 10K draws to around 0.3 ms per 10K draws, which is a 40% improvement.
- Chrome benchmark graph showing fast calls improvements ([source](https://chromeperf.appspot.com/report?sid=c5b915dc2e3d1d17cc76253f15839c488404af5ec02712361f80b45fca916689&start_rev=1121535&end_rev=1128342)).
+Chrome benchmark graph showing fast calls improvements ([source](https://chromeperf.appspot.com/report?sid=c5b915dc2e3d1d17cc76253f15839c488404af5ec02712361f80b45fca916689&start_rev=1121535&end_rev=1128342)).
 
 ## getCurrentTexture() on unconfigured canvas throws InvalidStateError
 

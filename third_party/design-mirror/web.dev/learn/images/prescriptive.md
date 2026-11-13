@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 The `<picture>` element doesn't render anything on its own, but instead acts as a decision engine for an inner `` element,
 telling it what to render. `<picture>` follows a precedent already set by the `<audio>` and `<video>` elements: a wrapper element
 that contains individual `<source>` elements.
@@ -19,10 +20,10 @@ that contains individual `<source>` elements.
 </picture ...>
 ```
 
-That inner `` also provides you with a reliable fallback pattern for older browsers without support for responsive images:
+That inner ``also provides you with a reliable fallback pattern for older browsers without support for responsive images:
 if the `<picture>` element isn't recognized by the user's browser, it's ignored. The `<source>` elements are then discarded as well,
 since the browser either won't recognize them at all, or won't have meaningful context for them without a `<video>` or `<audio>` parent.
-The inner `` element will be recognized by any browser, though---and the source specified in its `src` will be rendered as expected.
+The inner`` element will be recognized by any browser, though---and the source specified in its `src` will be rendered as expected.
 
 ## "Art directed" images with `<picture>`
 
@@ -33,7 +34,7 @@ For example: a full-width header image with a small central focus may work well 
 
 But when scaled down to suit small viewports, the central focus of the image might be lost:
 
-The *subject* of these image sources are the same, but in order to better focus on that subject visually, you'll want the
+The _subject_ of these image sources are the same, but in order to better focus on that subject visually, you'll want the
 proportions of the image source to change across breakpoints. For example, a tighter zoom on the center of the image, and
 some of the detail at the edges cropped out:
 
@@ -48,10 +49,10 @@ that matches user's viewport size will be the one selected:
 
 ```html
 <picture>
-  <source media="(min-width: 1200px)" srcset="wide-crop.jpg">
-  
+  <source media="(min-width: 1200px)" srcset="wide-crop.jpg" />
 </picture>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/poZNxyN?height=300&amp;theme-id=light&amp;default-tab=html%2Ccss%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen poZNxyN by web-dot-dev on Codepen"></iframe>
 
 You should always specify the inner `img` last in the order---if none of the `source` elements match their `media` or `type`
@@ -60,39 +61,40 @@ sources first, as seen in the preceding code. When using `max-width` media queri
 
 ```html
 <picture>
-   <source media="(max-width: 400px)" srcset="mid-bp.jpg">
-   <source media="(max-width: 800px)" srcset="high-bp.jpg">
-   
+  <source media="(max-width: 400px)" srcset="mid-bp.jpg" />
+  <source media="(max-width: 800px)" srcset="high-bp.jpg" />
 </picture>
 ```
 
 When a source is chosen based on the criteria you've specified, the `srcset` attribute on `source` is passed along to the
-`` as though it were defined on `` itself---meaning you're free to use `sizes` to optimize art directed image
+`as though it were defined on` itself---meaning you're free to use `sizes` to optimize art directed image
 sources as well.
 
 ```html
 <picture>
-   <source media="(min-width: 800px)" srcset="high-bp-1600.jpg 1600w, high-bp-1000.jpg 1000w">
-   <source srcset="lower-bp-1200.jpg 1200w, lower-bp-800.jpg 800w">
-   
+  <source
+    media="(min-width: 800px)"
+    srcset="high-bp-1600.jpg 1600w, high-bp-1000.jpg 1000w"
+  />
+  <source srcset="lower-bp-1200.jpg 1200w, lower-bp-800.jpg 800w" />
 </picture>
 ```
 
 Of course, an image with proportions that can vary depending on the selected `<source>` element raises a performance issue:
-`` only supports a single `width` and `height` attribute, but [omitting those attributes can lead to a measurably worse user experience](https://web.dev/learn/images/prescriptive.md.txt##).
+``only supports a single `width` and `height` attribute, but [omitting those attributes can lead to a measurably worse user experience](https://web.dev/learn/images/prescriptive.md.txt##).
 In order to account for this, a [relatively recent](https://github.com/whatwg/html/pull/5894)---but
 [well supported](https://developer.mozilla.org/docs/Web/HTML/Element/source#browser_compatibility)---addition to the HTML
 specification allows for use of `height` and `width` attributes on `<source>` elements. These work to reduce layout shifts just as well
-as they do on ``, with the appropriate space reserved in your layout for whatever `<source>` element is selected.
+as they do on``, with the appropriate space reserved in your layout for whatever `<source>` element is selected.
 
 ```html
 <picture>
-   <source
-      media="(min-width: 800px)"
-      srcset="high-bp-1600.jpg 1600w, high-bp-1000.jpg 1000w"
-      width="1600"
-      height="800">
-   
+  <source
+    media="(min-width: 800px)"
+    srcset="high-bp-1600.jpg 1600w, high-bp-1000.jpg 1000w"
+    width="1600"
+    height="800"
+  />
 </picture>
 ```
 
@@ -102,10 +104,10 @@ suited to the color scheme dictated by a user's preference:
 
 ```html
 <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="hero-dark.jpg">
-   
+  <source media="(prefers-color-scheme: dark)" srcset="hero-dark.jpg" />
 </picture>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/MWBbPJm?height=500&amp;theme-id=light&amp;default-tab=html%2Cresult&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen MWBbPJm by web-dot-dev on Codepen"></iframe>
 
 ### The `type` attribute
@@ -121,7 +123,7 @@ the browser to request and attempt to parse an image file before determining whe
 common example was a script along these lines:
 
 ```html
-   
+
 ```
 
 With this pattern, a request for `image.webp` would still be made in every browser---meaning a wasted transfer for browsers
@@ -141,15 +143,14 @@ requests---if the media type isn't recognized, the `<source>` and all its candid
 
 ```html
 <picture>
- <source type="image/webp" srcset="pic.webp">
- 
+  <source type="image/webp" srcset="pic.webp" />
 </picture>
 ```
 
 Here, any browser that supports WebP encoding will recognize the `image/webp` Media Type specified in the `type` attribute
 of the `<source>` element, select that `<source>`, and---since we've only provided a single candidate in `srcset`---instruct the inner
-`` to request, transfer, and render `pic.webp`. Any browser *without* support for WebP will disregard the `source`, and
-absent any instructions to the contrary, the `` will render the contents of `src` as it has done since 1992.
+``to request, transfer, and render `pic.webp`. Any browser *without* support for WebP will disregard the `source`, and
+absent any instructions to the contrary, the`` will render the contents of `src` as it has done since 1992.
 You don't need to specify a second `<source>` element with `type="image/jpeg"` here, of course---you can assume universal support for JPEG.
 
 Regardless of the user's browsing context, all of this is achieved with a single file transfer, and no bandwidth wasted on
@@ -179,7 +180,7 @@ There are also additions to the `<picture>` element on the horizon as well, to m
 to the way we style out page layouts. While viewport information is a sound basis for high-level layout decisions, it
 prevents us from taking a fully component-level approach to development---meaning, a component that can be dropped into
 any part of a page layout, with styles that respond to the space that the component itself occupies. This concern led
-to the creation of *[container queries](https://www.oddbird.net/2022/08/18/cq-syntax/)*: a method of styling elements
+to the creation of _[container queries](https://www.oddbird.net/2022/08/18/cq-syntax/)_: a method of styling elements
 based on the size of their parent container, rather than the viewport alone.
 
 While the container query syntax has only just stabilized---and browser support is [very limited](https://caniuse.com/css-container-queries),

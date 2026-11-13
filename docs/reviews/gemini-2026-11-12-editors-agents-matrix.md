@@ -3,11 +3,12 @@ Review: docs/research/EDITORS-AGENTS-MATRIX.md
 
 Score: 7 / 20 — Good instinct to separate [V] measurements from [NV] judgments and log anomalies in §8, but invalidated by a broken GitHub pagination metric, a false assumption about bun fmt / bun check, a category-error scoring formula that ranks LSP daemons against agent TUIs, contradictory cross-table membership, and recommendations that break sibling monorepo workflows.
 
-Criterion	Score	Verdict
-Factual & tooling accuracy	2 / 6	False bun fmt/check claim, broken gh api Link count, VS Code license mix-up, U+200B bug
-Statistical & methodological rigor	1 / 5	Cross-species rubric (rust-analyzer vs OpenCode), impossible sub-scores, --version timing fallacy
-Internal & monorepo consistency	2 / 5	OpenCode (#1) omitted from §4, drops Gemini CLI used by council, ignores prd/fr2 remote builds
-Completeness & operational readiness	2 / 4	Sub-scores hidden in external JSON, no 0–5 anchors, missing clangd/clippy/oxc & SSH remoting
+Criterion Score Verdict
+Factual & tooling accuracy 2 / 6 False bun fmt/check claim, broken gh api Link count, VS Code license mix-up, U+200B bug
+Statistical & methodological rigor 1 / 5 Cross-species rubric (rust-analyzer vs OpenCode), impossible sub-scores, --version timing fallacy
+Internal & monorepo consistency 2 / 5 OpenCode (#1) omitted from §4, drops Gemini CLI used by council, ignores prd/fr2 remote builds
+Completeness & operational readiness 2 / 4 Sub-scores hidden in external JSON, no 0–5 anchors, missing clangd/clippy/oxc & SSH remoting
+
 1. Factual Errors
 
 False native bun fmt / bun check replacement claim (§3 & §7):
@@ -83,24 +84,27 @@ Canonical owner/repo + binary package source column: Needed to prevent the OpenC
 Empirical agent capability benchmarks: SWE-bench Verified / Terminal-Bench pass rates and token-cost efficiency ($/task) instead of subjective [NV] autonomy guesses.
 
 4. Concrete Fixes
-Fix 1 — Accurate GitHub 90-day activity & cold-start commands (Bun / GraphQL)
+   Fix 1 — Accurate GitHub 90-day activity & cold-start commands (Bun / GraphQL)
 
 Replace the broken Link-header pagination and --version micro-benchmark with exact GraphQL commit + merged-PR counts and non-shim binary invocation:
 
 Bash
+
 # 1. Exact 90-day default-branch commit count in 1 GraphQL call (no per_page=30 Link bug)
+
 gh api graphql -F owner="anomalyco" -F name="opencode" -F since="2026-08-14T00:00:00Z" -f query='
-  query($owner: String!, $name: String!, $since: GitTimestamp!) {
-    repository(owner: $owner, name: $name) {
-      isArchived
-      licenseInfo { spdxId }
-      defaultBranchRef {
-        target { ... on Commit { history(since: $since) { totalCount } } }
-      }
-    }
-  }'
+query($owner: String!, $name: String!, $since: GitTimestamp!) {
+repository(owner: $owner, name: $name) {
+isArchived
+licenseInfo { spdxId }
+defaultBranchRef {
+target { ... on Commit { history(since: $since) { totalCount } } }
+}
+}
+}'
 
 # 2. Measure actual binary path (bypassing cmd.exe .cmd wrapper overhead on Windows) + headless prompt/init
+
 hyperfine -N -w 2 -r 5 "hx --health"
 
 Fix 2 — Split into 3 Category-Specific Rubrics (Delete §6. Classement global)
@@ -108,7 +112,9 @@ Fix 2 — Split into 3 Category-Specific Rubrics (Delete §6. Classement global)
 Replace §1 and §6 in docs/research/EDITORS-AGENTS-MATRIX.md (and strip U+200B on 2. Éditeurs):
 
 Markdown
+
 ## Index
+
 1. Méthode et barèmes par catégorie
 2. Éditeurs et IDE
 3. Serveurs de langage, lint et débogage (Rust / TS / C++)
@@ -117,7 +123,9 @@ Markdown
 6. Anomalies et conflits de sources
 
 ## 1. Méthode et barèmes par catégorie
+
 Chaque catégorie possède son propre vecteur de poids (total = 100) afin de ne jamais classer un serveur LSP contre un agent autonome. Tous les scores composites sont **[NV]** (agrégation de notes 0–5 documentées dans `editors-agents.json` avec ancres explicites 0/3/5).
+
 - **Éditeurs (100) :** perf/latence 15, empreinte RAM 10, DX Rust/TS/C++ 20, LSP + tree-sitter 15, Remote SSH Windows→Linux (`prd`/`fr2`) 15, intégration ACP/MCP 10, Windows natif 10, licence OSS 5.
 - **Briques IDE / Toolchain (100) :** précision d'analyse 25, perf/incrémentalité 20, RAM sur monorepo 15, support multi-plateforme (Win/Linux) 15, maturité protocole (LSP/DAP) 15, activité/licence 10.
 - **Agents & TUI autonomes (100) :** exécution NHITL/headless 20, qualité d'édition/outillage 20, MCP/ACP + contexte/mémoire 15, Windows natif (sans WSL) + Linux 15, extensibilité/skills 10, licence OSS 10, coût/tokens 10.
@@ -127,12 +135,15 @@ Fix 3 — Correct §3 & §7 Tooling and Stack Alignment
 Replace the erroneous bun fmt/oxlint/tsgo/Gemini CLI guidance in §3 and §7:
 
 Markdown
+
 ### Ajouts & corrections §3 (Qualité IDE Rust + TS + C++)
+
 - **Formatage & lint TS/JS :** conserver **`oxlint`** et **`oxfmt`** (`bun fmt` / `bun check` ne sont que des alias `bun run` vers les scripts `package.json`, pas un linter/formateur natif de Bun). `biome.exe` peut être retiré uniquement si aucun script ne l'appelle.
 - **Formatage, lint & C++ :** ajouter `rustfmt` + `cargo clippy` (toolchain nightly épinglée) et **`clangd`** (issu de la toolchain LLVM pour `third_party/llvm-project` et `chromium`).
 - **TypeScript 7 (`tsgo`) :** suivre désormais le dépôt principal **`microsoft/TypeScript`** (paquet npm `@typescript/native-preview` / `typescript` 7.x), `microsoft/typescript-go` n'étant que l'ancien dépôt de prévisualisation archivé.
 
 ### Corrections §7 (Recommandation alignée `C:\src`)
+
 - **Agents & TUI :**
   - Auditer l'origine exacte du binaire local `opencode` (`v2.2.7` vs `anomalyco/opencode` `v1.19.5` : `where.exe opencode` + hash SHA-256) avant de l'utiliser en production.
   - Mettre à jour **`Gemini CLI`** vers `v0.68.0` (exécution directe sous Bun plutôt que suppression) tant que `tools/council` (`codex` / `gemini` / `claude`) en dépend.
@@ -140,4 +151,3 @@ Markdown
 - **Éditeurs & Débogage (contrainte zéro build sur le PC, builds sur `prd`/`fr2`) :**
   - **Helix** (`hx`) + **`rust-analyzer`** (`rustup component add rust-analyzer`) pour l'édition rapide locale et SSH sur `prd`/`fr2`.
   - **Zed** (compiler ou installer en vérifiant le support Remote SSH Windows→Linux) ; conserver `Code - OSS` / `VS Code` ou `WinDbg` en repli pour le débogage graphique PDB/D3D12/WinUI 3 (`windows-msvc`).
-

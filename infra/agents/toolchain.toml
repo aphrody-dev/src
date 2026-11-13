@@ -34,7 +34,7 @@ id = "document-skills@anthropic-agent-skills"
 scope = "user"
 
 [[claude.plugin]]
-id = "google-cloud-developer@google-plugins"   # skills gcloud + MCP HTTP developer-knowledge
+id = "google-cloud-developer@google-plugins" # skills gcloud + MCP HTTP developer-knowledge
 scope = "user"
 env = ["DEVELOPERKNOWLEDGE_API_KEY"]
 
@@ -53,14 +53,14 @@ scope = "user"
 # Serveurs MCP stdio lancés par bun x (les plugins upstream utilisent npx : non installés).
 [[claude.mcp]]
 name = "chrome-devtools"
-hosts = ["pc"]                         # navigateur local / connexion Firebase du PC
+hosts = ["pc"] # navigateur local / connexion Firebase du PC
 scope = "user"
-command = ["bun", "x", "chrome-devtools-mcp@1.13.0", "--headless", "--isolated"]  # aucune fenêtre (demande du propriétaire 2026-11-13)
+command = ["bun", "x", "chrome-devtools-mcp@1.13.0", "--headless", "--isolated"] # aucune fenêtre (demande du propriétaire 2026-11-13)
 source = "ChromeDevTools/chrome-devtools-mcp@1417f93ee3f8"
 
 [[claude.mcp]]
 name = "firebase"
-hosts = ["pc"]                         # navigateur local / connexion Firebase du PC
+hosts = ["pc"] # navigateur local / connexion Firebase du PC
 scope = "user"
 command = ["bun", "x", "firebase-tools@15.36.0", "mcp"]
 env = { IS_FIREBASE_MCP = "true" }
@@ -70,7 +70,7 @@ source = "firebase/firebase-tools@450bcf337418"
 [[secret]]
 name = "DEVELOPERKNOWLEDGE_API_KEY"
 store = "env-kit"
-user_env = false                        # coffre seul : retirée de HKCU\\Environment, lue par mcp-headers.ts
+user_env = false # coffre seul : retirée de HKCU\\Environment, lue par mcp-headers.ts
 mint = "gcloud services api-keys get-key-string 334a6698-4c5b-41b9-b896-7f8f1494fa5b --project aphrody --account yolo-automation@aphrody.iam.gserviceaccount.com"
 
 # --- Audit design / UI (2026-11-13, docs/ui/ECOSYSTEM-AUDIT.md) ---
@@ -89,7 +89,7 @@ state = "absent"
 # Skills upstream copiées depuis un commit épinglé (~/.claude/skills/<name>, témoin .source).
 [[claude.skill]]
 name = "gpui-kit"
-repo = "longbridge/gpui-kit"          # ex-longbridge/gpui-component, crate gpui-kit 0.9.1
+repo = "longbridge/gpui-kit" # ex-longbridge/gpui-component, crate gpui-kit 0.9.1
 commit = "6f7f4d96982c476fc0cb3491c6c4d775371554f1"
 path = "skills/gpui-kit"
 license = "Apache-2.0"
@@ -103,7 +103,7 @@ license = "Apache-2.0"
 
 [[claude.skill]]
 name = "webui-reference"
-repo = "microsoft/webui"              # v3.1.1
+repo = "microsoft/webui" # v3.1.1
 commit = "30ca60aa4bdc1beab040dae32e1c10e195ec9113"
 path = "ai"
 license = "MIT"
@@ -130,17 +130,17 @@ hosts = ["pc"]
 
 [[claude.plugin]]
 id = "aphrody-skills@aphrody"
-refresh = true          # copie du cache Claude rafraîchie quand le HEAD de src change
+refresh = true # copie du cache Claude rafraîchie quand le HEAD de src change
 
 [[claude.plugin]]
 id = "aphrody-nhitl@aphrody"
 refresh = true
 
 [[claude.plugin]]
-id = "vercel-agent-skills@aphrody"      # fork aphrody-labs/agent-skills@1a2c79d4e6c4
+id = "vercel-agent-skills@aphrody" # fork aphrody-labs/agent-skills@1a2c79d4e6c4
 
 [[claude.plugin]]
-id = "web-quality-skills@aphrody"       # fork aphrody-labs/web-quality-skills@afa8da942115 (Lighthouse, Web Vitals)
+id = "web-quality-skills@aphrody" # fork aphrody-labs/web-quality-skills@afa8da942115 (Lighthouse, Web Vitals)
 
 [[claude.plugin]]
 id = "unreal-engine-skills-for-claude-code@aphrody"
@@ -189,7 +189,7 @@ hosts = ["pc"]
 
 [[claude.mcp]]
 name = "agent-desktop"
-command = ["{bin}/agent-desktop.exe", "mcp"]  # headless sémantique par défaut : pas de focus ni curseur physique
+command = ["{bin}/agent-desktop.exe", "mcp"] # headless sémantique par défaut : pas de focus ni curseur physique
 hosts = ["pc"]
 
 [[claude.mcp]]
@@ -228,18 +228,23 @@ hosts = ["pc"]
 [codex]
 marketplace = "aphrody"
 plugins = ["aphrody-skills@aphrody"]
-mcp = ["relay", "figma"]               # serveurs HTTP de [[claude.mcp]] (relay sert stitch__* et gemini_*)
+mcp = ["relay", "figma"] # serveurs HTTP de [[claude.mcp]] (relay sert stitch__* et gemini_*)
 
 [agy]
-plugins = ["aphrody-skills@aphrody", "web-quality-skills@aphrody"]   # vercel-agent-skills : sans manifeste, refusé par agy
+plugins = ["aphrody-skills@aphrody", "web-quality-skills@aphrody"] # vercel-agent-skills : sans manifeste, refusé par agy
 mcp = ["relay", "figma"]
 
 [gemini]
-extensions = [".agents"]                # gemini extensions link {src}/.agents (CLI absent à ce jour)
+extensions = [".agents"] # gemini extensions link {src}/.agents (CLI absent à ce jour)
 
 # Liens interdits : tout lien (symlink, jonction) vers une skill de src dans ces dossiers est retiré,
 # le plugin aphrody-skills la fournit déjà.
 [cleanup]
-link_dirs = ["{home}/.claude/skills", "{home}/.gemini/skills", "{home}/.agents/skills", "{home}/.codex/skills"]
+link_dirs = [
+  "{home}/.claude/skills",
+  "{home}/.gemini/skills",
+  "{home}/.agents/skills",
+  "{home}/.codex/skills",
+]
 # Copies posées par [[claude.skill]] devenues doublons d'un plugin (web-design-guidelines : vercel-agent-skills).
 drop_skills = ["web-design-guidelines"]

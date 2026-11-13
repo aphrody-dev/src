@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## Supported WGSL language extensions
@@ -67,7 +68,7 @@ try {
 ### Labels in macOS debugging tools
 
 The `use_user_defined_labels_in_backend` debug toggle allows you to forward object labels to the backend so that they can be seen in platform-specific debugging tools like RenderDoc, PIX, or Instruments. From now on, a better debug experience is provided on macOS when you enable it for [debugging](https://dawn.googlesource.com/dawn/+/refs/heads/main/docs/dawn/debugging.md). See [issue dawn:1784](https://bugs.chromium.org/p/dawn/issues/detail?id=1784)
- User defined labels in the Instruments app on macOS.
+User defined labels in the Instruments app on macOS.
 
 ### Log HLSL if compilation fails
 

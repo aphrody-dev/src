@@ -7,23 +7,22 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Use srcset to automatically choose the right image size.
 
- Sam Dutton [X](https://twitter.com/sw12) [GitHub](https://github.com/samdutton) [Mastodon](https://techhub.social/@samdutton) [Bluesky](https://bsky.app/profile/samdutton.bsky.social) [Homepage](https://samdutton.com)
+Sam Dutton [X](https://twitter.com/sw12) [GitHub](https://github.com/samdutton) [Mastodon](https://techhub.social/@samdutton) [Bluesky](https://bsky.app/profile/samdutton.bsky.social) [Homepage](https://samdutton.com)
 
 [Video](https://www.youtube.com/watch?v=SyVKRnusyqM)
 
 According to [HTTP Archive](https://httparchive.org/reports/state-of-images), a
 typical mobile web page weighs over 2.6 MB, and more than two thirds of that
 weight is images. That's a great opportunity for optimization!
- [Average mobile page bytes by content type](https://mobile.httparchive.org/)
+[Average mobile page bytes by content type](https://mobile.httparchive.org/)
 
 ## Summary
 
 - Don't save images larger than their display size.
 - Save multiple sizes for each image and use the [`srcset`](https://developer.mozilla.org/docs/Web/HTML/Element/img#attr-srcset) attribute to enable the browser to choose the smallest. The `w` value tells the browser the width of each version:
-
-    
 
 ## Save images with the right size
 
@@ -35,7 +34,7 @@ Take a look at the images below.
 
 They appear nearly identical, but the file size of one is more than 10 times
 larger than the other.
- Saved width 1000 px, file size 184 KB  Saved width 300 px, file size 16 KB
+Saved width 1000 px, file size 184 KB Saved width 300 px, file size 16 KB
 
 The first image is much larger in file size because it's saved with dimensions
 much larger than the display size. Both images are displayed with a fixed
@@ -59,14 +58,12 @@ where image display sizes change to fit the screen size.
 Wouldn't it be great if you could make each image available at different sizes, then
 let the browser choose the best size for the device and display size?
 Unfortunately there's a
-[catch-22](https://en.wikipedia.org/wiki/Catch-22_(logic)) when it comes to
+[catch-22](<https://en.wikipedia.org/wiki/Catch-22_(logic)>) when it comes to
 working out which image is best. The browser should use the smallest possible
 image, but it can't know the width of an image without downloading it to check.
 
 This is where `srcset` comes in handy. You save images at different sizes, then
 tell the browser the width of each version:
-
-    
 
 The `w` values show the width of each image in pixels. For example,
 `small.jpg 500w` tells the browser that [small.jpg](https://web.dev/articles/use-srcset-to-automatically-choose-the-right-image/image/small.jpg?auto=format) is 500
@@ -75,7 +72,7 @@ depending on the screen type and the viewport size---without having to
 download images to check their size.
 
 > [!CAUTION]
-> **Caution:** `srcset` gives the browser information about the saved width of each image file. It does *not* specify the size to display the image---you still need CSS for that!
+> **Caution:** `srcset` gives the browser information about the saved width of each image file. It does _not_ specify the size to display the image---you still need CSS for that!
 
 You can see `srcset` in action for the image below. If you're on a laptop or
 desktop computer, change your browser window size and reopen this page.
@@ -143,8 +140,6 @@ image file---before it makes any layout calculations.
 
 In the example below, `sizes="50vw"` tells the browser that this image will be
 displayed at 50% of the viewport width.
-
-    
 
 You can see this in action at
 [simpl.info/sizes](https://simpl.info/sizeswvalues/) and the ["Specifying multiple slot widths"](https://web.dev/articles/codelab-specifying-multiple-slot-widths.md.txt) codelab.

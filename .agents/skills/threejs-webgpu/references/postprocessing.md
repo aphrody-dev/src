@@ -22,13 +22,22 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 5);
 
 // A bright emissive sphere gives bloom something to pick up
 const mesh = new THREE.Mesh(
   new THREE.SphereGeometry(1, 32, 16),
-  new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0xffffff, emissiveIntensity: 2 }),
+  new THREE.MeshStandardMaterial({
+    color: 0x222222,
+    emissive: 0xffffff,
+    emissiveIntensity: 2,
+  }),
 );
 scene.add(mesh);
 
@@ -36,7 +45,12 @@ scene.add(mesh);
 // then OutputPass last: it applies renderer.toneMapping and outputColorSpace once.
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  1.5,
+  0.4,
+  0.85,
+);
 // bloomPass.strength, .radius and .threshold are live properties; threshold is the luminance above which things glow
 composer.addPass(bloomPass);
 composer.addPass(new OutputPass());
@@ -64,7 +78,14 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85));
+composer.addPass(
+  new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    1.5,
+    0.4,
+    0.85,
+  ),
+);
 composer.addPass(new SMAAPass()); // no arguments; the composer sizes it
 composer.addPass(new OutputPass());
 ```
@@ -132,7 +153,14 @@ function restoreMaterial(object) {
 const bloomComposer = new EffectComposer(renderer);
 bloomComposer.renderToScreen = false;
 bloomComposer.addPass(new RenderPass(scene, camera));
-bloomComposer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85));
+bloomComposer.addPass(
+  new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    1.5,
+    0.4,
+    0.85,
+  ),
+);
 
 // Final composer: the clean scene plus the bloom texture, mixed by a ShaderPass
 const finalComposer = new EffectComposer(renderer);
@@ -214,7 +242,12 @@ const composer = new EffectComposer(renderer);
 // SSAOPass darkens the previous image, so the scene render must come first
 composer.addPass(new RenderPass(scene, camera));
 
-const ssaoPass = new SSAOPass(scene, camera, window.innerWidth, window.innerHeight);
+const ssaoPass = new SSAOPass(
+  scene,
+  camera,
+  window.innerWidth,
+  window.innerHeight,
+);
 ssaoPass.kernelRadius = 16;
 ssaoPass.minDistance = 0.005;
 ssaoPass.maxDistance = 0.1;
@@ -236,7 +269,11 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
-const outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera);
+const outlinePass = new OutlinePass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  scene,
+  camera,
+);
 outlinePass.selectedObjects = [mesh]; // only these are outlined
 outlinePass.edgeStrength = 3;
 outlinePass.visibleEdgeColor.set(0xffffff);
@@ -269,7 +306,12 @@ const glitchPass = new GlitchPass();
 glitchPass.goWild = true; // glitch every frame; false (the default) glitches at random intervals
 composer.addPass(glitchPass);
 
-const halftonePass = new HalftonePass({ shape: 1, radius: 4, scatter: 0, greyscale: false }); // shape: 1 dot, 2 ellipse, 3 line, 4 square, 5 diamond
+const halftonePass = new HalftonePass({
+  shape: 1,
+  radius: 4,
+  scatter: 0,
+  greyscale: false,
+}); // shape: 1 dot, 2 ellipse, 3 line, 4 square, 5 diamond
 composer.addPass(halftonePass);
 
 const vignettePass = new ShaderPass(VignetteShader); // uniforms: offset and darkness
@@ -359,12 +401,20 @@ renderer.setAnimationLoop(animate);
 import * as THREE from "three";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, outputBufferType: THREE.HalfFloatType });
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  outputBufferType: THREE.HalfFloatType,
+});
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  1.5,
+  0.4,
+  0.85,
+);
 renderer.setEffects([bloomPass]);
 
 function animate() {
@@ -390,15 +440,27 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111111); // the WebGPU canvas is transparent by default
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 5);
-scene.add(new THREE.Mesh(new THREE.SphereGeometry(1, 32, 16), new THREE.MeshBasicNodeMaterial({ color: 0xffffff })));
+scene.add(
+  new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 16),
+    new THREE.MeshBasicNodeMaterial({ color: 0xffffff }),
+  ),
+);
 const renderPipeline = new THREE.RenderPipeline(renderer);
 const scenePass = pass(scene, camera);
 const scenePassColor = scenePass.getTextureNode("output");
 
 // bloom() returns only the glow, so add it to the scene color
-renderPipeline.outputNode = scenePassColor.add(bloom(scenePassColor, 1.5, 0.4, 0.85));
+renderPipeline.outputNode = scenePassColor.add(
+  bloom(scenePassColor, 1.5, 0.4, 0.85),
+);
 
 function animate() {
   renderPipeline.render(); // instead of renderer.render()
@@ -441,11 +503,17 @@ const renderPipeline = new THREE.RenderPipeline(renderer);
 const prePass = pass(scene, camera, { samples: 0 }); // ao() cannot read a multisampled depth texture
 prePass.setMRT(mrt({ output: normalView }));
 
-const aoPass = ao(prePass.getTextureNode("depth"), prePass.getTextureNode(), camera);
+const aoPass = ao(
+  prePass.getTextureNode("depth"),
+  prePass.getTextureNode(),
+  camera,
+);
 
 // Apply the AO to a normal scene pass
 const scenePass = pass(scene, camera);
-scenePass.contextNode = builtinAOContext(aoPass.getTextureNode().sample(screenUV).r);
+scenePass.contextNode = builtinAOContext(
+  aoPass.getTextureNode().sample(screenUV).r,
+);
 renderPipeline.outputNode = scenePass;
 ```
 

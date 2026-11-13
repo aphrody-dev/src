@@ -12,30 +12,53 @@
  * Fichiers : <état>/auth-state.json (dernière sonde), <état>/auth-prompts.json (derniers signalements).
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { type AuthOptions, type Check, collectChecks, type Manifest, runAuth } from "./auth";
+import {
+  type AuthOptions,
+  type Check,
+  collectChecks,
+  type Manifest,
+  runAuth,
+} from "./auth";
 import { secretGet, secretList } from "./secret-store";
 
 const DAY = 86_400_000;
 
 /** Le PC porte le coffre de référence : secrets CI, OIDC, flotte, tunnels et jetons d'API y sont sondés et poussés. */
-const PC = process.platform === "win32" || process.env.AY_AUTH_REFRESH_ALL === "1";
+const PC =
+  process.platform === "win32" || process.env.AY_AUTH_REFRESH_ALL === "1";
 /**
  * Identifiants dont un runner Linux a besoin (infra/agents/runner.ts : gh pour le push, claude et codex pour les
  * tâches) ; les autres CLI (cf, wrangler, vercel, gcloud, portées gh admin) sont l'affaire du PC, qui pousse les
  * valeurs. AY_AUTH_TARGETS (liste séparée par des virgules) remplace cette liste.
  */
-export const RUNNER_TARGETS = (process.env.AY_AUTH_TARGETS ?? "gh,claude,codex").split(",").filter(Boolean);
+export const RUNNER_TARGETS = (process.env.AY_AUTH_TARGETS ?? "gh,claude,codex")
+  .split(",")
+  .filter(Boolean);
 export const scope = (checks: Check[], pc = PC) =>
-  pc ? checks : checks.filter((c) => c.kind === "store" || RUNNER_TARGETS.includes(c.target));
+  pc
+    ? checks
+    : checks.filter(
+        (c) => c.kind === "store" || RUNNER_TARGETS.includes(c.target),
+      );
 
 export const stateDir = () =>
   process.env.AY_AUTH_STATE ??
   (process.platform === "win32"
     ? join(process.env.LOCALAPPDATA ?? homedir(), "aphrody", "auth")
-    : join(process.env.XDG_STATE_HOME ?? join(homedir(), ".local", "state"), "aphrody", "auth"));
+    : join(
+        process.env.XDG_STATE_HOME ?? join(homedir(), ".local", "state"),
+        "aphrody",
+        "auth",
+      ));
 
 const readJson = <T>(p: string, d: T): T => {
   try {
@@ -54,24 +77,39 @@ const key = (c: Check) => `${c.host}/${c.target}`;
 // Seuls les identifiants d'une personne (CLI, navigateur, jetons d'API) peuvent exiger son geste ; les écarts de CI,
 // d'OIDC, de flotte ou d'unités sont du travail d'agent, gardés dans auth-state.json mais jamais signalés au propriétaire.
 const OWNER_KINDS = new Set(["cli", "browser", "token", "store"]);
-export const needsOwner = (c: Check) => OWNER_KINDS.has(c.kind) && (c.status === "action" || c.status === "invalid");
+export const needsOwner = (c: Check) =>
+  OWNER_KINDS.has(c.kind) && (c.status === "action" || c.status === "invalid");
 
 /** Cibles à signaler maintenant : au plus une fois par 24 h chacune. */
-export function due(checks: Check[], prompts: Record<string, number>, now = Date.now()): Check[] {
-  return checks.filter((c) => needsOwner(c) && now - (prompts[key(c)] ?? 0) >= DAY);
+export function due(
+  checks: Check[],
+  prompts: Record<string, number>,
+  now = Date.now(),
+): Check[] {
+  return checks.filter(
+    (c) => needsOwner(c) && now - (prompts[key(c)] ?? 0) >= DAY,
+  );
 }
 
 function notify(title: string, lines: string[]) {
   const body = lines.slice(0, 12).join("\n");
   if (process.platform === "win32") {
     // Notification Windows native (une seule, groupée) ; aucun navigateur.
-    const esc = (s: string) => s.replace(/[<>&'"]/g, (m) => `&#${m.charCodeAt(0)};`);
+    const esc = (s: string) =>
+      s.replace(/[<>&'"]/g, (m) => `&#${m.charCodeAt(0)};`);
     const xml = `<toast><visual><binding template='ToastGeneric'><text>${esc(title)}</text><text>${esc(body)}</text></binding></visual></toast>`;
     const ps = `$x=New-Object Windows.Data.Xml.Dom.XmlDocument; $x.LoadXml('${xml.replace(/'/g, "''")}'); [Windows.UI.Notifications.ToastNotificationManager,Windows.UI.Notifications,ContentType=WindowsRuntime] > $null; [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('aphrody auth').Show([Windows.UI.Notifications.ToastNotification]::new($x))`;
-    spawnSync("pwsh", ["-NoProfile", "-NonInteractive", "-Command", ps], { windowsHide: true, timeout: 30_000 });
+    spawnSync("pwsh", ["-NoProfile", "-NonInteractive", "-Command", ps], {
+      windowsHide: true,
+      timeout: 30_000,
+    });
   }
   const out = join(stateDir(), "auth-pending.md");
-  writeFileSync(out, `# ${title}\n\n${lines.map((l) => `- ${l}`).join("\n")}\n`, { mode: 0o600 });
+  writeFileSync(
+    out,
+    `# ${title}\n\n${lines.map((l) => `- ${l}`).join("\n")}\n`,
+    { mode: 0o600 },
+  );
 }
 
 export async function pass(m: Manifest, o: AuthOptions, refresh: boolean) {
@@ -86,8 +124,17 @@ export async function pass(m: Manifest, o: AuthOptions, refresh: boolean) {
   // Le PC (coffre de référence) répare tout ; les autres hôtes seulement leurs CLI et leur stockage, pour qu'aucun
   // hôte ne pousse ses copies vers les secrets GitHub ou la flotte.
   const only = PC ? o.only : ["cli", "store"];
-  if (refresh) await collectChecks(m, { ...o, only, browser: false }, true).catch(() => []);
-  const checks = scope(await collectChecks(m, { ...o, only: PC ? o.only : ["cli", "store"], browser: false }, false));
+  if (refresh)
+    await collectChecks(m, { ...o, only, browser: false }, true).catch(
+      () => [],
+    );
+  const checks = scope(
+    await collectChecks(
+      m,
+      { ...o, only: PC ? o.only : ["cli", "store"], browser: false },
+      false,
+    ),
+  );
   const dir = stateDir();
   mkdirSync(dir, { recursive: true });
   writeJson(join(dir, "auth-state.json"), { at, checks });
@@ -98,12 +145,20 @@ export async function pass(m: Manifest, o: AuthOptions, refresh: boolean) {
   if (d.length) {
     notify(
       `${d.length} identifiant(s) à reconnecter`,
-      d.map((c) => `${key(c)} : ${c.fix ?? c.proof} ; puis ay auth daemon --ack ${c.target}`),
+      d.map(
+        (c) =>
+          `${key(c)} : ${c.fix ?? c.proof} ; puis ay auth daemon --ack ${c.target}`,
+      ),
     );
     for (const c of d) prompts[key(c)] = now;
     writeJson(pf, prompts);
   }
-  return { at, total: checks.length, owner: checks.filter(needsOwner).map(key), notified: d.map(key) };
+  return {
+    at,
+    total: checks.length,
+    owner: checks.filter(needsOwner).map(key),
+    notified: d.map(key),
+  };
 }
 
 export async function daemon(m: Manifest, o: AuthOptions): Promise<number> {
@@ -112,7 +167,10 @@ export async function daemon(m: Manifest, o: AuthOptions): Promise<number> {
   const ack = opt("--ack");
   if (ack) {
     // Signal du propriétaire : une seule connexion pour cette cible, jamais de boucle.
-    return runAuth("login", { ...o, args: [ack.replace(/^gcloud:.*/, "gcloud")] });
+    return runAuth("login", {
+      ...o,
+      args: [ack.replace(/^gcloud:.*/, "gcloud")],
+    });
   }
   const every = Math.max(1, Number(opt("--every") ?? 5)) * 60_000;
   const refreshEvery = Math.max(every, Number(opt("--refresh") ?? 30) * 60_000);
@@ -129,7 +187,9 @@ export async function daemon(m: Manifest, o: AuthOptions): Promise<number> {
 }
 
 /** Dernière sonde si elle a moins de `maxAgeMs` (5 min par défaut), sinon undefined : jamais d'état périmé. */
-export function lastState(maxAgeMs = 5 * 60_000): { at: string; checks: Check[] } | undefined {
+export function lastState(
+  maxAgeMs = 5 * 60_000,
+): { at: string; checks: Check[] } | undefined {
   const p = join(stateDir(), "auth-state.json");
   if (!existsSync(p)) return undefined;
   const s = readJson<{ at: string; checks: Check[] } | undefined>(p, undefined);

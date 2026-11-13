@@ -12,7 +12,6 @@ allowed-tools:
 > (upload, design-md, generate, html, download), DESIGN.md `ay design lint|export` (system: packages/design/DESIGN.md),
 > Jules `ay jules run|sessions` and tools `jules_run`, `jules_status`. JS/TS: bun only.
 
-
 # Automate GitHub Issues with Jules
 
 You are setting up a repository to automatically analyze open GitHub issues, plan implementation tasks, and dispatch parallel Jules coding agents to fix them.
@@ -93,6 +92,7 @@ cd scripts/fleet && bun install
 ### Step 6: Print next steps for the user
 
 Tell the user they need to:
+
 1. Add `JULES_API_KEY` as a GitHub repository secret (Settings → Secrets → Actions)
 2. `GITHUB_TOKEN` is provided automatically by GitHub Actions
 3. Customize the cron schedule in `.github/workflows/fleet-dispatch.yml` (default: daily 6am UTC)
@@ -121,13 +121,16 @@ GITHUB_TOKEN=<token> bun fleet-merge.ts
 ## Customization
 
 ### Prompt Tuning
+
 The analysis prompt in `scripts/fleet/prompts/analyze-issues.ts` controls how deeply issues are investigated. Users can adjust:
+
 - Root cause analysis depth
 - Solution implementation detail level
 - Merge conflict avoidance rules
 - File ownership constraints
 
 ### Issue Filtering
+
 Edit `scripts/fleet/github/issues.ts` to filter issues by label, milestone, or state.
 
 ## Resource References

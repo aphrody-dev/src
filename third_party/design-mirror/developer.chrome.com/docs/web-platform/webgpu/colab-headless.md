@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Jason Mayes [X](https://twitter.com/jason_mayes) [GitHub](https://github.com/jasonmayes) [LinkedIn](https://www.linkedin.com/in/webai)  François Beaufort [GitHub](https://github.com/beaufortfrancois)
+
+Jason Mayes [X](https://twitter.com/jason_mayes) [GitHub](https://github.com/jasonmayes) [LinkedIn](https://www.linkedin.com/in/webai) François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 > [!TIP]
 > **Tip** : If you aren't ready to create a Colab, read [Supercharge Web AI model testing:
@@ -26,13 +27,13 @@ interested in Web AI model testing, this guide is for you.
 
 ## Step 1: Create a new Google Colab notebook
 
-1. Go to [colab.new](https://colab.new/) to create a new Colab notebook. It should look similar to figure 1. 2. Follow the prompt to sign into your Google Account.  **Figure 1**: A new Colab notebook.
+1. Go to [colab.new](https://colab.new/) to create a new Colab notebook. It should look similar to figure 1. 2. Follow the prompt to sign into your Google Account. **Figure 1**: A new Colab notebook.
 
 ## Step 2: Connect to a T4 GPU-enabled server
 
 1. Click **Connect** near the top right of the notebook.
-2. Select **Change runtime type** :  **Figure 2**. Change the runtime in the Colab interface.
-3. In the modal window, select **T4 GPU** as your hardware accelerator. When you connect, Colab will use a Linux instance with an NVIDIA T4 GPU attached. More powerful GPU options are available (we have confirmed V100 GPU also works), however those options must be purchased.  **Figure 3** : Under Hardware accelerator, select **T4 GPU**.
+2. Select **Change runtime type** : **Figure 2**. Change the runtime in the Colab interface.
+3. In the modal window, select **T4 GPU** as your hardware accelerator. When you connect, Colab will use a Linux instance with an NVIDIA T4 GPU attached. More powerful GPU options are available (we have confirmed V100 GPU also works), however those options must be purchased. **Figure 3** : Under Hardware accelerator, select **T4 GPU**.
 4. Click **Save**.
 5. Click the **Connect** button to connect to your runtime. After some time, the button will present a green checkmark, along with RAM and disk usage graphs. This indicates that a server has successfully been created with your required hardware.
 
@@ -74,17 +75,18 @@ Nice work, you just created a server with a GPU attached.
    export DBUS_SESSION_BUS_ADDRESS="unix:path=/var/run/dbus/system_bus_socket"
    /etc/init.d/dbus start
    ```
+
 2. Click next to the cell to
    execute the code.
 
-    **Figure 4**.
+   **Figure 4**.
 
 3. Once the code finishes executing, verify `nvidia-smi` printed out something
    similar to the following screenshot to confirm you do indeed have a GPU
    attached and it's recognized on your server. You may need to scroll to earlier
    in the logs to view this output.
 
-    **Figure 5**: Look for the output which begins with "NVIDIA-SMI".
+   **Figure 5**: Look for the output which begins with "NVIDIA-SMI".
 
 ## Step 4: Use and automate headless Chrome
 
@@ -110,7 +112,7 @@ In the example, we stored the resulting PDF capture in `/content/gpu.pdf`. To
 view that file, expand the **content** .
 Then click to download the PDF
 file to your local machine.
- **Figure 6**: Watch the steps to download the PDF in this screen capture of the Colab interface.
+**Figure 6**: Watch the steps to download the PDF in this screen capture of the Colab interface.
 
 ### Part B: Command Chrome with Puppeteer
 
@@ -134,7 +136,7 @@ First, import [Puppeteer](https://pptr.dev/). This lets
 you remotely control Chrome with Node.js:
 
 ```javascript
-import puppeteer from 'puppeteer';
+import puppeteer from "puppeteer";
 ```
 
 Next, check what command line arguments were passed to the Node application.
@@ -180,15 +182,15 @@ Then, add an event listener to listen for `console.log` events when the web page
 executes JavaScript. This lets you log messages on the Node command line
 and also inspect the console text for a special phrase (in this case,
 `captureAndEnd`) that triggers a screenshot and then ends the browser process in
-Node. This is useful for web pages that need to do some amount of work *before*
+Node. This is useful for web pages that need to do some amount of work _before_
 a screenshot can be taken, and has a non-deterministic amount of time of
 execution.
 
 ```javascript
-page.on('console', async function(msg) {
+page.on("console", async function (msg) {
   console.log(msg.text());
-  if (msg.text() === 'captureAndEnd') {
-    await page.screenshot({ path: '/content/screenshotEnd.png' });
+  if (msg.text() === "captureAndEnd") {
+    await page.screenshot({ path: "/content/screenshotEnd.png" });
     await browser.close();
   }
 });
@@ -218,17 +220,17 @@ You may have noticed that we used an import statement at the start of the
 you'll receive an error that the module is invalid.
 
 ```json
- {
-    "dependencies":  {
-      "puppeteer": "*"
-    },
-    "name": "content",
-    "version": "1.0.0",
-    "main": "jPuppet.js",
-    "devDependencies": {},
-    "keywords": [],
-    "type": "module",
-    "description": "Node.js Puppeteer application to interface with headless Chrome with GPU support to capture screenshots and get console output from target webpage"
+{
+  "dependencies": {
+    "puppeteer": "*"
+  },
+  "name": "content",
+  "version": "1.0.0",
+  "main": "jPuppet.js",
+  "devDependencies": {},
+  "keywords": [],
+  "type": "module",
+  "description": "Node.js Puppeteer application to interface with headless Chrome with GPU support to capture screenshots and get console output from target webpage"
 }
 ```
 
@@ -245,7 +247,7 @@ processing in the browser using the GPU.
 
 You can use this for any client-side GPU-based workloads, from machine learning
 models to graphics and games testing.
- **Figure 7**: A successful capture of a GPU accelerated TensorFlow.js model capable of recognizing clothing client side in the browser in real time
+**Figure 7**: A successful capture of a GPU accelerated TensorFlow.js model capable of recognizing clothing client side in the browser in real time
 
 ## Resources
 

@@ -12,7 +12,6 @@ allowed-tools:
 > (upload, design-md, generate, html, download), DESIGN.md `ay design lint|export` (system: packages/design/DESIGN.md),
 > Jules `ay jules run|sessions` and tools `jules_run`, `jules_status`. JS/TS: bun only.
 
-
 # Stitch SITE.md Skill
 
 You are a Lead Product Owner and Architect. Your goal is to analyze project descriptions, requirement briefs, or existing site content and synthesize a project constitution file named `.stitch/SITE.md`.
@@ -29,6 +28,7 @@ This skill helps you initialize and structure `.stitch/SITE.md` files, which act
 ## The Goal
 
 Generate a `.stitch/SITE.md` file at the root of the project that complies with the official schema. It must cover:
+
 1. Core Identity (Name, Mission, Voice).
 2. Visual Language Vibe.
 3. Architecture & File Structure.
@@ -41,6 +41,7 @@ Generate a `.stitch/SITE.md` file at the root of the project that complies with 
 Analyze the input brief and translate it into the following sections:
 
 ### 1. Core Identity
+
 - **Project Name**: Extracted from requirements.
 - **Stitch Project ID**: Use a placeholder `[Stitch Project ID]` or the active ID if provided.
 - **Mission**: A 1-2 sentence description of what the application/site does.
@@ -48,18 +49,22 @@ Analyze the input brief and translate it into the following sections:
 - **Voice**: Tone adjectives (e.g. professional, playful, clean).
 
 ### 2. Visual Language
+
 - **Vibe (Adjectives)**: Define a primary, secondary, and tertiary aesthetic keyword matching the project's visual direction.
 
 ### 3. Architecture & File Structure
+
 - Map out the directory structure. Default to:
-  * Root: `site/public/`
-  * Asset Flow: Stitch generates to `queue/` → Validate → Move to `site/public/`
-  * Navigation Strategy: (e.g., standard header links, shared navigation bar).
+  - Root: `site/public/`
+  - Asset Flow: Stitch generates to `queue/` → Validate → Move to `site/public/`
+  - Navigation Strategy: (e.g., standard header links, shared navigation bar).
 
 ### 4. Live Sitemap
+
 - Map out the files requested in the brief. Mark completed files as `[x]` and pending/target files as `[ ]`. At initialization, at least `index.html` should be listed.
 
 ### 5. The Roadmap (Backlog)
+
 - Parse the requirements into concrete development tasks, grouped by priority:
   - **High Priority**: Core pages, basic layouts, primary user flows.
   - **Medium Priority**: Interactive features, forms, secondary pages.

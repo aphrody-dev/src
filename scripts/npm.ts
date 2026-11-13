@@ -18,64 +18,141 @@ const REGISTRY = "https://registry.npmjs.org";
 const OWNED = ["@aphrody", "@rosegriffon"]; // orgs npm dont <npm-owner> est owner (GET /-/org/<scope>/user)
 const ORG = "aphrody-labs";
 const WORKFLOW = "npm-publish.yml"; // nom du workflow appelant, vérifié par npm à chaque publish OIDC
-const SUBMODULES = ["apps/rosegriffon", "apps/shenron", "apps/auto", "apps/r2b"];
+const SUBMODULES = [
+  "apps/rosegriffon",
+  "apps/shenron",
+  "apps/auto",
+  "apps/r2b",
+];
 /** Doublons de nom : la copie canonique est celle de shenron (domaine média). */
 const CANONICAL: Record<string, string> = {
   "@aphrody/remotion": "apps/shenron",
   "@aphrody/hyperframes": "apps/shenron",
   "@aphrody/filmcraft": "apps/shenron",
 };
-const SESSION = join(process.env.LOCALAPPDATA ?? join(process.env.HOME ?? "~", ".local/share"), "aphrody", "npm-session.npmrc");
+const SESSION = join(
+  process.env.LOCALAPPDATA ?? join(process.env.HOME ?? "~", ".local/share"),
+  "aphrody",
+  "npm-session.npmrc",
+);
 /** Hôtes : alias ssh -> argv. prd agent passe par le mesh WireGuard (rebond fr2). */
 const HOSTS: Record<string, string[]> = {
   "prd:root": ["prd"],
-  "prd:agent": ["-o", "HostKeyAlias=72.60.186.43", "-J", "fr2", "agent@10.200.77.5"],
-  "fr2": ["cdn"],
-  "fr1": ["vps"],
+  "prd:agent": [
+    "-o",
+    "HostKeyAlias=72.60.186.43",
+    "-J",
+    "fr2",
+    "agent@10.200.77.5",
+  ],
+  fr2: ["cdn"],
+  fr1: ["vps"],
 };
 const SECRET = /\bnpm_[A-Za-z0-9]{20,}/g;
 const mask = (s: string) => s.replace(SECRET, "[secret]");
 
-const run = (argv: string[], opts: { stdin?: string; cwd?: string; timeout?: number } = {}) => {
+const run = (
+  argv: string[],
+  opts: { stdin?: string; cwd?: string; timeout?: number } = {},
+) => {
   const r = Bun.spawnSync(argv, {
     cwd: opts.cwd,
     stdin: opts.stdin === undefined ? "ignore" : Buffer.from(opts.stdin),
     timeout: opts.timeout ?? 120_000,
   });
-  return { code: r.exitCode, out: mask(r.stdout.toString()).trim(), err: mask(r.stderr.toString()).trim() };
+  return {
+    code: r.exitCode,
+    out: mask(r.stdout.toString()).trim(),
+    err: mask(r.stderr.toString()).trim(),
+  };
 };
 /** Commande exécutée avec NPM_TOKEN du coffre dans son env (env-kit secret exec). */
-const withToken = (argv: string[], timeout?: number) => run(["bun", ENV_KIT, "secret", "exec", "NPM_TOKEN", "--", ...argv], { timeout });
+const withToken = (argv: string[], timeout?: number) =>
+  run(["bun", ENV_KIT, "secret", "exec", "NPM_TOKEN", "--", ...argv], {
+    timeout,
+  });
 /** Valeur du coffre sur le stdin de la commande (env-kit secret pipe). */
-const pipeToken = (argv: string[], timeout?: number) => run(["bun", ENV_KIT, "secret", "pipe", "NPM_TOKEN", "--", ...argv], { timeout });
-const ssh = (h: string, cmd: string) => ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=20", ...HOSTS[h]!, cmd];
+const pipeToken = (argv: string[], timeout?: number) =>
+  run(["bun", ENV_KIT, "secret", "pipe", "NPM_TOKEN", "--", ...argv], {
+    timeout,
+  });
+const ssh = (h: string, cmd: string) => [
+  "ssh",
+  "-o",
+  "BatchMode=yes",
+  "-o",
+  "ConnectTimeout=20",
+  ...HOSTS[h]!,
+  cmd,
+];
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 
 // ------------------------------------------------------------------------------------------------- inventaire
-type Pkg = { path: string; repoRoot: string; slug: string; name: string; version: string; priv: boolean; json: any; indent: string };
+type Pkg = {
+  path: string;
+  repoRoot: string;
+  slug: string;
+  name: string;
+  version: string;
+  priv: boolean;
+  json: any;
+  indent: string;
+};
 
 const remoteSlug = (dir: string) => {
-  const u = run(["git", "-C", dir, "remote", "get-url", "origin"]).out || run(["git", "-C", dir, "remote", "get-url", "all"]).out;
-  return u.replace(/^git\+/, "").replace(/^https:\/\/github\.com\//, "").replace(/^git@github\.com:/, "").replace(/\.git$/, "");
+  const u =
+    run(["git", "-C", dir, "remote", "get-url", "origin"]).out ||
+    run(["git", "-C", dir, "remote", "get-url", "all"]).out;
+  return u
+    .replace(/^git\+/, "")
+    .replace(/^https:\/\/github\.com\//, "")
+    .replace(/^git@github\.com:/, "")
+    .replace(/\.git$/, "");
 };
 
 function scan(): Pkg[] {
-  const roots = [ROOT, ...SUBMODULES.map((s) => join(ROOT, s).replaceAll("\\", "/")).filter((d) => existsSync(join(d, ".git")))];
+  const roots = [
+    ROOT,
+    ...SUBMODULES.map((s) => join(ROOT, s).replaceAll("\\", "/")).filter((d) =>
+      existsSync(join(d, ".git")),
+    ),
+  ];
   const pkgs: Pkg[] = [];
   for (const repoRoot of roots) {
     const slug = repoRoot === ROOT ? `${ORG}/src` : remoteSlug(repoRoot);
-    const files = run(["git", "-C", repoRoot, "ls-files", "--", "*package.json"]).out.split("\n").filter((f) => /(^|\/)package\.json$/.test(f));
+    const files = run([
+      "git",
+      "-C",
+      repoRoot,
+      "ls-files",
+      "--",
+      "*package.json",
+    ])
+      .out.split("\n")
+      .filter((f) => /(^|\/)package\.json$/.test(f));
     for (const f of files) {
-      if (/(^|\/)(node_modules|third_party|var|fixtures?|__fixtures__)\//.test(f)) continue;
+      if (
+        /(^|\/)(node_modules|third_party|var|fixtures?|__fixtures__)\//.test(f)
+      )
+        continue;
       const abs = join(repoRoot, f);
       if (!existsSync(abs)) continue;
       const text = readFileSync(abs, "utf8");
       let json: any;
-      try { json = JSON.parse(text); } catch { continue; }
+      try {
+        json = JSON.parse(text);
+      } catch {
+        continue;
+      }
       if (!json.name) continue;
       pkgs.push({
         path: relative(ROOT, dirname(abs)).replaceAll("\\", "/") || ".",
-        repoRoot, slug, name: json.name, version: json.version ?? "0.0.0", priv: !!json.private, json,
+        repoRoot,
+        slug,
+        name: json.name,
+        version: json.version ?? "0.0.0",
+        priv: !!json.private,
+        json,
         indent: /^\{\r?\n(\s+)/.exec(text)?.[1] ?? "  ",
       });
     }
@@ -84,24 +161,43 @@ function scan(): Pkg[] {
 }
 
 const scopeOf = (n: string) => (n.startsWith("@") ? n.split("/")[0]! : "");
-const publishable = (p: Pkg) => !p.priv && OWNED.includes(scopeOf(p.name)) && (!CANONICAL[p.name] || p.path.startsWith(CANONICAL[p.name]!));
+const publishable = (p: Pkg) =>
+  !p.priv &&
+  OWNED.includes(scopeOf(p.name)) &&
+  (!CANONICAL[p.name] || p.path.startsWith(CANONICAL[p.name]!));
 
 async function latest(name: string): Promise<string | null> {
   for (let i = 0; i < 3; i++) {
     try {
       const r = await fetch(`${REGISTRY}/${name.replace("/", "%2f")}/latest`);
-      return r.status === 200 ? ((await r.json()) as { version: string }).version : null;
-    } catch { await Bun.sleep(500); }
+      return r.status === 200
+        ? ((await r.json()) as { version: string }).version
+        : null;
+    } catch {
+      await Bun.sleep(500);
+    }
   }
   return null;
 }
 
 async function inventory(json: boolean) {
   const rows = [];
-  for (const p of scan().filter(publishable)) rows.push({ name: p.name, path: p.path, repo: p.slug, version: p.version, npm: await latest(p.name) });
+  for (const p of scan().filter(publishable))
+    rows.push({
+      name: p.name,
+      path: p.path,
+      repo: p.slug,
+      version: p.version,
+      npm: await latest(p.name),
+    });
   if (json) return console.log(JSON.stringify(rows, null, 2));
-  for (const r of rows) console.log(`${r.name}\t${r.version}\tnpm=${r.npm ?? "-"}\t${r.repo}\t${r.path}`);
-  console.log(`# ${rows.length} publiables, ${rows.filter((r) => r.npm).length} déjà sur npm`);
+  for (const r of rows)
+    console.log(
+      `${r.name}\t${r.version}\tnpm=${r.npm ?? "-"}\t${r.repo}\t${r.path}`,
+    );
+  console.log(
+    `# ${rows.length} publiables, ${rows.filter((r) => r.npm).length} déjà sur npm`,
+  );
 }
 
 // ------------------------------------------------------------------------------------------------- alignement
@@ -114,36 +210,79 @@ function align(write: boolean) {
     if (!p.priv && ((scope && !OWNED.includes(scope)) || dup)) {
       want.private = true; // scope npm non possédé, ou doublon d'un paquet canonique : jamais publiable
     } else if (publishable(p)) {
-      const directory = relative(p.repoRoot, join(ROOT, p.path)).replaceAll("\\", "/");
-      want.repository = { type: "git", url: `git+https://github.com/${p.slug}.git`, ...(directory ? { directory } : {}) };
-      want.publishConfig = { ...(p.json.publishConfig ?? {}), access: "public", registry: `${REGISTRY}/` };
+      const directory = relative(p.repoRoot, join(ROOT, p.path)).replaceAll(
+        "\\",
+        "/",
+      );
+      want.repository = {
+        type: "git",
+        url: `git+https://github.com/${p.slug}.git`,
+        ...(directory ? { directory } : {}),
+      };
+      want.publishConfig = {
+        ...(p.json.publishConfig ?? {}),
+        access: "public",
+        registry: `${REGISTRY}/`,
+      };
     } else continue;
     const before = JSON.stringify(p.json);
     if (JSON.stringify(want) === before) continue;
     n++;
     console.log(`${write ? "écrit" : "à aligner"}\t${p.name}\t${p.path}`);
-    if (write) writeFileSync(join(ROOT, p.path, "package.json"), `${JSON.stringify(want, null, p.indent)}\n`);
+    if (write)
+      writeFileSync(
+        join(ROOT, p.path, "package.json"),
+        `${JSON.stringify(want, null, p.indent)}\n`,
+      );
   }
-  console.log(`# ${n} package.json ${write ? "alignés" : "à aligner (--write)"}`);
+  console.log(
+    `# ${n} package.json ${write ? "alignés" : "à aligner (--write)"}`,
+  );
 }
 
 // ------------------------------------------------------------------------------------------------- jeton et hôtes
 async function status() {
   const out: Record<string, string> = {};
-  const who = withToken(["bun", "-e", `const r=await fetch("${REGISTRY}/-/whoami",{headers:{authorization:"Bearer "+process.env.NPM_TOKEN}});console.log(r.status===200?(await r.json()).username:"invalide "+r.status)`]);
+  const who = withToken([
+    "bun",
+    "-e",
+    `const r=await fetch("${REGISTRY}/-/whoami",{headers:{authorization:"Bearer "+process.env.NPM_TOKEN}});console.log(r.status===200?(await r.json()).username:"invalide "+r.status)`,
+  ]);
   out.vault = who.out || who.err;
   // ~/.npmrc du PC lit ${NPM_TOKEN} : valeur courante de l'env utilisateur (un processus parent peut en garder une ancienne).
   const env = { ...process.env } as Record<string, string>;
   if (process.platform === "win32")
-    env.NPM_TOKEN = Bun.spawnSync(["pwsh", "-NoProfile", "-c", "[Environment]::GetEnvironmentVariable('NPM_TOKEN','User')"]).stdout.toString().trim();
-  const pc = Bun.spawnSync([npm, "whoami"], { cwd: process.env.USERPROFILE ?? process.env.HOME, env });
+    env.NPM_TOKEN = Bun.spawnSync([
+      "pwsh",
+      "-NoProfile",
+      "-c",
+      "[Environment]::GetEnvironmentVariable('NPM_TOKEN','User')",
+    ])
+      .stdout.toString()
+      .trim();
+  const pc = Bun.spawnSync([npm, "whoami"], {
+    cwd: process.env.USERPROFILE ?? process.env.HOME,
+    env,
+  });
   out.pc = pc.exitCode === 0 ? pc.stdout.toString().trim() : "non connecté";
   for (const h of Object.keys(HOSTS)) {
-    const r = run(ssh(h, "cd /tmp && PATH=$HOME/.bun/bin:$PATH nice -n 19 bun pm whoami 2>&1 | tail -1"), { timeout: 90_000 });
+    const r = run(
+      ssh(
+        h,
+        "cd /tmp && PATH=$HOME/.bun/bin:$PATH nice -n 19 bun pm whoami 2>&1 | tail -1",
+      ),
+      { timeout: 90_000 },
+    );
     out[h] = r.out || r.err.slice(0, 80);
   }
-  out.github = run(["gh", "secret", "list", "--org", ORG]).out.split("\n").find((l) => l.startsWith("NPM_TOKEN\t")) ? "secret d'org NPM_TOKEN présent" : "absent";
-  out.session = existsSync(SESSION) ? "session npm interactive présente" : "pas de session (bun scripts/npm.ts login)";
+  out.github = run(["gh", "secret", "list", "--org", ORG])
+    .out.split("\n")
+    .find((l) => l.startsWith("NPM_TOKEN\t"))
+    ? "secret d'org NPM_TOKEN présent"
+    : "absent";
+  out.session = existsSync(SESSION)
+    ? "session npm interactive présente"
+    : "pas de session (bun scripts/npm.ts login)";
   console.log(JSON.stringify(out, null, 2));
 }
 
@@ -155,33 +294,63 @@ const NPMRC =
 function sync() {
   const out: Record<string, unknown> = {};
   if (process.platform === "win32")
-    out.userenv = pipeToken(["pwsh", "-NoProfile", "-c", "[Environment]::SetEnvironmentVariable('NPM_TOKEN', [Console]::In.ReadToEnd().Trim(), 'User')"]).code === 0;
-  out.github = pipeToken(["gh", "secret", "set", "NPM_TOKEN", "--org", ORG, "--visibility", "all"]).code === 0;
-  for (const h of Object.keys(HOSTS)) out[h] = pipeToken(ssh(h, `bash -c '${NPMRC}'`), 90_000).out;
+    out.userenv =
+      pipeToken([
+        "pwsh",
+        "-NoProfile",
+        "-c",
+        "[Environment]::SetEnvironmentVariable('NPM_TOKEN', [Console]::In.ReadToEnd().Trim(), 'User')",
+      ]).code === 0;
+  out.github =
+    pipeToken([
+      "gh",
+      "secret",
+      "set",
+      "NPM_TOKEN",
+      "--org",
+      ORG,
+      "--visibility",
+      "all",
+    ]).code === 0;
+  for (const h of Object.keys(HOSTS))
+    out[h] = pipeToken(ssh(h, `bash -c '${NPMRC}'`), 90_000).out;
   console.log(JSON.stringify(out, null, 2));
 }
 
 // ------------------------------------------------------------------------------------------------- session interactive (2FA)
 /** npm dans un PTY bun : Entrée envoyée aux invites, URL d'authentification ouverte chez le propriétaire, lignes
  *  d'état relayées (jamais de jeton). La session vit dans un userconfig séparé : ~/.npmrc garde le jeton du coffre. */
-async function pty(argv: string[], waitMin = 15): Promise<{ code: number; text: string }> {
+async function pty(
+  argv: string[],
+  waitMin = 15,
+): Promise<{ code: number; text: string }> {
   let text = "";
   const opened = new Set<string>();
   const term = new Bun.Terminal({
     cols: 300,
     rows: 50,
     data(_t, d) {
-      const s = new TextDecoder().decode(d).replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "");
+      const s = new TextDecoder()
+        .decode(d)
+        .replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "");
       text += s;
       if (/press enter|appuyez sur entr/i.test(s)) term.write("\r");
-      for (const url of s.match(/https:\/\/www\.npmjs\.com\/(?:login|auth)\/[^\s"']+/g) ?? []) {
+      for (const url of s.match(
+        /https:\/\/www\.npmjs\.com\/(?:login|auth)\/[^\s"']+/g,
+      ) ?? []) {
         if (opened.has(url)) continue;
         opened.add(url);
         if (process.platform === "win32") Bun.spawn(["explorer.exe", url]);
       }
       for (const l of s.split(/\r?\n/)) {
         const x = mask(l).trim();
-        if (x && /http|logged|error|success|authent|otp|2fa|trust|created|exists|already/i.test(x)) console.error(x.slice(0, 220));
+        if (
+          x &&
+          /http|logged|error|success|authent|otp|2fa|trust|created|exists|already/i.test(
+            x,
+          )
+        )
+          console.error(x.slice(0, 220));
       }
     },
   });
@@ -195,21 +364,69 @@ async function pty(argv: string[], waitMin = 15): Promise<{ code: number; text: 
 
 async function login() {
   mkdirSync(dirname(SESSION), { recursive: true });
-  const r = await pty([npm, "login", "--auth-type=web", `--userconfig=${SESSION}`], 30);
-  console.log(JSON.stringify({ login: r.code === 0, whoami: run([npm, "whoami", `--userconfig=${SESSION}`]).out }));
+  const r = await pty(
+    [npm, "login", "--auth-type=web", `--userconfig=${SESSION}`],
+    30,
+  );
+  console.log(
+    JSON.stringify({
+      login: r.code === 0,
+      whoami: run([npm, "whoami", `--userconfig=${SESSION}`]).out,
+    }),
+  );
 }
 
 async function trust(dry: boolean) {
   const rows = scan().filter(publishable);
   const res: Record<string, string> = {};
   for (const p of rows) {
-    if (!(await latest(p.name))) { res[p.name] = "absent de npm : premier publish par le workflow (jeton), puis trust"; continue; }
-    const list = run([npm, "trust", "list", p.name, "--json", `--userconfig=${SESSION}`], { timeout: 60_000 });
-    if (/github/i.test(list.out) && list.out.includes(p.slug) && list.out.includes(WORKFLOW)) { res[p.name] = "déjà configuré"; continue; }
-    const argv = [npm, "trust", "github", p.name, "--file", WORKFLOW, "--repo", p.slug, "--allow-publish", "--allow-stage-publish", "-y", `--userconfig=${SESSION}`];
-    if (dry) { res[p.name] = `dry-run : ${argv.slice(1, 8).join(" ")}`; continue; }
+    if (!(await latest(p.name))) {
+      res[p.name] =
+        "absent de npm : premier publish par le workflow (jeton), puis trust";
+      continue;
+    }
+    const list = run(
+      [npm, "trust", "list", p.name, "--json", `--userconfig=${SESSION}`],
+      { timeout: 60_000 },
+    );
+    if (
+      /github/i.test(list.out) &&
+      list.out.includes(p.slug) &&
+      list.out.includes(WORKFLOW)
+    ) {
+      res[p.name] = "déjà configuré";
+      continue;
+    }
+    const argv = [
+      npm,
+      "trust",
+      "github",
+      p.name,
+      "--file",
+      WORKFLOW,
+      "--repo",
+      p.slug,
+      "--allow-publish",
+      "--allow-stage-publish",
+      "-y",
+      `--userconfig=${SESSION}`,
+    ];
+    if (dry) {
+      res[p.name] = `dry-run : ${argv.slice(1, 8).join(" ")}`;
+      continue;
+    }
     const r = await pty(argv, 10);
-    res[p.name] = r.code === 0 ? "configuré" : `échec ${r.code} : ${r.text.split("\n").filter((l) => /error|ERR/i.test(l)).slice(-1)[0]?.trim().slice(0, 120) ?? ""}`;
+    res[p.name] =
+      r.code === 0
+        ? "configuré"
+        : `échec ${r.code} : ${
+            r.text
+              .split("\n")
+              .filter((l) => /error|ERR/i.test(l))
+              .slice(-1)[0]
+              ?.trim()
+              .slice(0, 120) ?? ""
+          }`;
   }
   console.log(JSON.stringify(res, null, 2));
 }
@@ -222,9 +439,18 @@ async function harden(dry: boolean) {
     const r = await fetch(`${REGISTRY}/${p.name.replace("/", "%2f")}/latest`);
     if (r.status !== 200) continue;
     const j = (await r.json()) as { _npmUser?: { trustedPublisher?: unknown } };
-    if (!j._npmUser?.trustedPublisher) { res[p.name] = "dernière version publiée par jeton : pas encore"; continue; }
-    if (dry) { res[p.name] = "dry-run : npm access set mfa=publish"; continue; }
-    const x = await pty([npm, "access", "set", "mfa=publish", p.name, `--userconfig=${SESSION}`], 10);
+    if (!j._npmUser?.trustedPublisher) {
+      res[p.name] = "dernière version publiée par jeton : pas encore";
+      continue;
+    }
+    if (dry) {
+      res[p.name] = "dry-run : npm access set mfa=publish";
+      continue;
+    }
+    const x = await pty(
+      [npm, "access", "set", "mfa=publish", p.name, `--userconfig=${SESSION}`],
+      10,
+    );
     res[p.name] = x.code === 0 ? "2FA + jetons refusés" : `échec ${x.code}`;
   }
   console.log(JSON.stringify(res, null, 2));
@@ -232,39 +458,64 @@ async function harden(dry: boolean) {
 
 // ------------------------------------------------------------------------------------------------- épinglage SHA
 /** Fichiers workflow npm-publish.yml : src + sous-modules qui l'appellent. */
-const PIN_FILES = [ROOT, ...SUBMODULES.map((m) => join(ROOT, m).replaceAll("\\", "/"))]
+const PIN_FILES = [
+  ROOT,
+  ...SUBMODULES.map((m) => join(ROOT, m).replaceAll("\\", "/")),
+]
   .map((d) => ({ repo: d, file: join(d, ".github/workflows", WORKFLOW) }))
   .filter((x) => existsSync(x.file));
 const gh = (path: string) => JSON.parse(run(["gh", "api", path]).out || "null");
-const shaOf = (repo: string, ref: string) => (gh(`repos/${repo}/commits/${ref}`) as { sha: string }).sha;
+const shaOf = (repo: string, ref: string) =>
+  (gh(`repos/${repo}/commits/${ref}`) as { sha: string }).sha;
 
 /** Dernière release stable de la même majeure que `tag` (v7.0.1 -> v7.x.y la plus récente). */
 function latestInMajor(repo: string, tag: string): string {
   const major = /^v?(\d+)/.exec(tag)?.[1];
-  const rel = (gh(`repos/${repo}/releases?per_page=50`) as { tag_name: string; prerelease: boolean; draft: boolean }[]) ?? [];
-  return rel.find((r) => !r.prerelease && !r.draft && new RegExp(`^v?${major}\\.`).test(r.tag_name))?.tag_name ?? tag;
+  const rel =
+    (gh(`repos/${repo}/releases?per_page=50`) as {
+      tag_name: string;
+      prerelease: boolean;
+      draft: boolean;
+    }[]) ?? [];
+  return (
+    rel.find(
+      (r) =>
+        !r.prerelease &&
+        !r.draft &&
+        new RegExp(`^v?${major}\\.`).test(r.tag_name),
+    )?.tag_name ?? tag
+  );
 }
 
 function pins(write: boolean, push: boolean) {
-  const USES = /uses: ([\w.-]+\/[\w.-]+)((?:\/[\w./-]+)?)@([0-9a-f]{40}|[\w.-]+)(?: # ([\w.\/-]+))?/g;
+  const USES =
+    /uses: ([\w.-]+\/[\w.-]+)((?:\/[\w./-]+)?)@([0-9a-f]{40}|[\w.-]+)(?: # ([\w.\/-]+))?/g;
   const out: Record<string, string[]> = {};
   for (const { repo, file } of PIN_FILES) {
     const text = readFileSync(file, "utf8");
     const changes: string[] = [];
-    const next = text.replace(USES, (m, action: string, sub: string, ref: string, comment?: string) => {
-      let tag: string, sha: string;
-      if (sub) {
-        // workflow réutilisable du monorepo : dernier commit de main qui l'a modifié
-        tag = "main";
-        sha = (gh(`repos/${action}/commits?sha=main&path=${sub.slice(1)}&per_page=1`) as { sha: string }[])[0]!.sha;
-      } else {
-        tag = latestInMajor(action, comment ?? ref);
-        sha = shaOf(action, tag);
-      }
-      const line = `uses: ${action}${sub}@${sha} # ${tag}`;
-      if (line !== m) changes.push(`${action}${sub} ${comment ?? ref} -> ${tag}`);
-      return line;
-    });
+    const next = text.replace(
+      USES,
+      (m, action: string, sub: string, ref: string, comment?: string) => {
+        let tag: string, sha: string;
+        if (sub) {
+          // workflow réutilisable du monorepo : dernier commit de main qui l'a modifié
+          tag = "main";
+          sha = (
+            gh(
+              `repos/${action}/commits?sha=main&path=${sub.slice(1)}&per_page=1`,
+            ) as { sha: string }[]
+          )[0]!.sha;
+        } else {
+          tag = latestInMajor(action, comment ?? ref);
+          sha = shaOf(action, tag);
+        }
+        const line = `uses: ${action}${sub}@${sha} # ${tag}`;
+        if (line !== m)
+          changes.push(`${action}${sub} ${comment ?? ref} -> ${tag}`);
+        return line;
+      },
+    );
     const rel = relative(ROOT, file).replaceAll("\\", "/");
     out[rel] = changes;
     if (!write || next === text) continue;
@@ -272,10 +523,25 @@ function pins(write: boolean, push: boolean) {
     if (!push) continue;
     const wf = relative(repo, file).replaceAll("\\", "/");
     run(["git", "-C", repo, "add", "--", wf]);
-    run(["git", "-C", repo, "commit", "-m", `npm-publish : actions épinglées par SHA (${changes.join(", ")})`, "--", wf]);
-    run(["git", "-C", repo, "pull", "--rebase", "--autostash"], { timeout: 300_000 });
-    const p = run(["git", "-C", repo, "push", "origin", "HEAD:main"], { timeout: 300_000 });
-    out[rel].push(p.code === 0 ? "poussé" : `push en échec : ${p.err.slice(-160)}`);
+    run([
+      "git",
+      "-C",
+      repo,
+      "commit",
+      "-m",
+      `npm-publish : actions épinglées par SHA (${changes.join(", ")})`,
+      "--",
+      wf,
+    ]);
+    run(["git", "-C", repo, "pull", "--rebase", "--autostash"], {
+      timeout: 300_000,
+    });
+    const p = run(["git", "-C", repo, "push", "origin", "HEAD:main"], {
+      timeout: 300_000,
+    });
+    out[rel].push(
+      p.code === 0 ? "poussé" : `push en échec : ${p.err.slice(-160)}`,
+    );
   }
   console.log(JSON.stringify(out, null, 2));
 }
@@ -283,15 +549,33 @@ function pins(write: boolean, push: boolean) {
 const [cmd = "status", ...args] = Bun.argv.slice(2);
 const flag = (f: string) => args.includes(f);
 switch (cmd) {
-  case "status": await status(); break;
-  case "sync": sync(); break;
-  case "inventory": await inventory(flag("--json")); break;
-  case "align": align(flag("--write")); break;
-  case "login": await login(); break;
-  case "trust": await trust(flag("--dry-run")); break;
-  case "harden": await harden(flag("--dry-run")); break;
-  case "pins": pins(flag("--write") || flag("--push"), flag("--push")); break;
+  case "status":
+    await status();
+    break;
+  case "sync":
+    sync();
+    break;
+  case "inventory":
+    await inventory(flag("--json"));
+    break;
+  case "align":
+    align(flag("--write"));
+    break;
+  case "login":
+    await login();
+    break;
+  case "trust":
+    await trust(flag("--dry-run"));
+    break;
+  case "harden":
+    await harden(flag("--dry-run"));
+    break;
+  case "pins":
+    pins(flag("--write") || flag("--push"), flag("--push"));
+    break;
   default:
-    console.error("usage : bun scripts/npm.ts status|sync|inventory [--json]|align [--write]|login|trust [--dry-run]|harden [--dry-run]|pins [--write] [--push]");
+    console.error(
+      "usage : bun scripts/npm.ts status|sync|inventory [--json]|align [--write]|login|trust [--dry-run]|harden [--dry-run]|pins [--write] [--push]",
+    );
     process.exit(2);
 }

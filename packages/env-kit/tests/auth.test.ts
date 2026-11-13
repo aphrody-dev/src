@@ -22,12 +22,22 @@ describe("auth manifest", () => {
     expect(g?.issuer).toBe("https://token.actions.githubusercontent.com");
     // Propriétaire du dépôt depuis le transfert aphrody-dev/src -> aphrody-labs/src (2026-11-13).
     expect(g?.condition).toBe("assertion.repository_owner=='aphrody-labs'");
-    for (const r of (g as { repos?: string[] }).repos ?? []) expect(r.startsWith("aphrody-labs/")).toBe(true);
-    for (const v of [g!.condition, g!.pool, g!.provider, g!.service_account]) expect(v).not.toMatch(/\s/);
+    for (const r of (g as { repos?: string[] }).repos ?? [])
+      expect(r.startsWith("aphrody-labs/")).toBe(true);
+    for (const v of [g!.condition, g!.pool, g!.provider, g!.service_account])
+      expect(v).not.toMatch(/\s/);
   });
 
   test("host script is valid bash and embeds no value", () => {
-    const s = hostScript({ tunnels: { "cloudflared-x": "x" }, wireguard: ["wg0"], units: ["certbot"] }, ["ssh-ed25519 AAAAC3Nza test"], false);
+    const s = hostScript(
+      {
+        tunnels: { "cloudflared-x": "x" },
+        wireguard: ["wg0"],
+        units: ["certbot"],
+      },
+      ["ssh-ed25519 AAAAC3Nza test"],
+      false,
+    );
     expect(s).toContain("REPAIR=0");
     const bash = spawnSync("bash", ["-n"], { input: s, encoding: "utf8" });
     if (bash.error) return; // no bash on this host
@@ -36,8 +46,21 @@ describe("auth manifest", () => {
 
   test("report counts statuses", () => {
     const out = formatChecks([
-      { kind: "cli", target: "gh", host: "pc", status: "ok", proof: "gh api user -> x" },
-      { kind: "ssh", target: "prd", host: "usa", status: "invalid", proof: "refused", fix: "key" },
+      {
+        kind: "cli",
+        target: "gh",
+        host: "pc",
+        status: "ok",
+        proof: "gh api user -> x",
+      },
+      {
+        kind: "ssh",
+        target: "prd",
+        host: "usa",
+        status: "invalid",
+        proof: "refused",
+        fix: "key",
+      },
     ]);
     expect(out).toContain("1 ok");
     expect(out).toContain("1 invalides");
@@ -48,24 +71,45 @@ describe("secret store", () => {
   const usable =
     process.platform === "win32" ||
     (process.platform === "linux" &&
-      spawnSync("systemd-creds", [...(process.getuid?.() === 0 ? [] : ["--user"]), "encrypt", "--name=t", "-", "-"], { input: "x" }).status === 0);
+      spawnSync(
+        "systemd-creds",
+        [
+          ...(process.getuid?.() === 0 ? [] : ["--user"]),
+          "encrypt",
+          "--name=t",
+          "-",
+          "-",
+        ],
+        { input: "x" },
+      ).status === 0);
 
-  test.skipIf(!usable)("round-trips through the OS backend without plaintext on disk", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "envkit-store-"));
-    process.env.ENV_KIT_SECRET_DIR = dir;
-    try {
-      const { secretSet, secretGet, secretList, secretDelete } = await import("../src/secret-store");
-      secretSet("ENVKIT_TEST_TOKEN", "value-under-test");
-      expect(secretList()).toEqual(["ENVKIT_TEST_TOKEN"]);
-      expect(secretGet("ENVKIT_TEST_TOKEN")).toBe("value-under-test");
-      const raw = await Bun.file(join(dir, process.platform === "win32" ? "ENVKIT_TEST_TOKEN.dpapi" : "ENVKIT_TEST_TOKEN")).text();
-      expect(raw.includes("value-under-test")).toBe(false);
-      expect(() => secretSet("ENVKIT_TEST_TOKEN", "")).toThrow();
-      expect(() => secretSet("../evil", "x")).toThrow();
-      expect(secretDelete("ENVKIT_TEST_TOKEN")).toBe(true);
-    } finally {
-      delete process.env.ENV_KIT_SECRET_DIR;
-      rmSync(dir, { recursive: true, force: true });
-    }
-  });
+  test.skipIf(!usable)(
+    "round-trips through the OS backend without plaintext on disk",
+    async () => {
+      const dir = mkdtempSync(join(tmpdir(), "envkit-store-"));
+      process.env.ENV_KIT_SECRET_DIR = dir;
+      try {
+        const { secretSet, secretGet, secretList, secretDelete } =
+          await import("../src/secret-store");
+        secretSet("ENVKIT_TEST_TOKEN", "value-under-test");
+        expect(secretList()).toEqual(["ENVKIT_TEST_TOKEN"]);
+        expect(secretGet("ENVKIT_TEST_TOKEN")).toBe("value-under-test");
+        const raw = await Bun.file(
+          join(
+            dir,
+            process.platform === "win32"
+              ? "ENVKIT_TEST_TOKEN.dpapi"
+              : "ENVKIT_TEST_TOKEN",
+          ),
+        ).text();
+        expect(raw.includes("value-under-test")).toBe(false);
+        expect(() => secretSet("ENVKIT_TEST_TOKEN", "")).toThrow();
+        expect(() => secretSet("../evil", "x")).toThrow();
+        expect(secretDelete("ENVKIT_TEST_TOKEN")).toBe(true);
+      } finally {
+        delete process.env.ENV_KIT_SECRET_DIR;
+        rmSync(dir, { recursive: true, force: true });
+      }
+    },
+  );
 });

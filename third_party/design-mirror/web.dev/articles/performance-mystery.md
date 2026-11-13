@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 John McCutchan [X](https://twitter.com/johnmccutchan) [Homepage](http://www.johnmccutchan.com/)
 
 ## Introduction
@@ -53,13 +54,13 @@ Yes, the Oz developers are well versed in JavaScript VM performance and optimiza
 
 ### Why does the garbage collector run?
 
-Memory in JavaScript is automatically managed for the developer by the VM. V8 uses a common garbage collection system where memory is divided into two (or more) [generations](http://en.wikipedia.org/wiki/Garbage_collection_(computer_science)#Generational_GC_.28ephemeral_GC.29). The young generation holds objects that have recently been allocated. If an object survives long enough it is moved to the old generation.
+Memory in JavaScript is automatically managed for the developer by the VM. V8 uses a common garbage collection system where memory is divided into two (or more) [generations](<http://en.wikipedia.org/wiki/Garbage_collection_(computer_science)#Generational_GC_.28ephemeral_GC.29>). The young generation holds objects that have recently been allocated. If an object survives long enough it is moved to the old generation.
 
 The young generation is collected at a much higher frequency than the old generation is collected. This is by design, as young generation collection is much cheaper. It is often safe to assume that frequent GC pauses are caused by young generation collection.
 
 In V8 the young memory space is divided into two equally sized contiguous blocks of memory. Only one of these two blocks of memory is in use at any given time and it is called the to space. While there is remaining memory in the to space, allocating a new object is cheap. A cursor in the to space is moved forward the number of bytes needed for the new object. This continues until the to space is exhausted. At this point the program is stopped and collection begins.
 
-At this point the from space and to space are swapped. What was the to space and is now the from space, is scanned from beginning to end and any objects which are still alive are copied into the to space or are promoted to the old generation heap. If you want details, I suggest you read about [Cheney's Algorithm](http://en.wikipedia.org/wiki/Cheney&#39;s_algorithm).
+At this point the from space and to space are swapped. What was the to space and is now the from space, is scanned from beginning to end and any objects which are still alive are copied into the to space or are promoted to the old generation heap. If you want details, I suggest you read about [Cheney's Algorithm](http://en.wikipedia.org/wiki/Cheney's_algorithm).
 
 Intuitively you should understand that every time an object is allocated either implicitly or explicitly (via a call to new, \[\], or {}) your application is moving closer and closer to a garbage collection and the dreaded application pause.
 
@@ -100,7 +101,7 @@ memory even for temporary results.
 Storing a double precision number to a property. A HeapNumber object must be created to store the number and the property altered to point at this new object. Altering the property to point at the HeapNumber will not produce garbage. However, it is possible that there are many double precision numbers being stored as object properties. The code is full of statements like the following:
 
 ```javascript
-sprite.position.x += 0.5 * (dt);
+sprite.position.x += 0.5 * dt;
 ```
 
 In optimized code, every time x is assigned a freshly computed value, a seemingly innocuous statement, a new HeapNumber object is implicitly allocated, bringing us closer to a garbage collection pause.
@@ -180,10 +181,10 @@ Looking at the tick processor output from the Oz source code, the top function (
 
 ```javascript
 function updateSprites(dt) {
-    for (var sprite in sprites) {
-        sprite.position.x += 0.5 * dt;
-        // 20 more lines of arithmetic computation.
-    }
+  for (var sprite in sprites) {
+    sprite.position.x += 0.5 * dt;
+    // 20 more lines of arithmetic computation.
+  }
 }
 ```
 
@@ -209,14 +210,14 @@ After discovering the reason updateSprites was not optimized, the fix was simple
 
 ```javascript
 function updateSprite(sprite, dt) {
-    sprite.position.x += 0.5 * dt;
-    // 20 more lines of arithmetic computation.
+  sprite.position.x += 0.5 * dt;
+  // 20 more lines of arithmetic computation.
 }
 
 function updateSprites(dt) {
-    for (var sprite in sprites) {
-        updateSprite(sprite, dt);
-    }
+  for (var sprite in sprites) {
+    updateSprite(sprite, dt);
+  }
 }
 ```
 

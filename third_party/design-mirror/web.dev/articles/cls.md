@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)  Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
+
+Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/) Philip Walton [X](https://twitter.com/philwalton) [GitHub](https://github.com/philipwalton) [LinkedIn](https://www.linkedin.com/in/waltonphilip) [Mastodon](https://toot.cafe/@philipwalton) [Bluesky](https://bsky.app/profile/philipwalton.com) [Homepage](https://philipwalton.com/)
 
 <iframe src="https:///frame/articles/cls/index_3b6042f9f302f3d7cdb4af8b56c9f9c0bc3c3466a87f3921082eeeebca201b7a.frame" class="framebox inherit-locale " allow="clipboard-write https://" allowfullscreen is-upgraded></iframe>
 
@@ -30,11 +31,11 @@ The Cumulative Layout Shift (CLS) metric helps you address this problem by measu
 
 ## What is CLS?
 
-CLS is a measure of the largest burst of *layout shift scores* for every [unexpected](https://web.dev/articles/cls.md.txt#expected_vs_unexpected_layout_shifts) layout shift that occurs during the entire lifecycle of a page.
+CLS is a measure of the largest burst of _layout shift scores_ for every [unexpected](https://web.dev/articles/cls.md.txt#expected_vs_unexpected_layout_shifts) layout shift that occurs during the entire lifecycle of a page.
 
-A *layout shift* occurs any time a visible element changes its position from one rendered frame to the next. (Details on how individual [layout shift scores](https://web.dev/articles/cls.md.txt#layout_shift_score) are calculated are covered later in this guide.)
+A _layout shift_ occurs any time a visible element changes its position from one rendered frame to the next. (Details on how individual [layout shift scores](https://web.dev/articles/cls.md.txt#layout_shift_score) are calculated are covered later in this guide.)
 
-A burst of layout shifts, known as a [*session window*](https://web.dev/blog/evolving-cls.md.txt#why_a_session_window), is when one or more individual layout shifts occur in rapid succession with less than 1-second in between each shift and a maximum of 5 seconds for the total window duration.
+A burst of layout shifts, known as a [_session window_](https://web.dev/blog/evolving-cls.md.txt#why_a_session_window), is when one or more individual layout shifts occur in rapid succession with less than 1-second in between each shift and a maximum of 5 seconds for the total window duration.
 
 The largest burst is the session window with the maximum cumulative score of all layout shifts within that window.
 Example of session windows. Blue bars represent the scores of each individual layout shift.
@@ -45,19 +46,19 @@ Example of session windows. Blue bars represent the scores of each individual la
 ### What is a good CLS score?
 
 To provide a good user experience, sites should strive to have a CLS score of **0.1** or less. To ensure you're hitting this target for most of your users, a good threshold to measure is the **75th percentile** of page loads, segmented across mobile and desktop devices.
- Good CLS values are 0.1 or less. Poor values are greater than 0.25.
+Good CLS values are 0.1 or less. Poor values are greater than 0.25.
 
 To learn more about the research and methodology behind this recommendation, see [Defining the Core Web Vitals metrics thresholds](https://web.dev/articles/defining-core-web-vitals-thresholds.md.txt).
 
 ## Layout shifts in detail
 
-Layout shifts are defined by the [Layout Instability API](https://github.com/WICG/layout-instability), which reports `layout-shift` entries any time an element that is visible within the viewport changes its start position (for example, its top and left position in the default [writing mode](https://developer.mozilla.org/docs/Web/CSS/writing-mode)) between two frames. Such elements are considered *unstable elements*.
+Layout shifts are defined by the [Layout Instability API](https://github.com/WICG/layout-instability), which reports `layout-shift` entries any time an element that is visible within the viewport changes its start position (for example, its top and left position in the default [writing mode](https://developer.mozilla.org/docs/Web/CSS/writing-mode)) between two frames. Such elements are considered _unstable elements_.
 
 Note that layout shifts only occur when existing elements change their start position. If a new element is added to the DOM or an existing element changes size, it doesn't count as a layout shift---as long as the change doesn't cause other visible elements to change their start position.
 
 ### Layout shift score
 
-To calculate the *layout shift score* , the browser looks at the viewport size and the movement of *unstable elements* in the viewport between two rendered frames. The layout shift score is a product of two measures of that movement: the *impact fraction* and the *distance fraction* (both defined below).
+To calculate the _layout shift score_ , the browser looks at the viewport size and the movement of _unstable elements_ in the viewport between two rendered frames. The layout shift score is a product of two measures of that movement: the _impact fraction_ and the _distance fraction_ (both defined below).
 
 ```text
 layout shift score = impact fraction * distance fraction
@@ -65,50 +66,50 @@ layout shift score = impact fraction * distance fraction
 
 ### Impact fraction
 
-The [impact fraction](https://github.com/WICG/layout-instability#Impact-Fraction) measures how *unstable elements* impact the viewport area between two frames.
+The [impact fraction](https://github.com/WICG/layout-instability#Impact-Fraction) measures how _unstable elements_ impact the viewport area between two frames.
 
 The impact fraction for a given frame is a combination of the visible areas of all unstable elements for that frame and the previous frame, as a fraction of the total area of the viewport.
- If an element changes position, both its previous and its current position contribute to its impact fraction.
+If an element changes position, both its previous and its current position contribute to its impact fraction.
 
-In the preceding image, there's an element that takes up half of the viewport in one frame. Then, in the next frame, the element shifts down by 25% of the viewport height. The red, dotted rectangle indicates the union of the element's visible area in both frames, which, in this case, is 75% of the total viewport, so its *impact fraction* is `0.75`.
+In the preceding image, there's an element that takes up half of the viewport in one frame. Then, in the next frame, the element shifts down by 25% of the viewport height. The red, dotted rectangle indicates the union of the element's visible area in both frames, which, in this case, is 75% of the total viewport, so its _impact fraction_ is `0.75`.
 
 ### Distance fraction
 
-The other part of the layout shift score equation measures the distance that unstable elements have moved relative to the viewport. The *distance fraction* is the greatest horizontal or vertical distance any *unstable element* has moved in the frame divided by the viewport's largest dimension (width or height, whichever is greater).
- The distance fraction measures how far across the viewport an element has moved.
+The other part of the layout shift score equation measures the distance that unstable elements have moved relative to the viewport. The _distance fraction_ is the greatest horizontal or vertical distance any _unstable element_ has moved in the frame divided by the viewport's largest dimension (width or height, whichever is greater).
+The distance fraction measures how far across the viewport an element has moved.
 
-In the prior example, the largest viewport dimension is the height, and the unstable element has moved by 25% of the viewport height, which makes the *distance fraction* 0.25.
+In the prior example, the largest viewport dimension is the height, and the unstable element has moved by 25% of the viewport height, which makes the _distance fraction_ 0.25.
 
-So, in this example the *impact fraction* is `0.75` and the *distance fraction* is `0.25`, so the *layout shift score* is `0.75 * 0.25 = 0.1875`.
+So, in this example the _impact fraction_ is `0.75` and the _distance fraction_ is `0.25`, so the _layout shift score_ is `0.75 * 0.25 = 0.1875`.
 
 > [!NOTE]
-> **Note:** Initially, the layout shift score was calculated based only on *impact fraction* . The *distance fraction* was introduced to avoid overly penalizing cases where large elements shift by a small amount.
+> **Note:** Initially, the layout shift score was calculated based only on _impact fraction_ . The _distance fraction_ was introduced to avoid overly penalizing cases where large elements shift by a small amount.
 
 ### Examples
 
 The next example illustrates how adding content to an existing element affects the layout shift score:
- Adding a button to the bottom of the gray box pushes the green box down and partly out of the viewport.
+Adding a button to the bottom of the gray box pushes the green box down and partly out of the viewport.
 
-In this example, the gray box changes size, but its start position does not change so it's not an *unstable element*.
+In this example, the gray box changes size, but its start position does not change so it's not an _unstable element_.
 
 The "Click Me!" button was not previously in the DOM, so its start position doesn't change either.
 
-The start position of the green box, however, does change, but since it's been moved partially out of the viewport, the invisible area is not considered when calculating the *impact fraction* . The union of the visible areas for the green box in both frames (illustrated by the red, dotted rectangle) is the same as the area of the green box in the first frame---50% of the viewport. The *impact fraction* is `0.5`.
+The start position of the green box, however, does change, but since it's been moved partially out of the viewport, the invisible area is not considered when calculating the _impact fraction_ . The union of the visible areas for the green box in both frames (illustrated by the red, dotted rectangle) is the same as the area of the green box in the first frame---50% of the viewport. The _impact fraction_ is `0.5`.
 
-The *distance fraction* is illustrated with the purple arrow. The green box has moved down by about 14% of the viewport so the *distance fraction* is `0.14`.
+The _distance fraction_ is illustrated with the purple arrow. The green box has moved down by about 14% of the viewport so the _distance fraction_ is `0.14`.
 
 The layout shift score is `0.5 x 0.14 = 0.07`.
 
 The following example shows how multiple unstable elements affect a page's layout shift score:
- As more names appear on this sorted list, existing names move to preserve alphabetical order.
+As more names appear on this sorted list, existing names move to preserve alphabetical order.
 
 In the first frame in the preceding image, there are four results of an API request for animals, sorted in alphabetical order. In the second frame, more results are added to the sorted list.
 
-The first item in the list ("Cat") does not change its start position between frames, so it's stable. Similarly, the new items added to the list were not previously in the DOM, so their start positions don't change either. But the items labelled "Dog", "Horse", and "Zebra" all shift their start positions, making them *unstable elements*.
+The first item in the list ("Cat") does not change its start position between frames, so it's stable. Similarly, the new items added to the list were not previously in the DOM, so their start positions don't change either. But the items labelled "Dog", "Horse", and "Zebra" all shift their start positions, making them _unstable elements_.
 
-Again, the red, dotted rectangles represent the union of these three *unstable elements* ' before and after areas, which in this case is around 60% of the viewport's area (*impact fraction* of `0.60`).
+Again, the red, dotted rectangles represent the union of these three _unstable elements_ ' before and after areas, which in this case is around 60% of the viewport's area (_impact fraction_ of `0.60`).
 
-The arrows represent the distances that *unstable elements* have moved from their starting positions. The "Zebra" element, represented by the blue arrow, has moved the most, by about 30% of the viewport height. That makes the *distance fraction* in this example `0.3`.
+The arrows represent the distances that _unstable elements_ have moved from their starting positions. The "Zebra" element, represented by the blue arrow, has moved the most, by about 30% of the viewport height. That makes the _distance fraction_ in this example `0.3`.
 
 The layout shift score is `0.60 x 0.3 = 0.18`.
 
@@ -175,9 +176,9 @@ The following example shows how to create a [`PerformanceObserver`](https://deve
 ```javascript
 new PerformanceObserver((entryList) => {
   for (const entry of entryList.getEntries()) {
-    console.log('Layout shift:', entry);
+    console.log("Layout shift:", entry);
   }
-}).observe({type: 'layout-shift', buffered: true});
+}).observe({ type: "layout-shift", buffered: true });
 ```
 
 ### Measure CLS in JavaScript
@@ -194,7 +195,7 @@ In most cases, the current CLS value at the time the page is being unloaded is t
 
 In addition to these exceptions, CLS has some added complexity due to the fact that it measures the entire lifespan of a page:
 
-- Users might keep a tab open for a *very* long time---days, weeks, months. In fact, a user might never close a tab.
+- Users might keep a tab open for a _very_ long time---days, weeks, months. In fact, a user might never close a tab.
 - On mobile operating systems, browsers typically don't run page unload callbacks for background tabs, making it difficult to report the "final" value.
 
 To handle such cases, CLS should be reported any time a page is background---in addition to any time it's unloaded (the [`visibilitychange` event](https://developer.chrome.com/blog/page-lifecycle-api#event-visibilitychange) covers both of these scenarios). And analytics systems receiving this data will then need to calculate the final CLS value on the backend.
@@ -202,7 +203,7 @@ To handle such cases, CLS should be reported any time a page is background---in 
 Rather than memorizing and grappling with all of these cases yourself, developers can use the [`web-vitals` JavaScript library](https://github.com/GoogleChrome/web-vitals) to measure CLS, which accounts for everything mentioned previously, except the iframe case:
 
 ```javascript
-import {onCLS} from 'web-vitals';
+import { onCLS } from "web-vitals";
 
 // Measure and log CLS in all situations
 // where it needs to be reported.

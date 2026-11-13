@@ -7,11 +7,12 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Introduction to the Accessibility Tree
 
- Alice Boxhall [X](https://twitter.com/sundress)  Dave Gash  Meggin Kearney
+Alice Boxhall [X](https://twitter.com/sundress) Dave Gash Meggin Kearney
 
-Imagine that you're building a user interface *for screen reader users only*.
+Imagine that you're building a user interface _for screen reader users only_.
 Here, you don't need to create any visual UI at all, but just provide enough
 information for the screen reader to use.
 
@@ -22,8 +23,8 @@ might look something like this.
 
 This is basically what the browser actually presents to the screen reader. The
 browser takes the DOM tree and modifies it into a form that is useful to
-assistive technology. We refer to this modified tree as the *Accessibility
-Tree*.
+assistive technology. We refer to this modified tree as the _Accessibility
+Tree_.
 
 You might visualize the accessibility tree as looking a bit like an old web page
 from the '90s: a few images, lots of links, perhaps a field and a button.
@@ -59,7 +60,7 @@ information to create a customized experience.
 ## Semantics in native HTML
 
 A browser can transform the DOM tree into an accessibility tree because much of
-the DOM has *implicit* semantic meaning. That is, the DOM uses native HTML
+the DOM has _implicit_ semantic meaning. That is, the DOM uses native HTML
 elements that are recognized by browsers and work predictably on a variety of
 platforms. Accessibility for native HTML elements such as links or buttons is
 thus handled automatically. We can take advantage of that built-in accessibility
@@ -95,8 +96,8 @@ discoverable.
 
 Broadly, there are two types of names:
 
-- *Visible labels*, which are used by all users to associate meaning with an element, and
-- *Text alternatives*, which are only used when there is no need for a visual label.
+- _Visible labels_, which are used by all users to associate meaning with an element, and
+- _Text alternatives_, which are only used when there is no need for a visual label.
 
 For text-level elements, we don't need to do anything, because by definition it
 will have some text content. However, for input or control elements, and visual
@@ -113,10 +114,9 @@ touchscreen users. To associate a label with an element, either
 - Place the input element inside a label element
 
 ```html
-<label>
-    <input type="checkbox">Receive promotional offers?
-</label>
+<label> <input type="checkbox" />Receive promotional offers? </label>
 ```
+
 Receive promotional offers?
 
 or
@@ -124,9 +124,10 @@ or
 - Use the label's `for` attribute and refer to the element's `id`
 
 ```html
-<input id="promo" type="checkbox">
+<input id="promo" type="checkbox" />
 <label for="promo">Receive promotional offers?</label>
 ```
+
 Receive promotional offers?
 
 When the checkbox has been labeled correctly, the screen reader can report that

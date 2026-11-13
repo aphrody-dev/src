@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Images and `<iframe>` elements often consume more bandwidth than other types of
 resources. In the case of `<iframe>` elements, a fair amount of extra processing
 time can be involved in loading and rendering the pages within them.
@@ -45,11 +46,11 @@ they should be loaded:
 > connection type](https://googlechrome.github.io/samples/network-information/), as well as the type of image.
 
 It's also worth noting that if you're using the `<picture>` element, the
-`loading` attribute should still be applied to its child `` element, *not*
+`loading` attribute should still be applied to its child ``element, *not*
 the `<picture>` element itself. This is because the `<picture>` element is a
 container that contains additional `<source>` elements pointing to different
 image candidates, and the candidate that the browser chooses is applied directly
-to its child `` element.
+to its child`` element.
 
 ### Don't lazy load images that are in the initial viewport
 
@@ -68,15 +69,15 @@ devices.
 
 However, there are some cases in which it's fairly clear that you should avoid
 applying `loading="lazy"`. For example, you should definitely omit the
-`loading="lazy"` attribute from `` elements in cases of hero images,
-or other image use cases where `` elements are likely to appear above the
+`loading="lazy"` attribute from `elements in cases of hero images,
+or other image use cases where` elements are likely to appear above the
 fold, or near the top of the layout on any device. This is [even more important
 for images that are likely to be LCP candidates](https://web.dev/articles/lcp-lazy-loading).
 
 Images that are lazy loaded need to wait for the browser to [finish layout](https://web.dev/articles/howbrowserswork.md.txt#layout) in
 order to know if the image's final position is within the viewport. This means
 that if an `` element in the visible viewport has a `loading="lazy"`
-attribute, it's only requested *after* all CSS is downloaded, parsed, and
+attribute, it's only requested _after_ all CSS is downloaded, parsed, and
 applied to the page---as opposed to being fetched as soon as [it is discovered by
 the preload scanner in the raw markup](https://web.dev/articles/preload-scanner#whats_a_preload_scanner).
 
@@ -154,7 +155,7 @@ downloading.
 In addition to improving initial page load, another key upside is that if the
 user never plays the video, the resources required to deliver it are never
 downloaded. This is a good pattern, as it ensures the user only downloads what
-they *actually* want to, without making possibly faulty assumptions about the
+they _actually_ want to, without making possibly faulty assumptions about the
 user's needs.
 
 Chat widgets are another excellent use case for the facade technique. Most
@@ -204,8 +205,8 @@ markup pattern:
 <!-- The autoplay, loop, muted, and playsinline attributes are to
      ensure the video can autoplay without user intervention. -->
 <video class="lazy" autoplay loop muted playsinline width="320" height="480">
-  <source data-src="video.webm" type="video/webm">
-  <source data-src="video.mp4" type="video/mp4">
+  <source data-src="video.webm" type="video/webm" />
+  <source data-src="video.mp4" type="video/mp4" />
 </video>
 ```
 

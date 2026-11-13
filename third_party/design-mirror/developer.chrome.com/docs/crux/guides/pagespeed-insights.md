@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Rick Viscomi [GitHub](https://github.com/rviscomi) [Bluesky](https://bsky.app/profile/rviscomi.dev) [Homepage](https://developer.chrome.com/rviscomi.dev/)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+
+Rick Viscomi [GitHub](https://github.com/rviscomi) [Bluesky](https://bsky.app/profile/rviscomi.dev) [Homepage](https://developer.chrome.com/rviscomi.dev/) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 [PageSpeed Insights](https://pagespeed.web.dev/) (PSI) is a tool for web developers to understand what a page's performance is and how to improve it. It uses [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt) to audit the page and identify opportunities to improve performance. It also integrates with the [Chrome UX Report](https://developer.chrome.com/docs/crux.md.txt) (CrUX) to show how real users experience the page and the origin in aggregate. In this guide, learn how to use PSI to extract insights from CrUX and better understand the user experience.
 
@@ -37,13 +38,13 @@ In the real-user experiences section, metrics are grouped by [Core Web Vitals](h
 This table describes how values for these metrics are categorized as either
 "good", "needing improvement", or "poor".
 
-| Metric | "Good" | "Needs Improvement" | "Poor" |
-|---|---|---|---|
-| LCP | 0--2500ms | 2500--4000ms | 4000ms+ |
-| CLS | 0.00-0.10 | 0.10--0.25 | 0.25+ |
-| INP | 0--200ms | 200ms--500ms | 500ms+ |
-| FCP | 0--1800ms | 1800ms--3000ms | 3000ms+ |
-| TTFB | 0--800ms | 800ms--1800ms | 1800ms+ |
+| Metric | "Good"    | "Needs Improvement" | "Poor"  |
+| ------ | --------- | ------------------- | ------- |
+| LCP    | 0--2500ms | 2500--4000ms        | 4000ms+ |
+| CLS    | 0.00-0.10 | 0.10--0.25          | 0.25+   |
+| INP    | 0--200ms  | 200ms--500ms        | 500ms+  |
+| FCP    | 0--1800ms | 1800ms--3000ms      | 3000ms+ |
+| TTFB   | 0--800ms  | 800ms--1800ms       | 1800ms+ |
 
 The Core Web Vitals metrics are the most important metrics, and are directly experienced by real users. The other metrics may be used as diagnostics, but they're not necessarily perceptible by real users. Thus, these metrics are not factored into the Core Web Vitals assessment, and failing to meet the "good" thresholds only matters if they're adversely affecting the Core Web Vitals.
 

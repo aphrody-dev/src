@@ -29,8 +29,12 @@ export function parsePe(buf: ArrayBuffer): Pe | null {
     for (let i = 0; i < nsec; i++) {
       const s = secs + i * 40;
       const va = b.getUint32(s + 12, true);
-      const size = Math.max(b.getUint32(s + 8, true), b.getUint32(s + 16, true));
-      if (rva >= va && rva < va + size) return rva - va + b.getUint32(s + 20, true);
+      const size = Math.max(
+        b.getUint32(s + 8, true),
+        b.getUint32(s + 16, true),
+      );
+      if (rva >= va && rva < va + size)
+        return rva - va + b.getUint32(s + 20, true);
     }
     return -1;
   };
@@ -46,7 +50,13 @@ export function parsePe(buf: ArrayBuffer): Pe | null {
     machine: b.getUint16(pe + 4, true),
     timestamp: b.getUint32(pe + 8, true),
     subsystem: b.getUint16(opt + 68, true),
-    dir: (i) => (i < ndirs ? { rva: b.getUint32(dd + i * 8, true), size: b.getUint32(dd + i * 8 + 4, true) } : { rva: 0, size: 0 }),
+    dir: (i) =>
+      i < ndirs
+        ? {
+            rva: b.getUint32(dd + i * 8, true),
+            size: b.getUint32(dd + i * 8 + 4, true),
+          }
+        : { rva: 0, size: 0 },
     off,
     cstr,
   };
@@ -61,10 +71,17 @@ export function exportsOf(p: Pe): string[] {
   const n = b.getUint32(o + 24, true);
   const names = p.off(b.getUint32(o + 32, true));
   if (names < 0) return [];
-  return Array.from({ length: n }, (_, i) => p.cstr(b.getUint32(names + i * 4, true)));
+  return Array.from({ length: n }, (_, i) =>
+    p.cstr(b.getUint32(names + i * 4, true)),
+  );
 }
 
-export type ExportEntry = { name: string; ordinal: number; rva: number; forwarder?: string };
+export type ExportEntry = {
+  name: string;
+  ordinal: number;
+  rva: number;
+  forwarder?: string;
+};
 
 /** Table d'exports complète : nom, ordinal, RVA ; une RVA dans le répertoire d'exports est une redirection (« dll.nom »). */
 export function exportTable(p: Pe): ExportEntry[] {
@@ -82,7 +99,12 @@ export function exportTable(p: Pe): ExportEntry[] {
     const idx = b.getUint16(ords + i * 2, true);
     const rva = b.getUint32(funcs + idx * 4, true);
     const fwd = rva >= d.rva && rva < d.rva + d.size;
-    return { name: p.cstr(b.getUint32(names + i * 4, true)), ordinal: base + idx, rva, ...(fwd ? { forwarder: p.cstr(rva) } : {}) };
+    return {
+      name: p.cstr(b.getUint32(names + i * 4, true)),
+      ordinal: base + idx,
+      rva,
+      ...(fwd ? { forwarder: p.cstr(rva) } : {}),
+    };
   });
 }
 
@@ -91,7 +113,8 @@ export function importFunctions(p: Pe): { dll: string; name: string }[] {
   const d = p.dir(1);
   let o = d.rva ? p.off(d.rva) : -1;
   const b = p.view;
-  const plus = (b.getUint16(b.getUint32(60, true) + 24, true) & 0xffff) === 0x20b;
+  const plus =
+    (b.getUint16(b.getUint32(60, true) + 24, true) & 0xffff) === 0x20b;
   const out: { dll: string; name: string }[] = [];
   while (o >= 0 && o + 20 <= b.byteLength) {
     const nameRva = b.getUint32(o + 12, true);
@@ -102,7 +125,12 @@ export function importFunctions(p: Pe): { dll: string; name: string }[] {
       const v = plus ? b.getBigUint64(t, true) : BigInt(b.getUint32(t, true));
       if (!v) break;
       const byOrd = plus ? v >> 63n === 1n : (v & 0x80000000n) !== 0n;
-      out.push({ dll, name: byOrd ? `#${Number(v & 0xffffn)}` : p.cstr(Number(v & 0x7fffffffn) + 2) });
+      out.push({
+        dll,
+        name: byOrd
+          ? `#${Number(v & 0xffffn)}`
+          : p.cstr(Number(v & 0x7fffffffn) + 2),
+      });
       t += plus ? 8 : 4;
     }
     o += 20;
@@ -128,5 +156,8 @@ export function importsOf(p: Pe): string[] {
 export function resourceEntries(p: Pe, dirOff: number) {
   const b = p.view;
   const n = b.getUint16(dirOff + 12, true) + b.getUint16(dirOff + 14, true);
-  return Array.from({ length: n }, (_, i) => ({ id: b.getUint32(dirOff + 16 + i * 8, true), off: b.getUint32(dirOff + 20 + i * 8, true) }));
+  return Array.from({ length: n }, (_, i) => ({
+    id: b.getUint32(dirOff + 16 + i * 8, true),
+    off: b.getUint32(dirOff + 20 + i * 8, true),
+  }));
 }

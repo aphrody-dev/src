@@ -56,7 +56,10 @@ const PREFIXES = [
   "Pss",
   "Sbs",
 ].sort((a, b) => b.length - a.length);
-const component = (name: string) => PREFIXES.find((p) => name.startsWith(p) && /[A-Z_]/.test(name[p.length] ?? "")) ?? "(autre)";
+const component = (name: string) =>
+  PREFIXES.find(
+    (p) => name.startsWith(p) && /[A-Z_]/.test(name[p.length] ?? ""),
+  ) ?? "(autre)";
 const group = (names: string[]) => {
   const g: Record<string, { count: number; sample: string[] }> = {};
   for (const n of names) {
@@ -65,7 +68,9 @@ const group = (names: string[]) => {
     g[c].count++;
     if (g[c].sample.length < 6) g[c].sample.push(n);
   }
-  return Object.fromEntries(Object.entries(g).sort((a, b) => b[1].count - a[1].count));
+  return Object.fromEntries(
+    Object.entries(g).sort((a, b) => b[1].count - a[1].count),
+  );
 };
 const image = async (p: string, withImports = false) => {
   const r = await pe(p);
@@ -88,11 +93,23 @@ sampler.fast();
 const slow = sampler.slow();
 const u = new Uint32Array(sampler.fast());
 const names = sampler.names();
-const procs: { pid: number; ppid: number; name: string; session: number; path: string }[] = [];
+const procs: {
+  pid: number;
+  ppid: number;
+  name: string;
+  session: number;
+  path: string;
+}[] = [];
 const base = 8 + 16 + u[1]! * 8;
 for (let i = 0; i < u[2]!; i++) {
   const o = base + i * 12;
-  procs.push({ pid: u[o]!, ppid: u[o + 1]!, name: names[u[o + 10]!] ?? "?", session: u[o + 11]!, path: processPath(u[o]!) });
+  procs.push({
+    pid: u[o]!,
+    ppid: u[o + 1]!,
+    name: names[u[o + 10]!] ?? "?",
+    session: u[o + 11]!,
+    path: processPath(u[o]!),
+  });
 }
 const SYSTEM = [
   "System",
@@ -114,12 +131,24 @@ const SYSTEM = [
 
 const map = {
   date: new Date().toISOString(),
-  source: "binaires de %SystemRoot% et système en marche (ntdll via bun:ffi), relevé par sdk/tools/host/ntmap.ts",
+  source:
+    "binaires de %SystemRoot% et système en marche (ntdll via bun:ffi), relevé par sdk/tools/host/ntmap.ts",
   boot: await Promise.all(
-    [join(sys, "Boot", "EFI", "bootmgfw.efi"), join(s32, "winload.efi"), join(s32, "winresume.efi")].map((p) => image(p)),
+    [
+      join(sys, "Boot", "EFI", "bootmgfw.efi"),
+      join(s32, "winload.efi"),
+      join(s32, "winresume.efi"),
+    ].map((p) => image(p)),
   ),
-  kernel: { ntoskrnl: await image(join(s32, "ntoskrnl.exe"), true), hal: await image(join(s32, "hal.dll"), true) },
-  win32k: await Promise.all(["win32k.sys", "win32kbase.sys", "win32kfull.sys", "win32kbase_rs.sys"].map((f) => image(join(s32, f), true))),
+  kernel: {
+    ntoskrnl: await image(join(s32, "ntoskrnl.exe"), true),
+    hal: await image(join(s32, "hal.dll"), true),
+  },
+  win32k: await Promise.all(
+    ["win32k.sys", "win32kbase.sys", "win32kfull.sys", "win32kbase_rs.sys"].map(
+      (f) => image(join(s32, f), true),
+    ),
+  ),
   native: { ntdll: await image(join(s32, "ntdll.dll")) },
   win32: await Promise.all(
     [
@@ -135,11 +164,23 @@ const map = {
       "dcomp.dll",
     ].map((f) => image(join(s32, f), true)),
   ),
-  drivers: slow.modules.map((m) => ({ order: m.order, name: m.name, path: m.path, size: m.size })),
-  objectTypes: slow.objectTypes.map((t) => ({ name: t.name, index: t.index, objects: t.objects })),
+  drivers: slow.modules.map((m) => ({
+    order: m.order,
+    name: m.name,
+    path: m.path,
+    size: m.size,
+  })),
+  objectTypes: slow.objectTypes.map((t) => ({
+    name: t.name,
+    index: t.index,
+    objects: t.objects,
+  })),
   systemProcesses: procs
     .filter((p) => SYSTEM.includes(p.name))
-    .map((p) => ({ ...p, children: procs.filter((c) => c.ppid === p.pid).length })),
+    .map((p) => ({
+      ...p,
+      children: procs.filter((c) => c.ppid === p.pid).length,
+    })),
   counts: {
     processors: slow.basic.processors,
     processes: procs.length,
@@ -147,13 +188,28 @@ const map = {
     objectTypes: slow.objectTypes.length,
   },
 };
-const out = join(import.meta.dir, "..", "..", "..", "docs", "research", "windows-nt-map.json");
+const out = join(
+  import.meta.dir,
+  "..",
+  "..",
+  "..",
+  "docs",
+  "research",
+  "windows-nt-map.json",
+);
 // Les composants : résumé compact (pas d'échantillons pour les binaires win32, trop volumineux).
 await Bun.write(
   out,
-  JSON.stringify(map, (k, v) => (k === "sample" && Array.isArray(v) ? v.slice(0, 4) : v), 1),
+  JSON.stringify(
+    map,
+    (k, v) => (k === "sample" && Array.isArray(v) ? v.slice(0, 4) : v),
+    1,
+  ),
 );
-const k = map.kernel.ntoskrnl as { exports?: number; components?: Record<string, { count: number }> };
+const k = map.kernel.ntoskrnl as {
+  exports?: number;
+  components?: Record<string, { count: number }>;
+};
 console.log(
   JSON.stringify({
     out,

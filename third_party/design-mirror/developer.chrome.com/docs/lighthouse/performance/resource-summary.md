@@ -7,10 +7,11 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview.md.txt)
 reports how many network requests were made and
 how much data was transferred while your page loaded:
- Lighthouse resource summary audit
+Lighthouse resource summary audit
 
 - The **Requests** and **Transfer Size** values for the **Total** row are computed by adding the values for the **Image** , **Script** , **Font** , **Stylesheet** , **Other** , **Document** , and **Media** rows.
 - The **Third-party** column does not factor into the **Total** row's values. Its purpose is to make you aware of how many of the total requests and how much of the total transfer size came from third-party domains. The third-party requests could be a combination of any of the other resource types.

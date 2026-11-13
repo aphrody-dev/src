@@ -160,7 +160,7 @@ The harness hasn't had a full run in the cloud yet, so check the calibration of 
 closely. The commands below are for AWS, with the aws CLI on your machine; `VPC_ID` and
 `SUBNET_ID` are yours, and the instance type is an example.
 
-Choose an instance type whose *baseline* network bandwidth is above the profile's rate, since many
+Choose an instance type whose _baseline_ network bandwidth is above the profile's rate, since many
 types sustain their "up to" figure only in bursts, and one with local NVMe (instance store) for the
 data. A c6id.8xlarge has 12.5 Gbit/s and a local NVMe drive.
 
@@ -225,14 +225,14 @@ cp examples/workstation-vms.toml ~/bench-specs/my.toml
 
 Then change it:
 
-| Key | Set it to |
-|---|---|
-| `name` | a name of your own, such as `first-run` |
-| `[corpus]` `url`, `sha256`, `root` | the archive's URL and hash, and the tree's directory name in it |
-| `[target]` `inventory` | `"my.hosts.toml"`, relative to the spec |
-| `[[profile]]` `rtt_ms`, `rate_mbit` | the link to emulate. `rtt_ms` is the round trip the tools see: the harness measures the unshaped one and adds the rest. `rate_mbit` must be below the real link's speed: `900` on a 1 Gbit/s network. `4920` is 5 Gbit/s on the wire. |
-| `[tool.lore]` and `[tool.p4]` `url`, `sha256` | the builds' URLs and hashes |
-| `[run]` `settle_s` | `10` for a first run. The default, 120 seconds before each test, lets an SSD settle after TRIM. |
+| Key                                           | Set it to                                                                                                                                                                                                                             |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                                        | a name of your own, such as `first-run`                                                                                                                                                                                               |
+| `[corpus]` `url`, `sha256`, `root`            | the archive's URL and hash, and the tree's directory name in it                                                                                                                                                                       |
+| `[target]` `inventory`                        | `"my.hosts.toml"`, relative to the spec                                                                                                                                                                                               |
+| `[[profile]]` `rtt_ms`, `rate_mbit`           | the link to emulate. `rtt_ms` is the round trip the tools see: the harness measures the unshaped one and adds the rest. `rate_mbit` must be below the real link's speed: `900` on a 1 Gbit/s network. `4920` is 5 Gbit/s on the wire. |
+| `[tool.lore]` and `[tool.p4]` `url`, `sha256` | the builds' URLs and hashes                                                                                                                                                                                                           |
+| `[run]` `settle_s`                            | `10` for a first run. The default, 120 seconds before each test, lets an SSD settle after TRIM.                                                                                                                                       |
 
 To run Lore alone, delete the `[tool.p4]` and `[tool.p4.configurables]` tables. Then check the spec:
 
@@ -271,17 +271,17 @@ python3 -m bench report --trend "$before" "$after"   # writes trend.html in the 
 
 ## 7. When something goes wrong
 
-| What you see | What to do |
-|---|---|
-| `validate` prints spec errors | Each error names its key. [The spec](README.md#the-spec) lists them all. |
-| SSH refuses a VM's host key after the VM started again | Starting it with new user data made new host keys. Remove the client VM's old entry with `ssh-keygen -R '[127.0.0.1]:2222' -f ~/.local/share/bench/known_hosts`. For the server VM, do the same on the client VM, in `~/.ssh/bench_known_hosts`. |
-| A run refuses a host's `bench-helper` | `host/bench-helper` changed since the bootstrap. Run the bootstrap on that host again. |
-| The log says a profile's link is out of tolerance, and the run skips it | The real link can't carry `rate_mbit`, or its round trip isn't steady. Lower `rate_mbit`, or see [What a run does](README.md#what-a-run-does). |
-| `watch` prints `STALL?` | A step has made no progress for 3 minutes. The agent stops a step after 10 minutes without progress, flags it `stalled`, and goes on with the next run. |
-| A run stopped part way | `python3 -m bench run ~/bench-specs/my.toml --run-id RUN_ID` resumes it. It skips every run that completed without a failed step or verification. |
-| A disk's figure in the calibration is far below earlier runs | On VMs, the drive holding the disk image may be nearly full or untrimmed: trim the host's filesystem and check how full it is. The small-file figure alone varies by up to a third from one check to the next. |
-| The idle round trip differs between profiles by more than a few tenths of a millisecond | Set the hosts' CPU governor to `performance`. |
-| UDP arrives below the offered rate with no loss | The sender ran short of CPU, which happens in VMs at several Gbit/s. The link is fine. |
+| What you see                                                                            | What to do                                                                                                                                                                                                                                       |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `validate` prints spec errors                                                           | Each error names its key. [The spec](README.md#the-spec) lists them all.                                                                                                                                                                         |
+| SSH refuses a VM's host key after the VM started again                                  | Starting it with new user data made new host keys. Remove the client VM's old entry with `ssh-keygen -R '[127.0.0.1]:2222' -f ~/.local/share/bench/known_hosts`. For the server VM, do the same on the client VM, in `~/.ssh/bench_known_hosts`. |
+| A run refuses a host's `bench-helper`                                                   | `host/bench-helper` changed since the bootstrap. Run the bootstrap on that host again.                                                                                                                                                           |
+| The log says a profile's link is out of tolerance, and the run skips it                 | The real link can't carry `rate_mbit`, or its round trip isn't steady. Lower `rate_mbit`, or see [What a run does](README.md#what-a-run-does).                                                                                                   |
+| `watch` prints `STALL?`                                                                 | A step has made no progress for 3 minutes. The agent stops a step after 10 minutes without progress, flags it `stalled`, and goes on with the next run.                                                                                          |
+| A run stopped part way                                                                  | `python3 -m bench run ~/bench-specs/my.toml --run-id RUN_ID` resumes it. It skips every run that completed without a failed step or verification.                                                                                                |
+| A disk's figure in the calibration is far below earlier runs                            | On VMs, the drive holding the disk image may be nearly full or untrimmed: trim the host's filesystem and check how full it is. The small-file figure alone varies by up to a third from one check to the next.                                   |
+| The idle round trip differs between profiles by more than a few tenths of a millisecond | Set the hosts' CPU governor to `performance`.                                                                                                                                                                                                    |
+| UDP arrives below the offered rate with no loss                                         | The sender ran short of CPU, which happens in VMs at several Gbit/s. The link is fine.                                                                                                                                                           |
 
 [Watching a run](README.md#watching-a-run) and [Results and reports](README.md#results-and-reports)
 in the README go further.

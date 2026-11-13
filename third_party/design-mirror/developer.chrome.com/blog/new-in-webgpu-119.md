@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## Filterable 32-bit float textures
@@ -52,9 +53,7 @@ A new vertex format called "unorm10-10-10-2" aka "rgb10a2" has been added to the
 const buffers = [
   {
     arrayStride: 0,
-    attributes: [
-      { format: "unorm10-10-10-2", offset: 0, shaderLocation: 0 },
-    ],
+    attributes: [{ format: "unorm10-10-10-2", offset: 0, shaderLocation: 0 }],
   },
 ];
 

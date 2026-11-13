@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 This section documents how CrUX collects and organizes user experience data.
 
 ## Eligibility
@@ -68,8 +69,8 @@ origin to be included in the CrUX dataset it must meet two requirements:
 You can verify that your origin is discoverable by running a
 [Lighthouse audit](https://pagespeed.web.dev/) and looking at the SEO category
 results. Your site is not discoverable if your root page fails the
-[*Page is blocked from indexing*](https://developer.chrome.com/docs/lighthouse/seo/is-crawlable) or
-[*Page has unsuccessful HTTP status code*](https://developer.chrome.com/docs/lighthouse/seo/http-status-code)
+[_Page is blocked from indexing_](https://developer.chrome.com/docs/lighthouse/seo/is-crawlable) or
+[_Page has unsuccessful HTTP status code_](https://developer.chrome.com/docs/lighthouse/seo/http-status-code)
 audits.
 
 If an origin is determined to be publicly discoverable, eligible user
@@ -90,17 +91,17 @@ as origins:
 You can verify that a page is discoverable by running a
 [Lighthouse audit](https://pagespeed.web.dev/) and looking at the SEO category
 results. Your page is not discoverable if it fails the
-[*Page is blocked from indexing*](https://developer.chrome.com/docs/lighthouse/seo/is-crawlable) or
-[*Page has unsuccessful HTTP status code*](https://developer.chrome.com/docs/lighthouse/seo/http-status-code)
+[_Page is blocked from indexing_](https://developer.chrome.com/docs/lighthouse/seo/is-crawlable) or
+[_Page has unsuccessful HTTP status code_](https://developer.chrome.com/docs/lighthouse/seo/http-status-code)
 audits.
 
 If page is publicly discoverable for some users, but returns a non-success HTTP status in some circumstances, then those experiences won't be included in CrUX.
 
 Pages commonly have additional identifiers in their URL including query string parameters like `?utm_medium=email` and fragments like `#main`. These identifiers are stripped from the URL in the CrUX dataset so that all user experiences on the page are aggregated together. This is useful for pages that would otherwise not meet the popularity threshold if there were many disjointed URL variations for the same page. Note that in rare cases this may unexpectedly group experiences for distinct pages together; for example if parameters `?productID=101` and `?productID=102` represent different pages.
 
-Pages in CrUX are measured based on the top-level page. Pages included as iframes are not reported on separately in CrUX, but do contribute to the metrics of the top-level page. For example, if `https://www.example.com/page.html` embeds `https://www.example.com/frame.html` in an iframe, then `page.html` *will be* represented in CrUX (subject to the other eligibility criteria) but `frame.html` *will not* . And if `frame.html` has poor [CLS](https://developer.chrome.com/docs/crux/methodology/metrics#cls-metric) then the CLS will be included when measuring the CLS for `page.html`. CrUX is the Chrome *User Experience* Report and a user may not even be aware this is an iframe. Therefore, the experience is measured at the top level page---as per how the user sees this.
+Pages in CrUX are measured based on the top-level page. Pages included as iframes are not reported on separately in CrUX, but do contribute to the metrics of the top-level page. For example, if `https://www.example.com/page.html` embeds `https://www.example.com/frame.html` in an iframe, then `page.html` _will be_ represented in CrUX (subject to the other eligibility criteria) but `frame.html` _will not_ . And if `frame.html` has poor [CLS](https://developer.chrome.com/docs/crux/methodology/metrics#cls-metric) then the CLS will be included when measuring the CLS for `page.html`. CrUX is the Chrome _User Experience_ Report and a user may not even be aware this is an iframe. Therefore, the experience is measured at the top level page---as per how the user sees this.
 
-A website's architecture may complicate how its data is represented in CrUX. For example, single page apps (SPAs) may use a JavaScript-based *route transition* scheme to move between pages, as opposed to conventional anchor-based page navigations. These transitions appear as new page views to the user, but to Chrome and the underlying platform APIs the entire experience is attributed to the initial page view. This is a limitation of the web platform APIs on which CrUX is built, see [How SPA architectures affect Core Web Vitals](https://web.dev/articles/vitals-spa-faq) on web.dev for more information.
+A website's architecture may complicate how its data is represented in CrUX. For example, single page apps (SPAs) may use a JavaScript-based _route transition_ scheme to move between pages, as opposed to conventional anchor-based page navigations. These transitions appear as new page views to the user, but to Chrome and the underlying platform APIs the entire experience is attributed to the initial page view. This is a limitation of the web platform APIs on which CrUX is built, see [How SPA architectures affect Core Web Vitals](https://web.dev/articles/vitals-spa-faq) on web.dev for more information.
 
 ### User
 

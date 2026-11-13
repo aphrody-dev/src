@@ -19,7 +19,12 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 3);
 
 // PBR material - the default choice for lit, realistic surfaces
@@ -45,19 +50,19 @@ renderer.setAnimationLoop(animate);
 
 ## Material Types Overview
 
-| Material | Use case | Lighting |
-| -------------------- | ------------------------------------- | ------------------ |
-| MeshBasicMaterial | Unlit color, textures, wireframes | None |
-| MeshLambertMaterial | Matte diffuse surfaces | Diffuse |
-| MeshPhongMaterial | Shiny plastic, cheap specular | Diffuse + specular |
-| MeshStandardMaterial | PBR metal/rough workflow | PBR |
-| MeshPhysicalMaterial | PBR plus clearcoat, transmission, sheen, iridescence | PBR |
-| MeshToonMaterial | Cel shading | Toon steps |
-| MeshMatcapMaterial | Lit look baked into a matcap texture, no lights needed | Baked |
-| ShadowMaterial | Transparent surface that shows only the shadows it receives | Shadows only |
-| PointsMaterial | Point clouds | None |
-| LineBasicMaterial / LineDashedMaterial | Lines | None |
-| ShaderMaterial / RawShaderMaterial | Custom GLSL, WebGLRenderer only | Custom |
+| Material                               | Use case                                                    | Lighting           |
+| -------------------------------------- | ----------------------------------------------------------- | ------------------ |
+| MeshBasicMaterial                      | Unlit color, textures, wireframes                           | None               |
+| MeshLambertMaterial                    | Matte diffuse surfaces                                      | Diffuse            |
+| MeshPhongMaterial                      | Shiny plastic, cheap specular                               | Diffuse + specular |
+| MeshStandardMaterial                   | PBR metal/rough workflow                                    | PBR                |
+| MeshPhysicalMaterial                   | PBR plus clearcoat, transmission, sheen, iridescence        | PBR                |
+| MeshToonMaterial                       | Cel shading                                                 | Toon steps         |
+| MeshMatcapMaterial                     | Lit look baked into a matcap texture, no lights needed      | Baked              |
+| ShadowMaterial                         | Transparent surface that shows only the shadows it receives | Shadows only       |
+| PointsMaterial                         | Point clouds                                                | None               |
+| LineBasicMaterial / LineDashedMaterial | Lines                                                       | None               |
+| ShaderMaterial / RawShaderMaterial     | Custom GLSL, WebGLRenderer only                             | Custom             |
 
 Color data textures (map, emissiveMap, specularMap, sheenColorMap, specularColorMap, LDR matcap, a canvas or video used as color) need `texture.colorSpace = THREE.SRGBColorSpace`, or colors render washed out. Scalar maps (normal, bump, displacement, roughness, metalness, ao, alpha, toon gradientMap) keep the default. HDR loaders set their own color space.
 
@@ -138,8 +143,12 @@ const aoMap = await new THREE.TextureLoader().loadAsync("ao.jpg"); // scalar: ke
 const material = new THREE.MeshStandardMaterial({ aoMap }); // samples uv: no extra attribute needed
 
 // Alternative for a separate unwrap (a baked AO or light map): copy your baker's u,v pairs into uv1
-const bakedUv = new THREE.Float32BufferAttribute(mesh.geometry.attributes.position.count * 2, 2); // zero-filled until you copy them in
-mesh.geometry.setAttribute("uv1", bakedUv); mesh.material = material;
+const bakedUv = new THREE.Float32BufferAttribute(
+  mesh.geometry.attributes.position.count * 2,
+  2,
+); // zero-filled until you copy them in
+mesh.geometry.setAttribute("uv1", bakedUv);
+mesh.material = material;
 aoMap.channel = 1; // this material now samples uv1 instead of uv
 ```
 
@@ -207,7 +216,10 @@ const material = new THREE.MeshToonMaterial({ color: 0x00ff00, gradientMap });
 
 ```javascript
 // Normals encoded as RGB - debugging and flat illustrative looks
-const normals = new THREE.MeshNormalMaterial({ flatShading: false, wireframe: false });
+const normals = new THREE.MeshNormalMaterial({
+  flatShading: false,
+  wireframe: false,
+});
 
 // Depth as grayscale (BasicDepthPacking, the default); RGBADepthPacking packs it for reading back in a shader
 const depth = new THREE.MeshDepthMaterial();
@@ -219,7 +231,10 @@ For point clouds. `size` is in pixels; with `sizeAttenuation` (the default, pers
 
 ```javascript
 const geometry = new THREE.BufferGeometry();
-geometry.setAttribute("position", new THREE.Float32BufferAttribute([0, 0, 0, 1, 0.5, 0, 0.5, 1, 0], 3));
+geometry.setAttribute(
+  "position",
+  new THREE.Float32BufferAttribute([0, 0, 0, 1, 0.5, 0, 0.5, 1, 0], 3),
+);
 
 const material = new THREE.PointsMaterial({
   color: 0xffffff,
@@ -238,11 +253,18 @@ WebGL and WebGPU always draw line primitives 1 px wide; `linewidth`, `linecap` a
 
 ```javascript
 const geometry = new THREE.BufferGeometry();
-geometry.setAttribute("position", new THREE.Float32BufferAttribute([-1, 0, 0, 1, 0, 0], 3));
+geometry.setAttribute(
+  "position",
+  new THREE.Float32BufferAttribute([-1, 0, 0, 1, 0, 0], 3),
+);
 
 const solid = new THREE.LineBasicMaterial({ color: 0xffffff }); // always 1 px
 
-const dashed = new THREE.LineDashedMaterial({ color: 0xffffff, dashSize: 0.5, gapSize: 0.25 });
+const dashed = new THREE.LineDashedMaterial({
+  color: 0xffffff,
+  dashSize: 0.5,
+  gapSize: 0.25,
+});
 const line = new THREE.Line(geometry, dashed);
 line.computeLineDistances(); // required, or the line draws solid
 scene.add(line);
@@ -341,11 +363,18 @@ material.blending = THREE.SubtractiveBlending; // same for THREE.MultiplyBlendin
 material.premultipliedAlpha = true; // without it the renderer logs an error and sets no blend function
 
 // Stencil is off by default in both renderers: create the renderer with { stencil: true }
-const maskMaterial = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false });
+const maskMaterial = new THREE.MeshBasicMaterial({
+  colorWrite: false,
+  depthWrite: false,
+});
 maskMaterial.stencilWrite = true; // master switch for the stencil test and write
 maskMaterial.stencilRef = 1;
 maskMaterial.stencilZPass = THREE.ReplaceStencilOp; // writes 1 where the mask draws; also stencilFail, stencilZFail
-const contentMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, stencilWrite: true, stencilRef: 1 });
+const contentMaterial = new THREE.MeshBasicMaterial({
+  color: 0xff0000,
+  stencilWrite: true,
+  stencilRef: 1,
+});
 contentMaterial.stencilFunc = THREE.EqualStencilFunc; // draws only where the mask wrote 1
 contentMaterial.stencilFuncMask = 0xff; // compare mask; stencilWriteMask masks the write (both default 0xff)
 // draw the mask first: give its mesh a lower renderOrder than the content mesh
@@ -357,7 +386,10 @@ contentMaterial.stencilFuncMask = 0xff; // compare mask; stencilWriteMask masks 
 // One material per geometry group; BoxGeometry has six, in the order +x, -x, +y, -y, +z, -z
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
-const mesh = new THREE.Mesh(geometry, colors.map((color) => new THREE.MeshBasicMaterial({ color })));
+const mesh = new THREE.Mesh(
+  geometry,
+  colors.map((color) => new THREE.MeshBasicMaterial({ color })),
+);
 
 // Custom groups: start, count, material index. Indexed geometry counts indices (BoxGeometry has 36),
 // non-indexed geometry counts vertices; ranges outside every group are not drawn
@@ -382,7 +414,12 @@ scene.environmentIntensity = 0.8; // scene-wide dimmer; scene.environmentRotatio
 
 ```javascript
 const cubeEnv = new THREE.CubeTextureLoader().load([
-  "px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg",
+  "px.jpg",
+  "nx.jpg",
+  "py.jpg",
+  "ny.jpg",
+  "pz.jpg",
+  "nz.jpg",
 ]);
 
 const material = new THREE.MeshStandardMaterial({ envMap: cubeEnv });
@@ -428,7 +465,12 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111111); // the WebGPU canvas is transparent by default
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 0, 3);
 
 function animate() {
@@ -440,11 +482,24 @@ renderer.setAnimationLoop(animate);
 
 ```javascript
 import * as THREE from "three/webgpu";
-import { texture, mix, color, float, time, positionLocal, normalLocal, sin } from "three/tsl";
+import {
+  texture,
+  mix,
+  color,
+  float,
+  time,
+  positionLocal,
+  normalLocal,
+  sin,
+} from "three/tsl";
 
 // Unlit: the node equivalent of a color ShaderMaterial
 const unlit = new THREE.MeshBasicNodeMaterial();
-unlit.colorNode = mix(color(0x0066ff), color(0xff0066), sin(time.mul(0.5)).mul(0.5).add(0.5));
+unlit.colorNode = mix(
+  color(0x0066ff),
+  color(0xff0066),
+  sin(time.mul(0.5)).mul(0.5).add(0.5),
+);
 
 // Lit: node slots replace the fixed properties; needs lights or scene.environment
 const map = await new THREE.TextureLoader().loadAsync("color.jpg");
@@ -455,7 +510,9 @@ lit.roughnessNode = float(0.2);
 
 // Vertex displacement on positionLocal, which already carries skinning, morphs, instancing
 const shell = new THREE.MeshStandardNodeMaterial();
-shell.positionNode = positionLocal.add(normalLocal.mul(sin(positionLocal.y.mul(6))).mul(0.05));
+shell.positionNode = positionLocal.add(
+  normalLocal.mul(sin(positionLocal.y.mul(6))).mul(0.05),
+);
 ```
 
 ```javascript
@@ -465,9 +522,14 @@ import { instancedBufferAttribute } from "three/tsl";
 // The WebGPU backend draws Points at 1 px whatever the size; draw larger points as quads
 const positions = new THREE.InstancedBufferAttribute(new Float32Array(1500), 3); // fill with x, y, z per point
 const points = new THREE.Sprite(
-  new THREE.PointsNodeMaterial({ positionNode: instancedBufferAttribute(positions), size: 4, sizeAttenuation: false }) // 4 px squares
+  new THREE.PointsNodeMaterial({
+    positionNode: instancedBufferAttribute(positions),
+    size: 4,
+    sizeAttenuation: false,
+  }), // 4 px squares
 );
-points.count = 500; points.frustumCulled = false; // one quad per point; culling would test only a 0.7-unit sphere at the sprite origin
+points.count = 500;
+points.frustumCulled = false; // one quad per point; culling would test only a 0.7-unit sphere at the sprite origin
 scene.add(points);
 ```
 

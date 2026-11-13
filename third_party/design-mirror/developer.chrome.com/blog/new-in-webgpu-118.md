@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 ## HTMLImageElement and ImageData support in copyExternalImageToTexture()
@@ -22,12 +23,12 @@ await source.decode();
 // Create destination texture.
 const size = [source.width, source.height];
 const texture = myDevice.createTexture({
- size,
- format: "rgba8unorm",
- usage:
-   GPUTextureUsage.COPY_DST |
-   GPUTextureUsage.RENDER_ATTACHMENT |
-   GPUTextureUsage.TEXTURE_BINDING,
+  size,
+  format: "rgba8unorm",
+  usage:
+    GPUTextureUsage.COPY_DST |
+    GPUTextureUsage.RENDER_ATTACHMENT |
+    GPUTextureUsage.TEXTURE_BINDING,
 });
 
 // Copies a snapshot taken from the source image into a texture.
@@ -54,17 +55,20 @@ const device = await adapter.requestDevice({
 });
 
 const bindGroupLayout = device.createBindGroupLayout({
-  entries: [{
-    binding: 0,
-    visibility: GPUShaderStage.COMPUTE,
-    storageTexture: {
-      access: "read-write", // <-- New!
-      format: "r32uint",
+  entries: [
+    {
+      binding: 0,
+      visibility: GPUShaderStage.COMPUTE,
+      storageTexture: {
+        access: "read-write", // <-- New!
+        format: "r32uint",
+      },
     },
-  }],
+  ],
 });
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   enable chromium_experimental_read_write_storage_texture;
   @group(0) @binding(0) var tex : texture_storage_2d<r32uint, read_write>;
 

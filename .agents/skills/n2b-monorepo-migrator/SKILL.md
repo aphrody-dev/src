@@ -8,6 +8,7 @@ description: Audit and migrate legacy Node.js, V8, Electron, VS Code, Discord, M
 Activate this skill when auditing or transforming legacy Node/V8/Electron/VSCode/Discord/TypeScript/Microsoft/`.NET`/C++ repositories into **Bun v1.4.4** and **Rust LTO/AOT** stacks.
 
 ## Core Commands (`C:\Users\aphro\.local\bin\n2b.exe`)
+
 - Verify host hardware, LLVM 23 / Rust / Bun toolchains, and 63 read-only vendor submodules:
   ```powershell
   n2b doctor --json

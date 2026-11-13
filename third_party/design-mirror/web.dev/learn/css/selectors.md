@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 002: Selectors](https://thecsspodcast.libsyn.com/002-selectors)
 
 If you've got some text that you only want to be larger and red if it's the first paragraph of an article,
@@ -136,7 +137,7 @@ even if they have several other classes, like this:
 <div class="my-class another-class some-other-class"></div>
 ```
 
-This is because CSS looks for a `class` attribute that *contains* the defined class,
+This is because CSS looks for a `class` attribute that _contains_ the defined class,
 rather than matching that class exactly.
 
 > [!NOTE]
@@ -192,7 +193,7 @@ using the [attribute selector](https://developer.mozilla.org/docs/Web/CSS/Attrib
 Instruct CSS to look for attributes by wrapping the selector with square brackets (`[ ]`).
 
 ```css
-[data-type='primary'] {
+[data-type="primary"] {
   color: red;
 }
 ```
@@ -223,7 +224,7 @@ You can use case-sensitive attribute selectors
 by adding an `s` operator to your attribute selector.
 
 ```css
-[data-type='primary' s] {
+[data-type="primary" s] {
   color: red;
 }
 ```
@@ -237,20 +238,21 @@ you have access to operators that match portions of strings inside attribute val
 
 ```css
 /* A href that contains "example.com" */
-[href*='example.com'] {
+[href*="example.com"] {
   color: red;
 }
 
 /* A href that starts with https */
-[href^='https'] {
+[href^="https"] {
   color: green;
 }
 
 /* A href that ends with .com */
-[href$='.com'] {
+[href$=".com"] {
   color: blue;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/BapBbOy?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen BapBbOy by web-dot-dev on Codepen"></iframe> In this demo, the \`$\` operator in our attribute selector gets the filetype from the \`href\` attribute. This makes it possible to prefix the label---based on that filetype---using a pseudo-element.
 
 ### Grouping selectors
@@ -275,14 +277,16 @@ It's also extended to a class named `.my-class`, and an element that has a `lang
 Test your knowledge of simple selectors
 
 ```css
-* {}
+* {
+}
 ```
 
 What kind of simple selector is used in the above snippet?
 attribute `[]` are used for **attribute** simple selectors. ID `#` are used for **ID** simple selectors. universal `*` is the **universal** simple selector. class `.` are used for **class** simple selectors.
 
 ```css
-div {}
+div {
+}
 ```
 
 What kind of simple selector is used in the above snippet?
@@ -291,7 +295,7 @@ class A `.` is used for **class** simple selectors. type An `element` name is us
 ## Pseudo-classes and pseudo-elements
 
 CSS provides useful selector types that focus on specific platform state,
-like when an element is hovered, structures *inside* an element, or parts of an element.
+like when an element is hovered, structures _inside_ an element, or parts of an element.
 
 ### Pseudo-classes
 
@@ -300,7 +304,7 @@ either because they are interacted with,
 or one of their child elements is in a certain state.
 
 For example, an HTML element could be hovered with the mouse pointer by a user
-*or* a child element could also be hovered by the user.
+_or_ a child element could also be hovered by the user.
 For those situations, use the `:hover` pseudo-class.
 
 ```css
@@ -329,7 +333,7 @@ because instead of using a single colon (`:`), we use a double colon (`::`).
 
 ```css
 .my-element::before {
-  content: 'Prefix - ';
+  content: "Prefix - ";
 }
 ```
 
@@ -379,7 +383,7 @@ Pseudo-class One `:` is used to target pseudo-classes. Pseudo-element Two `::` a
 ## Complex selectors
 
 You have already seen a vast array of selectors,
-but sometimes, you will need more *fine-grained control* with your CSS.
+but sometimes, you will need more _fine-grained control_ with your CSS.
 This is where complex selectors step in to help.
 
 It's worth remembering at this point that although the following selectors give us more power,
@@ -438,7 +442,7 @@ by using a `+` character in your selector.
 
 To add space between stacked elements,
 use the next sibling combinator to add space
-*only* if an element is a **next sibling** of a child element of `.top`.
+_only_ if an element is a **next sibling** of a child element of `.top`.
 
 You could add margin to all child elements of `.top`,
 using the following selector:

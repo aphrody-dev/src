@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 The number of WebGPU features might feel a bit sparse this time, but some major advancements are just around the corner! Future releases will include features like shader compilation speed improvements, and changes to the async model of the implementation using WGPUFuture.
@@ -40,7 +41,8 @@ const device = await adapter.requestDevice({
   requiredFeatures: ["chromium-experimental-subgroups"],
 });
 
-const shaderModule = device.createShaderModule({ code: `
+const shaderModule = device.createShaderModule({
+  code: `
   enable chromium_experimental_subgroups;
 
   @compute @workgroup_size(64) fn main(

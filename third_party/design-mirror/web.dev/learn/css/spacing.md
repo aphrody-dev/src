@@ -7,15 +7,16 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ##### [The CSS Podcast - 013: Spacing](https://thecsspodcast.libsyn.com/011-spacing)
 
 Say you've got a collection of three boxes,
 stacked on top of each other and you want space between them.
 How many ways can you think of to do that in CSS?
 
-The `margin` property *might* give you what you need,
+The `margin` property _might_ give you what you need,
 but it also might add additional spacing that you don't want.
-For example, how do you target just the space *in between* each of those elements?
+For example, how do you target just the space _in between_ each of those elements?
 Something like `gap` might be more appropriate in this case.
 There are many ways to adjust spacing within a UI,
 each with its own strengths and caveats.
@@ -35,7 +36,7 @@ The `<hr>` creates a horizontal line with space either-side, known as `margin`.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/dyNRJQg?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen dyNRJQg by web-dot-dev on Codepen"></iframe>
 
 Along with using HTML elements,
-HTML *entities* can create space.
+HTML _entities_ can create space.
 An HTML entity is a reserved string of characters that are replaced with character entities by the browser.
 For example,
 if you were to type `&copy;` in your HTML file,
@@ -93,10 +94,11 @@ This sort of wrapper is often used to create a consistent center column on a web
 
 ```css
 .wrapper {
-    max-width: 400px;
-    margin: 0 auto;
+  max-width: 400px;
+  margin: 0 auto;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/XWpgZKq?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen XWpgZKq by web-dot-dev on Codepen"></iframe>
 
 Here, margin is removed from the top and bottom (block) sides,
@@ -123,19 +125,23 @@ Say you have two elements: a heading and a paragraph that both have vertical mar
 ```html
 <article>
   <h1>My heading with teal margin</h1>
-  <p>A paragraph of text that has blue margin on it, following the heading with margin.</p>
+  <p>
+    A paragraph of text that has blue margin on it, following the heading with
+    margin.
+  </p>
 </article>
 ```
 
 ```css
 h1 {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 p {
-    margin-top: 3rem;
+  margin-top: 3rem;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/OJWgvMx?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen OJWgvMx by web-dot-dev on Codepen"></iframe>
 
 At first glance,
@@ -157,7 +163,7 @@ Only block margins collapse, not inline (horizontal) margins.
 Margin collapse also helps with empty elements.
 If you have a paragraph that has a top and bottom margin of `20px`,
 it will only create `20px` of space: not `40px`.
-If *anything* is added to the inside of this element though,
+If _anything_ is added to the inside of this element though,
 including `padding`, its margin will no longer collapse in itself and will be treated as any box with content.
 
 ### Check your understanding
@@ -204,7 +210,7 @@ like insulation.
 
 Depending on which box model you are using---which was covered back in the
 [box model lesson](https://web.dev/learn/css/box-model.md.txt)
----`padding` can also affect the overall dimensions of the element too.
+\---`padding` can also affect the overall dimensions of the element too.
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/eYgRrzz?height=500&amp;theme-id=light&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen eYgRrzz by web-dot-dev on Codepen"></iframe>
 
 The `padding` property is shorthand for `padding-top`, `padding-right`, `padding-bottom` and `padding-left`.
@@ -235,7 +241,7 @@ two individual values.
 
 ## Grid and flexbox
 
-Lastly, in both grid and flexbox you can use the `gap` property to create space *between* child elements.
+Lastly, in both grid and flexbox you can use the `gap` property to create space _between_ child elements.
 The `gap` property is shorthand for `row-gap` and `column-gap`,
 it accepts one or two values, which can be lengths or percentages.
 You can also use keywords such as `unset`, `initial` and `inherit`.
@@ -274,7 +280,6 @@ h1 {
   margin-left: var(--gutter);
   margin-top: var(--spacing);
 }
-
 ```
 
 Using custom properties like this allows you to define them once,

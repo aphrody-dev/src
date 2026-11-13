@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Macro layouts describe the larger, page-wide organization of your interface.
 
 Before applying any layout, you should make sure that the flow of your content makes sense.
@@ -22,6 +23,7 @@ This single column default ordering is what smaller screens will get.
   <footer>...</footer>
 </body>
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/oNeePOX?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen oNeePOX by web-dot-dev on Codepen"></iframe>
 
 When you arrange these individual page-level components, you're designing a macro layout: a high-level view of your page.
@@ -68,6 +70,7 @@ The styles would look like this:
   }
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/gOxxdym?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen gOxxdym by web-dot-dev on Codepen"></iframe>
 
 However, the flexbox version requires more CSS.
@@ -92,6 +95,7 @@ Instead, you can apply rules so that the cards themselves automatically take up 
   grid-gap: 1em;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/QWMMVPm?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen QWMMVPm by web-dot-dev on Codepen"></iframe>
 
 You can achieve a similar layout with flexbox.
@@ -110,6 +114,7 @@ If you want to line up rows and columns, then use grid.
   flex-grow: 1;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/abyyaMg?height=500&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen abyyaMg by web-dot-dev on Codepen"></iframe>
 
 By applying some smart rules in flexbox or grid, it's possible to design dynamic macro layouts with minimal CSS and without any media queries.

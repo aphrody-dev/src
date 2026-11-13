@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!NOTE]
 > **Objective:** This module is a high-level overview of various use cases of images in HTML. If you're looking for a deep dive into the topic, visit the [Learn Images course](https://web.dev/learn/images.md.txt).
 
@@ -38,7 +39,6 @@ This can also be done with the [`<picture>`](https://developer.mozilla.org/docs/
 <picture>
   <source srcset="images/eve.png" media="(max-width: 800px)" />
   <source srcset="images/eve-xl.jpg" />
-  
 </picture>
 ```
 
@@ -265,7 +265,7 @@ The `srcset` attribute is common to `img`, `source`, and `link`, but is generall
 as media queries can be listed in the `<srcset>`'s media attribute instead. `<source>` also supports image formats defined in the `type` attribute.
 
 The browser considers each child `<source>` element and choose the best match among them. If no matches are found, the URL
-of the `` element's [`src`](https://developer.mozilla.org/docs/Web/HTML/Element/img#attr-src) attribute is selected. The accessible name comes from the `alt` attribute of the nested ``.
+of the ``element's [`src`](https://developer.mozilla.org/docs/Web/HTML/Element/img#attr-src) attribute is selected. The accessible name comes from the `alt` attribute of the nested``.
 The Learn sections covering the [`<picture>`](https://web.dev/learn/design/picture-element.md.txt) element and [prescriptive syntaxes](https://web.dev/learn/images/prescriptive.md.txt) are also worth a read.
 
 ## Additional performance features
@@ -331,10 +331,10 @@ of time to load, but the UI won't jump when the image is painted to the screen.
 
 ## Other image features
 
-The `` element also supports the `crossorigin`, `decoding`,
+The ``element also supports the `crossorigin`, `decoding`,
 `referrerpolicy`, and, in Blink-based browsers, `fetchpriority` attributes.
 Rarely used, if the image is part of a server-side map, include the `ismap`
-boolean attribute and nest the `` in a link for users without pointing
+boolean attribute and nest the`` in a link for users without pointing
 devices.
 
 The `ismap` attribute isn't necessary, or even supported, on the

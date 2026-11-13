@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Maud Nalpas [GitHub](https://github.com/maudnals) [LinkedIn](https://www.linkedin.com/in/maudnalpas) [Bluesky](https://bsky.app/profile/maudnals.bsky.social)
 
 > [!IMPORTANT]
@@ -37,7 +38,7 @@ choosing the library, assess its size like you would any other tool.
 Model size matters, too. What's considered large for an AI model depends.
 5MB can be a useful rule of thumb: it's also the
 [75th percentile of the median web page size](https://httparchive.org/reports/page-weight?lens=top10k&start=2018_09_15&end=latest&view=list#bytesTotal).
-A laxer number would be [10MB](https://developer.android.com/guide/playcore/feature-delivery/ux-guidelines#:%7E:text=are%20relatively%20small%20(-,less%20than%2010MB,-)%2C%20and%20there%20aren%27t).
+A laxer number would be [10MB](<https://developer.android.com/guide/playcore/feature-delivery/ux-guidelines#:%7E:text=are%20relatively%20small%20(-,less%20than%2010MB,-)%2C%20and%20there%20aren%27t>).
 
 Here are some important considerations about model size:
 
@@ -50,14 +51,14 @@ Here are some important considerations about model size:
 
 You can assess the exact download size of the models you're planning to use with
 your browsers' developer tools.
- In the Chrome DevTools Network panel, download size for the MediaPipe language detection model. Demo.  In the Chrome DevTools Network panel, download size for Gen AI models: Gemma 2B (Small LLM), DistilBERT (Small NLP / Very small LLM).
+In the Chrome DevTools Network panel, download size for the MediaPipe language detection model. Demo. In the Chrome DevTools Network panel, download size for Gen AI models: Gemma 2B (Small LLM), DistilBERT (Small NLP / Very small LLM).
 
 ### Optimize model size
 
 - **Compare model quality and download sizes** . A smaller model may have sufficient accuracy for your use case, while being much smaller. Fine tuning and [model shrinking techniques](https://web.dev/articles/llm-sizes.md.txt#model-shrinking) exist to significantly reduce a model's size while maintaining sufficient accuracy.
 - **Pick specialized models** when possible. Models that are tailored to a certain task tend to be smaller. For example, if you're looking to perform specific tasks like sentiment or toxicity analysis, use models specialized in these tasks rather than a generic LLM.
 
- Model selector for a [client-side AI-based transcription demo](https://jordismit.com/tools/ai-based-transcription-in-the-browser/) by [j0rd1smit](https://github.com/j0rd1smit).
+Model selector for a [client-side AI-based transcription demo](https://jordismit.com/tools/ai-based-transcription-in-the-browser/) by [j0rd1smit](https://github.com/j0rd1smit).
 
 While all these models perform the same task, with varying accuracy, their sizes
 vary widely: from 3MB to 1.5GB.
@@ -99,7 +100,7 @@ unsupported).
 
 Prioritize a smooth user experience: allow key features to function even if the
 AI model isn't fully loaded yet.
- Users can still post their review, even when the client-side AI feature isn't ready yet. Demo by [@maudnals](https://x.com/maudnals).
+Users can still post their review, even when the client-side AI feature isn't ready yet. Demo by [@maudnals](https://x.com/maudnals).
 
 ### Indicate progress
 
@@ -109,7 +110,7 @@ As you download the model, indicate progress completed and time remaining.
 - If you handle model downloads in your own code, you can fetch the model in chunks using a library, such as [fetch-in-chunks](https://github.com/tomayac/fetch-in-chunks?tab=readme-ov-file#with-progress-callback), and display download progress to the user.
   - For more advice, refer to [Best practices for animated progress indicators](https://www.smashingmagazine.com/2016/12/best-practices-for-animated-progress-indicators/) and [Designing for long waits and interruptions](https://www.nngroup.com/articles/designing-for-waits-and-interruptions/).
 
- Model download progress display. Custom implementation with [fetch-in-chunks](https://github.com/tomayac/fetch-in-chunks?tab=readme-ov-file#with-progress-callback). [Demo](https://mediapipe-llm.glitch.me/) by [@tomayac](https://twitter.com/tomayac).
+Model download progress display. Custom implementation with [fetch-in-chunks](https://github.com/tomayac/fetch-in-chunks?tab=readme-ov-file#with-progress-callback). [Demo](https://mediapipe-llm.glitch.me/) by [@tomayac](https://twitter.com/tomayac).
 
 ### Handle network interruptions gracefully
 
@@ -135,7 +136,7 @@ Find a demo and full implementation based on a web worker:
 - [script.js](https://github.com/GoogleChromeLabs/web-ai-demos/tree/main/perf-worker-gemma/src/script.js#L16)
 - [worker.js](https://github.com/GoogleChromeLabs/web-ai-demos/tree/main/perf-worker-gemma/src/worker.js)
 
- Top: With a web worker. Bottom: No web worker.
+Top: With a web worker. Bottom: No web worker.
 
 ## During inference
 
@@ -143,7 +144,7 @@ Once the model is downloaded and ready, you can run inference. Inference can be
 computationally expensive.
 
 > [!IMPORTANT]
-> **Key Term:** [*Inference*](https://developer.nvidia.com/topics/ai/ai-inference#:%7E:text=AI%20inference%20is%20the%20process%20of%20generating%20outputs%20from%20a%20model%20by%20providing%20it%20inputs) is essentially model thinking time: it's when the model generates outputs from a provided input. For example, if you gave your model a user-written product review, inference occurs when the model generates text that completes the user's review or analyzes the sentiment of the review.
+> **Key Term:** [_Inference_](https://developer.nvidia.com/topics/ai/ai-inference#:%7E:text=AI%20inference%20is%20the%20process%20of%20generating%20outputs%20from%20a%20model%20by%20providing%20it%20inputs) is essentially model thinking time: it's when the model generates outputs from a provided input. For example, if you gave your model a user-written product review, inference occurs when the model generates text that completes the user's review or analyzes the sentiment of the review.
 
 ### Move inference to a web worker
 
@@ -173,7 +174,7 @@ If inference takes more time than what would feel
 [immediate](https://www.nngroup.com/articles/response-times-3-important-limits/),
 signal to the user that the model is thinking. Use animations to ease the wait
 and ensure the user that the application is working as intended.
- Demo by [@maudnals](https://x.com/maudnals) and [@argyleink](https://x.com/argyleink)
+Demo by [@maudnals](https://x.com/maudnals) and [@argyleink](https://x.com/argyleink)
 
 ### Make inference cancellable
 

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** This audit has been removed as of Lighthouse 13. For more information see [What's new in Lighthouse 13](https://developer.chrome.com/blog/lighthouse-13-0.md.txt).
 
@@ -53,7 +54,7 @@ If you're only supporting browsers that have passive event listener support,
 just add the flag. For example:
 
 ```javascript
-document.addEventListener('touchstart', onTouchStart, {passive: true});
+document.addEventListener("touchstart", onTouchStart, { passive: true });
 ```
 
 If you're supporting [older browsers that don't support passive event listeners](https://developer.mozilla.org/docs/Web/API/EventTarget/addEventListener#Browser_compatibility),

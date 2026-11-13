@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)  Yoav Weiss [X](https://twitter.com/yoavweiss) [GitHub](https://github.com/yoavweiss)
+
+Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com) Yoav Weiss [X](https://twitter.com/yoavweiss) [GitHub](https://github.com/yoavweiss)
 
 Published: September 30, 2019, Last updated: July 10, 2026
 
@@ -32,7 +33,7 @@ Browser Support
 Suppose you're browsing the web on a screen that's 300 pixels wide, and the page
 requests an image 1500 pixels wide. That page has wasted a lot of your mobile
 data because your screen can't do anything with all that extra resolution.
-Ideally, the browser would fetch a version of the image that's just a *little*
+Ideally, the browser would fetch a version of the image that's just a _little_
 wider than your screen size, for example, 325 pixels. This ensures a
 high-resolution image without wasting data, and lets the image load faster.
 
@@ -65,7 +66,7 @@ discoverable, such as fonts included in stylesheets, background images, or
 resources loaded from a script.
 
 ```html
-<link rel="preload" as="image" href="important.png" fetchpriority="high">
+<link rel="preload" as="image" href="important.png" fetchpriority="high" />
 ```
 
 > [!IMPORTANT]
@@ -81,13 +82,20 @@ preload responsive images. Use them alongside
 For example, if you want to preload a responsive image specified with:
 
 ```html
- 
+
 ```
 
 You can do that by adding the following to your HTML's `<head>`:
 
 ```html
-<link rel="preload" as="image" href="wolf.jpg" imagesrcset="wolf_400px.jpg 400w, wolf_800px.jpg 800w, wolf_1600px.jpg 1600w" imagesizes="50vw" fetchpriority="high">
+<link
+  rel="preload"
+  as="image"
+  href="wolf.jpg"
+  imagesrcset="wolf_400px.jpg 400w, wolf_800px.jpg 800w, wolf_1600px.jpg 1600w"
+  imagesizes="50vw"
+  fetchpriority="high"
+/>
 ```
 
 This initiates a request using the same resource selection logic that
@@ -120,11 +128,11 @@ You can inspect this issue on a website with a dynamically-loaded image gallery:
 5. Disable the **Disable cache** checkbox.
 6. Reload the page.
 
- Without preloading, the images start loading after the browser has finished running the script. For the first image, that delay is unnecessary.
+Without preloading, the images start loading after the browser has finished running the script. For the first image, that delay is unnecessary.
 
 Using `preload` here lets the image start loading ahead of time, so it can be
 ready to display when the browser needs to display it.
- Preloading the first image lets it start loading at the same time as the script.
+Preloading the first image lets it start loading at the same time as the script.
 
 To see the difference that preloading makes, inspect the same dynamically-loaded
 image gallery but [with the first image preloaded](https://responsive-preload.glitch.me/preload.html)
@@ -141,7 +149,7 @@ choose which one to display based on the screen's
 [DPR](https://developer.mozilla.org/docs/Web/API/Window/devicePixelRatio).
 
 ```css
-background-image: image-set( "cat.png" 1x, "cat-2x.png" 2x);
+background-image: image-set("cat.png" 1x, "cat-2x.png" 2x);
 ```
 
 > [!NOTE]
@@ -152,12 +160,17 @@ only after it has downloaded and processed all the CSS in the page's `<head>`.
 
 You can inspect this issue on an example website with a
 [responsive background image](https://responsive-preload.glitch.me/background_no_preload.html).
- In this example, the image download doesn't start until the CSS is fully downloaded, causing unnecessary lag to the image's display.
+In this example, the image download doesn't start until the CSS is fully downloaded, causing unnecessary lag to the image's display.
 
 Responsive image preloading lets you load those images faster.
 
 ```html
-<link rel="preload" as="image" imagesrcset="cat.png 1x, cat-2x.png 2x" fetchpriority="high">
+<link
+  rel="preload"
+  as="image"
+  imagesrcset="cat.png 1x, cat-2x.png 2x"
+  fetchpriority="high"
+/>
 ```
 
 Leaving out the `href` attribute lets you ensure that browsers that don't
@@ -167,7 +180,7 @@ this case.
 
 You can inspect how the previous example behaves with a preloaded responsive
 background image in [the responsive background preload demo](https://responsive-preload.glitch.me/background_preload.html).
- Here the image and CSS start downloading at the same time, letting the image load faster.
+Here the image and CSS start downloading at the same time, letting the image load faster.
 
 ## Practical effects of preloading responsive images
 
@@ -188,7 +201,7 @@ and for [image preload](https://www.webpagetest.org/result/190710_7B_a99e7921217
 - [Speed Index](https://developer.chrome.com/docs/lighthouse/performance/speed-index) improved slightly (273 ms, as images arrive faster don't take up a huge chunk of the pixel area).
 - [Last Painted Hero](https://github.com/WPO-Foundation/webpagetest/blob/master/docs/Metrics/HeroElements.md) improved significantly, by 1.2 seconds.
 
- Images arrive significantly faster when preloaded, greatly improving the user experience.
+Images arrive significantly faster when preloaded, greatly improving the user experience.
 
 ## Preload and `<picture>`
 
@@ -202,9 +215,8 @@ but in the meantime, there are workarounds:
 
 ```html
 <picture>
-    <source srcset="small_cat.jpg" media="(max-width: 400px)">
-    <source srcset="medium_cat.jpg" media="(max-width: 800px)">
-    
+  <source srcset="small_cat.jpg" media="(max-width: 400px)" />
+  <source srcset="medium_cat.jpg" media="(max-width: 800px)" />
 </picture>
 ```
 
@@ -216,9 +228,27 @@ Because responsive preload has no notion of "order" or "first match", you'll
 need to translate the breakpoints into something like the following:
 
 ```html
-<link rel="preload" href="small_cat.jpg" as="image" media="(max-width: 400px)" fetchpriority="high">
-<link rel="preload" href="medium_cat.jpg" as="image" media="(min-width: 400.1px) and (max-width: 800px)" fetchpriority="high">
-<link rel="preload" href="large_cat.jpg" as="image" media="(min-width: 800.1px)" fetchpriority="high">
+<link
+  rel="preload"
+  href="small_cat.jpg"
+  as="image"
+  media="(max-width: 400px)"
+  fetchpriority="high"
+/>
+<link
+  rel="preload"
+  href="medium_cat.jpg"
+  as="image"
+  media="(min-width: 400.1px) and (max-width: 800px)"
+  fetchpriority="high"
+/>
+<link
+  rel="preload"
+  href="large_cat.jpg"
+  as="image"
+  media="(min-width: 800.1px)"
+  fetchpriority="high"
+/>
 ```
 
 ### Preload and `type`
@@ -228,7 +258,13 @@ The `<picture>` element also supports matching on the first `type`, to let you p
 This use case is only partially supported with preload: browsers should only download preloads for supported types. So you can use this to prevent browsers preloading unsupported mimetypes types by including this in the preload:
 
 ```html
-<link rel="preload" href="image.avif" type="image/avif" as="image" fetchpriority="high">
+<link
+  rel="preload"
+  href="image.avif"
+  type="image/avif"
+  as="image"
+  fetchpriority="high"
+/>
 ```
 
 However, unlike `<picture>` it won't stop at the first supported type. So if multiple preloads are included for multiple types, then all the images will be preloaded:
@@ -236,14 +272,32 @@ However, unlike `<picture>` it won't stop at the first supported type. So if mul
 Don't do this --- preload multiple types:
 
 ```html
-<link rel="preload" href="image.avif" type="image/avif" as="image" fetchpriority="high">
-<link rel="preload" href="image.jpg" type="image/jpg" as="image" fetchpriority="high">
+<link
+  rel="preload"
+  href="image.avif"
+  type="image/avif"
+  as="image"
+  fetchpriority="high"
+/>
+<link
+  rel="preload"
+  href="image.jpg"
+  type="image/jpg"
+  as="image"
+  fetchpriority="high"
+/>
 ```
 
 Instead do this --- preload the most preferred type:
 
 ```html
-<link rel="preload" href="image.avif" type="image/avif" as="image" fetchpriority="high">
+<link
+  rel="preload"
+  href="image.avif"
+  type="image/avif"
+  as="image"
+  fetchpriority="high"
+/>
 ```
 
 Preloading the newest format (AVIF in this case) acts as as a progressive enhancement, where browsers supporting that type will benefit and other browsers won't benefit from the preload.

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Kayce Basques [X](https://twitter.com/kaycebasques) [GitHub](https://github.com/kaycebasques)
 
 [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview) is a tool that

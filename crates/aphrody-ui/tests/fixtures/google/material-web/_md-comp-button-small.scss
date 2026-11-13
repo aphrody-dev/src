@@ -15,9 +15,9 @@
 //   platform: web
 // Output format: sass_vars
 
-@use 'md-sys-motion';
-@use 'md-sys-shape';
-@use 'md-sys-typescale';
+@use "md-sys-motion";
+@use "md-sys-shape";
+@use "md-sys-typescale";
 
 /// md.comp.button.small.container.height
 $container-height: 40px;

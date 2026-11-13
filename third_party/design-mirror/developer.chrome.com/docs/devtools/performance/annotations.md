@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Sofia Emelianova [GitHub](https://github.com/sofiayem)  Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
+
+Sofia Emelianova [GitHub](https://github.com/sofiayem) Barry Pollard [X](https://twitter.com/tunetheweb) [GitHub](https://github.com/tunetheweb) [Mastodon](https://mastodon.social/@tunetheweb) [Bluesky](https://bsky.app/profile/tunetheweb.com) [Homepage](https://www.tunetheweb.com)
 
 ## Overview
 
@@ -30,14 +31,14 @@ Naming things is hard! DevTools can use Gemini to suggest a label name in the **
 #### When you use this feature for the first time...
 
 You will see the following screen that explains that AI may not always get things right, that the AI works by sending the necessary trace data to Google to analyse and make the suggestion, and that you can control this feature in the settings tab.
- Auto annotation considerations prompt.
+Auto annotation considerations prompt.
 
 Once that's accepted, you can now ask Gemini to generate a label.
 
 > [!NOTE]
 > **Note:** Auto annotations are subject to the [same requirements as other AI features](https://developer.chrome.com/docs/devtools/ai-assistance#requirements) and can be [controlled through policy](https://developer.chrome.com/docs/devtools/ai-assistance#control_feature_availability).
 
-To generate a label, double-click on one of the **Main track** items in the trace, then click  **Generate label** next to the input field. Gemini can suggest a label based on the stack trace.
+To generate a label, double-click on one of the **Main track** items in the trace, then click **Generate label** next to the input field. Gemini can suggest a label based on the stack trace.
 
 You can tweak the suggested text as you see fit.
 

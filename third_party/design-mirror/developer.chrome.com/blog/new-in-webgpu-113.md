@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 François Beaufort [GitHub](https://github.com/beaufortfrancois)
 
 After years of development, the Chrome team announces that the first release of WebGPU is now available by default in Chrome on ChromeOS, macOS, and Windows. Check out [Chrome ships WebGPU](https://developer.chrome.com/blog/webgpu-release.md.txt) to learn more.

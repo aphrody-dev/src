@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Congratulations, you've made it through Learn Accessibility! At this point,
 you've learned a lot of best practices for accessibility and gone through
 multiple rounds of accessibility testing. You may have learned some new
@@ -49,9 +50,9 @@ about their journey to accessibility and best practices:
 
 ## Brought to you by
 
- Carie Fisher [GitHub](https://github.com/cehfisher) [LinkedIn](https://www.linkedin.com/in/cariefisher) [Mastodon](https://mstdn.social/@cariefisher) [Bluesky](https://bsky.app/profile/cariefisher.bsky.social) [Homepage](https://cariefisher.com/)  Alexandra Klepper [GitHub](https://github.com/alexandrascript) [Bluesky](https://bsky.app/profile/alexandrascript.com)
+Carie Fisher [GitHub](https://github.com/cehfisher) [LinkedIn](https://www.linkedin.com/in/cariefisher) [Mastodon](https://mstdn.social/@cariefisher) [Bluesky](https://bsky.app/profile/cariefisher.bsky.social) [Homepage](https://cariefisher.com/) Alexandra Klepper [GitHub](https://github.com/alexandrascript) [Bluesky](https://bsky.app/profile/alexandrascript.com)
 
- Mark Steadman [X](https://twitter.com/Steady5063) [Homepage](https://dev.to/steady5063)  Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
+Mark Steadman [X](https://twitter.com/Steady5063) [Homepage](https://dev.to/steady5063) Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
 
 ### Special thanks
 

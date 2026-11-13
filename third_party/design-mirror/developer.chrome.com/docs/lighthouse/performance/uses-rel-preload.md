@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** This audit has been removed as of Lighthouse 13. For more information see [What's new in Lighthouse 13](https://developer.chrome.com/blog/lighthouse-13-0.md.txt).
 
@@ -33,7 +34,7 @@ For example, if `app.js` takes 200ms to download, parse, and execute,
 the potential savings for each resource is 200ms since `app.js` is no longer a bottleneck for each of the requests.
 
 Preloading requests can make your pages load faster.
- Without preload links, `styles.css` and `ui.js` are requested only after `app.js` has been downloaded, parsed, and executed.
+Without preload links, `styles.css` and `ui.js` are requested only after `app.js` has been downloaded, parsed, and executed.
 
 The problem here is that the browser only becomes aware
 of those last 2 resources after it downloads, parses, and executes `app.js`.
@@ -53,7 +54,8 @@ as soon as possible.
   ...
 </head>
 ```
- With preload links, `styles.css` and `ui.js` are requested at the same time as `app.js`.
+
+With preload links, `styles.css` and `ui.js` are requested at the same time as `app.js`.
 
 See also [Preload critical assets to improve loading speed](https://web.dev/articles/preload-critical-assets)
 for more guidance.

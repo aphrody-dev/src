@@ -4,13 +4,13 @@ Sources : `dotnet/runtime@42656136` (branche `release/11.0`, 2026-11-11 ; https:
 
 ## 0. Faits de version (sources live)
 
-| Fait | Source |
-|---|---|
-| .NET 11.0.0 GA le 2026-11-10, STS, fin de support 2028-11-14, SDK 11.0.100 | `dotnet/core` `release-notes/11.0/releases.json` (gh api) |
-| Tag GA posé dans le VMR : `dotnet/dotnet` release `v11.0.100` publiée 2026-11-10T13:50Z | gh api `repos/dotnet/dotnet/releases` |
-| **Conflit apparent** : `dotnet/runtime` n'a pas de tag `v11.0.0` (dernier : `v11.0.0-rc.3.26522.148`) ; les GA se lisent dans `dotnet/dotnet` | gh api `git/matching-refs/tags/v11.0` |
-| `release/11.0` = version 11.0 `rtm` ; `main` = 12.0 `alpha` | `eng/Versions.props:9-18` (deux checkouts) |
-| .NET 10.0.15 (LTS) publié 2026-11-10 | gh api releases `dotnet/runtime` `v10.0.15` |
+| Fait                                                                                                                                          | Source                                                    |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| .NET 11.0.0 GA le 2026-11-10, STS, fin de support 2028-11-14, SDK 11.0.100                                                                    | `dotnet/core` `release-notes/11.0/releases.json` (gh api) |
+| Tag GA posé dans le VMR : `dotnet/dotnet` release `v11.0.100` publiée 2026-11-10T13:50Z                                                       | gh api `repos/dotnet/dotnet/releases`                     |
+| **Conflit apparent** : `dotnet/runtime` n'a pas de tag `v11.0.0` (dernier : `v11.0.0-rc.3.26522.148`) ; les GA se lisent dans `dotnet/dotnet` | gh api `git/matching-refs/tags/v11.0`                     |
+| `release/11.0` = version 11.0 `rtm` ; `main` = 12.0 `alpha`                                                                                   | `eng/Versions.props:9-18` (deux checkouts)                |
+| .NET 10.0.15 (LTS) publié 2026-11-10                                                                                                          | gh api releases `dotnet/runtime` `v10.0.15`               |
 
 ## 1. NativeAOT : exports C et liaison
 

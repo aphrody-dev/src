@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Milica Mihajlija [X](https://twitter.com/bibydigital) [GitHub](https://github.com/mihajlija) [Homepage](https://mihajlija.github.io/)
 
 > [!IMPORTANT]
@@ -42,18 +43,18 @@ KB).
 > [!NOTE]
 > **Note:** Webpack uses the unit "KiB", which you might not have seen before. 1 "KiB" and 1 "KB" are fairly close in size: 1 KiB is 1024 bytes, while 1 KB is 1000 bytes.
 
- Webpack warning you about bulky JS bundle ⚠️
+Webpack warning you about bulky JS bundle ⚠️
 
 These warnings are enabled by default in [production mode](https://webpack.js.org/concepts/mode/)
 and the default threshold is **244 KiB uncompressed** , for both assets and
 [entry points](https://webpack.js.org/concepts/entry-points/)
 (the combination of all assets used during the initial load of a page).
- Webpack warning you about bulky JS bundle ⚠️
+Webpack warning you about bulky JS bundle ⚠️
 
 Webpack will not only warn you, but it will also give you a recommendation on
 how to downsize your bundles. You can learn more about the recommended techniques on
 [Web Fundamentals](https://developers.google.com/web/fundamentals/performance/webpack/use-long-term-caching#lazy-loading).
- Webpack performance optimization recommendation 💁
+Webpack performance optimization recommendation 💁
 
 ## Set a custom performance budget
 
@@ -76,8 +77,8 @@ module.exports = {
   performance: {
     maxAssetSize: 100000,
     maxEntrypointSize: 100000,
-    hints: "warning"
-  }
+    hints: "warning",
+  },
 };
 ```
 
@@ -94,7 +95,7 @@ Possible values for **hints** are:
 2. **`error`**: Displays a red error message, but the build still passes. This setting is recommended for production builds.
 3. **`false`**: No warnings or errors are shown.
 
- Webpack performance hint "error" 🚨
+Webpack performance hint "error" 🚨
 
 ## Optimize
 
@@ -135,7 +136,7 @@ JavaScript:
 ```javascript
 const today = new Date();
 const year = today.getFullYear();
-const yearEnd = new Date(year,11,31); //months are zero indexed in JS
+const yearEnd = new Date(year, 11, 31); //months are zero indexed in JS
 const timeDiff = Math.abs(yearEnd.getTime() - today.getTime());
 const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
 ```

@@ -84,13 +84,13 @@ lore clone lores://edge.lore.internal:41337/my-game ./my-game
 
 ## Architecture
 
-| Component | Instance | Purpose |
-|-----------|----------|---------|
-| Primary (ECS on EC2) | c8gd.8xlarge | Composite store: NVMe cache + S3 durable. Serves replication to edge. |
-| Edge (ECS on EC2) | c8gd.8xlarge | Composite store: NVMe cache + replicated durable (QUIC to primary). Client-facing. |
-| Cloud Map DNS | — | Service discovery (`primary.lore.internal`, `edge.lore.internal`) |
-| VPC | — | Private subnets, NAT, S3/DynamoDB gateway endpoints |
-| TLS CA | — | Self-signed; establishes trust between nodes and clients |
+| Component            | Instance     | Purpose                                                                            |
+| -------------------- | ------------ | ---------------------------------------------------------------------------------- |
+| Primary (ECS on EC2) | c8gd.8xlarge | Composite store: NVMe cache + S3 durable. Serves replication to edge.              |
+| Edge (ECS on EC2)    | c8gd.8xlarge | Composite store: NVMe cache + replicated durable (QUIC to primary). Client-facing. |
+| Cloud Map DNS        | —            | Service discovery (`primary.lore.internal`, `edge.lore.internal`)                  |
+| VPC                  | —            | Private subnets, NAT, S3/DynamoDB gateway endpoints                                |
+| TLS CA               | —            | Self-signed; establishes trust between nodes and clients                           |
 
 **Startup:** Health check grace periods allow the primary (120s) and edge (300s) to initialize without being marked unhealthy. The edge's retry configuration handles Cloud Map DNS propagation delays automatically. On first deploy, edge nodes may restart 1-2 times while DNS propagates — this is expected and self-resolving.
 
@@ -126,11 +126,11 @@ aws logs tail /ecs/lore --since 5m --region us-west-2
 
 This example ships with a test plan and an automated e2e script in `tests/`:
 
-| File | Purpose |
-|------|---------|
-| `tests/plan.tftest.hcl` | Terraform plan-level validation (offline, free) |
-| `tests/e2e-test.sh` | Automated end-to-end validation (requires live infrastructure) |
-| `tests/TEST_PLAN.md` | Manual runbook — step-by-step deployment + validation |
+| File                    | Purpose                                                        |
+| ----------------------- | -------------------------------------------------------------- |
+| `tests/plan.tftest.hcl` | Terraform plan-level validation (offline, free)                |
+| `tests/e2e-test.sh`     | Automated end-to-end validation (requires live infrastructure) |
+| `tests/TEST_PLAN.md`    | Manual runbook — step-by-step deployment + validation          |
 
 The e2e test mirrors the [official Lore quickstart](https://epicgames.github.io/lore/tutorials/quickstart/) against this infrastructure, exercising all client operations through both the primary and edge:
 
@@ -139,6 +139,7 @@ The e2e test mirrors the [official Lore quickstart](https://epicgames.github.io/
 ```
 
 What it validates:
+
 - Health checks (HTTP 200 from primary and edge)
 - Full data path via primary (create → stage → commit → push → clone)
 - Full client workflow via edge (clone → branch → merge → push → sync)
@@ -148,17 +149,17 @@ See `tests/TEST_PLAN.md` for the manual equivalent with AWS resource validation.
 
 ## Customize
 
-| Need | What to change |
-|------|----------------|
-| Smaller instances (dev/test) | Set `instance_type = "c8gd.xlarge"` — same architecture, less capacity |
-| External access | Add an NLB in public subnets |
-| Authentication | Set `LORE__SERVER__AUTH__JWK__ENDPOINT` ([docs](https://epicgames.github.io/lore/reference/lore-server-config/#authentication)) |
-| More edge nodes | Increase ASG `min_size`/`max_size`/`desired_capacity` + edge service `desired_count` |
-| Dynamic scaling | Add an `aws_ecs_capacity_provider` with managed scaling (see the capacity note in `compute.tf`) |
-| Faster edge startup | Consider adding a startup probe that polls `primary.lore.internal` before starting loreserver |
-| Presigned URLs | Already configured via HMAC key in Secrets Manager |
-| Production hardening | Add `deletion_protection_enabled = true` to DynamoDB tables |
-| Objects stored before v0.8.7 | Set `fragment_metadata_table` to the existing metadata table (see below) |
+| Need                         | What to change                                                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Smaller instances (dev/test) | Set `instance_type = "c8gd.xlarge"` — same architecture, less capacity                                                          |
+| External access              | Add an NLB in public subnets                                                                                                    |
+| Authentication               | Set `LORE__SERVER__AUTH__JWK__ENDPOINT` ([docs](https://epicgames.github.io/lore/reference/lore-server-config/#authentication)) |
+| More edge nodes              | Increase ASG `min_size`/`max_size`/`desired_capacity` + edge service `desired_count`                                            |
+| Dynamic scaling              | Add an `aws_ecs_capacity_provider` with managed scaling (see the capacity note in `compute.tf`)                                 |
+| Faster edge startup          | Consider adding a startup probe that polls `primary.lore.internal` before starting loreserver                                   |
+| Presigned URLs               | Already configured via HMAC key in Secrets Manager                                                                              |
+| Production hardening         | Add `deletion_protection_enabled = true` to DynamoDB tables                                                                     |
+| Objects stored before v0.8.7 | Set `fragment_metadata_table` to the existing metadata table (see below)                                                        |
 
 Full server configuration: [Lore Server config reference](https://epicgames.github.io/lore/reference/lore-server-config/)
 

@@ -23,17 +23,27 @@ const sun = new THREE.DirectionalLight(0xffffff, 2);
 sun.position.set(3, 6, 4);
 scene.add(sun);
 
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 2, 8);
 
-const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 16), new THREE.MeshStandardMaterial({ color: 0x4488ff }));
+const mesh = new THREE.Mesh(
+  new THREE.SphereGeometry(1, 32, 16),
+  new THREE.MeshStandardMaterial({ color: 0x4488ff }),
+);
 scene.add(mesh);
 
 function animate() {
   mesh.rotation.y += 0.01;
   renderer.render(scene, camera);
   // the counters reset at the start of every render() call, so these cover the frame just drawn
-  console.log(`${renderer.info.render.calls} calls, ${renderer.info.render.triangles} triangles, ${renderer.info.memory.textures} textures`);
+  console.log(
+    `${renderer.info.render.calls} calls, ${renderer.info.render.triangles} triangles, ${renderer.info.memory.textures} textures`,
+  );
 }
 
 renderer.setAnimationLoop(animate);
@@ -98,7 +108,9 @@ function animate() {
   cpu += performance.now() - start; // CPU time spent in render(); the GPU executes the commands later
   frames++;
   if (frames === 60) {
-    console.log(`${((interval / frames) * 1000).toFixed(2)} ms per frame, ${(cpu / frames).toFixed(2)} ms CPU in render()`);
+    console.log(
+      `${((interval / frames) * 1000).toFixed(2)} ms per frame, ${(cpu / frames).toFixed(2)} ms CPU in render()`,
+    );
     interval = 0;
     cpu = 0;
     frames = 0;
@@ -124,7 +136,11 @@ const transform = new THREE.Matrix4();
 const parts = [];
 for (let i = 0; i < 200; i++) {
   const baked = rockGeometry.clone();
-  transform.setPosition((Math.random() - 0.5) * 40, 0, (Math.random() - 0.5) * 40);
+  transform.setPosition(
+    (Math.random() - 0.5) * 40,
+    0,
+    (Math.random() - 0.5) * 40,
+  );
   baked.applyMatrix4(transform); // bake the placement into the vertices
   parts.push(baked);
 }
@@ -138,10 +154,18 @@ Merging trades culling granularity for the call count: the merged mesh has a sin
 
 ```javascript
 const tree = new THREE.ConeGeometry(0.5, 2, 6);
-const trees = new THREE.InstancedMesh(tree, new THREE.MeshNormalMaterial(), 500);
+const trees = new THREE.InstancedMesh(
+  tree,
+  new THREE.MeshNormalMaterial(),
+  500,
+);
 const placement = new THREE.Object3D();
 for (let i = 0; i < 500; i++) {
-  placement.position.set((Math.random() - 0.5) * 40, 1, (Math.random() - 0.5) * 40);
+  placement.position.set(
+    (Math.random() - 0.5) * 40,
+    1,
+    (Math.random() - 0.5) * 40,
+  );
   placement.rotation.y = Math.random() * 6.28;
   placement.updateMatrix();
   trees.setMatrixAt(i, placement.matrix);
@@ -161,7 +185,11 @@ const boxId = batchedMesh.addGeometry(new THREE.BoxGeometry(1, 1, 1));
 const placement = new THREE.Matrix4();
 for (let i = 0; i < 500; i++) {
   const instanceId = batchedMesh.addInstance(i % 2 ? coneId : boxId); // a geometry renders only through an instance
-  placement.makeTranslation((Math.random() - 0.5) * 40, 1, (Math.random() - 0.5) * 40);
+  placement.makeTranslation(
+    (Math.random() - 0.5) * 40,
+    1,
+    (Math.random() - 0.5) * 40,
+  );
   batchedMesh.setMatrixAt(instanceId, placement);
 }
 scene.add(batchedMesh);
@@ -174,9 +202,18 @@ Unlike InstancedMesh, it culls and sorts each instance on its own (`perObjectFru
 ```javascript
 const detailMaterial = new THREE.MeshNormalMaterial();
 const lod = new THREE.LOD();
-lod.addLevel(new THREE.Mesh(new THREE.SphereGeometry(1, 64, 32), detailMaterial), 0); // distances are camera-to-object
-lod.addLevel(new THREE.Mesh(new THREE.SphereGeometry(1, 16, 8), detailMaterial), 12);
-lod.addLevel(new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4), detailMaterial), 30);
+lod.addLevel(
+  new THREE.Mesh(new THREE.SphereGeometry(1, 64, 32), detailMaterial),
+  0,
+); // distances are camera-to-object
+lod.addLevel(
+  new THREE.Mesh(new THREE.SphereGeometry(1, 16, 8), detailMaterial),
+  12,
+);
+lod.addLevel(
+  new THREE.Mesh(new THREE.SphereGeometry(1, 8, 4), detailMaterial),
+  30,
+);
 scene.add(lod);
 ```
 
@@ -290,7 +327,9 @@ const target = new THREE.Vector3(0, 1, 0);
 
 function animate() {
   timer.update();
-  step.subVectors(target, mesh.position).multiplyScalar(Math.min(timer.getDelta() * 2, 1));
+  step
+    .subVectors(target, mesh.position)
+    .multiplyScalar(Math.min(timer.getDelta() * 2, 1));
   mesh.position.add(step);
   renderer.render(scene, camera);
 }
@@ -324,12 +363,19 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111111); // the WebGPU canvas is transparent by default
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+);
 camera.position.set(0, 4, 18);
 function animate() {
   renderer.render(scene, camera);
   // autoReset clears per-frame counters at each loop tick; render.calls counts render passes since the app started
-  console.log(`${renderer.info.render.drawCalls} draw calls, ${renderer.info.memory.total} bytes of GPU memory`);
+  console.log(
+    `${renderer.info.render.drawCalls} draw calls, ${renderer.info.memory.total} bytes of GPU memory`,
+  );
 }
 renderer.setAnimationLoop(animate);
 ```
@@ -338,13 +384,31 @@ Compute moves particle work off the CPU: no per-particle loop, no buffer re-uplo
 
 ```javascript
 import * as THREE from "three/webgpu";
-import { Fn, cos, hash, instanceIndex, instancedArray, sin, time, TWO_PI, vec3 } from "three/tsl";
+import {
+  Fn,
+  cos,
+  hash,
+  instanceIndex,
+  instancedArray,
+  sin,
+  time,
+  TWO_PI,
+  vec3,
+} from "three/tsl";
 const count = 100000;
 const positionBuffer = instancedArray(count, "vec3"); // a storage buffer living on the GPU
 const simulate = Fn(() => {
   const rand = hash(instanceIndex);
   const angle = rand.mul(TWO_PI).add(time); // time updates itself every frame
-  positionBuffer.element(instanceIndex).assign(vec3(cos(angle).mul(8), sin(rand.mul(97).add(time.mul(2))).mul(2).add(2), sin(angle).mul(8)));
+  positionBuffer.element(instanceIndex).assign(
+    vec3(
+      cos(angle).mul(8),
+      sin(rand.mul(97).add(time.mul(2)))
+        .mul(2)
+        .add(2),
+      sin(angle).mul(8),
+    ),
+  );
 });
 const simulateCompute = simulate().compute(count); // one compute thread per particle
 const material = new THREE.SpriteNodeMaterial();

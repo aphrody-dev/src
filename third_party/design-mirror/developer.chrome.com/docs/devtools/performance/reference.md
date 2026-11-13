@@ -7,7 +7,8 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
-Kayce Basques [X](https://twitter.com/kaycebasques) [GitHub](https://github.com/kaycebasques)  Sofia Emelianova [GitHub](https://github.com/sofiayem)
+
+Kayce Basques [X](https://twitter.com/kaycebasques) [GitHub](https://github.com/kaycebasques) Sofia Emelianova [GitHub](https://github.com/sofiayem)
 
 [Video](https://www.youtube.com/watch?v=7A70hBrPL4I)
 
@@ -67,7 +68,7 @@ In this example, the **Performance** panel shows the activity during a page load
 
 Enable the **Screenshots** checkbox to capture a screenshot of every frame while recording.
 
-To customize visual recording fidelity within memory budgets, open **Capture settings**  and select a frame size and count cap preset from the **Screenshot capture** drop-down menu.
+To customize visual recording fidelity within memory budgets, open **Capture settings** and select a frame size and count cap preset from the **Screenshot capture** drop-down menu.
 
 See [View a screenshot](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#view-screenshot) to learn how to interact with screenshots.
 
@@ -79,7 +80,7 @@ to force garbage collection.
 ### Show recording settings
 
 Click **Capture settings**
- to
+to
 expose more settings related to how DevTools captures performance recordings.
 
 ### Disable JavaScript samples
@@ -87,7 +88,7 @@ expose more settings related to how DevTools captures performance recordings.
 By default, the **Main** track of a recording displays detailed call stacks of JavaScript
 functions that were called during the recording. To disable these call stacks:
 
-1. Open the **Capture settings**  menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
+1. Open the **Capture settings** menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
 2. Enable the **Disable JavaScript Samples** checkbox.
 3. Take a recording of the page.
 
@@ -103,7 +104,7 @@ This example shows a recording with enabled JS samples.
 
 To throttle the network while recording:
 
-1. Open the **Capture settings**  menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
+1. Open the **Capture settings** menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
 2. Set **Network** to the chosen level of throttling.
 
 In the drop-down menu, the **Performance** panel may also recommend a default throttling preset or a preset that approximates the experience of your users based on [field data](https://developer.chrome.com/docs/devtools/performance/overview.md.txt#compare).
@@ -112,7 +113,7 @@ In the drop-down menu, the **Performance** panel may also recommend a default th
 
 To throttle the CPU while recording:
 
-1. Open the **Capture settings**  menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
+1. Open the **Capture settings** menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
 2. Set **CPU** to the chosen level of throttling.
 
 > [!TIP]
@@ -129,7 +130,7 @@ In the drop-down menu, the **Performance** panel may also recommend a default th
 
 To view the statistics of your CSS rule selectors during long-running **Recalculate Style** events:
 
-1. Open the **Capture settings**  menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
+1. Open the **Capture settings** menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
 2. Check the **Enable CSS selector stats** checkbox.
 
 For more details, see how to [Analyze CSS selector performance during Recalculate Style events](https://developer.chrome.com/docs/devtools/performance/selector-stats.md.txt).
@@ -138,7 +139,7 @@ For more details, see how to [Analyze CSS selector performance during Recalculat
 
 To view detailed paint instrumentation:
 
-1. Open the **Capture settings**  menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
+1. Open the **Capture settings** menu. See [Show recording settings](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#settings).
 2. Check the **Enable advanced paint instrumentation** checkbox.
 
 To learn how to interact with the paint information, see [View layers](https://developer.chrome.com/docs/devtools/performance/reference.md.txt#layers) and [View paint
@@ -367,12 +368,10 @@ To declutter the flame chart in the **Main** thread, you can hide selected funct
    - Reset trace (`T`)
    - Add script to ignore list (`I`)
 
-   
-
    A drop-down button appears next to the function name with hidden children.
+
 2. To see the number of hidden children, hover over the drop-down button.
 
-   
 3. To reset a function with hidden children or the whole flame chart, select the function and press `U` or right-click any function and select **Reset trace** respectively.
 
 #### Ignore scripts in the flame chart
@@ -412,7 +411,7 @@ Click a link to open a source file in the **Sources** panel.
 
 #### Root activities
 
-Here's an explanation of the *root activities* concept that's mentioned in the **Call tree** tab,
+Here's an explanation of the _root activities_ concept that's mentioned in the **Call tree** tab,
 **Bottom-up** tab, and **Event log** sections.
 
 Root activities are those which cause the browser to do some work. For example, when you click a
@@ -675,9 +674,9 @@ This example shows the layer **#39** highlighted as you hover over it.
 
 To move the diagram:
 
-- Click **Pan Mode**  to move along the X and Y axes.
-- Click **Rotate Mode**  to rotate along the Z axis.
-- Click **Reset Transform**  to reset the diagram to its original position.
+- Click **Pan Mode** to move along the X and Y axes.
+- Click **Rotate Mode** to rotate along the Z axis.
+- Click **Reset Transform** to reset the diagram to its original position.
 
 See layer analysis in action:
 

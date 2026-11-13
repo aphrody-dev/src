@@ -1,11 +1,13 @@
 # Chromium Upstream vs Bun Full-Stack Rust Integration Spec
 
 ## Overview
+
 This specification details the architectural blueprint for natively integrating the missing Chromium Web Platform APIs directly into the Full-Rust Bun engine (`C:\src\third_party\bun`), moving from preload polyfills to zero-overhead native Rust built-ins.
 
 ---
 
 ## 1. MIME System Integration (`src/http_types`)
+
 - **Target Files**:
   - `src/http_types/mime_type_list.txt`
   - `src/http_types/MimeType.rs`
@@ -18,6 +20,7 @@ This specification details the architectural blueprint for natively integrating 
 ---
 
 ## 2. Prioritized Task Scheduling (`scheduler`) in JavaScriptCore
+
 - **Target Files**:
   - `src/bun.js/bindings/webcore/JSScheduler.cpp` / `JSScheduler.h`
   - `src/js/bun/scheduler.ts`
@@ -31,6 +34,7 @@ This specification details the architectural blueprint for natively integrating 
 ---
 
 ## 3. Web Locks API (`navigator.locks`)
+
 - **Target Files**:
   - `src/bun.js/bindings/webcore/JSLockManager.cpp`
   - `src/bun.js/modules/WebLocks.zig` / Rust equivalent
@@ -43,6 +47,7 @@ This specification details the architectural blueprint for natively integrating 
 ---
 
 ## 4. CacheStorage API backed by `bun:sqlite`
+
 - **Target Files**:
   - `src/bun.js/api/cache_storage.rs`
 - **Rust Integration**:
@@ -52,6 +57,7 @@ This specification details the architectural blueprint for natively integrating 
 ---
 
 ## 5. RFC 8484 DNS-over-HTTPS (DoH) & HTTPS RR Type 65
+
 - **Target Files**:
   - `src/dns/doh.rs`
   - `src/http/alpn.rs`

@@ -78,7 +78,7 @@ by replacing two of the ListObjects calls with explicit HeadObject calls.
 In this scenario we move fragment associations to a DynamoDB table:
 
 | hash | repository_context |
-|------|--------------------|
+| ---- | ------------------ |
 
 Where `hash` is partition key containing the fragment hash bytes, and `repository_context` is a
 composite sort key containing the repository bytes and the context bytes concatenated together. This

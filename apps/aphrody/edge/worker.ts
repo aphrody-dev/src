@@ -10,12 +10,12 @@ import {
   readState,
   serveProduction,
   type R2Like,
-} from "../../../packages/deploy/src/serve.ts";
+} from "@aphrody/deploy/src/serve.ts";
 import {
   runtime,
   type DONamespace,
   type ImagesBinding,
-} from "../../../packages/deploy/src/runtime.ts";
+} from "@aphrody/deploy/src/runtime.ts";
 
 interface Env {
   BUCKET: R2Like;
@@ -29,9 +29,6 @@ const dynamic = (p: string) =>
   p.startsWith("/api/") ||
   p.startsWith("/g/") ||
   p === "/search" ||
-  p === "/os/catalog.json" ||
-  p.startsWith("/os/api/") ||
-  p.startsWith("/os/vm/") ||
   p === "/healthz";
 
 export default {

@@ -6,13 +6,35 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 type Bounds = { x: number; y: number; width: number; height: number };
-type Node = { role?: string; name?: string; bounds?: Bounds; children?: Node[]; native_id?: { value?: string } };
-type Win = { id: string; app_name: string; title: string; minimized: boolean; bounds: Bounds };
+type Node = {
+  role?: string;
+  name?: string;
+  bounds?: Bounds;
+  children?: Node[];
+  native_id?: { value?: string };
+};
+type Win = {
+  id: string;
+  app_name: string;
+  title: string;
+  minimized: boolean;
+  bounds: Bounds;
+};
 
 const exe =
-  Bun.which("agent-desktop") ?? join(homedir(), ".local", "bin", process.platform === "win32" ? "agent-desktop.exe" : "agent-desktop");
+  Bun.which("agent-desktop") ??
+  join(
+    homedir(),
+    ".local",
+    "bin",
+    process.platform === "win32" ? "agent-desktop.exe" : "agent-desktop",
+  );
 async function ad(...args: string[]) {
-  const p = Bun.spawn([exe, ...args], { stdout: "pipe", stderr: "ignore", stdin: "ignore" });
+  const p = Bun.spawn([exe, ...args], {
+    stdout: "pipe",
+    stderr: "ignore",
+    stdin: "ignore",
+  });
   const out = await new Response(p.stdout).text();
   await p.exited;
   const j = JSON.parse(out) as { ok: boolean; data: unknown };
@@ -45,7 +67,11 @@ const ROLE_STYLE: Record<string, string> = {
   treeitem: "fill:#152238;stroke:#2b3f5f",
   titlebar: "fill:#172235;stroke:#3a5a8c",
 };
-const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+const esc = (s: string) =>
+  s.replace(
+    /[&<>"]/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!,
+  );
 
 function emit(n: Node, out: string[], depth: number, stats: { nodes: number }) {
   const b = n.bounds;
@@ -53,7 +79,9 @@ function emit(n: Node, out: string[], depth: number, stats: { nodes: number }) {
   const name = n.name ?? "";
   if (b && b.width > 0 && b.height > 0) {
     stats.nodes++;
-    out.push(`<g class="${esc(role)}" data-depth="${depth}"${name ? ` data-name="${esc(name.slice(0, 200))}"` : ""}>`);
+    out.push(
+      `<g class="${esc(role)}" data-depth="${depth}"${name ? ` data-name="${esc(name.slice(0, 200))}"` : ""}>`,
+    );
     out.push(
       `<rect x="${b.x}" y="${b.y}" width="${b.width}" height="${b.height}" rx="${role === "button" ? 4 : 2}" style="${ROLE_STYLE[role] ?? "fill:none;stroke:#26303f"}"/>`,
     );
@@ -71,8 +99,13 @@ function emit(n: Node, out: string[], depth: number, stats: { nodes: number }) {
 /** SVG du bureau entier (écrans, fenêtres visibles dans l'ordre Z, barre des tâches). */
 export async function desktopSvg(maxDepth = 14) {
   const t0 = performance.now();
-  const displays = (await ad("list-displays")) as { bounds: Bounds; scale: number }[];
-  const wins = ((await ad("list-windows")) as Win[]).filter((w) => !w.minimized && w.bounds.width > 0);
+  const displays = (await ad("list-displays")) as {
+    bounds: Bounds;
+    scale: number;
+  }[];
+  const wins = ((await ad("list-windows")) as Win[]).filter(
+    (w) => !w.minimized && w.bounds.width > 0,
+  );
   const minX = Math.min(...displays.map((d) => d.bounds.x));
   const minY = Math.min(...displays.map((d) => d.bounds.y));
   const maxX = Math.max(...displays.map((d) => d.bounds.x + d.bounds.width));
@@ -81,16 +114,32 @@ export async function desktopSvg(maxDepth = 14) {
   const body: string[] = [];
   const trees = await Promise.all(
     wins.map((w) =>
-      ad("snapshot", "--window-id", w.id, "--include-bounds", "--max-depth", String(maxDepth))
+      ad(
+        "snapshot",
+        "--window-id",
+        w.id,
+        "--include-bounds",
+        "--max-depth",
+        String(maxDepth),
+      )
         .then((d) => ({ w, tree: (d as { tree: Node }).tree }))
         .catch(() => ({ w, tree: null })),
     ),
   );
-  const taskbar = await ad("snapshot", "--surface", "taskbar", "--include-bounds", "--max-depth", "6").catch(() => null);
+  const taskbar = await ad(
+    "snapshot",
+    "--surface",
+    "taskbar",
+    "--include-bounds",
+    "--max-depth",
+    "6",
+  ).catch(() => null);
   // list-windows renvoie l'ordre Z du haut vers le bas : on dessine du bas vers le haut.
   for (const { w, tree } of trees.reverse()) {
     stats.windows++;
-    body.push(`<g class="toplevel" data-app="${esc(w.app_name)}" data-title="${esc(w.title)}">`);
+    body.push(
+      `<g class="toplevel" data-app="${esc(w.app_name)}" data-title="${esc(w.title)}">`,
+    );
     if (tree) emit(tree, body, 0, stats);
     else
       body.push(
@@ -115,7 +164,9 @@ export async function desktopSvg(maxDepth = 14) {
 }
 
 if (import.meta.main) {
-  const out = process.argv[2] ?? join(import.meta.dir, "..", "..", "..", "target", "desktop.svg");
+  const out =
+    process.argv[2] ??
+    join(import.meta.dir, "..", "..", "..", "target", "desktop.svg");
   const { svg, stats } = await desktopSvg();
   await Bun.write(out, svg);
   console.log(JSON.stringify({ out, bytes: svg.length, ...stats }));

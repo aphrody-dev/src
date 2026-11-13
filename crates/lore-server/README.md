@@ -39,6 +39,7 @@ Configuration is TOML-based and applied in the following order (later sources wi
 `config_path` defaults to `lore-server/config` and can be overridden with `--config` or `LORE_CONFIG_PATH`. All on-disk files are optional.
 
 See the `examples/` directory for complete configuration examples:
+
 - `config-local.toml` - Local storage with fixed topology
 - `config-aws.toml` - AWS (S3 + DynamoDB) storage
 - `config-consul.toml` - Consul service discovery
@@ -60,12 +61,12 @@ PluginRegistry
 
 ### Plugin Types
 
-| Type | Description | Available Plugins |
-|------|-------------|-------------------|
-| **Immutable Store** | Storage for content-addressable fragments | `aws` |
-| **Mutable Store** | Storage for branches and references | `aws` |
-| **Lock Store** | Distributed locking mechanism | `dynamodb` |
-| **Topology** | Peer discovery for replication | `consul` |
+| Type                | Description                               | Available Plugins |
+| ------------------- | ----------------------------------------- | ----------------- |
+| **Immutable Store** | Storage for content-addressable fragments | `aws`             |
+| **Mutable Store**   | Storage for branches and references       | `aws`             |
+| **Lock Store**      | Distributed locking mechanism             | `dynamodb`        |
+| **Topology**        | Peer discovery for replication            | `consul`          |
 
 ### Configuration Format
 
@@ -147,13 +148,13 @@ Hooks allow custom logic to be executed at specific points in the server's lifec
 
 ### Hook Points
 
-| Hook Point | Triggered When |
-|------------|----------------|
-| `BranchPush` | Before a branch push is committed |
-| `BranchCreate` | Before a new branch is created |
-| `BranchDelete` | Before a branch is deleted |
+| Hook Point         | Triggered When                     |
+| ------------------ | ---------------------------------- |
+| `BranchPush`       | Before a branch push is committed  |
+| `BranchCreate`     | Before a new branch is created     |
+| `BranchDelete`     | Before a branch is deleted         |
 | `RepositoryCreate` | Before a new repository is created |
-| `Obliterate` | Before content is obliterated |
+| `Obliterate`       | Before content is obliterated      |
 
 ### Hook Configuration
 
@@ -238,6 +239,7 @@ cargo test -p lore-server hooks
 ### Code Generation
 
 The `build.rs` script generates:
+
 - `src/plugins/mod.rs` - Plugin registration and module declarations
 - `src/hooks/mod.rs` - Hook registration and module declarations
 

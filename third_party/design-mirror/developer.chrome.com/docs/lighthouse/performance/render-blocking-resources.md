@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 > [!WARNING]
 > **Warning:** This audit has moved into the [Render-blocking requests](https://developer.chrome.com/docs/performance/insights/render-blocking.md.txt) insight as of Lighthouse 13. For more information see [What's new in Lighthouse 13](https://developer.chrome.com/blog/lighthouse-13-0.md.txt).
 
@@ -40,7 +41,7 @@ Use the [Coverage tab](https://developer.chrome.com/docs/devtools/coverage.md.tx
 in Chrome DevTools to identify non-critical CSS and JS.
 When you load or run a page, the tab tells you how much code was used,
 versus how much was loaded:
- Chrome DevTools: Coverage tab.
+Chrome DevTools: Coverage tab.
 
 You can reduce the size of your pages by only shipping the code and styles
 that you need. Click on a URL to inspect that file in the Sources panel.

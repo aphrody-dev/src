@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 ## Background
 
 The back/forward cache (bfcache) stores a snapshot of the page in memory for when the page is restored from the navigation history. This significantly speeds up return navigations to the page, however some browser APIs (e.g. unload listeners) can cause the bfcache to fail and the page will be loaded normally.
@@ -31,12 +32,12 @@ const flow = await startFlow(page);
 
 // This navigation will not test the bfcache
 // because it is part of a user flow.
-await flow.navigate('https://example.com');
+await flow.navigate("https://example.com");
 
 // This timespan will try to restore the page from the bfcache.
 // Problems restoring from the bfcache are surfaced in this report.
 await flow.startTimespan();
-await page.goto('https://example2.com');
+await page.goto("https://example2.com");
 await page.goBack();
 await flow.endTimespan();
 ```

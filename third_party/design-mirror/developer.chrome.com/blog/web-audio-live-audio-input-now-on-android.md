@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, developer.chrome.com
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Chris Wilson [X](https://twitter.com/cwilso)
 
 One of the consistent questions I keep fielding over on [Stack Overflow](https://stackoverflow.com/questions/tagged/web-audio) is "why doesn't audio input work?" - to which the answer kept turning out to be "because you're testing on Android, and we don't have it hooked up yet."

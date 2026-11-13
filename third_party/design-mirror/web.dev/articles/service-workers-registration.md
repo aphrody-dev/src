@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Best practices for timing your service worker registration.
 
- Jeff Posnick [X](https://twitter.com/jeffposnick) [GitHub](https://github.com/jeffposnick) [Homepage](https://jeffy.info/)
+Jeff Posnick [X](https://twitter.com/jeffposnick) [GitHub](https://github.com/jeffposnick) [Homepage](https://jeffy.info/)
 
 [Service
 workers](https://developer.chrome.com/docs/workbox/service-worker-overview)
@@ -28,8 +29,8 @@ If you've ever read about service workers, you've probably come across
 boilerplate substantially similar to the following:
 
 ```javascript
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js");
 }
 ```
 
@@ -83,10 +84,10 @@ event`](https://developer.mozilla.org//docs/Web/API/GlobalEventHandlers/onload)
 fires on `window`, like so:
 
 ```javascript
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js');
-    });
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("/service-worker.js");
+  });
 }
 ```
 
@@ -115,14 +116,14 @@ When a service worker is registered, it goes through the `install` and
 `activate` [lifecycle
 events](https://web.dev/articles/service-worker-lifecycle).
 Once a service worker is activated, it can handle `fetch` events for any
-subsequent visits to your web app. The service worker starts *before* the
+subsequent visits to your web app. The service worker starts _before_ the
 request for any pages under its scope is made, which makes sense when you think
 about it. If the existing service worker weren't already running prior to
 visiting a page, it wouldn't have a chance to fulfill `fetch` events for
 navigation requests.
 
 So once there's an active service worker, it doesn't matter when you call
-`navigator.serviceWorker.register()`, or in fact, *whether you call it at all* .
+`navigator.serviceWorker.register()`, or in fact, _whether you call it at all_ .
 Unless you change the URL of the service worker script,
 `navigator.serviceWorker.register()` is effectively a
 [no-op](https://en.wikipedia.org/wiki/NOP) during subsequent visits. When it's
@@ -193,9 +194,9 @@ A straightforward way to ensure to delay your service worker's initial
 registration until after the first page has loaded is to use the following:
 
 ```javascript
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js');
-    });
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("/service-worker.js");
+  });
 }
 ```

@@ -7,9 +7,10 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Sharing a practical guide to variable fonts, with lots of examples.
 
- Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
+Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
 
 If you have not yet taken the plunge into using [variable fonts](https://web.dev/articles/variable-fonts.md.txt), the article [Variable fonts in real life](https://evilmartians.com/chronicles/variable-fonts-in-real-life-how-to-use-and-love-them) from [Roman Shamin](https://twitter.com/romanshamin_en) and [Travis Turner](https://twitter.com/_Travis_Turner) at Evil Martians gives some excellent use cases,
 and reasons why your next project should make the change.

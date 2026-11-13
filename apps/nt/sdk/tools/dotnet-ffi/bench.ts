@@ -40,8 +40,13 @@ async function child(mode: string): Promise<Record<string, number | string>> {
     const t0 = performance.now();
     // Fonctions C sans appel système : coût de la seule transition bun:ffi (getpid est un appel système sous Linux).
     const lib = win
-      ? dlopen("kernel32.dll", { GetCurrentProcessId: { args: [], returns: "u32" } })
-      : dlopen(process.platform === "darwin" ? "libSystem.B.dylib" : "libc.so.6", { abs: { args: ["i32"], returns: "i32" } });
+      ? dlopen("kernel32.dll", {
+          GetCurrentProcessId: { args: [], returns: "u32" },
+        })
+      : dlopen(
+          process.platform === "darwin" ? "libSystem.B.dylib" : "libc.so.6",
+          { abs: { args: ["i32"], returns: "i32" } },
+        );
     r.openMs = Math.round((performance.now() - t0) * 100) / 100;
     const s = lib.symbols as Record<string, (x?: number) => number>;
     const f = (win ? s.GetCurrentProcessId : s.abs)!;
@@ -58,7 +63,8 @@ async function child(mode: string): Promise<Record<string, number | string>> {
   }
   const b = await load();
   const t0 = performance.now();
-  const api: Api = mode === "aot" ? b.openNative(paths.native) : openHosted(b, paths.il);
+  const api: Api =
+    mode === "aot" ? b.openNative(paths.native) : openHosted(b, paths.il);
   r.openMs = Math.round((performance.now() - t0) * 100) / 100;
   r.framework = api.framework();
   r.noop = measure(N, (n) => {
@@ -89,7 +95,8 @@ async function child(mode: string): Promise<Record<string, number | string>> {
   // Rappel .NET -> JS : JSCallback créé une fois, coût par rappel.
   const t1 = Bun.nanoseconds();
   for (let r2 = 0; r2 < 3; r2++) api.sumCallbacks((i) => i, CALLBACKS);
-  r.callbackPerCall = Math.round(((Bun.nanoseconds() - t1) / (3 * CALLBACKS)) * 10) / 10;
+  r.callbackPerCall =
+    Math.round(((Bun.nanoseconds() - t1) / (3 * CALLBACKS)) * 10) / 10;
   return r;
 }
 
@@ -98,12 +105,17 @@ if (modeArg >= 0) {
   console.log(JSON.stringify(await child(process.argv[modeArg + 1]!)));
 } else {
   if (!built) {
-    console.error(`artefacts absents (${paths.native}) : lancer \`just interop\` (CI)`);
+    console.error(
+      `artefacts absents (${paths.native}) : lancer \`just interop\` (CI)`,
+    );
     process.exit(1);
   }
   const results: Record<string, Record<string, number | string>> = {};
   for (const mode of ["js", "c", "aot", "coreclr"]) {
-    const p = Bun.spawnSync([process.execPath, import.meta.path, "--mode", mode], { stderr: "inherit" });
+    const p = Bun.spawnSync(
+      [process.execPath, import.meta.path, "--mode", mode],
+      { stderr: "inherit" },
+    );
     if (p.exitCode !== 0) throw new Error(`mode ${mode} : code ${p.exitCode}`);
     results[mode] = JSON.parse(p.stdout.toString().trim().split("\n").pop()!);
   }
@@ -118,8 +130,13 @@ if (modeArg >= 0) {
   };
   const dir = join(import.meta.dir, "..", "..", "..", "target", "bench");
   await mkdir(dir, { recursive: true });
-  await Bun.write(join(dir, `dotnet-ffi-${rid}.json`), `${JSON.stringify(report, null, 2)}\n`);
-  const cases = [...new Set(Object.values(results).flatMap((r) => Object.keys(r)))].filter((k) => !["label", "framework"].includes(k));
+  await Bun.write(
+    join(dir, `dotnet-ffi-${rid}.json`),
+    `${JSON.stringify(report, null, 2)}\n`,
+  );
+  const cases = [
+    ...new Set(Object.values(results).flatMap((r) => Object.keys(r))),
+  ].filter((k) => !["label", "framework"].includes(k));
   const md = [
     `### bun -> .NET (${rid}, ${report.cpu}, bun ${report.bun})`,
     "",
@@ -137,5 +154,6 @@ if (modeArg >= 0) {
     `aot : ${results.aot?.framework} ; coreclr : ${results.coreclr?.framework} ; c : ${results.c?.label}`,
   ].join("\n");
   console.log(md);
-  if (process.env.GITHUB_STEP_SUMMARY) await Bun.write(process.env.GITHUB_STEP_SUMMARY, `${md}\n`);
+  if (process.env.GITHUB_STEP_SUMMARY)
+    await Bun.write(process.env.GITHUB_STEP_SUMMARY, `${md}\n`);
 }

@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Rachel Andrew Technical Writer [GitHub](https://github.com/rachelandrew) [LinkedIn](https://www.linkedin.com/in/rachelandrew) [Mastodon](https://front-end.social/@rachelandrew) [Bluesky](https://bsky.app/profile/rachelandrew.bsky.social) [Homepage](https://rachelandrew.co.uk)
 
 Modern browsers can animate two CSS properties cheaply: `transform` and `opacity`.
@@ -104,8 +105,8 @@ Therefore you may well hit constraints of bandwidth between the CPU and GPU.
 You might wonder: is it better from a performance perspective to use CSS or JavaScript for animations?
 
 CSS-based animations, and [Web Animations](https://web.dev/blog/web-animations.md.txt) (in the browsers that support the API),
-are typically handled on a thread known as the *compositor thread* .
-This is different from the browser's *main thread*, where styling, layout, painting, and JavaScript are executed.
+are typically handled on a thread known as the _compositor thread_ .
+This is different from the browser's _main thread_, where styling, layout, painting, and JavaScript are executed.
 This means that if the browser is running some expensive tasks on the main thread,
 these animations can keep going without being interrupted.
 

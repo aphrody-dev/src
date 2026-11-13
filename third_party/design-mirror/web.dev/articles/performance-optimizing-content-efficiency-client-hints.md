@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 Jeremy Wagner [GitHub](https://github.com/malchata) [LinkedIn](https://www.linkedin.com/in/malchata) [Homepage](https://jlwagner.net/)
 
 Developing sites that are fast everywhere can be a tricky prospect. The plethora
@@ -19,19 +20,19 @@ hints](https://tools.ietf.org/html/draft-ietf-httpbis-client-hints-06)!
 
 Client hints are a set of opt-in HTTP request headers that give us insight into
 these aspects of the user's device and the network they're connected to. By
-tapping into this information server side, we can change *how* we deliver
+tapping into this information server side, we can change _how_ we deliver
 content based on device and/or network conditions. This can help us to create
 more inclusive user experiences.
 
 ## It's all about content negotiation
 
-Client hints are another method of *content negotiation*, which means changing
+Client hints are another method of _content negotiation_, which means changing
 content responses based on browser request headers.
 
 One example of content negotiation involves the
 [`Accept`](https://developer.mozilla.org/docs/Web/HTTP/Headers/Accept)
-request header. It describes what *content* types the browser understands, which
-the server can use to *negotiate* the response. For image requests, the content
+request header. It describes what _content_ types the browser understands, which
+the server can use to _negotiate_ the response. For image requests, the content
 of Chrome's `Accept` header is:
 
 ```console
@@ -39,7 +40,7 @@ Accept: image/webp,image/apng,image/*,*/*;q=0.8
 ```
 
 While all browsers support image formats like JPEG, PNG, and GIF, Accept tells
-in this case that the browser *also* supports [WebP](https://developers.google.com/speed/webp/) and
+in this case that the browser _also_ supports [WebP](https://developers.google.com/speed/webp/) and
 [APNG](https://en.wikipedia.org/wiki/APNG). Using this information, we can
 negotiate the best image types for each browser:
 
@@ -98,7 +99,7 @@ on a `<meta>` tag:
 
 ## All the client hints!
 
-Client hints describe one of two things: the device your users, well, *use*, and
+Client hints describe one of two things: the device your users, well, _use_, and
 the network they're using to access your site. Let's briefly cover all of the
 hints that are available.
 
@@ -113,10 +114,10 @@ to describe screens and media resolution:
 
 **Intrinsic size:** the actual dimensions of a media resource. For example, if
 you open an image in Photoshop, the dimensions shown in the image size dialogue
-describe its *intrinsic size*.
+describe its _intrinsic size_.
 
 **Density-corrected intrinsic size:** the dimensions of a media resource after
-it has been corrected for pixel density. It's the image's *intrinsic size*
+it has been corrected for pixel density. It's the image's _intrinsic size_
 divided by a [device pixel
 ratio](https://developer.mozilla.org/docs/Web/API/Window/devicePixelRatio).
 For example, let's take this markup:
@@ -128,20 +129,20 @@ For example, let's take this markup:
 Let's say the intrinsic size of the `1x` image in this case is 320x240, and the
 `2x` image's intrinsic size is 640x480. If this markup is parsed by a client
 installed on a device with a screen device pixel ratio of 2 (e.g., a Retina
-screen), the `2x` image is requested. The *density-corrected intrinsic size* of
+screen), the `2x` image is requested. The _density-corrected intrinsic size_ of
 the `2x` image is 320x240, since 640x480 divided by 2 is 320x240.
 
 **Extrinsic size:** the size of a media resource after CSS and other layout
 factors (such as `width` and `height` attributes) have been applied to it. Let's
-say you have an `` element that loads an image with a density-corrected
+say you have an ``element that loads an image with a density-corrected
 intrinsic size of 320x240, but it also has CSS `width` and `height` properties
 with values of `256px` and `192px` applied to it, respectively. In this example,
-the *extrinsic size* of that `` element becomes 256x192.
- ***Figure 1** . An illustration of intrinsic versus
+the *extrinsic size* of that`` element becomes 256x192.
+_**Figure 1** . An illustration of intrinsic versus
 extrinsic size. An image gains its extrinsic size after layout factors have been
 applied to it. In this case, applying CSS rules of `width: 256px;`
 and `height: 192px;` transforms a 320x240 intrinsically sized image
-to a 256x192 extrinsically sized one.*
+to a 256x192 extrinsically sized one._
 
 With some terminology under our belt, let's get into the list of device-specific
 client hints available to you.
@@ -183,10 +184,10 @@ attribute](https://developer.mozilla.org/docs/Web/HTML/Element/img#attr-sizes).
 is optimal for the current layout.
 
 For example, let's say a user requests a page with a 320 CSS pixel wide screen
-with a DPR of 2. The device loads a document with an `` element containing
+with a DPR of 2. The device loads a document with an ``element containing
 a `sizes` attribute value of `85vw` (i.e., 85% of the viewport width for all
 screen sizes). If the `Width` hint has been opted-into, the client will send
-this `Width` hint to the server with the request for the ``'s `src`:
+this `Width` hint to the server with the request for the``'s `src`:
 
 ```console
 Width: 544
@@ -200,19 +201,19 @@ This hint is especially powerful because it not only takes into account the
 density-corrected width of the screen, but also reconciles this critical piece
 of information with the image's extrinsic size within the layout. This gives
 servers the opportunity to negotiate image responses that are optimal for both
-the screen *and* the layout.
+the screen _and_ the layout.
 
 #### Content-DPR
 
-While you already know that *screens* have a device pixel ratio, resources also
+While you already know that _screens_ have a device pixel ratio, resources also
 have their own pixel ratios. In the simplest resource selection use cases, pixel
 ratios between devices and resources can be the same. But! In cases where both
 the `DPR` and `Width` headers are in play, the extrinsic size of a resource can
 produce scenarios where the two differ. This is where the `Content-DPR` hint
 comes into play.
 
-Unlike other client hints, `Content-DPR` is not a *request* header to be used by
-servers, but rather a *response* header servers *must* send whenever `DPR` and
+Unlike other client hints, `Content-DPR` is not a _request_ header to be used by
+servers, but rather a _response_ header servers _must_ send whenever `DPR` and
 `Width` hints are used to select a resource. The value of `Content-DPR` should
 be the result of this equation:
 
@@ -256,7 +257,7 @@ resources to clients on slow connections.
 
 #### RTT
 
-The `RTT` hint provides the approximate *Round Trip Time* , in milliseconds, on
+The `RTT` hint provides the approximate _Round Trip Time_ , in milliseconds, on
 the application layer. The `RTT` hint, unlike transport layer RTT, includes
 server processing time.
 
@@ -276,7 +277,7 @@ omitting some requests).
 
 While latency is important in loading performance, bandwidth is influential,
 too. The `Downlink` hint, expressed in megabits per second (Mbps), reveals the
-*approximate* downstream speed of the user's connection:
+_approximate_ downstream speed of the user's connection:
 
 ```console
 Downlink: 2.5
@@ -290,17 +291,17 @@ delivered to users based on the quality of a network connection.
 
 #### ECT
 
-The `ECT` hint stands for *Effective Connection Type* . Its value is one of an
+The `ECT` hint stands for _Effective Connection Type_ . Its value is one of an
 enumerated list of connection types, each of which describes [a connection
 within specified ranges of both `RTT` and `Downlink`
 values](https://wicg.github.io/netinfo/#effective-connection-types).
 
-This header doesn't explain what the *actual* connection type is---for
+This header doesn't explain what the _actual_ connection type is---for
 example, it doesn't report whether your gateway is a cell tower or a wifi access
 point. Rather, it analyzes the current connection's latency and bandwidth and
 determines what network profile it resembles most. For example, if you connect
 through wifi to a slow network, `ECT` may be populated with a value of `2g`,
-which is the closest approximation of the *effective* connection:
+which is the closest approximation of the _effective_ connection:
 
 ```console
 ECT: 2g
@@ -316,7 +317,7 @@ refined using the `RTT` and `Downlink` hints.
 preference stating that pages should send less data.
 
 > [!NOTE]
-> **Note:** Of all the client hints, `Save-Data` is the only one you *can't* opt into with `Accept-CH`. Only the user can control whether this hint is sent by toggling Chrome's [Data Saver feature](https://support.google.com/chrome/answer/2392284) on Android devices.
+> **Note:** Of all the client hints, `Save-Data` is the only one you _can't_ opt into with `Accept-CH`. Only the user can control whether this hint is sent by toggling Chrome's [Data Saver feature](https://support.google.com/chrome/answer/2392284) on Android devices.
 
 I prefer to classify `Save-Data` as a network hint because many of the things
 you would do with it are similar to other network hints. Users may also be
@@ -335,7 +336,7 @@ signal, users will appreciate it.
 
 ## Tying it all together
 
-What you *do* with client hints depends on you. Because they offer so much
+What you _do_ with client hints depends on you. Because they offer so much
 information, you have many options. To get some ideas flowing, let's see what
 client hints can do for [Sconnie
 Timber](https://github.com/malchata/client-hints-example), a fictional timber
@@ -347,13 +348,13 @@ can really make a difference for users.
 ### Responsive images
 
 All but the simplest responsive image use cases can get complicated. What if you
-have multiple treatments *and* variants of the same images for different screen
-sizes---*and* different formats? That markup gets [*very* complicated *very*
+have multiple treatments _and_ variants of the same images for different screen
+sizes---_and_ different formats? That markup gets [_very_ complicated _very_
 quickly](https://dev.opera.com/articles/responsive-images/#changing-image-sizes-high-dpi-images-different-image-types--art-direction-use-case).
 It's easy to get it wrong, and easy to forget or misunderstand important
 concepts (such as `sizes`).
 
-While `<picture>` and `srcset` are undeniably *awesome* tools, they can be
+While `<picture>` and `srcset` are undeniably _awesome_ tools, they can be
 time-consuming to develop and maintain for complex use cases. We can automate
 markup generation, but doing so is also difficult because the functionality
 `<picture>` and `srcset` provides is complex enough that their automation needs
@@ -382,7 +383,6 @@ instead of sending this markup to all users:
     "
     type="image/webp"
   />
-  
 </picture>
 ```
 
@@ -398,26 +398,26 @@ rewritten by
 takes an image filename and additional parameters to help a back-end script
 choose the best image in the given conditions.
 
-I sense *"But isn't this just reimplementing `<picture>` and `srcset` on the
-back-end?"* is your first question.
+I sense _"But isn't this just reimplementing `<picture>` and `srcset` on the
+back-end?"_ is your first question.
 
 In a way, yes---but with an important distinction: when an application uses
 client hints to craft media responses, most (if not all) of the work is much
 easier to automate, which can include a service (such as a CDN) that can do this
 on your behalf. Whereas with HTML solutions, new markup needs to be written to
-provide for every use case. Sure, you *can* automate markup generation. If your
+provide for every use case. Sure, you _can_ automate markup generation. If your
 design or requirements change, though, there's a good chance you'll need to
 revisit your automation strategy in the future.
 
 Client hints make it possible to start with a lossless, high-resolution
-image that can then be dynamically resized to be optimal for *any* combination
+image that can then be dynamically resized to be optimal for _any_ combination
 of screen and layout. Unlike `srcset`, which requires you to enumerate a fixed
 list of possible image candidates for the browser to choose from, this approach
 can be more flexible. While `srcset` forces you to offer browsers a coarse set
 of variants---say, `256w`, `512w`, `768w`, and `1024w`---a client-hints
 powered solution can serve all widths, without a giant pile of markup.
 
-Of course, you don't *have* to write image selection logic yourself. [Cloudinary
+Of course, you don't _have_ to write image selection logic yourself. [Cloudinary
 uses client hints to craft image responses when you use the `w_auto`
 parameter](https://cloudinary.com/blog/automatic_responsive_images_with_client_hints),
 and observed that median users downloaded 42% less bytes when using browsers
@@ -432,7 +432,7 @@ Policy](https://wicg.github.io/feature-policy/) is complete.
 
 ### Helping users on slow networks
 
-*Adaptive performance* is the idea that we can adjust how we deliver resources
+_Adaptive performance_ is the idea that we can adjust how we deliver resources
 based on the information client hints makes available to us; specifically
 information surrounding the current state of the user's network connection.
 
@@ -452,13 +452,13 @@ If `Save-Data` is absent, however, we move on and weigh the values of the `ECT`,
 connection quality. The [network score generation source
 code](https://github.com/malchata/client-hints-example/blob/master/includes/functions.php#L8)
 is available on Github. The takeaway is, if we use the network-related hints in
-*some* fashion, we can make experiences better for those who are on slow
+_some_ fashion, we can make experiences better for those who are on slow
 networks.
- ***Figure 2**. An "about us" page for a local
+_**Figure 2**. An "about us" page for a local
 business site. The baseline experience includes web fonts, JavaScript to drive a
 carousel and accordion behavior, as well as content images. These are all things
 we can omit when network conditions are too slow to load them
-quickly.*
+quickly._
 
 When sites adapt to the information client hints provide, we don't have to adopt
 an "all or nothing" approach. We can intelligently decide which resources to
@@ -469,17 +469,17 @@ is poor.
 In this example, we can see the impact client hints have when it comes to
 improving the performance of sites on slower networks. Below is a WebPagetest
 waterfall of a site on a slow network that doesn't adapt to client hints:
- ***Figure 3**. A resource heavy site loading images,
-scripts, and fonts on a slow connection.*
+_**Figure 3**. A resource heavy site loading images,
+scripts, and fonts on a slow connection._
 
 And now a waterfall for the same site on the same slow connection, except this
 time, the site uses client hints to eliminate non-critical page resources:
- ***Figure 4**. The same site on the same connection,
+_**Figure 4**. The same site on the same connection,
 only the "nice to have" resources are excluded in favor of faster
-loading.*
+loading._
 
-Client hints reduced the page load time from over 45 seconds to *less than a
-tenth of that time*. The benefits of client hints in this scenario can't be
+Client hints reduced the page load time from over 45 seconds to _less than a
+tenth of that time_. The benefits of client hints in this scenario can't be
 emphasized enough and can be a serious boon to users seeking critical
 information over slow networks.
 
@@ -512,7 +512,7 @@ like so:
 Vary: DPR, Width
 ```
 
-There's a *big* caveat to this, though: You never want to `Vary` cacheable
+There's a _big_ caveat to this, though: You never want to `Vary` cacheable
 responses on a frequently changing header (like `Cookie`) because those
 resources become effectively uncacheable. Knowing this, you might want to avoid
 `Vary`ing on client hint headers such as `RTT` or `Downlink`, because those are
@@ -536,10 +536,10 @@ are delivered via JavaScript. This includes client hints. In the service worker
 method to read a resource's request headers like so:
 
 ```javascript
-self.addEventListener('fetch', (event) => {
-  let dpr = event.request.headers.get('DPR');
-  let viewportWidth = event.request.headers.get('Viewport-Width');
-  let width = event.request.headers.get('Width');
+self.addEventListener("fetch", (event) => {
+  let dpr = event.request.headers.get("DPR");
+  let viewportWidth = event.request.headers.get("Viewport-Width");
+  let width = event.request.headers.get("Width");
 
   event.respondWith(
     (async function () {
@@ -556,27 +556,27 @@ Any client hint header you opt into can be read in this fashion. Though that's
 not the only way you can get some of this information. Network-specific hints
 can be read in these equivalent JavaScript properties in the `navigator` object:
 
-| Client hint | JS equivalent |
-|---|---|
-| \`ECT\` | \`navigator.connection.effectiveType\` |
-| \`RTT\` | \`navigator.connection.rtt\` |
-| \`Save-Data\` | \`navigator.connection.saveData\` |
-| \`Downlink\` | \`navigator.connection.downlink\` |
-| \`Device-Memory\` | \`navigator.deviceMemory\` |
-[Imagemin plugins for filetypes.]
+| Client hint                       | JS equivalent                          |
+| --------------------------------- | -------------------------------------- |
+| \`ECT\`                           | \`navigator.connection.effectiveType\` |
+| \`RTT\`                           | \`navigator.connection.rtt\`           |
+| \`Save-Data\`                     | \`navigator.connection.saveData\`      |
+| \`Downlink\`                      | \`navigator.connection.downlink\`      |
+| \`Device-Memory\`                 | \`navigator.deviceMemory\`             |
+| [Imagemin plugins for filetypes.] |
 
 Because these APIs aren't available everywhere you need feature check with the
 [`in`
 operator](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/in):
 
 ```javascript
-if ('connection' in navigator) {
+if ("connection" in navigator) {
   // Work with netinfo API properties in JavaScript!
 }
 ```
 
 From here, you can use logic similar to what you would use on the server, except
-you don't *need* a server to negotiate content with client hints. Service
+you don't _need_ a server to negotiate content with client hints. Service
 workers alone have the power to make experiences faster and more resilient due
 to the added ability they have to serve content when the user is offline.
 
@@ -592,7 +592,7 @@ more finely than and srcset can.
 
 Perhaps more importantly, we can sniff out poor network connections and bridge
 the gap for users by modifying what we send---and how we send it. This can
-go a *long* way in making sites easier to access for users on fragile networks.
+go a _long_ way in making sites easier to access for users on fragile networks.
 Combined with service workers, we can create incredibly fast sites that are
 available offline.
 
@@ -613,7 +613,7 @@ will see the value of them and show intent to implement.
 - [Delivering Fast and Light Applications with
   `Save-Data`](https://web.dev/web/fundamentals/performance/optimizing-content-efficiency/save-data)
 
-*Thank you to [Ilya Grigorik](https://twitter.com/igrigorik), [Eric
+_Thank you to [Ilya Grigorik](https://twitter.com/igrigorik), [Eric
 Portis](https://twitter.com/etportis), [Jeff Posnick](https://twitter.com/jeffposnick), [Yoav
 Weiss](https://twitter.com/yoavweiss), and [Estelle Weyl](https://twitter.com/estellevw) for their
-valuable feedback and edits on this article.*
+valuable feedback and edits on this article._

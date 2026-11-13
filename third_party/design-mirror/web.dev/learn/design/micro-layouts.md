@@ -7,6 +7,7 @@ license: CC-BY-4.0 (texte), Apache-2.0 (exemples de code)
 attribution: Google LLC et les auteurs cités, web.dev
 modified: images et avatars retirés ; texte inchangé sinon
 ---
+
 When we think of layouts, we often think of page-level designs.
 But smaller components within the page can have their own self-contained layouts.
 
@@ -42,6 +43,7 @@ h1::after {
   align-self: center;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/rNzYvxm?height=200&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen rNzYvxm by web-dot-dev on Codepen"></iframe>   Desktop browsers like Firefox and Chrome have developer tools that can show you grid lines and areas overlaid on your design.
 
 Learn how to [inspect grid layouts](https://developer.chrome.com/docs/devtools/css/grid) in Chrome DevTools.
@@ -71,6 +73,7 @@ But the image never gets larger than 200 pixels.
   flex: 3;
 }
 ```
+
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/qBXVYZo?height=300&amp;theme-id=dark&amp;default-tab=result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen qBXVYZo by web-dot-dev on Codepen"></iframe>   The developer tools in Firefox and Chrome can help you visualize the shape of your flexbox components.
 
 Learn how to [inspect flexbox layouts](https://developer.chrome.com/docs/devtools/css/flexbox)
@@ -87,7 +90,7 @@ It doesn't know if it's being used in the main content or in a sidebar.
 This can make component layouts trickier than page layouts.
 To be able to apply contextually relevant styles, your components need to know more than the size of the viewport they are inside.
 
-With page layouts, you *do* know the width of the container because the
+With page layouts, you _do_ know the width of the container because the
 container is the browser viewport; media queries report the dimensions of the
 page-level container.
 
@@ -154,11 +157,11 @@ There are media objects within both elements.
 ```html
 <body>
   <main>
-     <div class="media">...</div>
-     <div class="media">...</div>
+    <div class="media">...</div>
+    <div class="media">...</div>
   </main>
   <aside>
-     <div class="media">...</div>
+    <div class="media">...</div>
   </aside>
 </body>
 ```

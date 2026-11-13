@@ -4,13 +4,13 @@
 # default user, whose key is the harness's (imported as the instances' key pair). Copy a spec,
 # point its target.inventory at this file, and replace the addresses with your instances'.
 [client]
-ip = "10.0.1.10"                 # private: the server shapes its traffic to this address
-ssh = "ubuntu@203.0.113.10"      # public
+ip = "10.0.1.10" # private: the server shapes its traffic to this address
+ssh = "ubuntu@203.0.113.10" # public
 data = "/bench"
 notes = "instance type, region and volume, recorded with the results"
 
 [server]
-ip = "10.0.1.20"                 # private: the client reaches SSH, P4 and Lore here
+ip = "10.0.1.20" # private: the client reaches SSH, P4 and Lore here
 ssh = "ubuntu@203.0.113.20"
 data = "/bench"
 notes = "instance type, region and volume, recorded with the results"

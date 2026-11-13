@@ -4,8 +4,16 @@
       "Valve": {
         "Steam": {
           "CompatToolMapping": {
-            "0": { "name": "proton_experimental", "config": "", "priority": "75" },
-            "2799860": { "name": "GE-Proton11-9", "config": "", "priority": "250" }
+            "0": {
+              "name": "proton_experimental",
+              "config": "",
+              "priority": "75"
+            },
+            "2799860": {
+              "name": "GE-Proton11-9",
+              "config": "",
+              "priority": "250"
+            }
           },
           "BaseInstallFolder_1": "D:\\SteamLibrary",
           "quote": "say \"hi\"\tthen\nleave",

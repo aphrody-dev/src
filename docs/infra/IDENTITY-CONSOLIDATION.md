@@ -6,17 +6,17 @@ Règles appliquées : aucun dépôt supprimé (archivage seulement), aucun yank,
 
 ## Tableau avant / après
 
-| Plate-forme | Avant | Après |
-|---|---|---|
-| GitHub `yolo-rs` | 77 dépôts (65 publics, 12 privés) | **0 dépôt** ; org gardée vide (nom réservé, redirections) |
-| GitHub `aphrody-dev` | 79 dépôts, dont `src` | 29 dépôts, **tous archivés** (doublons de copies aphrody-labs) |
-| GitHub `aphrody-labs` | 556 dépôts, 10 doublons internes `-N` | 687 dépôts (595 actifs, 92 archivés) ; seule org active |
-| npm | `@yolo-rs/posix-bun` 0.1.2 (seul paquet du scope) ; `@aphrody/*` 681 paquets | inchangé : publication `@aphrody/posix-bun` et `npm deprecate` différés (auth npm E401) |
-| crates.io | 370 crates, propriétaire unique `aphrody-dev` ; 95 citent des dépôts disparus | sources des 95 reprises dans deux dépôts ; équipe propriétaire différée (accès OAuth) |
-| PyPI | 5 projets, propriétaire `aphrody-dev`, pas d'organisation | inchangé (aucun doublon) |
-| Cloudflare | 1 compte, 5 zones, 15 Workers, 11 buckets R2, 5 tunnels | inchangé (plan ci-dessous, aucune ressource prouvée morte) |
-| gcloud | 10 projets, 9 comptes de service dans `aphrody`, 524 API activées | inchangé (plan ci-dessous) |
-| Vercel, Hostinger | 1 équipe Vercel (3 projets rg-*) ; Hostinger 1 VPS KVM 8, 1 domaine .tech | inchangé (aucun doublon) |
+| Plate-forme           | Avant                                                                         | Après                                                                                   |
+| --------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| GitHub `yolo-rs`      | 77 dépôts (65 publics, 12 privés)                                             | **0 dépôt** ; org gardée vide (nom réservé, redirections)                               |
+| GitHub `aphrody-dev`  | 79 dépôts, dont `src`                                                         | 29 dépôts, **tous archivés** (doublons de copies aphrody-labs)                          |
+| GitHub `aphrody-labs` | 556 dépôts, 10 doublons internes `-N`                                         | 687 dépôts (595 actifs, 92 archivés) ; seule org active                                 |
+| npm                   | `@yolo-rs/posix-bun` 0.1.2 (seul paquet du scope) ; `@aphrody/*` 681 paquets  | inchangé : publication `@aphrody/posix-bun` et `npm deprecate` différés (auth npm E401) |
+| crates.io             | 370 crates, propriétaire unique `aphrody-dev` ; 95 citent des dépôts disparus | sources des 95 reprises dans deux dépôts ; équipe propriétaire différée (accès OAuth)   |
+| PyPI                  | 5 projets, propriétaire `aphrody-dev`, pas d'organisation                     | inchangé (aucun doublon)                                                                |
+| Cloudflare            | 1 compte, 5 zones, 15 Workers, 11 buckets R2, 5 tunnels                       | inchangé (plan ci-dessous, aucune ressource prouvée morte)                              |
+| gcloud                | 10 projets, 9 comptes de service dans `aphrody`, 524 API activées             | inchangé (plan ci-dessous)                                                              |
+| Vercel, Hostinger     | 1 équipe Vercel (3 projets rg-*) ; Hostinger 1 VPS KVM 8, 1 domaine .tech     | inchangé (aucun doublon)                                                                |
 
 ## GitHub
 
@@ -33,16 +33,16 @@ Comparaison de la branche par défaut (`repos/<garde>/compare/<b>...<autre>:<b>`
 
 ### Opérations
 
-| Opération | Détail |
-|---|---|
-| Renommés puis archivés dans labs | `yolo-vps` -> `yolo-vps-dup-labs`, `yolo-ui` -> `yolo-ui-dup-labs` (libèrent le nom pour la copie la plus complète) |
-| Transferts yolo-rs -> labs (77) | 68 sous le même nom ; `yolo` -> `yolo-rs` (projet distinct de `aphrody-labs/yolo`, resté privé) ; doublons archivés suffixés : `agent-skills`, `skills`, `wgpu`, `zed`, `google-bun`, `yolo-backend`, `mcp-rust-sdk`, `mcp-typescript-sdk` -> `<nom>-dup-yolo-rs` |
-| Transferts aphrody-dev -> labs (50) | 47 sous le même nom (dont `dioxus`, `ring3-agent`, `rust-stack`, `bench`, `mesh-vn` privé, les anciens dépôts de paquets archivés) ; `nsh` -> `longbridge-nsh` ; `antigravity-sdk-python` -> `antigravity-sdk-python-upstream` ; `src` -> `aphrody-labs/src` |
-| Redirections | vérifiées après transfert : 301 vers aphrody-labs pour les 65 publics (`curl -I`), API authentifiée pour les 12 privés, `git ls-remote` par l'ancienne URL |
-| `aphrody-labs/src` | transfert fait après le feu vert de la coordination (labs-1b) ; secrets Actions conservés (6), runner `fr1` de niveau dépôt conservé (hors ligne avant comme après) ; premier push 7448e98..2841d30 accepté, workflows déclenchés sur aphrody-labs/src (`ci-revert` success ; `ci` attend le runner fr1 hors ligne, `images` échoue sur `/third_party/patches` absent, échec déjà présent à 02:21 avant le transfert) |
-| Remotes | PC `C:\src` : `origin`, `all` -> aphrody-labs/src (gitlab et Google Source inchangés) ; 26 remotes de `third_party/*` et `crates/{bench,ring3-agent,rust-stack}` repointés ; prd `/home/agent/agents/src` : délégué à labs-1b ; `/root/src`, fr1, fr2 : rien à faire (labs-1b) |
-| Dépôt | commits 9a6ad3d (pins `src.lock.json`, `DEPS`, miroir steam-depot) et 7448e98 (URLs `aphrody-dev/src` dans Cargo.toml, package.json, deploy.toml `[auth.github]`, bake, justfile, tools.toml, MAINTAINERS) |
-| Org yolo-rs | vide ; **gardée**, non supprimée : la supprimer libérerait le nom et casserait les redirections si quelqu'un le reprenait |
+| Opération                           | Détail                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Renommés puis archivés dans labs    | `yolo-vps` -> `yolo-vps-dup-labs`, `yolo-ui` -> `yolo-ui-dup-labs` (libèrent le nom pour la copie la plus complète)                                                                                                                                                                                                                                                                                                   |
+| Transferts yolo-rs -> labs (77)     | 68 sous le même nom ; `yolo` -> `yolo-rs` (projet distinct de `aphrody-labs/yolo`, resté privé) ; doublons archivés suffixés : `agent-skills`, `skills`, `wgpu`, `zed`, `google-bun`, `yolo-backend`, `mcp-rust-sdk`, `mcp-typescript-sdk` -> `<nom>-dup-yolo-rs`                                                                                                                                                     |
+| Transferts aphrody-dev -> labs (50) | 47 sous le même nom (dont `dioxus`, `ring3-agent`, `rust-stack`, `bench`, `mesh-vn` privé, les anciens dépôts de paquets archivés) ; `nsh` -> `longbridge-nsh` ; `antigravity-sdk-python` -> `antigravity-sdk-python-upstream` ; `src` -> `aphrody-labs/src`                                                                                                                                                          |
+| Redirections                        | vérifiées après transfert : 301 vers aphrody-labs pour les 65 publics (`curl -I`), API authentifiée pour les 12 privés, `git ls-remote` par l'ancienne URL                                                                                                                                                                                                                                                            |
+| `aphrody-labs/src`                  | transfert fait après le feu vert de la coordination (labs-1b) ; secrets Actions conservés (6), runner `fr1` de niveau dépôt conservé (hors ligne avant comme après) ; premier push 7448e98..2841d30 accepté, workflows déclenchés sur aphrody-labs/src (`ci-revert` success ; `ci` attend le runner fr1 hors ligne, `images` échoue sur `/third_party/patches` absent, échec déjà présent à 02:21 avant le transfert) |
+| Remotes                             | PC `C:\src` : `origin`, `all` -> aphrody-labs/src (gitlab et Google Source inchangés) ; 26 remotes de `third_party/*` et `crates/{bench,ring3-agent,rust-stack}` repointés ; prd `/home/agent/agents/src` : délégué à labs-1b ; `/root/src`, fr1, fr2 : rien à faire (labs-1b)                                                                                                                                        |
+| Dépôt                               | commits 9a6ad3d (pins `src.lock.json`, `DEPS`, miroir steam-depot) et 7448e98 (URLs `aphrody-dev/src` dans Cargo.toml, package.json, deploy.toml `[auth.github]`, bake, justfile, tools.toml, MAINTAINERS)                                                                                                                                                                                                            |
+| Org yolo-rs                         | vide ; **gardée**, non supprimée : la supprimer libérerait le nom et casserait les redirections si quelqu'un le reprenait                                                                                                                                                                                                                                                                                             |
 
 Différé : `aphrody-dev` garde 29 dépôts archivés (doublons prouvés) : rien à transférer, les noms existent déjà dans labs.
 
@@ -68,7 +68,7 @@ XML-RPC `user_packages aphrody-dev` : `aphrody-cli`, `aphrody-embedding-fixtures
 Un seul compte visible (`ca22c1a5…`, contact@aphrody.com), donc pas de fusion de comptes.
 
 - Zones : aphrody.app, aphrody.com, dragonballfr.com, rosegriffon.fr (actives), 3dland.tech (pending).
-- Workers sans domaine ni route : `aphrody-com` (workers.dev, modifié le 2026-11-12), `downloads-portable` (workers.dev, 2026-11-12), `aphrody-email-worker` (Email Routing probable), `rosegriffon-maintenance` (page de maintenance de secours). Doublons apparents : `aphrody` (aphrody.com/*, www) contre `aphrody-com` ; `aphrody-app` (bun.aphrody.*) contre `aphrody-app-site` (aphrody.app, www).
+- Workers sans domaine ni route : `aphrody-com` (workers.dev, modifié le 2026-11-12), `downloads-portable` (workers.dev, 2026-11-12), `aphrody-email-worker` (Email Routing probable), `rosegriffon-maintenance` (page de maintenance de secours). Doublons apparents : `aphrody` (aphrody.com/_, www) contre `aphrody-com` ; `aphrody-app` (bun.aphrody._) contre `aphrody-app-site` (aphrody.app, www).
 - R2 : 11 buckets, tous en WEUR ; tunnels : 5, tous healthy.
 - Analytics GraphQL `workersInvocationsAdaptive` du 2026-10-14 au 2026-11-13 : requêtes > 0 pour aphrody (170), aphrody-app (3 250), aphrody-app-site (260), aphrody-com (280), aphrody-webos (188 110), api-aphrody-com (270), bun-video-showcase (2 820), cdn (210), creator (380), downloads-aphrody-com (210), rosegriffon-maintenance (37 570), shenron-cdn (448 710). Zéro requête : `aphrody-email-worker`, `downloads-portable`, `yolo-aphrody-com`.
 - Code exporté avant toute action dans `var/identity/workers/` (`<nom>.content` multipart + `settings.json` ; b3 : email-worker 7ab5e422…, downloads-portable c0e92523…) ; `yolo-aphrody-com` est un Worker d'assets seuls (contenu API vide, 204) : domaine `yolo.aphrody.com` relevé dans `yolo-aphrody-com.domains.txt`.
