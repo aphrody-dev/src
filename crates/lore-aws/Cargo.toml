@@ -8,13 +8,13 @@ version = "0.13.1-nightly"
 
 [dependencies]
 async-trait = { workspace = true }
-aws-config = { version = "1.13.2", default-features = false, features = ["rt-tokio"] }
-aws-sdk-dynamodb = { version = "1.139.0", default-features = false, features = ["rt-tokio"] }
-aws-sdk-s3 = { version = "1.159.0", default-features = false, features = ["rt-tokio"] }
-aws-smithy-runtime-api = { version = "1.21.0", default-features = false }
-aws-smithy-http-client = { version = "1.5.2", default-features = false, features = ["rustls-ring"] }
-aws-smithy-types = { version = "1.9.4", default-features = false }
-aws-types = { version = "1.7.0", default-features = false }
+aws-config = { workspace = true, features = ["rt-tokio"] }
+aws-sdk-dynamodb = { workspace = true, features = ["rt-tokio"] }
+aws-sdk-s3 = { workspace = true, features = ["rt-tokio"] }
+aws-smithy-runtime-api = { workspace = true }
+aws-smithy-http-client = { workspace = true, features = ["rustls-ring"] }
+aws-smithy-types = { workspace = true }
+aws-types = { workspace = true }
 bytes = { workspace = true }
 chrono = { workspace = true }
 dashmap = { workspace = true }
@@ -25,7 +25,7 @@ opentelemetry-semantic-conventions = { workspace = true }
 smallvec = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 serde_bytes = { workspace = true }
-serde_dynamo = { version = "4.3.0", features = ["aws-sdk-dynamodb+1"] }
+serde_dynamo = { workspace = true, features = ["aws-sdk-dynamodb+1"] }
 thiserror = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
@@ -41,7 +41,7 @@ lore-telemetry = { workspace = true }
 lore-aws = { path = ".", package = "aphrody-lore-aws",  features = ["test-util"]  }
 mockall = { workspace = true }
 rand = { workspace = true }
-serial_test = "4.0.1"
+serial_test = { workspace = true }
 temp-env = { workspace = true }
 tokio = { workspace = true, features = ["test-util"] }
 tracing-test = { workspace = true }

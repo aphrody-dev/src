@@ -61,7 +61,7 @@ tracing-appender = { workspace = true }
 tracing-ecs = { workspace = true }
 tracing-opentelemetry = { workspace = true }
 tracing-subscriber = { workspace = true }
-opentelemetry-appender-tracing = "=0.33.1"
+opentelemetry-appender-tracing = { workspace = true }
 opentelemetry-otlp = { workspace = true }
 opentelemetry_sdk = { workspace = true }
 lore-base = { workspace = true }
@@ -90,10 +90,10 @@ ctor = { workspace = true }
 lore-base = { path = "../lore-base", package = "aphrody-lore-base",  features = ["test-util"]  }
 lore-credential = { path = "../lore-credential", package = "aphrody-lore-credential" }
 lore-storage = { path = "../lore-storage", package = "aphrody-lore-storage",  features = ["test-util"]  }
-axum-test = { version = "21.1.0", default-features = false }
+axum-test = { workspace = true }
 rcgen = { workspace = true }
-http-body = "1.1.0"
-http-body-util = "0.1.5"
+http-body = { workspace = true }
+http-body-util = { workspace = true }
 indexmap = { workspace = true }
 mockall = { workspace = true }
 opentelemetry_sdk = { workspace = true, features = ["testing"] }

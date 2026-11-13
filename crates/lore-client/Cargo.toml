@@ -12,7 +12,7 @@ anstyle = { workspace = true }
 chrono = { workspace = true }
 clap = { workspace = true }
 clap-markdown = { workspace = true }
-clap_complete = { version = "4.6.11" }
+clap_complete = { workspace = true }
 libc = { workspace = true }
 parking_lot = { workspace = true }
 serde = { workspace = true }
@@ -37,7 +37,7 @@ test-util = []
 lore-client = { path = ".", features = ["test-util"] , package = "aphrody-lore-client" }
 
 [build-dependencies]
-winresource = "0.1.34"
+winresource = { workspace = true }
 
 [[bin]]
 name = "lore"

@@ -8,10 +8,9 @@ description = "Content-addressed artifact store for depot tooling, after Lore: F
 
 [dependencies]
 blake3.workspace = true
-# Same chunker and parameters as EpicGames/lore (lore-storage/src/chunker.rs).
-fastcdc = "5.0"
-sha2 = "0.11"
-zstd = "0.14"
+fastcdc = { workspace = true }
+sha2 = { workspace = true }
+zstd = { workspace = true }
 
 [dev-dependencies]
-tempfile = "3"
+tempfile = { workspace = true }

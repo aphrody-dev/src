@@ -16,8 +16,7 @@ serde.workspace = true
 toml.workspace = true
 
 [dev-dependencies]
-# wyhash's upstream tests print inputs with bstr (same major as the fork).
-bstr = { version = "1.13", default-features = false, features = ["alloc"] }
+bstr = { workspace = true, features = ["alloc"] }
 blake3.workspace = true
 
 [[bench]]

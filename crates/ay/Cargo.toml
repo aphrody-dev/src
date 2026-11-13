@@ -39,7 +39,7 @@ toml.workspace = true
 ureq.workspace = true
 regex.workspace = true
 uuid.workspace = true
-dotenvy = "0.15.7"
+dotenvy = { workspace = true }
 sys = { version = "0.2.0", path = "../sys" , package = "aphrody-sys" }
 xtk.workspace = true
 up = { version = "0.2.0", package = "aphrody-up", path = "../up" }
@@ -48,7 +48,7 @@ rt = { version = "0.2.0", package = "aphrody-rt", path = "../rt" }
 aphrody-docs = { version = "0.2.0", path = "../docs" }
 bun-flat = { version = "0.2.0", package = "aphrody-bun-flat", path = "../bun-flat" }
 # `ay self-update` against the dist releases (blocking API, no async runtime in ay itself).
-axoupdater = { version = "0.10", features = ["blocking"] }
+axoupdater = { workspace = true, features = ["blocking"] }
 
 # The benchmark suite measures Win32 APIs; `ay bench` reports unsupported elsewhere.
 [target.'cfg(windows)'.dependencies]

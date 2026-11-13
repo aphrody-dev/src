@@ -14,8 +14,8 @@ fs = []
 
 [dependencies]
 aphrody-design-sprite-sheet = { version = "0.2.0", path = "../aphrody-design-sprite-sheet" }
-image = { version = "0.25", default-features = false, features = ["png", "webp"] }
-png = "0.18"
+image = { workspace = true, features = ["png", "webp"] }
+png = { workspace = true }
 serde.workspace = true
 serde_json.workspace = true
-sha2 = "0.11"
+sha2 = { workspace = true }

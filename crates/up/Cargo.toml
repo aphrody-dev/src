@@ -16,28 +16,24 @@ clap.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 toml.workspace = true
-# ureq 3: rustls on ring, no OpenSSL or cmake; same build on MSVC and static musl.
-ureq = "3"
-dotenvy = "0.15.7"
-sha2 = "0.11"
-flate2 = "1.1"
-tar = "0.4.46"
-ruzstd = "0.9"
-# Pure-Rust xz (lzma-rust2), no liblzma C build.
-lzma-rust2 = { version = "0.25", default-features = false, features = ["std", "xz"] }
-zip = { version = "9", default-features = false, features = ["deflate"] }
-# GitHub release asset picker for tools without pinned assets (`source = "ubi"`); async, so a
-# current-thread tokio runtime drives it.
-ubi = "0.13"
-tokio = { version = "1", features = ["rt"] }
+ureq = { workspace = true }
+dotenvy = { workspace = true }
+sha2 = { workspace = true }
+flate2 = { workspace = true }
+tar = { workspace = true }
+ruzstd = { workspace = true }
+lzma-rust2 = { workspace = true, features = ["std", "xz"] }
+zip = { workspace = true, features = ["deflate"] }
+ubi = { workspace = true }
+tokio = { workspace = true, features = ["rt"] }
 
 # .claude/skills -> .agents/skills style directory links without admin rights.
 [target.'cfg(windows)'.dependencies]
-junction = "2.1"
+junction = { workspace = true }
 
 [dev-dependencies]
-tempfile = "3"
-lzma-rust2 = { version = "0.25", default-features = false, features = ["std", "xz", "encoder"] }
+tempfile = { workspace = true }
+lzma-rust2 = { workspace = true, features = ["encoder", "std", "xz"] }
 
 [lints.rust]
 unsafe_code = "forbid"

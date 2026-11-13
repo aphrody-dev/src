@@ -32,7 +32,7 @@ http = { workspace = true }
 infer = { workspace = true }
 jsonwebtoken = { workspace = true }
 libc = { workspace = true }
-open = "5.4.5"
+open = { workspace = true }
 opentelemetry = { workspace = true }
 parking_lot = { workspace = true }
 pin-project = { workspace = true }

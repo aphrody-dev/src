@@ -7,4 +7,4 @@ repository.workspace = true
 description = "Native reader/writer for the agent Context store (same SQLite schema as packages/ai-os/src/core/context.ts)."
 
 [dependencies]
-rusqlite = { version = "0.42", features = ["bundled"] }
+rusqlite = { workspace = true, features = ["bundled"] }

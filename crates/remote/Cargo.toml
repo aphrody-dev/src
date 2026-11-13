@@ -14,12 +14,10 @@ name = "remote"
 anyhow = { workspace = true }
 base64 = { workspace = true }
 clap = { workspace = true }
-# Same versions russh uses, for hashed known_hosts entries (HMAC-SHA1).
-hmac = "0.13"
-sha1 = "0.11"
+hmac = { workspace = true }
+sha1 = { workspace = true }
 serde = { workspace = true }
 toml = { workspace = true }
-# ring instead of the default aws-lc-rs: no cmake/nasm needed on Windows or musl.
-russh = { version = "0.65", default-features = false, features = ["ring", "rsa", "flate2"] }
-russh-sftp = "3.0"
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "io-util", "io-std", "fs", "time", "net"] }
+russh = { workspace = true, features = ["flate2", "ring", "rsa"] }
+russh-sftp = { workspace = true }
+tokio = { workspace = true, features = ["fs", "io-std", "io-util", "macros", "net", "rt-multi-thread", "time"] }

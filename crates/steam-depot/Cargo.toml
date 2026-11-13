@@ -35,30 +35,29 @@ depot = [
 ]
 
 [dependencies]
-qrcode = { version = "0.14.1", default-features = false, features = ["svg"], optional = true }
-serde = { version = "1.0.228", default-features = false, features = ["derive", "std"] }
-serde_json = { version = "1.0.154", default-features = false, features = ["std"] }
-thiserror = { version = "2.0.21", default-features = false }
-crc32fast = { version = "1.5", default-features = false, features = ["std"] }
-anyhow = { version = "1.0.104", default-features = false, optional = true, features = ["std"] }
-bytes = { version = "1.12.1", optional = true }
-clap = { version = "4", optional = true, features = ["derive", "color", "env"] }
-dirs-next = { version = "2", optional = true }
-hex = { version = "0.4", optional = true }
-tokio = { version = "1.53.2", optional = true, features = ["rt-multi-thread", "macros", "fs", "sync", "time"] }
-tracing = { version = "0.1.44", default-features = false, optional = true, features = ["std"] }
-zip = { version = "9", optional = true, default-features = false, features = ["deflate"] }
-steamroom = { git = "https://github.com/aphrody-labs/steamroom", rev = "b9868e9fde09ae1879728b3769126fdc8b720e2f", optional = true }
-steamroom-client = { git = "https://github.com/aphrody-labs/steamroom", rev = "b9868e9fde09ae1879728b3769126fdc8b720e2f", optional = true }
-tracing-subscriber = { version = "0.3.20", default-features = false, features = ["fmt", "env-filter", "ansi", "tracing-log"], optional = true }
-
-reqwest = { version = "0.13", optional = true, default-features = false }
+qrcode = { workspace = true, features = ["svg"], optional = true }
+serde = { workspace = true, features = ["derive", "std"] }
+serde_json = { workspace = true, features = ["std"] }
+thiserror = { workspace = true }
+crc32fast = { workspace = true, features = ["std"] }
+anyhow = { workspace = true, features = ["std"], optional = true }
+bytes = { workspace = true, optional = true }
+clap = { workspace = true, features = ["color", "derive", "env"], optional = true }
+dirs-next = { workspace = true, optional = true }
+hex = { workspace = true, optional = true }
+tokio = { workspace = true, features = ["fs", "macros", "rt-multi-thread", "sync", "time"], optional = true }
+tracing = { workspace = true, features = ["std"], optional = true }
+zip = { workspace = true, features = ["deflate"], optional = true }
+steamroom = { workspace = true, optional = true }
+steamroom-client = { workspace = true, optional = true }
+tracing-subscriber = { workspace = true, features = ["ansi", "env-filter", "fmt", "tracing-log"], optional = true }
+reqwest = { workspace = true, optional = true }
 
 [target.'cfg(unix)'.dependencies]
-libc = { version = "0.2.190", default-features = false, optional = true }
+libc = { workspace = true, optional = true }
 
 [target.'cfg(windows)'.dependencies]
-windows = { version = "0.62.2", default-features = false, features = ["Win32_Foundation", "Win32_System_Registry"] }
+windows = { workspace = true, features = ["Win32_Foundation", "Win32_System_Registry"] }
 
 [dev-dependencies]
-tempfile = "3.27.0"
+tempfile = { workspace = true }

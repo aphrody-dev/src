@@ -7,21 +7,21 @@ repository = "https://github.com/aphrody-dev/depot"
 description = "gclient in Rust: DEPS/.gclient evaluator, revinfo, getdep/setdep, sync planner on gix (`ay gclient`, `ay fetch`)"
 
 [dependencies]
-ruff_python_parser = { package = "rustpython-ruff_python_parser", version = "0.16.10" }
-ruff_python_ast = { package = "rustpython-ruff_python_ast", version = "0.16.10" }
-ruff_text_size = { package = "rustpython-ruff_text_size", version = "0.16.10" }
+ruff_python_parser = { workspace = true }
+ruff_python_ast = { workspace = true }
+ruff_text_size = { workspace = true }
 gix = { workspace = true, features = ["blocking-network-client", "blocking-http-transport-reqwest-rust-tls"] }
 clap.workspace = true
 depot-core.workspace = true
 depot-cas.workspace = true
 depot-cipd.workspace = true
-ureq = "3"
+ureq = { workspace = true }
 serde_json.workspace = true
-tar = "0.4.46"
-flate2 = "1.1"
-lzma-rust2 = { version = "0.25", default-features = false, features = ["std", "xz"] }
-zip = { version = "9", default-features = false, features = ["deflate"] }
+tar = { workspace = true }
+flate2 = { workspace = true }
+lzma-rust2 = { workspace = true, features = ["std", "xz"] }
+zip = { workspace = true, features = ["deflate"] }
 
 [dev-dependencies]
-tempfile = "3"
-lzma-rust2 = { version = "0.25", default-features = false, features = ["std", "xz", "encoder"] }
+tempfile = { workspace = true }
+lzma-rust2 = { workspace = true, features = ["encoder", "std", "xz"] }

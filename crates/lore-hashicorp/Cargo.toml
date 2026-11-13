@@ -15,7 +15,7 @@ async-trait = { workspace = true }
 opentelemetry = { workspace = true }
 opentelemetry_sdk = { workspace = true }
 rand = { workspace = true }
-rs-consul = "0.15.0"
+rs-consul = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 lore-revision = { workspace = true }

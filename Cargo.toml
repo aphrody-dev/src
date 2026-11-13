@@ -72,24 +72,24 @@ tv-ffmpeg = { version = "0.2.0", path = "crates/tv-ffmpeg" }
 tv-i18n = { version = "0.2.0", path = "crates/tv-i18n" }
 
 # crates.io. Keys shared by src and labs: labs exact pin (same or newer version), union of features.
-anyhow = "=1.0.104"
-ffmpeg-next = "=9.1.0"
-fluent-templates = "=0.15.1"
-sys-locale = "=0.3.2"
-unic-langid = "=0.9.6"
-base64 = "=0.23.1"
-bitflags = "=2.13.2"
-blake3 = { version = "=1.8.7", features = ["mmap", "rayon"] }
-clap = { version = "=4.6.7", features = ["derive", "env", "cargo", "string", "unicode"] }
-regex = "=1.13.1"
-serde = { version = "=1.0.229", features = ["derive"] }
-serde_json = "=1.0.154"
-thiserror = "=2.0.21"
+anyhow = "1.0.104"
+ffmpeg-next = "9.1.0"
+fluent-templates = "0.15.1"
+sys-locale = "0.3.2"
+unic-langid = "0.9.6"
+base64 = "0.23.1"
+bitflags = "2.13.2"
+blake3 = { version = "1.8.7", features = ["mmap", "rayon"] }
+clap = { version = "4.6.7", features = ["derive", "env", "cargo", "string", "unicode"] }
+regex = "1.13.1"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+thiserror = "2.0.21"
 toml = "=1.2.1+spec-1.1.0"
 toml_edit = "0.25.19"
-tracing = { version = "=0.1.44", features = ["release_max_level_debug"] }
-tracing-subscriber = { version = "=0.3.23", features = ["env-filter", "fmt", "json"] }
-windows-sys = { version = "=0.61.2", features = [
+tracing = { version = "0.1.44", features = ["release_max_level_debug"] }
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt", "json"] }
+windows-sys = { version = "0.61.2", features = [
   "Win32_Foundation",
   "Win32_System_Console",
   "Win32_System_SystemInformation",
@@ -98,7 +98,7 @@ windows-sys = { version = "=0.61.2", features = [
   "Win32_Security",
 ] }
 # One zerocopy for the whole graph (depot-core, lore*, bench, ring3-agent): 0.8, no 0.9 prerelease.
-zerocopy = { version = "=0.8.63", features = ["derive", "alloc", "simd"] }
+zerocopy = { version = "0.8.63", features = ["derive", "alloc", "simd"] }
 # crates.io
 byteorder = "1.5"
 raw-cpuid = "11.6"
@@ -159,56 +159,56 @@ wgpu = "30.0.1"
 winit = "0.31.0-beta.4"
 
 # Labs-only crates.io dependencies
-anstyle = "=1.0.14"
-anstream = "=1.0.0"
-async-channel = "=2.5.0"
-async-stream = "=0.3.6"
-async-trait = "=0.1.92"
-axum = "=0.8.9"
+anstyle = "1.0.14"
+anstream = "1.0.0"
+async-channel = "2.5.0"
+async-stream = "0.3.6"
+async-trait = "0.1.92"
+axum = "0.8.9"
 # Pinned: the C API pointer types implement the derive-support traits bitcode exports for its own
 # derive macro, which its semver guarantees do not cover.
 bitcode = "=0.6.9"
-bytes = { version = "=1.12.1", features = ["serde"] }
-chrono = { version = "=0.4.45", default-features = false, features = ["alloc", "clock"] }
-clap-markdown = "=0.1.5"
-config = { version = "=0.15.27", features = ["toml"], default-features = false }
-ctor = "=1.0.13"
-dtor = "=1.0.6"
-crossbeam-epoch = "=0.9.21"
-crossbeam-queue = "=0.3.14"
-crossbeam-utils = "=0.8.23"
+bytes = { version = "1.12.1", features = ["serde"] }
+chrono = { version = "0.4.45", default-features = false, features = ["alloc", "clock"] }
+clap-markdown = "0.1.5"
+config = { version = "0.15.27", features = ["toml"], default-features = false }
+ctor = "1.0.13"
+dtor = "1.0.6"
+crossbeam-epoch = "0.9.21"
+crossbeam-queue = "0.3.14"
+crossbeam-utils = "0.8.23"
 dashmap = "=7.0.0-rc2"
-diffy = "=0.5.2"
-directories = "=6.0.0"
-enum_dispatch = "=0.3.13"
-tracing-appender = "=0.2.5"
-tracing-ecs = "=0.5.0"
-tracing-opentelemetry = "=0.34.0"
-fastcdc = "=5.0.0"
-futures = "=0.3.34"
-glob-match = "=0.2.1"
-governor = { version = "=0.10.4", default-features = false, features = ["std"] }
-hex = "=0.4.3"
-http = "=1.5.0"
-http-body = "=1.1.0"
-hyper = { version = "=1.12.0", default-features = false }
-hyper-util = { version = "=0.1.21", default-features = false }
-indexmap = "=2.14.2"
-infer = "=0.22.0"
-io-uring = "=0.7.16"
+diffy = "0.5.2"
+directories = "6.0.0"
+enum_dispatch = "0.3.13"
+tracing-appender = "0.2.5"
+tracing-ecs = "0.5.0"
+tracing-opentelemetry = "0.34.0"
+fastcdc = "5.0.0"
+futures = "0.3.34"
+glob-match = "0.2.1"
+governor = { version = "0.10.4", default-features = false, features = ["std"] }
+hex = "0.4.3"
+http = "1.5.0"
+http-body = "1.1.0"
+hyper = { version = "1.12.0", default-features = false }
+hyper-util = { version = "0.1.21", default-features = false }
+indexmap = "2.14.2"
+infer = "0.22.0"
+io-uring = "0.7.16"
 # PEM keys are never parsed; `use_pem` would pull in a second `pem`.
-jsonwebtoken = { version = "=11.1.0", default-features = false, features = ["rust_crypto"] }
+jsonwebtoken = { version = "11.1.0", default-features = false, features = ["rust_crypto"] }
 # The OS secure stores the token store keeps its encryption keys in, one per platform.
-keyring-core = "=1.0.1"
-apple-native-keyring-store = { version = "=1.0.2", features = ["keychain"] }
-linux-keyutils-keyring-store = "=1.0.0"
-windows-native-keyring-store = { version = "=1.1.0", default-features = false }
+keyring-core = "1.0.1"
+apple-native-keyring-store = { version = "1.0.2", features = ["keychain"] }
+linux-keyutils-keyring-store = "1.0.0"
+windows-native-keyring-store = { version = "1.1.0", default-features = false }
 libc = "0.2.191"
 lz4-sys = "=1.11.1+lz4-1.10.0"
-zstd-sys = { version = "=2.1.2+zstd.1.5.7", default-features = false, features = ["experimental"] }
-mockall = "=0.15.0"
-opentelemetry = "=0.33.1"
-opentelemetry-otlp = { version = "=0.33.1", default-features = false, features = [
+zstd-sys = { version = "2.1.2", default-features = false, features = ["experimental"] }
+mockall = "0.15.0"
+opentelemetry = "0.33.1"
+opentelemetry-otlp = { version = "0.33.1", default-features = false, features = [
     "grpc-tonic",
     "tls-ring",
     "tls-roots",
@@ -217,47 +217,47 @@ opentelemetry-otlp = { version = "=0.33.1", default-features = false, features =
     "logs",
     "internal-logs",
 ] }
-opentelemetry_sdk = { version = "=0.33.1", features = ["rt-tokio"] }
-opentelemetry-semantic-conventions = { version = "=0.33.1", features = ["semconv_experimental"] }
-parking_lot = { version = "=0.13.0", features = ["arc_lock"] }
-pin-project = "=1.1.13"
-proc-macro2 = "=1.0.107"
-prost = "=0.14.5"
-prost-types = "=0.14.5"
-quinn = { version = "=0.11.12", default-features = false, features = ["runtime-tokio", "rustls-ring", "bloom"] }
-quinn-proto = { version = "=0.11.19", default-features = false }
-quote = "=1.0.47"
-rand = "=0.10.3"
-rand_distr = "=0.6.0"
-tempfile = "=3.27.0"
-rcgen = "=0.14.10"
-reqwest = { version = "=0.13.5", default-features = false, features = [
+opentelemetry_sdk = { version = "0.33.1", features = ["rt-tokio"] }
+opentelemetry-semantic-conventions = { version = "0.33.1", features = ["semconv_experimental"] }
+parking_lot = { version = "0.13.0", features = ["arc_lock"] }
+pin-project = "1.1.13"
+proc-macro2 = "1.0.107"
+prost = "0.14.5"
+prost-types = "0.14.5"
+quinn = { version = "0.11.12", default-features = false, features = ["runtime-tokio", "rustls-ring", "bloom"] }
+quinn-proto = { version = "0.11.19", default-features = false }
+quote = "1.0.47"
+rand = "0.10.3"
+rand_distr = "0.6.0"
+tempfile = "3.27.0"
+rcgen = "0.14.10"
+reqwest = { version = "0.13.5", default-features = false, features = [
     "rustls-no-provider",
     "charset",
     "http2",
     "system-proxy",
     "form",
 ] }
-ring = { version = "=0.17.14", features = ["std"] }
+ring = { version = "0.17.14", features = ["std"] }
 # We configure rustls to not bring in aws-lc-sys, which seems to have build issues on Windows.
-rustls = { version = "=0.23.46", default-features = false, features = [
+rustls = { version = "0.23.46", default-features = false, features = [
     "std",
     "logging",
     "ring",
 ] }
-rustls-pki-types = "=1.16.0"
-rustls-native-certs = "=0.8.5"
+rustls-pki-types = "1.16.0"
+rustls-native-certs = "0.8.5"
 smallvec = "=2.0.0-beta.4"
-serde_bytes = "=0.11.19"
-serde_with = { version = "=3.24.0", default-features = false, features = ["alloc", "macros"] }
-saphyr-parser = "=0.3.4"
-sha2 = "=0.11.1"
-serial_test = { version = "=4.0.1" }
-socket2 = "=0.6.5"
-syn = "=3.0.10"
-sysinfo = { version = "=0.40.3", default-features = false, features = ["disk", "system", "linux-tmpfs"] }
-temp-env = "=0.3.6"
-tokio = { version = "=1.54.1", features = [
+serde_bytes = "0.11.19"
+serde_with = { version = "3.24.0", default-features = false, features = ["alloc", "macros"] }
+saphyr-parser = "0.3.4"
+sha2 = "0.11.1"
+serial_test = { version = "4.0.1" }
+socket2 = "0.6.5"
+syn = "3.0.10"
+sysinfo = { version = "0.40.3", default-features = false, features = ["disk", "system", "linux-tmpfs"] }
+temp-env = "0.3.6"
+tokio = { version = "1.54.1", features = [
     "fs",
     "io-util",
     "macros",
@@ -269,22 +269,91 @@ tokio = { version = "=1.54.1", features = [
     "sync",
     "time",
 ] }
-tokio-metrics = { version = "=0.5.2", default-features = false, features = ["rt"] }
-tokio-stream = { version = "=0.1.19", default-features = false, features = ["sync"] }
-tokio-util = { version = "=0.7.20", default-features = false, features = ["rt"] }
-trybuild = "=1.0.122"
-tonic = { version = "=0.14.9", default-features = false, features = ["codegen", "router", "server", "tls-native-roots", "tls-webpki-roots"] }
-tonic-prost = "=0.14.9"
-tonic-prost-build = "=0.14.9"
-tower = { version = "=0.5.3", default-features = false }
-tower-http = { version = "=0.7.1", default-features = false }
-tracing-test = "=0.2.6"
-url = "=2.5.8"
-urlencoding = "=2.1.3"
-uuid = { version = "=1.29.2", default-features = false, features = ["v4", "v7"] }
-webpki-roots = "=1.0.12"
-x509-parser = "=0.18.1"
-xxhash-rust = { version = "=0.8.19", default-features = false, features = ["xxh3"] }
+tokio-metrics = { version = "0.5.2", default-features = false, features = ["rt"] }
+tokio-stream = { version = "0.1.19", default-features = false, features = ["sync"] }
+tokio-util = { version = "0.7.20", default-features = false, features = ["rt"] }
+trybuild = "1.0.122"
+tonic = { version = "0.14.9", default-features = false, features = ["codegen", "router", "server", "tls-native-roots", "tls-webpki-roots"] }
+tonic-prost = "0.14.9"
+tonic-prost-build = "0.14.9"
+tower = { version = "0.5.3", default-features = false }
+tower-http = { version = "0.7.1", default-features = false }
+tracing-test = "0.2.6"
+url = "2.5.8"
+urlencoding = "2.1.3"
+uuid = { version = "1.29.2", default-features = false, features = ["v4", "v7"] }
+webpki-roots = "1.0.12"
+x509-parser = "0.18.1"
+xxhash-rust = { version = "0.8.19", default-features = false, features = ["xxh3"] }
+adblock = "0.13.5"
+argon2 = "0.6.0"
+aws-config = { version = "1.13.2", default-features = false }
+aws-sdk-dynamodb = { version = "1.139.0", default-features = false }
+aws-sdk-s3 = { version = "1.159.0", default-features = false }
+aws-smithy-http-client = { version = "1.5.2", default-features = false }
+aws-smithy-runtime-api = { version = "1.21.0", default-features = false }
+aws-smithy-types = { version = "1.9.4", default-features = false }
+aws-types = { version = "1.7.0", default-features = false }
+axoupdater = "0.10.3"
+axum-test = { version = "21.1.0", default-features = false }
+backtrace = { version = "0.3.77", default-features = false }
+cbindgen = { version = "0.29.2", default-features = false }
+cc = "1.11.1"
+clap_complete = "4.6.11"
+crc32fast = { version = "1.5.5", default-features = false }
+dirs-next = "2.0.0"
+dotenvy = "0.15.7"
+ed25519-dalek = "3.0.0"
+flate2 = "1.1.11"
+getrandom = "0.4.3"
+glob = "0.3.4"
+h2 = "0.4.20"
+h3 = "0.0.8"
+h3-quinn = "0.0.10"
+hickory-resolver = { version = "0.26.3", default-features = false }
+hmac = "0.13.0"
+http-body-util = "0.1.5"
+ico = "0.6.0"
+if-addrs = "0.15.0"
+junction = "2.1.0"
+log = "0.4.35"
+lzma-rust2 = { version = "0.25.0", default-features = false }
+memmap2 = "0.9.12"
+open = "5.4.5"
+opentelemetry-appender-tracing = "0.33.1"
+oxc_allocator = "0.158.0"
+oxc_ast = "0.158.0"
+oxc_parser = "0.158.0"
+oxc_span = "0.158.0"
+pbkdf2 = "0.13.0"
+png = "0.18.1"
+pyo3 = "0.30.1"
+qrcode = { version = "0.14.1", default-features = false }
+resvg = { version = "0.50.0", default-features = false }
+ron = "0.12.3"
+rs-consul = "0.15.0"
+ruff_python_ast = { version = "0.16.10", package = "rustpython-ruff_python_ast" }
+ruff_python_parser = { version = "0.16.10", package = "rustpython-ruff_python_parser" }
+ruff_text_size = { version = "0.16.10", package = "rustpython-ruff_text_size" }
+rusqlite = "0.42.0"
+russh = { version = "0.65.1", default-features = false }
+russh-sftp = "3.0.1"
+rustix = { version = "1.1.6", default-features = false }
+rustls-platform-verifier = "0.7.1"
+ruzstd = "0.9.1"
+serde-wasm-bindgen = "0.6.5"
+serde_dynamo = "4.3.0"
+sha1 = "0.11.0"
+steamroom = { git = "https://github.com/aphrody-labs/steamroom", rev = "b9868e9fde09ae1879728b3769126fdc8b720e2f" }
+steamroom-client = { git = "https://github.com/aphrody-labs/steamroom", rev = "b9868e9fde09ae1879728b3769126fdc8b720e2f" }
+tar = "0.4.46"
+tokio-rustls = { version = "0.26.6", default-features = false }
+tokio-tungstenite = { version = "0.30.0", default-features = false }
+ubi = "0.13.0"
+winresource = "0.1.34"
+zip = { version = "9.5.1", default-features = false }
+zstd = "0.14.3"
+bstr = { version = "1.13.1", default-features = false }
 
 
 

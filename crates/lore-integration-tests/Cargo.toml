@@ -38,16 +38,16 @@ path = "tests/store_retention_test.rs"
 anyhow = { workspace = true }
 async-trait = { workspace = true }
 axum = { workspace = true }
-aws-sdk-dynamodb = { version = "1.139.0", default-features = false, features = ["rt-tokio"] }
-aws-sdk-s3 = { version = "1.159.0", default-features = false, features = ["rt-tokio"] }
+aws-sdk-dynamodb = { workspace = true, features = ["rt-tokio"] }
+aws-sdk-s3 = { workspace = true, features = ["rt-tokio"] }
 bytes = { workspace = true }
 rand = { workspace = true }
 reqwest = { workspace = true }
 ring = { workspace = true }
 serde_json = { workspace = true }
-rs-consul = "0.15.0"
+rs-consul = { workspace = true }
 rustls = { workspace = true, optional = true }
-serde_dynamo = { version = "4.3.0", features = ["aws-sdk-dynamodb+1"] }
+serde_dynamo = { workspace = true, features = ["aws-sdk-dynamodb+1"] }
 tokio = { workspace = true }
 tokio-stream = { workspace = true, optional = true }
 tonic = { workspace = true, optional = true }

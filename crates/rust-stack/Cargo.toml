@@ -16,20 +16,20 @@ crate-type = ["cdylib", "rlib"]
 path = "src/lib.rs"
 
 [dependencies]
-argon2 = "0.6"
-axum = { version = "0.8.9", default-features = false, features = ["http1", "json", "tokio", "query"] }
-base64 = "0.23"
-blake3 = "1.8"
-clap = { version = "4.6", features = ["derive"] }
-ed25519-dalek = { version = "3.0", features = ["rand_core"] }
-getrandom = "0.4"
-hex = "0.4"
-hmac = "0.13"
-pbkdf2 = { version = "0.13", features = ["hmac"] }
-rusqlite = { version = "0.42", features = ["bundled"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-sha2 = "0.11"
-tokio = { version = "1.54", default-features = false, features = ["rt-multi-thread", "macros", "net", "sync", "time", "io-util"] }
-ureq = { version = "3.5", features = ["json"] }
+argon2 = { workspace = true }
+axum = { workspace = true, features = ["http1", "json", "query", "tokio"] }
+base64 = { workspace = true }
+blake3 = { workspace = true }
+clap = { workspace = true, features = ["derive"] }
+ed25519-dalek = { workspace = true, features = ["rand_core"] }
+getrandom = { workspace = true }
+hex = { workspace = true }
+hmac = { workspace = true }
+pbkdf2 = { workspace = true, features = ["hmac"] }
+rusqlite = { workspace = true, features = ["bundled"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+tokio = { workspace = true, features = ["io-util", "macros", "net", "rt-multi-thread", "sync", "time"] }
+ureq = { workspace = true, features = ["json"] }
 corelib = { version = "0.2.0", package = "aphrody-corelib", path = "../corelib" }

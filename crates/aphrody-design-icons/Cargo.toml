@@ -22,14 +22,14 @@ path = "src/bin/aphrody-design-icons.rs"
 
 [dependencies]
 clap = { workspace = true, features = ["derive"] }
-resvg = { version = "0.50.0", default-features = false }
+resvg = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 toml = { workspace = true }
 aphrody-design-shared = { workspace = true }
 aphrody-design-tokens = { workspace = true }
-zstd = "0.14.3"
+zstd = { workspace = true }
 
 [dev-dependencies]
-ico = "0.6.0"
+ico = { workspace = true }
