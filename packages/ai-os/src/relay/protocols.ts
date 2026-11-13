@@ -38,6 +38,10 @@ export const fail = (
   id: id ?? null,
   error: { code, message, ...(data ? { data } : {}) },
 });
+/** Code JSON-RPC d'une exception : entier seulement (une erreur réseau porte e.code = "ECONNREFUSED", interdit par
+ * JSON-RPC 2.0 §5.1), sinon le code par défaut. */
+export const rpcCode = (e: any, d: number) =>
+  Number.isInteger(e?.code) ? (e.code as number) : d;
 export const text = (v: unknown) =>
   typeof v === "string"
     ? v
@@ -72,7 +76,9 @@ export async function nativeRpc(r: Req): Promise<Res | null> {
     const v = await call(r.method, r.params);
     return r.id === undefined ? null : ok(r.id, v);
   } catch (e: any) {
-    return r.id === undefined ? null : fail(r.id, e.code ?? -32000, e.message);
+    return r.id === undefined
+      ? null
+      : fail(r.id, rpcCode(e, -32000), e.message);
   }
 }
 
@@ -172,7 +178,9 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
           : fail(r.id, -32601, `méthode MCP inconnue : ${r.method}`);
     }
   } catch (e: any) {
-    return r.id === undefined ? null : fail(r.id, e.code ?? -32603, e.message);
+    return r.id === undefined
+      ? null
+      : fail(r.id, rpcCode(e, -32603), e.message);
   }
 }
 

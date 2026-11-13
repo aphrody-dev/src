@@ -68,3 +68,10 @@ test("MCP : outil inconnu et notification sans réponse", async () => {
     ),
   ).toBeNull();
 });
+
+test("JSON-RPC : code d'erreur toujours entier (erreur réseau à code texte)", async () => {
+  const { rpcCode } = await import("../../src/relay/protocols.ts");
+  expect(rpcCode({ code: "ECONNREFUSED" }, -32603)).toBe(-32603);
+  expect(rpcCode({ code: -32602 }, -32603)).toBe(-32602);
+  expect(rpcCode(undefined, -32000)).toBe(-32000);
+});
