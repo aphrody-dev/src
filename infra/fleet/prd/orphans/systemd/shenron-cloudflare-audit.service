@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: Apache-2.0
+[Unit]
+Description=Shenron Cloudflare read-only reconciliation
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=oneshot
+User=root
+Group=root
+UMask=0077
+WorkingDirectory=/srv/shenron/config/cloudflare/cli
+Environment=CLOUDFLARE_OPS_STATE=/home/ubuntu/.local/state/aphrody/cloudflare
+Environment=CLOUDFLARE_API_TOKEN_FILE=/run/credentials/shenron-cloudflare-audit.service/api-token
+LoadCredential=api-token:/srv/shenron/config/cloudflare/api-token
+ExecStart=/usr/local/bin/bun /srv/shenron/config/cloudflare/cli/cloudflare-ops.ts reconcile --manifest /srv/shenron/config/cloudflare/manifest.json
+TimeoutStartSec=240
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/ubuntu/.local/state/aphrody/cloudflare
+[Install]
+WantedBy=multi-user.target
+

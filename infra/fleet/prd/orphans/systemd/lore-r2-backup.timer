@@ -1,0 +1,7 @@
+[Unit]
+Description=Hourly Lore store backup to R2
+[Timer]
+OnCalendar=hourly
+Persistent=true
+[Install]
+WantedBy=timers.target

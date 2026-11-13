@@ -1,0 +1,17 @@
+[Unit]
+Description=NativeLink server (REAPI for Chromium siso)
+After=network-online.target
+[Service]
+ReadWritePaths=/home/nativelink
+ExecStartPre=+/bin/chown -R nativelink-server /home/nativelink
+DynamicUser=yes
+StateDirectory=nativelink
+ProtectSystem=strict
+ProtectHome=read-only
+NoNewPrivileges=yes
+ExecStart=/usr/local/bin/nativelink /etc/nativelink/server.json5
+Restart=always
+LimitNOFILE=1048576
+Nice=5
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+{
+  "name": "creator-aphrody-com",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-01",
+  "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "aphrody-dist" }],
+  "vars": { "PREFIX": "sites/creator.aphrody.com", "SERVICE": "aphrody-creator", "SPA": "1" }
+}

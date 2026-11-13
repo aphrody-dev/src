@@ -1,0 +1,12 @@
+[Unit]
+Description=Archive non-Chromium data of fr1 to R2 (resumable; no deletion)
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/home/ubuntu/fr1-r2.sh
+Nice=19
+IOSchedulingClass=idle
+[Install]
+WantedBy=multi-user.target

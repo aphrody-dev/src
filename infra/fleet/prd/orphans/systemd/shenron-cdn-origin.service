@@ -1,0 +1,15 @@
+[Unit]
+Description=Shenron R2/KV CDN Origin Server (127.0.0.1:9077)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/srv/shenron/config/cloudflare/cli
+ExecStart=/usr/local/bin/bun /srv/shenron/config/cloudflare/cli/cdn-origin.mjs /srv/shenron/config/cloudflare/origin-cdn.json
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

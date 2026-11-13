@@ -1,0 +1,11 @@
+{
+  // Snapshot of the live Worker (2026-11-13); source of truth is this file plus index.js until the merged app replaces it.
+  "name": "aphrody-webos",
+  "main": "index.js",
+  "compatibility_date": "2026-10-11",
+  "compatibility_flags": ["nodejs_compat"],
+  "services": [{ "binding": "LEGACY", "service": "aphrody-app" }],
+  "r2_buckets": [{ "binding": "VM", "bucket_name": "aphrody-assets" }]
+  // Custom domains: *craft.aphrody.app (artcraft filmcraft photocraft vectorcraft effectcraft lightcraft pdfcraft wordcraft soundcraft designcraft cadcraft deckcraft gridcraft figcraft), apt.aphrody.app
+  // Routes: fig|play|docs|photos|sound|design|art|calendar|console|sheets|slides|maps|pdf|cad|os.aphrody.com/*; assets|play|video|dist|bun-lib.aphrody.app/; app-*.aphrody.app/*
+}

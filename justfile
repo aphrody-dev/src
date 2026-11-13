@@ -573,3 +573,7 @@ lfs-wsl:
     wsl --import bunlfs "$LOCALAPPDATA/bunlfs/wsl" "$TEMP/bunlfs/bunlfs-rootfs.tar.gz" --version 2
     wsl -d bunlfs -e /usr/bin/bun --version | tee "{{root}}/docs/lfs/logs/wsl-bun-version.txt"
     wsl -d bunlfs -e /usr/bin/bun /usr/lib/bunlfs/proof.ts | tee "{{root}}/docs/lfs/logs/wsl-proof.txt"
+
+# Install units captured from live hosts (infra/fleet/<role>/orphans; docs/infra/PROD-MAP.md); usage: just fleet-orphans prd|fr1
+fleet-orphans role:
+    sh "{{root}}/infra/fleet/bin/orphans-install.sh" {{role}}

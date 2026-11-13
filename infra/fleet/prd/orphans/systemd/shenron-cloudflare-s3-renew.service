@@ -1,0 +1,14 @@
+[Unit]
+Description=Renew scoped Shenron R2 S3 credential
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+UMask=0077
+LoadCredential=api-token:/srv/shenron/config/cloudflare/api-token
+Environment=CLOUDFLARE_API_TOKEN_FILE=/run/credentials/shenron-cloudflare-s3-renew.service/api-token
+ExecStart=/usr/local/bin/bun /srv/shenron/config/cloudflare/cli/s3-profile.ts renew --manifest /srv/shenron/config/cloudflare/manifest.json --profile /srv/shenron/config/cloudflare/shenron-s3.json --consumer-data-root /srv/shenron/data/bot/data/source-pipeline --consumer-directory /srv/shenron/data/bot/data/source-pipeline/credentials --consumer-uid 1000 --consumer-gid 1000 --apply
+TimeoutStartSec=120

@@ -1,0 +1,19 @@
+[Unit]
+Description=Copy verified Shenron production snapshot to DBFR over restricted SSH
+Wants=network-online.target
+After=network-online.target shenron-container-backup.service
+
+[Service]
+Type=oneshot
+User=root
+UMask=0077
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=45min
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=true
+ExecStart=/usr/local/bin/bun /usr/local/libexec/shenron-dbfr-backup.ts
+StandardOutput=journal
+StandardError=journal

@@ -1,0 +1,5 @@
+[Unit]
+Description=Sync Lore store to R2 (aphrody-lore)
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/rclone sync /var/lib/lore r2-lore:aphrody-lore/prd --fast-list --transfers 16
