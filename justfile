@@ -359,8 +359,8 @@ fleet-bootstrap role:
     timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/tools.toml sh infra/fleet/bootstrap/{{role}}.sh'
 
 # One src checkout (/srv/src, full, main) + 5-min sync timer + role extras on a fleet host, idempotent
-# (usage: just fleet-setup fr1|fr2|prd [runners=4]); dependencies first through just fleet-bootstrap <role>.
-fleet-setup role runners="4":
+# (usage: just fleet-setup fr1|fr2|prd [runners=6]); dependencies first through just fleet-bootstrap <role>.
+fleet-setup role runners="6":
     tar -cf - -C "{{root}}" infra/fleet/bin infra/fleet/systemd infra/fleet/{{role}}/resilience.conf | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-setup && mkdir -p /tmp/aphrody-setup/infra/fleet && tar -xf - -C /tmp/aphrody-setup'
     timeout 900 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'sudo bash /tmp/aphrody-setup/infra/fleet/bin/fleet-setup.sh {{role}} {{runners}}'
 

@@ -1,6 +1,6 @@
 # Rust tier of the PR-less flow on main (tribunal 2026-11-13, docs/reviews/judge-2026-11-13-ci.md).
 # Fast gates (checkdeps, identity, Go, every Bun suite, cargo metadata) live in judge.yml only.
-# Self-hosted runners of fr1 (labels self-hosted, fr1, build; four instances, one systemd unit each, `just fleet-setup fr1`):
+# Self-hosted runners of fr1 (labels self-hosted, fr1, build; six instances, one systemd unit each, `just fleet-setup fr1`):
 # the factory takes every build, test and CI job (owner decision 2026-11-13); prd serves production only, fr2 is edge
 # (docs/infra/FLEET.md). Jobs run in parallel on the instances; every cargo step goes through aphrody-heavy (two heavy
 # slots, nice/ionice, load gate) so Chromium/LLVM builds keep priority. Cache: one CARGO_TARGET_DIR shared by the runners
