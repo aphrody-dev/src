@@ -2,6 +2,14 @@
 
 Checked 2026-11-13 with `gh api`, Context7 (`/websites/dev_epicgames`) and the web pages cited. Anything without a source here is unverified; do not add it from memory. Versions and dates are a snapshot; community rows come from the GitHub GraphQL API (see Community).
 
+## Epic philosophy (as stated by Epic)
+
+Source: unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show (2026-06-17).
+- Build once, deploy to traditional platforms, Fortnite or your own ecosystems (UE 6 aim).
+- Portable, interoperable content, code and economies through open standards.
+- Open model choice: the UE MCP interface is open, use Claude, Gemini or any model.
+- Lore: open source and free to use. Observed licensing practice: new public tools are MIT (snapshot.json `license`), UE source stays under the EULA in a private repo.
+
 ## Engine and languages
 
 | Item | Fact | Source |
