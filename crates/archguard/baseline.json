@@ -1,0 +1,12 @@
+{
+  "_": "Cliquet ci.yml : nombre d'erreurs --strict toléré par règle (dette au 2026-11-13, 36b38d47 + 1311086d). Ne peut que baisser ; 0 partout = revenir à `arch check --strict` bloquant.",
+  "ARCH-001": 1,
+  "ARCH-002": 2,
+  "ARCH-003": 4,
+  "ARCH-005": 6,
+  "ARCH-006": 25,
+  "ARCH-008": 2,
+  "ARCH-009": 9,
+  "ARCH-011": 14,
+  "ARCH-015": 43
+}
