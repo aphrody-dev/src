@@ -29,9 +29,6 @@ graphify-out/
 !/.claude/
 /.claude/skills
 /.claude/settings.local.json
-!/.repo/
-!/.repo/manifests/
-!/.repo/manifest.xml
 !/docs/
 !/apps/
 !/packages/
@@ -62,20 +59,14 @@ graphify-out/
 !/Cargo.toml
 !/Cargo.lock
 !/deny.toml
-!/flake.nix
-!/flake.lock
+!/identity.toml
 !/package.json
 !/bun.lock
-!/install.ps1
-!/install.sh
-!/deploy.ps1
-!/deploy.sh
-!/deploy.toml
+!/pyproject.toml
+!/uv.lock
 !/src.lock.json
 !/tools.toml
 !/dist-workspace.toml
-!/.gitlab-ci.yml
-!/cloudbuild.yaml
 
 # .NET build output (infra/winnt-sdk)
 infra/winnt-sdk/**/bin/
@@ -86,3 +77,5 @@ infra/winnt-sdk/**/obj/
 /third_party/*
 !/third_party/ECOSYSTEM.toml
 !/scripts/
+
+packages/shell-matrix/bin/
