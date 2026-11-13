@@ -262,6 +262,51 @@
       "excerpt": "relances répétées de connexions (gcloud org-contact x3, codex, npm, setup-token) et états d authentification périmés dans les rapports",
       "fix": "ay auth daemon seul : sonde réelle toutes les 5 min, refresh sans humain, au plus un signalement groupé par identifiant et par 24 h, aucune page ouverte, --ack pour une seule connexion (docs/infra/AUTH.md)",
       "reason": "règle du propriétaire du 2026-11-13 ; toute relance hors du service est une violation"
+    },
+    {
+      "location": "orch:pc",
+      "category": "orch_etat",
+      "severity": "low",
+      "status": "fixed",
+      "excerpt": "runner PC : psmux session agents (health, coder, reviewer, designer, growth), tâches planifiées Aphrody\\AgentsHealth (5 min) et AgentsLogon (ouverture de session), file vide (done 12, failed 3), CLI claude/codex/opencode/agy OK, pi absent",
+      "fix": "infra/agents/install-pc.sh",
+      "reason": "2026-11-13 04:50 : relevé merge+sync"
+    },
+    {
+      "location": "orch:prd",
+      "category": "orch_etat",
+      "severity": "low",
+      "status": "fixed",
+      "excerpt": "runner prd : aphrody-agents.service enabled+active (systemd --user, linger agent), timers pull/health actifs, tmux agents 8 fenêtres recréées après le reboot de 03:41 UTC, file vide (done 3, failed 22)",
+      "fix": "infra/agents/install.sh",
+      "reason": "2026-11-13 04:50 : survie au reboot constatée (uptime 0, unités remontées seules)"
+    },
+    {
+      "location": "orch:fr1",
+      "category": "orch_etat",
+      "severity": "low",
+      "status": "fixed",
+      "excerpt": "runner fr1 (rôle chromium seul, tâches lourdes) : aphrody-agents enabled+active, linger agent, tmux agents 2 fenêtres",
+      "fix": "infra/agents/fleet.toml [hosts.fr1]",
+      "reason": "2026-11-13 04:50 : relevé merge+sync"
+    },
+    {
+      "location": "orch:fr2",
+      "category": "orch_etat",
+      "severity": "low",
+      "status": "fixed",
+      "excerpt": "runner fr2 (linter, sre) : aphrody-agents enabled+active, linger agent, tmux agents 3 fenêtres",
+      "fix": "infra/agents/fleet.toml [hosts.fr2]",
+      "reason": "2026-11-13 04:50 : relevé merge+sync"
+    },
+    {
+      "location": "prd:infra/agents/runner.ts ciWatch",
+      "category": "queue_failed",
+      "severity": "high",
+      "status": "open",
+      "excerpt": "19 tâches prd (ci-fix-* sre, deps-update) en échec immédiat reason=no_cli_provider : ciWatch() et le gabarit deps-update.json n'écrivent pas `providers`, runTaskLocked refuse alors tout rôle d'édition",
+      "fix": "ciWatch et tasks/deps-update.json doivent nommer les CLI (ou passer par ai-os orch) ; runner.ts en cours d'édition par une autre session (GitHub App), non modifié ici",
+      "reason": "2026-11-13 04:50 : constaté dans var/agents/results/*/result.json sur prd"
     }
   ]
 }
