@@ -378,9 +378,9 @@ test ref="origin/main":
 agents cmd="status" *args:
     bun "{{root}}/infra/agents/runner.ts" {{cmd}} {{args}}
 
-# Install/refresh the runner on a Linux host (prd, fr1, fr2): CLIs, checkout, systemd user units
+# Install/refresh the runner on a Linux host (fr1, fr2 as ubuntu; prd as the non-root user agent)
 agents-install host:
-    ssh {{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"
+    if [ "{{host}}" = prd ]; then ssh prd 'sh -s' < "{{root}}/infra/agents/bootstrap-user.sh" && ssh agent@prd 'sh -s' < "{{root}}/infra/agents/install.sh"; else ssh {{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"; fi
 
 # Install the runner on this Windows PC (scheduled tasks + psmux session)
 agents-install-pc:

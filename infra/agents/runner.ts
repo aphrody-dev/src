@@ -124,8 +124,6 @@ function childEnv(extra: Record<string, string> = {}): Record<string, string> {
       (process.env.AGENTS_KEEP_ENV === "1" || !SCRUB.test(k))
     )
       e[k] = v;
-  // Claude Code refuses bypassPermissions as root unless the host declares itself a sandbox (prd runs as root).
-  if (!WIN && process.getuid?.() === 0) e.IS_SANDBOX = "1";
   return { ...e, ...extra };
 }
 function sh(
@@ -564,6 +562,11 @@ async function runTask(t: Task, claimedPath: string) {
 }
 
 async function work(role: string) {
+  // Agents never run as root (Claude Code guardrail): prd uses the dedicated user `agent`.
+  if (!WIN && process.getuid?.() === 0)
+    throw new Error(
+      "runner: refuse to run as root, use the `agent` user (install.sh)",
+    );
   if (!FLEET.roles[role]) throw new Error(`unknown role ${role}`);
   ensureDirs();
   const hb = join(STATE, `heartbeat-${role}`);

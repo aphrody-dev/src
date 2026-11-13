@@ -4,6 +4,7 @@
 # Env: AGENTS_SRC (checkout, default ~/agents/src), AGENTS_UPDATE=1 (upgrade CLIs to latest).
 # Called at the end of infra/fleet/bootstrap/*.sh when present. Doc: docs/agents/AGENT-FIRST.md.
 set -eu
+[ "$(id -u)" != 0 ] || { echo "install: never as root; run bootstrap-user.sh as root, then this as user agent" >&2; exit 1; }
 
 SRC=${AGENTS_SRC:-$HOME/agents/src}
 REPO=${AGENTS_REPO:-https://github.com/aphrody-dev/src.git}

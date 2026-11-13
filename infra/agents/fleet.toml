@@ -44,8 +44,9 @@ budget_usd = 2
 # (PC aliases, WireGuard 10.200.77.0/24, public IP). `ship` = where every host sends log.jsonl.
 [hosts.prd]
 roles = ["coder", "reviewer", "tester", "linter", "deployer", "sre", "growth"]
-src = "/root/agents/src"
-ssh = ["prd", "root@10.200.77.5", "root@72.60.186.43"]
+# Dedicated non-root user `agent` (systemd --user + linger), never root.
+src = "/home/agent/agents/src"
+ssh = ["agent@prd", "agent@10.200.77.5", "agent@72.60.186.43"]
 
 [hosts.fr1]
 # Chromium/LLVM builds only: no general runner, only role chromium.
