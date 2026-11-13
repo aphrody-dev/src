@@ -23,7 +23,6 @@ W:	https://about.aphrody.com
 T:	git https://android.googlesource.com/platform/manifest.git
 T:	git https://android.googlesource.com/kernel/build.git
 T:	git https://github.com/aphrody-dev/aphrody-app.git
-F:	.repo/manifests/
 F:	apps/aphrody-app/crates/aphrody-android/
 F:	third_party/android-skills/
 F:	third_party/aosp-manifest/
@@ -131,7 +130,6 @@ F:	crates/unix-distro/
 F:	crates/unix-omarchy/
 F:	docs/linux-kernel-story/
 F:	docs/patches/
-F:	packages/knowledge-engine/
 F:	third_party/aether/
 F:	third_party/ananicy-rules/
 F:	third_party/arch-wsl/
@@ -201,12 +199,7 @@ T:	git https://github.com/aphrody-dev/ai-triad.git
 T:	git https://github.com/aphrody-dev/knowledge-engine.git
 T:	git https://github.com/aphrody-dev/pi-opencode.git
 F:	.agents/
-F:	packages/agy/
 F:	packages/ai-os/
-F:	packages/ai-triad/
-F:	packages/brain/
-F:	packages/knowledge-engine/
-F:	packages/pi-opencode/
 
 LAYER L1 BASE (crates/core, net, sys, design tokens, lore-base/io, depot-core/cas)
 M:	skill:bun agent:claude <contact@aphrody.com>
@@ -227,7 +220,7 @@ M:	skill:microsoft skill:windows-machine agent:claude <contact@aphrody.com>
 S:	Supported
 F:	crates/core-capi/
 F:	crates/dx12-hal/
-F:	crates/unix-*/
+F:	crates/unix-uutils/
 F:	crates/remote/
 F:	packages/ffi-bridge/
 F:	packages/runtime-adapter/
