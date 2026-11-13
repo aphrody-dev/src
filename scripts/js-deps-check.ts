@@ -36,6 +36,14 @@ const BUILTIN: Record<string, string> = {
 };
 const EXACT = /^\d+\.\d+\.\d+(-[\w.]+)?(\+[\w.]+)?$/;
 
+// Build delegates imposed by a vendor CLI: `cf build`/`cf deploy` only build through the Cloudflare Vite plugin
+// (or Wrangler), https://developers.cloudflare.com/cf/projects/ ("cf does not run a dev server or bundler itself").
+// Declared as devDependencies of infra/cloudflare/workers/*, never shipped (the Worker bundle runs on workerd).
+// Their transitive closure is exempt from the builtin and duplicate rules only when nothing else reaches it.
+const DELEGATES: Record<string, string[]> = { "infra/cloudflare/workers/": ["@cloudflare/vite-plugin", "vite"] };
+const delegateOf = (where: string, field: string, name: string) =>
+  field === "devDependencies" && Object.entries(DELEGATES).some(([dir, names]) => where.startsWith(dir) && names.includes(name));
+
 type Problem = { kind: string; where: string; detail: string };
 const problems: Problem[] = [];
 const add = (kind: string, where: string, detail: string) => problems.push({ kind, where, detail });
@@ -63,11 +71,13 @@ for (const file of manifests) {
 }
 
 const runtimeExternal = new Set<string>();
+const delegateRoots = new Set<string>(), otherRoots = new Set<string>();
 for (const { file, json } of pkgs) {
   const where = file.slice(root.length + 1).replaceAll("\\", "/");
   for (const field of ["dependencies", "devDependencies", "optionalDependencies", "peerDependencies"]) {
     for (const [name, spec] of Object.entries<string>(json[field] ?? {})) {
-      if (BUILTIN[name]) add("builtin", where, `${name}: use ${BUILTIN[name]}`);
+      if (BUILTIN[name] && !delegateOf(where, field, name)) add("builtin", where, `${name}: use ${BUILTIN[name]}`);
+      if (!internal.has(name)) (delegateOf(where, field, name) ? delegateRoots : otherRoots).add(name);
       if (internal.has(name)) {
         if (!spec.startsWith("workspace:")) add("internal-spec", where, `${name}@${spec} (use "workspace:*")`);
         continue;
@@ -87,6 +97,7 @@ const lockPath = join(root, "bun.lock");
 const lock = Bun.JSONC.parse(await Bun.file(lockPath).text()) as any;
 const versions = new Map<string, Set<string>>();
 const meta = new Map<string, any>();
+const edges = new Map<string, Set<string>>(); // package name -> names it depends on (any version)
 for (const entry of Object.values<any[]>(lock.packages ?? {})) {
   const id = String(entry[0]);
   const at = id.lastIndexOf("@");
@@ -95,15 +106,30 @@ for (const entry of Object.values<any[]>(lock.packages ?? {})) {
   if (ver.startsWith("workspace:")) continue;
   (versions.get(name) ?? versions.set(name, new Set()).get(name)!).add(ver);
   meta.set(name, entry[2] ?? {});
-  if (BUILTIN[name]) add("builtin", "bun.lock", `${name} (transitive): replaced by ${BUILTIN[name]}`);
+  const m = entry[2] ?? {};
+  const e = edges.get(name) ?? edges.set(name, new Set()).get(name)!;
+  for (const k of ["dependencies", "optionalDependencies", "peerDependencies"]) for (const d of Object.keys(m[k] ?? {})) e.add(d);
 }
-for (const [name, set] of versions) if (set.size > 1) add("duplicate", "bun.lock", `${name}: ${[...set].join(", ")}`);
+const closure = (roots: Set<string>) => {
+  const seen = new Set<string>(), todo = [...roots];
+  while (todo.length) { const n = todo.pop()!; if (seen.has(n)) continue; seen.add(n); for (const d of edges.get(n) ?? []) todo.push(d); }
+  return seen;
+};
+const others = closure(otherRoots);
+const delegateOnly = new Set([...closure(delegateRoots)].filter((n) => !others.has(n)));
+for (const name of versions.keys())
+  if (BUILTIN[name] && !delegateOnly.has(name)) add("builtin", "bun.lock", `${name} (transitive): replaced by ${BUILTIN[name]}`);
+for (const [name, set] of versions)
+  if (set.size > 1 && !delegateOnly.has(name)) add("duplicate", "bun.lock", `${name}: ${[...set].join(", ")}`);
 
 for (const name of runtimeExternal) {
   if (versions.has(`@types/${name.replace(/^@([^/]+)\//, "$1__")}`)) continue;
   const dir = join(root, "node_modules", name);
   const pj = existsSync(join(dir, "package.json")) ? await Bun.file(join(dir, "package.json")).json() : null;
   if (!pj) { add("untyped", name, "not installed: run `bun install --frozen-lockfile` then re-check"); continue; }
+  // Asset-only package (no main/module/exports, no root .js): files read at build time, nothing to import or type.
+  const code = pj.main || pj.module || pj.exports || readdirSync(dir).some((f) => /\.(c|m)?js$/.test(f));
+  if (!code) continue;
   const exportsTyped = JSON.stringify(pj.exports ?? {}).includes('"types"');
   const typed = pj.types || pj.typings || exportsTyped || existsSync(join(dir, "index.d.ts"))
     || readdirSync(dir).some((f) => f.endsWith(".d.ts") || f.endsWith(".d.mts"));
@@ -116,10 +142,11 @@ const summary = {
   external: versions.size,
   catalog: Object.keys(catalog).length,
   problems,
+  exempt: { delegateOnly: delegateOnly.size },
 };
 if (asJson) console.log(JSON.stringify(summary, null, 2));
 else {
   for (const p of problems) console.error(`js-deps-check: ${p.kind}: ${p.where}: ${p.detail}`);
-  console.log(`js-deps-check: ${pkgs.length} manifests, ${versions.size} external packages, ${problems.length} problem(s)`);
+  console.log(`js-deps-check: ${pkgs.length} manifests, ${versions.size} external packages (${delegateOnly.size} only behind a vendor build delegate), ${problems.length} problem(s)`);
 }
 process.exit(problems.length ? 1 : 0);

@@ -14,6 +14,7 @@
     },
     "apps/nt": {
       "name": "@aphrody/nt",
+      "version": "0.0.0",
       "dependencies": {
         "@aphrody/ffi-bridge": "workspace:*",
       },
@@ -192,6 +193,9 @@
         "wck": "./src/cli.ts",
       },
     },
+  },
+  "overrides": {
+    "tree-sitter-c": "0.24.1",
   },
   "catalog": {
     "@cloudflare/vite-plugin": "2.0.0-beta.v.16",
@@ -523,7 +527,5 @@
     "zod": ["zod@4.6.6", "", {}, "sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA=="],
 
     "@img/sharp-wasm32/@emnapi/runtime": ["@emnapi/runtime@1.11.3", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA=="],
-
-    "tree-sitter-cpp/tree-sitter-c": ["tree-sitter-c@0.23.6", "", { "dependencies": { "node-addon-api": "^8.3.0", "node-gyp-build": "^4.8.4" }, "peerDependencies": { "tree-sitter": "^0.22.1" }, "optionalPeers": ["tree-sitter"], "hasInstallScript": true }, "sha512-0dxXKznVyUA0s6PjNolJNs2yF87O5aL538A/eR6njA5oqX3C3vH4vnx3QdOKwuUdpKEcFdHuiDpRKLLCA/tjvQ=="],
   }
 }
