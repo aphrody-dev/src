@@ -114,6 +114,14 @@ ai-os *args:
 ai-os-test:
     bun --cwd "{{root}}/packages/ai-os" test
 
+# ai-os orchestrator (packages/ai-os/docs/ORCHESTRATOR.md): hosts, engines, health, run <workflow.json>, plan "<goal>", design, market
+orch *args:
+    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts orch {{args}}
+
+# Unattended lifecycle: code, fmt, check, tests, judges, fix, docker on prd, deploy (dry-run unless --apply), monitor, optimize
+lifecycle *args:
+    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts orch lifecycle {{args}}
+
 # Windows service AphrodyRelay (elevated): exe = published artefact relay-service of .github/workflows/ai-os.yml
 [windows]
 relay-install exe:

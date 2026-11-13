@@ -2,6 +2,7 @@
 import { llmAsk } from "../llm/model.ts";
 import { listModels } from "../llm/models.ts";
 import { AGENT_TOOLS } from "./agent-tools.ts";
+import { ORCH_TOOLS } from "./orch-tools.ts";
 import { accountsSync } from "./accounts.ts";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
@@ -365,6 +366,6 @@ export const TOOLS: Tool[] = [
   },
 ];
 
-TOOLS.push(...AGENT_TOOLS);
+TOOLS.push(...AGENT_TOOLS, ...ORCH_TOOLS);
 
 export const toolByName = new Map(TOOLS.map((t) => [t.name, t]));

@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from "node:fs";
+
 // Agents en ligne de commande servant de fournisseurs de modèles (Antigravity `agy`, Claude Code `claude`) :
 // partagés par le pont de modèles (models.ts) et le relais (relay/backends.ts). Exécution sans shell, délai borné.
 
@@ -23,6 +25,37 @@ export const CLAUDE_ENV = () =>
     "ANTHROPIC_WORKSPACE_ID",
   );
 
+/** Sous Windows, une CLI installée en shim .cmd (agy.cmd, codex.cmd) passerait ses arguments par cmd.exe, qui
+ * interprète & | < > ^ % : Bun refuse alors l'appel, et un passage forcé par cmd.exe permettrait une injection par la
+ * consigne. On lance donc l'exécutable que le shim appelle (ligne `"<exe>" %*`, variables `set "X=…"` et
+ * d'environnement résolues). Si le shim ne se résout pas, la commande est rendue telle quelle. */
+export function resolveExe(name: string): string {
+  if (process.platform !== "win32") return name;
+  const p = Bun.which(name);
+  if (!p || !/\.(cmd|bat)$/i.test(p)) return p ?? name;
+  let text = "";
+  try {
+    text = readFileSync(p, "utf8");
+  } catch {
+    return p;
+  }
+  const vars: Record<string, string> = {};
+  const expand = (s: string) =>
+    s.replace(
+      /%(\w+)%/g,
+      (_, k) =>
+        vars[k] ?? process.env[k] ?? process.env[k.toUpperCase()] ?? `%${k}%`,
+    );
+  for (const m of text.matchAll(/^\s*set\s+"(\w+)=([^"]*)"/gim))
+    vars[m[1]!] ??= expand(m[2]!);
+  // Premier appel `"<cible>" %*` : le chemin par défaut du shim, avant ses étiquettes de sous-commandes.
+  const call = text.match(/^\s*"([^"]+)"\s+%\*/im)?.[1];
+  const exe = call && expand(call);
+  return exe && /\.exe$/i.test(exe) && !exe.includes("%") && existsSync(exe)
+    ? exe
+    : p;
+}
+
 export async function cli(
   engine: string,
   argv: string[],
@@ -30,6 +63,7 @@ export async function cli(
   env?: Record<string, string>,
 ): Promise<Answer> {
   const t0 = performance.now();
+  argv = [resolveExe(argv[0]!), ...argv.slice(1)];
   const p = Bun.spawn(argv, {
     stdout: "pipe",
     stderr: "pipe",

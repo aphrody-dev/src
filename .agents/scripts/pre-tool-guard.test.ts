@@ -10,6 +10,33 @@ const claude = (name: string, input: { path?: string; command?: string }) =>
   });
 
 describe("pre-tool-guard", () => {
+  test("blocks external effects without an owner rule", () => {
+    expect(
+      claude("Bash", { command: "npm publish --access public" }),
+    ).toContain("owner rule");
+    expect(claude("Bash", { command: "gh release create v1.2.3" })).toContain(
+      "owner rule",
+    );
+    expect(claude("mcp__plugin_resend_resend__send-email", {})).toContain(
+      "owner rule",
+    );
+    expect(claude("mcp__claude_ai_Gmail__create_draft", {})).toBeNull();
+    expect(claude("Bash", { command: "bun publish --dry-run" })).toContain(
+      "owner rule",
+    );
+    expect(
+      evaluate(
+        {
+          shape: "claude",
+          name: "bash",
+          path: "",
+          command: "cargo publish -p foo",
+        },
+        [/^cargo publish -p foo$/],
+      ),
+    ).toBeNull();
+  });
+
   test("blocks printing the raw .env vault", () => {
     expect(claude("Bash", { command: "cat .env" })).toContain(".env");
     expect(

@@ -18,7 +18,12 @@
  * 1. Writes, edits, or commands targeting C:\Windows\System32 (host userspace integrity).
  * 2. Staging the raw C:\src\.env vault into git.
  * 3. Printing the raw C:\src\.env vault (cat/type/Get-Content/Read), which would leak secrets into transcripts.
+ * 4. External effects (package publication, GitHub releases, e-mail sends, MCP send/publish/payment tools) unless an
+ *    owner rule in .agents/owner-rules.json allows them ({ "rules": [{ "effect": "external", "match": "<regex>" }] }).
+ *    Same validation point as the ai-os orchestrator (packages/ai-os/src/orch/policy.ts).
  */
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 type Shape = "agy" | "claude";
 
@@ -41,6 +46,28 @@ const PRINTS_DOT_ENV = new RegExp(
     DOT_ENV,
   "i",
 );
+
+const EXTERNAL_CMD =
+  /\b(?:npm|bun|pnpm|yarn|cargo|twine|vsce|ovsx|gem)\s+publish\b|\bgh\s+release\s+create\b|\bresend\s+(?:emails?|broadcasts?)\s+send\b/i;
+const EXTERNAL_TOOL =
+  /^mcp__.*(?:send[-_]|[-_]send\b|broadcast|publish|post[-_]message|payment|purchase|checkout)/i;
+
+/** Owner rules allowing external effects (absent file = everything external is denied). */
+export function ownerRules(
+  file = join(import.meta.dir, "..", "owner-rules.json"),
+): RegExp[] {
+  if (!existsSync(file)) return [];
+  try {
+    const j = JSON.parse(readFileSync(file, "utf8"));
+    return (Array.isArray(j.rules) ? j.rules : [])
+      .filter(
+        (r: any) => r?.effect === "external" && typeof r.match === "string",
+      )
+      .map((r: any) => new RegExp(r.match, "i"));
+  } catch {
+    return [];
+  }
+}
 
 function parse(raw: string): ToolCall | null {
   let payload: Record<string, any>;
@@ -74,7 +101,17 @@ function isDotEnvPath(path: string): boolean {
   return /(?:^|[/\\])\.env$/i.test(path.trim());
 }
 
-export function evaluate(call: ToolCall): string | null {
+export function evaluate(
+  call: ToolCall,
+  rules: RegExp[] = ownerRules(),
+): string | null {
+  const subject = call.command || call.name;
+  if (
+    (EXTERNAL_TOOL.test(call.name) || EXTERNAL_CMD.test(call.command)) &&
+    !rules.some((r) => r.test(subject))
+  ) {
+    return "Blocked external effect (publish, send, spend) without an owner rule in .agents/owner-rules.json. Draft it into var/agents/outbox instead.";
+  }
   const mutates = /write|edit|notebook/.test(call.name);
   if (mutates && SYSTEM32.test(call.path)) {
     return "Blocked write/edit inside C:\\Windows\\System32. Install userland binaries in C:\\Users\\aphro\\.local\\bin.";
