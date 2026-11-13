@@ -5,7 +5,8 @@
 # Host ports = deploy.toml green ports, bound to 127.0.0.1: nginx/cloudflared front them, systemd units keep the
 # blue ports, so the containers run side by side with prd's current services (blue/green, no port clash).
 # Rollback: SRC_TAG=<previous sha> docker compose -f infra/docker/compose.yaml --profile core up -d
-# Secrets: env_file /etc/aphrody/secrets.env on the host (never in images or here).
+# Secrets: env_file /etc/aphrody/secrets.env on the host (never in images or here). R2 over S3 for downloads/cdn/
+# api-gateway: S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_ENDPOINT (https://<account>.r2.cloudflarestorage.com), S3_REGION=auto.
 name: aphrody-src
 
 x-svc: &svc
@@ -42,7 +43,6 @@ services:
     ports: ["127.0.0.1:${GATEWAY_HOST_PORT:-24000}:4000"]
     volumes: [ai-os-home:/home/bun]
     read_only: false
-    depends_on: { llama: { condition: service_started, required: false } }
 
   aphrody:
     <<: *svc
