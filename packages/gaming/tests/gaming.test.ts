@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   appUpdateArgs,
+  appUpdateScript,
   forkPins,
   isSecretFile,
   loadDownloads,
@@ -36,7 +37,7 @@ test("steamdb links", () => {
 });
 
 test("downloads manifest and steamcmd script", () => {
-  const d = loadDownloads(root);
+  const d = loadDownloads();
   expect(d.steamcmd.linux.url).toStartWith("https://steamcdn-a.akamaihd.net/");
   expect(resolveApp("proton-experimental", d).appid).toBe(1493710);
   expect(appUpdateArgs({ app: 1493710, dir: "/srv/proton", platform: "linux" })).toEqual([
@@ -49,10 +50,23 @@ test("Proton app ids agree with crates/steam-depot", () => {
   const rs = readFileSync(join(root, "crates", "steam-depot", "src", "proton.rs"), "utf8");
   const block = rs.slice(rs.indexOf("VALVE_PROTON_APPS"), rs.indexOf("];", rs.indexOf("VALVE_PROTON_APPS")));
   const fromRust = [...block.matchAll(/\("([^"]+)", ([\d_]+)\)/g)].map((m) => [m[1], Number(m[2]!.replaceAll("_", ""))]);
-  const apps = Object.values(loadDownloads(root).apps);
+  const apps = Object.values(loadDownloads().apps);
   for (const [name, id] of fromRust) expect(apps.find((a) => a.appid === id)?.name).toBe(name as string);
   const sniper = Number(rs.match(/STEAM_LINUX_RUNTIME_SNIPER_APP_ID: u32 = ([\d_]+)/)![1]!.replaceAll("_", ""));
   expect(apps.some((a) => a.appid === sniper)).toBe(true);
+});
+
+test("steamcmd runscript", () => {
+  expect(appUpdateScript({ app: 323470, dir: "C:\\games\\dbxv2", user: "ci", password: "pw", beta: "b", betaPassword: "bp" })).toBe(
+    [
+      "@ShutdownOnFailedCommand 1",
+      "@NoPromptForPassword 1",
+      'force_install_dir "C:/games/dbxv2"',
+      "login ci pw",
+      "app_update 323470 -beta b -betapassword bp validate",
+      "quit",
+    ].join("\n"),
+  );
 });
 
 test("vulkan manifests", () => {

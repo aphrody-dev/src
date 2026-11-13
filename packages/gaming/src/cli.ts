@@ -27,7 +27,7 @@ const HELP = `ay gaming <command> [--json]
   layers [--info]              Vulkan ICDs and implicit/explicit layers (--info adds vulkaninfo --summary)
   dx                           DirectX: DXGI adapters and D3D12 runtime (Windows), Agility SDK per game
   forks                        gaming forks pinned in src.lock.json and their variants
-  steamcmd install             official steamcmd into the per-user tool dir (infra/gaming/downloads.toml)
+  steamcmd install             official steamcmd into the per-user tool dir (packages/gaming/src/downloads.toml)
   steamcmd app-update <name|appid> --dir <d> [--user <u>] [--beta <b>] [--platform linux|windows|macos] [--dry-run]
   steamcmd run -- <steamcmd args>
   run <exe> --prefix <dir> [--tool <name> | --tool-path <dir>] [--app <id>] [--dry-run] [-- args]

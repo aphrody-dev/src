@@ -24,5 +24,16 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./steamcmd": "./src/steamcmd.ts",
+    "./steam": "./src/steam.ts",
+    "./proton": "./src/proton.ts",
+    "./vulkan": "./src/vulkan.ts",
+    "./dx": "./src/dx.ts"
+  },
+  "files": [
+    "src"
+  ]
 }

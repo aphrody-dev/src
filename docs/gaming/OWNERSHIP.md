@@ -15,7 +15,7 @@ Commandes : `ay steam` (Rust, `crates/ay/src/low/steam.rs`) et `ay gaming` (`pac
 | Données Steam en JSON pour Bun | `ay steam root/libraries/apps/vdf/compat/host/env` | `packages/gaming/src/native.ts` |
 | SteamID, liens SteamDB/boutique, carte des chemins d'une app, filtre des fichiers d'identifiants | `packages/gaming/src/steam.ts` (`@aphrody/gaming`) | MCP du plugin, `ay gaming` |
 | Vulkan (ICD, couches implicites et explicites), DirectX (adaptateurs DXGI, runtime D3D12, Agility SDK, DXVK/vkd3d-proton livrés par Proton) | `packages/gaming/src/{vulkan,dx}.ts` | `ay gaming layers`, `ay gaming dx`, `ay gaming status` |
-| steamcmd reproductible, Proton hors Steam (umu-run ou `proton waitforexitandrun`) | `packages/gaming/src/{steamcmd,proton}.ts`, manifeste `infra/gaming/downloads.toml` | `ay gaming steamcmd`, `ay gaming run` |
+| steamcmd reproductible, Proton hors Steam (umu-run ou `proton waitforexitandrun`) | `packages/gaming/src/{steamcmd,proton}.ts`, manifeste `packages/gaming/src/downloads.toml` | `ay gaming steamcmd`, `ay gaming run` |
 | Plugin Claude Code, MCP `steam` | `apps/rosegriffon/plugins/steam` (`servers/steam-mcp.ts` importe `packages/gaming`) | Claude Code, tout client MCP |
 | Skills | `apps/rosegriffon/plugins/steam/skills/*` | miroirs générés `.agents/skills/{steam-*,gaming-stack}` : `ay gaming skills sync`, contrôle `ay gaming skills check` (test de `packages/gaming`) |
 | Images (Bazzite, SteamOS, CachyOS côté jeu) | `infra/gaming/images.toml` | CI, hôtes |
@@ -64,7 +64,7 @@ CachyOS (noyau `linux-cachyos`, `CachyOS-PKGBUILDS`) : couche système, `docs/li
 ## 4. Exclu pour cause de licence
 
 Jamais forké, vendorisé, commité ni redistribué ; seulement wrappers, manifestes de téléchargement
-officiels (`infra/gaming/downloads.toml`), documentation et skills :
+officiels (`packages/gaming/src/downloads.toml`), documentation et skills :
 
 - client Steam, `steamcmd` (téléchargé depuis `steamcdn-a.akamaihd.net` par `ay gaming steamcmd install`, taille contrôlée) ;
 - builds Proton et Steam Linux Runtime distribués par Steam (apps 1493710, 2180100, 3658110, 2805730, 2348590, 1628350, 1391110, 1070560), installés par steamcmd sous le compte de l'utilisateur ;

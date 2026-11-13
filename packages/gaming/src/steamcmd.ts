@@ -1,5 +1,5 @@
 // Reproducible steamcmd wrapper: installs Valve's official bootstrap from the manifest
-// (infra/gaming/downloads.toml) into a per-user directory, never into the repo, and runs it with
+// (packages/gaming/src/downloads.toml) into a per-user directory, never into the repo, and runs it with
 // fixed script arguments. Credentials: none in argv; `--user` relies on steamcmd's own cached
 // login (first login is interactive in steamcmd, or done by the owner), anonymous otherwise.
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync } from "node:fs";
@@ -29,8 +29,9 @@ export function srcRoot(): string {
   return process.env.SRC_ROOT ?? join(import.meta.dir, "..", "..", "..");
 }
 
-export function loadDownloads(root = srcRoot()): Downloads {
-  return Bun.TOML.parse(readFileSync(join(root, "infra", "gaming", "downloads.toml"), "utf8")) as unknown as Downloads;
+/** The official download manifest shipped with this package (src/downloads.toml). */
+export function loadDownloads(file = join(import.meta.dir, "downloads.toml")): Downloads {
+  return Bun.TOML.parse(readFileSync(file, "utf8")) as unknown as Downloads;
 }
 
 export function hostPlatform(): "windows" | "linux" | "macos" {
@@ -60,7 +61,7 @@ export async function installSteamcmd(d = loadDownloads()): Promise<string> {
   if (!res.ok) throw new Error(`${p.url}: HTTP ${res.status}`);
   const buf = new Uint8Array(await res.arrayBuffer());
   if (buf.length !== p.size)
-    throw new Error(`${p.url}: ${buf.length} bytes, manifest says ${p.size} (update infra/gaming/downloads.toml after checking the source)`);
+    throw new Error(`${p.url}: ${buf.length} bytes, manifest says ${p.size} (update packages/gaming/src/downloads.toml after checking the source)`);
   const sum = new Bun.CryptoHasher("sha256").update(buf).digest("hex");
   if (sum !== p.sha256) throw new Error(`${p.url}: sha256 ${sum}, manifest says ${p.sha256}`);
   // Unpack into a staging dir, check the listing, then move: a half-extracted install never looks complete.
@@ -101,6 +102,27 @@ export function appUpdateArgs(o: AppUpdate): string[] {
   if (o.validate !== false) args.push("validate");
   args.push("+quit");
   return args;
+}
+
+export interface ScriptOptions extends AppUpdate {
+  /** Only for steamcmd's own non-interactive login; prefer a cached login (`user` alone). */
+  password?: string;
+  betaPassword?: string;
+}
+
+/** steamcmd `+runscript` file for one app install or update (same steps as `appUpdateArgs`):
+ * fails on the first failed command and never prompts for a password. */
+export function appUpdateScript(o: ScriptOptions): string {
+  const beta = o.beta ? ` -beta ${o.beta}${o.betaPassword ? ` -betapassword ${o.betaPassword}` : ""}` : "";
+  return [
+    ...(o.platform ? [`@sSteamCmdForcePlatformType ${o.platform}`] : []),
+    "@ShutdownOnFailedCommand 1",
+    "@NoPromptForPassword 1",
+    `force_install_dir "${o.dir.replaceAll("\\", "/")}"`,
+    `login ${o.user ?? "anonymous"}${o.password ? ` ${o.password}` : ""}`,
+    `app_update ${o.app}${beta}${o.validate !== false ? " validate" : ""}`,
+    "quit",
+  ].join("\n");
 }
 
 /** Resolves a manifest name (`proton-experimental`) or a numeric app id. */
