@@ -27,7 +27,13 @@ if (main) {
   const gpu = (
     navigator as unknown as {
       gpu?: {
-        requestAdapter(): Promise<{ info?: { vendor?: string; architecture?: string; description?: string } } | null>;
+        requestAdapter(): Promise<{
+          info?: {
+            vendor?: string;
+            architecture?: string;
+            description?: string;
+          };
+        } | null>;
       };
     }
   ).gpu;
@@ -45,7 +51,9 @@ if (main) {
       } else {
         state.gpu = true;
         const i = adapter.info;
-        state.adapter = [i?.vendor, i?.architecture, i?.description].filter(Boolean).join(" ");
+        state.adapter = [i?.vendor, i?.architecture, i?.description]
+          .filter(Boolean)
+          .join(" ");
         msg.textContent = "";
         launch.disabled = false;
         launch.addEventListener("click", start);

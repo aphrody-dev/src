@@ -1,0 +1,331 @@
+{
+  "base": "https://aphrody.com",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "results": [
+    {
+      "id": "photocraft",
+      "url": "https://aphrody.com/craft/photocraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "PhotoCraft | Aphrody",
+      "before": {
+        "file": "photocraft-1-loaded.png",
+        "bytes": 24996,
+        "colours": 463,
+        "nonDominantShare": 0.082
+      },
+      "after": {
+        "file": "photocraft-2-after-click.png",
+        "bytes": 24996,
+        "colours": 463,
+        "nonDominantShare": 0.082
+      },
+      "drew": true,
+      "responded": false,
+      "verdict": "drew, no change after interaction"
+    },
+    {
+      "id": "filmcraft",
+      "url": "https://aphrody.com/craft/filmcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "FilmCraft | Aphrody",
+      "before": {
+        "file": "filmcraft-1-loaded.png",
+        "bytes": 214113,
+        "colours": 1909,
+        "nonDominantShare": 0.338
+      },
+      "after": {
+        "file": "filmcraft-2-after-click.png",
+        "bytes": 211878,
+        "colours": 1915,
+        "nonDominantShare": 0.337
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    },
+    {
+      "id": "soundcraft",
+      "url": "https://aphrody.com/craft/soundcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "SoundCraft | Aphrody",
+      "before": {
+        "file": "soundcraft-1-loaded.png",
+        "bytes": 228927,
+        "colours": 1545,
+        "nonDominantShare": 0.818
+      },
+      "after": {
+        "file": "soundcraft-2-after-click.png",
+        "bytes": 228738,
+        "colours": 1506,
+        "nonDominantShare": 0.821
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    },
+    {
+      "id": "craft-launcher",
+      "url": "https://aphrody.com/craft/craft-launcher?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "ArtCraft Launcher | Aphrody",
+      "before": {
+        "file": "craft-launcher-1-loaded.png",
+        "bytes": 260865,
+        "colours": 312,
+        "nonDominantShare": 0.235
+      },
+      "after": {
+        "file": "craft-launcher-2-after-click.png",
+        "bytes": 258477,
+        "colours": 496,
+        "nonDominantShare": 0.507
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    },
+    {
+      "id": "vectorcraft",
+      "url": "https://aphrody.com/craft/vectorcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "VectorCraft | Aphrody",
+      "before": {
+        "file": "vectorcraft-1-loaded.png",
+        "bytes": 170931,
+        "colours": 620,
+        "nonDominantShare": 0.467
+      },
+      "after": {
+        "file": "vectorcraft-2-after-click.png",
+        "bytes": 157047,
+        "colours": 571,
+        "nonDominantShare": 0.56
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    },
+    {
+      "id": "lightcraft",
+      "url": "https://aphrody.com/craft/lightcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "LightCraft | Aphrody",
+      "before": {
+        "file": "lightcraft-1-loaded.png",
+        "bytes": 255738,
+        "colours": 592,
+        "nonDominantShare": 0.528
+      },
+      "after": {
+        "file": "lightcraft-2-after-click.png",
+        "bytes": 255738,
+        "colours": 592,
+        "nonDominantShare": 0.528
+      },
+      "drew": true,
+      "responded": false,
+      "verdict": "drew, no change after interaction"
+    },
+    {
+      "id": "designcraft",
+      "url": "https://aphrody.com/craft/designcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "DesignCraft | Aphrody",
+      "before": {
+        "file": "designcraft-1-loaded.png",
+        "bytes": 131319,
+        "colours": 473,
+        "nonDominantShare": 0.572
+      },
+      "after": {
+        "file": "designcraft-2-after-click.png",
+        "bytes": 89376,
+        "colours": 387,
+        "nonDominantShare": 0.615
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    },
+    {
+      "id": "effectcraft",
+      "url": "https://aphrody.com/craft/effectcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "EffectCraft | Aphrody",
+      "before": {
+        "file": "effectcraft-1-loaded.png",
+        "bytes": 263151,
+        "colours": 983,
+        "nonDominantShare": 0.547
+      },
+      "after": {
+        "file": "effectcraft-2-after-click.png",
+        "bytes": 277935,
+        "colours": 1025,
+        "nonDominantShare": 0.555
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    },
+    {
+      "id": "gridcraft",
+      "url": "https://aphrody.com/craft/gridcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "GridCraft | Aphrody",
+      "before": {
+        "file": "gridcraft-1-loaded.png",
+        "bytes": 81969,
+        "colours": 472,
+        "nonDominantShare": 0.446
+      },
+      "after": {
+        "file": "gridcraft-2-after-click.png",
+        "bytes": 82395,
+        "colours": 482,
+        "nonDominantShare": 0.446
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    },
+    {
+      "id": "cadcraft",
+      "url": "https://aphrody.com/craft/cadcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "CadCraft | Aphrody",
+      "before": {
+        "file": "cadcraft-1-loaded.png",
+        "bytes": 210777,
+        "colours": 719,
+        "nonDominantShare": 0.532
+      },
+      "after": {
+        "file": "cadcraft-2-after-click.png",
+        "bytes": 223938,
+        "colours": 719,
+        "nonDominantShare": 0.58
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    },
+    {
+      "id": "deckcraft",
+      "url": "https://aphrody.com/craft/deckcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "DeckCraft | Aphrody",
+      "before": {
+        "file": "deckcraft-1-loaded.png",
+        "bytes": 137391,
+        "colours": 828,
+        "nonDominantShare": 0.564
+      },
+      "after": {
+        "file": "deckcraft-2-after-click.png",
+        "bytes": 144816,
+        "colours": 949,
+        "nonDominantShare": 0.566
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    },
+    {
+      "id": "wordcraft",
+      "url": "https://aphrody.com/craft/wordcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "WordCraft | Aphrody",
+      "before": {
+        "file": "wordcraft-1-loaded.png",
+        "bytes": 100872,
+        "colours": 483,
+        "nonDominantShare": 0.298
+      },
+      "after": {
+        "file": "wordcraft-2-after-click.png",
+        "bytes": 100872,
+        "colours": 483,
+        "nonDominantShare": 0.298
+      },
+      "drew": true,
+      "responded": false,
+      "verdict": "drew, no change after interaction"
+    },
+    {
+      "id": "pdfcraft",
+      "url": "https://aphrody.com/craft/pdfcraft?autostart=1",
+      "host": {
+        "gpu": true,
+        "launched": true,
+        "adapter": "nvidia lovelace"
+      },
+      "title": "PdfCraft | Aphrody",
+      "before": {
+        "file": "pdfcraft-1-loaded.png",
+        "bytes": 187323,
+        "colours": 682,
+        "nonDominantShare": 0.63
+      },
+      "after": {
+        "file": "pdfcraft-2-after-click.png",
+        "bytes": 193239,
+        "colours": 655,
+        "nonDominantShare": 0.632
+      },
+      "drew": true,
+      "responded": true,
+      "verdict": "drew and changed after interaction"
+    }
+  ]
+}

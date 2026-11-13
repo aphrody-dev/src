@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { getSuggestions } from "./src/data/suggestions";
 import { UniversalStoreManager } from "./src/store/universal-manager";
-import { runBenchmarkSuite } from "./src/benchmark/stack-picker";
+import { readStored } from "./src/benchmark/stored";
 import { AssetStore, respondWithAsset } from "./src/runtime/assets";
 import { getHashEngine } from "./src/runtime/hash";
 import {
@@ -35,7 +35,7 @@ function resolveDist(): string {
 }
 
 const DIST_DIR = resolveDist();
-const storeManager = UniversalStoreManager.getInstance("var/store.sqlite");
+const storeManager = UniversalStoreManager.getInstance("var");
 const assets = new AssetStore(DIST_DIR);
 
 /** Google ids: runtime env first, else the config baked into dist/ by the build. */
@@ -145,15 +145,18 @@ function htmlHeaders(pathname: string): Record<string, string> {
     ...(isOs(pathname)
       ? OS_HEADERS
       : isPlay(pathname)
-      ? PLAY_HEADERS
-      : isCraft(pathname)
-      ? CRAFT_HEADERS
-      : isGamescope(pathname)
-      ? GAMESCOPE_HEADERS
-      : {
-          Link: pathname === "/" || pathname === "/en" ? LINK_HOME : LINK_PAGE,
-          ...SECURITY_HEADERS,
-        }),
+        ? PLAY_HEADERS
+        : isCraft(pathname)
+          ? CRAFT_HEADERS
+          : isGamescope(pathname)
+            ? GAMESCOPE_HEADERS
+            : {
+                Link:
+                  pathname === "/" || pathname === "/en"
+                    ? LINK_HOME
+                    : LINK_PAGE,
+                ...SECURITY_HEADERS,
+              }),
   };
 }
 
@@ -190,22 +193,13 @@ export const server = serve({
     if (pathname === "/api/pm" || pathname === "/api/store/search") {
       const q = url.searchParams.get("q") || "";
       const eco = (url.searchParams.get("ecosystem") || "all") as any;
-      const packages = await storeManager.search(q, eco);
-      return jsonResponse(
-        { query: q, ecosystem: eco, count: packages.length, packages },
-        200,
-        req,
-      );
+      return jsonResponse(await storeManager.searchDetailed(q, eco), 200, req);
     }
 
     // 7. API: Performance, LTO, AOT & Zero-Copy Stack Benchmark (short: /api/bnc, legacy: /api/bench)
     if (pathname === "/api/bnc" || pathname === "/api/bench") {
-      try {
-        const report = await runBenchmarkSuite();
-        return jsonResponse(report, 200, req);
-      } catch (err: any) {
-        return jsonResponse({ error: err.message }, 500, req);
-      }
+      const state = readStored();
+      return jsonResponse(state, state.measured ? 200 : 404, req);
     }
 
     // 9. First-party GA4 relay

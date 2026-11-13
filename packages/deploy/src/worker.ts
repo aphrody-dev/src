@@ -18,10 +18,16 @@ import {
 import {
   dashboard,
   landing,
+  platform,
+  LOCALES,
+  localePath,
+  pagePath,
   logPage,
+  tr,
   projectPage,
   type ProjectView,
 } from "./pages.ts";
+import { HERO_JS, THEME_JS } from "./ui.ts";
 import {
   forgetState,
   readState,
@@ -496,8 +502,19 @@ export default {
       )
         return dash(req, env, url);
       const reg = await registry(env);
-      if (url.pathname === "/")
-        return html(landing(reg, await views(env, reg)));
+      if (url.pathname === "/") return html(landing(reg));
+      const loc = LOCALES.find((x) => x !== "fr" && url.pathname === `/${x}`);
+      if (loc) return html(landing(reg, loc));
+      const plat = LOCALES.find((x) => pagePath("platform", x) === url.pathname);
+      if (plat) return html(platform(reg, await views(env, reg), plat));
+      if (url.pathname === "/_/theme.js" || url.pathname === "/_/hero.js")
+        return new Response(url.pathname === "/_/theme.js" ? THEME_JS : HERO_JS, {
+          headers: {
+            "content-type": "text/javascript; charset=utf-8",
+            "cache-control": "public, max-age=300",
+            "x-content-type-options": "nosniff",
+          },
+        });
       if (url.pathname === "/labs")
         return Response.redirect("https://aphrody.app/", 301);
       if (url.pathname === "/llms.txt")
@@ -514,7 +531,7 @@ export default {
         );
       if (url.pathname === "/sitemap.xml")
         return new Response(
-          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${["/"].map((p) => `<url><loc>https://aphrody.app${p}</loc>${reg.generatedAt ? `<lastmod>${reg.generatedAt.slice(0, 10)}</lastmod>` : ""}</url>`).join("")}</urlset>\n`,
+          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${LOCALES.flatMap((x) => [localePath(x), pagePath("platform", x)]).map((p) => `<url><loc>https://aphrody.app${p}</loc>${reg.generatedAt ? `<lastmod>${reg.generatedAt.slice(0, 10)}</lastmod>` : ""}</url>`).join("")}</urlset>\n`,
           {
             headers: {
               "content-type": "application/xml; charset=utf-8",
@@ -528,9 +545,9 @@ export default {
       if (url.pathname === "/favicon.ico")
         return Response.redirect("https://aphrody.com/favicon.ico", 301);
       return html(
-        landing(reg, await views(env, reg)).replace(
+        landing(reg).replace(
           "<h1",
-          '<p class="lead">Page introuvable.</p><h1',
+          `<p class="lead">${tr("fr", "plat.notfound")}</p><h1`,
         ),
         404,
       );

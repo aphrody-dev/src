@@ -1,6 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import { CRAFT_APPS, CRAFT_CDN } from "../src/craft/apps";
-import { CRAFT_CSP, CRAFT_PERMISSIONS, renderCraftApp, renderCraftIndex } from "../src/craft/page";
+import {
+  CRAFT_CSP,
+  CRAFT_PERMISSIONS,
+  renderCraftApp,
+  renderCraftIndex,
+} from "../src/craft/page";
 
 describe("craft host pages", () => {
   test("every app has a page with its name, icon and lazy iframe", () => {
@@ -19,6 +24,8 @@ describe("craft host pages", () => {
   test("CSP frames only the first-party CDN, no wasm eval on the host page", () => {
     expect(CRAFT_CSP).toContain("frame-src https://cdn.aphrody.com");
     expect(CRAFT_CSP).not.toContain("unsafe-eval");
-    expect(CRAFT_PERMISSIONS).toContain('gamepad=(self "https://cdn.aphrody.com")');
+    expect(CRAFT_PERMISSIONS).toContain(
+      'gamepad=(self "https://cdn.aphrody.com")',
+    );
   });
 });

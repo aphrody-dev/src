@@ -1,0 +1,195 @@
+{
+  "objects": [
+    {
+      "downloads": {
+        "monthly": 374164006,
+        "weekly": 105430096
+      },
+      "dependents": "6606",
+      "updated": "2026-11-13T10:41:29.010Z",
+      "searchScore": 2289.4854,
+      "package": {
+        "name": "hono",
+        "keywords": [
+          "hono",
+          "web",
+          "app",
+          "http",
+          "application",
+          "framework",
+          "router",
+          "cloudflare",
+          "workers",
+          "fastly",
+          "compute",
+          "deno",
+          "bun",
+          "lambda",
+          "nodejs"
+        ],
+        "version": "4.13.18",
+        "description": "Web framework built on Web Standards",
+        "sanitized_name": "hono",
+        "publisher": {
+          "email": "npm-oidc-no-reply@github.com",
+          "actor": {
+            "name": "yusukebe",
+            "type": "user",
+            "email": "yusuke@kamawada.com"
+          },
+          "trustedPublisher": {
+            "oidcConfigId": "4f58518f-c773-4172-885e-5ea4bad8c637",
+            "id": "github"
+          },
+          "approver": {
+            "name": "yusukebe",
+            "email": "yusuke@kamawada.com"
+          },
+          "username": "GitHub Actions"
+        },
+        "maintainers": [
+          {
+            "email": "yusuke@kamawada.com",
+            "username": "yusukebe"
+          }
+        ],
+        "license": "MIT",
+        "date": "2026-11-11T08:54:02.195Z",
+        "links": {
+          "homepage": "https://hono.dev",
+          "repository": "git+https://github.com/honojs/hono.git",
+          "bugs": "https://github.com/honojs/hono/issues",
+          "npm": "https://www.npmjs.com/package/hono"
+        }
+      },
+      "score": {
+        "final": 2289.4854,
+        "detail": {
+          "popularity": 1,
+          "quality": 1,
+          "maintenance": 1
+        }
+      },
+      "flags": {
+        "insecure": 0
+      }
+    },
+    {
+      "downloads": {
+        "monthly": 347496808,
+        "weekly": 97278965
+      },
+      "dependents": "3674",
+      "updated": "2026-11-13T10:31:21.711Z",
+      "searchScore": 647.62604,
+      "package": {
+        "name": "@hono/node-server",
+        "keywords": [],
+        "version": "2.1.8",
+        "description": "Node.js Adapter for Hono",
+        "sanitized_name": "@hono/node-server",
+        "publisher": {
+          "email": "npm-oidc-no-reply@github.com",
+          "actor": {
+            "name": "yusukebe",
+            "type": "user",
+            "email": "yusuke@kamawada.com"
+          },
+          "approver": {
+            "name": "yusukebe",
+            "email": "yusuke@kamawada.com"
+          },
+          "trustedPublisher": {
+            "oidcConfigId": "6aa70a6b-ce6e-4724-ae0c-9b24484ec7d5",
+            "id": "github"
+          },
+          "username": "GitHub Actions"
+        },
+        "maintainers": [
+          {
+            "email": "yusuke@kamawada.com",
+            "username": "yusukebe"
+          }
+        ],
+        "license": "MIT",
+        "date": "2026-11-12T12:42:49.377Z",
+        "links": {
+          "homepage": "https://github.com/honojs/node-server",
+          "repository": "git+https://github.com/honojs/node-server.git",
+          "bugs": "https://github.com/honojs/node-server/issues",
+          "npm": "https://www.npmjs.com/package/@hono/node-server"
+        }
+      },
+      "score": {
+        "final": 647.62604,
+        "detail": {
+          "popularity": 1,
+          "quality": 1,
+          "maintenance": 1
+        }
+      },
+      "flags": {
+        "insecure": 0
+      }
+    },
+    {
+      "downloads": {
+        "monthly": 11628626,
+        "weekly": 3230113
+      },
+      "dependents": "138",
+      "updated": "2026-11-13T10:41:50.849Z",
+      "searchScore": 546.32684,
+      "package": {
+        "name": "hono-openapi",
+        "keywords": [
+          "hono",
+          "openapi",
+          "zod",
+          "valibot",
+          "typebox",
+          "arktype",
+          "effect"
+        ],
+        "version": "1.5.0",
+        "description": "OpenAPI schema generator for Hono",
+        "sanitized_name": "hono-openapi",
+        "publisher": {
+          "email": "npm-oidc-no-reply@github.com",
+          "trustedPublisher": {
+            "oidcConfigId": "8a98cec3-7494-41a8-9df8-5da25e9056c4",
+            "id": "github"
+          },
+          "username": "GitHub Actions"
+        },
+        "maintainers": [
+          {
+            "email": "mathuraditya724@gmail.com",
+            "username": "mathuraditya724"
+          }
+        ],
+        "license": "MIT",
+        "date": "2026-10-18T04:21:01.368Z",
+        "links": {
+          "homepage": "https://github.com/rhinobase/hono-openapi",
+          "repository": "git+https://github.com/rhinobase/hono-openapi.git",
+          "bugs": "https://github.com/rhinobase/hono-openapi/issues",
+          "npm": "https://www.npmjs.com/package/hono-openapi"
+        }
+      },
+      "score": {
+        "final": 546.32684,
+        "detail": {
+          "popularity": 1,
+          "quality": 1,
+          "maintenance": 1
+        }
+      },
+      "flags": {
+        "insecure": 0
+      }
+    }
+  ],
+  "total": 6078,
+  "time": "2026-11-13T10:59:46.311Z"
+}

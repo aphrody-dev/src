@@ -4,7 +4,13 @@
 import { CRAFT_APPS, CRAFT_CDN, type CraftApp } from "./apps";
 
 const esc = (s: string) =>
-  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+  s.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ]!,
+  );
 
 /**
  * CSP of /craft: the app runs in a cross-origin iframe from the first-party CDN. No COOP/COEP is sent: the
@@ -24,7 +30,13 @@ export const CRAFT_CSP = [
 ].join("; ");
 const CDN = '"https://cdn.aphrody.com"';
 // Delegated to the CDN origin that hosts the framed app (allow= on the iframe alone is not enough).
-export const CRAFT_PERMISSIONS = ["microphone", "gamepad", "fullscreen", "clipboard-read", "clipboard-write"]
+export const CRAFT_PERMISSIONS = [
+  "microphone",
+  "gamepad",
+  "fullscreen",
+  "clipboard-read",
+  "clipboard-write",
+]
   .map((f) => `${f}=(self ${CDN})`)
   .concat(["camera=()", "geolocation=()"])
   .join(", ");
@@ -55,7 +67,12 @@ ul.grid img{width:48px;height:48px;object-fit:contain;flex:none}
 ul.grid b{display:block}ul.grid span{color:#a9b6c4;font-size:.9rem}
 `;
 
-function shell(title: string, description: string, body: string, app?: CraftApp): string {
+function shell(
+  title: string,
+  description: string,
+  body: string,
+  app?: CraftApp,
+): string {
   const icon = app ? `${CRAFT_CDN}${app.id}/${app.icon}` : "/favicon.svg";
   return `<!doctype html>
 <html lang="en">
@@ -104,5 +121,9 @@ export function renderCraftIndex(): string {
 <main><ul class="grid">
 ${items}
 </ul></main>`;
-  return shell("Craft Apps | Aphrody", "Open-source creative suite running as WebAssembly on WebGPU.", body);
+  return shell(
+    "Craft Apps | Aphrody",
+    "Open-source creative suite running as WebAssembly on WebGPU.",
+    body,
+  );
 }

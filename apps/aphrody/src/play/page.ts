@@ -6,9 +6,21 @@ import { catalogs } from "../../../../packages/i18n/src/index.ts";
 export const PLAY_LOCALES = ["en", "fr", "zh-CN", "ja", "es"] as const;
 export type PlayLocale = (typeof PLAY_LOCALES)[number];
 const playPath = (l: PlayLocale) => (l === "en" ? "/play" : `/play/${l}`);
-const NATIVE: Record<PlayLocale, string> = { en: "English", fr: "Français", "zh-CN": "中文", ja: "日本語", es: "Español" };
+const NATIVE: Record<PlayLocale, string> = {
+  en: "English",
+  fr: "Français",
+  "zh-CN": "中文",
+  ja: "日本語",
+  es: "Español",
+};
 const esc = (s: string) =>
-  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+  s.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ]!,
+  );
 
 /** CSP of /play only: the wasm module needs 'wasm-unsafe-eval'; no third party, no inline script. */
 export const PLAY_CSP = [
@@ -28,10 +40,12 @@ export function renderPlay(locale: PlayLocale = "en"): string {
   const en = catalogs.en as Record<string, string>;
   const cat = catalogs[locale] as Record<string, string>;
   const dict: Record<string, string> = {};
-  for (const k of Object.keys(en)) if (k.startsWith("play.")) dict[k] = cat[k] ?? en[k]!;
+  for (const k of Object.keys(en))
+    if (k.startsWith("play.")) dict[k] = cat[k] ?? en[k]!;
   const t = (k: string) => esc(dict[k]!);
   const alt = PLAY_LOCALES.map(
-    (l) => `<link rel="alternate" hreflang="${l}" href="https://aphrody.com${playPath(l)}">`,
+    (l) =>
+      `<link rel="alternate" hreflang="${l}" href="https://aphrody.com${playPath(l)}">`,
   ).join("");
   return `<!doctype html>
 <html lang="${locale}">

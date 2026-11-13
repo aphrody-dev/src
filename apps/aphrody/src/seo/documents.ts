@@ -5,20 +5,31 @@
  * security.txt, humans.txt and the IndexNow key.
  */
 
+import { APP_URL, HOME, SITE_URL, pathGroups } from "./site";
 import {
-  APP_URL,
-  HOME,
-  SITE_URL,
-  pathGroups,
-} from "./site";
-import { HOME_LOCALES as LOCALES, PRODUCTS, type HoldingLocale as Locale } from "../holding/page";
+  HOME_LOCALES as LOCALES,
+  PRODUCTS,
+  type HoldingLocale as Locale,
+} from "../holding/page";
 import { catalogs } from "../../../../packages/i18n/src/index.ts";
 
 /** Route of the home page per locale: fr at the root, the others under /<locale>. */
 const localizedPath = (path: string, l: Locale): string =>
   l === "fr" ? path : path === "/" ? `/${l}` : `/${l}${path}`;
-const HREFLANG: Record<Locale, string> = { fr: "fr", en: "en", "zh-CN": "zh-CN", ja: "ja", es: "es" };
-const NATIVE: Record<Locale, string> = { fr: "Français", en: "English", "zh-CN": "中文", ja: "日本語", es: "Español" };
+const HREFLANG: Record<Locale, string> = {
+  fr: "fr",
+  en: "en",
+  "zh-CN": "zh-CN",
+  ja: "ja",
+  es: "es",
+};
+const NATIVE: Record<Locale, string> = {
+  fr: "Français",
+  en: "English",
+  "zh-CN": "中文",
+  ja: "日本語",
+  es: "Español",
+};
 const homeCopy = (l: Locale) => {
   const c = catalogs[l] as Record<string, string>;
   return { h1: c["home.title"], intro: c["home.desc"] };

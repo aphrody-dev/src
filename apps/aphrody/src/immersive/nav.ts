@@ -20,7 +20,8 @@ export function pickNext(boxes: Box[], from: number, dir: Dir): number {
     if (i === from) return;
     const dx = cx(b) - cx(a);
     const dy = cy(b) - cy(a);
-    const main = dir === "left" ? -dx : dir === "right" ? dx : dir === "up" ? -dy : dy;
+    const main =
+      dir === "left" ? -dx : dir === "right" ? dx : dir === "up" ? -dy : dy;
     const cross = dir === "left" || dir === "right" ? dy : dx;
     if (main <= 1) return;
     const score = main + 2 * Math.abs(cross);
@@ -35,5 +36,11 @@ export function pickNext(boxes: Box[], from: number, dir: Dir): number {
 /** Direction of a gamepad stick or d-pad reading, or null inside the dead zone. */
 export function stickDir(x: number, y: number, dead = 0.5): Dir | null {
   if (Math.hypot(x, y) < dead) return null;
-  return Math.abs(x) > Math.abs(y) ? (x < 0 ? "left" : "right") : y < 0 ? "up" : "down";
+  return Math.abs(x) > Math.abs(y)
+    ? x < 0
+      ? "left"
+      : "right"
+    : y < 0
+      ? "up"
+      : "down";
 }
