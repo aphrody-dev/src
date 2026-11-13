@@ -25,8 +25,6 @@ jobs:
         run: bun --revision | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Bun workspace dependencies (bun check reads @types/bun from node_modules)
         run: bun install --frozen-lockfile
-      - uses: actions/setup-go@v7
-        with: { go-version-file: infra/go.mod }
       - name: Layered dependency gate (checkdeps)
         run: bun scripts/checkdeps.ts
       - name: Identity gate
@@ -37,8 +35,6 @@ jobs:
         run: AGENTS_HOME="$RUNNER_TEMP/agents" bun --no-env-file infra/agents/runner.ts status
       - name: Agent runner tests (no shell, prompts with shell metacharacters)
         run: AGENTS_HOME="$RUNNER_TEMP/agents" bun --no-env-file test infra/agents
-      - name: Go deploy engine
-        run: go -C infra test ./...
       - name: JS supply chain (bun workspace deps)
         run: bun scripts/js-deps-check.ts
       - name: Toolchain (Chromium 157 rustc, rustup chromium-157 named by rust-toolchain.toml)
@@ -67,7 +63,8 @@ jobs:
         run: cd packages/chromium-bun && bun check && bun --no-env-file test test/ssrf.test.ts test/engines.test.ts test/layers.test.ts test/purge-matrix.test.ts test/winner-picker.test.ts test/chromium-inspector.test.ts
       - name: Bun apps/aphrody
         if: ${{ !cancelled() }}
-        run: cd apps/aphrody && bun check && bun --no-env-file test
+        # The suites read the built site (dist/ is git-ignored): build it first, as deploy.yml does.
+        run: cd apps/aphrody && bun check && bun run build && bun --no-env-file test
   # Tribunal ai-os review (docs/reviews/README.md) sur les commits du push : job séparé et indicatif (continue-on-error),
   # il ne ralentit pas les portes ci-dessus et ne déclenche jamais ci-revert. Verdict du juge dans le résumé du run ; la
   # CI ne commite rien (les verdicts archivés viennent de `just review` et de `ai-os orch lifecycle`). Moteurs : registre
