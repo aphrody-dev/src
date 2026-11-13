@@ -22,7 +22,16 @@ const rows: Row[] = [];
 const add = (check: string, target: string, ok: boolean, evidence: string) => rows.push({ check, target, ok, evidence });
 
 async function doh(name: string, type = "A"): Promise<string[]> {
-  const r = await fetch(`https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`, { headers: { accept: "application/dns-json" } });
+  // ~75 lookups run in parallel: the resolver sometimes refuses a connection, so retry before failing the run.
+  let r: Response | undefined;
+  for (let i = 0; i < 4 && !r; i++) {
+    r = await fetch(`https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`, { headers: { accept: "application/dns-json" } }).catch(async (e) => {
+      if (i === 3) throw e;
+      await Bun.sleep(500 * (i + 1));
+      return undefined;
+    });
+  }
+  if (!r) throw new Error(`DoH ${name}: no answer`);
   return (((await r.json()) as any).Answer ?? []).filter((a: any) => a.type === (type === "A" ? 1 : 28)).map((a: any) => a.data);
 }
 function issuer(host: string): Promise<string> {
@@ -217,37 +226,52 @@ for (const from of ["fr2", "prd"]) {
   }
 }
 
-// 9b. browser terminals: the Access CA of each ssh app is the key sshd trusts on its host, and the Unix user equal
-// to the owner email prefix exists (a real certificate login needs the owner browser session: not automatable).
+// 9b. browser terminals: the Access CA of each ssh app is the only key in the file sshd trusts on its host (root 644),
+// certificates are limited to principals files (only the owner user has one), and that user exists. A real certificate
+// login needs the owner's browser session: reported as not proven, not as a failure.
 {
   const apps2 = await api<any[]>("GET", `/accounts/${cfg.account}/access/apps?per_page=100`);
   for (const [name, host] of [["fr2-ssh", "fr2"], ["prd-ssh", "prd"]]) {
     const app = apps2.find((x) => x.name === name);
     const ca = app ? await api<any>("GET", `/accounts/${cfg.account}/access/apps/${app.id}/ca`).catch(() => null) : null;
     const want = String(ca?.public_key ?? "").trim().split(" ").slice(0, 2).join(" ");
-    const live = sh(host, 'sudo sshd -T 2>/dev/null | grep -i "^trustedusercakeys " | cut -d" " -f2 | xargs -r sudo cat; id -u contact >/dev/null 2>&1 && echo USER_OK');
-    const ok = !!want && live.includes(want) && live.includes("USER_OK");
-    add("ssh-ca", `${name} CA trusted by sshd on ${host}`, ok, ok ? `${want.split(" ")[0]} ...${want.slice(-12)}, user contact` : "MISMATCH or missing");
+    const live = sh(host, [
+      'f=$(sudo sshd -T 2>/dev/null | grep -i "^trustedusercakeys " | cut -d" " -f2)',
+      'echo "MODE $(stat -c "%U %a" "$f")"; echo "KEYS $(grep -c . "$f")"; sudo cat "$f"',
+      'echo "APF $(sudo sshd -T 2>/dev/null | grep -i "^authorizedprincipalsfile " | cut -d" " -f2)"',
+      'echo "PRINC $(ls /etc/ssh/access-principals | tr "\\n" " ")"',
+      "id -u contact >/dev/null 2>&1 && echo USER_OK",
+    ].join("; "));
+    const ok = !!want && live.includes(want) && live.includes("MODE root 644") && live.includes("KEYS 1")
+      && live.includes("APF /etc/ssh/access-principals/%u") && /PRINC contact \n/.test(live + "\n") && live.includes("USER_OK");
+    add("ssh-ca", `${name} CA trusted by sshd on ${host}`, ok, ok ? `${want.split(" ")[0]} ...${want.slice(-12)}, sole CA, root 644, principals: contact only; certificate login not proven (owner browser session)` : live.replace(/\n/g, " | ").slice(0, 200) || "MISSING");
   }
 }
 
-// 9c. closing criteria of public ssh 22 on fr2 (target 2026-11-20): hourly probes on fr2 and prd (fleet-ssh22-probe.timer),
-// 7 full days without a failed probe in either direction (Access and mesh), OVH KVM console tested
-// (/etc/fleet/kvm-console-tested on fr2, written once by the owner). Fails only if probing stops; readiness is in the evidence.
+// 9c. closing criteria of public ssh 22 on fr2 (target 2026-11-20): hourly probes (fleet-ssh22-probe.timer) on fr2
+// (Access -> prd, mesh -> prd), prd (Access -> fr2, mesh -> fr2) and fr1 (mesh -> fr2, the path left once 22 is closed).
+// Green day count = time since the later of the first probe and the last failure or gap > 2 h between two probes.
+// Ready = 7 days on all three, at least 150 probes each, and the OVH KVM console tested (/etc/fleet/kvm-console-tested
+// on fr2, written once by the owner). The check fails only if probing stops; readiness is reported in the evidence.
 {
-  const DAY = 86400, now = Date.now() / 1000;
+  const DAY = 86400, GAP = 2 * 3600, now = Date.now() / 1000;
   const parts: string[] = [];
   let fresh = true, ready = true;
-  for (const h of ["fr2", "prd"]) {
+  for (const [h, label] of [["fr2", "fr2"], ["prd", "prd"], ["vps", "fr1"]]) {
     const rowsH = sh(h, "sudo cat /var/lib/fleet-ssh22/probes.jsonl 2>/dev/null").split("\n").filter(Boolean)
-      .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean) as { ts: number; access: boolean; mesh: boolean }[];
+      .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean) as { ts: number; access: boolean | null; mesh: boolean }[];
+    let start = rowsH[0]?.ts ?? now, fails = 0;
+    rowsH.forEach((r, i) => {
+      const bad = r.access === false || !r.mesh;
+      if (bad) fails++;
+      if (bad || (i > 0 && r.ts - rowsH[i - 1].ts > GAP)) start = r.ts;
+    });
     const last = rowsH.at(-1);
-    const fails = rowsH.filter((r) => !r.access || !r.mesh);
-    const since = Math.max(rowsH[0]?.ts ?? now, fails.at(-1)?.ts ?? 0);
-    const days = Math.floor((now - since) / DAY);
-    if (!last || now - last.ts > 2 * 3600) fresh = false;
-    if (days < 7) ready = false;
-    parts.push(`${h}: ${rowsH.length} probes, ${fails.length} failed, ${days}/7 d green, last ${last ? Math.round((now - last.ts) / 60) + " min ago" : "never"}`);
+    if (last && now - last.ts > GAP) start = now;
+    const days = Math.floor((now - start) / DAY);
+    if (!last || now - last.ts > GAP) fresh = false;
+    if (days < 7 || rowsH.length < 150) ready = false;
+    parts.push(`${label}: ${rowsH.length} probes, ${fails} failed, ${days}/7 d green, last ${last ? Math.round((now - last.ts) / 60) + " min ago" : "never"}`);
   }
   const kvm = sh("fr2", "cat /etc/fleet/kvm-console-tested 2>/dev/null");
   if (!kvm) ready = false;
