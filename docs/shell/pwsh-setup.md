@@ -66,7 +66,7 @@ Tests (TabExpansion2, 7.7 et 5.1) : `git chec` → check-attr…, `cargo bui` �
 | `-NoLogo -NoProfile -NoExit -c exit` | 256 ms | |
 | `-NoLogo -NoExit -c exit` (profil complet, proxy interactif) | 335 ms | |
 
-Ancien profil (même machine) : +42 ms en interactif ; nouveau sans env.ps1 : +42 ms. Le surcoût actuel vient d'env.ps1 (+46 ms au-delà d'un dot-source vide, boucle PATH ; correction demandée à shells.ts) et du parse du fichier (~15 ms, dont le bloc Coreutils et ses deux regex `Compiled` ~11 ms).
+Ancien profil (même machine) : +42 ms en interactif ; nouveau sans env.ps1 : +42 ms. Le surcoût actuel vient d'env.ps1 (+46 ms au-delà d'un dot-source vide avec l'ancienne boucle PATH ; régénéré depuis en une passe HashSet, remesure à refaire sur machine non chargée : le passage suivant donnait ±47 ms de bruit) et du parse du fichier (~15 ms, dont le bloc Coreutils et ses deux regex `Compiled` ~11 ms).
 
 ## Hors périmètre
 
