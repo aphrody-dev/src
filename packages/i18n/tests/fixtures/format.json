@@ -1,0 +1,119 @@
+[
+  {
+    "locale": "en",
+    "key": "greeting",
+    "args": { "name": "Ada" },
+    "out": "Hello, Ada"
+  },
+  {
+    "locale": "fr",
+    "key": "greeting",
+    "args": { "name": "Ada" },
+    "out": "Bonjour, Ada"
+  },
+  {
+    "locale": "en",
+    "key": "files.count",
+    "args": { "count": 0 },
+    "out": "No files"
+  },
+  {
+    "locale": "en",
+    "key": "files.count",
+    "args": { "count": 1 },
+    "out": "1 file"
+  },
+  {
+    "locale": "en",
+    "key": "files.count",
+    "args": { "count": 7 },
+    "out": "7 files"
+  },
+  {
+    "locale": "fr",
+    "key": "files.count",
+    "args": { "count": 0 },
+    "out": "Aucun fichier"
+  },
+  {
+    "locale": "fr",
+    "key": "files.count",
+    "args": { "count": 1 },
+    "out": "1 fichier"
+  },
+  {
+    "locale": "fr",
+    "key": "files.count",
+    "args": { "count": 2 },
+    "out": "2 fichiers"
+  },
+  {
+    "locale": "es",
+    "key": "files.count",
+    "args": { "count": 1 },
+    "out": "1 archivo"
+  },
+  {
+    "locale": "es",
+    "key": "files.count",
+    "args": { "count": 5 },
+    "out": "5 archivos"
+  },
+  {
+    "locale": "ja",
+    "key": "files.count",
+    "args": { "count": 1 },
+    "out": "1個のファイル"
+  },
+  {
+    "locale": "zh-CN",
+    "key": "files.count",
+    "args": { "count": 3 },
+    "out": "3 个文件"
+  },
+  {
+    "locale": "en",
+    "key": "results.found",
+    "args": { "count": 1, "query": "bevy" },
+    "out": "1 result for bevy"
+  },
+  {
+    "locale": "zh-CN",
+    "key": "results.found",
+    "args": { "count": 4, "query": "bevy" },
+    "out": "找到 4 条与 bevy 相关的结果"
+  },
+  {
+    "locale": "ja",
+    "key": "results.found",
+    "args": { "count": 0, "query": "bevy" },
+    "out": "bevy の結果はありません"
+  },
+  {
+    "locale": "en",
+    "key": "build.state",
+    "args": { "state": "running" },
+    "out": "Running"
+  },
+  {
+    "locale": "es",
+    "key": "build.state",
+    "args": { "state": "zzz" },
+    "out": "Desconocido"
+  },
+  {
+    "locale": "en",
+    "key": "quote.literal",
+    "args": {},
+    "out": "Use {braces} and it's fine"
+  },
+  {
+    "locale": "fr",
+    "key": "status.error",
+    "args": { "reason": "x" },
+    "out": "Une erreur s'est produite : x"
+  },
+  { "locale": "de", "key": "nav.home", "args": {}, "out": "Home" },
+  { "locale": "fr-CA", "key": "nav.home", "args": {}, "out": "Accueil" },
+  { "locale": "en", "key": "no.such.key", "args": {}, "out": "no.such.key" }
+]

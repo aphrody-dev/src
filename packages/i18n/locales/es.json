@@ -1,0 +1,21 @@
+{
+  "app.name": "Aphrody",
+  "app.tagline": "Un motor de juegos y una suite creativa construidos en abierto",
+  "nav.home": "Inicio",
+  "nav.docs": "Documentación",
+  "nav.packages": "Paquetes",
+  "nav.settings": "Ajustes",
+  "action.save": "Guardar",
+  "action.cancel": "Cancelar",
+  "action.retry": "Reintentar",
+  "action.install": "Instalar {name}",
+  "status.loading": "Cargando...",
+  "status.error": "Algo salió mal: {reason}",
+  "status.empty": "Todavía no hay nada que mostrar",
+  "greeting": "Hola, {name}",
+  "files.count": "{count, plural, =0 {Ningún archivo} one {# archivo} other {# archivos}}",
+  "results.found": "{count, plural, =0 {Sin resultados para {query}} one {# resultado para {query}} other {# resultados para {query}}}",
+  "build.state": "{state, select, queued {En cola} running {En curso} done {Terminado} other {Desconocido}}",
+  "quote.literal": "Usa '{'llaves'}' sin problema",
+  "locale.label": "Idioma"
+}

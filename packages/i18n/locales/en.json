@@ -1,0 +1,21 @@
+{
+  "app.name": "Aphrody",
+  "app.tagline": "A game engine and creative suite built in the open",
+  "nav.home": "Home",
+  "nav.docs": "Documentation",
+  "nav.packages": "Packages",
+  "nav.settings": "Settings",
+  "action.save": "Save",
+  "action.cancel": "Cancel",
+  "action.retry": "Retry",
+  "action.install": "Install {name}",
+  "status.loading": "Loading...",
+  "status.error": "Something went wrong: {reason}",
+  "status.empty": "Nothing to show yet",
+  "greeting": "Hello, {name}",
+  "files.count": "{count, plural, =0 {No files} one {# file} other {# files}}",
+  "results.found": "{count, plural, =0 {No results for {query}} one {# result for {query}} other {# results for {query}}}",
+  "build.state": "{state, select, queued {Queued} running {Running} done {Finished} other {Unknown}}",
+  "quote.literal": "Use '{'braces'}' and it''s fine",
+  "locale.label": "Language"
+}

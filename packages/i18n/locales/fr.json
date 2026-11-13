@@ -1,0 +1,21 @@
+{
+  "app.name": "Aphrody",
+  "app.tagline": "Un moteur de jeu et une suite créative construits en open source",
+  "nav.home": "Accueil",
+  "nav.docs": "Documentation",
+  "nav.packages": "Paquets",
+  "nav.settings": "Paramètres",
+  "action.save": "Enregistrer",
+  "action.cancel": "Annuler",
+  "action.retry": "Réessayer",
+  "action.install": "Installer {name}",
+  "status.loading": "Chargement...",
+  "status.error": "Une erreur s'est produite : {reason}",
+  "status.empty": "Rien à afficher pour l'instant",
+  "greeting": "Bonjour, {name}",
+  "files.count": "{count, plural, =0 {Aucun fichier} one {# fichier} other {# fichiers}}",
+  "results.found": "{count, plural, =0 {Aucun résultat pour {query}} one {# résultat pour {query}} other {# résultats pour {query}}}",
+  "build.state": "{state, select, queued {En attente} running {En cours} done {Terminé} other {Inconnu}}",
+  "quote.literal": "Utilisez '{'des accolades'}' sans souci",
+  "locale.label": "Langue"
+}
