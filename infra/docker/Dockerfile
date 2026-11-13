@@ -138,8 +138,6 @@ COPY apps/aphrody/ apps/aphrody/
 COPY docs/ALPHABET.md docs/ALPHABET.md
 COPY docs/reviews/ docs/reviews/
 COPY third_party/forks.txt third_party/forks.txt
-COPY assets/brand/brand.toml assets/brand/brand.toml
-COPY assets/brand/src/ assets/brand/src/
 COPY --parents crates/*/Cargo.toml ./
 COPY apps/r2-site/ apps/r2-site/
 COPY infra/fleet/workers/ infra/fleet/workers/
