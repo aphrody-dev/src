@@ -429,13 +429,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "aphrody-diffutils-flat"
-version = "0.3.0"
-dependencies = [
- "regex",
-]
-
-[[package]]
 name = "aphrody-docs"
 version = "0.3.0"
 dependencies = [
@@ -473,6 +466,13 @@ dependencies = [
  "depot-migrate",
  "depot-re",
  "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "aphrody-i18n"
+version = "0.3.0"
+dependencies = [
  "serde_json",
 ]
 
