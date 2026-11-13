@@ -39,6 +39,10 @@ pub fn run() {
                 .set(AssetPlugin {
                     // Assets are plain files served next to the page: no .meta sidecar requests.
                     meta_check: AssetMetaCheck::Never,
+                    // Absolute on the web: the page is /play (no trailing slash) in some locales, so a relative
+                    // "assets" fetched /assets/models/explorer.glb (404) and the player never loaded.
+                    #[cfg(target_arch = "wasm32")]
+                    file_path: "/play/assets".into(),
                     ..default()
                 }),
         )
