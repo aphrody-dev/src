@@ -1,5 +1,8 @@
 //! Gamescope WebAssembly & WebGPU module for modern browsers (Chromium).
 
+#[cfg(target_arch = "wasm32")]
+pub mod console;
+
 use wasm_bindgen::prelude::*;
 use gamescope_core::{Resolution, ScalingLayout, ScalingMode};
 #[cfg(target_arch = "wasm32")]

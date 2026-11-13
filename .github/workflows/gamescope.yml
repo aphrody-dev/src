@@ -1,0 +1,55 @@
+# Gamescope console UI (crates/gamescope-core, crates/gamescope-web-wasm): unit tests of the UI logic, the
+# wasm32-unknown-unknown build with wasm-bindgen (CLI version equal to the crate in the lockfile), and publication of
+# gamescope.js and gamescope_bg.wasm to R2 aphrody-assets/gamescope (https://cdn.aphrody.com/gamescope/). Runs on fr1.
+name: gamescope
+on:
+  push:
+    branches: [main]
+    paths:
+      - "crates/gamescope-core/**"
+      - "crates/gamescope-web-wasm/**"
+      - "crates/gamescope-wgsl/**"
+      - ".github/workflows/gamescope.yml"
+  workflow_dispatch:
+concurrency:
+  group: gamescope-${{ github.ref }}
+  cancel-in-progress: false
+permissions: { contents: read }
+jobs:
+  web:
+    name: wasm build and publish
+    runs-on: [self-hosted, fr1]
+    timeout-minutes: 60
+    env:
+      RUSTC_WRAPPER: ""
+      CARGO_TERM_COLOR: never
+      CARGO_TARGET_DIR: /home/ubuntu/build/gamescope-wasm-target
+      RUSTUP_TOOLCHAIN: nightly-2026-11-12
+      HEAVY_WAIT_MAX: "2700"
+      OUT: ${{ github.workspace }}/target/gamescope-web
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: false }
+      - name: UI logic tests (focus navigation, layout, both shells)
+        run: aphrody-heavy cargo test -p gamescope-core
+      - name: wasm32 target
+        run: rustup target add wasm32-unknown-unknown --toolchain "$RUSTUP_TOOLCHAIN"
+      - name: wasm32-unknown-unknown release build
+        env:
+          CARGO_PROFILE_RELEASE_STRIP: none
+        run: aphrody-heavy cargo build -p gamescope-web-wasm --target wasm32-unknown-unknown --release
+      - name: wasm-bindgen (CLI version must equal the wasm-bindgen crate in the lockfile)
+        run: |
+          v=$(cargo metadata --format-version 1 | jaq -r '[.packages[] | select(.name == "wasm-bindgen") | .version][0]')
+          [ "$(wasm-bindgen --version 2>/dev/null)" = "wasm-bindgen $v" ] || aphrody-heavy cargo install --locked --root "$RUNNER_TEMP/wb" wasm-bindgen-cli --version "$v"
+          export PATH="$RUNNER_TEMP/wb/bin:$PATH"
+          mkdir -p "$OUT"
+          wasm-bindgen --target web --no-typescript --out-dir "$OUT" --out-name gamescope \
+            "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/gamescope_web_wasm.wasm"
+          ls -l "$OUT"
+      - name: Publish to cdn.aphrody.com/gamescope (R2 aphrody-assets)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          rclone copyto "$OUT/gamescope_bg.wasm" r2:aphrody-assets/gamescope/gamescope_bg.wasm --header-upload "Content-Type: application/wasm" --header-upload "Cache-Control: public, max-age=300"
+          rclone copyto "$OUT/gamescope.js" r2:aphrody-assets/gamescope/gamescope.js --header-upload "Content-Type: text/javascript" --header-upload "Cache-Control: public, max-age=300"
+          rclone lsl r2:aphrody-assets/gamescope

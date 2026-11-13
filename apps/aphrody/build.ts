@@ -36,6 +36,8 @@ import {
   renderCraftApp,
   renderCraftIndex,
 } from "./src/craft/page";
+import { GAMESCOPE_CSP, GAMESCOPE_PERMISSIONS } from "./src/gamescope/page";
+import { buildGamescope } from "./src/gamescope/build";
 import { buildImmersive } from "./src/immersive/build";
 import { buildOs } from "./src/os/build";
 import { OS_CSP } from "./src/os/page";
@@ -43,6 +45,7 @@ import {
   holding404,
   HOME_LOCALES,
   artSprite,
+  UI_SCRIPTS,
   holdingCss,
   productIcons,
   renderHolding,
@@ -97,6 +100,7 @@ for (const l of HOME_LOCALES)
 
 // 4. Crawler, agent and compliance documents.
 emit("art.svg", artSprite(SRC_ROOT));
+for (const [name, js] of Object.entries(UI_SCRIPTS)) emit(name, js);
 emit("robots.txt", robotsTxt());
 for (const [name, xml] of Object.entries(buildSitemaps(BUILD_DATE)))
   emit(name, xml);
@@ -157,6 +161,8 @@ if (!craftBuild.success) {
   console.error("Craft build failed:", craftBuild.logs);
   process.exit(1);
 }
+// 3b3. /gamescope: console UI (wasm on cdn.aphrody.com/gamescope).
+for (const l of await buildGamescope(ROOT, DIST_DIR, emit)) console.log(l);
 // 3c. /os: browser OS shell (apps/aphrody/src/os): pages in five locales, client, owner assets, pinned runtimes.
 for (const l of await buildOs(ROOT, DIST_DIR, emit)) console.log(`- ${l}`);
 console.log(
@@ -214,6 +220,14 @@ emit(
     "  ! Content-Security-Policy",
     `  Content-Security-Policy: ${CRAFT_CSP}`,
     `  Permissions-Policy: ${CRAFT_PERMISSIONS}`,
+    "/gamescope",
+    "  ! Content-Security-Policy",
+    `  Content-Security-Policy: ${GAMESCOPE_CSP}`,
+    `  Permissions-Policy: ${GAMESCOPE_PERMISSIONS}`,
+    "/gamescope/*",
+    "  ! Content-Security-Policy",
+    `  Content-Security-Policy: ${GAMESCOPE_CSP}`,
+    `  Permissions-Policy: ${GAMESCOPE_PERMISSIONS}`,
     "/os",
     "  ! Content-Security-Policy",
     `  Content-Security-Policy: ${OS_CSP}`,

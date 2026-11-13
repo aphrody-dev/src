@@ -1,0 +1,12 @@
+# wasm deploy status
+
+## gamescope console UI
+
+| Item | State (2026-11-13) |
+| --- | --- |
+| Crates | `crates/gamescope-core` (`ui.rs`, `console.rs`: focus navigation, tile-row layout, animation, two shell variants, 27 unit tests, no GPU), `crates/gamescope-web-wasm` (`console.rs` + `console.wgsl`: wgpu instanced-quad renderer, letterbox through `ScalingLayout`) |
+| Build | `wasm32-unknown-unknown` release on fr1 (`nightly-2026-11-12`), `wasm-bindgen --target web` 0.2.130 (equals the lockfile), recipe in `.github/workflows/gamescope.yml` |
+| Artifacts | `https://cdn.aphrody.com/gamescope/gamescope.js` and `gamescope_bg.wasm` (R2 `aphrody-assets/gamescope/`, ~394 KB wasm) |
+| Route | `/gamescope` in `apps/aphrody` (`src/gamescope/`, `src/client/gamescope.ts`), own CSP with `wasm-unsafe-eval`, `?shell=ps\|switch` plus two buttons |
+| Proof | `scripts/proof-gamescope.ts` (real Chrome, RTX adapter over CDP), screenshots in `docs/reviews/proof/gamescope-*.webp` |
+| Not built | EASU/RCAS upscale pass is not applied to the UI (the UI renders at canvas resolution through its own pipeline); no game launch, store, search or settings behind the tiles (sample catalog, each action says so); native window build is not wired; `Shell::Tv` and hosting from `apps/aphrody-app` are planned (`docs/design/replica/console/architecture.md`) |

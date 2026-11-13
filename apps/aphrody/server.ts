@@ -17,6 +17,7 @@ import { render404, renderSearchResults } from "./src/seo/html";
 import type { Locale } from "./src/seo/site";
 import { PLAY_CSP } from "./src/play/page";
 import { CRAFT_CSP, CRAFT_PERMISSIONS } from "./src/craft/page";
+import { GAMESCOPE_CSP, GAMESCOPE_PERMISSIONS } from "./src/gamescope/page";
 import { handleOs, isOs, osHeaders } from "./src/os/server";
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -75,6 +76,14 @@ const CRAFT_HEADERS: Record<string, string> = {
   "Content-Security-Policy": CRAFT_CSP,
   "Permissions-Policy": CRAFT_PERMISSIONS,
 };
+/** /gamescope runs a wasm module from the first-party CDN: own CSP with wasm-unsafe-eval. */
+const GAMESCOPE_HEADERS: Record<string, string> = {
+  ...SECURITY_HEADERS,
+  "Content-Security-Policy": GAMESCOPE_CSP,
+  "Permissions-Policy": GAMESCOPE_PERMISSIONS,
+};
+const isGamescope = (pathname: string) =>
+  pathname === "/gamescope" || pathname.startsWith("/gamescope/");
 const OS_HEADERS = osHeaders(SECURITY_HEADERS);
 const isCraft = (pathname: string) =>
   pathname === "/craft" || pathname.startsWith("/craft/");
@@ -139,6 +148,8 @@ function htmlHeaders(pathname: string): Record<string, string> {
       ? PLAY_HEADERS
       : isCraft(pathname)
       ? CRAFT_HEADERS
+      : isGamescope(pathname)
+      ? GAMESCOPE_HEADERS
       : {
           Link: pathname === "/" || pathname === "/en" ? LINK_HOME : LINK_PAGE,
           ...SECURITY_HEADERS,
@@ -334,7 +345,9 @@ export const server = serve({
               ? PLAY_HEADERS
               : isCraft(pathname)
                 ? CRAFT_HEADERS
-                : SECURITY_HEADERS,
+                : isGamescope(pathname)
+                  ? GAMESCOPE_HEADERS
+                  : SECURITY_HEADERS,
       );
     }
 

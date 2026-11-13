@@ -12,3 +12,6 @@ pub use hdr::{
 };
 pub use pacing::{LatencyBudgetCalculator, RefreshRate, RollingFrameHistogram};
 pub use scaling::{Resolution, ScalingLayout, ScalingMode, ViewportRect};
+
+pub mod console;
+pub mod ui;
