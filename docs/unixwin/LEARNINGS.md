@@ -13,7 +13,7 @@ pas de repli.
 | `niubash.test.ts` | lancement (`--version`, Bun Shell, pipeline Bun -> niu -> Bun, 256 octets par stdin, pas de CR), 62 scripts en parité octet pour octet + code de sortie avec GNU bash : codes de sortie, `set -e`, `pipefail`, `PIPESTATUS`, redirections (fd 3, here-string, heredocs, noclobber), pipelines, expansions, tableaux, `getopts`, `trap`, `mapfile`, UTF-8, persona MSYS (`pwd -W`, `cygpath`), glob avec préfixe Windows | 65/65 avec le niu de la chaîne des forks (2 échecs avec niubash 1.5.0 amont + repli) |
 | `paths.test.ts` | dialectes `/c/`, `/mnt/c/`, `/cygdrive/c/`, `C:\`, `C:/` ; argv d'un enfant natif (bun) ; données non-chemin intactes ; `/dev/null`, `/tmp`, persona ; repli `/src` (`NIU_ROOT_FALLBACK` : sans, avec, `0`, membres réservés) ; noms UTF-8 et CRLF | 16/16 |
 | `winuxcmd.test.ts` | inventaire (`--list-all`), 36 applets en parité avec uutils, `rev` et `expr` contre la valeur GNU, applets appelés depuis niubash | 42/42 |
-| prd | `cargo test` de rubash (Linux) : `just unixwin-test-prd` | voir ci-dessous |
+| prd | `cargo test` de rubash (Linux, rubash@ae43f3e5) : `just unixwin-test-prd` | lib : 1247/1251 au premier passage ; les 4 échecs (EMFILE « Too many open files » et pdeathsig sous charge) passent isolément avec `ulimit -n 65536`, désormais posé par `prd-test.sh` (`--no-fail-fast`) |
 | CI du fork | `cargo test --lib` de rubash sous Windows (`builtins::pwd`, `executor::path::`, `executor::glob::`), build croisé `cross-xwin` | run 43348343134 (niubash@1acf7953, rubash@ae43f3e5) : 3 jobs verts |
 
 Total : 123/123 avec `niu.exe` installé par `just unixwin-install ci` (sha256 f482617e…, rubash ae43f3e56a76) ; le binaire construit sur prd par cargo xwin passe aussi la suite (121/121 au premier tour).

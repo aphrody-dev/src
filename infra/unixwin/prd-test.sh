@@ -9,6 +9,8 @@ FILTER=${2-}
 JOBS=${JOBS:-4}
 W=${UNIXWIN_WORK:-$HOME/unixwin}
 export PATH="$HOME/.cargo/bin:$PATH" CARGO_TARGET_DIR="$W/target-test"
+# Les tests ouvrent beaucoup de descripteurs en parallèle : la limite par défaut (1024) donne EMFILE.
+ulimit -n 65536 2>/dev/null || ulimit -n 4096 2>/dev/null || true
 mkdir -p "$W/logs"
 d="$W/rubash"
 [ -d "$d/.git" ] || git clone -q --filter=blob:none --no-checkout https://github.com/aphrody-labs/rubash.git "$d"
@@ -17,7 +19,7 @@ git -C "$d" -c advice.detachedHead=false checkout -q --force "$RUB" || exit 1
 log="$W/logs/rubash-test-$(git -C "$d" rev-parse --short=12 HEAD).log"
 cd "$d" || exit 1
 # shellcheck disable=SC2086
-nice -n 19 cargo test --locked -j "$JOBS" $FILTER -- --test-threads "$JOBS" >"$log" 2>&1
+nice -n 19 cargo test --locked --no-fail-fast -j "$JOBS" $FILTER -- --test-threads "$JOBS" >"$log" 2>&1
 code=$?
 grep -E '^test result:|^failures:|FAILED|panicked' "$log" | tail -40
 echo "LOG $log"
