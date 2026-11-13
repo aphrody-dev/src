@@ -170,3 +170,40 @@ test("MCP tools/call: non-object arguments and schema violations are -32602", as
   expect(text(undefined)).toBe("null");
   expect(text({ text: "", steps: 1 })).toBe("");
 });
+
+test("no token: foreign Origin refused on POST, queue limit 0 still serves, stop is idempotent", async () => {
+  const g = createGateway({
+    home: mkdtempSync(join(tmpdir(), "agent-gw-q-")),
+    model: await resolveModel("echo/gw"),
+    maxQueuedPerSession: 0,
+  });
+  const post = (body: unknown, headers: Record<string, string> = {}) =>
+    fetch(new URL("/channels/webhook", g.url).href, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers,
+    });
+  expect(
+    (
+      await post(
+        { session: "s", text: "x" },
+        { origin: "https://evil.example" },
+      )
+    ).status,
+  ).toBe(401);
+  expect(
+    (
+      await post(
+        { session: "s", text: "x" },
+        { origin: "http://localhost:3000" },
+      )
+    ).status,
+  ).toBe(200);
+  const empty = await fetch(new URL("/v1/chat/completions", g.url).href, {
+    method: "POST",
+    body: JSON.stringify({ messages: [{ role: "user", content: "" }] }),
+  });
+  expect(empty.status).toBe(400);
+  g.stop();
+  g.stop();
+});

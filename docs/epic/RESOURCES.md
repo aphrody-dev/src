@@ -6,7 +6,7 @@ Checked 2026-11-13 with `gh api`, Context7 (`/websites/dev_epicgames`) and the w
 
 | Item | Fact | Source |
 | :--- | :--- | :--- |
-| Unreal Engine (C++) | Latest stable seen: 5.8, 2026-06-17 (UE 6 status: see below) | dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes |
+| Unreal Engine (C++) | Latest stable: 5.8, 2026-06-17, last planned UE5 major (UE 6: see below) | dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-8-release-notes |
 | UE source access | Private `EpicGames/UnrealEngine`; link GitHub account at unrealengine.com/ue4-on-github | `gh api repos/EpicGames/Signup/readme`; `gh api repos/EpicGames/UnrealEngine` returns private |
 | UE royalty | 5% above first US$1M gross per product; 3.5% under Launch Everywhere with Epic; EGS and Fab revenue excluded | unrealengine.com/release (secondary quotes; EULA not read) |
 | Lore (Rust VCS) | MIT, pre-1.0, v0.13.0 2026-11-06, centralized content-addressed, built into UEFN; docs epicgames.github.io/lore | `gh api repos/EpicGames/lore` |
@@ -15,7 +15,8 @@ Checked 2026-11-13 with `gh api`, Context7 (`/websites/dev_epicgames`) and the w
 
 ## Unreal Engine 6 and Verse direction
 
-- UE 6: no preview build and no Epic-confirmed date. A "late 2027" early-access window is reported only by Wikipedia (citing State of Unreal 2026); treat as unverified. Epic positions UE 6 as merging UE and UEFN toolsets.
+- UE 6 (official, unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show, 2026-06-17, read via Chrome): in development, Early Access targeted end of 2027. Three initiatives: gameplay programming model moves to Verse ("transactionalizes C++"); portable, interoperable content, code and economies through open standards; pipeline features such as MCP with integrations for Claude, Gemini and others. UE 5.8 is the last planned UE5 major release (5.9 kept as an option).
+- Same page: Lore is open source and free; EGS has 6,000+ games from 3,000+ partners and a full rebuild of the Launcher and storefront backend is under way; UE 5.8 MCP plugin is Experimental and model-agnostic.
 - Epic is moving the gameplay programming model to Verse ("transactionalizes C++"); animation, itemization and gameplay abilities arrive in Scene Graph as Verse components (unrealengine.com/news/state-of-unreal-2026-top-news-from-the-show). Today the engine language stays C++ (UE 5.8).
 - UEFN: v43.00 (2026-11-01) adds Verse material inheritance; Verse does not run on the client yet. v42.40 (2026-10-15): UEFN source assets licensable on Fab, `text_channel` API in `/Verse.org/Chat` (dev.epicgames.com/documentation/fortnite release notes).
 - MetaHuman: Creator web app access closed 2026-11-05, then 90 more days to retrieve gallery MetaHumans (forums.unrealengine.com/t/metahuman-creator-web-application-is-being-discontinued/2695297); creation is in-engine. UE 5.8 ships a MetaHuman Devkit and Animator markerless mocap (State of Unreal 2026 news page).

@@ -105,7 +105,12 @@ export function createGateway(o: GatewayOptions) {
   const maxActive = o.maxConcurrentTurns ?? 16;
   const maxQueued = o.maxQueuedPerSession ?? 4;
   let active = 0;
-  const waiting = new Map<string, number>();
+  const waiting = new Map<string, number>(); // session -> turns engaged (running + queued)
+  const release = (session: string) => {
+    const left = (waiting.get(session) ?? 1) - 1;
+    if (left > 0) waiting.set(session, left);
+    else waiting.delete(session);
+  };
   const touch = (session: string) => {
     seen.delete(session);
     seen.set(session, Date.now());
@@ -121,6 +126,7 @@ export function createGateway(o: GatewayOptions) {
   // Keep one memory store open for the gateway's lifetime (shared with every turn).
   const memory = Memory.acquire(layout(o.home).memoryDb);
   const sweep = setInterval(evict, Math.min(ttl, 60_000));
+  let stopped = false;
   sweep.unref?.();
   const channels = new Map(
     (o.channels ?? [webhookChannel()]).map((c) => [c.id, c]),
@@ -136,22 +142,24 @@ export function createGateway(o: GatewayOptions) {
       signal?: AbortSignal;
     } = {},
   ) => {
-    const queued = waiting.get(session) ?? 0;
-    if (queued >= maxQueued)
+    // Turns engaged on the session: one running plus at most maxQueued waiting.
+    const pending = (waiting.get(session) ?? 0) + 1;
+    if (pending > maxQueued + 1)
       return Promise.reject(new Busy("session queue full"));
-    waiting.set(session, queued + 1);
+    waiting.set(session, pending);
     const prev = queue.get(session) ?? Promise.resolve();
     const next = prev.then(async () => {
-      const left = (waiting.get(session) ?? 1) - 1;
-      if (left > 0) waiting.set(session, left);
-      else waiting.delete(session);
       // The global slot is taken when the turn really starts, not while it waits in its session queue.
-      if (active >= maxActive) throw new Busy("too many turns");
+      if (active >= maxActive) {
+        release(session);
+        throw new Busy("too many turns");
+      }
       active++;
       touch(session);
       evict();
       const history = opts.history ?? sessions.get(session) ?? [];
       if (!opts.ephemeral) sessions.set(session, history);
+      trimHistory(history, maxHistory); // also bounds the history a stateless client sends
       try {
         const r = await run({
           task: text,
@@ -166,6 +174,7 @@ export function createGateway(o: GatewayOptions) {
         return r.text;
       } finally {
         active--;
+        release(session);
         if (opts.ephemeral) seen.delete(session);
         else touch(session); // idle time counts from the end of the turn
       }
@@ -188,8 +197,18 @@ export function createGateway(o: GatewayOptions) {
       { status: 400 },
     );
   const busy = () => new Response("too many concurrent turns", { status: 429 });
+  // Without a token the gateway trusts the loopback only, so a page of another site must not reach it
+  // (CSRF / WebSocket hijacking): any Origin header must be a loopback origin.
+  const localOrigin = (req: Request) => {
+    const origin = req.headers.get("origin");
+    if (!origin) return true;
+    const host = URL.parse(origin)?.hostname;
+    return host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+  };
   const authed = (req: Request) =>
-    !o.token || same(req.headers.get("authorization"), `Bearer ${o.token}`);
+    o.token
+      ? same(req.headers.get("authorization"), `Bearer ${o.token}`)
+      : localOrigin(req);
 
   const server = Bun.serve<{ session: string }>({
     // Agent turns outlast the default 10 s idle timeout.
@@ -212,6 +231,9 @@ export function createGateway(o: GatewayOptions) {
             return bad("messages must be an array");
           if (j.stream === true) return bad("stream is not supported");
           const last = j.messages.at(-1);
+          const prompt = last?.role === "user" ? extractText(last.content) : "";
+          if (prompt === "" && last?.role === "user")
+            return bad("empty user message");
           if (last?.role !== "user")
             return bad("the last message must be from the user");
           // Without `user` or `x-session` the turn is ephemeral: no history shared between clients.
@@ -224,7 +246,7 @@ export function createGateway(o: GatewayOptions) {
             // Stateless clients send the whole conversation: it seeds the history of the ephemeral turn.
             text = await turn(
               session,
-              extractText(last.content),
+              prompt,
               named
                 ? {}
                 : {
@@ -235,6 +257,7 @@ export function createGateway(o: GatewayOptions) {
             );
           } catch (e) {
             if (e instanceof Busy) return busy();
+            if (req.signal.aborted) return new Response(null, { status: 499 });
             throw e;
           }
           return Response.json({
@@ -281,13 +304,8 @@ export function createGateway(o: GatewayOptions) {
     },
     fetch(req, srv) {
       if (new URL(req.url).pathname === "/ws") {
-        // Without a token the gateway trusts the loopback only: refuse cross-site pages (WebSocket hijacking).
-        const origin = req.headers.get("origin");
-        if (!o.token && origin) {
-          const host = URL.parse(origin)?.hostname;
-          if (host !== "localhost" && host !== "127.0.0.1" && host !== "[::1]")
-            return new Response("forbidden origin", { status: 403 });
-        }
+        if (!o.token && !localOrigin(req))
+          return new Response("forbidden origin", { status: 403 });
         if (
           !authed(req) &&
           !same(new URL(req.url).searchParams.get("token"), o.token ?? "")
@@ -340,6 +358,8 @@ export function createGateway(o: GatewayOptions) {
     sessions,
     evict,
     stop: () => {
+      if (stopped) return;
+      stopped = true;
       clearInterval(sweep);
       Memory.release(memory);
       return server.stop(true);

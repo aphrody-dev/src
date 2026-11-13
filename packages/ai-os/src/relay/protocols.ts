@@ -55,6 +55,13 @@ export const text = (v: unknown): string =>
 export async function call(name: string, args: unknown) {
   if (typeof name !== "string")
     throw Object.assign(new Error("méthode absente"), { code: -32600 });
+  if (
+    args !== undefined &&
+    (args === null || typeof args !== "object" || Array.isArray(args))
+  )
+    throw Object.assign(new Error("arguments must be an object"), {
+      code: -32602,
+    });
   const t = toolByName.get(name);
   if (!t && name.includes("__")) return hubCall(name, args ?? {});
   if (!t)
