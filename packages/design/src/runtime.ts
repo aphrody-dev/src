@@ -1,24 +1,17 @@
 // Génération M3 à l'exécution (graine dynamique, ex. thème par requête) et recherche de Material Symbols.
 // Les sites à graine fixe consomment tokens/tokens.css ; ce module sert les cas où la graine varie.
-import {
-  argbFromHex, hexFromArgb, Hct, MaterialDynamicColors,
-  SchemeContent, SchemeExpressive, SchemeFidelity, SchemeMonochrome, SchemeNeutral, SchemeTonalSpot, SchemeVibrant,
-  type DynamicScheme,
-} from "@material/material-color-utilities";
+import { hexFromArgb, MaterialDynamicColors } from "@material/material-color-utilities";
 import { join } from "node:path";
+import { dynamicScheme, type Variant } from "./schemes.ts";
 
-export type Variant = "tonal-spot" | "vibrant" | "expressive" | "content" | "fidelity" | "monochrome" | "neutral";
-const SCHEMES: Record<Variant, new (h: Hct, dark: boolean, contrast: number) => DynamicScheme> = {
-  "tonal-spot": SchemeTonalSpot, vibrant: SchemeVibrant, expressive: SchemeExpressive, content: SchemeContent,
-  fidelity: SchemeFidelity, monochrome: SchemeMonochrome, neutral: SchemeNeutral,
-};
+export type { Variant };
 const kebab = (s: string) => s.replace(/_/g, "-").replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 const roles = new MaterialDynamicColors().allColors.filter((c) => !c.name.endsWith("_palette_key_color"));
 
 /** Rôles M3 d'une graine (hex #RRGGBB) pour un mode. */
 export function scheme(seed: string, dark = false, variant: Variant = "tonal-spot", contrast = 0): Record<string, string> {
   if (!/^#[0-9a-fA-F]{6}$/.test(seed)) throw new Error(`graine invalide : ${seed}`);
-  const s = new SCHEMES[variant](Hct.fromInt(argbFromHex(seed)), dark, contrast);
+  const s = dynamicScheme(seed, variant, dark, contrast);
   return Object.fromEntries(roles.map((c) => [kebab(c.name), hexFromArgb(c.getArgb(s)).toUpperCase()]));
 }
 

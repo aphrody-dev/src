@@ -2,21 +2,9 @@
 // Color: official @material/material-color-utilities (DynamicScheme, MaterialDynamicColors).
 // Type scale, shape, motion, elevation, state: parsed from @material/web tokens/versions/v0_192.
 // `bun run src/build.ts` writes tokens/ and DESIGN.md ; `--check` fails if anything would change.
-import {
-  argbFromHex,
-  hexFromArgb,
-  Hct,
-  MaterialDynamicColors,
-  SchemeContent,
-  SchemeExpressive,
-  SchemeFidelity,
-  SchemeMonochrome,
-  SchemeNeutral,
-  SchemeTonalSpot,
-  SchemeVibrant,
-  type DynamicScheme,
-} from "@material/material-color-utilities";
+import { argbFromHex, hexFromArgb, Hct, MaterialDynamicColors } from "@material/material-color-utilities";
 import { join } from "node:path";
+import { SCHEMES, type Variant } from "./schemes.ts";
 
 const pkg = join(import.meta.dir, "..");
 const root = join(pkg, "..", "..");
@@ -34,16 +22,7 @@ if (!brand?.seed) throw new Error("graine de marque introuvable (assets/brand/br
 const mcuVersion = (await Bun.file(join(pkg, "node_modules/@material/material-color-utilities/package.json")).json()).version;
 const mwcVersion = (await Bun.file(join(pkg, "node_modules/@material/web/package.json")).json()).version;
 
-const SCHEMES: Record<string, new (h: Hct, dark: boolean, contrast: number) => DynamicScheme> = {
-  "tonal-spot": SchemeTonalSpot,
-  vibrant: SchemeVibrant,
-  expressive: SchemeExpressive,
-  content: SchemeContent,
-  fidelity: SchemeFidelity,
-  monochrome: SchemeMonochrome,
-  neutral: SchemeNeutral,
-};
-const Scheme = SCHEMES[brand.variant];
+const Scheme = SCHEMES[brand.variant as Variant];
 if (!Scheme) throw new Error(`variant inconnue dans brand.toml : ${brand.variant}`);
 
 // Modes: M3 defines standard (0), medium (0.5) and high (1) contrast, light and dark.
