@@ -153,7 +153,10 @@ function claude(env: Env): Identity[] {
           identity: String(oauth.email),
           detail: `${oauth.subscriptionType} until ${String(oauth.loginExpiresAt).slice(0, 10)}`,
         }
-      : { provider: "claude.ai", status: "invalid" },
+      : oauth?.loggedIn && oauth.authMethod === "oauth_token"
+        ? // Jeton longue durée de `claude setup-token` (CLAUDE_CODE_OAUTH_TOKEN, coffre) : même abonnement, sans session.
+          { provider: "claude.ai", status: "ok", identity: "CLAUDE_CODE_OAUTH_TOKEN", detail: "claude setup-token (1 an)" }
+        : { provider: "claude.ai", status: "invalid" },
   ];
   if (ANTHROPIC_API_KEY) {
     const k = claudeStatus(env);

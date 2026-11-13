@@ -11,4 +11,12 @@ test("signalement au plus une fois par 24 h et par identifiant", () => {
   const prompts = { "pc/npm": now - 3_600_000, "pc/cf": now - 86_400_001 };
   expect(due(checks, prompts, now).map((x) => x.target)).toEqual(["cf"]);
   expect(due(checks, {}, now).map((x) => x.target)).toEqual(["npm", "cf"]);
+  expect(needsOwner({ ...c("NPM_TOKEN", "action"), kind: "oidc" })).toBe(false);
+});
+
+test("runner Linux : seuls gh, claude, codex et le stockage sont sondés", async () => {
+  const { scope } = await import("../src/auth-daemon");
+  const checks = [c("gh", "ok"), c("gh-scopes", "action"), c("cf", "invalid"), c("claude", "ok"), c("codex", "ok"), { ...c("systemd-creds-user", "ok"), kind: "store" }];
+  expect(scope(checks, false).map((x) => x.target)).toEqual(["gh", "claude", "codex", "systemd-creds-user"]);
+  expect(scope(checks, true)).toHaveLength(6);
 });

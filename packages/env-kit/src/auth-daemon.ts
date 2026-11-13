@@ -20,6 +20,17 @@ import { secretGet, secretList } from "./secret-store";
 
 const DAY = 86_400_000;
 
+/** Le PC porte le coffre de référence : secrets CI, OIDC, flotte, tunnels et jetons d'API y sont sondés et poussés. */
+const PC = process.platform === "win32" || process.env.AY_AUTH_REFRESH_ALL === "1";
+/**
+ * Identifiants dont un runner Linux a besoin (infra/agents/runner.ts : gh pour le push, claude et codex pour les
+ * tâches) ; les autres CLI (cf, wrangler, vercel, gcloud, portées gh admin) sont l'affaire du PC, qui pousse les
+ * valeurs. AY_AUTH_TARGETS (liste séparée par des virgules) remplace cette liste.
+ */
+export const RUNNER_TARGETS = (process.env.AY_AUTH_TARGETS ?? "gh,claude,codex").split(",").filter(Boolean);
+export const scope = (checks: Check[], pc = PC) =>
+  pc ? checks : checks.filter((c) => c.kind === "store" || RUNNER_TARGETS.includes(c.target));
+
 export const stateDir = () =>
   process.env.AY_AUTH_STATE ??
   (process.platform === "win32"
@@ -40,7 +51,10 @@ const writeJson = (p: string, v: unknown) => {
 
 const key = (c: Check) => `${c.host}/${c.target}`;
 /** Identifiant qui attend un geste humain (pas une simple absence d'outil). */
-export const needsOwner = (c: Check) => c.status === "action" || c.status === "invalid";
+// Seuls les identifiants d'une personne (CLI, navigateur, jetons d'API) peuvent exiger son geste ; les écarts de CI,
+// d'OIDC, de flotte ou d'unités sont du travail d'agent, gardés dans auth-state.json mais jamais signalés au propriétaire.
+const OWNER_KINDS = new Set(["cli", "browser", "token", "store"]);
+export const needsOwner = (c: Check) => OWNER_KINDS.has(c.kind) && (c.status === "action" || c.status === "invalid");
 
 /** Cibles à signaler maintenant : au plus une fois par 24 h chacune. */
 export function due(checks: Check[], prompts: Record<string, number>, now = Date.now()): Check[] {
@@ -70,9 +84,9 @@ export async function pass(m: Manifest, o: AuthOptions, refresh: boolean) {
   // Rafraîchissement sans humain d'abord, puis la sonde qui fait foi.
   // Le PC (coffre de référence) répare tout ; les autres hôtes seulement leurs CLI et leur stockage, pour qu'aucun
   // hôte ne pousse ses copies vers les secrets GitHub ou la flotte.
-  const only = process.platform === "win32" || process.env.AY_AUTH_REFRESH_ALL === "1" ? o.only : ["cli", "store"];
+  const only = PC ? o.only : ["cli", "store"];
   if (refresh) await collectChecks(m, { ...o, only, browser: false }, true).catch(() => []);
-  const checks = await collectChecks(m, { ...o, browser: false }, false);
+  const checks = scope(await collectChecks(m, { ...o, only: PC ? o.only : ["cli", "store"], browser: false }, false));
   const dir = stateDir();
   mkdirSync(dir, { recursive: true });
   writeJson(join(dir, "auth-state.json"), { at, checks });
