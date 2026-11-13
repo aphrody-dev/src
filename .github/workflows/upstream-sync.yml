@@ -43,7 +43,8 @@ jobs:
         run: |
           list="$RUNNER_TEMP/upstreams.txt"
           log="$RUNNER_TEMP/sync.log"
-          grep -E '^(EpicGames|bevyengine|trumank|FabianFG|UE4SS-RE|legendary-gl|3ddelano)/' third_party/forks.txt | cut -d' ' -f1 | sort -u > "$list"
+          grep -E '^(EpicGames|bevyengine|trumank|FabianFG|UE4SS-RE|legendary-gl|3ddelano)/' third_party/forks.txt | cut -d' ' -f1 | grep -vx 'EpicGames/UnrealEngine' | sort -u > "$list"
+          # UnrealEngine upstream is private to Epic org members: the App cannot read it; fr1 fork-sync.timer (gh login) syncs it.
           fail=0
           while read -r up; do
             name="${up#*/}"
