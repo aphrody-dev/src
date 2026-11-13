@@ -185,7 +185,8 @@ function claude(m: Manifest, out: string[], note: (ok: boolean, w: string) => vo
     const env = Object.entries(s.env ?? {}).flatMap(([k, v]) => ["-e", `${k}=${v}`]);
     const r = s.url
       ? run(["claude", "mcp", "add", "--scope", scope, "--transport", "http", s.name, s.url])
-      : run(["claude", "mcp", "add", "--scope", scope, ...env, s.name, "--", ...argv]);
+      : // name before -e: -e is variadic in `claude mcp add` and would swallow the name (fr2, 2026-11-13)
+        run(["claude", "mcp", "add", "--scope", scope, s.name, ...env, "--", ...argv]);
     if (r.code !== 0) out.push(`ERR  claude mcp ${s.name} : ${last(r)}`);
   }
   return pl;
