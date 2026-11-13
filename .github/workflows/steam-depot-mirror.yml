@@ -23,4 +23,4 @@ jobs:
           TOKEN: ${{ secrets.SUBMODULES_TOKEN }}
         run: |
           git subtree split --prefix=crates/steam-depot -b steam-depot-split
-          git push --force "https://x-access-token:${TOKEN}@github.com/aphrody-dev/steam-depot.git" steam-depot-split:main
+          git push --force "https://x-access-token:${TOKEN}@github.com/aphrody-labs/steam-depot.git" steam-depot-split:main

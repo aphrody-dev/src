@@ -90,49 +90,49 @@
         },
         "crates/bench": {
             "path": "C:\\src\\crates\\bench",
-            "url": "https://github.com/aphrody-dev/bench.git",
+            "url": "https://github.com/aphrody-labs/bench.git",
             "commit": "938ba8bef3943d46f523c8287062ee8537c389ce",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "all": "https://github.com/aphrody-dev/bench.git",
+                "all": "https://github.com/aphrody-labs/bench.git",
                 "gitlab": "https://gitlab.com/aphrody-dev/bench.git",
                 "gitlab-self": "https://git.aphrody.com/aphrody/bench.git",
                 "google": "https://source.developers.google.com/p/aphrody/r/bench",
-                "origin": "https://github.com/aphrody-dev/bench.git"
+                "origin": "https://github.com/aphrody-labs/bench.git"
             },
             "sparse_paths": null
         },
         "crates/ring3-agent": {
             "path": "C:\\src\\crates\\ring3-agent",
-            "url": "https://github.com/aphrody-dev/ring3-agent.git",
+            "url": "https://github.com/aphrody-labs/ring3-agent.git",
             "commit": "f4bc7f48460379a421d1714c174bb58b95d5f5d0",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "all": "https://github.com/aphrody-dev/ring3-agent.git",
+                "all": "https://github.com/aphrody-labs/ring3-agent.git",
                 "gitlab": "https://gitlab.com/aphrody-dev/ring3-agent.git",
                 "gitlab-self": "https://git.aphrody.com/aphrody/ring3-agent.git",
                 "google": "https://source.developers.google.com/p/aphrody/r/ring3-agent",
-                "origin": "https://github.com/aphrody-dev/ring3-agent.git"
+                "origin": "https://github.com/aphrody-labs/ring3-agent.git"
             },
             "sparse_paths": null
         },
         "crates/rust-stack": {
             "path": "C:\\src\\crates\\rust-stack",
-            "url": "https://github.com/aphrody-dev/rust-stack.git",
+            "url": "https://github.com/aphrody-labs/rust-stack.git",
             "commit": "d2dfa9a889fa2809e778c8f45cd4e179339920e0",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "all": "https://github.com/aphrody-dev/rust-stack.git",
+                "all": "https://github.com/aphrody-labs/rust-stack.git",
                 "gitlab": "https://gitlab.com/aphrody-dev/rust-stack.git",
                 "gitlab-self": "https://git.aphrody.com/aphrody/rust-stack.git",
                 "google": "https://source.developers.google.com/p/aphrody/r/rust-stack",
-                "origin": "https://github.com/aphrody-dev/rust-stack.git"
+                "origin": "https://github.com/aphrody-labs/rust-stack.git"
             },
             "sparse_paths": null
         },
@@ -1211,28 +1211,28 @@
         },
         "third_party/agent-browser": {
             "path": "C:\\src\\third_party\\agent-browser",
-            "url": "https://github.com/aphrody-dev/agent-browser.git",
+            "url": "https://github.com/aphrody-labs/agent-browser.git",
             "upstream_url": "https://github.com/vercel-labs/agent-browser.git",
             "commit": "d129226078e0fc8ee5dec48fbc96a46df5d0aafd",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/agent-browser.git",
+                "origin": "https://github.com/aphrody-labs/agent-browser.git",
                 "upstream": "https://github.com/vercel-labs/agent-browser.git"
             },
             "sparse_paths": null
         },
         "third_party/agent-desktop": {
             "path": "C:\\src\\third_party\\agent-desktop",
-            "url": "https://github.com/aphrody-dev/agent-desktop.git",
+            "url": "https://github.com/aphrody-labs/agent-desktop.git",
             "upstream_url": "https://github.com/vercel-labs/agent-desktop.git",
             "commit": "8e8dd7cbefe6d4421a0147aee0aad78dc6ace2b4",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/agent-desktop.git",
+                "origin": "https://github.com/aphrody-labs/agent-desktop.git",
                 "upstream": "https://github.com/vercel-labs/agent-desktop.git"
             },
             "sparse_paths": null
@@ -1315,14 +1315,14 @@
         },
         "third_party/antigravity-sdk-python": {
             "path": "C:\\src\\third_party\\antigravity-sdk-python",
-            "url": "https://github.com/aphrody-dev/antigravity-sdk-python.git",
+            "url": "https://github.com/aphrody-labs/antigravity-sdk-python-upstream.git",
             "upstream_url": "https://github.com/google-antigravity/antigravity-sdk-python.git",
             "commit": "75ba22bd00afae2f46393ff31f30c3f0df52982f",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/antigravity-sdk-python.git",
+                "origin": "https://github.com/aphrody-labs/antigravity-sdk-python-upstream.git",
                 "upstream": "https://github.com/google-antigravity/antigravity-sdk-python.git"
             },
             "sparse_paths": null
@@ -1582,14 +1582,14 @@
         },
         "third_party/bun": {
             "path": "C:\\src\\third_party\\bun",
-            "url": "https://github.com/aphrody-dev/bun.git",
+            "url": "https://github.com/aphrody-labs/bun.git",
             "upstream_url": "https://github.com/oven-sh/bun.git",
             "commit": "3d03a0a9e0ea3a9f0be91f79ad2dfa4c57f76ddf",
             "branch": "feat/linux-kernel-7.4",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/bun.git",
+                "origin": "https://github.com/aphrody-labs/bun.git",
                 "upstream": "https://github.com/oven-sh/bun.git"
             },
             "sparse_paths": null
@@ -1690,28 +1690,28 @@
         },
         "third_party/cc-switch": {
             "path": "C:\\src\\third_party\\cc-switch",
-            "url": "https://github.com/aphrody-dev/cc-switch.git",
+            "url": "https://github.com/aphrody-labs/cc-switch.git",
             "upstream_url": "https://github.com/farion1231/cc-switch.git",
             "commit": "efbec38f0e1ecaee2a488d619190b7ec4075238b",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/cc-switch.git",
+                "origin": "https://github.com/aphrody-labs/cc-switch.git",
                 "upstream": "https://github.com/farion1231/cc-switch.git"
             },
             "sparse_paths": null
         },
         "third_party/cc-switch-cli": {
             "path": "C:\\src\\third_party\\cc-switch-cli",
-            "url": "https://github.com/aphrody-dev/cc-switch-cli.git",
+            "url": "https://github.com/aphrody-labs/cc-switch-cli.git",
             "upstream_url": "https://github.com/SaladDay/cc-switch-cli.git",
             "commit": "4dfe82f4b8794211375283f1e5e494a390181aa0",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/cc-switch-cli.git",
+                "origin": "https://github.com/aphrody-labs/cc-switch-cli.git",
                 "upstream": "https://github.com/SaladDay/cc-switch-cli.git"
             },
             "sparse_paths": null
@@ -1782,14 +1782,14 @@
         },
         "third_party/claude-code": {
             "path": "C:\\src\\third_party\\claude-code",
-            "url": "https://github.com/aphrody-dev/claude-code.git",
+            "url": "https://github.com/aphrody-labs/claude-code.git",
             "upstream_url": "https://github.com/anthropics/claude-code.git",
             "commit": "ab49b8966bd80199f493a31dad9396f8743e73a7",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/claude-code.git",
+                "origin": "https://github.com/aphrody-labs/claude-code.git",
                 "upstream": "https://github.com/anthropics/claude-code.git"
             },
             "sparse_paths": null
@@ -1809,14 +1809,14 @@
         },
         "third_party/cliproxyapi": {
             "path": "C:\\src\\third_party\\cliproxyapi",
-            "url": "https://github.com/aphrody-dev/CLIProxyAPI.git",
+            "url": "https://github.com/aphrody-labs/CLIProxyAPI.git",
             "upstream_url": "https://github.com/router-for-me/CLIProxyAPI.git",
             "commit": "d1ea84f4b338f553d2818091ec9425a4ff742c78",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/CLIProxyAPI.git",
+                "origin": "https://github.com/aphrody-labs/CLIProxyAPI.git",
                 "upstream": "https://github.com/router-for-me/CLIProxyAPI.git"
             },
             "sparse_paths": null
@@ -1873,14 +1873,14 @@
         },
         "third_party/codex": {
             "path": "C:\\src\\third_party\\codex",
-            "url": "https://github.com/aphrody-dev/codex.git",
+            "url": "https://github.com/aphrody-labs/codex.git",
             "upstream_url": "https://github.com/openai/codex.git",
             "commit": "568c592f9cbe4388aafe9759bf6f3ed1bb0fd5e3",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/codex.git",
+                "origin": "https://github.com/aphrody-labs/codex.git",
                 "upstream": "https://github.com/openai/codex.git"
             },
             "sparse_paths": null
@@ -2301,14 +2301,14 @@
         },
         "third_party/gemini-cli": {
             "path": "C:\\src\\third_party\\gemini-cli",
-            "url": "https://github.com/aphrody-dev/gemini-cli.git",
+            "url": "https://github.com/aphrody-labs/gemini-cli.git",
             "upstream_url": "https://github.com/google-gemini/gemini-cli.git",
             "commit": "e5d88fb2c036ce7e0c27131469cd963221b9d9e7",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/gemini-cli.git",
+                "origin": "https://github.com/aphrody-labs/gemini-cli.git",
                 "upstream": "https://github.com/google-gemini/gemini-cli.git"
             },
             "sparse_paths": null
@@ -2938,14 +2938,14 @@
         },
         "third_party/llvm-project": {
             "path": "C:\\src\\third_party\\llvm-project",
-            "url": "https://github.com/aphrody-dev/llvm-project.git",
+            "url": "https://github.com/aphrody-labs/llvm-project.git",
             "upstream_url": "https://github.com/llvm/llvm-project.git",
             "commit": "392dfff97d29b59d77e5cac6d4b6ef2585fe7117",
             "branch": "detached",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/llvm-project.git",
+                "origin": "https://github.com/aphrody-labs/llvm-project.git",
                 "upstream": "https://github.com/llvm/llvm-project.git"
             },
             "sparse_paths": [
@@ -3003,13 +3003,13 @@
         },
         "third_party/lore": {
             "path": "C:\\src\\third_party\\lore",
-            "url": "https://github.com/aphrody-dev/lore.git",
+            "url": "https://github.com/aphrody-labs/lore.git",
             "commit": "166908c3a14404c1f11c18e6723964f5c2d3ac21",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/lore.git"
+                "origin": "https://github.com/aphrody-labs/lore.git"
             },
             "sparse_paths": null
         },
@@ -3211,13 +3211,13 @@
         },
         "third_party/n2": {
             "path": "C:\\src\\third_party\\n2",
-            "url": "https://github.com/aphrody-dev/n2.git",
+            "url": "https://github.com/aphrody-labs/n2.git",
             "commit": "b1fead52ccda0c497d816696f23f4099c3e8ec1f",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/n2.git"
+                "origin": "https://github.com/aphrody-labs/n2.git"
             },
             "sparse_paths": null
         },
@@ -3245,13 +3245,13 @@
         },
         "third_party/ninja": {
             "path": "C:\\src\\third_party\\ninja",
-            "url": "https://github.com/aphrody-dev/ninja.git",
+            "url": "https://github.com/aphrody-labs/ninja.git",
             "commit": "1a8fee23135e57cda12d47aedb19f795353fa13c",
             "branch": "master",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/ninja.git"
+                "origin": "https://github.com/aphrody-labs/ninja.git"
             },
             "sparse_paths": null
         },
@@ -3481,14 +3481,14 @@
         },
         "third_party/omniroute": {
             "path": "C:\\src\\third_party\\omniroute",
-            "url": "https://github.com/aphrody-dev/OmniRoute.git",
+            "url": "https://github.com/aphrody-labs/OmniRoute.git",
             "upstream_url": "https://github.com/cheaper-inference/OmniRoute.git",
             "commit": "de7d72384f5352d5c7ea47459b990ee20f04686f",
             "branch": "release/v3.8.54",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/OmniRoute.git",
+                "origin": "https://github.com/aphrody-labs/OmniRoute.git",
                 "upstream": "https://github.com/cheaper-inference/OmniRoute.git"
             },
             "sparse_paths": null
@@ -3559,27 +3559,27 @@
         },
         "third_party/opencodex": {
             "path": "C:\\src\\third_party\\opencodex",
-            "url": "https://github.com/aphrody-dev/opencodex.git",
+            "url": "https://github.com/aphrody-labs/opencodex.git",
             "upstream_url": "https://github.com/lidge-jun/opencodex.git",
             "commit": "bceee7fe7f4f7820491d36a71f97b2650c844309",
             "branch": "dev",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/opencodex.git",
+                "origin": "https://github.com/aphrody-labs/opencodex.git",
                 "upstream": "https://github.com/lidge-jun/opencodex.git"
             },
             "sparse_paths": null
         },
         "third_party/opentui": {
             "path": "C:\\src\\third_party\\opentui",
-            "url": "https://github.com/aphrody-dev/opentui.git",
+            "url": "https://github.com/aphrody-labs/opentui.git",
             "commit": "4d40024a7b9f58d320aad211c22ab7e5f0665d87",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/opentui.git"
+                "origin": "https://github.com/aphrody-labs/opentui.git"
             },
             "sparse_paths": null
         },
@@ -3905,25 +3905,25 @@
         },
         "third_party/russh": {
             "path": "C:\\src\\third_party\\russh",
-            "url": "https://github.com/aphrody-dev/russh.git",
+            "url": "https://github.com/aphrody-labs/russh.git",
             "commit": "a9f644259fa57ddb2da0f980e6ae813b829f7ad4",
             "branch": "aphrody/sntrup761",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/russh.git"
+                "origin": "https://github.com/aphrody-labs/russh.git"
             },
             "sparse_paths": null
         },
         "third_party/russh-sftp": {
             "path": "C:\\src\\third_party\\russh-sftp",
-            "url": "https://github.com/aphrody-dev/russh-sftp.git",
+            "url": "https://github.com/aphrody-labs/russh-sftp.git",
             "commit": "2ef937985fa965a3e1a8a83828ce7acab30719d6",
             "branch": "master",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/russh-sftp.git"
+                "origin": "https://github.com/aphrody-labs/russh-sftp.git"
             },
             "sparse_paths": null
         },
@@ -4131,14 +4131,14 @@
         },
         "third_party/sntrup761": {
             "path": "C:\\src\\third_party\\sntrup761",
-            "url": "https://github.com/aphrody-dev/sntrup761.git",
+            "url": "https://github.com/aphrody-labs/sntrup761.git",
             "upstream_url": "https://github.com/mikelodder7/sntrup761.git",
             "commit": "54e3a99495e974586085df0c86583eb7c606854e",
             "branch": "aphrody/pure-rust",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/sntrup761.git",
+                "origin": "https://github.com/aphrody-labs/sntrup761.git",
                 "upstream": "https://github.com/mikelodder7/sntrup761.git"
             },
             "sparse_paths": null
@@ -4241,14 +4241,14 @@
         },
         "third_party/steamroom": {
             "path": "C:\\src\\third_party\\steamroom",
-            "url": "https://github.com/aphrody-dev/steamroom",
+            "url": "https://github.com/aphrody-labs/steamroom",
             "upstream_url": "https://github.com/landaire/steamroom.git",
             "commit": "21ba4f8b2117bd72f85b0f3ecde8825a8ca8f128",
             "branch": "main",
             "engine": "git",
             "pillar": "git",
             "remotes": {
-                "origin": "https://github.com/aphrody-dev/steamroom",
+                "origin": "https://github.com/aphrody-labs/steamroom",
                 "upstream": "https://github.com/landaire/steamroom.git"
             },
             "sparse_paths": null
