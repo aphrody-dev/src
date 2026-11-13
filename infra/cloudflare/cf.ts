@@ -112,17 +112,17 @@ function storeAccess(host: string, t: { client_id: string; client_secret: string
   const env = `CF_ACCESS_CLIENT_ID=${t.client_id}\nCF_ACCESS_CLIENT_SECRET=${t.client_secret}\n`;
   const script = "set -eu; umask 077; f=/etc/aphrody/secrets.env; exec 9>/run/lock/aphrody-secrets.lock; flock -w 30 9; " +
     "t=$(mktemp /etc/aphrody/.secrets.XXXXXX); trap 'rm -f $t' EXIT; { [ -f $f ] && grep -v '^CF_ACCESS_CLIENT_' $f || true; cat; } > $t; " +
-    "install -m 600 -o root -g root $t $f; rm -f $t; grep -c '^CF_ACCESS_CLIENT_' $f";
+    "install -m 600 -o root -g root $t $f; grep -c '^CF_ACCESS_CLIENT_' $f";
   const p = Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=60", host, `sudo bash -c ${JSON.stringify(script)}`],
     { stdin: Buffer.from(env), timeout: 180_000 });
   return p.exitCode === 0 && p.stdout.toString().trim() === "2";
 }
 
 // client_id stored on the host (ids are not secret): detects a token whose secret never reached the host.
-function storedClientId(host: string): string {
+function storedClientId(host: string): string | null {
   const p = Bun.spawnSync(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=60", host,
     "sudo sed -n 's/^CF_ACCESS_CLIENT_ID=//p' /etc/aphrody/secrets.env"], { timeout: 120_000 });
-  return p.exitCode === 0 ? p.stdout.toString().trim() : "?";
+  return p.exitCode === 0 ? p.stdout.toString().trim() : null; // null = host unreachable: never rotate on that
 }
 
 if (want("access")) {
@@ -150,7 +150,8 @@ if (want("access")) {
       }
     } else {
       const have = storedClientId(st.host);
-      if (have !== tok.client_id) {
+      if (have === null) console.error(`  ${st.host} unreachable: secret presence of ${st.name} not checked, no rotation`);
+      else if (have !== tok.client_id) {
         say("rotate", `service token ${st.name}: ${st.host} holds ${have === "" ? "no" : "another"} client id, new secret delivered`);
         if (apply) await deliver(await api<any>("POST", `/accounts/${A}/access/service_tokens/${tok.id}/rotate`));
       }
@@ -177,7 +178,9 @@ if (want("access")) {
     const desired = [cfg.access.owner_policy, ...(a.tokens ?? []).map((t) => polByToken.get(t)).filter((x): x is string => !!x)];
     // PUT body: the managed fields plus the editable settings already set on the app (read-only fields such as id,
     // uid, aud, created_at are never sent back).
-    const KEEP = ["allowed_idps", "auto_redirect_to_identity", "cors_headers", "enable_binding_cookie", "http_only_cookie_attribute",
+    const KEEP = ["custom_deny_message", "custom_deny_url", "custom_non_identity_deny_url", "custom_pages", "self_hosted_domains",
+      "destinations", "path_cookie_attribute", "allow_authenticate_via_warp", "app_launcher_logo_url", "bg_color", "header_bg_color",
+      "landing_page_design", "footer_links", "skip_app_launcher_login_page", "allow_iframe", "read_service_tokens_from_header", "allowed_idps", "auto_redirect_to_identity", "cors_headers", "enable_binding_cookie", "http_only_cookie_attribute",
       "same_site_cookie_attribute", "logo_url", "skip_interstitial", "options_preflight_bypass", "service_auth_401_redirect", "tags"];
     const body = (cur?: any) => ({
       ...Object.fromEntries(KEEP.filter((k) => cur?.[k] !== undefined).map((k) => [k, cur[k]])), name: a.name, type: a.type, domain: a.domain, session_duration: cur?.session_duration ?? "24h",

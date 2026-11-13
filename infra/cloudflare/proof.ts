@@ -161,6 +161,11 @@ for (const from of ["fr2", "prd"]) {
     const t = st.find((x) => x.name === s2.name);
     add("credential", `Access token ${s2.name}`, !!t && !soon(t.expires_at), t ? `expires ${t.expires_at}` : "MISSING");
   }
+  const zid = (await api<any[]>("GET", "/zones?name=aphrody.com"))[0]?.id;
+  // Read with CF_PROOF_TOKEN (proof-ssl-read: SSL and Certificates Read on aphrody.com only): the account token has no SSL scope.
+  const aop = zid && Bun.env.CF_PROOF_TOKEN ? await fetch(`https://api.cloudflare.com/client/v4/zones/${zid}/origin_tls_client_auth/hostnames/certificates`, { headers: { authorization: `Bearer ${Bun.env.CF_PROOF_TOKEN}` } }).then(async (r) => ((await r.json()) as any).result ?? null).catch(() => null) : null;
+  const live = (aop ?? []).filter((x: any) => x.status === "active");
+  add("credential", "AOP client certificate (dbfr)", live.length > 0 && live.every((x: any) => !soon(x.expires_on)), aop === null ? "not readable with this token" : live.map((x: any) => `expires ${x.expires_on}`).join(", ") || "NONE");
   const at = await api<any[]>("GET", `/accounts/${cfg.account}/tokens?per_page=100`);
   for (const h of ["fr2", "prd"]) {
     const t = at.find((x) => x.name === `fleet-${h}-dns`);

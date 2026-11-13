@@ -228,13 +228,20 @@ cf-plan section="":
 cf-apply section only="":
     bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/cf.ts apply {{section}} {{ if only != "" { "--only " + only } else { "" } }}
 
+# Custom AOP for fr2 origins proxied by Cloudflare (dbfr): rotate CA + edge client certificate, then prune after convergence
+cf-aop host="dbfr.aphrody.com":
+    CF_AUTH=oauth bun infra/cloudflare/aop.ts {{host}}
+
+cf-aop-prune host="dbfr.aphrody.com":
+    CF_AUTH=oauth bun infra/cloudflare/aop.ts --prune {{host}}
+
 # Rotate the per-host least-privilege fleet tokens (fleet-<host>-dns) into /etc/aphrody/secrets.env of fr2/prd
 cf-fleet-token:
     bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/fleet-token.ts fr2 prd
 
 # Re-run every Cloudflare/fr2 edge check (DNS, headers, TLS, tunnels, Access, closed origin, WAF, cache); exit 1 on regression
-cf-proof:
-    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/proof.ts
+cf-proof *args:
+    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN CF_PROOF_TOKEN -- bun infra/cloudflare/proof.ts {{args}}
 
 # Headless Claude Code, no human in the loop (JSON result on stdout)
 # Free text is passed as exported variables ($prompt), never interpolated into the script (tribunal 2026-11-13).
