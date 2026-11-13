@@ -54,3 +54,9 @@ test("port fermé : non joignable, sans exception", async () => {
   expect(await reachable("127.0.0.1", 1, 1000)).toBe(false);
   expect(await reachable("", 50052)).toBe(false);
 });
+
+test("[trial] : prd sondé par ensure, une couche distante sur Qwen3-0.6B", () => {
+  expect(f.trial?.nodes).toContain("prd");
+  expect(f.model[f.trial!.model]).toBeTruthy();
+  expect(f.trial!.split.length).toBe(2);
+});

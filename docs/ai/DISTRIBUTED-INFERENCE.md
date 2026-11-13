@@ -31,7 +31,7 @@ PC (Windows, RTX 4070)                       WireGuard uniquement
                                                          fr2 (désactivé : proxy prioritaire, 11 Go)
 ```
 
-- **Coordinateur** : `llama-server` CUDA sur le PC, lié à `127.0.0.1:8090`. Les logits restent sur le PC : avec `-ngl 999`, la tête de sortie est sur CUDA0, et seul l'état caché traverse le réseau, soit `n_embd × 4` octets (f32) par jeton et par frontière : 6 Kio pour gemma-4-E2B (`n_embd = 1536`), 4 Kio pour Qwen3-0.6B (1024), 20 Kio pour un modèle à `n_embd = 5120` (classe 14-32B).
+- **Coordinateur** : `llama-server` CUDA sur le PC, lié à `127.0.0.1:8090`. Les logits restent sur le PC : avec `-ngl 999`, la tête de sortie est sur CUDA0, et seul l'état caché traverse le réseau, soit `n_embd × 4` octets (f32) par jeton et par frontière : 6 Kio pour gemma-4-E2B, 4 Kio pour Qwen3-0.6B. Les `n_embd` sont lus dans les métadonnées GGUF des fichiers servis : `gemma4.embedding_length = 1536` et `qwen3.embedding_length = 1024`. Pour un modèle à `n_embd = 5120`, comme Qwen3-14B, ce serait 20 Kio ; cette valeur vient de la fiche du modèle et n'a pas été relevée ici.
 - **Nœuds Linux** (`node.sh`) : `ggml-rpc-server` officiel `b12340` (sha256 vérifié) dans l'unité transitoire `aphrody-rpc`, avec `CPUQuota`, `MemoryMax`, `MemorySwapMax=0`, `Nice=19`, `IOSchedulingClass=idle`, `CPUWeight=10` et `OOMScoreAdjust=900`. Le serveur écoute uniquement sur l'adresse WireGuard (`-H`, jamais `0.0.0.0`). Une table nft `inet aphrody_rpc` rejette toute source autre que le coordinateur (`10.200.77.2`, `10.200.78.2`) et le nœud lui-même. Aucun port public, aucun passage par Cloudflare.
 - **Admission et retrait** : la condition est vérifiée avant le démarrage, puis toutes les `watch_s` secondes par le chien de garde de l'unité. Quand elle tombe, le rpc-server s'arrête et la raison est écrite dans `/run/aphrody-rpc.state`.
   - fr1 (`no-build`) : aucun processus `ninja|siso|reproxy|clang|rustc|ld.lld`, et charge inférieure à nproc/2.
@@ -42,7 +42,7 @@ PC (Windows, RTX 4070)                       WireGuard uniquement
 
 ### Cache de modèles, montages, swap
 
-- **Pas de montage réseau pour les poids.** Le lien montant du PC est mesuré à 145 Kio/s par ssh public, et 30 à 54 Kio/s par WireGuard. Un `mmap` à travers SMB, NFS, SSHFS ou `rclone mount` lirait les pages à ce débit. La donnée doit descendre vers le PC (environ 7 Mio/s mesurés depuis Hugging Face), jamais en monter.
+- **Pas de montage réseau pour les poids.** Le lien montant du PC a été mesuré entre 30 et 160 Ko/s : 145 Kio/s par ssh public, 30 à 54 Kio/s par WireGuard pendant qu'un autre transfert tournait, et 158 Ko/s effectifs pour le chargement RPC vers fr1 (51,5 Mo en 326 s). Un `mmap` à travers SMB, NFS, SSHFS ou `rclone mount` lirait les pages à ce débit. La donnée doit descendre vers le PC (8,4 Mo/s mesurés depuis Hugging Face : 3 106 738 272 octets en 370 s), jamais en monter.
 - **Cache dédupliqué par contenu** : un GGUF est identifié par son sha256 (oid LFS de Hugging Face, ou digest de blob Ollama). Sur le PC, `~/.local/share/ay/ai/` tient des liens durs vers les blobs d'Ollama (`ay ai`, `{ollama_gguf:}`) : aucune seconde copie. Sur chaque nœud, `node.sh warm` tire le GGUF depuis `url` dans `/var/cache/aphrody-models` au débit du centre de données, le vérifie, puis le charge une fois sur la boucle locale. Le cache de tenseurs de rpc-server (`/var/cache/aphrody-rpc`, SSD) se remplit ainsi, et au chargement suivant le coordinateur n'envoie que les empreintes des tenseurs de plus de 10 Mio. Les tenseurs plus petits passent toujours par le réseau : sur un petit modèle (gemma-4-E2B, couches de 4 à 9 Mio), le gain est partiel. Calcul, non mesuré : un tenseur FFN de Qwen3-14B (5120 × 17408, Q4_K à 4,5 bits) pèse environ 48 Mio, donc plus que le seuil. Le chargement d'un tel modèle devrait ne transporter que des empreintes pour l'essentiel de ses poids.
 - **Swap et zram** : refusés pour l'inférence (`MemorySwapMax=0`). Le 2026-11-13, le swap de prd est plein (16/16 Gio). Faire échanger des poids ou un cache KV ne ferait que retarder l'OOM tout en ralentissant shenron.
 - **Tunnels** : WireGuard existant (hub fr1 `wg1`, lien direct PC↔prd `prod` 10.200.78.0/30). Les tunnels Cloudflare (`docs/infra/CLOUDFLARE-ONE.md`) servent aux interfaces d'administration. Ils ne transportent pas le RPC, dont le protocole n'a pas d'authentification.
@@ -75,7 +75,9 @@ Au 2026-11-13, il est absent de `infra/deploy.toml`, `infra/agents/fleet.toml`, 
 
 ```sh
 ay ai fabric up [--only fr1,prd] [--split 1,7] [--local] [--no-warm] [--model qwen3-0.6b]   # ou : ai-os fabric up
-ay ai fabric ensure        # bascule : coordinateur muet -> up avec les nœuds encore admis, sinon GPU seul (tâche planifiée)
+ay ai fabric ensure        # bascule (coordinateur muet -> up, sauf après down), puis admission opportuniste [trial]
+ay ai fabric timer [--remove] [--every 10]   # tâche planifiée Windows aphrody-fabric-ensure (conhost --headless)
+ay ai fabric trials        # essais courts consignés (~/.local/share/ay/ai/fabric-trials.jsonl)
 ay ai fabric warm          # nœuds : GGUF local vérifié, cache de tenseurs rempli
 ay ai fabric status        # coordinateur, nœuds : condition, charge, MemoryPeak/CPUUsageNSec de l'unité
 ay ai fabric bench --tokens 128
@@ -101,31 +103,32 @@ RTT mesurés depuis le PC :
 | GPU seul (RTX 4070) | gemma-4-E2B Q4_K_M | 170 / 178 / 181 / 180 (128 jetons) | 178-285 | 3 s |
 | GPU seul | Qwen3-0.6B Q4_K_M | 420 / 417 / 446 / 465 (64 jetons) | 317-418 | < 2 s |
 | GPU + fr2 (1/28 des couches, `-ts 1,27`) | Qwen3-0.6B Q4_K_M | 6,0 / 2,5 / 2,3 (32 jetons) | 3,4-7,7 | 178 s |
-| GPU + fr1 (1/35, `-ts 1,34`) | gemma-4-E2B Q4_K_M | génération interrompue au bout de 7 min (voir plus bas) | 1,0-2,0 | 326 s (51,5 Mo poussés) |
+| GPU + fr1 (1/35, `-ts 1,34`) | gemma-4-E2B Q4_K_M | aucune valeur `timings` : 64 jetons non terminés en ~7 min, soit une borne estimée de 0,15 tok/s | 1,0-2,0 (deux lignes `print_timing`) | 326 s (51,5 Mo poussés) |
 
-- **Débit réparti / GPU seul ≈ 1/70 à 1/200.** Le rapport compare la seule configuration complète, GPU + fr2 sur Qwen3-0.6B (6,0 à 2,3 tok/s), au GPU seul sur le même modèle (417 à 465 tok/s). Une seule couche distante suffit à produire cet écart. Chaque jeton paie un aller-retour WireGuard (25 à 60 ms mesurés vers fr1) et la remontée de l'état caché par le lien montant du PC. Trafic mesuré sur le socket de fr2 (`bytes_received`/`bytes_sent` avant et après) pendant les 3 requêtes : 931 Ko montants et 877 Ko descendants. Les 3 requêtes comptent 3 × 32 jetons générés plus environ 3 × 20 jetons de prompt, soit ~156 jetons, d'où ~6 Ko par jeton. C'est cohérent avec `n_embd × 4` = 4 Kio plus l'en-tête des commandes RPC. Ce n'est pas le volume qui limite mais la latence par jeton.
-- **gemma-4-E2B ne se répartit pas.** La génération est restée sous 0,15 tok/s, avec un prompt à 1 tok/s. Cause probable, non vérifiée au niveau des octets : les modèles Gemma « E » partagent le cache KV entre couches, et les couches CUDA relisent alors à chaque jeton un KV posé sur l'appareil distant. Sur fr2, avec la même part d'une couche, Qwen3 a donné 2 à 6 tok/s. Consigne provisoire, tant qu'un second modèle Gemma n'a pas été testé : servir en priorité des architectures sans partage de KV (Qwen3, Llama, Mistral).
-- **Lien montant du PC** : 145 Kio/s par ssh public et 30 à 54 Kio/s par WireGuard, contre environ 7 Mio/s en descente (Hugging Face, 3,1 Go en 370 s). D'où `warm` : sur fr1, le GGUF est tiré en 1 min environ, et 897 Mio de tenseurs de plus de 10 Mio ont été mis en cache localement en 6 s.
-- **Retrait automatique observé (un événement)** : sur fr1, un build `rustc` (toolchain nightly-2026-11-12, crates `syn`, `rustls`, `reqwest`) était en cours, avec une charge de 28,4 puis 53,8. À 02:48:03 UTC, au premier passage du chien de garde qui l'a vu, le rpc-server s'est arrêté (`/run/aphrody-rpc.state` : « retrait… »). L'unité consigne alors « Consumed 13.348s CPU time over 12min 32s wall clock time, 3G memory peak », sous `MemoryMax` 24G. llama.cpp arrête alors le coordinateur (« Remote RPC server crashed »), le fournisseur `fabric` disparaît de `llm_models`, et `ai-os fabric ensure` relance un coordinateur GPU seul. fr1 est alors refusé (refroidissement `fabric-rpc`), prd aussi (« charge 4.30 >= 4 »), et gpu2 n'est pas déclaré.
+- **Débit réparti / GPU seul ≈ 1/70 à 1/200.** Le rapport compare la seule configuration complète, GPU + fr2 sur Qwen3-0.6B (6,0 à 2,3 tok/s), au GPU seul sur le même modèle (417 à 465 tok/s). Une seule couche distante suffit à produire cet écart. Chaque jeton paie un aller-retour WireGuard (fr2 : 149 ms au ping par le hub ; fr1 : 49 à 74 ms au ping, 25 à 28 ms en `minrtt`/`rtt` TCP) et la remontée de l'état caché par le lien montant du PC. Trafic mesuré sur le socket de fr2 (`bytes_received`/`bytes_sent` avant et après) pendant les 3 requêtes : 931 Ko montants et 877 Ko descendants. Les 3 requêtes comptent 3 × 32 jetons générés plus environ 3 × 20 jetons de prompt, soit ~156 jetons. Cela fait ~6,0 Ko montants et ~5,6 Ko descendants par jeton, environ 11,6 Ko en tout, contre `n_embd × 4` = 4 Kio d'état caché dans chaque sens, plus les commandes RPC. Avec ~6 Ko montants par jeton et 30 à 160 Ko/s de lien montant, le plafond est de 5 à 27 tok/s. Le lien montant explique donc au moins en partie les 2,3 à 6 tok/s, en plus de la latence de 149 ms.
+- **gemma-4-E2B ne se répartit pas.** Génération : borne estimée de 0,15 tok/s ; prompt : 1,0 à 2,0 tok/s (`print_timing`). Cause probable, non vérifiée au niveau des octets : le GGUF déclare `gemma4.attention.shared_kv_layers = 20`, c'est-à-dire que 20 des 35 couches réutilisent le cache KV d'une couche antérieure, et les couches CUDA relisent alors à chaque jeton un KV posé sur l'appareil distant. Sur fr2, avec la même part d'une couche, Qwen3 a donné 2 à 6 tok/s. Consigne provisoire, tant qu'un second modèle Gemma n'a pas été testé : servir en priorité des architectures sans partage de KV (Qwen3, Llama, Mistral).
+- **Lien montant du PC** : 145 Kio/s par ssh public et 30 à 54 Kio/s par WireGuard, contre 8,4 Mo/s en descente (Hugging Face, 3,1 Go en 370 s). D'où `warm` : sur fr1, le GGUF est tiré en 1 min environ, et 897 Mio de tenseurs de plus de 10 Mio ont été mis en cache localement en 6 s.
+- **Retrait automatique observé (un événement)** : sur fr1, un build `rustc` (toolchain nightly-2026-11-12, crates `syn`, `rustls`, `reqwest`) était en cours, avec une charge de 28,4 puis 53,8. L'heure de début du build n'a pas été relevée. À 02:48:03 UTC (horloge de fr1, `date -u`), à un passage du chien de garde (`watch_s = 15`, donc au plus 15 s après la détection possible), le rpc-server s'est arrêté (`/run/aphrody-rpc.state` : « retrait… »). L'unité consigne alors « Consumed 13.348s CPU time over 12min 32s wall clock time, 3G memory peak », sous `MemoryMax` 24G. llama.cpp arrête alors le coordinateur (« Remote RPC server crashed »), le fournisseur `fabric` disparaît de `llm_models`, et `ai-os fabric ensure` relance un coordinateur GPU seul. fr1 est alors refusé (refroidissement `fabric-rpc`), prd aussi (« charge 4.30 >= 4 »), et gpu2 n'est pas déclaré.
 - **Plafonds sur fr2** (`proxy`) pendant le test : `CPUQuotaPerSecUSec=1s` (100 %), `MemoryMax=2147483648`, `MemoryPeak=100425728` (96 Mio), 4,3 s de CPU au total, nginx actif, charge 0,21 à 0,49 pour 6 cœurs.
 - **prd surveillé** pendant les deux essais (toutes les 3 s : charge, verrou lourd, `shenron-chat-v2`, unité `aphrody-rpc`). Charge entre 3,70 et 4,29 pour un seuil de 4, verrou `/var/lock/aphrody-heavy.lock` tenu par un autre travail, `8799/health` toujours à 200, aucune unité `aphrody-rpc`. prd a été refusé à chaque admission. Après les essais, la charge de prd monte à 113,9 (1 min) sans aucune unité du tissu présente. Ce n'était pas le cas d'utilisation de prd, qui reste un appoint borné à 2 cœurs et 6 Gio.
-- **Essai prd autorisé par le coordinateur, jamais admissible.** prd a été sondé toutes les minutes de 04:07 à 04:38 UTC. La charge est descendue sous 4 à partir de 04:23 (minimum 1,96), mais le verrou lourd est resté tenu pendant toute la fenêtre, par une file de travaux : `cargo build -j 2 -p aphrody` sous `flock`, une boucle `flock … while load >= 4` et `rg-steam-initial`. Ensuite, ssh ne répondait plus. Aucune unité `aphrody-rpc` n'a donc été lancée sur prd.
+- **Essai prd autorisé par le coordinateur, jamais admissible.** Sonde manuelle toutes les minutes, de 04:07 à 04:38 heure de Paris (03:07 à 03:38 UTC, horloge du PC). La charge est descendue sous 4 à partir de 04:23 Paris (minimum 1,96), mais le verrou lourd est resté tenu pendant toute la fenêtre, par une file de travaux : `cargo build -j 2 -p aphrody` sous `flock`, une boucle `flock … while load >= 4` et `rg-steam-initial`. Ensuite, ssh ne répondait plus. Aucune unité `aphrody-rpc` n'a donc été lancée sur prd. Il n'y aura plus d'essai manuel : la tâche planifiée `aphrody-fabric-ensure` (toutes les 10 min) sonde prd par sa condition d'admission. Dès qu'il passe, elle lance l'essai court de `[trial]` dans `fabric.toml` (Qwen3-0.6B, une couche sur prd, 16 jetons), relève ses plafonds (`status`), arrête l'unité et revient à l'état précédent. Le résultat est consigné dans `fabric-trials.jsonl`. La première sonde, `ai-os fabric ensure` lancé à la main vers 04:50 Paris (03:50 UTC), a été refusée : « service prioritaire http://127.0.0.1:8799/health : HTTP 503 ». Les refus ne sont pas consignés ; seuls les essais le sont.
 
 Conclusion :
 - Ce qui est démontré :
   - génération répartie réelle GPU + VPS (Qwen3-0.6B sur fr2) ;
   - exposition limitée à WireGuard, avec filtre nft ;
   - plafonds systemd tenus (fr2) ;
+  - refus de prd par la règle (à chaque admission).
+- Démontré une seule fois :
   - retrait automatique sur build (fr1) ;
-  - refus de prd par la règle ;
-  - bascule vers le GPU seul.
+  - bascule vers le GPU seul par `ensure`. Sa durée n'a pas été chronométrée ; un coordinateur GPU seul se charge en 3 s.
 - Ce qui ne l'est pas : un modèle de 14 à 32B réparti (cas d'usage du §3, non mesuré), et la cause de la charge de 113,9 sur prd. Aucune unité du tissu n'y tournait, mais l'auteur de cette charge n'a pas été identifié.
-- Sur les liens actuels, le tissu ne sert qu'à charger un modèle que la 4070 ne peut pas contenir. Il n'accélère jamais un modèle qui y tient.
+- Sur les liens actuels, le tissu ne sert qu'à charger un modèle que la 4070 ne peut pas contenir. Sur les liens mesurés (une couche distante, WAN, 3 ou 4 requêtes), il n'accélère pas un modèle qui y tient.
 - Hypothèse : un gain de débit demanderait gpu2 sur le même réseau local que le PC, ou un lien montant plus rapide.
 
 ## 7. Revue
 
-Verdict 1 de Gemini, le 2026-11-13, par le relais `gemini_review` (moteur antigravity, 33 s) : **13/20**. Seize défauts relevés, traités comme suit dans cette version :
+Verdict 1 de Gemini, le 2026-11-13, par le relais `gemini_review` (moteur antigravity, 33 s) : **13/20**. Seize défauts relevés ; corrections groupées par thème :
 
 - Comparaisons et chiffres :
   - Qwen3 rattaché à fr2, et non à fr1.
@@ -146,3 +149,19 @@ Verdict 1 de Gemini, le 2026-11-13, par le relais `gemini_review` (moteur antigr
   - Numérotation (§5/§6) : déjà conforme dans le fichier. L'écart venait de la version condensée envoyée à Gemini.
   - Mesure d'un 14B ou plus.
   - Second modèle Gemma : hors de portée du lien montant actuel.
+
+Verdict 2, sur la version corrigée, par le même relais (moteur antigravity, 50 s) : **14/20**. Quinze défauts relevés, corrigés dans cette version :
+- Corrections :
+  - horodatages ramenés à l'heure de Paris et à l'UTC ;
+  - origine de la première sonde précisée ;
+  - trafic par jeton donné dans chaque sens, et rôle du lien montant reconnu (plafond de 5 à 27 tok/s) ;
+  - débits montants réconciliés (30 à 160 Ko/s) ;
+  - ping et RTT TCP séparés ;
+  - borne de 0,15 tok/s marquée comme estimée ;
+  - descente corrigée à 8,4 Mo/s.
+- Requalifications : « démontré une fois », et « sur les liens mesurés » au lieu de « jamais ».
+- Sources ajoutées :
+  - `n_embd` lus dans les GGUF ;
+  - `shared_kv_layers = 20` relevé dans le GGUF de gemma ;
+  - `watch_s = 15` cité.
+- Défaut de procédure : la règle globale exige Gemini 4 Carbon High sur gemini.google.com par claude-in-chrome. Les deux verdicts viennent du relais `gemini_review`, désigné par le coordinateur, dont le moteur s'annonce « antigravity ». Le modèle exact derrière ce moteur n'est pas confirmé.

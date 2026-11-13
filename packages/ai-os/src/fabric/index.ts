@@ -5,6 +5,7 @@
 // Le modèle servi apparaît dans llm_models sous `fabric/<alias>` (llm/models.ts), absent dès que le coordinateur tombe.
 import { createHash } from "node:crypto";
 import {
+  appendFileSync,
   createReadStream,
   existsSync,
   mkdirSync,
@@ -55,6 +56,8 @@ export type Fabric = {
     { path: string; bytes: number; sha256: string; url?: string }
   >;
   node: FabricNode[];
+  /** Essai court réparti lancé par `ensure` dès qu'un nœud listé passe l'admission (une fois par nœud). */
+  trial?: { nodes: string[]; model: string; split: number[]; tokens: number };
 };
 export type NodeState = {
   id: string;
@@ -468,25 +471,175 @@ export async function up(o: UpOpts = {}, root = srcRoot()) {
   };
 }
 
-/** Bascule : coordinateur muet (llama.cpp s'arrête quand un rpc-server disparaît) -> nouvel `up` avec les nœuds
- *  encore admis, sinon GPU seul. À lancer périodiquement (tâche planifiée) ; ne fait rien si tout répond. */
-export async function ensure(root = srcRoot()) {
+const trialsPath = () => join(dataDir(), "fabric-trials.jsonl");
+const lockPath = () => join(dataDir(), "fabric-ensure.lock");
+
+/** Essais consignés (une ligne JSON par essai). */
+export function trials(): any[] {
+  try {
+    return readFileSync(trialsPath(), "utf8")
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
+  } catch {
+    return [];
+  }
+}
+
+/** Un seul `ensure` à la fois (timer toutes les 10 min, essai de plusieurs minutes) ; verrou périmé après 1 h. */
+function takeLock(): boolean {
+  mkdirSync(dataDir(), { recursive: true });
+  try {
+    if (
+      existsSync(lockPath()) &&
+      Date.now() - statSync(lockPath()).mtimeMs > 3_600_000
+    )
+      rmSync(lockPath());
+    writeFileSync(lockPath(), String(process.pid), { flag: "wx" });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Essai court réparti avec un nœud admis, puis retour exact à l'état précédent ; résultat consigné. */
+export async function trial(id: string, root = srcRoot()) {
   const f = loadFabric(root);
-  const ok = !!(
-    await fetch(`${coordinatorUrl(f)}/health`, {
-      signal: AbortSignal.timeout(3000),
-    }).catch(() => null)
-  )?.ok;
-  if (ok) return { action: "none", healthy: true };
+  const t = f.trial ?? {
+    nodes: [],
+    model: f.coordinator.model,
+    split: [],
+    tokens: 16,
+  };
   const prev = readState();
-  const h = new Health();
-  for (const n of prev?.nodes ?? [])
-    if (n.admitted) h.record(n.id, PROVIDER, false, "overload", 0);
-  h.close();
+  const n = f.node.find((x) => x.id === id)!;
+  const t0 = new Date().toISOString();
+  const r: any = { node: id, at: t0, model: t.model };
+  try {
+    const u = await up(
+      { only: [id], model: t.model, split: t.split, noWarm: true },
+      root,
+    );
+    r.admitted = u.nodes.find((x) => x.id === id) ?? null;
+    r.rpc = u.rpc;
+    if (u.ok && u.rpc.length) {
+      r.bench = await bench("Explain how a CPU cache works.", t.tokens, root);
+      if (n.os === "linux") {
+        const st = await nodeSh(root, f, n, "status", 30_000);
+        try {
+          r.caps = JSON.parse(st.out);
+        } catch {
+          r.caps = st.out;
+        }
+      }
+    }
+    r.ok = !!(u.ok && u.rpc.length && r.bench?.ok);
+  } catch (e) {
+    r.ok = false;
+    r.error = e instanceof Error ? e.message : String(e);
+  } finally {
+    if (n.os === "linux")
+      await nodeSh(root, f, n, "down", 60_000).catch(() => null);
+    if (prev)
+      await up(
+        {
+          model: prev.model,
+          only: prev.nodes.filter((x) => x.admitted).map((x) => x.id),
+          local: !prev.rpc.length,
+        },
+        root,
+      ).catch(() => null);
+    else await stopCoordinator();
+  }
+  r.ms = Date.now() - Date.parse(t0);
+  appendFileSync(trialsPath(), JSON.stringify(r) + "\n");
+  return r;
+}
+
+/** Timer : bascule (coordinateur muet -> `up` avec les nœuds encore admis, sinon GPU seul ; rien si le tissu a été
+ *  arrêté par `down`), puis admission opportuniste : chaque nœud de [trial] sans essai réussi est sondé, et l'essai
+ *  court part dès qu'il passe sa condition. */
+export async function ensure(root = srcRoot()) {
+  if (!takeLock()) return { action: "busy" };
+  try {
+    const f = loadFabric(root);
+    const out: any = { action: "none" };
+    const ok = !!(
+      await fetch(`${coordinatorUrl(f)}/health`, {
+        signal: AbortSignal.timeout(3000),
+      }).catch(() => null)
+    )?.ok;
+    const prev = readState();
+    if (!ok && prev) {
+      const h = new Health();
+      for (const n of prev.nodes)
+        if (n.admitted) h.record(n.id, PROVIDER, false, "overload", 0);
+      h.close();
+      Object.assign(out, {
+        action: "restart",
+        previous: prev.rpc,
+        ...(await up({ model: prev.model }, root)),
+      });
+    }
+    out.healthy = ok;
+    const done = new Set(
+      trials()
+        .filter((x) => x.ok)
+        .map((x) => x.node),
+    );
+    out.probes = [];
+    for (const id of f.trial?.nodes ?? []) {
+      if (done.has(id)) continue;
+      const n = f.node.find((x) => x.id === id);
+      if (!n) continue;
+      const g =
+        n.os === "linux"
+          ? await nodeSh(root, f, n, "gate", 30_000)
+          : {
+              code: (await reachable(n.reach ?? "", n.port ?? 50052)) ? 0 : 1,
+              out: "port muet",
+              err: "",
+            };
+      const admit = g.code === 0;
+      out.probes.push({
+        id,
+        admit,
+        reason: admit ? undefined : g.out || g.err,
+      });
+      if (admit) out.trial = await trial(id, root);
+    }
+    return out;
+  } finally {
+    rmSync(lockPath(), { force: true });
+  }
+}
+
+/** Tâche planifiée Windows (utilisateur courant, sans élévation, `conhost --headless` : aucune fenêtre) : `ai-os fabric ensure` toutes les `every` minutes. */
+export function timer(remove = false, every = 10, root = srcRoot()) {
+  const name = "aphrody-fabric-ensure";
+  if (process.platform !== "win32")
+    throw new Error("timer prévu sur le coordinateur Windows");
+  const argv = remove
+    ? ["schtasks", "/Delete", "/TN", name, "/F"]
+    : [
+        "schtasks",
+        "/Create",
+        "/F",
+        "/SC",
+        "MINUTE",
+        "/MO",
+        String(every),
+        "/TN",
+        name,
+        "/TR",
+        `conhost.exe --headless "${process.execPath}" "${join(root, "packages/ai-os/src/cli.ts")}" fabric ensure`,
+      ];
+  const p = Bun.spawnSync(argv);
   return {
-    action: "restart",
-    previous: prev?.rpc ?? [],
-    ...(await up({ model: prev?.model }, root)),
+    task: name,
+    removed: remove,
+    code: p.exitCode,
+    out: (p.stdout.toString() + p.stderr.toString()).trim(),
   };
 }
 

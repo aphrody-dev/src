@@ -20,6 +20,15 @@ cache = "~/.local/share/ay/ai"
 # Adresses WireGuard du coordinateur : seules sources admises sur le port RPC des nœuds (nft).
 mesh = ["10.200.77.2", "10.200.78.2"]
 
+# Admission opportuniste (`ai-os fabric ensure`, tâche planifiée `ai-os fabric timer`) : dès qu'un nœud listé passe sa
+# condition, essai court réparti (une couche distante, `tokens` jetons) puis retour à l'état précédent ; résultat dans
+# ~/.local/share/ay/ai/fabric-trials.jsonl (`ai-os fabric trials`). Un nœud déjà essayé avec succès n'est plus sondé.
+[trial]
+nodes = ["prd"]
+model = "qwen3-0.6b"
+split = [1, 27]
+tokens = 16
+
 [release]
 tag = "b12340"
 commit = "8954f194837d2ec4d5f67f20c81b84abe63883ba"

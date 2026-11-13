@@ -2,12 +2,24 @@
 //   ai-os fabric up [--only fr1,prd] [--split 1,7] [--local] [--no-warm] [--model alias]  admet les nœuds, démarre rpc-server puis le coordinateur
 //   ai-os fabric status                                        coordinateur, nœuds (condition, charge, plafonds systemd)
 //   ai-os fabric warm [--only fr1]                            nœuds : GGUF local vérifié, cache de tenseurs rempli
-//   ai-os fabric ensure                                        bascule : coordinateur muet -> up (nœuds admis, sinon GPU seul)
+//   ai-os fabric ensure                                        bascule (coordinateur muet -> up), puis admission opportuniste [trial]
+//   ai-os fabric timer [--remove] [--every 10]                 tâche planifiée Windows : ensure toutes les N minutes
+//   ai-os fabric trials                                        essais courts consignés par ensure (admission opportuniste)
 //   ai-os fabric down                                          arrête le coordinateur et les rpc-server
 //   ai-os fabric bench [--tokens N] [prompt]                   une génération réelle, tokens/s
 //   ai-os fabric node <id>                                     nœud Windows : rpc-server au premier plan
 import { parseArgs } from "node:util";
-import { bench, down, ensure, serveNode, status, up, warm } from "./index";
+import {
+  bench,
+  down,
+  ensure,
+  serveNode,
+  status,
+  timer,
+  trials,
+  up,
+  warm,
+} from "./index";
 
 const { positionals, values } = parseArgs({
   args: Bun.argv.slice(2),
@@ -19,6 +31,8 @@ const { positionals, values } = parseArgs({
     "no-warm": { type: "boolean" },
     tokens: { type: "string" },
     model: { type: "string" },
+    remove: { type: "boolean" },
+    every: { type: "string" },
   },
 });
 const [cmd, ...rest] = positionals;
@@ -39,6 +53,12 @@ switch (cmd ?? "status") {
   }
   case "status":
     print(await status());
+    break;
+  case "timer":
+    print(timer(!!values.remove, Number(values.every ?? 10)));
+    break;
+  case "trials":
+    print(trials());
     break;
   case "ensure":
     print(await ensure());
