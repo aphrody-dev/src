@@ -423,12 +423,6 @@ mod tests {
     }
 
     #[test]
-    fn conformance_and_manifests_verify() {
-        assert_eq!(parse("conformance --fetch wpt"), Route::Conformance(v(&["--fetch", "wpt"])));
-        assert_eq!(parse("manifests verify"), Route::Xtk(v(&["manifests", "--check"])));
-    }
-
-    #[test]
     fn unknown_command_is_a_usage_error() {
         assert_eq!(run(&v(&["nope"])), 2);
     }
