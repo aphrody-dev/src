@@ -743,6 +743,69 @@ export async function mint(m: Manifest, o: AuthOptions): Promise<number> {
   }
 }
 
+// --- GitHub App for CI submodule checkout (replaces the SUBMODULES_TOKEN PAT) --------------------------
+
+/**
+ * `ay auth github-app [--org aphrody-labs]`: GitHub App manifest flow. Serves 127.0.0.1:47800, opens
+ * Chrome on a form that posts the manifest (contents: read) to the organization; the owner clicks
+ * "Create GitHub App". The callback converts the code (POST /app-manifests/{code}/conversions, valid
+ * 1 h), stores the private key in the OS store and as the org secret SUBMODULES_APP_KEY (stdin), the
+ * client id as the org variable SUBMODULES_APP_CLIENT_ID, then redirects to the install page (second
+ * click). Workflows mint 1 h installation tokens with actions/create-github-app-token. Waits 24 h.
+ */
+export async function githubApp(o: AuthOptions): Promise<number> {
+  const a = o.args ?? [];
+  const org = a.includes("--org") ? a[a.indexOf("--org") + 1]! : "aphrody-labs";
+  const port = 47800;
+  const state = randomBytes(16).toString("hex");
+  const manifest = {
+    name: `${org}-submodules`,
+    url: "https://aphrody.com",
+    description: "CI : lecture des sous-modules (jetons d'installation de 1 h, actions/create-github-app-token)",
+    hook_attributes: { url: "https://aphrody.com/", active: false },
+    redirect_url: `http://127.0.0.1:${port}/callback`,
+    public: false,
+    default_permissions: { contents: "read", metadata: "read" },
+    default_events: [],
+  };
+  const esc = (x: string) => x.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  const page = `<!doctype html><meta charset=utf-8><title>GitHub App</title><form id=f method=post action="https://github.com/organizations/${org}/settings/apps/new?state=${state}"><input type=hidden name=manifest value="${esc(JSON.stringify(manifest))}"><button>Créer l'App GitHub ${org}-submodules</button></form><script>document.getElementById("f").submit()</script>`;
+  let finish: (code: number) => void = () => {};
+  const done = new Promise<number>((r) => (finish = r));
+  const server = Bun.serve({
+    hostname: "127.0.0.1",
+    port,
+    async fetch(req) {
+      const u = new URL(req.url);
+      if (u.pathname === "/") return new Response(page, { headers: { "content-type": "text/html; charset=utf-8" } });
+      if (u.pathname !== "/callback") return new Response(null, { status: 404 });
+      if (u.searchParams.get("state") !== state) return new Response("state invalide", { status: 400 });
+      const r = await fetch(`https://api.github.com/app-manifests/${encodeURIComponent(u.searchParams.get("code") ?? "")}/conversions`, {
+        method: "POST",
+        headers: { accept: "application/vnd.github+json" },
+      });
+      if (!r.ok) {
+        finish(1);
+        return new Response(`conversion refusée : HTTP ${r.status}`, { status: 502 });
+      }
+      const app = (await r.json()) as { id: number; slug: string; client_id: string; pem: string };
+      secretSet("SUBMODULES_APP_KEY", app.pem);
+      const k = sh("gh", ["secret", "set", "SUBMODULES_APP_KEY", "--org", org, "--visibility", "all", "--body", "-"], { input: app.pem });
+      const v = sh("gh", ["variable", "set", "SUBMODULES_APP_CLIENT_ID", "--org", org, "--visibility", "all", "--body", app.client_id]);
+      console.error(`ay auth github-app : App ${app.slug} (id ${app.id}) ; clé -> stockage + secret ${org} ${k.ok ? "ok" : clean(k.err)} ; client id -> variable ${v.ok ? "ok" : clean(v.err)}`);
+      setTimeout(() => finish(k.ok && v.ok ? 0 : 1), 500);
+      return Response.redirect(`https://github.com/apps/${app.slug}/installations/new`, 302);
+    },
+  });
+  const url = `http://127.0.0.1:${port}/`;
+  if (process.platform === "win32") spawnSync("cmd", ["/c", "start", "", url], { windowsHide: true });
+  else spawnSync("xdg-open", [url]);
+  console.error(`ay auth github-app : ${url} ouvert ; clic propriétaire « Create GitHub App » puis « Install » (attente 24 h)`);
+  const code = await Promise.race([done, Bun.sleep(86_400_000).then(() => 1)]);
+  server.stop(true);
+  return code;
+}
+
 // --- Entry ------------------------------------------------------------------------------------------
 
 const KINDS = ["cli", "browser", "token", "store", "ci", "oidc", "fleet", "tunnel-api"] as const;
@@ -753,6 +816,7 @@ export async function runAuth(sub: string, o: AuthOptions): Promise<number> {
   const repair = sub === "repair";
   let checks: Check[] = [];
   if (sub === "mint") return mint(m, o);
+  if (sub === "github-app") return githubApp(o);
   if (sub === "login") {
     // Device flow first (RFC 8628) where the CLI has it; only the CLIs whose check fails are logged in.
     const t = o.args ?? [];
@@ -778,7 +842,7 @@ export async function runAuth(sub: string, o: AuthOptions): Promise<number> {
   } else if (sub === "tunnels") {
     checks = await deployTunnels(m, o);
   } else {
-    console.error(`ay auth: sous-commande inconnue ${sub}. Attendu : status, repair, login, oidc, mint, gh-secrets, tunnels, rotate`);
+    console.error(`ay auth: sous-commande inconnue ${sub}. Attendu : status, repair, login, oidc, mint, github-app, gh-secrets, tunnels, rotate`);
     return 2;
   }
   if (o.json) console.log(JSON.stringify(checks, null, 2));

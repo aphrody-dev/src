@@ -56,13 +56,22 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - id: app
+        # GitHub App aphrody-labs-submodules (ay auth github-app) : jeton d'installation de 1 h, contents: read.
+        if: vars.SUBMODULES_APP_CLIENT_ID != ''
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.SUBMODULES_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SUBMODULES_APP_KEY }}
+          owner: aphrody-labs
+          permission-contents: read
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
           # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
-          token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
+          token: ${{ steps.app.outputs.token || secrets.SUBMODULES_TOKEN || github.token }}
       - name: Install dist
         # we specify bash to get pipefail; it guards against the `curl` command
         # failing. otherwise `sh` won't catch that `curl` returned non-0
@@ -119,13 +128,22 @@ jobs:
       - name: enable windows longpaths
         run: |
           git config --global core.longpaths true
+      - id: app
+        # GitHub App aphrody-labs-submodules (ay auth github-app) : jeton d'installation de 1 h, contents: read.
+        if: vars.SUBMODULES_APP_CLIENT_ID != ''
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.SUBMODULES_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SUBMODULES_APP_KEY }}
+          owner: aphrody-labs
+          permission-contents: read
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
           # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
-          token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
+          token: ${{ steps.app.outputs.token || secrets.SUBMODULES_TOKEN || github.token }}
       - name: Install Rust non-interactively if not already installed
         if: ${{ matrix.container }}
         run: |
@@ -181,13 +199,22 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       BUILD_MANIFEST_NAME: target/distrib/global-dist-manifest.json
     steps:
+      - id: app
+        # GitHub App aphrody-labs-submodules (ay auth github-app) : jeton d'installation de 1 h, contents: read.
+        if: vars.SUBMODULES_APP_CLIENT_ID != ''
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.SUBMODULES_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SUBMODULES_APP_KEY }}
+          owner: aphrody-labs
+          permission-contents: read
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
           # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
-          token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
+          token: ${{ steps.app.outputs.token || secrets.SUBMODULES_TOKEN || github.token }}
       - name: Install cached dist
         uses: actions/download-artifact@v8
         with:
@@ -234,13 +261,22 @@ jobs:
     outputs:
       val: ${{ steps.host.outputs.manifest }}
     steps:
+      - id: app
+        # GitHub App aphrody-labs-submodules (ay auth github-app) : jeton d'installation de 1 h, contents: read.
+        if: vars.SUBMODULES_APP_CLIENT_ID != ''
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.SUBMODULES_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SUBMODULES_APP_KEY }}
+          owner: aphrody-labs
+          permission-contents: read
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
           # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
-          token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
+          token: ${{ steps.app.outputs.token || secrets.SUBMODULES_TOKEN || github.token }}
       - name: Install cached dist
         uses: actions/download-artifact@v8
         with:
@@ -302,10 +338,19 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - id: app
+        # GitHub App aphrody-labs-submodules (ay auth github-app) : jeton d'installation de 1 h, contents: read.
+        if: vars.SUBMODULES_APP_CLIENT_ID != ''
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.SUBMODULES_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SUBMODULES_APP_KEY }}
+          owner: aphrody-labs
+          permission-contents: read
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
           # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
-          token: ${{ secrets.SUBMODULES_TOKEN || github.token }}
+          token: ${{ steps.app.outputs.token || secrets.SUBMODULES_TOKEN || github.token }}
