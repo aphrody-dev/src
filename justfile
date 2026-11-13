@@ -63,6 +63,11 @@ build target="":
 install-ay:
     cargo install --path "{{root}}/crates/ay" --root "{{home_directory()}}/.local" --force --locked --no-track
 
+# Browser, automation and crawl engines (packages/chromium-bun/src/engines): idempotent install, Windows and Linux
+# (usage: just browsers, just browsers chrome@beta lightpanda; other subcommands: bun run --cwd packages/chromium-bun src/cli.ts engines)
+browsers *ids:
+    bun run --cwd "{{root}}/packages/chromium-bun" src/cli.ts engines install {{ids}}
+
 # Byte-level Git and Scalar optimization across all repos
 slim-all:
     ay git slim --all --root "{{root}}"

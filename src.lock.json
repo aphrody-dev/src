@@ -168,6 +168,118 @@
             },
             "sparse_paths": null
         },
+        "third_party/accessibility-cli": {
+            "path": "C:\\src\\third_party\\accessibility-cli",
+            "url": "https://github.com/aphrody-labs/accessibility-cli.git",
+            "upstream_url": "https://github.com/DioxusLabs/accessibility-cli.git",
+            "commit": "eb58eb69182064d153c1cf7ac4577fc0f311549f",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/accessibility-cli.git",
+                "upstream": "https://github.com/DioxusLabs/accessibility-cli.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/anyrender": {
+            "path": "C:\\src\\third_party\\anyrender",
+            "url": "https://github.com/aphrody-labs/anyrender.git",
+            "upstream_url": "https://github.com/DioxusLabs/anyrender.git",
+            "commit": "efe45afb4b63130eea41552db2c6fee5b3aef90b",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/anyrender.git",
+                "upstream": "https://github.com/DioxusLabs/anyrender.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/apify-cli": {
+            "path": "C:\\src\\third_party\\apify-cli",
+            "url": "https://github.com/aphrody-labs/apify-cli.git",
+            "upstream_url": "https://github.com/apify/apify-cli.git",
+            "commit": "d4da6ec9841e0a379cc3e8e522ae15ece397c2a5",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/apify-cli.git",
+                "upstream": "https://github.com/apify/apify-cli.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/apify-client-js": {
+            "path": "C:\\src\\third_party\\apify-client-js",
+            "url": "https://github.com/aphrody-labs/apify-client-js.git",
+            "upstream_url": "https://github.com/apify/apify-client-js.git",
+            "commit": "4be190a71059f4a6e018df4195e956a186952381",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/apify-client-js.git",
+                "upstream": "https://github.com/apify/apify-client-js.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/apify-client-python": {
+            "path": "C:\\src\\third_party\\apify-client-python",
+            "url": "https://github.com/aphrody-labs/apify-client-python.git",
+            "upstream_url": "https://github.com/apify/apify-client-python.git",
+            "commit": "2756f896ddb22e87ccb28313bde54f44c83c5c57",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/apify-client-python.git",
+                "upstream": "https://github.com/apify/apify-client-python.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/apify-sdk-python": {
+            "path": "C:\\src\\third_party\\apify-sdk-python",
+            "url": "https://github.com/aphrody-labs/apify-sdk-python.git",
+            "upstream_url": "https://github.com/apify/apify-sdk-python.git",
+            "commit": "d0d18d9275f686bf60cc124543e4bc2e0b8c58a3",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/apify-sdk-python.git",
+                "upstream": "https://github.com/apify/apify-sdk-python.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/blitz-chrome-devtools-frontend": {
+            "path": "C:\\src\\third_party\\blitz-chrome-devtools-frontend",
+            "url": "https://github.com/aphrody-labs/blitz-chrome-devtools-frontend.git",
+            "upstream_url": "https://github.com/DioxusLabs/blitz-chrome-devtools-frontend.git",
+            "commit": "26d2ded9ac157270461a745361bf6923a6ca614f",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/blitz-chrome-devtools-frontend.git",
+                "upstream": "https://github.com/DioxusLabs/blitz-chrome-devtools-frontend.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/blitz-website": {
+            "path": "C:\\src\\third_party\\blitz-website",
+            "url": "https://github.com/aphrody-labs/blitz-website.git",
+            "upstream_url": "https://github.com/DioxusLabs/blitz-website.git",
+            "commit": "c5acb6cc31ef03541c5434a9cfcea2ae158bab8e",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/blitz-website.git",
+                "upstream": "https://github.com/DioxusLabs/blitz-website.git"
+            },
+            "sparse_paths": null
+        },
         "third_party/CachyOS-PKGBUILDS": {
             "path": "C:\\src\\third_party\\CachyOS-PKGBUILDS",
             "url": "https://github.com/CachyOS/CachyOS-PKGBUILDS.git",
@@ -177,6 +289,48 @@
             "pillar": "linux-kernel",
             "remotes": {
                 "origin": "https://github.com/CachyOS/CachyOS-PKGBUILDS.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/chrome-devtools-mcp": {
+            "path": "C:\\src\\third_party\\chrome-devtools-mcp",
+            "url": "https://github.com/aphrody-labs/chrome-devtools-mcp.git",
+            "upstream_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp.git",
+            "commit": "1417f93ee3f83b87270c910b0c0337de475f6f17",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/chrome-devtools-mcp.git",
+                "upstream": "https://github.com/ChromeDevTools/chrome-devtools-mcp.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/chrome-for-testing": {
+            "path": "C:\\src\\third_party\\chrome-for-testing",
+            "url": "https://github.com/aphrody-labs/chrome-for-testing.git",
+            "upstream_url": "https://github.com/GoogleChromeLabs/chrome-for-testing.git",
+            "commit": "d56d98583d9634cc9ed35eda0743f4ce5671338e",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/chrome-for-testing.git",
+                "upstream": "https://github.com/GoogleChromeLabs/chrome-for-testing.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/crawlee-python": {
+            "path": "C:\\src\\third_party\\crawlee-python",
+            "url": "https://github.com/aphrody-labs/crawlee-python.git",
+            "upstream_url": "https://github.com/apify/crawlee-python.git",
+            "commit": "ea841e621650a26aa5cba34a1b687bec443a660e",
+            "branch": "master",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/crawlee-python.git",
+                "upstream": "https://github.com/apify/crawlee-python.git"
             },
             "sparse_paths": null
         },
@@ -258,6 +412,20 @@
             "remotes": {
                 "origin": "https://github.com/aphrody-labs/Oryx.git",
                 "upstream": "https://github.com/microsoft/Oryx.git"
+            },
+            "sparse_paths": null
+        },
+        "third_party/playwright-python": {
+            "path": "C:\\src\\third_party\\playwright-python",
+            "url": "https://github.com/aphrody-labs/playwright-python.git",
+            "upstream_url": "https://github.com/microsoft/playwright-python.git",
+            "commit": "b36f716b50808af0ef031fda06546f97b407ddcc",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/playwright-python.git",
+                "upstream": "https://github.com/microsoft/playwright-python.git"
             },
             "sparse_paths": null
         },
@@ -352,6 +520,30 @@
                 "origin": "https://github.com/microsoft/TypeChat.git"
             },
             "sparse_paths": null
+        },
+        "third_party/WebKit": {
+            "path": "C:\\src\\third_party\\WebKit",
+            "url": "https://github.com/aphrody-labs/WebKit.git",
+            "upstream_url": "https://github.com/oven-sh/WebKit.git",
+            "commit": "b553971ea817212ee787c005f8a1003c68307963",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/WebKit.git",
+                "upstream": "https://github.com/oven-sh/WebKit.git",
+                "webkit": "https://github.com/WebKit/WebKit.git"
+            },
+            "sparse_paths": [
+                "/*",
+                "!/*/",
+                "/Source/",
+                "!/Source/*/",
+                "/Source/JavaScriptCore/",
+                "/Source/WTF/",
+                "/Source/bmalloc/",
+                "/Source/cmake/"
+            ]
         },
         "third_party/WSL": {
             "path": "C:\\src\\third_party\\WSL",
@@ -3565,6 +3757,7 @@
             "pillar": "git",
             "remotes": {
                 "aphrody": "https://github.com/aphrody-labs/stylo.git",
+                "dioxuslabs": "https://github.com/DioxusLabs/stylo.git",
                 "origin": "https://github.com/servo/stylo.git"
             },
             "sparse_paths": null
@@ -3615,6 +3808,7 @@
             "engine": "git",
             "pillar": "git",
             "remotes": {
+                "aphrody": "https://github.com/aphrody-labs/taffy.git",
                 "origin": "https://github.com/DioxusLabs/taffy.git"
             },
             "sparse_paths": null

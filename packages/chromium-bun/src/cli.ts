@@ -3,6 +3,7 @@
 import { inspectChromiumTree } from "./audit/chromium-inspector.ts";
 import { CHROMIUM_DEPENDENCY_AUDIT } from "./audit/purge-matrix.ts";
 import { runAllBenchmarks } from "./benchmarks/runner.ts";
+import { runEnginesCommand } from "./engines/cli.ts";
 import { getAllLayers } from "./layers.ts";
 import {
   auditUrlInRealChromium,
@@ -112,6 +113,10 @@ async function main(): Promise<void> {
       console.log(JSON.stringify(CHROMIUM_DEPENDENCY_AUDIT, null, 2));
       break;
     }
+    case "engines": {
+      process.exitCode = await runEnginesCommand(args.slice(1));
+      break;
+    }
     case "bench": {
       await runAllBenchmarks();
       break;
@@ -127,6 +132,7 @@ async function main(): Promise<void> {
           "  crawl <url> [--chromium] [--allow-private]        Crawl & index page on fr2 shard",
           "  audit-url <url> [--lighthouse] [--agent-browser]  Run real headless Chromium Web Vitals & QA audit",
           "  inspect | layers | matrix | bench                 6-Layer Chromium extraction & benchmarks",
+          "  engines list|channels|path|install|launch         Browser, automation and crawl engines (engines/registry.ts)",
         ].join("\n"),
       );
       break;

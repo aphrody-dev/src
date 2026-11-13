@@ -9,6 +9,7 @@ export * from "./browser/cdp-client.ts";
 export * from "./browser/ssrf.ts";
 export * from "./browser/shields.ts";
 export * from "./browser/launcher.ts";
+export * from "./engines/index.ts";
 export * from "./browser/chromium-tracker.ts";
 export * from "./browser/bun-v8-bridge.ts";
 export * from "./search/indexer.ts";

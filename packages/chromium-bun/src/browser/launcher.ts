@@ -3,9 +3,14 @@
  * Headless Chromium / Chrome Process Launcher & Agent-Browser Runner
  * Spawns isolated ephemeral headless Chromium processes with CDP WebSocket control.
  */
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import {
+  getEngine,
+  resolveChromium,
+  resolveExecutable,
+} from "../engines/registry.ts";
 import { ChromiumBunCdpClient } from "./cdp-client.ts";
 
 export interface LaunchedChromiumInstance extends AsyncDisposable {
@@ -16,40 +21,13 @@ export interface LaunchedChromiumInstance extends AsyncDisposable {
   close(): Promise<void>;
 }
 
-const CHROMIUM_CANDIDATES: readonly string[] = [
-  Bun.env.CHROME_PATH || "",
-  "C:/src/third_party/chromium/out/Release/chrome.exe",
-  "C:/Program Files/Google/Chrome/Application/chrome.exe",
-  "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
-  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
-  "/usr/bin/chromium",
-  "/usr/bin/chromium-browser",
-  "/usr/bin/google-chrome",
-  "/usr/bin/google-chrome-stable",
-].filter(Boolean);
-
+/** Chromium local résolu par le registre des moteurs (engines/registry.ts), sans chemin codé en dur. */
 export function findLocalChromiumBinary(): string | null {
-  for (const candidate of CHROMIUM_CANDIDATES) {
-    if (existsSync(candidate)) return candidate;
-  }
-  const whichChrome =
-    Bun.which("chrome") ?? Bun.which("chromium") ?? Bun.which("google-chrome");
-  return whichChrome ?? null;
+  return resolveChromium();
 }
 
 export function findAgentBrowserBinary(): string | null {
-  const candidates = [
-    "C:/Users/aphro/.local/bin/agent-browser.exe",
-    join(
-      Bun.env.USERPROFILE || Bun.env.HOME || "",
-      ".local/bin/agent-browser.exe",
-    ),
-    join(Bun.env.USERPROFILE || Bun.env.HOME || "", ".local/bin/agent-browser"),
-  ];
-  for (const c of candidates) {
-    if (c && existsSync(c)) return c;
-  }
-  return Bun.which("agent-browser") ?? null;
+  return resolveExecutable(getEngine("agent-browser"));
 }
 
 export async function launchHeadlessChromium(options?: {
@@ -60,7 +38,7 @@ export async function launchHeadlessChromium(options?: {
   const binaryPath = options?.binaryPath ?? findLocalChromiumBinary();
   if (!binaryPath) {
     throw new Error(
-      "No Chromium/Chrome binary found on host. Set CHROME_PATH or install Chromium.",
+      "No Chromium/Chrome binary found. Set CHROME_PATH or run `chromium-bun engines install chrome@stable`.",
     );
   }
 

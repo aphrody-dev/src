@@ -105,6 +105,36 @@ const FORKS: Fork[] = [
     ],
   },
   { name: "webui", upstream: gh("microsoft/webui") },
+  // Navigateurs, automatisation et crawl (2026-11-13), façade packages/chromium-bun/src/engines. Les clones déjà
+  // présents (playwright, puppeteer, crawlee, apify-sdk-js, obscura, lightpanda, servo, blitz, stylo, taffy) gardent
+  // origin = amont et remote aphrody = fork ; seuls les nouveaux passent ici.
+  ...[
+    "microsoft/playwright-python",
+    "apify/apify-sdk-python",
+    "apify/apify-cli",
+    "apify/apify-client-js",
+    "apify/apify-client-python",
+    "apify/crawlee-python",
+    "ChromeDevTools/chrome-devtools-mcp",
+    "GoogleChromeLabs/chrome-for-testing",
+    "DioxusLabs/anyrender",
+    "DioxusLabs/blitz-website",
+    "DioxusLabs/accessibility-cli",
+    "DioxusLabs/blitz-chrome-devtools-frontend",
+  ].map((r) => ({ name: r.split("/")[1]!, upstream: gh(r) })),
+  // JavaScriptCore de bun (fork oven-sh/WebKit, 13 Go) : moteur JS, WTF et bmalloc seulement.
+  {
+    name: "WebKit",
+    upstream: gh("oven-sh/WebKit"),
+    remotes: { webkit: gh("WebKit/WebKit") },
+    // `ay git clone --sparse` applique `git sparse-checkout set` en mode cône : des dossiers, pas des motifs.
+    sparse: [
+      "Source/JavaScriptCore",
+      "Source/WTF",
+      "Source/bmalloc",
+      "Source/cmake",
+    ],
+  },
 ];
 
 const repo = join(import.meta.dir, "..", "..", "..");
