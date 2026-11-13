@@ -5,8 +5,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 process.env.ACP_HOME = mkdtempSync(join(tmpdir(), "ai-os-acp-"));
+process.env.AGENT_HOME = process.env.ACP_HOME;
 let slow = false;
+const real = await import("../../src/relay/backends.ts");
 mock.module("../../src/relay/backends.ts", () => ({
+  ...real,
   gemini: async (prompt: string) => {
     if (slow) await Bun.sleep(200);
     if (prompt === "boom") throw new Error("moteur indisponible");
@@ -99,4 +102,26 @@ test("session/cancel pendant un tour : stopReason cancelled", async () => {
   slow = false;
   expect(out.at(-1).result.stopReason).toBe("cancelled");
   expect(out.some((m) => m.method === "session/update")).toBe(false);
+});
+
+test("_meta.model : modèle découvert, historique repris au tour suivant", async () => {
+  const [n] = await rpc("session/new", {
+    cwd,
+    mcpServers: [],
+    _meta: { model: "echo/bot" },
+  });
+  const sessionId = n.result.sessionId;
+  await rpc("session/prompt", {
+    sessionId,
+    prompt: [{ type: "text", text: "un" }],
+  });
+  const out = await rpc("session/prompt", {
+    sessionId,
+    prompt: [{ type: "text", text: "deux" }],
+  });
+  const t = out[0].params.update.content.text;
+  expect(t).toContain("bot:");
+  expect(t).toContain("User: un");
+  expect(t).toContain("User: deux");
+  expect(out[1].result.stopReason).toBe("end_turn");
 });

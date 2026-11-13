@@ -2,11 +2,14 @@
 // un client ACP (éditeur, Hermes, OpenClaw acpx) utilise Gemini (ou Claude Code headless) comme agent.
 //   initialize (négociation de version), session/new, session/load (rejoue l'historique en session/update),
 //   session/list, session/prompt (agent_message_chunk puis stopReason end_turn), session/cancel (stopReason cancelled).
+// Moteur par session : _meta.engine « claude », _meta.model (ou RELAY_ACP_MODEL) = modèle découvert fournisseur/modèle
+// (llm_models, historique de la session repris dans le prompt), sinon Gemini.
 // Sessions persistées dans le dossier du relais (acp-sessions.json) : conversation Gemini, cwd, historique.
 // Codes d'erreur ACP : -32700 JSON invalide, -32602 paramètres, -32002 session absente, -32603 échec interne
 // (-32000 signifie « authentification requise » en ACP et n'est pas utilisé pour un échec de moteur).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
+import { llmAsk } from "../llm/model.ts";
 import { claude, gemini } from "./backends.ts";
 import { relayHome } from "./cdp.ts";
 import { VERSION } from "./protocols.ts";
@@ -22,7 +25,8 @@ type Msg = {
 type Turn = { role: "user" | "agent"; text: string };
 type Session = {
   cwd: string;
-  engine: "gemini" | "claude";
+  engine: "gemini" | "claude" | "llm";
+  model?: string;
   chat?: string;
   title?: string;
   updatedAt: string;
@@ -52,6 +56,15 @@ const save = () => {
 const pending = new Map<string, () => void>();
 
 export type Out = (m: unknown) => void;
+
+/** Modèle sans état : les derniers tours de la session précèdent la demande. */
+const withHistory = (h: Turn[], prompt: string) =>
+  h.length
+    ? `${h
+        .slice(-20)
+        .map((t) => `${t.role === "user" ? "User" : "Assistant"}: ${t.text}`)
+        .join("\n\n")}\n\nUser: ${prompt}`
+    : prompt;
 
 /** cwd et mcpServers sont requis par NewSessionRequest et LoadSessionRequest ; cwd doit être absolu. */
 const badSetup = (p: any) =>
@@ -111,7 +124,14 @@ export async function handle(m: Msg, write: Out) {
       const id = crypto.randomUUID();
       load().set(id, {
         cwd: p.cwd,
-        engine: p._meta?.engine === "claude" ? "claude" : "gemini",
+        ...(p._meta?.engine === "claude"
+          ? { engine: "claude" as const }
+          : (p._meta?.model ?? Bun.env.RELAY_ACP_MODEL)
+            ? {
+                engine: "llm" as const,
+                model: String(p._meta?.model ?? Bun.env.RELAY_ACP_MODEL),
+              }
+            : { engine: "gemini" as const }),
         updatedAt: new Date().toISOString(),
         history: [],
       });
@@ -163,13 +183,15 @@ export async function handle(m: Msg, write: Out) {
         const run =
           s.engine === "claude"
             ? claude(prompt)
-            : gemini(prompt, { chat: s.chat });
+            : s.engine === "llm"
+              ? llmAsk(s.model!, withHistory(s.history, prompt))
+              : gemini(prompt, { chat: s.chat });
         const a = await Promise.race([run, done.then(() => null)]);
         if (cancelled || !a) {
           run.catch(() => {});
           return reply({ stopReason: "cancelled" });
         }
-        if (a.chat) s.chat = a.chat;
+        if ("chat" in a && a.chat) s.chat = a.chat;
         s.title ??= prompt.slice(0, 80);
         s.history.push(
           { role: "user", text: prompt },
