@@ -54,9 +54,8 @@ M:	Aphrody Engineering <contact@aphrody.com>
 L:	contact@aphrody.com
 S:	Supported
 W:	https://about.aphrody.com
-T:	git https://github.com/aphrody-dev/bun.git
+T:	git https://github.com/aphrody-labs/bun.git
 T:	git https://github.com/oven-sh/bun.git
-T:	git https://github.com/aphrody-dev/bun-parity.git
 T:	quilt packages/bun-parity/patches/
 F:	packages/bun-parity/
 F:	packages/bun-plugins/

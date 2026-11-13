@@ -14,7 +14,7 @@ Code testé qui l'utilise (14, généré par `bun packages/core/src/cli.ts gen`)
 - `packages/ai-os/native/sovereign-polyglot-ffi/src/system1.rs` — tests : `packages/ai-os/tests/ai-os.test.ts`, `packages/ai-os/tests/full-design-mode.test.ts`, `packages/ai-os/tests/rosegriffon.test.ts`
 - `packages/ai-os/src/ffi/desktop.ts` — tests : `packages/ai-os/tests/ai-os.test.ts`, `packages/ai-os/tests/full-design-mode.test.ts`, `packages/ai-os/tests/rosegriffon.test.ts`
 - `packages/ai-os/src/ffi/polyglot.ts` — tests : `packages/ai-os/tests/ai-os.test.ts`, `packages/ai-os/tests/full-design-mode.test.ts`, `packages/ai-os/tests/rosegriffon.test.ts`
-- `packages/bun-plugins/decide-plugin.ts` — tests : `packages/bun-plugins/m3-icons-plugin.test.ts`, `packages/bun-plugins/tests/just-plugin.test.ts`, `packages/bun-plugins/tests/lua-plugin.test.ts`
+- `packages/bun-plugins/decide-plugin.ts` — tests : `packages/bun-plugins/m3-icons-plugin.test.ts`, `packages/bun-plugins/tests/just-plugin.test.ts`
 - `packages/core/src/ffi.ts` — tests : `packages/core/test/ffi.test.ts`
 - `packages/core/test/ffi.test.ts` — tests : `packages/core/test/ffi.test.ts`
 - `packages/forge/src/depot-bridge.ts` — tests : `packages/forge/tests/bundle.test.ts`, `packages/forge/tests/crypto.test.ts`, `packages/forge/tests/db.test.ts`

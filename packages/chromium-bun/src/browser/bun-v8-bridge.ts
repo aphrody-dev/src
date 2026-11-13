@@ -25,9 +25,9 @@ export interface ForkedRepoEntry {
 export const BUN_CHROMIUM_UPSTREAM_REPOS: readonly ForkedRepoEntry[] = [
   {
     name: "bun",
-    fullName: "aphrody-dev/bun",
+    fullName: "aphrody-labs/bun",
     upstream: "oven-sh/bun",
-    url: "https://github.com/aphrody-dev/bun",
+    url: "https://github.com/aphrody-labs/bun",
     plane: "host-bun-webkit",
     category: "runtime",
     description:

@@ -1,7 +1,7 @@
 # ay on Bun, without JSC and without the JS/TS engine
 
 Owner decision 2026-11-12: `ay` is Bun minus JavaScriptCore and minus its JavaScript/TypeScript
-engine. `ay` reuses the Rust crates of our Bun fork (`third_party/bun`, `aphrody-dev/bun`, a Cargo
+engine. `ay` reuses the Rust crates of our Bun fork (`third_party/bun`, `aphrody-labs/bun`, a Cargo
 workspace of 136 crates under `src/`) for everything that is not JS execution: package manager,
 HTTP, shell, spawn, archives, compression, S3, SQL, Valkey, glob, semver, watcher, CSS, Markdown.
 
@@ -70,7 +70,7 @@ only and do not link anything.
 
 1. **Fork checkout and baseline.** Run the fork's vendor checkout, then `cargo check` on the 70
    free crates plus the 12 listed above. Proof: clean check log committed to the fork's PR notes.
-2. **Cut the two edges** in `aphrody-dev/bun` behind the default-on features. Proof: `cargo tree`
+2. **Cut the two edges** in `aphrody-labs/bun` behind the default-on features. Proof: `cargo tree`
    as above; Bun's own `bun bd` and its install/resolver test suites still pass.
 3. **First routes**: `ay sh`, `ay x`, `ay fetch`, `ay tar`/`zstd`, `ay glob`, `ay semver`
    (no install yet). Proof: `cargo test -p aphrody` routing tests; `ay sh` runs the justfile's
