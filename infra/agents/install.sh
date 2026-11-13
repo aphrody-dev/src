@@ -29,8 +29,11 @@ install -m 0755 "$SRC/infra/agents/pre-push" "$SRC/.git/hooks/pre-push"
 need claude || curl -fsSL https://claude.ai/install.sh | bash
 for spec in codex:@openai/codex opencode:opencode-ai pi:@earendil-works/pi-coding-agent; do
   bin=${spec%%:*}; pkg=${spec#*:}
-  if ! need "$bin" || [ "${AGENTS_UPDATE:-0}" = 1 ]; then bun add -g "$pkg@latest" >/dev/null 2>&1; fi
+  # Check the bun global bin itself: a same-named wrapper elsewhere on PATH does not count.
+  if [ ! -x "$HOME/.bun/bin/$bin" ] || [ "${AGENTS_UPDATE:-0}" = 1 ]; then bun add -g "$pkg@latest" >/dev/null 2>&1; fi
 done
+# npm CLIs with a `#!/usr/bin/env node` shebang run on bun's node mode when node is absent.
+need node || ln -sf "$(command -v bun)" "$HOME/.bun/bin/node"
 
 # 3. systemd user units (linger keeps them running without a login session).
 need loginctl && loginctl enable-linger "$(id -un)" 2>/dev/null || true
@@ -46,5 +49,5 @@ systemctl --user enable --now aphrody-agents.service aphrody-agents-health.timer
 "$BUN" "$SRC/infra/agents/runner.ts" health
 
 echo "install: ok host=$(hostname) src=$SRC"
-for c in claude codex opencode pi; do printf '  %s: ' "$c"; "$c" --version 2>/dev/null | head -1 || echo missing; done
+for c in claude codex opencode pi; do printf '  %s: ' "$c"; "$c" --version 2>&1 | head -1 || echo missing; done
 tmux list-windows -t agents -F '  tmux #{window_index} #{window_name}' 2>/dev/null || true
