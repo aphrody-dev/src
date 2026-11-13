@@ -1,0 +1,16 @@
+# Daily replay of the fork patch stacks on upstream (docs/upstream/STRATEGY.md). Installed by
+# infra/upstream/install.sh with @SRC@, @BUN@, @STACKS@ and @ENV@ filled in for the host.
+[Unit]
+Description=Aphrody fork patch stacks: sync on upstream (@STACKS@)
+After=network-online.target
+
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=idle
+Environment=SRC_ROOT=@SRC@
+@ENV@
+# Exit 3 = a patch conflicts with upstream: the fork is left as it was and the unit shows failed.
+ExecStart=@BUN@ @SRC@/packages/upstream/src/cli.ts sync @STACKS@ --push
+ExecStartPost=@BUN@ @SRC@/packages/upstream/src/cli.ts gc @GC@
+TimeoutStartSec=3h

@@ -1,0 +1,11 @@
+[Unit]
+Description=Aphrody fork patch stacks: daily sync on upstream
+
+[Timer]
+# 05:30 UTC: after bun's canary of the night (oven-sh/bun main) and before the working day in Europe.
+OnCalendar=*-*-* 05:30:00 UTC
+RandomizedDelaySec=20min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

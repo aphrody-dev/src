@@ -1,0 +1,114 @@
+# Upstream status of the bun stack (aphrody-labs/bun), written by `ay upstream mark`.
+# Keys: patch slug (Electron's munge of the subject). Doc: docs/upstream/STRATEGY.md.
+
+[patch."build_pass_the_bind_ts_schema_list_to_the_codegen_scripts_in_a_file"]
+subject = "build: pass the .bind.ts schema list to the codegen scripts in a file"
+status = "pending"
+note = "remplace build: pass bindgen sources relative (marge mesurée : 39 caractères sous 8191)"
+owner = "upstream-stack"
+updated = "2026-11-13"
+
+[patch."build_xwin_0_10_0_which_reads_the_current_visual_studio_manifest"]
+subject = "build: xwin 0.10.0, which reads the current Visual Studio manifest"
+status = "submitted"
+note = "oven-sh/bun#48784"
+pr = "https://github.com/oven-sh/bun/pull/48784"
+owner = "bun-windows"
+updated = "2026-11-13"
+
+[patch."child_process_expose_the_parent-end_pipe_fd_through_stream_handle"]
+subject = "child_process: expose the parent-end pipe fd through stream._handle"
+status = "submitted"
+note = "oven-sh/bun#39760 (robobun), portage sur la disposition bindgen du fork"
+pr = "https://github.com/oven-sh/bun/pull/39760"
+owner = "amont"
+updated = "2026-11-13"
+
+[patch."ci_aphrody_cross-compile_bun_exe_for_windows_x64_and_run_the_fork_s_wind"]
+subject = "ci(aphrody): cross-compile bun.exe for Windows x64 and run the fork's Windows regression tests"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (régression Windows)"
+owner = "bun-windows"
+updated = "2026-11-13"
+
+[patch."ci_native_leave_the_windows_sysroot_out_of_the_build_host"]
+subject = "ci(native): leave the Windows sysroot out of the build host"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-13"
+
+[patch."ci_native_release_build_thinlto_linux-x64_gnu_musl_windows-x64_and_non-r"]
+subject = "ci: native release build (ThinLTO, linux-x64 gnu/musl, windows-x64) and non-regression bench"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-13"
+
+[patch."ci_native_run_on_dispatch_only"]
+subject = "ci(native): run on dispatch only"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-13"
+
+[patch."completions_print_the_script_for_bash_zsh_and_fish_on_windows"]
+subject = "completions: print the script for bash, zsh and fish on Windows"
+status = "pending"
+note = "Fixes #25042 ; #28122 fermé sans fusion"
+owner = "bun-windows"
+updated = "2026-11-13"
+
+[patch."docs_minifier_page_frontmatter_uses_title_like_every_other_page"]
+subject = "docs: minifier page frontmatter uses title like every other page"
+status = "inappropriate"
+note = "sans effet visible : bun.com/docs/bundler/minifier affiche déjà le titre Minifier (2026-11-13) ; à retirer"
+owner = "upstream-stack"
+updated = "2026-11-13"
+
+[patch."docs_sizes_bun_gzipsync_and_bun_deflatesync_give_for_the_utils_examples"]
+subject = "docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples"
+status = "submitted"
+note = "oven-sh/bun#48786"
+pr = "https://github.com/oven-sh/bun/pull/48786"
+owner = "bun-audit"
+updated = "2026-11-13"
+
+[patch."import_meta_main_compare_the_main_module_s_key_as_a_url_in_every_executa"]
+subject = "import.meta.main: compare the main module's key as a URL in every executable"
+status = "submitted"
+note = "oven-sh/bun#48698 (robobun)"
+pr = "https://github.com/oven-sh/bun/pull/48698"
+owner = "amont"
+updated = "2026-11-13"
+
+[patch."node_fs_resolve_a_relative_path_that_normalizes_to_nothing_to_the_cwd_on"]
+subject = "node:fs: resolve a relative path that normalizes to nothing to the cwd on Windows"
+status = "submitted"
+note = "oven-sh/bun#45410 (robobun)"
+pr = "https://github.com/oven-sh/bun/pull/45410"
+owner = "amont"
+updated = "2026-11-13"
+
+[patch."shell_skip_a_dead_bin_link_for_the_script_words_bun_bunx_and_node_window"]
+subject = "shell: skip a dead bin link for the script words bun, bunx and node (Windows)"
+status = "submitted"
+note = "oven-sh/bun#45742 (robobun)"
+pr = "https://github.com/oven-sh/bun/pull/45742"
+owner = "amont"
+updated = "2026-11-13"
+
+[patch."sys_windows_report_enoent_for_an_empty_path_instead_of_acting_on_the_dir"]
+subject = "sys(windows): report ENOENT for an empty path instead of acting on the directory it is relative to"
+status = "submitted"
+note = "oven-sh/bun#38052 (robobun)"
+pr = "https://github.com/oven-sh/bun/pull/38052"
+owner = "amont"
+updated = "2026-11-13"
+
+[patch."upgrade_unpack_the_windows_release_in-process_and_check_canary_downloads"]
+subject = "upgrade: unpack the Windows release in-process and check canary downloads against the API digest"
+status = "pending"
+note = "Windows : Expand-Archive de PowerShell 7 sous 5.1 ; canary vérifié contre le digest de l'API"
+owner = "bun-windows"
+updated = "2026-11-13"

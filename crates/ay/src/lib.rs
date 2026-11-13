@@ -59,6 +59,9 @@ pub enum Cmd {
     /// Gamescope mode (runs the `gamescope-rs` binary)
     #[command(disable_help_flag = true)]
     Scope(Rest),
+    /// Patch stacks of the bun and Chromium forks: status, sync, check, pr, mark, gc, export (packages/upstream)
+    #[command(disable_help_flag = true)]
+    Upstream(Rest),
     /// Pure-Rust SSH (russh): exec <host|all|a,b> -- cmd, cp, hosts, check
     #[command(disable_help_flag = true)]
     Ssh(Rest),
@@ -133,6 +136,8 @@ pub enum Route {
     External(&'static str, Vec<String>),
     /// `bun packages/env-kit/src/cli.ts <args>` (TypeScript, run in place by bun).
     EnvKit(Vec<String>),
+    /// `bun packages/<name>/src/cli.ts <args>` (a Bun package CLI of the monorepo, run in place).
+    Package(&'static str, Vec<String>),
     Ssh(Vec<String>),
     Conformance(Vec<String>),
     Rt(Vec<String>),
@@ -188,6 +193,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Deploy(r) => Route::External("src-deploy", r.args),
         Cmd::Bench(r) => Route::Bench(r.args),
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
+        Cmd::Upstream(r) => Route::Package("upstream", r.args),
         Cmd::Ssh(r) => Route::Ssh(r.args),
         Cmd::Conformance(r) => Route::Conformance(r.args),
         Cmd::Rt(r) => Route::Rt(r.args),
@@ -231,6 +237,7 @@ fn run_route(route: Route) -> i32 {
         Route::Depot(name, args) => depot_cli::run(name, &args),
         Route::Bench(args) => run_bench(&args),
         Route::External(program, args) => exec::run_external(program, &args),
+        Route::Package(name, args) => exec::run_package(name, &args),
         Route::EnvKit(args) => exec::run_env_kit(&args),
         Route::Ssh(args) => remote::run("ay ssh", &args, &repo_root()),
         Route::Conformance(args) => run_conformance(&args),
@@ -429,6 +436,12 @@ mod tests {
         let Route::Ai(a) = parse("ai service ollama litellm --remove") else { panic!("not ai") };
         assert_eq!(a.cmd, Some(ai::AiCmd::Service { ids: v(&["ollama", "litellm"]), remove: true }));
         assert_eq!(parse("ai"), Route::Ai(ai::AiArgs::default()));
+    }
+
+    #[test]
+    fn upstream_runs_the_bun_package() {
+        assert_eq!(parse("upstream status bun --json"), Route::Package("upstream", v(&["status", "bun", "--json"])));
+        assert_eq!(parse("upstream --help"), Route::Package("upstream", v(&["--help"])));
     }
 
     #[test]

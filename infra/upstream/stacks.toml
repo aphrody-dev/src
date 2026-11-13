@@ -1,0 +1,54 @@
+# Patch stacks of the forks we keep compatible with upstream. Read by `ay upstream` (packages/upstream).
+# Process, statuses and calendar: docs/upstream/STRATEGY.md.
+#
+# model = "branch": the fork's default branch is upstream/<ref> plus a linear series of patch commits
+#   (each commit = one patch, status in its `Upstream-Status:` trailer). `ay upstream sync` replays the
+#   series on the new upstream tip and pushes with --force-with-lease.
+# model = "series": patch files in `series` (Electron layout: one .patch per change, order in `.patches`),
+#   checked against the upstream tip on a scratch index; the fork's default branch mirrors upstream.
+
+[stack.bun]
+model = "branch"
+upstream = "oven-sh/bun"
+upstream_url = "https://github.com/oven-sh/bun.git"
+ref = "main" # canary: bun publishes canary builds from main
+fork = "aphrody-labs/bun"
+branch = "main"
+checkout = "third_party/bun"
+forge = "github"
+rules = "bun"
+runner = "prd"
+# Upstream's own CI, dispatched on an ephemeral PR head before the PR is opened (they run on pull_request
+# and workflow_dispatch in oven-sh/bun; build + test runs on oven's Buildkite once the PR is open).
+lint_workflows = ["format.yml", "lint.yml", "rust-lints.yml", "source-lints.yml"]
+
+[stack.bunx]
+# Fork on the short org, owned by the native-binary work (docs/bun/NATIVE-BINARY.md). Same upstream,
+# same statuses; skipped while the repository does not exist.
+model = "branch"
+upstream = "oven-sh/bun"
+upstream_url = "https://github.com/oven-sh/bun.git"
+ref = "main"
+fork = "bunx-sh/bun"
+branch = "main"
+checkout = "var/upstream/bunx"
+forge = "github"
+rules = "bun"
+runner = "prd"
+optional = true
+lint_workflows = ["format.yml", "lint.yml", "rust-lints.yml", "source-lints.yml"]
+
+[stack.chromium]
+model = "series"
+upstream = "chromium/src"
+upstream_url = "https://chromium.googlesource.com/chromium/src.git"
+ref = "main"
+fork = "aphrody-labs/chromium" # GitHub mirror, kept even with upstream (merge-upstream API)
+github_upstream = "chromium/chromium"
+branch = "main"
+checkout = "third_party/chromium/src"
+series = "infra/upstream/chromium/patches"
+forge = "gerrit"
+gerrit = "https://chromium-review.googlesource.com"
+rules = "chromium"
+runner = "fr1"

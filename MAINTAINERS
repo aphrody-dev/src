@@ -250,6 +250,15 @@ F:	docs/ARCHITECTURE.md
 F:	docs/PHILOSOPHY.md
 F:	justfile
 
+UPSTREAM PATCH STACKS (BUN, CHROMIUM FORKS)
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+T:	git https://github.com/aphrody-labs/bun.git
+F:	docs/upstream/
+F:	infra/upstream/
+F:	packages/upstream/
+
 THE REST
 M:	Aphrody Engineering <contact@aphrody.com>
 S:	Maintained
