@@ -32,7 +32,7 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with: { global-json-file: apps/nt/global.json }
       - uses: oven-sh/setup-bun@v2
-        with: { bun-version: 1.4.4 }
+        with: { bun-version-file: package.json }
       - uses: taiki-e/install-action@v2
         with: { tool: just }
       - uses: mozilla-actions/sccache-action@v0.0.11
@@ -93,7 +93,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
-        with: { bun-version: 1.4.4 }
+        with: { bun-version-file: package.json }
       - uses: taiki-e/install-action@v2
         with: { tool: just }
       - run: just lint
@@ -110,7 +110,7 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with: { global-json-file: apps/nt/global.json }
       - uses: oven-sh/setup-bun@v2
-        with: { bun-version: 1.4.4 }
+        with: { bun-version-file: package.json }
       - uses: taiki-e/install-action@v2
         with: { tool: just }
       # niubash : shell des recettes just sous Windows.
