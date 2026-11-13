@@ -45,7 +45,7 @@ jobs:
       - name: Rust (ay and its libraries; toolchain from rust-toolchain.toml)
         run: |
           aphrody-heavy cargo build -p aphrody
-          aphrody-heavy cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard -p agent-context
+          aphrody-heavy cargo test -p aphrody -p depot-gclient -p depot-cas -p depot-cipd -p aphrody-up -p aphrody-rt -p archguard -p agent-context -p aphrody-ui
       - name: Supply-chain gate (cargo-deny)
         run: |
           command -v cargo-deny >/dev/null || aphrody-heavy cargo install --locked cargo-deny
