@@ -49,6 +49,8 @@ export interface Project {
   exclude: string[];
   production: "auto" | "manual";
   api?: string; // path prefixes proxied to the backend origin (prd) instead of served from R2
+  protect?: boolean; // previews behind Cloudflare Access (production stays public)
+  budgets?: { LCP?: number; INP?: number; CLS?: number }; // p75 budgets checked by `ay deploy observe`
 }
 
 export interface InventoryItem {

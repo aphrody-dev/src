@@ -16,7 +16,16 @@ import {
   rollbackTarget,
   type Registry,
 } from "../src/state.ts";
-import { affected, loadProjects } from "../src/registry.ts";
+import {
+  affected,
+  cacheKey,
+  changedFiles,
+  loadProjects,
+  manifest,
+  overBudget,
+} from "../src/registry.ts";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import worker, { type Env } from "../src/worker.ts";
 
 class FakeR2 {
@@ -345,5 +354,63 @@ describe("sources", () => {
       "aphrody",
     ]);
     expect(affected(p, ["README.md"])).toEqual([]);
+  });
+});
+
+describe("build cache and observe", () => {
+  const root = mkdtempSync(join(tmpdir(), "deploy-cache-"));
+  mkdirSync(join(root, "app", "dist", "a"), { recursive: true });
+  writeFileSync(join(root, "bun.lock"), "lock1");
+  writeFileSync(join(root, "app", "index.ts"), "x");
+  writeFileSync(join(root, "app", "dist", "index.html"), "<p>1</p>");
+  writeFileSync(join(root, "app", "dist", "a", "b.js"), "b");
+  writeFileSync(join(root, "app", "dist", "a", "b.js.gz"), "gz");
+  const p = loadProjects(join(import.meta.dir, "..", "..", ".."))[0]!;
+  const proj = {
+    ...p,
+    watch: ["app/**"],
+    build: "bun run build",
+    budgets: undefined,
+  };
+  const tracked = ["app/index.ts", "bun.lock", "other.md"];
+  test("cache key is stable and covers watch files, bun.lock and command", () => {
+    const k1 = cacheKey(proj, root, tracked);
+    expect(cacheKey(proj, root, tracked)).toBe(k1);
+    expect(cacheKey({ ...proj, build: "bun x" }, root, tracked)).not.toBe(k1);
+    writeFileSync(join(root, "bun.lock"), "lock2");
+    const k2 = cacheKey(proj, root, tracked);
+    expect(k2).not.toBe(k1);
+    writeFileSync(join(root, "app", "index.ts"), "y");
+    expect(cacheKey(proj, root, tracked)).not.toBe(k2);
+    writeFileSync(join(root, "other.md"), "z");
+    expect(cacheKey(proj, root, tracked)).toBe(cacheKey(proj, root, tracked));
+  });
+  test("manifest hashes outputs, applies excludes, diff keeps only changes", () => {
+    const m = manifest(join(root, "app", "dist"), ["**/*.gz"]);
+    expect(Object.keys(m)).toEqual(["a/b.js", "index.html"]);
+    expect(changedFiles(m, m)).toEqual([]);
+    expect(changedFiles(undefined, m)).toEqual(["a/b.js", "index.html"]);
+    writeFileSync(join(root, "app", "dist", "index.html"), "<p>2</p>");
+    expect(
+      changedFiles(m, manifest(join(root, "app", "dist"), ["**/*.gz"])),
+    ).toEqual(["index.html"]);
+    rmSync(root, { recursive: true, force: true });
+  });
+  test("budgets: over p75 fails, missing samples do not", () => {
+    const b = { ...proj, budgets: { LCP: 2500, INP: 200, CLS: 0.1 } };
+    expect(
+      overBudget(b, { LCP: { p75: 3000, n: 4 }, CLS: { p75: 0.05, n: 4 } }),
+    ).toEqual(["LCP p75 3000 > budget 2500 (n 4)"]);
+    expect(overBudget(b, { INP: { p75: 900, n: 0 } })).toEqual([]);
+    expect(overBudget(proj, { LCP: { p75: 9e9, n: 1 } })).toEqual([]);
+  });
+  test("projects.toml: site watched, budgets and protect parsed", () => {
+    const all = loadProjects(join(import.meta.dir, "..", "..", ".."));
+    for (const n of ["aphrody", "yolo"]) {
+      const x = all.find((y) => y.name === n)!;
+      expect(x.watch).toContain("packages/site/**");
+      expect(x.budgets?.LCP).toBe(2500);
+      expect(x.protect).toBe(false);
+    }
   });
 });

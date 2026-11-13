@@ -34,6 +34,8 @@ export function loadProjects(root = SRC_ROOT): Project[] {
       exclude: v.exclude ?? [],
       production: v.production === "manual" ? "manual" : "auto",
       api: v.api,
+      protect: v.protect === true,
+      budgets: v.budgets,
     } satisfies Project;
   });
 }
@@ -187,4 +189,86 @@ export function affected(projects: Project[], changed: string[]): Project[] {
       return changed.some((c) => glob.match(c));
     }),
   );
+}
+
+/** Build cache key: SHA-256 over the git-tracked files matched by `watch`, bun.lock and the build command. */
+export function cacheKey(
+  p: Project,
+  root = SRC_ROOT,
+  tracked?: string[],
+): string {
+  const files =
+    tracked ??
+    Bun.spawnSync(["git", "ls-files", "-z"], { cwd: root })
+      .stdout.toString()
+      .split("\0")
+      .filter(Boolean);
+  const globs = p.watch.map((g) => new Bun.Glob(g));
+  const picked = files
+    .filter((f) => globs.some((g) => g.match(f)))
+    .concat("bun.lock")
+    .sort();
+  const h = new Bun.CryptoHasher("sha256");
+  h.update(`build\0${p.build}\0out\0${p.out}\0`);
+  for (const f of new Set(picked)) {
+    h.update(`${f}\0`);
+    h.update(
+      existsSync(join(root, f))
+        ? new Bun.CryptoHasher("sha256")
+            .update(readFileSync(join(root, f)))
+            .digest("hex")
+        : "-",
+    );
+  }
+  return h.digest("hex");
+}
+
+export interface BuildCache {
+  key: string;
+  project: string;
+  sha: string; // deployment that holds the files
+  files: Record<string, string>; // path -> sha256
+  bytes: number;
+  at: string;
+}
+
+export const cachePath = (p: string, key: string, root = SRC_ROOT) =>
+  join(root, "deploys", p, "_cache", `${key}.json`);
+
+/** Content manifest of a build output: relative path -> sha256 (exclusions applied). */
+export function manifest(
+  dir: string,
+  exclude: string[],
+): Record<string, string> {
+  const skip = exclude.map((g) => new Bun.Glob(g));
+  const out: Record<string, string> = {};
+  for (const rel of [...new Bun.Glob("**/*").scanSync({ cwd: dir, dot: true })]
+    .map((f) => f.replace(/\\/g, "/"))
+    .sort())
+    if (!skip.some((g) => g.match(rel)))
+      out[rel] = new Bun.CryptoHasher("sha256")
+        .update(readFileSync(join(dir, rel)))
+        .digest("hex");
+  return out;
+}
+
+/** Files of `next` that are new or changed against `prev`. */
+export function changedFiles(
+  prev: Record<string, string> | undefined,
+  next: Record<string, string>,
+): string[] {
+  return Object.keys(next).filter((k) => prev?.[k] !== next[k]);
+}
+
+/** Budget breaches of a project's p75 vitals (metrics without samples are not judged). */
+export function overBudget(
+  p: Project,
+  vitals: Record<string, { p75: number; n: number }>,
+): string[] {
+  return Object.entries(p.budgets ?? {}).flatMap(([k, max]) => {
+    const v = vitals[k];
+    return v && v.n > 0 && max !== undefined && v.p75 > max
+      ? [`${k} p75 ${v.p75} > budget ${max} (n ${v.n})`]
+      : [];
+  });
 }

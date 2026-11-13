@@ -9,6 +9,10 @@
 #   watch       globs of the paths that trigger a deployment
 #   env         names of the vault variables the build reads (values never leave env-kit / CI secrets)
 #   exclude     globs of output files not uploaded
+#   protect     true: previews behind Cloudflare Access (production stays public); default false
+#   budgets     p75 Core Web Vitals budgets (LCP/INP ms, CLS unitless) checked by `ay deploy observe`
+# Build cache: SHA-256 of the git-tracked `watch` files + bun.lock + build command; an identical key reuses
+# the ready deployment that produced it (no build, no upload). CI keeps deploys/<p>/_cache/<key>.json.
 
 [project.aphrody]
 path = "apps/aphrody"
@@ -23,17 +27,20 @@ watch = [
   "packages/deploy/src/m3.ts",
   "packages/design/tokens/**",
   "packages/wck/**",
+  "packages/site/**",
   "assets/brand/**",
 ]
 env = ["PUBLIC_CONTACT_EMAIL", "INDEXNOW_KEY"]
 exclude = ["**/*.gz", "**/*.br", "**/*.exe"]
 production = "auto"
+budgets = { LCP = 2500, INP = 200, CLS = 0.1 }
 
 [project.yolo]
 path = "apps/yolo"
 build = "bun run build"
 out = "dist"
 domains = ["yolo.aphrody.app"]
-watch = ["apps/yolo/**", "packages/bun-plugins/**", "packages/design/**"]
+watch = ["apps/yolo/**", "packages/site/**", "packages/design/**"]
 exclude = ["**/*.gz", "**/*.br", "**/*.exe"]
 production = "auto"
+budgets = { LCP = 2500, INP = 200, CLS = 0.1 }

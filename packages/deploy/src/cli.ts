@@ -7,11 +7,23 @@
 //   ay deploy promote <project> <sha>            production to sha
 //   ay deploy ci [--before sha] [--after sha] [--project p]...   CI entry: registry, affected projects, deploy
 //   ay deploy registry                           upload the registry (projects, inventory, labs, brand)
+//   ay deploy observe [project]...               p75 LCP/INP/CLS against the budgets (exit 1 when over)
 // Container deploys stay under `ay deploy up|build|smoke|ps|shell|run|products` (just docker-*).
-import { readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { componentsBundle } from "./m3.ts";
-import { affected, buildRegistry, loadProjects, SRC_ROOT } from "./registry.ts";
+import {
+  affected,
+  buildRegistry,
+  type BuildCache,
+  cacheKey,
+  cachePath,
+  changedFiles,
+  loadProjects,
+  manifest,
+  overBudget,
+  SRC_ROOT,
+} from "./registry.ts";
 import { previewUrl, type Deployment, type Project } from "./state.ts";
 
 const API = (Bun.env.APHRODY_DEPLOY_API ?? "https://aphrody.app").replace(
@@ -76,22 +88,12 @@ const git = (...a: string[]) =>
     .stdout.toString()
     .trim();
 
-function walk(dir: string): string[] {
-  return readdirSync(dir).flatMap((n) => {
-    const p = join(dir, n);
-    return statSync(p).isDirectory() ? walk(p) : [p];
-  });
-}
-
 async function upload(
   p: Project,
   sha: string,
   dir: string,
+  files: string[],
 ): Promise<{ files: number; bytes: number }> {
-  const skip = p.exclude.map((g) => new Bun.Glob(g));
-  const files = walk(dir)
-    .map((f) => relative(dir, f).replace(/\\/g, "/"))
-    .filter((rel) => !skip.some((g) => g.match(rel)));
   let bytes = 0;
   let next = 0;
   const one = async () => {
@@ -185,14 +187,65 @@ async function githubDeployment(
   );
 }
 
-/** Build one project at `sha` (the checkout), upload it, finalize, promote when production = auto. */
+/** Last cache entry written for the project (newest mtime), if any. */
+function previousCache(p: Project): BuildCache | undefined {
+  const dir = join(SRC_ROOT, "deploys", p.name, "_cache");
+  if (!existsSync(dir)) return undefined;
+  let best: { at: string; c: BuildCache } | undefined;
+  for (const f of new Bun.Glob("*.json").scanSync({ cwd: dir }))
+    try {
+      const c = JSON.parse(readFileSync(join(dir, f), "utf8")) as BuildCache;
+      if (!best || c.at > best.at) best = { at: c.at, c };
+    } catch {}
+  return best?.c;
+}
+
+async function promote(p: Project, sha: string): Promise<void> {
+  const pr = await call("POST", `/api/projects/${p.name}/promote`, { sha });
+  console.log(
+    `production ${p.name} -> ${pr.sha?.slice(0, 7)} (was ${pr.previous?.slice(0, 7) ?? "none"})`,
+  );
+  if (p.domains[0])
+    await githubDeployment(
+      p,
+      sha,
+      `production/${p.name}`,
+      `https://${p.domains[0]}`,
+      true,
+    );
+}
+
+/** Build one project at `sha` (the checkout), upload it, finalize, promote when production = auto.
+ * Build cache: same inputs (watch files, bun.lock, command) as a ready deployment -> no build, no upload,
+ * the cached deployment is reused (and promoted). */
 async function deployOne(
   p: Project,
   sha: string,
   opts: { branch: string; message: string; run?: string; promote: boolean },
 ): Promise<boolean> {
+  const key = cacheKey(p);
+  const cfile = cachePath(p.name, key);
+  if (existsSync(cfile)) {
+    const c = JSON.parse(readFileSync(cfile, "utf8")) as BuildCache;
+    const list = await call<{
+      production: string | null;
+      deployments: Deployment[];
+    }>("GET", `/api/projects/${p.name}/deployments`, undefined, false).catch(
+      () => null,
+    );
+    if (list?.deployments.some((d) => d.sha === c.sha && d.state === "ready")) {
+      console.log(
+        `== ${p.name}@${sha.slice(0, 7)}: cache hit ${key.slice(0, 12)}, build skipped, 0 files uploaded, reusing ${c.sha.slice(0, 7)} ${previewUrl(p.name, c.sha)}`,
+      );
+      if (opts.promote && p.production === "auto" && list.production !== c.sha)
+        await promote(p, c.sha);
+      return true;
+    }
+  }
   const url = previewUrl(p.name, sha);
-  console.log(`== ${p.name}@${sha.slice(0, 7)}: ${p.build} in ${p.path}`);
+  console.log(
+    `== ${p.name}@${sha.slice(0, 7)}: cache miss ${key.slice(0, 12)}, ${p.build} in ${p.path}`,
+  );
   await call("POST", `/api/projects/${p.name}/deployments`, {
     sha,
     branch: opts.branch,
@@ -215,8 +268,12 @@ async function deployOne(
     await githubDeployment(p, sha, `preview/${p.name}`, url, false);
     return false;
   }
-  const up = await upload(p, sha, join(SRC_ROOT, p.path, p.out));
-  log += `uploaded ${up.files} files, ${up.bytes} bytes\n`;
+  const dir = join(SRC_ROOT, p.path, p.out);
+  const files = manifest(dir, p.exclude);
+  const prev = previousCache(p);
+  const changed = changedFiles(prev?.files, files);
+  const up = await upload(p, sha, dir, Object.keys(files));
+  log += `uploaded ${up.files} files, ${up.bytes} bytes (${changed.length} new or changed since ${prev?.sha.slice(0, 7) ?? "none"})\n`;
   await call("POST", `/api/projects/${p.name}/deployments/${sha}/finalize`, {
     state: "ready",
     files: up.files,
@@ -225,20 +282,19 @@ async function deployOne(
   });
   console.log(`preview ${url} (${up.files} files)`);
   await githubDeployment(p, sha, `preview/${p.name}`, url, true);
-  if (opts.promote && p.production === "auto") {
-    const pr = await call("POST", `/api/projects/${p.name}/promote`, { sha });
-    console.log(
-      `production ${p.name} -> ${pr.sha?.slice(0, 7)} (was ${pr.previous?.slice(0, 7) ?? "none"})`,
-    );
-    if (p.domains[0])
-      await githubDeployment(
-        p,
-        sha,
-        `production/${p.name}`,
-        `https://${p.domains[0]}`,
-        true,
-      );
-  }
+  mkdirSync(dirname(cfile), { recursive: true });
+  writeFileSync(
+    cfile,
+    JSON.stringify({
+      key,
+      project: p.name,
+      sha,
+      files,
+      bytes: up.bytes,
+      at: new Date().toISOString(),
+    } satisfies BuildCache),
+  );
+  if (opts.promote && p.production === "auto") await promote(p, sha);
   return true;
 }
 
@@ -260,7 +316,7 @@ async function main(): Promise<number> {
       (await Bun.file(import.meta.path).text())
         .split("\n")
         .filter((l) => l.startsWith("//"))
-        .slice(0, 11)
+        .slice(0, 12)
         .map((l) => l.slice(3))
         .join("\n"),
     );
@@ -328,6 +384,30 @@ async function main(): Promise<number> {
       `${name}: production ${r.previous?.slice(0, 7) ?? "none"} -> ${r.sha.slice(0, 7)}`,
     );
     return 0;
+  }
+  if (sub === "observe") {
+    const names = argv.splice(0);
+    const all = loadProjects().filter(
+      (p) => p.budgets && (!names.length || names.includes(p.name)),
+    );
+    let over = 0;
+    for (const p of all) {
+      const s = await call<{
+        vitals?: Record<string, { p75: number; n: number }>;
+      }>("GET", `/api/projects/${p.name}/insights?days=7`);
+      for (const line of overBudget(p, s.vitals ?? {})) {
+        over++;
+        console.error(`::error title=CWV ${p.name}::${line}`);
+      }
+      console.log(
+        `${p.name}: ${
+          Object.entries(s.vitals ?? {})
+            .map(([k, v]) => `${k} p75 ${v.p75} (n ${v.n})`)
+            .join(", ") || "no samples"
+        }`,
+      );
+    }
+    return over ? 1 : 0;
   }
   if (sub === "registry") {
     console.log(await publishPlatform(git("rev-parse", "HEAD")));
