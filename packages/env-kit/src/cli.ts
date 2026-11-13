@@ -8,6 +8,8 @@ import { GOOGLE_SCOPES, googleOAuthLoopback } from "./google-auth.ts";
 import { gmailProfile, listMessages, sendMessage } from "./gmail.ts";
 import { contextEnv, detectContext, exportLines } from "./google-context.ts";
 import { formatIdentities, whoami } from "./whoami";
+import { runAuth } from "./auth";
+import { secretDelete, secretGet, secretHas, secretList, secretSet, storeInfo } from "./secret-store";
 import {
   buildAphrodyIamBindingsPlan,
   formatAccountsStatusReport,
@@ -20,6 +22,7 @@ import {
   DEFAULT_MONOREPO_ENV_PATH,
   exportForCloudflareDevVars,
   exportForVercelEnv,
+  isSecretKey,
   loadMonorepoEnv,
   maskValue,
   parseDotEnv,
@@ -210,19 +213,105 @@ function runDoctor(envPath: string): number {
   return 0;
 }
 
-function setCredentialEverywhere(
+/** Secrets also go to the OS store (DPAPI / systemd-creds); a host without one keeps .env only. */
+function storeSecret(key: string, value: string): void {
+  if (!isSecretKey(key, value) || !value) return;
+  try {
+    secretSet(key, value);
+  } catch (e) {
+    console.error(`[env-kit] secret store unavailable for ${key}: ${(e as Error).message}`);
+  }
+}
+
+async function readStdin(): Promise<string> {
+  const text = await Bun.stdin.text();
+  return text.replace(/\r?\n$/, "");
+}
+
+async function runSecretCommand(envPath: string, args: readonly string[]): Promise<number> {
+  const sub = args[0] ?? "list";
+  const name = args[1];
+  const json = args.includes("--json");
+  if (sub === "info") {
+    const info = storeInfo();
+    console.log(json ? JSON.stringify(info) : `${info.backend} ${info.dir}`);
+    return 0;
+  }
+  if (sub === "list") {
+    const names = secretList();
+    console.log(json ? JSON.stringify(names) : names.join("\n"));
+    return 0;
+  }
+  if (sub === "set" && name) {
+    // The value only ever arrives on stdin (never argv, so never in shell history or ps).
+    if (process.stdin.isTTY) {
+      console.error("env-kit secret set: pipe the value on stdin (clipboard, provider CLI), never type it");
+      return 2;
+    }
+    const value = await readStdin();
+    if (!value) return 1;
+    secretSet(name, value);
+    console.log(`[env-kit] ${name} -> ${storeInfo().backend} (${maskValue(name, value)})`);
+    return 0;
+  }
+  // No "get": a captured stdout (agent, CI log) is not a terminal, so a TTY guard cannot keep a
+  // value out of a transcript. Secrets reach a consumer only through its env or its stdin.
+  if (sub === "exec" || sub === "pipe") {
+    const sep = args.indexOf("--");
+    const names = args.slice(1, sep < 0 ? undefined : sep).filter((a) => !a.startsWith("--"));
+    const command = sep < 0 ? [] : args.slice(sep + 1);
+    if (!names.length || !command.length || (sub === "pipe" && names.length !== 1)) {
+      console.error(`Usage: env-kit secret ${sub} NAME${sub === "exec" ? " [NAME...]" : ""} -- <cmd> [args...]`);
+      return 2;
+    }
+    const values = names.map((n) => [n, secretGet(n)] as const);
+    const missing = values.filter(([, v]) => v === undefined).map(([n]) => n);
+    if (missing.length) {
+      console.error(`[env-kit] absent from the store: ${missing.join(", ")}`);
+      return 1;
+    }
+    const r = spawnSync(command[0]!, command.slice(1), {
+      stdio: sub === "pipe" ? ["pipe", "inherit", "inherit"] : "inherit",
+      input: sub === "pipe" ? values[0]![1] : undefined,
+      env: sub === "exec" ? { ...process.env, ...Object.fromEntries(values) } : process.env,
+    });
+    return r.status ?? 1;
+  }
+  if (sub === "has" && name) return secretHas(name) ? 0 : 1;
+  if (sub === "rm" && name) return secretDelete(name) ? 0 : 1;
+  if (sub === "import") {
+    // .env -> store, for the given keys or every secret-like key; idempotent.
+    const env = existsSync(envPath) ? parseDotEnv(readFileSync(envPath, "utf8")) : {};
+    const keys = args.slice(1).filter((a) => !a.startsWith("--"));
+    let n = 0;
+    for (const [k, v] of Object.entries(env)) {
+      if (!v || (keys.length ? !keys.includes(k) : !isSecretKey(k, v))) continue;
+      if (secretGet(k) === v) continue;
+      secretSet(k, v);
+      n++;
+    }
+    console.log(`[env-kit] secret import: ${n} updated, ${secretList().length} in ${storeInfo().dir}`);
+    return 0;
+  }
+  console.error("Usage: env-kit secret <info|list|set NAME (stdin)|exec NAME.. -- cmd|pipe NAME -- cmd|has NAME|rm NAME|import [KEY...]>");
+  return 2;
+}
+
+export function setCredentialEverywhere(
   envPath: string,
   key: string,
   value: string,
 ): void {
   upsertEnvFileKey(envPath, key, value);
   setWindowsUserEnv(key, value);
+  storeSecret(key, value);
   process.env[key] = value;
 
   const coupled = COUPLED_KEYS[key] ?? [];
   for (const mirrorKey of coupled) {
     upsertEnvFileKey(envPath, mirrorKey, value);
     setWindowsUserEnv(mirrorKey, value);
+    storeSecret(mirrorKey, value);
     process.env[mirrorKey] = value;
   }
 
@@ -322,6 +411,12 @@ Usage:
   env-kit dev-vars <projectDir>        Write gitignored .dev.vars for Cloudflare wrangler dev
   env-kit vercel-env [projectDir]      Preview masked Vercel env summary (or write .env.local with --write)
   env-kit exec -- <cmd> [args...]      Execute command with C:/src/.env injected into child process
+  env-kit secret <info|list|set|exec|pipe|has|rm|import>  OS secret store (DPAPI / systemd-creds); values in via stdin, out via child env/stdin only
+  env-kit auth status [--json] [--only k,..]  Every auth: CLIs, Chrome, tokens, store, CI secrets, ssh, WireGuard, tunnels
+  env-kit auth repair [--browser]      Fix without password; --browser opens sign-in pages the owner clicks
+  env-kit auth gh-secrets [--dry-run]  gh secret set from the store (deploy.toml [auth.github])
+  env-kit auth tunnels [--dry-run]     cloudflared tokens from the Cloudflare API into systemd-creds
+  env-kit auth rotate cloudflare       Roll CLOUDFLARE_API_TOKEN through the API; store, .env, user env, then gh-secrets
 `);
 }
 
@@ -405,6 +500,25 @@ export async function main(
       console.log(`--- Identity (credentials -> owner, secrets never printed) ---
 ${formatIdentities(ids)}`);
     return ids.some((i) => i.status === "invalid") ? 1 : 0;
+  }
+
+  if (cmd === "secret") {
+    return runSecretCommand(envPath, argv.slice(1));
+  }
+
+  if (cmd === "auth") {
+    loadMonorepoEnv({ envPath, override: false, injectProcessEnv: true });
+    const flag = (n: string) => argv.includes(n);
+    const only = argv.find((a) => a.startsWith("--only="))?.slice(7) ?? (argv.includes("--only") ? argv[argv.indexOf("--only") + 1] : undefined);
+    const root = process.env.SRC_ROOT ?? resolve(import.meta.dir, "..", "..", "..");
+    return runAuth(argv[1] ?? "status", {
+      root,
+      json: flag("--json"),
+      browser: flag("--browser"),
+      dryRun: flag("--dry-run"),
+      only: only?.split(","),
+      persist: (k, v) => setCredentialEverywhere(envPath, k, v),
+    });
   }
 
   if (cmd === "accounts") {

@@ -27,6 +27,32 @@ env-kit vercel-env [dir] [--write]   # Export masked Vercel env summary or .env.
 env-kit exec -- <command> [args...]  # Run any binary with C:\src\.env injected
 ```
 
+## OS Secret Store (`env-kit secret`, `ay secret`)
+
+Encrypted by the OS, one file per secret named after its environment variable (`src/secret-store.ts`):
+
+| Host | Backend | Directory |
+| :--- | :------ | :-------- |
+| Windows | DPAPI current user (`CryptProtectData` via bun:ffi, application entropy) | `%LOCALAPPDATA%\aphrody\secrets\<NAME>.dpapi` |
+| Linux root | `systemd-creds` (host key, TPM2 when present) | `/etc/credstore.encrypted/<NAME>` (read by `LoadCredentialEncrypted=<NAME>`) |
+| Linux user | `systemd-creds --user` (systemd >= 256) | `~/.config/credstore.encrypted/<NAME>` |
+
+```sh
+<provider cli> | ay secret set NAME      # value on stdin only (refused from a terminal)
+ay secret exec NAME [NAME...] -- cmd     # child gets the values in its env
+ay secret pipe NAME -- cmd               # child gets the value on stdin
+ay secret list | info | has NAME | rm NAME | import [KEY...]   # import: .env -> store, idempotent
+```
+
+There is no `get`: a stdout captured by an agent or a CI log is not a terminal, so nothing prints a value.
+Library API for other tools (AI provider keys included): `secretSet`, `secretGet`, `secretList`,
+`resolveSecret(name)` (store, then `process.env` / `.env`). `env-kit set` and `sync-gh` also write the store.
+
+## Fleet Authentication (`env-kit auth`, `ay auth`)
+
+`status`, `repair [--browser]`, `gh-secrets`, `tunnels`, `rotate cloudflare`: see `docs/infra/AUTH.md`.
+Inventory in `deploy.toml` (`[nodes.*]`, `[auth.*]`).
+
 ## Multi-Language Loaders
 
 | Language / Runtime            | Path                                                      | Native CLI Flag / Usage                                                  |

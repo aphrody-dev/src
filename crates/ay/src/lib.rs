@@ -85,6 +85,12 @@ pub enum Cmd {
     /// The checkout's gn binary (buildtools/<platform>/gn)
     #[command(disable_help_flag = true)]
     Gn(Rest),
+    /// Every authentication of the fleet (env-kit): status, repair [--browser], gh-secrets, tunnels, rotate
+    #[command(disable_help_flag = true)]
+    Auth(Rest),
+    /// OS secret store (DPAPI on Windows, systemd-creds on Linux): info, list, set, exec, pipe, import
+    #[command(disable_help_flag = true)]
+    Secret(Rest),
     /// Build the workspace for a cross-compilation preset (--list shows toolchain status)
     Build(build::BuildArgs),
     /// Machine profile: OS, firmware/SMBIOS, CPUID, PCI, GPUs, disks, virtualization, toolchains
@@ -119,6 +125,8 @@ pub enum Route {
     Depot(&'static str, Vec<String>),
     Bench(Vec<String>),
     External(&'static str, Vec<String>),
+    /// `bun packages/env-kit/src/cli.ts <args>` (TypeScript, run in place by bun).
+    EnvKit(Vec<String>),
     Ssh(Vec<String>),
     Rt(Vec<String>),
     Chromium(chromium::Tool, Vec<String>),
@@ -172,6 +180,8 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Cipd(r) => Route::Chromium(chromium::Tool::Cipd, r.args),
         Cmd::Ninja(r) => Route::Chromium(chromium::Tool::Ninja, r.args),
         Cmd::Gn(r) => Route::Chromium(chromium::Tool::Gn, r.args),
+        Cmd::Auth(r) => Route::EnvKit(prefixed(&["auth"], &r.args)),
+        Cmd::Secret(r) => Route::EnvKit(prefixed(&["secret"], &r.args)),
         Cmd::Build(b) => Route::Build(b),
         Cmd::Sys(s) => Route::Sys(s),
         Cmd::Up(u) => Route::Up(u),
@@ -202,6 +212,7 @@ fn run_route(route: Route) -> i32 {
         Route::Depot(name, args) => depot_cli::run(name, &args),
         Route::Bench(args) => run_bench(&args),
         Route::External(program, args) => exec::run_external(program, &args),
+        Route::EnvKit(args) => exec::run_env_kit(&args),
         Route::Ssh(args) => remote::run("ay ssh", &args, &repo_root()),
         Route::Rt(args) => rt::run("ay rt", &args),
         Route::Chromium(tool, args) => chromium::run(tool, &args),
@@ -307,6 +318,14 @@ mod tests {
     fn external_engines() {
         assert_eq!(parse("deploy up --all"), Route::External("src-deploy", v(&["up", "--all"])));
         assert_eq!(parse("scope serve-web"), Route::External("gamescope-rs", v(&["serve-web"])));
+    }
+
+    #[test]
+    fn auth_and_secret_go_to_env_kit() {
+        assert_eq!(parse("auth status --json"), Route::EnvKit(v(&["auth", "status", "--json"])));
+        assert_eq!(parse("auth repair --browser"), Route::EnvKit(v(&["auth", "repair", "--browser"])));
+        assert_eq!(parse("secret exec CF -- wrangler deploy"), Route::EnvKit(v(&["secret", "exec", "CF", "--", "wrangler", "deploy"])));
+        assert_eq!(parse("secret --help"), Route::EnvKit(v(&["secret", "--help"])));
     }
 
     #[test]

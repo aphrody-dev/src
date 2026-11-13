@@ -22,7 +22,7 @@
 | Objet | ID |
 |---|---|
 | Tunnel `mig-prd` (remote-managed, 4 connexions QUIC cdg/bru) | `72153924-6650-4dd4-bced-f8b6731edcd8` |
-| Unité prd `cloudflared-mig-prd.service`, token `/etc/cloudflared-mig/mig-prd.tunnel-token` (root:root 0600, dossier 0700) | – |
+| Unité prd `cloudflared-mig-prd.service`, jeton en credential systemd chiffré `/etc/credstore.encrypted/cloudflared-mig-prd` depuis le 2026-11-13 (`ay auth tunnels`, docs/infra/AUTH.md ; l’ancien fichier en clair est supprimé) | – |
 | DNS CNAME proxifiés (zone aphrody.com) : mig-test / mig-downloads / mig-depot / mig-commons | `55f6b370…` / `48aa92a8…` / `58a419a0…` / `b64672bd…` |
 | Politique Access réutilisable `mig-owner-only` (contact@aphrody.com, 24 h) | `f3931268-9a0c-417c-b133-807ec2ca93e8` |
 | App Access `mig-prd-admin` (mig-depot, mig-commons) | `79f30d5f-8d38-4aaa-99fd-4b2ee21be3a4` |

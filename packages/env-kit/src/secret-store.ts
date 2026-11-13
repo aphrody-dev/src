@@ -1,0 +1,200 @@
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * OS-protected secret store shared by every tool of the monorepo (`env-kit secret`, `ay secret`,
+ * `ay auth`). One encrypted file per secret, named after the environment variable it feeds:
+ *
+ * - Windows: DPAPI, current-user scope (`CryptProtectData`, crypt32.dll through bun:ffi), with a
+ *   fixed application entropy. Files: `%LOCALAPPDATA%\aphrody\secrets\<NAME>.dpapi`. Only this
+ *   Windows account on this machine can decrypt them.
+ * - Linux, root: `systemd-creds encrypt` (host key, plus TPM2 when present) into
+ *   `/etc/credstore.encrypted/<NAME>`, the directory systemd searches for
+ *   `LoadCredentialEncrypted=<NAME>`: a unit consumes a secret without any copy in clear.
+ * - Linux, other users: `systemd-creds --user` into `~/.config/credstore.encrypted/<NAME>`.
+ *
+ * `ENV_KIT_SECRET_DIR` overrides the directory. Values travel through memory and stdin only: never
+ * argv, never stdout unless the caller pipes (`secretGet` returns the value, the CLI refuses to
+ * print it to a terminal).
+ */
+
+import { spawnSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+
+export type SecretBackend = "dpapi" | "systemd-creds" | "systemd-creds-user";
+
+export interface SecretStoreInfo {
+  backend: SecretBackend;
+  dir: string;
+}
+
+const NAME = /^[A-Za-z_][A-Za-z0-9_.-]{0,127}$/;
+const ENTROPY = new TextEncoder().encode("aphrody/env-kit/secret-store/v1");
+
+function assertName(name: string): void {
+  if (!NAME.test(name)) throw new Error(`invalid secret name: ${JSON.stringify(name)}`);
+}
+
+const isRoot = (): boolean => process.getuid?.() === 0;
+
+export function storeInfo(): SecretStoreInfo {
+  const override = process.env.ENV_KIT_SECRET_DIR;
+  if (process.platform === "win32") {
+    const base = process.env.LOCALAPPDATA ?? join(homedir(), "AppData", "Local");
+    return { backend: "dpapi", dir: override ?? join(base, "aphrody", "secrets") };
+  }
+  if (process.platform === "linux") {
+    if (isRoot()) return { backend: "systemd-creds", dir: override ?? "/etc/credstore.encrypted" };
+    const base = process.env.XDG_CONFIG_HOME ?? join(homedir(), ".config");
+    return { backend: "systemd-creds-user", dir: override ?? join(base, "credstore.encrypted") };
+  }
+  throw new Error(`secret store: unsupported platform ${process.platform}`);
+}
+
+const fileOf = (info: SecretStoreInfo, name: string): string =>
+  join(info.dir, info.backend === "dpapi" ? `${name}.dpapi` : name);
+
+// --- Windows DPAPI (bun:ffi) ----------------------------------------------------------------
+
+type Dpapi = {
+  protect(data: Uint8Array): Uint8Array;
+  unprotect(blob: Uint8Array): Uint8Array;
+};
+
+let dpapi: Dpapi | undefined;
+
+function loadDpapi(): Dpapi {
+  if (dpapi) return dpapi;
+  const { dlopen, FFIType, ptr, toArrayBuffer } = require("bun:ffi") as typeof import("bun:ffi");
+  const sig = {
+    args: [FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.ptr, FFIType.u32, FFIType.ptr],
+    returns: FFIType.i32,
+  } as const;
+  const crypt32 = dlopen("crypt32.dll", { CryptProtectData: sig, CryptUnprotectData: sig });
+  const kernel32 = dlopen("kernel32.dll", {
+    LocalFree: { args: [FFIType.ptr], returns: FFIType.ptr },
+  });
+  const CRYPTPROTECT_UI_FORBIDDEN = 0x1;
+  // DATA_BLOB { DWORD cbData; BYTE *pbData; } = 16 bytes on x64 (pointer at offset 8).
+  const blob = (bytes: Uint8Array): Buffer => {
+    const b = Buffer.alloc(16);
+    b.writeUInt32LE(bytes.byteLength, 0);
+    if (bytes.byteLength) b.writeBigUInt64LE(BigInt(ptr(bytes)), 8);
+    return b;
+  };
+  const call = (fn: "CryptProtectData" | "CryptUnprotectData", input: Uint8Array): Uint8Array => {
+    // Copy into a buffer bun owns for the duration of the call (ptr() needs a non-empty view).
+    const data = new Uint8Array(Math.max(input.byteLength, 1));
+    data.set(input);
+    const inBlob = blob(data.subarray(0, input.byteLength));
+    const entropy = blob(ENTROPY);
+    const out = Buffer.alloc(16);
+    const ok =
+      fn === "CryptProtectData"
+        ? crypt32.symbols.CryptProtectData(ptr(inBlob), null, ptr(entropy), null, null, CRYPTPROTECT_UI_FORBIDDEN, ptr(out))
+        : crypt32.symbols.CryptUnprotectData(ptr(inBlob), null, ptr(entropy), null, null, CRYPTPROTECT_UI_FORBIDDEN, ptr(out));
+    data.fill(0);
+    if (!ok) throw new Error(`${fn} failed`);
+    const len = out.readUInt32LE(0);
+    const p = Number(out.readBigUInt64LE(8));
+    try {
+      return len ? new Uint8Array(toArrayBuffer(p as never, 0, len)).slice() : new Uint8Array();
+    } finally {
+      if (p) kernel32.symbols.LocalFree(p as never);
+    }
+  };
+  dpapi = {
+    protect: (d) => call("CryptProtectData", d),
+    unprotect: (b) => call("CryptUnprotectData", b),
+  };
+  return dpapi;
+}
+
+// --- Linux systemd-creds ----------------------------------------------------------------------
+
+function creds(info: SecretStoreInfo, args: string[], input?: Uint8Array): Uint8Array {
+  const user = info.backend === "systemd-creds-user" ? ["--user"] : [];
+  const r = spawnSync("systemd-creds", [...user, ...args], {
+    input: input ? Buffer.from(input) : undefined,
+    maxBuffer: 16 << 20,
+  });
+  if (r.status !== 0) {
+    // stderr of systemd-creds never contains the payload.
+    throw new Error(`systemd-creds ${args[0]} failed: ${String(r.stderr ?? r.error ?? "").trim()}`);
+  }
+  return new Uint8Array(r.stdout);
+}
+
+// --- Public API -------------------------------------------------------------------------------
+
+export function secretSet(name: string, value: string | Uint8Array): void {
+  assertName(name);
+  const info = storeInfo();
+  mkdirSync(info.dir, { recursive: true, mode: 0o700 });
+  const bytes = typeof value === "string" ? new TextEncoder().encode(value) : value;
+  if (!bytes.byteLength) throw new Error(`secret ${name}: empty value`);
+  const file = fileOf(info, name);
+  if (info.backend === "dpapi") {
+    writeFileSync(file, loadDpapi().protect(bytes));
+    return;
+  }
+  // systemd-creds writes the output file itself (0600) and binds the credential name.
+  creds(info, ["encrypt", `--name=${name}`, "-", file], bytes);
+}
+
+export function secretGetBytes(name: string): Uint8Array | undefined {
+  assertName(name);
+  const info = storeInfo();
+  const file = fileOf(info, name);
+  if (!existsSync(file)) return undefined;
+  if (info.backend === "dpapi") return loadDpapi().unprotect(new Uint8Array(readFileSync(file)));
+  return creds(info, ["decrypt", `--name=${name}`, file, "-"]);
+}
+
+export function secretGet(name: string): string | undefined {
+  const b = secretGetBytes(name);
+  return b === undefined ? undefined : new TextDecoder().decode(b);
+}
+
+export function secretHas(name: string): boolean {
+  assertName(name);
+  return existsSync(fileOf(storeInfo(), name));
+}
+
+export function secretList(): string[] {
+  const info = storeInfo();
+  if (!existsSync(info.dir)) return [];
+  return readdirSync(info.dir)
+    .map((f) => (info.backend === "dpapi" ? f.replace(/\.dpapi$/, "") : f))
+    .filter((n) => NAME.test(n) && !n.startsWith("."))
+    .sort();
+}
+
+export function secretDelete(name: string): boolean {
+  assertName(name);
+  const file = fileOf(storeInfo(), name);
+  if (!existsSync(file)) return false;
+  rmSync(file);
+  return true;
+}
+
+/** Store first, then the process environment (which `loadMonorepoEnv` fills from `.env`). */
+export function resolveSecret(
+  name: string,
+  env: Readonly<Record<string, string | undefined>> = process.env,
+): string | undefined {
+  try {
+    const v = secretGet(name);
+    if (v) return v;
+  } catch {
+    // Store unavailable on this host: fall back to the environment.
+  }
+  return env[name] || undefined;
+}

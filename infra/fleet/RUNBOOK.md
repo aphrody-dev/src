@@ -35,6 +35,7 @@ ssh : clés uniquement sur les trois nœuds (`PasswordAuthentication no`, root `
 ## Santé et alertes
 
 - `fleet-health.timer` (2 min) sur fr1 et prd. Il vérifie le mesh, les ports NativeLink, commons et gpu-depot, et l'edge fr2 (`curl --resolve`). Les échecs vont dans journald, tag `fleet-health`, et vers `FLEET_ALERT_URL` si cette variable est définie dans `/etc/fleet/health.env`.
+- Authentifications et accès réseau (ssh, WireGuard, cloudflared, unités de renouvellement, secrets CI) : `ay auth status` depuis le PC, `ay auth repair` pour réparer sans mot de passe, `ay auth tunnels` pour les jetons cloudflared (systemd-creds). Détail : `docs/infra/AUTH.md`.
 - Failover DNS : désactivé (`FLEET_DNS_FAILOVER=0`). Pour l'activer, il faut un token Cloudflare `Zone.DNS:Edit` (`CF_API_TOKEN`) et `/etc/fleet/dns-failover.tsv` (zone, record, IP de repli). Le repli valable aujourd'hui est fr1, qui garde ses vhosts nginx en rollback tant que rosegriffon-52 n'a pas confirmé.
 
 ## Réinstallation d'un nœud

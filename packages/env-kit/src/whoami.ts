@@ -81,10 +81,16 @@ async function cloudflare(env: Env): Promise<Identity> {
   const t = env.CLOUDFLARE_API_TOKEN;
   if (!t) return { provider: "cloudflare", status: "unset" };
   const h = { headers: { Authorization: `Bearer ${t}` } };
-  const v = await json(
+  // User tokens verify on /user, account-owned tokens (cfat_) on /accounts/<id>.
+  let v = await json(
     "https://api.cloudflare.com/client/v4/user/tokens/verify",
     h,
   );
+  if (!v.ok && env.CLOUDFLARE_ACCOUNT_ID)
+    v = await json(
+      `https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/tokens/verify`,
+      h,
+    );
   if (!v.ok) return { provider: "cloudflare", status: "invalid" };
   const acc = await json(
     "https://api.cloudflare.com/client/v4/accounts?per_page=5",
@@ -160,6 +166,24 @@ function claude(env: Env): Identity[] {
     });
   }
   return out;
+}
+
+/**
+ * crates.io API tokens may not read /me: a valid token gets 403 "only on the crates.io website",
+ * a rejected one 403 "authentication failed". crates.io also requires a User-Agent.
+ */
+async function cratesIo(env: Env): Promise<Identity> {
+  const t = env.CARGO_REGISTRY_TOKEN;
+  if (!t) return { provider: "crates.io", status: "unset" };
+  const r = await json("https://crates.io/api/v1/me", {
+    headers: { Authorization: t, "User-Agent": "aphrody-env-kit (contact@aphrody.com)" },
+  });
+  const detail = String(r.body?.errors?.[0]?.detail ?? "");
+  if (r.ok)
+    return { provider: "crates.io", status: "ok", identity: r.body?.user?.login };
+  return /only be performed on the crates.io website/.test(detail)
+    ? { provider: "crates.io", status: "ok", identity: "API token accepted", detail: "/me is website-only" }
+    : { provider: "crates.io", status: "invalid" };
 }
 
 const bearer = (
@@ -268,14 +292,7 @@ export async function whoami(env: Env = process.env): Promise<Identity[]> {
       env.NPM_TOKEN,
       (b) => b?.username,
     ),
-    bearer(
-      "crates.io",
-      "https://crates.io/api/v1/me",
-      env.CARGO_REGISTRY_TOKEN,
-      (b) => b?.user && `${b.user.login} <${b.user.email ?? ""}>`,
-      "Authorization",
-      "",
-    ),
+    cratesIo(env),
     bearer(
       "supabase",
       "https://api.supabase.com/v1/projects",

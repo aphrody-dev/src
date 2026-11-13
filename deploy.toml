@@ -217,3 +217,32 @@ service = "yolo"
 target = "vps"
 commercial = false
 vps_exec = "bun run server.ts"
+
+# =============================================================================
+# Authentication and network access (docs/infra/AUTH.md). `ay auth status|repair|gh-secrets|tunnels`
+# (packages/env-kit/src/auth.ts) walks [nodes.*] over ssh and the tables below. Names only: values
+# live in the OS secret store (`ay secret`: DPAPI on Windows, systemd-creds on Linux), then .env.
+# =============================================================================
+
+# GitHub Actions secrets pushed by `ay auth gh-secrets` (`gh secret set --body -`, value on stdin).
+# AI provider keys (ANTHROPIC_API_KEY...) are synced by the AI provider tooling, not listed here.
+[auth.github.repo_secrets]
+"aphrody-dev/src" = ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID", "HOSTINGER_API_TOKEN", "VERCEL_TOKEN", "SUBMODULES_TOKEN"]
+
+[auth.github.org_secrets]
+aphrody-labs = ["HOSTINGER_API_TOKEN", "CARGO_REGISTRY_TOKEN"]
+
+# Per node: cloudflared units (unit = tunnel name), WireGuard interfaces (handshake < 180 s),
+# units that renew a credential (must not be failed). repair = false: checked, never changed.
+[auth.hosts.fr1]
+wireguard = ["wg1"]
+repair = false
+
+[auth.hosts.fr2]
+wireguard = ["wg1"]
+units = ["certbot"]
+
+[auth.hosts.usa]
+tunnels = { cloudflared-mig-prd = "mig-prd", cloudflared-prod = "prod" }
+wireguard = ["prod", "vps"]
+units = ["shenron-cloudflare-s3-renew", "rg-steam-depot"]
