@@ -14,4 +14,4 @@ Soumis : `docs/agents/AGENT-FIRST.md` au commit 8785f5a, avec les liens vers `in
 | 6 | Majeur. Boucle serrée new -> claimed -> new pendant les pannes ; refroidissement par fournisseur et non par modèle | Fait : `not_before` (+15 min) au lieu de la boucle, plafond de remises en file. Pas encore fait : refroidissement par modèle et quarantaine `auth_required` |
 | 7 | Majeur. Aucun plafond de coût en dehors de Claude ; ai-os est un point de défaillance unique sans supervision | Transmis à ai-os (nt-d6), qui porte le routage et les quotas |
 
-Les points non traités sont listés dans `docs/agents/AGENT-FIRST.md`, section 9.
+Les points non traités sont listés dans `docs/agents/AGENT-FIRST.md`, section 10.

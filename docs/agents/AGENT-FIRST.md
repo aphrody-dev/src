@@ -126,10 +126,21 @@ Chaque hôte déclare ses cibles dans `fleet.toml` (`ssh = [alias, IP WireGuard,
 | prd | `smoke-prd-lint-epic-fmt` (linter, `bun fmt` de `packages/epic-games`, check `bun fmt --check`) | claude refusé (root) -> bascule sur codex -> check vert -> commit. Le runner prd a été déplacé ensuite sous l'utilisateur `agent` | `0c8f6e4` sur main |
 | pc | `smoke-pc-lint-gds-fmt` (coder, `bun fmt` de `packages/google-design`) | 1er essai : 400 (clé du `.env`) -> refroidissement + remise en file ; après `--no-env-file` : claude -> check vert -> commit | `82215ad` sur main |
 
-## 9. Reste à faire (hors de portée des agents)
+## 9. Identifiants des runners (sans humain, sauf le clic final)
 
-- Connexions de l'utilisateur `agent` sur prd (OAuth, interactif) : `sudo -iu agent claude login`, `sudo -iu agent codex login`, `sudo -iu agent gh auth login` (push sur main). Tant qu'elles manquent, les CLI de prd répondent « not logged in » (refroidissement, tâche remise en file) et un commit non poussé met la tâche en `failed`.
-- OAuth Claude expiré sur fr2 (`claude` interactif, une connexion).
+Règle : aucune valeur dans le dépôt, les journaux, l'argv ou les unités. Sur Linux, chaque identifiant longue durée est chiffré par `systemd-creds --user` dans `~/.config/credstore.encrypted/<NOM>` de l'utilisateur du runner (même stockage que `ay secret`, docs/infra/AUTH.md). `runner.ts` le déchiffre et le place uniquement dans l'environnement des CLI qu'il lance. Noms lus : `CLAUDE_CODE_OAUTH_TOKEN`, `GH_TOKEN`.
+
+| Identifiant | État prd (`agent`) | Comment |
+|---|---|---|
+| `GH_TOKEN` (push sur main) | fait, vérifié : `gh auth status` OK (GH_TOKEN), `git push --dry-run` OK | `gh auth token` (root, prd) passé en stdin à `systemd-creds --user encrypt` ; le helper git est `gh auth git-credential` |
+| Claude Code | en attente du propriétaire | fenêtre tmux `login-claude` lancée (`claude auth login --claudeai`), page d'autorisation ouverte dans Chrome. Le propriétaire clique « Authorize », puis colle le code affiché dans la fenêtre : `ssh -t agent@prd tmux attach -t agents` puis `select-window -t login-claude`. Variante longue durée : `claude setup-token` sur le PC, puis le jeton en stdin de `ssh agent@prd 'systemd-creds --user --name=CLAUDE_CODE_OAUTH_TOKEN encrypt - ~/.config/credstore.encrypted/CLAUDE_CODE_OAUTH_TOKEN'` |
+| Codex | en attente du propriétaire | fenêtre tmux `login-codex` (`codex login --device-auth`, code valable 15 min), page https://auth.openai.com/codex/device ouverte dans Chrome. Le propriétaire saisit le code affiché dans la fenêtre puis valide. Après expiration : `ssh agent@prd 'tmux respawn-window -k -t agents:login-codex'` pour un nouveau code |
+| fr2 (`ubuntu`) | OAuth Claude expiré | même procédure que prd (`ssh -t fr2 tmux attach -t agents`, `claude auth login`) |
+| PC | `codex.cmd` pointe vers un `codex.exe` introuvable, Codex répond 401 | `codex login` sur le PC (et réinstaller Codex si le binaire manque) |
+
+## 10. Reste à faire (hors de portée des agents)
+
+- Les deux clics de connexion de la section 9 (Claude, Codex) sur prd et fr2.
 - WARP sur le PC (UAC) pour le chemin Cloudflare ; `codex login` sur le PC.
 - Réinstaller un runner GitHub pour `ci.yml` (prd trop chargé d'après FLEET.md) ou porter ses étapes vers `judge.yml`.
-- Les tâches planifiées sans `providers` passent par le relais (texte seulement) : ai-os doit nommer une CLI de code pour `deps-update`, ou prendre la planification à son compte.
+- Les modèles planifiés sans `providers` : `deps-update` finit en `no_cli_provider` tant qu’ai-os ne nomme pas de CLI de code (ou ne reprend pas la planification) ; `release-notes` et `seo-check` passent par le relais.
