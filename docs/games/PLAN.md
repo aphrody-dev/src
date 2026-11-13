@@ -65,6 +65,7 @@ Exists, with the commit that added it:
 - `ay flat` per fork: `6fbba4e3`. Feature matrix and platform equivalence: `31506186`. Craft Apps captures and FFmpeg `.bc`: `e13ccbc6`.
 - LGPL FFmpeg built on fr1 with the Chromium 157 clang (LLVM 24) into `/opt/ffmpeg-lgpl`; `asset-test` builds and `gen` runs against it: `e410f398`.
 - `Cargo.lock` regenerated on fr1 for the root workspace: `b2d86ae0`.
+- Browser OS route `/os` in `apps/aphrody` (launcher on the WebGPU stage, windows, OPFS library, v86 Linux, Ruffle, EmulatorJS, game frame, store, gamescope WGSL pipeline): `62a80d2c`, `e807aaf7`; details and gaps in `docs/games/BROWSER-OS.md`. Production headers and routing for `/os` are not deployed yet.
 
 Not done:
 
