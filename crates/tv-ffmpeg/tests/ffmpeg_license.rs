@@ -10,5 +10,8 @@ fn ffmpeg_build_is_lgpl() {
         assert!(!config.contains(flag), "FFmpeg built with {flag}: {config}");
     }
     let license = tv_ffmpeg::ff::util::license();
-    assert!(license.starts_with("LGPL"), "FFmpeg licence is {license}, expected LGPL");
+    assert!(
+        license.starts_with("LGPL"),
+        "FFmpeg licence is {license}, expected LGPL"
+    );
 }

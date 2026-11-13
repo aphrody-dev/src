@@ -5,7 +5,8 @@
 
 use std::path::Path;
 
-pub const USAGE: &str = "usage: ay conformance [--fetch] [suite...]\n       ay conformance channels [platform]\n";
+pub const USAGE: &str =
+    "usage: ay conformance [--fetch] [suite...]\n       ay conformance channels [platform]\n";
 
 /// Run against the repository `root`; returns the text to print, or an error message (exit 2).
 pub fn run(root: &Path, args: &[String]) -> Result<String, String> {
@@ -19,14 +20,20 @@ pub fn run(root: &Path, args: &[String]) -> Result<String, String> {
 fn suites(root: &Path, args: &[String]) -> Result<String, String> {
     let pins = crate::Pins::load(root)?;
     let fetch = args.iter().any(|a| a == "--fetch");
-    let ids: Vec<&str> = args.iter().map(String::as_str).filter(|a| *a != "--fetch").collect();
+    let ids: Vec<&str> = args
+        .iter()
+        .map(String::as_str)
+        .filter(|a| *a != "--fetch")
+        .collect();
     if let Some(bad) = ids.iter().find(|a| a.starts_with('-')) {
         return Err(format!("error: unknown argument '{bad}'\n\n{USAGE}"));
     }
     let selected: Vec<&crate::Suite> = if ids.is_empty() {
         pins.suite.iter().collect()
     } else {
-        ids.iter().map(|id| pins.suite(id)).collect::<Result<_, _>>()?
+        ids.iter()
+            .map(|id| pins.suite(id))
+            .collect::<Result<_, _>>()?
     };
     let target = format!("{}-{}", std::env::consts::ARCH, std::env::consts::OS);
     let mut out = String::new();
@@ -44,7 +51,9 @@ fn suites(root: &Path, args: &[String]) -> Result<String, String> {
 fn channels(root: &Path, args: &[String]) -> Result<String, String> {
     let platform = match args.first().map(String::as_str) {
         Some("-h" | "--help") => return Ok(USAGE.to_string()),
-        Some(p) if p.starts_with('-') => return Err(format!("error: unknown argument '{p}'\n\n{USAGE}")),
+        Some(p) if p.starts_with('-') => {
+            return Err(format!("error: unknown argument '{p}'\n\n{USAGE}"));
+        }
         Some(p) => p,
         None => "Linux",
     };
@@ -71,7 +80,10 @@ mod tests {
         let root = Path::new(".");
         assert_eq!(run(root, &["--help".into()]).unwrap(), USAGE);
         assert!(run(root, &["--nope".into()]).is_err());
-        assert_eq!(run(root, &["channels".into(), "--help".into()]).unwrap(), USAGE);
+        assert_eq!(
+            run(root, &["channels".into(), "--help".into()]).unwrap(),
+            USAGE
+        );
         assert!(run(root, &["channels".into(), "--nope".into()]).is_err());
     }
 }

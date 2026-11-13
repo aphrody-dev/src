@@ -153,7 +153,13 @@ impl SovereignAdblockEngine {
             .filter(|l| !l.is_empty())
             .partition(|l| l.starts_with("0.0.0.0 ") || l.starts_with("127.0.0.1 "));
         set.add_filter_list(standard.join("\n"), ParseOptions::default());
-        set.add_filter_list(hosts.join("\n"), ParseOptions { format: FilterFormat::Hosts, ..ParseOptions::default() });
+        set.add_filter_list(
+            hosts.join("\n"),
+            ParseOptions {
+                format: FilterFormat::Hosts,
+                ..ParseOptions::default()
+            },
+        );
         let cosmetic_hide_selectors = standard
             .iter()
             .filter_map(|l| l.strip_prefix("##"))
@@ -161,16 +167,31 @@ impl SovereignAdblockEngine {
             .filter(|sel| !sel.is_empty() && !sel.starts_with('+'))
             .map(str::to_string)
             .collect();
-        Self { engine: adblock::Engine::new_with_filter_set(set), cosmetic_hide_selectors }
+        Self {
+            engine: adblock::Engine::new_with_filter_set(set),
+            cosmetic_hide_selectors,
+        }
     }
 
     /// Check a request: `source_url` is the page that issued it (empty = unknown, treated as
     /// third-party by adblock), `request_type` an adblock/webRequest type (`script`, `image`,
     /// `xmlhttprequest`, `sub_frame`, `document`, `other`, ...).
     #[must_use]
-    pub fn check_request(&self, url: &str, source_url: &str, request_type: &str) -> AdblockCheckResult {
-        let Ok(request) = adblock::request::Request::new(url, source_url, request_type, "GET") else {
-            return AdblockCheckResult { matched: false, blocked: false, important: false, filter: None, exception: None };
+    pub fn check_request(
+        &self,
+        url: &str,
+        source_url: &str,
+        request_type: &str,
+    ) -> AdblockCheckResult {
+        let Ok(request) = adblock::request::Request::new(url, source_url, request_type, "GET")
+        else {
+            return AdblockCheckResult {
+                matched: false,
+                blocked: false,
+                important: false,
+                filter: None,
+                exception: None,
+            };
         };
         let r = self.engine.check_network_request(&request);
         AdblockCheckResult {
@@ -192,7 +213,12 @@ impl SovereignAdblockEngine {
     /// Site-specific hide selectors for a page (`example.org##sel`, minus `#@#` exceptions), sorted.
     #[must_use]
     pub fn hide_selectors_for(&self, page_url: &str) -> Vec<String> {
-        let mut v: Vec<String> = self.engine.url_cosmetic_resources(page_url).hide_selectors.into_iter().collect();
+        let mut v: Vec<String> = self
+            .engine
+            .url_cosmetic_resources(page_url)
+            .hide_selectors
+            .into_iter()
+            .collect();
         v.sort();
         v
     }
@@ -219,7 +245,10 @@ mod tests {
         let envelopes = boq_parse_envelopes(&raw);
         assert_eq!(envelopes.len(), 1);
         assert_eq!(envelopes[0][0].as_str(), Some("nbid-1"));
-        assert_eq!(boq_first_envelope(&raw).unwrap()[0].as_str(), Some("nbid-1"));
+        assert_eq!(
+            boq_first_envelope(&raw).unwrap()[0].as_str(),
+            Some("nbid-1")
+        );
     }
 
     #[test]
@@ -237,28 +266,82 @@ mod tests {
         ";
         let engine = SovereignAdblockEngine::from_rules(rules);
 
-        let r1 = engine.check_request("https://ad.doubleclick.net/pixel.gif", "https://news.site.org/", "image");
+        let r1 = engine.check_request(
+            "https://ad.doubleclick.net/pixel.gif",
+            "https://news.site.org/",
+            "image",
+        );
         assert!(r1.blocked);
         assert_eq!(r1.filter.as_deref(), Some("||doubleclick.net^"));
 
-        let r2 = engine.check_request("https://partner.doubleclick.net/sdk.js", "https://news.site.org/", "script");
+        let r2 = engine.check_request(
+            "https://partner.doubleclick.net/sdk.js",
+            "https://news.site.org/",
+            "script",
+        );
         assert!(!r2.blocked);
-        assert_eq!(r2.exception.as_deref(), Some("@@||partner.doubleclick.net^"));
+        assert_eq!(
+            r2.exception.as_deref(),
+            Some("@@||partner.doubleclick.net^")
+        );
 
-        let r3 = engine.check_request("https://ads.google.com/banner.js", "https://news.site.org/", "script");
+        let r3 = engine.check_request(
+            "https://ads.google.com/banner.js",
+            "https://news.site.org/",
+            "script",
+        );
         assert!(r3.blocked && r3.important);
 
-        assert!(engine.check_request("https://telemetry.tracker.io/collect", "https://news.site.org/", "xmlhttprequest").blocked);
+        assert!(
+            engine
+                .check_request(
+                    "https://telemetry.tracker.io/collect",
+                    "https://news.site.org/",
+                    "xmlhttprequest"
+                )
+                .blocked
+        );
 
         // $third-party: blocked from another site, allowed first-party.
-        assert!(engine.check_request("https://cdn.tracker.io/a.js", "https://news.site.org/", "script").blocked);
-        assert!(!engine.check_request("https://cdn.tracker.io/a.js", "https://cdn.tracker.io/", "script").blocked);
+        assert!(
+            engine
+                .check_request(
+                    "https://cdn.tracker.io/a.js",
+                    "https://news.site.org/",
+                    "script"
+                )
+                .blocked
+        );
+        assert!(
+            !engine
+                .check_request(
+                    "https://cdn.tracker.io/a.js",
+                    "https://cdn.tracker.io/",
+                    "script"
+                )
+                .blocked
+        );
 
-        assert!(!engine.check_network_url("https://aphrody.com/search?q=bun").blocked);
+        assert!(
+            !engine
+                .check_network_url("https://aphrody.com/search?q=bun")
+                .blocked
+        );
 
         // Generic rules only; the google.com rule stays scoped to google.com.
-        assert_eq!(engine.cosmetic_hide_selectors, vec![".ConsentBanner".to_string()]);
-        assert!(engine.hide_selectors_for("https://www.google.com/").contains(&".sponsored-slot".to_string()));
-        assert!(!engine.hide_selectors_for("https://news.site.org/").contains(&".sponsored-slot".to_string()));
+        assert_eq!(
+            engine.cosmetic_hide_selectors,
+            vec![".ConsentBanner".to_string()]
+        );
+        assert!(
+            engine
+                .hide_selectors_for("https://www.google.com/")
+                .contains(&".sponsored-slot".to_string())
+        );
+        assert!(
+            !engine
+                .hide_selectors_for("https://news.site.org/")
+                .contains(&".sponsored-slot".to_string())
+        );
     }
 }
