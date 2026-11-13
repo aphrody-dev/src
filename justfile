@@ -221,12 +221,13 @@ cf-proof:
     bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/proof.ts
 
 # Headless Claude Code, no human in the loop (JSON result on stdout)
-agent prompt turns="100":
-    claude -p "{{prompt}}" --permission-mode bypassPermissions --output-format json --max-turns {{turns}}
+# Free text is passed as exported variables ($prompt), never interpolated into the script (tribunal 2026-11-13).
+agent $prompt $turns="100":
+    claude -p "$prompt" --permission-mode bypassPermissions --output-format json --max-turns "$turns"
 
-# Same, on the fr1 build runner through GitHub Actions (.github/workflows/claude.yml)
-agent-ci prompt:
-    gh workflow run claude.yml -f prompt="{{prompt}}"
+# Same, on a GitHub-hosted runner through GitHub Actions (.github/workflows/claude.yml)
+agent-ci $prompt:
+    gh workflow run claude.yml -f "prompt=$prompt"
 
 # Format entire Bun workspace
 fmt:
@@ -236,14 +237,14 @@ fmt:
 verify-all:
     ay arch check --strict --root "{{root}}"
     ay doctor
-    bun test "{{root}}/packages/env-kit" "{{root}}/packages/pi-opencode" "{{root}}/packages/ai-triad"
+    bun test "{{root}}/packages/env-kit"
     bun test "{{root}}/.agents/scripts/pre-tool-guard.test.ts"
     bun --cwd "{{root}}/packages/ai-os" test
-    cargo test --manifest-path "{{root}}/crates/rust-stack/Cargo.toml"
-    cargo test --workspace --manifest-path "{{root}}/Cargo.toml"
+    # Rust compiles in CI only (never on the workstation): run ci.yml on this commit and wait for it.
+    gh workflow run ci.yml --ref main && sleep 5 && gh run watch "$(gh run list --workflow ci.yml -L 1 --json databaseId --jq '.[0].databaseId')" --exit-status
 
-# --- Containers (upstream only: docker buildx bake + compose; docs/infra/DEPLOY.md, docs/infra/UPSTREAM-STACK.md) ---
-# Builds run in CI (images.yml) or on fr1 (factory); prd and fr2 only pull and run. The PC has no local engine:
+# --- Containers (upstream only: docker buildx bake + compose; docs/infra/DEPLOY.md) ---
+# Builds run in CI (images.yml, GitHub-hosted); fr1 is Chromium/LLVM only; prd and fr2 only pull and run. The PC has no local engine:
 # docker contexts fr1 (ssh://vps), prd (ssh://prd), fr2 (ssh://cdn).
 docker := if os() == "windows" { "docker.exe" } else { "docker" }
 docker_tag := env("SRC_TAG", `git rev-parse --short=12 HEAD`)
@@ -253,12 +254,10 @@ docker_compose := docker + " compose -f " + root + "/infra/docker/compose.yaml"
 docker-build targets="default" ref="main":
     gh workflow run images.yml --repo aphrody-labs/src --ref {{ref}} -f targets="{{targets}}"
 
-# amd64 build of a pushed commit ON fr1 (git context, no upload from the PC), loaded there, then health-checked
-# (usage: just docker-smoke, just docker-smoke bun main iteration)
-docker-smoke targets="smoke" ref="main" profile="release":
-    timeout 900 ssh vps 'sudo install -m 0755 /dev/stdin /usr/local/bin/aphrody-heavy' < "{{root}}/infra/fleet/bin/heavy.sh"
-    timeout 7200 ssh vps 'TAG=smoke CARGO_PROFILE={{profile}} CARGO_BUILD_JOBS=4 aphrody-heavy docker buildx bake --builder aphrody "https://github.com/aphrody-labs/src.git#{{ref}}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{targets}}'
-    timeout 900 ssh vps 'SRC_TAG=smoke sh -s' < "{{root}}/infra/docker/smoke.sh"
+# Build and health-check images in CI (images.yml: build, then its smoke job on ubuntu-latest); never on fr1
+# (usage: just docker-smoke, just docker-smoke bun main)
+docker-smoke targets="smoke" ref="main":
+    gh workflow run images.yml --repo aphrody-labs/src --ref "{{ if ref =~ '^[A-Za-z0-9._/-]+$' { ref } else { error("invalid ref") } }}" -f "targets={{ if targets =~ '^[A-Za-z0-9._ -]+$' { targets } else { error("invalid targets") } }}"
 
 # Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
 docker-up profile="core" ctx="prd":
@@ -466,7 +465,7 @@ agents-install-pc:
 agents-attach host="prd":
     ssh -t {{host}} tmux attach -t agents
 
-# bun-LFS (fork aphrody-labs/lfs in third_party/lfs, report docs/lfs/BUN-LFS.md). Built on GitHub-hosted
+# bun-LFS (fork aphrody-labs/lfs in third_party/lfs). Built on GitHub-hosted
 # runners (.github/workflows/bunlfs.yml of the fork): never on the PC, never on prd (fleet rule 2026-11-13).
 lfs_repo := "aphrody-labs/lfs"
 
