@@ -13,7 +13,7 @@ import { Health } from "./health";
 import { design, market, software } from "./lifecycle";
 import { runnerState } from "./queue";
 import { type Step, type Workflow, runWorkflow } from "./run";
-import { candidates, rank } from "./select";
+import { candidates, rank, taskModels } from "./select";
 
 const { positionals, values } = parseArgs({
   args: Bun.argv.slice(2),
@@ -72,7 +72,10 @@ switch (cmd) {
               {
                 edit: values.edit,
                 prefer: values.prefer as any,
-                models: values.model,
+                models: [
+                  ...(await taskModels(values.task)),
+                  ...(values.model ?? []),
+                ],
               },
               health,
               rs?.cooling,

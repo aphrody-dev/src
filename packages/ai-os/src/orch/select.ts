@@ -219,3 +219,19 @@ export function rank(
   }
   return [...new Set([...wanted, ...ranked])];
 }
+
+/** Table prix/qualité par classe de tâche (config/model-routing.json, sources live) : « cli:modèle » primaire puis repli.
+ * anthropic passe par la CLI claude, google par agy. Inconnu = liste vide (le classement habituel s'applique). */
+export async function taskModels(task: string | undefined): Promise<string[]> {
+  if (!task) return [];
+  const f = Bun.file(
+    new URL("../../config/model-routing.json", import.meta.url),
+  );
+  if (!(await f.exists())) return [];
+  const t = (await f.json()).tasks?.[task];
+  if (!t) throw new Error(`unknown task class: ${task}`);
+  const cli: Record<string, string> = { anthropic: "claude", google: "agy" };
+  return [t.primary, ...(t.fallback ?? [])]
+    .filter((r: any) => cli[r.provider])
+    .map((r: any) => `${cli[r.provider]}:${r.model}`);
+}
