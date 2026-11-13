@@ -144,7 +144,7 @@ func buildFullPlan(specs []*detect.ProjectSpec) (*DeploymentPlan, error) {
 		}
 		services = append(services, ServicePlan{
 			Spec:         s,
-			OCIImageRef:  fmt.Sprintf("ghcr.io/aphrody-dev/%s:latest", s.Name),
+			OCIImageRef:  fmt.Sprintf("ghcr.io/aphrody-labs/%s:latest", s.Name),
 			R2Artifact:   fmt.Sprintf("s3://%s/releases/%s/latest.oci.tar", bucket, s.Name),
 			RolloutSteps: steps,
 			CloudRun:     gc.Plan(s, "latest"),
@@ -343,7 +343,7 @@ func runUp(args []string) error {
 		packRes, err := oci.PackBinaryLayout(oci.PackOptions{
 			BinaryPath: stubBin,
 			BinaryName: s.Name,
-			ImageRef:   fmt.Sprintf("ghcr.io/aphrody-dev/%s:latest", s.Name),
+			ImageRef:   fmt.Sprintf("ghcr.io/aphrody-labs/%s:latest", s.Name),
 			OutDir:     ociDir,
 			Port:       s.Port,
 		})

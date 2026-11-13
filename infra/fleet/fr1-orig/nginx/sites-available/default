@@ -71,7 +71,7 @@ server {
 }
 
 
-# Virtual Host configuration for example.com
+# Virtual Host configuration for google.com
 #
 # You can move that to a different file under sites-available/ and symlink that
 # to sites-enabled/ to enable it.
@@ -80,9 +80,9 @@ server {
 #	listen 80;
 #	listen [::]:80;
 #
-#	server_name example.com;
+#	server_name google.com;
 #
-#	root /var/www/example.com;
+#	root /var/www/google.com;
 #	index index.html;
 #
 #	location / {

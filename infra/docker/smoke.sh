@@ -3,7 +3,7 @@
 #   SRC_TAG=<tag> sh infra/docker/smoke.sh [image ...]       (DOCKER=docker.exe from Windows; context = prd)
 set -eu
 D=${DOCKER:-docker}
-REG=${SRC_REGISTRY:-ghcr.io/aphrody-dev}
+REG=${SRC_REGISTRY:-ghcr.io/aphrody-labs}
 TAG=${SRC_TAG:-latest}
 [ $# -gt 0 ] || set -- ai-os ai-os-gateway aphrody r2-site api-gateway loreserver r3d rust-stack
 fail=0

@@ -30,7 +30,7 @@ Versions des outils : `packages/machine/toolchains.lock.toml` (généré par `sc
 | ring3-agent (r3d) | prd (`rust-daemon`) | image `r3d` (28080) | sans état réseau : N | aucun | `SRC_TAG=<sha> just docker-up` |
 | loreserver | prd systemd `loreserver` (41339 sur le maillage) | image `loreserver` (31339, 31337/udp) | un écrivain ; lecteurs par réplicas du stockage | `/data` (volume `lore-data`) + sauvegarde R2 | `just lab-deploy-loreserver` (binaire précédent) ou `SRC_TAG=<sha> just docker-up` |
 | shenron | prd, compose produit (`/srv/shenron`) | `just docker-products` (lanes + image `shenron`) | défini par le produit | Postgres/Redis produit | compose produit, tag précédent |
-| rosegriffon | prd, compose produit (`rosegriffon-*`) | `just docker-products` (`RG_REGISTRY=ghcr.io/aphrody-dev/rosegriffon`) | défini par le produit | Postgres/Redis produit | `RG_TAG=<tag> docker compose -f apps/rosegriffon/compose.yaml up -d` |
+| rosegriffon | prd, compose produit (`rosegriffon-*`) | `just docker-products` (`RG_REGISTRY=ghcr.io/aphrody-labs/rosegriffon`) | défini par le produit | Postgres/Redis produit | `RG_TAG=<tag> docker compose -f apps/rosegriffon/compose.yaml up -d` |
 
 Vercel : bloqué (softBlock depuis 06/2026) ; `scripts/deploy-target.ts <app> vercel` reste rendu pour la portabilité,
 aucune production n'y est placée.

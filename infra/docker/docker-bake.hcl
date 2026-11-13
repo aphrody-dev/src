@@ -2,10 +2,10 @@
 #   docker buildx bake -f infra/docker/docker-bake.hcl                  amd64+arm64 to GHCR (needs `docker login ghcr.io`)
 #   docker buildx bake -f infra/docker/docker-bake.hcl --set '*.platform=linux/amd64' --load smoke
 #   docker buildx bake -f infra/docker/docker-bake.hcl products          shenron runtime (its own Dockerfile)
-# Pins mirror packages/machine/toolchains.lock.toml. Cache: registry (ghcr.io/aphrody-dev/cache:<target>), mode=max,
+# Pins mirror packages/machine/toolchains.lock.toml. Cache: registry (ghcr.io/aphrody-labs/cache:<target>), mode=max,
 # so CI runners and prd share the cargo-chef dependency layer.
 
-variable "REGISTRY" { default = "ghcr.io/aphrody-dev" }
+variable "REGISTRY" { default = "ghcr.io/aphrody-labs" }
 variable "TAG" { default = "dev" }
 variable "PLATFORMS" { default = "linux/amd64,linux/arm64" }
 variable "CARGO_PROFILE" { default = "release" }

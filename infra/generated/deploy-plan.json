@@ -67,7 +67,7 @@
         "greenPort": 23000,
         "googleEgress": false
       },
-      "ociImageRef": "ghcr.io/aphrody-dev/aphrody:latest",
+      "ociImageRef": "ghcr.io/aphrody-labs/aphrody:latest",
       "r2Artifact": "s3://aphrody-assets/releases/aphrody/latest.oci.tar",
       "rolloutSteps": [
         {
@@ -203,7 +203,7 @@
           "lockfile": "bun.lock"
         }
       },
-      "ociImageRef": "ghcr.io/aphrody-dev/shenron:latest",
+      "ociImageRef": "ghcr.io/aphrody-labs/shenron:latest",
       "r2Artifact": "s3://shenron-cdn/releases/shenron/latest.oci.tar",
       "rolloutSteps": [
         {
@@ -326,7 +326,7 @@
           "lockfile": "bun.lock"
         }
       },
-      "ociImageRef": "ghcr.io/aphrody-dev/rosegriffon:latest",
+      "ociImageRef": "ghcr.io/aphrody-labs/rosegriffon:latest",
       "r2Artifact": "s3://rosegriffon-media/releases/rosegriffon/latest.oci.tar",
       "rolloutSteps": [
         {
@@ -442,7 +442,7 @@
         "greenPort": 24000,
         "googleEgress": false
       },
-      "ociImageRef": "ghcr.io/aphrody-dev/ai-os:latest",
+      "ociImageRef": "ghcr.io/aphrody-labs/ai-os:latest",
       "r2Artifact": "s3://sovereign-artifacts/releases/ai-os/latest.oci.tar",
       "rolloutSteps": [
         {
@@ -555,7 +555,7 @@
           "lockfile": "Cargo.lock"
         }
       },
-      "ociImageRef": "ghcr.io/aphrody-dev/rust-stack:latest",
+      "ociImageRef": "ghcr.io/aphrody-labs/rust-stack:latest",
       "r2Artifact": "s3://sovereign-artifacts/releases/rust-stack/latest.oci.tar",
       "rolloutSteps": [
         {
@@ -676,7 +676,7 @@
           "lockfile": "bun.lock"
         }
       },
-      "ociImageRef": "ghcr.io/aphrody-dev/ai-triad:latest",
+      "ociImageRef": "ghcr.io/aphrody-labs/ai-triad:latest",
       "r2Artifact": "s3://sovereign-artifacts/releases/ai-triad/latest.oci.tar",
       "rolloutSteps": [
         {
@@ -789,7 +789,7 @@
           "lockfile": "Cargo.lock"
         }
       },
-      "ociImageRef": "ghcr.io/aphrody-dev/ring3-agent:latest",
+      "ociImageRef": "ghcr.io/aphrody-labs/ring3-agent:latest",
       "r2Artifact": "s3://sovereign-artifacts/releases/ring3-agent/latest.oci.tar",
       "rolloutSteps": [
         {

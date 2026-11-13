@@ -197,8 +197,15 @@ validate = "https://api.mammouth.ai/v1/models"
 [[provider]]
 id = "google-vertex"
 route = "vertex_ai"
-credentials = ["env:GCP_ADMIN_SA_KEY", "file:~/.aphrody/secrets/yolo-automation.json"]
+credentials = ["env:VERTEX_APHRODY_SA_KEY", "env:GCP_ADMIN_SA_KEY", "file:~/.aphrody/secrets/yolo-automation.json"]
 params = { vertex_location = "env:GOOGLE_CLOUD_LOCATION" }
+
+# Anthropic (clé payante, rattachée à un espace de travail) : en-tête anthropic-workspace-id et plafond de
+# dépense ajoutés par infra/ai/litellm-overlay.toml (ay ne sait pas encore écrire extra_headers ni max_budget).
+[[provider]]
+id = "anthropic"
+route = "anthropic"
+key = "ANTHROPIC_API_KEY"
 
 # Hors LiteLLM : CLI Antigravity authentifiée (modèles listés par la CLI).
 [[provider]]

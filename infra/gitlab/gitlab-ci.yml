@@ -34,7 +34,7 @@ default:
 # 1. Anti-AI-Slop, Zero-Emoji, Secret-Hygiene & Design-First Gate (gds verify + bun check)
 lint-anti-slop-gate:
   stage: lint-anti-slop
-  image: oven/bun:latest
+  image: oven/bun:1.4.4-alpine
   tags:
     - docker
   script:
@@ -48,7 +48,7 @@ lint-anti-slop-gate:
 # 2. Build Bun v1.4.4 AOT CLIs, Rust WSLg/Unix Crates & Go 1.27 Infra Engine
 build-bun-packages:
   stage: build-bun-rust-go
-  image: oven/bun:latest
+  image: oven/bun:1.4.4-alpine
   tags:
     - docker
   script:
@@ -80,7 +80,7 @@ build-go-infra:
 # 3. Deterministic Test Gate (Bun Workspace + Rust WSLg/Unix)
 test-bun-forge-and-workspace:
   stage: test-gate
-  image: oven/bun:latest
+  image: oven/bun:1.4.4-alpine
   tags:
     - docker
   script:
@@ -119,7 +119,7 @@ arch-cachyos-omarchy-pkgctl:
 # 5. WCK 100/100 Web Perfection, Core Web Vitals & SEO Gate
 wck-seo-100-gate:
   stage: wck-seo-100
-  image: oven/bun:latest
+  image: oven/bun:1.4.4-alpine
   tags:
     - docker
   script:
@@ -131,7 +131,7 @@ wck-seo-100-gate:
 # 6. Tri-Forge Mirror Synchronization (GitHub + GitLab + Google Cloud Git)
 triforge-mirror-sync:
   stage: triforge-mirror
-  image: oven/bun:latest
+  image: oven/bun:1.4.4-alpine
   tags:
     - docker
   rules:

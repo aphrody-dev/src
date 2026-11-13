@@ -32,6 +32,6 @@ dpl doctor
 dpl detect C:\src\apps\aphrody
 dpl plan --all --out C:\src\infra\generated\deploy-plan.json
 dpl caddyfile --out C:\src\infra\generated\Caddyfile
-dpl oci-pack <binary> --tag ghcr.io/aphrody-dev/aphrody:latest --out <dir>
+dpl oci-pack <binary> --tag ghcr.io/aphrody-labs/aphrody:latest --out <dir>
 dpl up --all --dry-run --provider all
 ```

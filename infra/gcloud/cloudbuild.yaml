@@ -17,8 +17,8 @@ options:
 steps:
   # 1. Secret Hygiene, Anti-AI-Slop Design Gate & Bun Native Typecheck / Test
   - id: verify-bun-and-wck
-    name: oven/bun:latest
-    entrypoint: bash
+    name: oven/bun:1.4.4-alpine
+    entrypoint: sh
     args:
       - -ceu
       - |

@@ -69,7 +69,7 @@ func TestDetectAllFiveRuntimesAndOverrides(t *testing.T) {
 	// 4. Go Service + src-deploy.json region override
 	goDir := filepath.Join(root, "gemini-proxy")
 	_ = os.MkdirAll(goDir, 0o755)
-	_ = os.WriteFile(filepath.Join(goDir, "go.mod"), []byte("module example.com/gemini\n\ngo 1.27.0\n"), 0o644)
+	_ = os.WriteFile(filepath.Join(goDir, "go.mod"), []byte("module google.com/gemini\n\ngo 1.27.0\n"), 0o644)
 	_ = os.WriteFile(filepath.Join(goDir, "main.go"), []byte("package main\nfunc main(){}\n"), 0o644)
 	_ = os.WriteFile(filepath.Join(goDir, "src-deploy.json"), []byte(`{"region":"us-google-egress","domains":["gemini.aphrody.com"],"port":9090}`), 0o644)
 	sGo, err := Detect(goDir)

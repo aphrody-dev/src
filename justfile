@@ -89,7 +89,7 @@ deps-lock *flags:
 
 # Upgrade within declared requirements, report Cargo duplicates before/after (--breaking: majors too); then run on prd
 deps-bump *flags:
-    ay lock --deps --bump --root "{{root}}" {{flags}}
+    ay lock --deps --bump --dedupe --root "{{root}}" {{flags}}
 
 # Derive DEPS, .gitmodules and patch series from src.lock.json (pin-001)
 manifests:
@@ -208,7 +208,7 @@ docker := if os() == "windows" { "docker.exe" } else { "docker" }
 docker_tag := env("SRC_TAG", `git rev-parse --short=12 HEAD`)
 docker_compose := docker + " compose -f " + root + "/infra/docker/compose.yaml"
 
-# Build + push src images (amd64+arm64) to ghcr.io/aphrody-dev on the prd engine (usage: just docker-build, just docker-build bun)
+# Build + push src images (amd64+arm64) to ghcr.io/aphrody-labs on the prd engine (usage: just docker-build, just docker-build bun)
 docker-build targets="default":
     {{docker}} buildx inspect aphrody >/dev/null 2>&1 || {{docker}} buildx create --name aphrody --driver docker-container --bootstrap
     cd "{{root}}" && TAG={{docker_tag}} {{docker}} buildx bake --builder aphrody -f infra/docker/docker-bake.hcl --push {{targets}}
@@ -233,7 +233,7 @@ docker-ps profile="core" ctx="prd":
 docker-products:
     cd "{{root}}/apps/shenron" && {{docker}} buildx bake -f docker-bake.hcl lanes
     cd "{{root}}" && TAG={{docker_tag}} {{docker}} buildx bake -f infra/docker/docker-bake.hcl --push products
-    RG_REGISTRY=ghcr.io/aphrody-dev/rosegriffon RG_TAG={{docker_tag}} {{docker}} compose -f "{{root}}/apps/rosegriffon/compose.yaml" build
+    RG_REGISTRY=ghcr.io/aphrody-labs/rosegriffon RG_TAG={{docker_tag}} {{docker}} compose -f "{{root}}/apps/rosegriffon/compose.yaml" build
 
 # Arch Linux workstation shell with the monorepo mounted at /src
 docker-shell:
@@ -416,3 +416,26 @@ agents-install-pc:
 # Attach to a host's agent tmux session (WireGuard or public ssh; see AGENT-FIRST.md, Tunnels)
 agents-attach host="prd":
     ssh -t {{host}} tmux attach -t agents
+
+# bun-LFS (fork aphrody-labs/lfs in third_party/lfs, report docs/lfs/BUN-LFS.md). Built on GitHub-hosted
+# runners (.github/workflows/bunlfs.yml of the fork): never on the PC, never on prd (fleet rule 2026-11-13).
+lfs_repo := "aphrody-labs/lfs"
+
+# Run the build + QEMU boot + comparisons on CI and wait for it
+lfs-build:
+    gh workflow run bunlfs.yml -R {{lfs_repo}} --ref trunk
+    sleep 10
+    gh run watch -R {{lfs_repo}} --exit-status "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -L 1 --json databaseId --jq '.[0].databaseId')"
+
+# Archive the logs of the last successful run (QEMU serial, boot and image comparisons) into docs/lfs/logs
+lfs-logs:
+    gh run download -R {{lfs_repo}} "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -s success -L 1 --json databaseId --jq '.[0].databaseId')" -n bunlfs-logs -D "{{root}}/docs/lfs/logs"
+
+# Import the rootfs of the last successful run as the WSL distribution bunlfs and run the proof
+[windows]
+lfs-wsl:
+    gh run download -R {{lfs_repo}} "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -s success -L 1 --json databaseId --jq '.[0].databaseId')" -n bunlfs-images -D "$TEMP/bunlfs"
+    -wsl --unregister bunlfs
+    wsl --import bunlfs "$LOCALAPPDATA/bunlfs/wsl" "$TEMP/bunlfs/bunlfs-rootfs.tar.gz" --version 2
+    wsl -d bunlfs -e /usr/bin/bun --version | tee "{{root}}/docs/lfs/logs/wsl-bun-version.txt"
+    wsl -d bunlfs -e /usr/bin/bun /usr/lib/bunlfs/proof.ts | tee "{{root}}/docs/lfs/logs/wsl-proof.txt"

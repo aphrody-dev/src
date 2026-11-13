@@ -279,7 +279,7 @@ revoked = ["up+fbCDKsbVlLZSFXR3k4U3I784oSqwO8/ijyHSM/yM="]
 # Rollback: SRC_TAG=<previous sha> just docker-up <profile> <ctx>.
 # =============================================================================
 [containers]
-registry = "ghcr.io/aphrody-dev"
+registry = "ghcr.io/aphrody-labs"
 platforms = ["linux/amd64", "linux/arm64"]
 
 [containers.images]
@@ -292,3 +292,101 @@ loreserver = { target = "loreserver", services = ["loreserver"], host_ports = [3
 r2-site = { target = "r2-site", services = ["downloads", "cdn"], host_ports = [28797, 28796], profile = "edge", nodes = ["fr2", "usa"] }
 api-gateway = { target = "api-gateway", services = ["api-gateway"], host_ports = [28081], profile = "edge", nodes = ["fr2", "usa"] }
 llama = { upstream = "ghcr.io/ggml-org/llama.cpp:server-b12316", services = ["llama"], host_ports = [28088], profile = "ai", nodes = ["usa"] }
+
+# -----------------------------------------------------------------------------
+# Cluster layer (origin side): LB + failover + request dedup across fr1/fr2/prd.
+# Single source for infra/cluster/gen.ts -> infra/cluster/generated/<member>/ (docs/infra/CLUSTER.md).
+# Edge (DNS, Workers, Cache Rules, Tunnel ingress, Access) belongs to infra/cloudflare + docs/infra/FR2-CLOUDFLARE.md.
+# Control plane (exec/put/http between hosts, heartbeat) = ay-cluster (crates/cluster, 127.0.0.1:7810).
+# Data plane = HAProxy 3.4: 127.0.0.1:<lb> on every member -> weighted, URI-hashed pool -> local nginx
+# cache shard or remote member over backend mTLS (TCP 7444, private CA, verify required); no ssh, no WireGuard.
+# -----------------------------------------------------------------------------
+[cluster]
+domain = "cluster.internal"     # SNI <service>.<member>.cluster.internal
+mesh_port = 7444                # TCP, public IPv4, mTLS only (fleet IPs already allowed by fr2 nft table)
+stats_port = 19900              # 127.0.0.1: /stats, /metrics (Prometheus)
+check_inter_ms = 1000
+check_fall = 2
+check_rise = 3
+cache_max_size = "2g"
+
+[cluster.members.fr1]
+node = "fr1"
+ssh = "fr1"
+weight = 20                     # low weight: Chromium/LLVM builds keep priority
+slice = { CPUQuota = "200%", MemoryMax = "6G", CPUWeight = "10", IOWeight = "10" }
+[cluster.members.fr2]
+node = "fr2"
+ssh = "fr2"
+weight = 60
+[cluster.members.prd]
+node = "usa"
+ssh = "prd"
+weight = 100
+
+# Stateless, multi-member. targets = member -> local origin. cache: micro (honour origin headers, else 1 s
+# for anonymous GET/HEAD), honor (origin headers only), off (no shard, no coalescing).
+[cluster.services.downloads]
+lb_port = 19797
+targets = { fr1 = "127.0.0.1:28797", fr2 = "127.0.0.1:28797", prd = "127.0.0.1:28797" }
+check = { path = "/", host = "downloads.aphrody.com", expect = "! rstatus ^5" }
+cache = "micro"
+[cluster.services.cdn]
+lb_port = 19796
+targets = { fr1 = "127.0.0.1:28796", fr2 = "127.0.0.1:28796", prd = "127.0.0.1:28796" }
+check = { path = "/", host = "cdn.aphrody.com", expect = "status 200" }
+cache = "micro"
+[cluster.services.api-gateway]
+lb_port = 19081
+targets = { fr1 = "127.0.0.1:28081", fr2 = "127.0.0.1:28081", prd = "127.0.0.1:28081" }
+check = { path = "/", host = "api.aphrody.com", expect = "status 200" }
+cache = "micro"
+
+# Single-member today (prd); every member still answers on lb_port, so Tunnel replicas can run anywhere.
+[cluster.services.mig-test]
+lb_port = 19780
+targets = { prd = "127.0.0.1:8780" }
+check = { path = "/", host = "mig-test.aphrody.com", expect = "status 200" }
+cache = "honor"
+[cluster.services.depot]
+lb_port = 19182
+targets = { prd = "10.200.77.5:8182" }
+check = { path = "/health", host = "mig-depot.aphrody.com", expect = "rstatus ^[24]" }
+cache = "off"
+[cluster.services.commons]
+lb_port = 19766
+targets = { prd = "10.200.77.5:8766" }
+check = { path = "/health", host = "mig-commons.aphrody.com", expect = "status 200" }
+cache = "off"
+[cluster.services.relay]
+lb_port = 19889
+targets = { prd = "127.0.0.1:3889" }
+check = { path = "/health", host = "relay.cluster.internal", expect = "status 200" }
+cache = "off"
+
+# TCP services (mode tcp, connect check). nativelink: replaces the prd -> fr1 ssh forward of 50051/50061.
+[cluster.services.nativelink]
+mode = "tcp"
+lb_port = 19051
+targets = { fr1 = "10.200.77.1:50051" }
+[cluster.services.nativelink-cas]
+mode = "tcp"
+lb_port = 19061
+targets = { fr1 = "10.200.77.1:50061" }
+
+# Benchmark endpoint (static nginx files on every member; 29990 also on the WireGuard IP for the comparison).
+[cluster.services.bench]
+lb_port = 19990
+targets = { fr1 = "127.0.0.1:29990", fr2 = "127.0.0.1:29990", prd = "127.0.0.1:29990" }
+check = { path = "/bench/health", host = "bench.cluster.internal", expect = "status 200" }
+cache = "off"
+
+# Stateful: single primary, never load-balanced, not exposed on the mesh.
+[cluster.stateful.postgres]
+primary = "prd"
+target = "127.0.0.1:5432"
+backup = []                     # no standby yet: dumps only; a standby would pull WAL over ay-cluster
+[cluster.stateful.redis]
+primary = "prd"
+target = "127.0.0.1:6379"
+backup = []

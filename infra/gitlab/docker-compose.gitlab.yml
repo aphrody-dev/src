@@ -46,7 +46,7 @@ services:
       CI_SERVER_URL: "https://git.aphrody.com"
       RUNNER_NAME: "aphrody-fr2-docker-executor"
       RUNNER_EXECUTOR: "docker"
-      DOCKER_IMAGE: "oven/bun:latest"
+      DOCKER_IMAGE: "oven/bun:1.4.4-alpine"
       RUNNER_TAG_LIST: "docker,bun,rust,go,wck"
     volumes:
       - gitlab_runner_docker_config:/etc/gitlab-runner

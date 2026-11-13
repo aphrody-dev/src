@@ -105,7 +105,7 @@ type HistoryEntry struct {
 type PackOptions struct {
 	BinaryPath   string
 	BinaryName   string // optional override inside /app/<name>
-	ImageRef     string // e.g. "ghcr.io/aphrody-dev/aphrody:latest"
+	ImageRef     string // e.g. "ghcr.io/aphrody-labs/aphrody:latest"
 	OutDir       string
 	OS           string // defaults to "linux"
 	Architecture string // defaults to "amd64"

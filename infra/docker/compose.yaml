@@ -28,7 +28,7 @@ services:
   ai-os-relay:
     <<: *svc
     profiles: [core]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/ai-os:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/ai-os:${SRC_TAG:-latest}
     ports: ["127.0.0.1:${RELAY_HOST_PORT:-28790}:8790", "127.0.0.1:${RELAY_TCP_HOST_PORT:-28791}:8791"]
     volumes: [ai-os-home:/home/bun]
     read_only: false
@@ -36,7 +36,7 @@ services:
   ai-os-gateway:
     <<: *svc
     profiles: [core]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/ai-os:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/ai-os:${SRC_TAG:-latest}
     command: ["bun", "src/cli.ts", "gateway"]
     # AGENT_MODEL=<provider>/<model> (e.g. llama/<gguf name>); echo/echo keeps the gateway up until a model is set.
     environment: { PORT: "4000", HEALTH_PATH: /health, RELAY_OPENAI_ENDPOINTS: "llama=http://llama:8080", AGENT_MODEL: "${AGENT_MODEL:-echo/echo}" }
@@ -47,34 +47,34 @@ services:
   aphrody:
     <<: *svc
     profiles: [core]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/aphrody:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/aphrody:${SRC_TAG:-latest}
     ports: ["127.0.0.1:${APHRODY_HOST_PORT:-23000}:3000"]
     volumes: [aphrody-var:/app/var]
 
   yolo: # image built from a full workstation checkout only (packages/google-design/upstream is not in git)
     <<: *svc
     profiles: [yolo]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/yolo:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/yolo:${SRC_TAG:-latest}
     ports: ["127.0.0.1:${YOLO_HOST_PORT:-23092}:3092"]
     read_only: false
 
   rust-stack:
     <<: *svc
     profiles: [core]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/rust-stack:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/rust-stack:${SRC_TAG:-latest}
     ports: ["127.0.0.1:${RUST_STACK_HOST_PORT:-24100}:4100"]
     volumes: [rust-stack-data:/data]
 
   r3d:
     <<: *svc
     profiles: [core]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/r3d:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/r3d:${SRC_TAG:-latest}
     ports: ["127.0.0.1:${R3D_HOST_PORT:-28080}:8080"]
 
   loreserver:
     <<: *svc
     profiles: [core]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/loreserver:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/loreserver:${SRC_TAG:-latest}
     ports: ["127.0.0.1:${LORE_HTTP_HOST_PORT:-31339}:41339", "127.0.0.1:${LORE_QUIC_HOST_PORT:-31337}:41337/udp"]
     volumes: [lore-data:/data]
     deploy: { resources: { limits: { memory: 4g } } }
@@ -95,28 +95,28 @@ services:
   downloads:
     <<: *svc
     profiles: [edge, core]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/r2-site:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/r2-site:${SRC_TAG:-latest}
     environment: { PORT: "8797", S3_BUCKET: aphrody-dist, PREFIX: aphrody, SERVICE: aphrody-downloads, SPA: "0" }
     ports: ["127.0.0.1:${DOWNLOADS_HOST_PORT:-28797}:8797"]
 
   cdn:
     <<: *svc
     profiles: [edge, core]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/r2-site:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/r2-site:${SRC_TAG:-latest}
     environment: { PORT: "8796", S3_BUCKET: aphrody-assets, PREFIX: "", SERVICE: aphrody-cdn, SPA: "0" }
     ports: ["127.0.0.1:${CDN_HOST_PORT:-28796}:8796"]
 
   api-gateway:
     <<: *svc
     profiles: [edge, core]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/api-gateway:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/api-gateway:${SRC_TAG:-latest}
     environment: { S3_BUCKET_BUCKET: aphrody-dist }
     ports: ["127.0.0.1:${API_GATEWAY_HOST_PORT:-28081}:8080"]
 
   # ---------------------------------------------------------------- dev (toolchain containers, repo bind-mounted)
   dev:
     profiles: [dev]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/src-dev:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/src-dev:${SRC_TAG:-latest}
     build: { context: ../.., dockerfile: infra/docker/Dockerfile, target: dev }
     platform: linux/amd64
     working_dir: /src
@@ -137,7 +137,7 @@ services:
 
   runtime:
     profiles: [dev]
-    image: ${SRC_REGISTRY:-ghcr.io/aphrody-dev}/src-runtime:${SRC_TAG:-latest}
+    image: ${SRC_REGISTRY:-ghcr.io/aphrody-labs}/src-runtime:${SRC_TAG:-latest}
     working_dir: /src
     environment: { SRC_ROOT: /src }
     volumes: ["../..:/src"]
