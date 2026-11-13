@@ -59,6 +59,8 @@ export const hashEmbedder = (dim = 512): Embedder => ({
 });
 
 export const estimateTokens = (s: string) => Math.ceil(s.length / 4);
+/** Characters of an entry's text that renderContext keeps; the token budget counts the same slice. */
+export const RENDER_CHARS = 1200;
 
 export type Mask = {
   scopes?: string[];
@@ -112,6 +114,25 @@ const identifiers = (s: string) =>
     (s.match(/[A-Za-z_][A-Za-z0-9_]{2,}/g) ?? []).map((x) => x.toLowerCase()),
   );
 
+/** SQL form of the scope/source mask (same rule as `visible`: exact scope, `scope:` prefix, or `*`). */
+function maskSql(m: Mask, col: string): [string, (string | number)[]] {
+  const parts: string[] = [];
+  const params: (string | number)[] = [];
+  if (m.scopes && !m.scopes.includes("*")) {
+    if (m.scopes.length === 0) return ["0", []];
+    parts.push(
+      `(${m.scopes.map(() => `${col}scope = ? OR substr(${col}scope, 1, ?) = ?`).join(" OR ")})`,
+    );
+    for (const s of m.scopes) params.push(s, s.length + 1, `${s}:`);
+  }
+  if (m.sources) {
+    if (m.sources.length === 0) return ["0", []];
+    parts.push(`${col}source IN (${m.sources.map(() => "?").join(", ")})`);
+    params.push(...m.sources);
+  }
+  return [parts.join(" AND "), params];
+}
+
 export class Context {
   readonly db: Database;
   constructor(
@@ -119,6 +140,8 @@ export class Context {
     readonly embedder: Embedder | undefined = hashEmbedder(),
   ) {
     this.db = new Database(path, { create: true });
+    // Concurrent agents share the store: wait on locks instead of SQLITE_BUSY.
+    this.db.run("PRAGMA busy_timeout=5000");
     this.db.run("PRAGMA journal_mode=WAL");
     this.db.run(
       "CREATE TABLE IF NOT EXISTS entries(rid INTEGER PRIMARY KEY, id TEXT UNIQUE NOT NULL, source TEXT NOT NULL, scope TEXT NOT NULL, title TEXT, text TEXT NOT NULL, symbols TEXT, at INTEGER NOT NULL)",
@@ -135,6 +158,11 @@ export class Context {
     this.db.run(
       "CREATE TRIGGER IF NOT EXISTS entries_au AFTER UPDATE ON entries BEGIN INSERT INTO entries_fts(entries_fts, rowid, title, text) VALUES ('delete', old.rid, old.title, old.text); INSERT INTO entries_fts(rowid, title, text) VALUES (new.rid, new.title, new.text); END",
     );
+    this.db.run(
+      "CREATE INDEX IF NOT EXISTS entries_at ON entries(at DESC, rid DESC)",
+    );
+    this.db.run("CREATE INDEX IF NOT EXISTS entries_scope ON entries(scope)");
+    this.db.run("CREATE INDEX IF NOT EXISTS entries_source ON entries(source)");
     // KV-cache: embeddings keyed by (embedder, content hash); recompute only on change.
     this.db.run(
       "CREATE TABLE IF NOT EXISTS kv(embedder TEXT, hash TEXT, vec BLOB, PRIMARY KEY(embedder, hash))",
@@ -176,14 +204,23 @@ export class Context {
     return r ? this.row(r) : undefined;
   }
 
+  /** Most recent visible entries. Scopes and sources filter in SQL (before LIMIT); `allow` pages until `limit` is met. */
   list(mask: Mask = {}, limit = 1000): Entry[] {
-    return this.db
-      .query<any, [number]>(
-        "SELECT * FROM entries ORDER BY at DESC, rid DESC LIMIT ?",
-      )
-      .all(limit)
-      .map((r) => this.row(r))
-      .filter((e) => this.visible(e, mask));
+    const [where, params] = maskSql(mask, "");
+    const q = this.db.query<any, (string | number)[]>(
+      `SELECT * FROM entries${where ? ` WHERE ${where}` : ""} ORDER BY at DESC, rid DESC LIMIT ? OFFSET ?`,
+    );
+    const out: Entry[] = [];
+    for (let off = 0; out.length < limit; off += limit) {
+      const rows = q.all(...params, limit, off);
+      for (const r of rows) {
+        const e = this.row(r);
+        if (!mask.allow || mask.allow(e)) out.push(e);
+        if (out.length === limit) break;
+      }
+      if (rows.length < limit || !mask.allow) break;
+    }
+    return out;
   }
 
   private row(r: any): Entry {
@@ -260,11 +297,12 @@ export class Context {
       .map((x) => `"${x.replace(/"/g, "")}"`);
     const lex = new Map<string, number>();
     if (terms.length && w.lexical > 0) {
+      const [where, params] = maskSql(o, "e.");
       const rows = this.db
-        .query<any, [string, number]>(
-          "SELECT e.*, bm25(entries_fts, 2.0, 1.0) AS s FROM entries_fts JOIN entries e ON e.rid = entries_fts.rowid WHERE entries_fts MATCH ? ORDER BY s LIMIT ?",
+        .query<any, (string | number)[]>(
+          `SELECT e.*, bm25(entries_fts, 2.0, 1.0) AS s FROM entries_fts JOIN entries e ON e.rid = entries_fts.rowid WHERE entries_fts MATCH ?${where ? ` AND ${where}` : ""} ORDER BY s LIMIT ?`,
         )
-        .all(terms.join(" OR "), nCand);
+        .all(terms.join(" OR "), ...params, nCand);
       for (const r of rows) if (take(this.row(r))) lex.set(r.id, -r.s);
     }
     // recency + structural + semantic candidates come from the most recent visible entries plus lexical hits
@@ -362,7 +400,9 @@ export class Context {
         text,
         score: attn.get(id) ?? 0,
         heads: hs,
-        tokens: estimateTokens(text),
+        tokens: estimateTokens(
+          `${e.title ?? ""} ${text.replace(/\s+/g, " ").slice(0, RENDER_CHARS)}`,
+        ),
       };
     });
     scored.sort((a, b) => b.score - a.score);
@@ -399,7 +439,7 @@ export function renderContext(sel: Scored[]): string {
   return [...by]
     .map(
       ([src, xs]) =>
-        `## ${oneLine(String(src)) || "context"}\n${xs.map((x) => `- ${x.title ? `${oneLine(x.title)}: ` : ""}${x.text.replace(/\s+/g, " ").slice(0, 1200)}`).join("\n")}`,
+        `## ${oneLine(String(src)) || "context"}\n${xs.map((x) => `- ${x.title ? `${oneLine(x.title)}: ` : ""}${x.text.replace(/\s+/g, " ").slice(0, RENDER_CHARS)}`).join("\n")}`,
     )
     .join("\n\n");
 }

@@ -130,3 +130,38 @@ test("home: init templates, persona prefix; skills indexed in context", async ()
   expect(hit[0]?.id).toBe("skill:reverse-words");
   ctx.close();
 });
+
+test("context: scope mask applies before LIMIT (no starvation by newer out-of-scope rows)", async () => {
+  const ctx = new Context(tmp("agent-ctx-scope-"), undefined);
+  const now = Date.now();
+  await ctx.ingest(
+    {
+      id: "old",
+      source: "memory",
+      scope: "team:a",
+      text: "deploy runbook for prd",
+    },
+    now - 10_000,
+  );
+  await ctx.ingest(
+    Array.from({ length: 50 }, (_, i) => ({
+      id: `n${i}`,
+      source: "doc",
+      scope: "other",
+      text: `noise ${i}`,
+    })),
+    now,
+  );
+  expect(ctx.list({ scopes: ["team"] }, 5).map((e) => e.id)).toEqual(["old"]);
+  expect(ctx.list({ scopes: ["team:a"], sources: ["doc"] }, 5)).toEqual([]);
+  expect(ctx.list({ scopes: ["*"] }, 3).length).toBe(3);
+  expect(
+    ctx.list({ allow: (e) => e.id === "old" }, 1).map((e) => e.id),
+  ).toEqual(["old"]);
+  const hit = await ctx.select("deploy runbook", {
+    scopes: ["team"],
+    candidates: 5,
+  });
+  expect(hit.map((s) => s.id)).toEqual(["old"]);
+  ctx.close();
+});

@@ -401,6 +401,28 @@
             },
             "sparse_paths": null
         },
+        "third_party/node": {
+            "path": "C:\\src\\third_party\\node",
+            "url": "https://github.com/aphrody-labs/node.git",
+            "upstream_url": "https://github.com/nodejs/node.git",
+            "commit": "6728a1cfe024be07f560f09ffa73f394704b5442",
+            "branch": "main",
+            "engine": "git",
+            "pillar": "git",
+            "remotes": {
+                "origin": "https://github.com/aphrody-labs/node.git",
+                "upstream": "https://github.com/nodejs/node.git"
+            },
+            "sparse_paths": [
+                "/*",
+                "!/*/",
+                "/doc/",
+                "!/doc/*/",
+                "/doc/api/",
+                "/lib/",
+                "/src/"
+            ]
+        },
         "third_party/Oryx": {
             "path": "C:\\src\\third_party\\Oryx",
             "url": "https://github.com/aphrody-labs/Oryx.git",
