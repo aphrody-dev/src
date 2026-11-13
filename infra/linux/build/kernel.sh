@@ -79,4 +79,4 @@ for f in "$WORK"/out/linux-*.pkg.tar.zst; do
   case $f in *-headers-*|*-dbg-*|*-nvidia*|*-zfs-*) ;; *) pkg=$f; break ;; esac
 done
 [ -n "$pkg" ] || { echo "kernel: no kernel package in $WORK/out" >&2; exit 1; }
-sh "$SRC/infra/linux/build/boot.sh" "$pkg" "$WORK/out/boot.log"
+[ "$HOST" = ci ] || sh "$SRC/infra/linux/build/boot.sh" "$pkg" "$WORK/out/boot.log" # CI boots in its own step (linux-kernel.yml)
