@@ -8,6 +8,8 @@
     ".": "./src/index.ts",
     "./tokens.json": "./tokens/tokens.json",
     "./tokens.css": "./tokens/tokens.css",
+    "./themes.css": "./tokens/themes.css",
+    "./themes.json": "./tokens/themes.json",
     "./components": "./src/components.ts",
     "./symbols.css": "./src/symbols.css",
     "./bun-plugin": "./src/bun-plugin.ts",
@@ -19,6 +21,8 @@
     "check": "bun run src/build.ts --check",
     "test": "bun test",
     "figma": "bun run src/figma.ts --modes 4",
+    "themes": "bun run src/cli.ts themes",
+    "screenshots": "bun run src/cli.ts screenshots",
     "lint": "bun run ../google-design/src/design-md/cli.ts lint DESIGN.md"
   },
   "dependencies": {
