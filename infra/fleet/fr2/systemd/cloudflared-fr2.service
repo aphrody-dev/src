@@ -1,0 +1,24 @@
+# Cloudflare Tunnel "fr2" (88aa6a53-0a9a-4a5b-a9b6-3d3394dd978d), remote-managed: ingress lives in
+# infra/cloudflare/cloudflare.toml (bun infra/cloudflare/cf.ts apply tunnels). Today: ssh-fr2.aphrody.com -> ssh://127.0.0.1:22
+# behind Access (browser SSH + service token). Outbound only (QUIC 7844, HTTP/2 fallback on TCP 443): no inbound port.
+# Token: systemd credential, encrypted on the host (never on disk in clear):
+#   bun infra/cloudflare/tunnel-token.ts fr2 | ssh fr2 'sudo systemd-creds encrypt --name=cloudflared-fr2 - /etc/credstore.encrypted/cloudflared-fr2'
+# Rollback: systemctl disable --now cloudflared-fr2
+[Unit]
+Description=Cloudflare Tunnel fr2 (Access SSH, fr2-local services)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+LoadCredentialEncrypted=cloudflared-fr2:/etc/credstore.encrypted/cloudflared-fr2
+ExecStart=/usr/local/bin/cloudflared tunnel --no-autoupdate --metrics 127.0.0.1:20245 --protocol auto run --token-file %d/cloudflared-fr2
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

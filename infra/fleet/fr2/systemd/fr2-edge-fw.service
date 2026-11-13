@@ -1,0 +1,14 @@
+# Loads /etc/nftables.d/fr2-edge.nft (80/443 only from Cloudflare + fleet). Source: infra/fleet/fr2/bin/fr2-edge-fw.sh
+# Rollback: systemctl disable --now fr2-edge-fw.timer fr2-edge-fw.service; nft delete table inet fr2_edge
+[Unit]
+Description=fr2 origin firewall (Cloudflare + fleet only on 80/443)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/usr/local/bin/fr2-edge-fw.sh
+
+[Install]
+WantedBy=multi-user.target
