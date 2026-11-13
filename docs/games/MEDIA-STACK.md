@@ -1,6 +1,6 @@
 # Media, 3D and codec libraries: sourced matrix (2026-11-13)
 
-Source: `gh api repos/<owner>/<repo>` run on 2026-11-13 (stars, last push, SPDX). `NOASSERTION` means GitHub could not map the LICENSE file to one SPDX id (multi-license or custom): read the repository LICENSE before any redistribution. Rank = stars within the category, as a popularity signal only; it says nothing about quality or fit.
+Source: `gh api repos/<owner>/<repo>` run on 2026-11-13 (stars, last push, SPDX). `NOASSERTION` means GitHub could not map the LICENSE file to one SPDX id (multi-license or custom): read the repository LICENSE before any redistribution. Tables are unsorted; stars are a popularity signal only, not a fit or quality measure.
 
 ## Applications (the monorepo import/export targets)
 
@@ -23,7 +23,7 @@ Source: `gh api repos/<owner>/<repo>` run on 2026-11-13 (stars, last push, SPDX)
 | PixarAnimationStudios/OpenUSD | NOASSERTION | 7643 | 2026-11-11 | USD scene description (default branch `dev`) |
 | google/draco | Apache-2.0 | 7551 | 2026-11-11 | mesh/point-cloud compression |
 | KhronosGroup/KTX-Software | NOASSERTION | 1399 | 2026-11-10 | KTX2 / Basis Universal textures |
-| KhronosGroup/glTF-Sample-Assets | (none reported) | 1156 | 2026-11-12 | conformance test assets |
+| KhronosGroup/glTF-Sample-Assets | (empty in the API response) | 1156 | 2026-11-12 | conformance test assets |
 | gltf-rs/gltf | Apache-2.0 | 644 | 2026-05-11 | Rust glTF 2.0 loader (last push 6 months old) |
 
 ## Image
@@ -64,7 +64,13 @@ Source: `gh api repos/<owner>/<repo>` run on 2026-11-13 (stars, last push, SPDX)
 
 ## Import/export through LLVM and tree-sitter: what is and is not built
 
-- Exists: tree-sitter code graph (`ay graph`, `crates/depot-treesitter`), LLVM shared toolchain docs (`docs/llvm/UNIFIED-TOOLCHAIN.md`), C ABI cdylib `crates/core-capi`.
-- Not built: a root `C` folder that imports and exports every format of this matrix. Reasons: a new root directory must first be added to `ALLOWED_ROOT_PHYSICAL_DIRS` in `crates/archguard/src/constants.rs` and mirrored in `archguard.rules.json`; no per-format binding has been written or tested; no LLVM IR or tree-sitter extraction of FFmpeg, Blender, VLC or Unreal has been run (nothing compiles on the workstation, builds run on fr1).
-- Next step, in order: (1) fork the application and codec repos above into `third_party/forks.txt` via `gh-fork` (Epic and Oodle/MSVC stay private); (2) run `just graph third_party/<name> <name>` on fr1 for FFmpeg first; (3) only then design the C ABI surface from the extracted public headers.
+- Exists: tree-sitter code graph (`ay graph`, `crates/depot-graph` (crate present; execution of `ay graph` not re-run in this session)), LLVM shared toolchain docs (`docs/llvm/UNIFIED-TOOLCHAIN.md`), C ABI cdylib `crates/core-capi`.
+- Not built: a root `C` folder that imports and exports every format of this matrix. Reasons: a new root directory must first be added to `ALLOWED_ROOT_PHYSICAL_DIRS` in `crates/archguard/src/constants.rs` and mirrored in `archguard.rules.json`; no per-format binding has been written or tested; no LLVM IR or tree-sitter extraction of FFmpeg, Blender or VLC has been run (no heavy build on the workstation, builds run on fr1).
+- Next step, in order: (1) fork FFmpeg only via `gh-fork` and prove the extraction on it before forking the rest (Epic and Oodle/MSVC stay private); (2) run `just graph third_party/<name> <name>` (recipe `graph` exists in the justfile, line 75) on fr1 for FFmpeg first; (3) only then design the C ABI surface from the extracted public headers.
 - Quality bar (Linux kernel, Chromium, Unreal) is a review standard, not a measurable gate yet; no metric is defined here.
+
+## Not yet covered (gaps flagged by review, no data fetched)
+
+- Video encoders (x264, x265, aom, rav1e), audio (FLAC, LAME, fdk-aac), fonts (FreeType, HarfBuzz, fontations), Rust 3D (wgpu, russimp, tobj), HDR/VFX (OpenEXR, libultrahdr), containers (Matroska). Add them with the same `gh api repos/<owner>/<repo>` readout.
+- NOASSERTION licenses are unresolved: the real license per repository (for example FFmpeg LGPL/GPL depending on build options) must be read from each LICENSE file before any use.
+- Unreal Engine is deliberately outside this matrix (Epic sources: `docs/epic/RESOURCES.md`).
