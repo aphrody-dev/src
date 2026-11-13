@@ -8,18 +8,28 @@
 import {
   APP_URL,
   HOME,
-  HREFLANG,
-  LOCALES,
   SITE_URL,
-  localizedPath,
   pathGroups,
-  type Locale,
 } from "./site";
-import { PRODUCTS } from "../holding/page";
+import { HOME_LOCALES as LOCALES, PRODUCTS, type HoldingLocale as Locale } from "../holding/page";
+import { catalogs } from "../../../../packages/i18n/src/index.ts";
+
+/** Route of the home page per locale: fr at the root, the others under /<locale>. */
+const localizedPath = (path: string, l: Locale): string =>
+  l === "fr" ? path : path === "/" ? `/${l}` : `/${l}${path}`;
+const HREFLANG: Record<Locale, string> = { fr: "fr", en: "en", "zh-CN": "zh-CN", ja: "ja", es: "es" };
+const NATIVE: Record<Locale, string> = { fr: "Français", en: "English", "zh-CN": "中文", ja: "日本語", es: "Español" };
+const homeCopy = (l: Locale) => {
+  const c = catalogs[l] as Record<string, string>;
+  return { h1: c["home.title"], intro: c["home.desc"] };
+};
 import { WEBMCP_TOOLS } from "./webmcp-tools";
 import type { GoogleConfig } from "../google/config";
 
-export const SITEMAP_FILES = ["sitemap-core.xml", "sitemap-images.xml"] as const;
+export const SITEMAP_FILES = [
+  "sitemap-core.xml",
+  "sitemap-images.xml",
+] as const;
 
 const NS_SITEMAP = "http://www.sitemaps.org/schemas/sitemap/0.9";
 const XML_HEAD = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -122,7 +132,10 @@ export function llmsTxt(): string {
     "",
     "## Products",
     "",
-    ...PRODUCTS.map((p) => `- ${p.url ? `[${p.name}](${p.url})` : p.name} (${p.status.en}): ${p.text.en}`),
+    ...PRODUCTS.map(
+      (p) =>
+        `- ${p.url ? `[${p.name}](${p.url})` : p.name} (${p.status.en}): ${p.text.en}`,
+    ),
     "",
     "## Contact",
     "",
@@ -139,9 +152,19 @@ export function llmsTxt(): string {
 export function llmsFullTxt(): string {
   const parts: string[] = [llmsTxt(), "# Full content", ""];
   for (const l of LOCALES) {
-    parts.push(`## ${l === "fr" ? "Français" : "English"}`, "", `${HOME[l].h1} ${HOME[l].intro}`, "");
+    parts.push(
+      `## ${NATIVE[l]}`,
+      "",
+      `${homeCopy(l).h1} ${homeCopy(l).intro}`,
+      "",
+    );
     for (const p of PRODUCTS)
-      parts.push(`### ${p.name}`, ...(p.url ? [`URL: ${p.url}`] : []), `${p.status[l]}. ${p.text[l]}`, "");
+      parts.push(
+        `### ${p.name}`,
+        ...(p.url ? [`URL: ${p.url}`] : []),
+        `${p.status[l]}. ${p.text[l]}`,
+        "",
+      );
   }
   return parts.join("\n");
 }
@@ -212,7 +235,7 @@ export function securityTxt(buildDate: string, contactEmail?: string): string {
   return [
     `Contact: ${contactEmail ? "mailto:" + contactEmail : APP_URL + "/"}`,
     `Expires: ${exp.toISOString()}`,
-    "Preferred-Languages: fr, en",
+    "Preferred-Languages: fr, en, zh-CN, ja, es",
     `Canonical: ${SITE_URL}/.well-known/security.txt`,
     "",
   ].join("\n");

@@ -62,6 +62,6 @@ describe("play launcher markup", () => {
     expect(html).toContain('<button id="l-start"');
     expect(html).toContain('aria-pressed="true"');
     expect(html).toContain("#launcher:not([hidden]) ~ #msg{visibility:hidden}");
-    expect(html).not.toMatch(/<script(?![^>]*\bsrc=)[^>]*>/);
+    expect(html).not.toMatch(/<script(?![^>]*\bsrc=)(?![^>]*application\/json)[^>]*>/);
   });
 });

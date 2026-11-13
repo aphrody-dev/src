@@ -1,5 +1,14 @@
 // /play: full-screen canvas for the wasm game (crates/game). WebGPU is required: without it the page
-// shows a message instead of a canvas that stays black. Texts in fr and en by browser language.
+// shows a message instead of a canvas that stays black. Texts come from packages/i18n (keys play.*), the page
+// is server-rendered per locale: /play (en), /play/fr, /play/zh-CN, /play/ja, /play/es.
+import { catalogs } from "../../../../packages/i18n/src/index.ts";
+
+export const PLAY_LOCALES = ["en", "fr", "zh-CN", "ja", "es"] as const;
+export type PlayLocale = (typeof PLAY_LOCALES)[number];
+const playPath = (l: PlayLocale) => (l === "en" ? "/play" : `/play/${l}`);
+const NATIVE: Record<PlayLocale, string> = { en: "English", fr: "Français", "zh-CN": "中文", ja: "日本語", es: "Español" };
+const esc = (s: string) =>
+  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 /** CSP of /play only: the wasm module needs 'wasm-unsafe-eval'; no third party, no inline script. */
 export const PLAY_CSP = [
@@ -15,14 +24,23 @@ export const PLAY_CSP = [
   "form-action 'none'",
 ].join("; ");
 
-export function renderPlay(): string {
+export function renderPlay(locale: PlayLocale = "en"): string {
+  const en = catalogs.en as Record<string, string>;
+  const cat = catalogs[locale] as Record<string, string>;
+  const dict: Record<string, string> = {};
+  for (const k of Object.keys(en)) if (k.startsWith("play.")) dict[k] = cat[k] ?? en[k]!;
+  const t = (k: string) => esc(dict[k]!);
+  const alt = PLAY_LOCALES.map(
+    (l) => `<link rel="alternate" hreflang="${l}" href="https://aphrody.com${playPath(l)}">`,
+  ).join("");
   return `<!doctype html>
-<html lang="en">
+<html lang="${locale}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aphrody Play</title>
 <meta name="robots" content="noindex">
+<link rel="canonical" href="https://aphrody.com${playPath(locale)}">${alt}
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#10151c">
 <link rel="icon" href="/play/assets/ui/logo.svg" type="image/svg+xml">
@@ -50,23 +68,26 @@ html,body{margin:0;height:100%;background:#10151c;color:#e8edf3;font:16px/1.5 sy
 .l-card .t{font-size:1.35rem;font-weight:700}.l-card .d{color:#a9b6c4;font-size:.95rem}.l-card .l-state{font-size:.85rem;font-weight:700;color:#7fd0ff}
 .l-card:not(:has(button)){display:none}
 :root:not(.stage-on) .l-card{background:#17202b;border:1px solid #34414f;border-radius:6px}
+.l-lang{display:flex;flex-wrap:wrap;gap:8px 16px}.l-lang a{color:#a9b6c4;min-height:44px;display:inline-flex;align-items:center;padding:0 4px;text-decoration:underline}.l-lang a[aria-current]{color:#7fd0ff;text-decoration:none;font-weight:700}.l-lang a:focus-visible{outline:2px solid #7fd0ff;outline-offset:2px}
 #l-panel{margin:0;max-width:60ch;color:#c7d2de;font-size:.95rem}#l-panel[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <main id="launcher" aria-labelledby="l-title">
-<div><h1 id="l-title">Aphrody Play</h1><p class="sub" id="l-sub">Open-world slice on Bevy. Arrow keys, WASD, a gamepad or the pointer move between cards.</p></div>
+<div><h1 id="l-title">Aphrody Play</h1><p class="sub" id="l-sub">${t("play.sub")}</p></div>
 <div class="l-row">
-<div class="l-card"><button id="l-start" type="button"><span class="t">Start</span><span class="d">Enter, click or gamepad A</span></button></div>
-<div class="l-card"><button id="l-controls" type="button" aria-expanded="false" aria-controls="l-panel"><span class="t">Controls</span><span class="d">Keyboard, mouse, gamepad</span></button></div>
-<div class="l-card"><button id="l-sound" type="button" aria-pressed="true" data-on="On" data-off="Off"><span class="t">Sound</span><span class="l-state">On</span></button></div>
+<div class="l-card"><button id="l-start" type="button"><span class="t">${t("play.start")}</span><span class="d">${t("play.start.d")}</span></button></div>
+<div class="l-card"><button id="l-controls" type="button" aria-expanded="false" aria-controls="l-panel"><span class="t">${t("play.controls")}</span><span class="d">${t("play.controls.d")}</span></button></div>
+<div class="l-card"><button id="l-sound" type="button" aria-pressed="true" data-on="${t("play.on")}" data-off="${t("play.off")}"><span class="t">${t("play.sound")}</span><span class="l-state">${t("play.on")}</span></button></div>
 </div>
-<p id="l-panel" hidden>WASD or left stick: walk. Shift: run. Space or A: jump. T: speed up the day. Click to capture the mouse, Esc to release it.</p>
+<p id="l-panel" hidden>${t("play.panel")}</p>
+<nav class="l-lang" aria-label="Language">${PLAY_LOCALES.map((l) => `<a href="${playPath(l)}" hreflang="${l}" lang="${l}"${l === locale ? ' aria-current="page"' : ""}>${NATIVE[l]}</a>`).join("")}</nav>
 </main>
 <canvas id="game" tabindex="0" aria-label="Aphrody Play"></canvas>
 <div id="msg" role="status" aria-live="polite"><img src="/play/assets/ui/logo.svg" alt="" width="64" height="64"><p id="msg-text"></p></div>
 <div id="hint" hidden></div>
+<script type="application/json" id="i18n">${JSON.stringify(dict).replace(/</g, "\u003c")}</script>
 <script type="module" src="/play/play.js"></script>
 </body>
 </html>

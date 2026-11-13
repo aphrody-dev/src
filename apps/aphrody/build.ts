@@ -28,7 +28,7 @@ import {
 } from "./src/seo/documents";
 import { minifyCss } from "./src/seo/page-css";
 import { render404 } from "./src/seo/html";
-import { PLAY_CSP, renderPlay } from "./src/play/page";
+import { PLAY_CSP, PLAY_LOCALES, renderPlay } from "./src/play/page";
 import { buildImmersive } from "./src/immersive/build";
 import { buildOs } from "./src/os/build";
 import { OS_CSP } from "./src/os/page";
@@ -107,7 +107,8 @@ emit("404.html", holding404(SRC_ROOT));
 // 3b. /play: full-screen WebGPU canvas. The wasm build (crates/game, wasm-bindgen --target web) is
 // produced on fr1 or by .github/workflows/game.yml into GAME_WEB_DIR (default target/game-web); when it
 // is absent the page still ships and tells the visitor the game is not installed.
-emit("play/index.html", renderPlay());
+for (const l of PLAY_LOCALES)
+  emit(l === "en" ? "play/index.html" : `play/${l}/index.html`, renderPlay(l));
 const playBuild = await Bun.build({
   entrypoints: [join(ROOT, "src", "client", "play.ts")],
   outdir: join(DIST_DIR, "play"),

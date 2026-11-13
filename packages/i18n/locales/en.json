@@ -123,5 +123,19 @@
   "os.gs.cap": "Frame cap",
   "os.gs.nocap": "Display rate",
   "os.gs.nosrc": "No video surface found in this window",
-  "os.gs.stats": "{src} to {dst}, {fps} fps"
+  "os.gs.stats": "{src} to {dst}, {fps} fps",
+  "play.sub": "Open-world slice on Bevy. Arrow keys, WASD, a gamepad or the pointer move between cards.",
+  "play.start": "Start",
+  "play.start.d": "Enter, click or gamepad A",
+  "play.controls": "Controls",
+  "play.controls.d": "Keyboard, mouse, gamepad",
+  "play.sound": "Sound",
+  "play.on": "On",
+  "play.off": "Off",
+  "play.panel": "WASD or left stick: walk. Shift: run. Space or A: jump. T: speed up the day. Click to capture the mouse, Esc to release it.",
+  "play.loading": "Loading the game...",
+  "play.nogpu": "This game requires WebGPU. Use a recent Chrome, Edge or Safari on a device with a compatible GPU.",
+  "play.missing": "The game is not installed on this server (wasm build missing).",
+  "play.failed": "The game could not start.",
+  "play.hint": "Click to capture the mouse. WASD or left stick: walk. Shift: run. Space or A: jump. T: speed up the day. Esc: release the mouse."
 }

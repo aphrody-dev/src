@@ -123,5 +123,19 @@
   "os.gs.cap": "Limite d'images",
   "os.gs.nocap": "Cadence de l'écran",
   "os.gs.nosrc": "Aucune surface vidéo dans cette fenêtre",
-  "os.gs.stats": "{src} vers {dst}, {fps} i/s"
+  "os.gs.stats": "{src} vers {dst}, {fps} i/s",
+  "play.sub": "Extrait de monde ouvert sur Bevy. Flèches, ZQSD, une manette ou le pointeur passent d'une carte à l'autre.",
+  "play.start": "Démarrer",
+  "play.start.d": "Entrée, clic ou A de la manette",
+  "play.controls": "Commandes",
+  "play.controls.d": "Clavier, souris, manette",
+  "play.sound": "Son",
+  "play.on": "Activé",
+  "play.off": "Coupé",
+  "play.panel": "ZQSD ou stick gauche : marcher. Maj : courir. Espace ou A : sauter. T : accélérer le jour. Cliquez pour capturer la souris, Échap pour la libérer.",
+  "play.loading": "Chargement du jeu...",
+  "play.nogpu": "Ce jeu demande WebGPU. Utilisez une version récente de Chrome, Edge ou Safari sur un appareil avec un GPU compatible.",
+  "play.missing": "Le jeu n'est pas installé sur ce serveur (build wasm absent).",
+  "play.failed": "Le jeu n'a pas pu démarrer.",
+  "play.hint": "Cliquez pour capturer la souris. ZQSD / WASD ou stick gauche : marcher. Maj : courir. Espace ou A : sauter. T : accélérer le jour. Échap : libérer la souris."
 }

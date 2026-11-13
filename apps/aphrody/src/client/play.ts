@@ -8,34 +8,22 @@ interface PlayState {
   error?: string;
 }
 
-const T = {
-  fr: {
-    loading: "Chargement du jeu...",
-    noGpu:
-      "Ce jeu demande WebGPU. Utilisez une version récente de Chrome, Edge ou Safari sur un appareil avec un GPU compatible.",
-    missing: "Le jeu n'est pas installé sur ce serveur (build wasm absent).",
-    failed: "Le jeu n'a pas pu démarrer.",
-    hint: "Cliquez pour capturer la souris. ZQSD / WASD ou stick gauche : marcher. Maj : courir. Espace ou A : sauter. T : accélérer le jour. Échap : libérer la souris.",
-  },
-  en: {
-    loading: "Loading the game...",
-    noGpu:
-      "This game requires WebGPU. Use a recent Chrome, Edge or Safari on a device with a compatible GPU.",
-    missing: "The game is not installed on this server (wasm build missing).",
-    failed: "The game could not start.",
-    hint: "Click to capture the mouse. WASD or left stick: walk. Shift: run. Space or A: jump. T: speed up the day. Esc: release the mouse.",
-  },
-} as const;
-
-const lang = navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en";
-const t = T[lang];
+const dict = JSON.parse(
+  document.getElementById("i18n")?.textContent ?? "{}",
+) as Record<string, string>;
+const t = {
+  loading: dict["play.loading"] ?? "",
+  noGpu: dict["play.nogpu"] ?? "",
+  missing: dict["play.missing"] ?? "",
+  failed: dict["play.failed"] ?? "",
+  hint: dict["play.hint"] ?? "",
+};
 const state: PlayState = { gpu: false, started: false };
 (window as unknown as { __play: PlayState }).__play = state;
 
 const msg = document.getElementById("msg")!;
 const text = document.getElementById("msg-text")!;
 const hint = document.getElementById("hint")!;
-document.documentElement.lang = lang;
 
 function show(message: string) {
   text.textContent = message;

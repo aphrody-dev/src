@@ -93,8 +93,10 @@ describe("Sitemap index and child sitemaps", () => {
         expect(loc[1].startsWith(SITE_URL)).toBe(true);
     }
     const core = files["sitemap-core.xml"];
-    expect(core).toContain('hreflang="fr-FR"');
-    expect(core).toContain('hreflang="en-US"');
+    for (const h of ["fr", "en", "zh-CN", "ja", "es"])
+      expect(core).toContain(`hreflang="${h}"`);
+    for (const p of ["/en", "/es", "/ja", "/zh-CN"])
+      expect(core).toContain(`<loc>${SITE_URL}${p}</loc>`);
     expect(core).toContain('hreflang="x-default"');
     expect(files["sitemap-images.xml"]).toContain("<image:loc>");
   });

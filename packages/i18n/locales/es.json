@@ -123,5 +123,19 @@
   "os.gs.cap": "Límite de fotogramas",
   "os.gs.nocap": "Frecuencia de pantalla",
   "os.gs.nosrc": "No hay superficie de vídeo en esta ventana",
-  "os.gs.stats": "{src} a {dst}, {fps} fps"
+  "os.gs.stats": "{src} a {dst}, {fps} fps",
+  "play.sub": "Fragmento de mundo abierto sobre Bevy. Las flechas, WASD, un mando o el puntero se mueven entre tarjetas.",
+  "play.start": "Empezar",
+  "play.start.d": "Intro, clic o A del mando",
+  "play.controls": "Controles",
+  "play.controls.d": "Teclado, ratón, mando",
+  "play.sound": "Sonido",
+  "play.on": "Activado",
+  "play.off": "Desactivado",
+  "play.panel": "WASD o stick izquierdo: caminar. Mayús: correr. Espacio o A: saltar. T: acelerar el día. Clic para capturar el ratón, Esc para soltarlo.",
+  "play.loading": "Cargando el juego...",
+  "play.nogpu": "Este juego requiere WebGPU. Usa una versión reciente de Chrome, Edge o Safari en un dispositivo con GPU compatible.",
+  "play.missing": "El juego no está instalado en este servidor (falta la compilación wasm).",
+  "play.failed": "No se pudo iniciar el juego.",
+  "play.hint": "Clic para capturar el ratón. WASD o stick izquierdo: caminar. Mayús: correr. Espacio o A: saltar. T: acelerar el día. Esc: soltar el ratón."
 }

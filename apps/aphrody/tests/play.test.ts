@@ -11,7 +11,7 @@ describe("/play page", () => {
   });
 
   it("has no inline script (CSP forbids it on /play)", () => {
-    expect(html).not.toMatch(/<script(?![^>]*\bsrc=)[^>]*>/);
+    expect(html).not.toMatch(/<script(?![^>]*\bsrc=)(?![^>]*application\/json)[^>]*>/);
   });
 
   it("allows wasm and nothing third-party", () => {

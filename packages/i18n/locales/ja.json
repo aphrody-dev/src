@@ -123,5 +123,19 @@
   "os.gs.cap": "フレーム上限",
   "os.gs.nocap": "ディスプレイ周波数",
   "os.gs.nosrc": "このウィンドウに映像面がありません",
-  "os.gs.stats": "{src} から {dst}、{fps} fps"
+  "os.gs.stats": "{src} から {dst}、{fps} fps",
+  "play.sub": "Bevy 上のオープンワールドの一部。矢印キー、WASD、ゲームパッド、ポインターでカードを移動します。",
+  "play.start": "開始",
+  "play.start.d": "Enter、クリック、またはゲームパッドの A",
+  "play.controls": "操作",
+  "play.controls.d": "キーボード、マウス、ゲームパッド",
+  "play.sound": "サウンド",
+  "play.on": "オン",
+  "play.off": "オフ",
+  "play.panel": "WASD または左スティック: 歩く。Shift: 走る。Space または A: ジャンプ。T: 時間を早める。クリックでマウスを捕捉、Esc で解放。",
+  "play.loading": "ゲームを読み込み中...",
+  "play.nogpu": "このゲームには WebGPU が必要です。対応 GPU を搭載した端末で、最新の Chrome、Edge、Safari を使用してください。",
+  "play.missing": "このサーバーにゲームがインストールされていません (wasm ビルドがありません)。",
+  "play.failed": "ゲームを開始できませんでした。",
+  "play.hint": "クリックでマウスを捕捉。WASD または左スティック: 歩く。Shift: 走る。Space または A: ジャンプ。T: 時間を早める。Esc: マウスを解放。"
 }
