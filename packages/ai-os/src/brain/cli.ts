@@ -258,14 +258,16 @@ async function sync() {
   const idx = join(CLAUDE, "projects", "C--src", "memory", "MEMORY.md");
   const mem = existsSync(idx) ? await Bun.file(idx).text() : "";
   const block = `${BEGIN}\n# Shared directives (from ~/.claude/CLAUDE.md, synced by ai-os brain)\n\n${global.trim()}\n\n## Memory index (~/.claude/projects/C--src/memory)\n\n${mem.trim()}\n${END}`;
-  // One managed block per agent prompt file: agy, Codex, OpenCode. Text outside the block is the agent-specific
-  // header, created once when the file has no block yet (stale hand-written contracts are replaced).
+  // One managed block per agent prompt file: agy, Codex, OpenCode, Pi. Text outside the block is the agent-specific
+  // header, written only when the file is absent or empty.
+  const ROOT = resolve(import.meta.dir, "../../../..");
   const head = (name: string) =>
-    `# ${name}\n\nContrat commun à tous les agents : C:\\src\\AGENTS.md + C:\\src\\.agents\\SOUL.md. Le bloc ci-dessous est généré par \`ai-os brain sync\` à partir de ~/.claude ; ne pas l’éditer à la main. MCP : serveur \`relay\` seul (infra/agents/toolchain.toml).`;
+    `# ${name}\n\nContrat commun à tous les agents : ${join(ROOT, "AGENTS.md")} + ${join(ROOT, ".agents", "SOUL.md")}. Le bloc ci-dessous est généré par \`ai-os brain sync\` à partir de ~/.claude ; ne pas l’éditer à la main. MCP : serveur \`relay\` seul (infra/agents/toolchain.toml).`;
   const prompts = [
     { path: join(GEMINI, "GEMINI.md"), name: "agy (Antigravity CLI)" },
     { path: join(H, ".codex", "AGENTS.md"), name: "Codex" },
     { path: join(H, ".config", "opencode", "AGENTS.md"), name: "OpenCode" },
+    { path: join(H, ".pi", "agent", "AGENTS.md"), name: "Pi" },
   ].filter((p) => existsSync(dirname(p.path)));
   const outputs: [string, string][] = [];
   for (const p of prompts) {
@@ -276,7 +278,8 @@ async function sync() {
       p.path,
       b >= 0 && e > b
         ? cur.slice(0, b) + block + cur.slice(e + END.length)
-        : `${head(p.name)}\n\n${block}\n`,
+        : // No managed block yet: an existing hand-written file is kept and the block appended.
+          `${cur.trim() ? cur.trimEnd() : head(p.name)}\n\n${block}\n`,
     ]);
   }
 

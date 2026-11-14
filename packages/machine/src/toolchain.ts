@@ -501,10 +501,19 @@ export async function toolchain({
     }
     // Exclusivité seulement si le relais est joignable sur cet hôte (sinon l'agent perdrait tous ses serveurs).
     const agyShared = sharedMcp(m, m.agy.mcp).some((x) => x.url);
-    for (const c of agyShared ? ml.map((l) => l.trim().split(/\s+/)) : []) {
-      if (!c[0] || (m.agy.mcp ?? []).includes(c[0])) continue;
+    // Ligne de serveur = NAME TYPE STATUS … avec un type connu (jamais un message ou un en-tête).
+    const rows = ml
+      .map((l) => l.trim().split(/\s+/))
+      .filter(
+        (c) =>
+          /^[\w.-]+$/.test(c[0] ?? "") && /^(stdio|http|sse)$/.test(c[1] ?? ""),
+      );
+    for (const c of agyShared ? rows : []) {
+      if ((m.agy.mcp ?? []).includes(c[0]!)) continue;
       note(false, `agy mcp ${c[0]} retiré (fourni par le relais)`);
-      if (!check) run(["agy", "mcp", "remove", c[0]]);
+      if (check) continue;
+      const r = run(["agy", "mcp", "remove", c[0]!]);
+      if (r.code !== 0) out.push(`ERR  agy mcp remove ${c[0]} : ${last(r)}`);
     }
   } else if (m.agy) out.push("info agy absent");
 
@@ -570,7 +579,10 @@ export async function toolchain({
     for (const c of codexShared ? cm : []) {
       if ((m.codex.mcp ?? []).includes(c.name)) continue;
       note(false, `codex mcp ${c.name} retiré (fourni par le relais)`);
-      if (!check) run(["codex", "mcp", "remove", c.name]);
+      if (check) continue;
+      const r = run(["codex", "mcp", "remove", c.name]);
+      if (r.code !== 0)
+        out.push(`ERR  codex mcp remove ${c.name} : ${last(r)}`);
     }
   } else if (m.codex) out.push("info codex absent");
 
@@ -599,10 +611,22 @@ export async function toolchain({
   for (const f of m.mcpfile ?? []) {
     const p = fill(f.path);
     if (!existsSync(p)) continue;
-    const doc = Bun.JSONC.parse(readFileSync(p, "utf8")) as Record<
-      string,
-      unknown
-    >;
+    let doc: Record<string, unknown>;
+    try {
+      doc = (Bun.JSONC.parse(readFileSync(p, "utf8")) ?? {}) as Record<
+        string,
+        unknown
+      >;
+    } catch (e) {
+      out.push(
+        `ERR  ${f.agent} mcp : ${p} illisible (${(e as Error).message})`,
+      );
+      continue;
+    }
+    for (const x of sharedMcp(m, f.mcp).filter((x) => !x.url))
+      out.push(
+        `info ${f.agent} mcp ${x.name} : pas d'entrée [[claude.mcp]] HTTP sans secret pour ${HOST}`,
+      );
     const servers = Object.fromEntries(
       sharedMcp(m, f.mcp)
         .filter((x) => x.url)
@@ -625,7 +649,15 @@ export async function toolchain({
   }
 
   // --- Liens interdits (symlink, jonction) vers des skills que le plugin aphrody-skills fournit déjà.
-  const ours = new Set(readdirSync(join(SRC, ".agents", "skills")));
+  const managed = new Set([
+    ...(m.claude?.skill ?? []).map((s) => s.name),
+    ...(m.skill?.private ?? []).map((s) => s.name),
+  ]);
+  const ours = new Set(
+    readdirSync(join(SRC, ".agents", "skills"), { withFileTypes: true })
+      .filter((e) => e.isDirectory() && !managed.has(e.name))
+      .map((e) => e.name),
+  );
   for (const d of (m.cleanup?.link_dirs ?? []).map(fill)) {
     if (!existsSync(d)) continue;
     for (const n of readdirSync(d)) {

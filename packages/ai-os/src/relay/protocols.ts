@@ -5,7 +5,7 @@
 //   - A2A 1.0 : a2a.ts (mêmes outils, via call).
 import { validate } from "../llm/schema.ts";
 import type { JsonSchema } from "../llm/types.ts";
-import { hubCall, hubTools } from "./mcp-hub.ts";
+import { hubCall, hubTools, isBuiltin } from "./mcp-hub.ts";
 import { TOOLS, toolByName } from "./tools.ts";
 
 export const VERSION = "0.1.0";
@@ -177,6 +177,14 @@ export async function mcpRpc(r: Req, core = false): Promise<Res | null> {
                 -32602,
                 "Invalid params: name must be a non-empty string",
               );
+        // /mcp/core : même périmètre à l'appel qu'au listage (aucun outil d'un serveur agrégé de ~/.claude.json).
+        if (
+          core &&
+          name.includes("__") &&
+          !TOOLS.some((t) => t.name === name) &&
+          !isBuiltin(name.slice(0, name.indexOf("__")))
+        )
+          return fail(r.id, -32602, `Unknown tool: ${name}`);
         const args = r.params?.arguments;
         if (
           args !== undefined &&

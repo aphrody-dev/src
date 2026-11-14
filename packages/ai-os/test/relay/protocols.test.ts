@@ -108,3 +108,16 @@ test("MCP tools/call : nom absent ou vide -> -32602, serveur agrégé inconnu ->
   expect(bad.error).toBeUndefined();
   expect(bad.result.isError).toBe(true);
 });
+
+test("/mcp/core : un outil d'un serveur agrégé est refusé à l'appel comme au listage", async () => {
+  const res: any = await mcpRpc(
+    {
+      jsonrpc: "2.0",
+      id: 9,
+      method: "tools/call",
+      params: { name: "vercel__list_projects", arguments: {} },
+    },
+    true,
+  );
+  expect(res.error.code).toBe(-32602);
+});

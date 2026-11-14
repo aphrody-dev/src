@@ -46,9 +46,15 @@ id = "android-skills@android-skills"
 scope = "user"
 state = "absent"
 
+# figma et cloudflare : installés par le propriétaire sur le PC le 2026-11-14 ; absents de la flotte.
 [[claude.plugin]]
 id = "figma@claude-plugins-official"
 hosts = ["pc"]
+
+[[claude.plugin]]
+id = "figma@claude-plugins-official"
+hosts = ["prd", "fr1", "fr2"]
+state = "absent"
 
 [[claude.plugin]]
 id = "figma-to-code-design-to-react-vue-and-html@anthropic-plugin-directory"
@@ -91,6 +97,11 @@ state = "absent"
 [[claude.plugin]]
 id = "cloudflare@anthropic-plugin-directory"
 hosts = ["pc"]
+
+[[claude.plugin]]
+id = "cloudflare@anthropic-plugin-directory"
+hosts = ["prd", "fr1", "fr2"]
+state = "absent"
 
 [[claude.plugin]]
 id = "microsoft-docs@anthropic-plugin-directory"
@@ -196,7 +207,8 @@ mcp = ["relay"]
 plugins = ["aphrody-skills@aphrody"]
 mcp = ["relay"]
 
-# Agents sans CLI de configuration MCP scriptable : clé MCP du fichier réécrite (reste du fichier intact).
+# Agents configurés par fichier : la clé MCP est réécrite (les autres clés sont conservées, les commentaires JSONC non).
+# Fichier absent = agent non installé, ignoré.
 [[mcpfile]]
 agent = "opencode"
 path = "{home}/.config/opencode/opencode.jsonc"
@@ -229,8 +241,6 @@ link_dirs = [
   "{home}/.gemini/skills",
   "{home}/.agents/skills",
   "{home}/.codex/skills",
-  "{home}/.config/opencode/skills",
-  "{home}/.pi/agent/skills",
 ]
 drop_copies = true
 drop_skills = [
