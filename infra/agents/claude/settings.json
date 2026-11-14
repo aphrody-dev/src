@@ -45,5 +45,6 @@
     "commit": "",
     "pr": ""
   },
-  "spinnerTipsEnabled": false
+  "spinnerTipsEnabled": false,
+  "skillListingBudgetFraction": 0.003
 }

@@ -13,7 +13,7 @@
 
 ## Method
 - Sub-agents: one per long, independent workstream, in parallel when the owner asks. Targeted reads, filtered outputs.
-- Native tools (rg, fd, jaq, b3sum); pwsh only for CIM/registry/Authenticode.
+- Native tools, ranked in docs/tools/CLI-LIBS-2026-11.md: rg, fd, jaq, sd (not sed), dua (not du), xh (not curl), eza, hyperfine, b3sum; dedicated Read/Grep/Glob/Edit first; absolute paths, never `cd`; pwsh only for CIM/registry/Authenticode.
 - Learning: the hook logs to ~/.claude/learning; skill `learn` distills them into memories/skills.
 
 ## Stack

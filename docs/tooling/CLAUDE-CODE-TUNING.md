@@ -34,6 +34,7 @@ Measured with `claude -p "Reply with the single word: ok" --output-format json` 
 | Previous MCP servers (rea, vercel, agent-desktop, agent-browser) and the three workshop plugins restored by flags | 48 408 tokens | 1.1 to 1.3 s |
 | Current | 39065 tokens | 1.3 to 1.4 s |
 | Current, with the four unused built-in tools denied | 36 446 tokens | 1.3 s |
+| Current, plus `skillListingBudgetFraction: 0.003` (default 0.01) | 26 895 tokens | 1.3 s |
 
 The "previous" row understates the old state: the 59 skills now hidden from the listing could not be restored by a flag. Latency of a turn did not change; the gain is context, not speed.
 
@@ -42,6 +43,10 @@ Where the current baseline goes (same command, flags as noted): 30 158 tokens wi
 Built-in tools are part of the 30 158-token floor, and a tool listed in `permissions.deny` leaves the context. Measured cost per tool (same command, `--disallowedTools <tool>`): `Workflow` 1 951 tokens, `ScheduleWakeup` 1 820, `ReportFindings` 821, `NotebookEdit` 8, `AskUserQuestion` 0 in print mode (it is only offered interactively). Denied in the managed settings: `AskUserQuestion` (no-question rule), `ScheduleWakeup` (self-paced `/loop` only), `ReportFindings`, `NotebookEdit`. `Workflow` is kept: `/gemini-review` runs through it.
 
 Hiding the last six skills left the baseline unchanged (39 062 then 39 065 tokens): the skills listing fills a fixed budget, so hiding skills past that point frees room for the descriptions of the remaining ones instead of lowering the token count.
+
+`skillListingBudgetFraction` (Context7, /websites/code_claude, settings-reference): the listing keeps every skill name and drops the descriptions of the least-used skills past the cap; 0.003 removes about 8 000 tokens per session. Skills stay invocable by name, and the hidden families keep an entry skill.
+
+Startup of `claude -p` (debug log): 0.6 s to setup, 0.25 s of it a remote managed-settings fetch that fails with HTTP 400 under API-key auth (not configurable), then the API call. A shell that leaves stdin open adds a fixed 3 s wait for piped input: run `claude -p ... < /dev/null`. Wall time 6.4 s -> 4.3 s for a one-word answer.
 
 ## Live settings checked against the documentation
 
