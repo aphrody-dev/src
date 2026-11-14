@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { checkBevyMeta, renderBevyMeta } from "../src/bevy.ts";
 import {
   renderMaterialSymbolsCss,
+  renderRustIconsModule,
   validateMaterialSymbolSvg,
 } from "../src/material-symbols.ts";
 import { optimizeSvg2, validateSvg2 } from "../src/svg2.ts";
@@ -73,6 +74,19 @@ describe("Material Symbols Rounded conventions", () => {
     expect(css).toContain('"wght" 400');
     expect(css).toContain('"GRAD" 0');
     expect(css).toContain('"opsz" 24');
+
+    const rs = renderRustIconsModule({
+      settings: {
+        codepoint: "e8b8",
+        outline: '<path d="M12 2z"/>',
+        fill: '<path d="M12 2z"/>',
+        viewBox: "0 0 24 24",
+      },
+    });
+    expect(rs).toContain("pub struct IconData");
+    expect(rs).toContain("pub const SETTINGS: IconData");
+    expect(rs).toContain("pub enum Symbol");
+    expect(rs).toContain("Self::Settings => '\\u{e8b8}'");
   });
 });
 

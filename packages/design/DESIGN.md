@@ -271,11 +271,11 @@ Coins M3 : none 0, extra-small 4, small 8, medium 12, large 16, extra-large 28, 
 
 ## Components
 
-Web : Material Web (`@material/web` 2.5.0) uniquement, via `@aphrody/design/components`. Icônes : Material Symbols Rounded (`material-symbols`). Desktop natif : GPUI ou Microsoft WebUI avec ces mêmes tokens (`tokens.rs`, `tokens.css`). TUI : `ansi.json`.
+Web : Material Web (`@material/web` 2.5.0) uniquement, via `@aphrody/design/components`. Icônes : SVG 2 statiques (`assets/brand/gen/symbols/sprite.svg`, `svg/*.svg`) et structs Rust typées à la compilation (`tokens/symbols.rs` `IconData` / `lucide-dioxus` / `lucide-leptos` / `dioxus-icons` / `icondata_core`, tree-shakées par LLVM/wasm-opt sans chargement `.woff2` runtime). Desktop natif GPU : enum `Symbol::codepoint()` (`tokens/symbols.rs`, compatible `egui_material_icons` / `iced_lucide` / `cosmic-text`) avec `tokens.rs`. TUI : `ansi.json`.
 
 ## Do's and Don'ts
 
-- Faire : consommer `tokens.css` ou `tokens.json`, jamais recopier une valeur hexadécimale.
+- Faire : consommer `tokens.css`, `tokens.json` ou les constantes typées `tokens/symbols.rs` (`Symbol::Settings`), jamais recopier une valeur hexadécimale ni une chaîne d'icône non typée côté Rust.
 - Faire : régénérer par `bun run --cwd packages/design build` après tout changement de `brand.toml`.
 - Ne pas faire : Tailwind, shadcn, palettes maison, dégradés décoratifs, emoji dans l'UI.
-- Ne pas faire : une seconde bibliothèque de composants ou d'icônes à côté de Material Web et Material Symbols.
+- Ne pas faire : une seconde bibliothèque d'icônes runtime (`.woff2`) là où SVG 2 statique ou `Symbol` typé compile-time s'applique.

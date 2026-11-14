@@ -392,6 +392,15 @@ pub const bolt: u32 = ${rgba(tokens.custom.bolt)};
 pub const font_brand = ${JSON.stringify(brand.font)};
 `;
 
+const symbolsJsonFile = Bun.file(
+  join(root, "assets/brand/gen/symbols/symbols.json"),
+);
+if (await symbolsJsonFile.exists()) {
+  const { renderRustIconsModule } =
+    await import("../../assets/src/material-symbols.ts");
+  files["symbols.rs"] = renderRustIconsModule(await symbolsJsonFile.json());
+}
+
 // ANSI: 24-bit SGR per role, plus a 16-color terminal scheme projected from M3 roles.
 const rgbOf = (hex: string) =>
   [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
@@ -630,14 +639,14 @@ Coins M3 : none 0, extra-small 4, small 8, medium 12, large 16, extra-large 28, 
 
 ## Components
 
-Web : Material Web (\`@material/web\` ${mwcVersion}) uniquement, via \`@aphrody/design/components\`. Icônes : Material Symbols Rounded (\`material-symbols\`). Desktop natif : GPUI ou Microsoft WebUI avec ces mêmes tokens (\`tokens.rs\`, \`tokens.css\`). TUI : \`ansi.json\`.
+Web : Material Web (\`@material/web\` ${mwcVersion}) uniquement, via \`@aphrody/design/components\`. Icônes : SVG 2 statiques (\`assets/brand/gen/symbols/sprite.svg\`, \`svg/*.svg\`) et structs Rust typées à la compilation (\`tokens/symbols.rs\` \`IconData\` / \`lucide-dioxus\` / \`lucide-leptos\` / \`dioxus-icons\` / \`icondata_core\`, tree-shakées par LLVM/wasm-opt sans chargement \`.woff2\` runtime). Desktop natif GPU : enum \`Symbol::codepoint()\` (\`tokens/symbols.rs\`, compatible \`egui_material_icons\` / \`iced_lucide\` / \`cosmic-text\`) avec \`tokens.rs\`. TUI : \`ansi.json\`.
 
 ## Do's and Don'ts
 
-- Faire : consommer \`tokens.css\` ou \`tokens.json\`, jamais recopier une valeur hexadécimale.
+- Faire : consommer \`tokens.css\`, \`tokens.json\` ou les constantes typées \`tokens/symbols.rs\` (\`Symbol::Settings\`), jamais recopier une valeur hexadécimale ni une chaîne d'icône non typée côté Rust.
 - Faire : régénérer par \`bun run --cwd packages/design build\` après tout changement de \`brand.toml\`.
 - Ne pas faire : Tailwind, shadcn, palettes maison, dégradés décoratifs, emoji dans l'UI.
-- Ne pas faire : une seconde bibliothèque de composants ou d'icônes à côté de Material Web et Material Symbols.
+- Ne pas faire : une seconde bibliothèque d'icônes runtime (\`.woff2\`) là où SVG 2 statique ou \`Symbol\` typé compile-time s'applique.
 `;
 
 const writes: [string, string][] = [

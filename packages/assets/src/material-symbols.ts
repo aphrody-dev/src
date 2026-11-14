@@ -18,6 +18,138 @@ export interface SymbolEntry {
   viewBox: string;
 }
 
+const toPascalCase = (snake: string): string =>
+  snake
+    .split(/[^a-zA-Z0-9]+/)
+    .filter(Boolean)
+    .map((p) => p[0]!.toUpperCase() + p.slice(1).toLowerCase())
+    .join("");
+
+const toConstIdent = (snake: string): string =>
+  snake.replace(/[^a-zA-Z0-9]+/g, "_").toUpperCase();
+
+/**
+ * Generates a compile-time typed Rust module (`symbols.rs`) covering both 2026 Rust UI icon paradigms:
+ * - Web / WASM (`Dioxus`, `Leptos`, SSR): per-icon `pub const` `IconData` structs tree-shaken by LLVM/`wasm-opt` (zero runtime `.woff2` load).
+ * - Native / GPU (`egui`, `iced`, `wgpu`/`parley`/`cosmic-text`, `GPUI`): exhaustive `enum Symbol` with Unicode scalar `codepoint()`.
+ */
+export function renderRustIconsModule(
+  map: Record<string, SymbolEntry>,
+): string {
+  const names = Object.keys(map).sort();
+  const consts: string[] = [];
+  const variants: string[] = [];
+  const nameArms: string[] = [];
+  const cpArms: string[] = [];
+  const dataArms: string[] = [];
+  const parseArms: string[] = [];
+  const allItems: string[] = [];
+
+  for (const name of names) {
+    const e = map[name]!;
+    const pascal = toPascalCase(name);
+    const ident = toConstIdent(name);
+    const cpHex = (e.codepoint ?? "e88a").toLowerCase();
+    const cpLit = `'\\u{${cpHex}}'`;
+    consts.push(
+      `pub const ${ident}: IconData = IconData {\n` +
+        `    id: ${JSON.stringify(name)},\n` +
+        `    view_box: ${JSON.stringify(e.viewBox)},\n` +
+        `    outline: ${JSON.stringify(e.outline)},\n` +
+        `    fill: ${JSON.stringify(e.fill || e.outline)},\n` +
+        `    codepoint: ${cpLit},\n` +
+        `};`,
+    );
+    variants.push(`    ${pascal},`);
+    nameArms.push(`            Self::${pascal} => ${JSON.stringify(name)},`);
+    cpArms.push(`            Self::${pascal} => ${cpLit},`);
+    dataArms.push(`            Self::${pascal} => &${ident},`);
+    parseArms.push(
+      `            ${JSON.stringify(name)} => Some(Self::${pascal}),`,
+    );
+    allItems.push(`Self::${pascal}`);
+  }
+
+  return `// Compile-time typed icons (${names.length} Material Symbols Rounded). Generated — do not edit.
+// Web/WASM (Dioxus, Leptos, SSR): consume \`IconData\` / \`Symbol::icon_data()\` (LLVM dead-strips unused constants, zero runtime .woff2).
+// Native/GPU (egui, iced, wgpu/parley, GPUI): consume \`Symbol::codepoint()\` for compile-time typed font-atlas lookups.
+
+/// Static SVG vector icon descriptor (tree-shaken per constant by LLVM / wasm-opt).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct IconData {
+    pub id: &'static str,
+    pub view_box: &'static str,
+    pub outline: &'static str,
+    pub fill: &'static str,
+    pub codepoint: char,
+}
+
+impl IconData {
+    /// Emits a W3C CR-SVG2-20261006 \`<svg>\` element inheriting \`currentColor\`.
+    #[must_use]
+    pub fn to_svg(&self, filled: bool, size: u16) -> String {
+        let body = if filled { self.fill } else { self.outline };
+        format!(
+            "<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"{size}\\" height=\\"{size}\\" viewBox=\\"{vb}\\" fill=\\"currentColor\\" aria-hidden=\\"true\\">{body}</svg>",
+            vb = self.view_box,
+        )
+    }
+}
+
+${consts.join("\n")}
+
+/// Compile-time checked icon identifier (typos fail at \`cargo check\`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum Symbol {
+${variants.join("\n")}
+}
+
+impl Symbol {
+    /// Exhaustive list of compiled symbols.
+    pub const ALL: &'static [Self] = &[${allItems.join(", ")}];
+
+    /// Canonical snake_case icon identifier.
+    #[must_use]
+    pub const fn name(self) -> &'static str {
+        match self {
+${nameArms.join("\n")}
+        }
+    }
+
+    /// Unicode Private Use Area codepoint for native GPU text/SDF atlases (\`egui\`, \`iced\`, \`cosmic-text\`, \`parley\`).
+    #[must_use]
+    pub const fn codepoint(self) -> char {
+        match self {
+${cpArms.join("\n")}
+        }
+    }
+
+    /// Static W3C SVG 2 data for Web/WASM SSR and VDOM frameworks (\`Dioxus\`, \`Leptos\`, \`Yew\`).
+    #[must_use]
+    pub const fn icon_data(self) -> &'static IconData {
+        match self {
+${dataArms.join("\n")}
+        }
+    }
+
+    /// Renders a W3C CR-SVG2-20261006 \`<svg>\` string for this symbol.
+    #[must_use]
+    pub fn to_svg(self, filled: bool, size: u16) -> String {
+        self.icon_data().to_svg(filled, size)
+    }
+
+    /// Resolves a serialized snake_case icon name at boundary edges.
+    #[must_use]
+    pub fn parse(name: &str) -> Option<Self> {
+        match name {
+${parseArms.join("\n")}
+            _ => None,
+        }
+    }
+}
+`;
+}
+
 /** Validates an SVG against Material Symbols 24px optical grid + W3C CR-SVG2-20261006. */
 export function validateMaterialSymbolSvg(svg: string, name: string): string[] {
   const rep = validateSvg2(svg, `${name}.svg`);
@@ -144,6 +276,7 @@ export function syncMaterialSymbolsDir(symbolsDir: string): {
     join(symbolsDir, "symbols.css"),
     renderMaterialSymbolsCss(Object.keys(map).length),
   );
+  writeFileSync(join(symbolsDir, "symbols.rs"), renderRustIconsModule(map));
 
   return { count: Object.keys(map).length, errors };
 }
