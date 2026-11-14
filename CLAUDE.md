@@ -10,6 +10,16 @@ Guidance for Claude Code (`claude.ai/code`). Canonical contract: [`AGENTS.md`](.
 - Layout, scope and execution rules: `AGENTS.md` (imported above); not repeated here.
 - C and WebAssembly targets in `src/` build locally in < 4s (`src/Makefile`); heavy Rust workspace builds run on `fr1` or CI (`ci.yml`).
 - Never run bare `bun test` at root: target a package (`bun test packages/core`).
+- Subagents: use the project types in `.claude/agents/`, each with its skills preloaded (`general-purpose` is denied in `.claude/settings.json`):
+  - `rust-crates`: cargo on fr1.
+  - `c-core`: `src/` C core.
+  - `upstream-absorber`: absorb or flatten upstream, dedup third party.
+  - `chromium-integrator`
+  - `ts-packages`: Bun.
+  - `coherence-fixer`
+  - `fact-checker`: read-only.
+  - `Explore` / `Plan` for read-only research.
+- Commits in the shared tree go through a private index (`GIT_INDEX_FILE`, `commit-tree`, `update-ref`) or `ay code commit`, never a plain `git commit` of the shared index.
 
 ## Essential Commands
 

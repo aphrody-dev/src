@@ -15,6 +15,9 @@
       "NotebookEdit",
       "WebFetch",
       "WebSearch"
+    ],
+    "deny": [
+      "Agent(general-purpose)"
     ]
   },
   "outputStyle": "Autonome"
