@@ -6,7 +6,7 @@ import { join, resolve } from "node:path";
 
 type Source = {
   name: string;
-  kind: "openrouter" | "modelsdev" | "litellm";
+  kind: "openrouter" | "modelsdev" | "litellm" | "arena";
   url: string;
 };
 type Conf = {
@@ -54,10 +54,14 @@ const add = (
 const failed: string[] = [];
 await Promise.all(
   conf.source.map(async (s) => {
-    const { status, json } = await get(s.url).catch(() => ({
-      status: 0,
-      json: null,
-    }));
+    const { status, json } = /^https?:/.test(s.url)
+      ? await get(s.url).catch(() => ({ status: 0, json: null }))
+      : {
+          status: 200,
+          json: await Bun.file(join(SRC, s.url))
+            .json()
+            .catch(() => null),
+        };
     if (!json) return failed.push(`${s.name} (HTTP ${status})`);
     if (s.kind === "openrouter")
       for (const m of json.data ?? [])
@@ -68,6 +72,15 @@ await Promise.all(
           api: v.api,
           doc: v.doc,
         });
+    if (s.kind === "arena")
+      for (const o of json.orgs ?? [])
+        add(
+          String(o.org)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-"),
+          s.name,
+          o.models,
+        );
     if (s.kind === "litellm")
       for (const v of Object.values<any>(json))
         if (v?.litellm_provider) add(v.litellm_provider, s.name, 1);

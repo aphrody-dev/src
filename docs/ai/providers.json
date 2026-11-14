@@ -2,7 +2,8 @@
  "sources": [
   "https://openrouter.ai/api/v1/models",
   "https://models.dev/api.json",
-  "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json"
+  "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json",
+  "docs/ai/arena.json"
  ],
  "failed": [],
  "providers": [
@@ -131,7 +132,8 @@
    "api": "https://apihub.agnes-ai.com/v1",
    "doc": "https://agnes-ai.com/doc",
    "probe": {
-    "status": 401
+    "status": 200,
+    "models": 10
    }
   },
   {
@@ -143,6 +145,12 @@
    "doc": "https://ai-router.dev/openai-compatible-api-gateway/",
    "probe": {
     "status": 401
+   }
+  },
+  {
+   "id": "ai2",
+   "sources": {
+    "arena": 8
    }
   },
   {
@@ -239,6 +247,7 @@
   {
    "id": "alibaba",
    "sources": {
+    "arena": 42,
     "models.dev": 53
    },
    "api": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
@@ -307,6 +316,7 @@
   {
    "id": "amazon",
    "sources": {
+    "arena": 10,
     "openrouter": 5
    }
   },
@@ -347,6 +357,12 @@
    }
   },
   {
+   "id": "ant-group",
+   "sources": {
+    "arena": 2
+   }
+  },
+  {
    "id": "anthracite-org",
    "sources": {
     "openrouter": 1
@@ -355,6 +371,7 @@
   {
    "id": "anthropic",
    "sources": {
+    "arena": 34,
     "openrouter": 32,
     "litellm": 24,
     "models.dev": 18
@@ -456,6 +473,7 @@
   {
    "id": "baidu",
    "sources": {
+    "arena": 4,
     "openrouter": 2
    }
   },
@@ -584,6 +602,7 @@
   {
    "id": "bytedance",
    "sources": {
+    "arena": 1,
     "openrouter": 1
    }
   },
@@ -726,6 +745,7 @@
   {
    "id": "cohere",
    "sources": {
+    "arena": 7,
     "openrouter": 6,
     "litellm": 16,
     "models.dev": 17
@@ -856,6 +876,7 @@
   {
    "id": "deepseek",
    "sources": {
+    "arena": 22,
     "openrouter": 17,
     "litellm": 17,
     "models.dev": 4
@@ -1162,6 +1183,7 @@
   {
    "id": "google",
    "sources": {
+    "arena": 43,
     "openrouter": 47,
     "models.dev": 37
    },
@@ -1306,6 +1328,12 @@
    }
   },
   {
+   "id": "ibm",
+   "sources": {
+    "arena": 9
+   }
+  },
+  {
    "id": "ibm-granite",
    "sources": {
     "openrouter": 1
@@ -1334,6 +1362,12 @@
    "probe": {
     "status": 200,
     "models": 2
+   }
+  },
+  {
+   "id": "inception-ai",
+   "sources": {
+    "arena": 2
    }
   },
   {
@@ -1746,6 +1780,7 @@
   {
    "id": "meituan",
    "sources": {
+    "arena": 2,
     "openrouter": 1
    }
   },
@@ -1774,6 +1809,7 @@
   {
    "id": "meta",
    "sources": {
+    "arena": 23,
     "openrouter": 10,
     "litellm": 10,
     "models.dev": 7
@@ -1799,6 +1835,7 @@
   {
    "id": "microsoft",
    "sources": {
+    "arena": 8,
     "openrouter": 1
    }
   },
@@ -1811,6 +1848,7 @@
   {
    "id": "minimax",
    "sources": {
+    "arena": 6,
     "openrouter": 5,
     "litellm": 13,
     "models.dev": 8
@@ -1857,6 +1895,7 @@
   {
    "id": "mistral",
    "sources": {
+    "arena": 18,
     "litellm": 79,
     "models.dev": 36
    },
@@ -1956,6 +1995,7 @@
   {
    "id": "moonshot",
    "sources": {
+    "arena": 8,
     "litellm": 13
    }
   },
@@ -2116,6 +2156,12 @@
    }
   },
   {
+   "id": "nexusflow",
+   "sources": {
+    "arena": 1
+   }
+  },
+  {
    "id": "nimble",
    "sources": {
     "litellm": 1
@@ -2171,6 +2217,7 @@
   {
    "id": "nvidia",
    "sources": {
+    "arena": 12,
     "openrouter": 11,
     "models.dev": 52
    },
@@ -2238,6 +2285,7 @@
   {
    "id": "openai",
    "sources": {
+    "arena": 48,
     "openrouter": 98,
     "litellm": 223,
     "models.dev": 51
@@ -2549,6 +2597,7 @@
   {
    "id": "reflection",
    "sources": {
+    "arena": 1,
     "openrouter": 1,
     "models.dev": 1
    },
@@ -2821,6 +2870,12 @@
    }
   },
   {
+   "id": "spacexai",
+   "sources": {
+    "arena": 18
+   }
+  },
+  {
    "id": "stability",
    "sources": {
     "litellm": 23
@@ -2852,6 +2907,7 @@
   {
    "id": "stepfun",
    "sources": {
+    "arena": 5,
     "openrouter": 3,
     "models.dev": 7
    },
@@ -2961,6 +3017,7 @@
   {
    "id": "tencent",
    "sources": {
+    "arena": 11,
     "openrouter": 8,
     "litellm": 18
    }
@@ -3061,6 +3118,12 @@
    "doc": "https://tinker-docs.thinkingmachines.ai/tinker/compatible-apis/anthropic/",
    "probe": {
     "status": 404
+   }
+  },
+  {
+   "id": "thinky",
+   "sources": {
+    "arena": 3
    }
   },
   {
@@ -3186,12 +3249,13 @@
    "doc": "https://unorouter.com/models",
    "probe": {
     "status": 200,
-    "models": 313
+    "models": 319
    }
   },
   {
    "id": "upstage",
    "sources": {
+    "arena": 2,
     "openrouter": 2,
     "models.dev": 5
    },
@@ -3477,6 +3541,7 @@
   {
    "id": "xiaomi",
    "sources": {
+    "arena": 8,
     "openrouter": 5,
     "models.dev": 6
    },
@@ -3546,6 +3611,7 @@
   {
    "id": "z-ai",
    "sources": {
+    "arena": 15,
     "openrouter": 20
    }
   },
