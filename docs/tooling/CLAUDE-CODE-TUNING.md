@@ -38,6 +38,8 @@ The "previous" row understates the old state: the 59 skills now hidden from the 
 
 Where the current baseline goes (same command, flags as noted): 30 158 tokens with no MCP and outside the repo (built-in prompt, tools, global files: not reducible by configuration); skills listing about 6 000 (76 visible skills, 19 799 characters of descriptions before the last six were hidden); MCP about 1 250; project instruction files about 1 700.
 
+Hiding the last six skills left the baseline unchanged (39 062 then 39 065 tokens): the skills listing fills a fixed budget, so hiding skills past that point frees room for the descriptions of the remaining ones instead of lowering the token count.
+
 ## Live settings checked against the documentation
 
 | Fact (https://code.claude.com/docs/en/ settings, env-vars, hooks, statusline) | Value in `~/.claude/settings.json` |
