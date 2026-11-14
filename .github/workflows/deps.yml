@@ -39,7 +39,9 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.4
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      - name: Toolchain (rustup chromium-157, rust-toolchain.toml)
+        run: bun scripts/toolchain.ts install
       - name: Build ay
         run: cargo build -p aphrody
       - name: Bump locks
@@ -75,6 +77,11 @@ jobs:
             target
           key: deps-${{ runner.os }}-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock') }}
           restore-keys: deps-${{ runner.os }}-
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+      - name: Toolchain (rustup chromium-157, rust-toolchain.toml)
+        run: bun scripts/toolchain.ts install
       - name: Build ay.exe
         run: cargo build -p aphrody --locked
       - uses: actions/upload-artifact@v7
