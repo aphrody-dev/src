@@ -43,8 +43,8 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/russh | mirror | b541663a8838 | a9f644259fa5 | 0/2 | noop | - | 0 |
 | aphrody-labs/gamemode | mirror | a74b8106a223 | a74b8106a223 | 0/0 | noop | - | 0 |
 | aphrody-labs/MangoHud | mirror | 791f92016625 | 791f92016625 | 0/0 | noop | - | 0 |
-| aphrody-labs/fmt | mirror | 73c716dd8448 | 73c716dd8448 | 1/0 | fast-forwarded | - | 0 |
-| aphrody-labs/wgpu | mirror | 12788112433a | 12788112433a | 0/0 | noop | - | 0 |
+| aphrody-labs/fmt | mirror | 4d5346cfb886 | 4d5346cfb886 | 1/0 | fast-forwarded | - | 0 |
+| aphrody-labs/wgpu | mirror | bd66bd1aeb54 | bd66bd1aeb54 | 1/0 | fast-forwarded | - | 0 |
 | aphrody-labs/design.md | mirror | 1ed38aa9dd44 | 1ed38aa9dd44 | 0/0 | noop | - | 0 |
 | aphrody-labs/jules-action | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/jules-awesome-list | mirror | - | - | ?/? | - | - | 0 |
@@ -129,7 +129,7 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/base-ui | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/tailwindcss | mirror | b08bf83a3272 | 8ed754c0e837 | 0/2 | noop | - | 0 |
 | aphrody-labs/better-auth | mirror | 3fa26c979160 | 1e6077ea0cad | 0/3 | noop | - | 0 |
-| aphrody-labs/Pulsar-Native | mirror | bf673839c57b | bf673839c57b | 0/0 | noop | - | 0 |
+| aphrody-labs/Pulsar-Native | mirror | 557281ce588e | 557281ce588e | 1/0 | fast-forwarded | - | 0 |
 | aphrody-labs/gpui-ce | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/gpui-fast | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/gpuix | mirror | 0ce4f41fca8f | 0ce4f41fca8f | 0/0 | noop | - | 0 |
