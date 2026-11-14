@@ -12,6 +12,7 @@ pub mod build;
 pub mod bump;
 pub mod bun;
 pub mod chromium;
+pub mod code;
 mod exec;
 pub mod low;
 pub mod self_update;
@@ -182,6 +183,8 @@ pub enum Cmd {
     Bun(bun::BunArgs),
     /// Unified monorepo auto-bump via `bun pm`, `depot-gclient`, `crates.io` (`cargo update`) and `ay bun bump`
     Bump(bump::BumpArgs),
+    /// Parser-backed refactoring and staging: refs <path>, mv <from> <to> [--dry-run], stage <file> --match <text>
+    Code(code::CodeArgs),
     /// Inference providers behind LiteLLM (infra/ai/ai.toml): ls, install, service, pull, config, check, auth, push, up
     Ai(ai::AiArgs),
     #[command(flatten)]
@@ -233,6 +236,7 @@ pub enum Route {
     SelfUpdate(self_update::SelfUpdateArgs),
     Bun(bun::BunArgs),
     Bump(bump::BumpArgs),
+    Code(code::CodeArgs),
     Ai(ai::AiArgs),
     Low(low::LowCmd),
 }
@@ -328,6 +332,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::SelfUpdate(a) => Route::SelfUpdate(a),
         Cmd::Bun(a) => Route::Bun(a),
         Cmd::Bump(a) => Route::Bump(a),
+        Cmd::Code(a) => Route::Code(a),
         Cmd::Ai(a) => Route::Ai(a),
         Cmd::Low(c) => Route::Low(c),
     }
@@ -373,6 +378,7 @@ fn run_route(route: Route) -> i32 {
         Route::SelfUpdate(args) => self_update::run(args),
         Route::Bun(args) => bun::run(args),
         Route::Bump(args) => bump::run(args),
+        Route::Code(a) => code::run(a),
         Route::Ai(args) => ai::run(args),
         Route::Low(c) => low::run(c),
     }
