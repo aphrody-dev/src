@@ -263,6 +263,9 @@ async function sync() {
   const ROOT = resolve(import.meta.dir, "../../../..");
   const head = (name: string) =>
     `# ${name}\n\nContrat commun à tous les agents : ${join(ROOT, "AGENTS.md")} + ${join(ROOT, ".agents", "SOUL.md")}. Le bloc ci-dessous est généré par \`ai-os brain sync\` à partir de ~/.claude ; ne pas l’éditer à la main. MCP : serveur \`relay\` seul (infra/agents/toolchain.toml).`;
+  // agy state dir exists before the filter below, so a first run on a fresh host writes GEMINI.md too.
+  if (!dry && Bun.which("agy"))
+    mkdirSync(join(GEMINI, "antigravity-cli"), { recursive: true });
   const prompts = [
     { path: join(GEMINI, "GEMINI.md"), name: "agy (Antigravity CLI)" },
     { path: join(H, ".codex", "AGENTS.md"), name: "Codex" },

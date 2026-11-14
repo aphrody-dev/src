@@ -124,6 +124,8 @@ name = "relay"
 url = "http://127.0.0.1:8790/mcp/core"
 shared_url = "http://127.0.0.1:8790/mcp"
 headers_helper = "bun {src}/packages/machine/src/relay-headers.ts"
+# agy n'a ni OAuth vérifiable ni en-tête sans secret en clair : même serveur en stdio, sans autorisation.
+stdio_command = ["bun", "{src}/packages/ai-os/src/relay/cli.ts", "mcp-stdio"]
 hosts = ["pc"]
 
 [[claude.mcp]]
@@ -144,7 +146,9 @@ hosts = ["pc"]
 [[claude.mcp]]
 name = "rea"
 command = ["C:/Program Files/nodejs/node.exe", "{home}/.bun/install/global/node_modules/rea-agents/scripts/rea.mjs", "mcp"]
-env = { GHIDRA_INSTALL_DIR = "{home}/AppData/Local/ghidra", JAVA_HOME = "C:/Program Files/Microsoft/jdk-25.0.5.21-hotspot" }
+# JAVA_HOME vient de l'environnement utilisateur (aucun chemin de correctif JDK figé ici).
+env = { GHIDRA_INSTALL_DIR = "{home}/AppData/Local/ghidra" }
+install = ["bun", "add", "-g", "rea-agents"]
 hosts = ["pc"]
 
 [[claude.mcp]]

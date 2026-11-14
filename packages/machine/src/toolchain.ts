@@ -43,9 +43,13 @@ type Mcp = Hosts & {
   scope?: string;
   command?: string[];
   url?: string;
+  /** Même serveur en stdio pour un agent sans OAuth (agy). */
+  stdio_command?: string[];
   /** URL donnée aux autres agents (défaut : url). */
   shared_url?: string;
   env?: Record<string, string>;
+  /** Commande d'installation lancée quand un fichier de `command` manque. */
+  install?: string[];
   secrets?: string[];
   headers?: Record<string, string>;
   /** Commande headersHelper explicite (jeton local, hors coffre). */
@@ -352,6 +356,27 @@ function claude(
       );
       continue;
     }
+    // Serveur local dont un fichier manque (poste neuf) : installé par la commande du manifeste.
+    const missing = argv
+      .slice(1)
+      .filter((a) => /[\\/]/.test(a) && !existsSync(a));
+    if (s.install && missing.length) {
+      note(false, `claude mcp ${s.name} : ${s.install.join(" ")}`);
+      if (!check) {
+        const r = run(s.install);
+        if (r.code !== 0) out.push(`ERR  ${s.name} install : ${last(r)}`);
+      }
+    }
+    const wantEnv = Object.fromEntries(
+      Object.entries(s.env ?? {}).map(([k, v]) => [k, norm(fill(v))]),
+    );
+    const curEnv = Object.fromEntries(
+      Object.entries(cur?.env ?? {}).map(([k, v]) => [k, norm(v)]),
+    );
+    const envSame =
+      !!s.url ||
+      JSON.stringify(Object.entries(wantEnv).sort()) ===
+        JSON.stringify(Object.entries(curEnv).sort());
     const leaked = Object.keys(cur?.env ?? {}).some((k) =>
       s.secrets?.includes(k),
     );
@@ -368,6 +393,7 @@ function claude(
     const same = s.url
       ? cur?.url === s.url && cur?.headersHelper === helper
       : !!cur &&
+        envSame &&
         norm(cur.command ?? "") === norm(argv[0]) &&
         JSON.stringify((cur.args ?? []).map(norm)) ===
           JSON.stringify(argv.slice(1).map(norm));
@@ -379,7 +405,7 @@ function claude(
     if (cur) run(["claude", "mcp", "remove", s.name, "--scope", scope]);
     const env = Object.entries(s.env ?? {}).flatMap(([k, v]) => [
       "-e",
-      `${k}=${v}`,
+      `${k}=${fill(v)}`,
     ]);
     const r = s.url
       ? helper
@@ -493,10 +519,18 @@ export async function toolchain({
       const cols = ml
         .map((l) => l.trim().split(/\s+/))
         .find((c) => c[0] === x.name);
-      const ok = !!cols && cols[2] === "enabled" && cols[3] === x.url;
+      const stdio = m.claude?.mcp
+        ?.find((y) => y.name === x.name)
+        ?.stdio_command?.map((a) => fill(a).replaceAll("\\", "/"));
+      const ok = stdio
+        ? !!cols &&
+          cols[1] === "stdio" &&
+          cols[2] === "enabled" &&
+          norm(cols.slice(3).join(" ")) === norm(stdio.join(" "))
+        : !!cols && cols[2] === "enabled" && cols[3] === x.url;
       note(ok, `agy mcp ${x.name}`);
       if (ok || check) continue;
-      const r = run(["agy", "mcp", "add", x.name, x.url]);
+      const r = run(["agy", "mcp", "add", x.name, ...(stdio ?? [x.url])]);
       if (r.code !== 0) out.push(`ERR  agy mcp ${x.name} : ${last(r)}`);
     }
     // Exclusivité seulement si le relais est joignable sur cet hôte (sinon l'agent perdrait tous ses serveurs).
