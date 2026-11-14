@@ -129,7 +129,7 @@ describe("env-kit Bun/TypeScript core", () => {
         [
           "CLOUDFLARE_ACCOUNT_ID=ca22c1a51a145f919b54afa18d936516",
           "GEMINI_API_KEY=AIzaMockTestKeyForUnitSpecOnly1234",
-          "CARGO_HOME=C:/Users/aphro/.cargo",
+          "CARGO_HOME=/home/user/.cargo",
         ].join("\n"),
         "utf8",
       );
@@ -190,7 +190,12 @@ describe("env-kit Bun/TypeScript core", () => {
         readFileSync(res.antigravityCliMcpPath, "utf8"),
       );
       expect(agyMcp.mcpServers["ai-os"].command).toBe(
-        "C:/Users/aphro/.local/bin/ai-os.exe",
+        join(
+          dir,
+          ".local",
+          "bin",
+          process.platform === "win32" ? "ai-os.exe" : "ai-os",
+        ),
       );
       expect(agyMcp.mcpServers["cloudflare-docs"].url).toBe(
         "https://docs.mcp.cloudflare.com/mcp",

@@ -20,7 +20,7 @@ const SECRET_VALUE_PREFIX_PATTERN =
   /^(sk-|AIza|figd_|gh[pousr]_|github_pat_|npm_|pypi-|ctx7sk-|vcp_|napi_|eyJ[A-Za-z0-9_-]+\.)/;
 
 export interface LoadMonorepoEnvOptions {
-  /** Optional explicit path to `.env`. Defaults to walking up from `startDir` or `C:\src\.env`. */
+  /** Optional explicit path to `.env`. Defaults to walking up from `startDir` or the monorepo `.env`. */
   envPath?: string;
   /** Starting directory when searching upward for `.env`. Defaults to `process.cwd()`. */
   startDir?: string;
@@ -63,7 +63,7 @@ export function maskValue(key: string, value: string | undefined): string {
 }
 
 /**
- * Resolves the nearest `.env` walking upward from `startDir`, falling back to `C:\src\.env`.
+ * Resolves the nearest `.env` walking upward from `startDir`, falling back to the monorepo `.env`.
  */
 export function resolveMonorepoEnvPath(
   startDir: string = process.cwd(),
@@ -210,12 +210,12 @@ export interface LoadedMonorepoEnv {
 }
 
 /**
- * Loads `C:\src\.env` (or nearest `.env`), injects missing keys into `process.env`
+ * Loads the monorepo `.env` (or nearest `.env`), injects missing keys into `process.env`
  * without overriding existing process env vars unless `override: true`, validates
  * `required` keys per service, and redacts secrets on `inspect` / `JSON.stringify`.
  *
  * Note on Bun v1.4.4 best practice:
- * Bun auto-loads `.env` in CWD and supports `bun --env-file=C:/src/.env` natively.
+ * Bun auto-loads `.env` in CWD and supports `bun --env-file=<repo>/.env` natively.
  * `loadMonorepoEnv` bridges nested monorepo subdirectories and enforces service contracts.
  */
 export function loadMonorepoEnv(
@@ -312,7 +312,7 @@ export function loadMonorepoEnv(
 export interface ExportCloudflareDevVarsOptions {
   /** Explicit keys to include. Defaults to non-empty cloud/AI/DB/app secrets relevant to Workers. */
   keys?: readonly string[];
-  /** Source `.env` path. Defaults to `C:\src\.env`. */
+  /** Source `.env` path. Defaults to `<repo>/.env`. */
   envPath?: string;
 }
 

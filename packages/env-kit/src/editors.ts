@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 
 export interface SyncEditorsResult {
   opencodePath: string;
@@ -130,8 +130,17 @@ export function syncAllEditorConfigs(
   const appData =
     options.appDataDir ??
     process.env.APPDATA ??
-    join(home, "AppData", "Roaming");
+    (process.platform === "win32"
+      ? join(home, "AppData", "Roaming")
+      : (process.env.XDG_CONFIG_HOME ?? join(home, ".config")));
   const env = options.env ?? process.env;
+  const exe = process.platform === "win32" ? ".exe" : "";
+  const AIOS_BIN = join(home, ".local", "bin", `ai-os${exe}`);
+  const ENVKIT_BIN = join(home, ".local", "bin", `env-kit${exe}`);
+  const ENV_FILE = join(
+    process.env.ENV_KIT_ROOT ?? resolve(import.meta.dir, "..", "..", ".."),
+    ".env",
+  );
 
   const opencodePath = join(home, ".config", "opencode", "opencode.jsonc");
   const zedPath = join(appData, "Zed", "settings.json");
@@ -162,7 +171,7 @@ export function syncAllEditorConfigs(
   const ocMcp = asRecord(oc.mcp);
   ocMcp.ai_os = {
     type: "local",
-    command: ["C:/Users/aphro/.local/bin/ai-os.exe", "mcp-stdio"],
+    command: [AIOS_BIN, "mcp-stdio"],
     enabled: true,
   };
   ocMcp.cloudflare = {
@@ -196,7 +205,7 @@ export function syncAllEditorConfigs(
   };
   ocMcp.figma = {
     type: "local",
-    command: ["C:/Users/aphro/.local/bin/ai-os.exe", "mcp-stdio"],
+    command: [AIOS_BIN, "mcp-stdio"],
     enabled: true,
     environment: {
       FIGMA_API_KEY: "{env:FIGMA_ACCESS_TOKEN}",
@@ -205,7 +214,7 @@ export function syncAllEditorConfigs(
   };
   ocMcp.github = ocMcp.github ?? {
     type: "local",
-    command: ["C:/Users/aphro/.local/bin/ai-os.exe", "mcp-stdio"],
+    command: [AIOS_BIN, "mcp-stdio"],
     enabled: true,
     environment: {
       GITHUB_PERSONAL_ACCESS_TOKEN: "{env:GITHUB_TOKEN}",
@@ -367,7 +376,7 @@ export function syncAllEditorConfigs(
     source: "custom",
     enabled: true,
     command: {
-      path: "C:/Users/aphro/.local/bin/ai-os.exe",
+      path: AIOS_BIN,
       args: ["mcp-stdio"],
       env: {},
     },
@@ -376,7 +385,7 @@ export function syncAllEditorConfigs(
     source: "custom",
     enabled: true,
     command: {
-      path: "C:/Users/aphro/.local/bin/env-kit.exe",
+      path: ENVKIT_BIN,
       args: ["exec", "--", "r3d-mcp"],
       env: {},
     },
@@ -385,8 +394,8 @@ export function syncAllEditorConfigs(
     source: "custom",
     enabled: true,
     command: {
-      path: "C:/Users/aphro/.local/bin/env-kit.exe",
-      args: ["exec", "--", "C:/Users/aphro/.local/bin/ai-os.exe", "mcp-stdio"],
+      path: ENVKIT_BIN,
+      args: ["exec", "--", AIOS_BIN, "mcp-stdio"],
       env: {},
     },
   };
@@ -394,8 +403,8 @@ export function syncAllEditorConfigs(
     source: "custom",
     enabled: true,
     command: {
-      path: "C:/Users/aphro/.local/bin/env-kit.exe",
-      args: ["exec", "--", "C:/Users/aphro/.local/bin/ai-os.exe", "mcp-stdio"],
+      path: ENVKIT_BIN,
+      args: ["exec", "--", AIOS_BIN, "mcp-stdio"],
       env: {},
     },
   };
@@ -419,7 +428,7 @@ export function syncAllEditorConfigs(
     fallbackModel: "qwen3-coder-14b-heretic",
     nhitl: true,
     autoApproveTools: true,
-    envFile: "C:/src/.env",
+    envFile: ENV_FILE,
     apiKeys: {
       anthropic: "$ANTHROPIC_API_KEY",
       google: "$GEMINI_API_KEY",
@@ -576,7 +585,7 @@ export function syncAllEditorConfigs(
     const servers = asRecord(doc.mcpServers);
     if (includeAiOs && !servers["ai-os"]) {
       servers["ai-os"] = {
-        command: "C:/Users/aphro/.local/bin/ai-os.exe",
+        command: AIOS_BIN,
         args: ["mcp-stdio"],
       };
     }

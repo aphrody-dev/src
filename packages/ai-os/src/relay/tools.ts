@@ -4,7 +4,9 @@ import { listModels } from "../llm/models.ts";
 import { s } from "../llm/schema.ts";
 import { AGENT_TOOLS } from "./agent-tools.ts";
 import { hubCall, hubTools } from "./mcp-hub.ts";
+import { CORE_TOOLS } from "./core-tools.ts";
 import { ORCH_TOOLS } from "./orch-tools.ts";
+import { TERM_TOOLS } from "../term/mcp-tools.ts";
 // packages/ai-os/src/google may be absent from a checkout (module not yet on main): the relay then
 // starts without these tools instead of crashing (prd rollback 2026-11-13, src-checkout-update).
 const GOOGLE_TOOLS: Tool[] = await import("../google/tools.ts").then(
@@ -15,7 +17,7 @@ import { accountsSync } from "./accounts.ts";
 import { outbound } from "./outbound.ts";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import {
   claude,
   claudeWithTools,
@@ -443,7 +445,7 @@ export const TOOLS: Tool[] = [
     readOnly: true,
     run: async () => {
       const cli = join(
-        Bun.env.SRC_ROOT ?? "C:/src",
+        Bun.env.SRC_ROOT ?? resolve(import.meta.dir, "..", "..", "..", ".."),
         "packages",
         "env-kit",
         "src",
@@ -465,6 +467,9 @@ export const TOOLS: Tool[] = [
       return JSON.parse(out);
     },
   },
+];
+
+TOOLS.push(
   {
     name: "hub_tools",
     description:
@@ -528,8 +533,11 @@ export const TOOLS: Tool[] = [
     readOnly: false,
     run: (a) => hubCall(String(a.name), a.arguments ?? {}),
   },
-];
-
-TOOLS.push(...AGENT_TOOLS, ...ORCH_TOOLS, ...GOOGLE_TOOLS);
+  ...AGENT_TOOLS,
+  ...CORE_TOOLS,
+  ...ORCH_TOOLS,
+  ...TERM_TOOLS,
+  ...GOOGLE_TOOLS,
+);
 
 export const toolByName = new Map(TOOLS.map((t) => [t.name, t]));

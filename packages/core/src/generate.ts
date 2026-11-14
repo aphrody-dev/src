@@ -173,7 +173,7 @@ function renderPillar(
     ),
     "",
     "Scripts:",
-    "- `bun packages/core/src/cli.ts index C:/src --all`: reindexes (sqlite var/index/core.db + JSON).",
+    "- `bun packages/core/src/cli.ts index . --all`: reindexes (sqlite var/index/core.db + JSON).",
     `- \`bun packages/core/src/cli.ts users ${p.needles[0]}\`: lists the files that import/call it.`,
     "- `bun packages/core/src/cli.ts gen-docs`: regenerates README.md, MDX plans, and docs/reference/*.md.",
     "- `bun test ./packages/core/test/`: round-trip bun:ffi <-> core-capi and doc generator tests.",

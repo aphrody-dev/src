@@ -25,7 +25,7 @@ import type { Tool } from "./tools.ts";
 const home = () => Bun.env.AGENT_HOME ?? join(homedir(), ".agent");
 const skillStores = () => {
   const dirs = [layout(home()).skills];
-  const srcSkills = join(Bun.env.SRC_ROOT ?? "C:/src", ".agents", "skills");
+  const srcSkills = join(Bun.env.SRC_ROOT ?? resolve(import.meta.dir, "..", "..", "..", ".."), ".agents", "skills");
   if (existsSync(srcSkills) && !dirs.includes(srcSkills)) dirs.push(srcSkills);
   return dirs.map((d) => new Skills(d));
 };
@@ -244,7 +244,7 @@ export const AGENT_TOOLS: Tool[] = [
     readOnly: true,
     run: async (a) => {
       const target = resolve(
-        Bun.env.SRC_ROOT ?? "C:/src",
+        Bun.env.SRC_ROOT ?? resolve(import.meta.dir, "..", "..", "..", ".."),
         String(a.path ?? "."),
       );
       if (a.mode === "legacy-scan") {

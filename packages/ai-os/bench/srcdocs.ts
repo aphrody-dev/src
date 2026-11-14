@@ -11,7 +11,7 @@ export type EvalSet = {
 export const CACHE = join(import.meta.dir, ".cache", "srcdocs.json");
 
 export async function buildSrcDocs(
-  root = Bun.env.SRC_DOCS ?? "C:/src/docs",
+  root = Bun.env.SRC_DOCS ?? join(import.meta.dir, "..", "..", "..", "docs"),
   max = 400,
 ): Promise<EvalSet> {
   const entries: EvalSet["entries"] = [];

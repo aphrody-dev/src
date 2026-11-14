@@ -23,6 +23,7 @@ copyFileSync(join(infra, "hosts.toml"), process.env.VAULT_HOSTS_FILE);
 copyFileSync(join(infra, "policy.toml"), process.env.VAULT_POLICY_FILE);
 
 const V = await import("../src/index.ts");
+const CLI = join(import.meta.dir, "..", "src", "cli.ts");
 const FACTICE = `factice-${crypto.randomUUID()}`;
 const linuxNoCreds =
   process.platform === "linux" &&
@@ -296,16 +297,16 @@ describe.skipIf(!Bun.which("age") || linuxNoCreds)("age per host", () => {
     expect(existsSync(join(root, "outbox", "prd", "PC_ONLY_TOKEN.age"))).toBe(
       false,
     );
-    expect(V.taskXml("PC\\u", 5, "C:/src/packages/vault/src/cli.ts")).toContain(
+    expect(V.taskXml("PC\\u", 5, CLI)).toContain(
       "<StateChange>SessionUnlock</StateChange>",
     );
-    const syncXml = V.taskXml("PC\\u", 5, "C:/src/packages/vault/src/cli.ts");
+    const syncXml = V.taskXml("PC\\u", 5, CLI);
     expect(syncXml).toContain("<LogonType>InteractiveToken</LogonType>");
     expect(syncXml).toContain("<LogonTrigger>");
     const pushXml = V.taskXml(
       "PC\\u",
       15,
-      "C:/src/packages/vault/src/cli.ts",
+      CLI,
       "push",
     );
     expect(pushXml).toContain("<LogonType>S4U</LogonType>");

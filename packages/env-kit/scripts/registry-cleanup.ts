@@ -8,14 +8,16 @@
  *   bun run packages/env-kit/scripts/registry-cleanup.ts --execute   # Requires fresh NPM_TOKEN / CARGO_REGISTRY_TOKEN
  */
 import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { loadMonorepoEnv } from "../src/index";
 
 loadMonorepoEnv();
 
 const execute = process.argv.includes("--execute");
 
-const NPM_REPORT = "C:/src/var/reports/npm-inventory.json";
-const CRATES_REPORT = "C:/src/var/reports/crates-inventory.json";
+const REPORTS = join(import.meta.dir, "..", "..", "..", "var", "reports");
+const NPM_REPORT = join(REPORTS, "npm-inventory.json");
+const CRATES_REPORT = join(REPORTS, "crates-inventory.json");
 
 const CANONICAL_NPM_KEEP = new Set([
   "@aphrody/ai-os",

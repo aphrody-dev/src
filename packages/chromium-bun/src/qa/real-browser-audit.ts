@@ -4,7 +4,7 @@
  * Executes live end-to-end verification against local and production URLs.
  */
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import type { RealWebVitals } from "../browser/cdp-client.ts";
 import {
@@ -54,8 +54,8 @@ export interface LighthouseAuditReport {
 
 export function findLighthouseBinary(): string | null {
   const candidates = [
-    "C:/Users/aphro/.bun/bin/lighthouse.exe",
-    "C:/Users/aphro/.local/bin/lighthouse.exe",
+    join(homedir(), ".bun/bin", process.platform === "win32" ? "lighthouse.exe" : "lighthouse"),
+    join(homedir(), ".local/bin", process.platform === "win32" ? "lighthouse.exe" : "lighthouse"),
     join(Bun.env.USERPROFILE || Bun.env.HOME || "", ".bun/bin/lighthouse.exe"),
     join(Bun.env.USERPROFILE || Bun.env.HOME || "", ".bun/bin/lighthouse"),
   ];
@@ -157,7 +157,7 @@ export async function runAgentBrowserSnapshot(
   const binaryPath = findAgentBrowserBinary();
   if (!binaryPath) {
     throw new Error(
-      "agent-browser binary not found in C:/Users/aphro/.local/bin or PATH",
+      "agent-browser binary not found in ~/.local/bin or PATH",
     );
   }
 

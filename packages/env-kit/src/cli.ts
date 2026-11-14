@@ -504,7 +504,7 @@ Usage:
   env-kit accounts switch <principal>  Activate gcloud configuration for <ai|owner|org|sa>
   env-kit billing <status|plan|apply|lift|relink>  GCP billing via billing-agent (keyless): budgets, spend, idle resources
   env-kit accounts iam-bindings        Print idempotent GCP IAM policy bindings for project aphrody (#468000409790)
-  env-kit set <KEY> <VALUE>            Set key in C:/src/.env + Windows User Env + sync editors
+  env-kit set <KEY> <VALUE>            Set key in <repo>/.env + Windows User Env + sync editors
   env-kit merge --source <host>        Merge dotenv from stdin into .env (new keys added, differing as KEY__HOST)
   env-kit merge --from-windows         Merge credential-like Windows user env vars into .env
   env-kit nuget-set-key <API_KEY>     Set NUGET_API_KEY and register with dotnet nuget config
@@ -512,7 +512,7 @@ Usage:
   env-kit sync-gh                      Sync current 'gh auth token' into GITHUB_TOKEN & GH_TOKEN
   env-kit dev-vars <projectDir>        Write gitignored .dev.vars for Cloudflare wrangler dev
   env-kit vercel-env [projectDir]      Preview masked Vercel env summary (or write .env.local with --write)
-  env-kit exec -- <cmd> [args...]      Execute command with C:/src/.env injected into child process
+  env-kit exec -- <cmd> [args...]      Execute command with <repo>/.env injected into child process
   env-kit secret <info|list|set|exec|pipe|has|rm|import>  OS secret store (DPAPI / systemd-creds); values in via stdin, out via child env/stdin only
   env-kit vault <init|add|import-chrome-csv|export-chrome-csv|sync|status|rotate|hosts|doc|fp|backup|restore|hello>  age vault per host (docs/infra/VAULT.md)
   env-kit auth status [--json] [--only k,..]  Every auth: CLIs, Chrome, tokens, store, CI secrets, ssh, WireGuard, tunnels
