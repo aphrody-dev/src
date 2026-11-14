@@ -1154,7 +1154,7 @@ path = "third_party/next.js"
 url = "https://github.com/aphrody-labs/next.js.git"
 upstream = "https://github.com/vercel/next.js.git"
 branch = "canary"
-sha = "9fc797ae3e67eae5be223d13f638c39f8841b861"
+sha = "7f5aded5bbb618bfb32014f7a99b0ae66bd545a1"
 kind = "web"
 used_by = [
   "apps/shenron/apps/site (Next 16.5 standalone : optimiseur d'images, Modern Web Guidance, Lighthouse)",
