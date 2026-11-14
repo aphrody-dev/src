@@ -91,7 +91,7 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/ratatui | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/scx | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/cridecoder | mirror | - | - | ?/? | - | - | 0 |
-| aphrody-labs/servo | mirror | af5f54ba7609 | af5f54ba7609 | 0/0 | noop | - | 0 |
+| aphrody-labs/servo | mirror | 062b34416171 | 062b34416171 | 1/0 | fast-forwarded | - | 0 |
 | aphrody-labs/artcraft | mirror | 84a6a7dcf5cc | 79d87b2b54b5 | 22/0 | blocked: HTTP 403: Repository was archived so is read-only. (https://api.github.com/repos/aphrody-labs/artcraft/merge-upstream) | - | 0 |
 | aphrody-labs/linux | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/bazzite | mirror | ce9229d7b3b9 | ce9229d7b3b9 | 0/0 | noop | - | 0 |
@@ -118,7 +118,7 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/z3 | mirror | 1a1d88dde7cc | 1a1d88dde7cc | 0/0 | noop | - | 0 |
 | aphrody-labs/embedded_gpui | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/zed | mirror | 56a157e5b01b | 56a157e5b01b | 0/0 | noop | - | 0 |
-| aphrody-labs/webpack | mirror | b0939389f5a5 | b0939389f5a5 | 0/0 | noop | - | 0 |
+| aphrody-labs/webpack | mirror | a0a34d3bb394 | a0a34d3bb394 | 1/0 | fast-forwarded | - | 0 |
 | aphrody-labs/swc | mirror | df1c01862bbe | df1c01862bbe | 0/0 | noop | - | 0 |
 | aphrody-labs/postcss | mirror | b6316e5d61e5 | b6316e5d61e5 | 0/0 | noop | - | 0 |
 | aphrody-labs/taskr | mirror | 7a50e6e8c1fb | 7a50e6e8c1fb | 0/0 | noop | - | 0 |
