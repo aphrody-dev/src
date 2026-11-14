@@ -8,7 +8,7 @@ flat `third_party/`, CIPD binaries pinned by hash) and intelligent-terminal
 `cgmanifest.json` per component, workstation described in `.config/configuration.winget`).
 
 Source studies: `docs/packaging/PACKAGE-MANAGERS.md`, `docs/packaging/RECOMMENDATION.md`,
-`docs/llvm/UNIFIED-TOOLCHAIN.md`, `docs/compat/TARGETS.md`, `docs/INSTALL_UPDATE.md`. This document
+`docs/llvm/UNIFIED-TOOLCHAIN.md`, `docs/compat/TARGETS.md`, `docs/infra/INSTALL_UPDATE.md`. This document
 settles them. Only deviation: the `distroless/*-debian13` images cited in `RECOMMENDATION.md` are
 rejected, because src never uses Debian or Ubuntu.
 
@@ -104,7 +104,7 @@ Major bumps (`--breaking`) and the nightly date are changed by hand, in a dedica
 
 Complements:
 
-- `docs/DEPS-MINIMIZE.md`: no versioned third-party code, Cargo git sources pinned by `rev`;
+- `docs/native/deps/DEPS-MINIMIZE.md`: no versioned third-party code, Cargo git sources pinned by `rev`;
 - `deny.toml` `[sources.allow-org]`, recognized by `CARGO-GIT`;
 - `scripts/js-deps-check.ts`, run in `just check` and in CI: `bun.lock` duplicates, bun built-ins.
 

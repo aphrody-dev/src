@@ -89,7 +89,7 @@ Grammaires : 13 avec extracteur dédié ; les autres découvertes par `crates/co
 ## 6. Identité renommable et multiplateforme
 
 - Une source : `identity.toml` (product, cli, naming : scope npm et préfixes, orgs, domains, products.*). `just identity apply` (`bun scripts/identity.ts apply`) réécrit les champs copiés (Cargo.toml `[workspace.package]`, nom et `[[bin]]` de crates/ay, `package.json#name` et clés `@scope/` des dépendances) ; `just identity check` garde `just check` et la CI. Lecteurs directs : crates/xtask (vars DEPS), packages/forge (valeurs par défaut des forges), tout paquet via `import identity from "<racine>/identity.toml"`. Les configurations d'hôte (nginx, mail, DNS) restent littérales : elles décrivent l'état déployé.
-- Aucun nom de produit ni chemin absolu en dur : `env!("CARGO_PKG_NAME")`, racine détectée par `identity.toml` (ARCHITECTURE-ROOT.md invariant 6) ou `SRC_ROOT`, `XDG_*`, `%LOCALAPPDATA%`.
+- Aucun nom de produit ni chemin absolu en dur : `env!("CARGO_PKG_NAME")`, racine détectée par `identity.toml` (core/ARCHITECTURE-ROOT.md invariant 6) ou `SRC_ROOT`, `XDG_*`, `%LOCALAPPDATA%`.
 - Chaque binaire compile et teste sur windows-msvc et linux-gnu ; scripts .sh/.ps1 remplacés par des recettes just. Exceptions par nature, en `cfg(windows)` : `dx12-hal` (D3D12, DirectComposition ; vide sur Linux) et l'hôte `wslg-cli` (DispatcherQueue WinUI 3 dans `wslg_cli::host` ; sur Linux, les binaires sortent en erreur). `smithay-wayland-wire` et `cosmic-compat` compilent et testent sur Linux ; seuls le transport Hyper-V et le mappage D3D12 des dmabufs sont `cfg(windows)`. dx12-001 soldé le 2026-11-13.
 
 ## 7. Règles de fusion (sans régression)
@@ -124,7 +124,7 @@ Status: v0 architecture. Implemented: conformance harness skeleton, Lore absorbe
 
 Aphrody Labs (`aphrody-labs/labs`, private) is the lab of Aphrody, as Vercel Labs is to Vercel (`aphrody-dev` is the main org). Goal: a self-hosted replacement for Vercel, Vercel Labs, Epic Games and Unreal Engine, built on their open-source projects, with every paid or hosted-only feature replaced by a self-hosted one.
 
-- Shell (Windows, Claude Code): see [docs/shell/INDEX.md](shell/INDEX.md).
+- Shell (Windows, Claude Code): see [docs/native/shell/INDEX.md](native/shell/INDEX.md).
 - Compatibility target on the web side: `vercel/vercel` (CLI, builders, Build Output API v3) and Next.js. Our stack on top: Tailwind v4 engine, shadcn registry, Base UI components, Blitz/vello renderer.
 - Compatibility target on the web side: `vercel/vercel` (CLI, builders, Build Output API v3) and Next.js.
 - Version control: Lore (`EpicGames/lore`, MIT), vendored from the fork `aphrody-labs/lore` into `third_party/lore`. Git is not used.

@@ -68,7 +68,7 @@ graphify-out/
 !/identity.toml
 !/package.json
 !/tsconfig.json
-# Single monorepo version (docs/VERSIONING.md, ay release freeze).
+# Single monorepo version (docs/packaging/VERSIONING.md, ay release freeze).
 !/VERSION
 !/bun.lock
 !/bunfig.toml

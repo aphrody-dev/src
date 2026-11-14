@@ -1,4 +1,4 @@
-# License and supply-chain policy for the root Cargo workspace (cargo-deny 0.20; docs/deps/POLICY.md, docs/DEPS-MINIMIZE.md).
+# License and supply-chain policy for the root Cargo workspace (cargo-deny 0.20; docs/deps/POLICY.md, docs/native/deps/DEPS-MINIMIZE.md).
 # Run: `just deny` (part of `just check` and CI).
 [graph]
 all-features = true
@@ -60,7 +60,7 @@ github = ["aphrody-labs", "aphrody-dev", "storytold"]
 [advisories]
 yanked = "deny"
 unmaintained = "workspace"
-# No fixed release upstream; tracked in docs/DEPS-MINIMIZE.md (remove when the dependents move).
+# No fixed release upstream; tracked in docs/native/deps/DEPS-MINIMIZE.md (remove when the dependents move).
 ignore = [
   { id = "RUSTSEC-2023-0071", reason = "rsa 0.9 via jsonwebtoken 11, no fixed 0.9 release; leaves with jsonwebtoken on rsa 0.10" },
   { id = "RUSTSEC-2026-0387", reason = "crypto-bigint 0.5 via elliptic-curve 0.13 (p256/p384 0.13), no fixed 0.5 release; 0.7 already in graph" },

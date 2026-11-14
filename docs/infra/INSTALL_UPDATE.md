@@ -2,7 +2,7 @@
 
 How `ay`, the toolchain around it, and published wasm/CDN assets are installed and kept current on
 the workstation and on the three hosts (`usa` production, `fr1` builds and storage, `fr2` CDN, cron
-and sync; see `docs/INFRA_MATRIX.md`).
+and sync; see `docs/infra/INFRA_MATRIX.md`).
 
 | Piece                 | Where                                                                              | Command                                     |
 | --------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------- |

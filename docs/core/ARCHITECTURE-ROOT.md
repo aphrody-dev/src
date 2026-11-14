@@ -16,7 +16,7 @@ Common target with the labs session (reference: `labs/docs/ROOT-ARCHITECTURE.md`
 5. **Single identity.** `identity.toml` at the root contains: product and repository, CLI (binary `ay`, package `aphrody`), npm scope, prefixes (`crate_prefix`, `env_prefix`, `symbol_prefix`), orgs (`aphrody-dev`, `aphrody-labs`), domains, sub-products.
    - `just identity apply` (`bun scripts/identity.ts apply`) rewrites the copied fields: `[workspace.package]` (authors, repository, homepage), name and `[[bin]]` of crates/ay, `package.json#name` and `@scope/` keys;
    - `just identity check` guards `just check` and CI (step "Identity gate");
-   - crate prefix: only names that would collide on crates.io carry it (docs/NAMING.md); it is not reapplied to existing names, which would break invariant 2;
+   - crate prefix: only names that would collide on crates.io carry it (docs/ay/NAMING.md); it is not reapplied to existing names, which would break invariant 2;
    - code hard-codes no product name: `env!("CARGO_PKG_NAME")` everywhere, `env!("CARGO_BIN_NAME")` only in a `[[bin]]` target (Cargo does not define it for a lib), otherwise reading identity.toml (Rust: crates/xtask; TS: Bun TOML import);
    - renaming fits in one PR: identity.toml, then `apply`, then `just ci`.
 6. **No absolute path, link or junction versioned.**

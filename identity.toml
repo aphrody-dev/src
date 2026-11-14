@@ -15,7 +15,7 @@ crate = "aphrody" # package name of crates/ay
 
 [naming]
 npm_scope = "@aphrody" # every packages/*/package.json#name and the root package
-crate_prefix = "aphrody-" # crates/<dir> is named <dir> or <crate_prefix><dir> (crates.io collisions, docs/NAMING.md)
+crate_prefix = "aphrody-" # crates/<dir> is named <dir> or <crate_prefix><dir> (crates.io collisions, docs/ay/NAMING.md)
 
 # Historical names kept as-is (renaming them is a breaking change for their users).
 # C symbol and env prefixes (aphrody_*, APHRODY_*) are frozen: TICKET identity-001.
@@ -41,7 +41,7 @@ path = "packages/ai-os"
 home_env = "AGENT_HOME"
 home_default = "~/.agent"
 
-# Public channels of the anonymous identity (docs/IDENTITY.md): nothing personal (name, private mailbox, phone, photo).
+# Public channels of the anonymous identity (docs/infra/IDENTITY.md): nothing personal (name, private mailbox, phone, photo).
 # Private mailboxes are vault keys only (APHRODY_OWNER_GOOGLE_ACCOUNT, APHRODY_AI_GOOGLE_ACCOUNT).
 [contact]
 email = "contact@aphrody.com"

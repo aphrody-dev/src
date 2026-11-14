@@ -2,7 +2,7 @@ cargo-features = ["codegen-backend", "panic-immediate-abort"]
 
 # Root Cargo workspace for every first-party Rust crate in this repository.
 # Every first-party crate sits one level below crates/ and is a member through the glob.
-# See docs/CONSOLIDATION_PLAN.md.
+# See docs/core/ARCHITECTURE-ROOT.md.
 [workspace]
 resolver = "3"
 members = [

@@ -177,7 +177,7 @@ dependency, not a build.
   few lines per lot. `ay --help` ends with an overview by area (repo, toolchain, bun, chromium,
   fleet, measure), as `bun --help` groups its commands.
 - **Outputs**: text for people, `--json` with a versioned schema for agents, `NO_COLOR` and no
-  color when stdout is not a terminal, exit codes 0/1/2 (docs/NAMING.md conventions).
+  color when stdout is not a terminal, exit codes 0/1/2 (docs/ay/NAMING.md conventions).
 - **Start time**: measured with `ay time -n 50 -- ay --version` (HdrHistogram p50/p90/p99); a lot
   may not regress it.
 - **AOT and LTO**: release is fat LTO, one codegen unit, `panic = "abort"`, stripped (root

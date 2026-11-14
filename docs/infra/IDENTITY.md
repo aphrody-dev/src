@@ -2,7 +2,7 @@
 
 ## Name
 
-Single source: [`identity.toml`](../identity.toml) at the repository root (`just identity check` gates it, `just identity apply` rewrites the copies; docs/ARCHITECTURE-ROOT.md invariant 5). This section only explains the values.
+Single source: [`identity.toml`](../../identity.toml) at the repository root (`just identity check` gates it, `just identity apply` rewrites the copies; docs/core/ARCHITECTURE-ROOT.md invariant 5). This section only explains the values.
 
 - **Brand**: Aphrody Labs, home `labs.aphrody.com` (`[domains].home`); `aphrody-dev` is the main org, `aphrody-labs` the lab org (this repository `github.com/aphrody-labs/src` since 2026-11-13, `[product].repo_org`; forks, products under `apps/`).
 - **Binary**: `ay` (`[cli].binary`), package `aphrody` (`[cli].crate`, crates/ay). The former labs binary `aphrody` (crates/aphrody-cli) is now `ay conformance`.
