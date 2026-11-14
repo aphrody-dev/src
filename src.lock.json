@@ -1703,7 +1703,7 @@
     "third_party/depot_tools": {
       "path": "third_party/depot_tools",
       "url": "https://chromium.googlesource.com/chromium/tools/depot_tools.git",
-      "commit": "1afcf0756e47f3a6ee82d7736b9fcda2d57b268e",
+      "commit": "ec77017fb3e090ff02bffb9c6980ebcdd3006ddc",
       "branch": "detached",
       "engine": "git",
       "pillar": "chromium",

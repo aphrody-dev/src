@@ -7,7 +7,7 @@ vars = {
   'org_github': 'https://github.com/aphrody-dev',
   'chromium_git': 'https://chromium.googlesource.com',
   'chromium_revision': 'ef68a767a544b5544e46944e4b3be15e9ce0b6d4',
-  'depot_tools_revision': '1afcf0756e47f3a6ee82d7736b9fcda2d57b268e',
+  'depot_tools_revision': 'ec77017fb3e090ff02bffb9c6980ebcdd3006ddc',
   'linux_kernel_revision': '7475ea8b58616b33c04afb976cf0fbaad9dd63fb',
 }
 
@@ -135,7 +135,7 @@ deps = {
   'third_party/deadbolt': 'https://github.com/aphrody-labs/deadbolt.git@11a56948b453823c9c9c3de1161254df2c00b105',
   'third_party/defguard': 'https://github.com/DefGuard/defguard.git@e17756e70b179d7e1a19f94e1c00375fbf47539b',
   'third_party/deno': 'https://github.com/denoland/deno.git@e7b39ebd55c85aaf6a29290c1f5a99e2e21e09dd',
-  'third_party/depot_tools': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git@1afcf0756e47f3a6ee82d7736b9fcda2d57b268e',
+  'third_party/depot_tools': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git@ec77017fb3e090ff02bffb9c6980ebcdd3006ddc',
   'third_party/depotdownloader': 'https://github.com/SteamRE/DepotDownloader.git@1847160f18122838e691ab9be83e92fdc6779d6a',
   'third_party/design-md': 'https://github.com/aphrody-labs/design.md.git@1ed38aa9dd4451b9039f9aeb9ed1d2579edafddf',
   'third_party/devtools': 'https://gitlab.archlinux.org/archlinux/devtools.git@c677b681beb02427762e49deef31f635edc2834f',
