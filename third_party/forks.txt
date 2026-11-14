@@ -105,3 +105,5 @@ swc-project/swc Rust
 postcss/postcss JavaScript
 lukeed/taskr JavaScript
 felixge/node-require-like JavaScript
+GoogleChrome/modern-web-guidance-src JavaScript
+wasm-bindgen/wasm-bindgen Rust
