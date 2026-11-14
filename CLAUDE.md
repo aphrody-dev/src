@@ -30,4 +30,8 @@ bun packages/ai-os/src/brain/cli.ts sync   # global CLAUDE.md + memory index -> 
 - Committing a file another session also edited: stage only your hunks with context (`git diff -- <file>` filtered, `git apply --cached`), never `git add` the whole file; `--unidiff-zero` misplaces pure insertions, so re-read `git diff --cached` before committing.
 - MCP: `~/.claude.json` is the only server list; the relay re-exports it to other agents (`/mcp`), Claude uses `/mcp/core`. `claude mcp remove` drops stored OAuth, so change servers through `toolchain.toml`.
 - Leftover `.git/rebase-merge/` holding only `autostash`: `git stash store -m orphan <sha>` then remove the dir before rebasing.
+- Never `cmd //c ...` from the Bash tool (niubash opens an interactive cmd and hangs): remove a junction with `bun -e` (`fs.unlinkSync`, fallback `fs.rmdirSync`).
+- Relay code changes load only after `pwsh -NoProfile -c "Restart-Service AphrodyRelay -Force"` (service runs `packages/ai-os/src/relay/cli.ts serve` from source; killing the bun child is not enough).
+- VPS update (`/srv/src` on vps, prd, cdn): `git fetch -q --no-recurse-submodules origin main && git merge --ff-only FETCH_HEAD`. Blocked by a file identical to upstream: `git checkout FETCH_HEAD -- <file>`. Blocked by a submodule upstream absorbed: `git submodule deinit -f <path>` only if it is clean and its HEAD is on a remote branch.
+- Gemini review when the relay fails (Antigravity credits, no relay Chrome session): gemini.google.com through claude-in-chrome; insert long text with `document.execCommand("insertText")` (synthetic paste is ignored, page CSP blocks fetch to localhost).
 - R2 listing: `cf r2 buckets list`, `cf r2 objects list --bucket-name <b>` (discover others with `cf cli search`).
