@@ -38,7 +38,7 @@ image = "v3"
 env = { _processor_opt = "generic_v4", _use_llvm_lto = "thin" }
 
 # KVM guests of the fleet class of fr1/fr2 (Haswell, x86-64-v3). Kept buildable for measurements;
-# fr1/fr2 stay on the Ubuntu kernel (docs/packaging/RECOMMENDATION.md).
+# fr1/fr2 move to Arch + CachyOS kernels (docs/infra/REINSTALL-PLAN.md).
 [flavor.kvm-v3]
 image = "v3"
 env = { _processor_opt = "generic_v3", _cpusched = "eevdf", _cachy_config = "no", _HZ_ticks = "300", _preempt = "lazy", _hugepage = "madvise", _use_llvm_lto = "thin" }
@@ -47,3 +47,9 @@ env = { _processor_opt = "generic_v3", _cpusched = "eevdf", _cachy_config = "no"
 [flavor.prd-autofdo]
 image = "v3"
 env = { _processor_opt = "zen4", _cpusched = "eevdf", _cachy_config = "no", _HZ_ticks = "300", _preempt = "lazy", _hugepage = "madvise", _use_llvm_lto = "thin", _autofdo = "yes", _build_debug = "yes" }
+
+# 7.4-rc for fr1/fr2 (Haswell, x86-64-v3): CachyOS linux-cachyos-rc tracks mainline rc (7.4-rc2 in CachyOS/linux-cachyos, 2026-11-14).
+# The repo package is preferred (reinstall/40-kernel.sh); this flavor is the local build fallback.
+[flavor.rc-v3]
+image = "v3"
+env = { _processor_opt = "generic_v3", _cpusched = "eevdf", _cachy_config = "no", _HZ_ticks = "300", _preempt = "lazy", _hugepage = "madvise", _use_llvm_lto = "thin" }

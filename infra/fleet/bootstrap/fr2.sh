@@ -6,8 +6,14 @@ LOCK=${LOCK:-$(cd "$(dirname "$0")/../../.." && pwd)/tools.toml}
 . "$(dirname "$0")/common.sh"
 
 pkgs="docker.io docker-buildx docker-compose-v2 nginx wireguard-tools curl"
+if command -v pacman >/dev/null 2>&1; then  # Arch/CachyOS (after reinstall): same set, Arch package names
+  pkgs="docker docker-buildx docker-compose nginx wireguard-tools curl"
+  missing=$(for p in $pkgs; do pacman -Qq "$p" >/dev/null 2>&1 || echo "$p"; done)
+  [ -z "$missing" ] || { log "pacman: $missing"; $SUDO pacman -S --needed --noconfirm $missing >/dev/null; }
+else
 missing=$(for p in $pkgs; do dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q "ok installed" || echo "$p"; done)
 [ -z "$missing" ] || { log "apt: $missing"; $SUDO apt-get install -y --no-install-recommends $missing >/dev/null; }
+fi
 
 # Docker must not flip the FORWARD policy to DROP (WireGuard mesh forwarding goes through this host).
 if [ ! -f /etc/docker/daemon.json ]; then

@@ -38,6 +38,13 @@ GRUB_DEFAULT=saved
 GRUB_SAVEDEFAULT=true
 GRUB_DISABLE_SUBMENU=y
 G
+# CachyOS repos (x86-64-v3 when the CPU supports it, checked in the rescue system; fr1/fr2 are Haswell = v3, no AVX-512).
+# Source: https://mirror.cachyos.org/cachyos-repo.tar.xz (cachyos-repo.sh adds keys, mirrorlists, [cachyos-v3] repos). Skip with CACHY=0.
+if [ "${CACHY:-1}" = 1 ]; then
+  /lib64/ld-linux-x86-64.so.2 --help | grep -q 'x86-64-v3 (supported' || { echo "CPU lacks x86-64-v3: set CACHY=0" >&2; exit 1; }
+  curl -fL https://mirror.cachyos.org/cachyos-repo.tar.xz -o /mnt/root/tmp/cachyos-repo.tar.xz
+  chroot /tmp/ab arch-chroot /mnt sh -ec 'cd /tmp && tar xf cachyos-repo.tar.xz && cd cachyos-repo && ./cachyos-repo.sh && pacman -Syu --noconfirm'
+fi
 chroot /tmp/ab arch-chroot /mnt sh -ec "
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime; systemd-firstboot --locale=C.UTF-8 --timezone=UTC 2>/dev/null || true
 grub-install --target=i386-pc $DISK
