@@ -1,0 +1,18 @@
+# Applied to %USERPROFILE%\.wslconfig (copy by hand). Kernel + modules from infra/wsl-distro/kernel/build-kernel.sh on fr1. Revert: delete the kernel= lines (Microsoft kernel keeps /dev/dxg).
+[wsl2]
+kernel=C:\\src\\target\\wsl\\bzImage-aphrody-cachyos
+kernelModules=C:\\src\\target\\wsl\\modules-aphrody-cachyos.vhdx
+processors=24
+memory=24GB
+swap=32GB
+nestedVirtualization=true
+guiApplications=true
+localhostForwarding=true
+firewall=false
+
+[experimental]
+dnsTunneling=true
+hostAddressLoopback=true
+autoMemoryReclaim=gradual
+sparseVhd=true
+bestEffortDnsParsing=true

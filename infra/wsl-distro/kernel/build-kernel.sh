@@ -40,11 +40,21 @@ curl -fsSL "$MS/include/uapi/misc/d3dkmthk.h" -o include/uapi/misc/d3dkmthk.h
 grep -q dxgkrnl drivers/hv/Kconfig || sed -i '$i source "drivers/hv/dxgkrnl/Kconfig"' drivers/hv/Kconfig
 grep -q dxgkrnl drivers/hv/Makefile || printf 'obj-$(CONFIG_DXGKRNL)\t\t+= dxgkrnl/\n' >> drivers/hv/Makefile
 
+# dxgkrnl needs the two VMBus GUIDs that Microsoft keeps in include/linux/hyperv.h.
+grep -q HV_GPUP_DXGK_GLOBAL_GUID include/linux/hyperv.h || cat >> include/linux/hyperv.h <<'HV'
+
+#define HV_GPUP_DXGK_GLOBAL_GUID \
+	.guid = GUID_INIT(0xdde9cbc0, 0x5060, 0x4436, 0x94, 0x48, \
+			  0xea, 0x12, 0x54, 0xa5, 0xd1, 0x77)
+#define HV_GPUP_DXGK_VGPU_GUID \
+	.guid = GUID_INIT(0x6e382d18, 0x3336, 0x4f4b, 0xac, 0xc4, \
+			  0x2b, 0x77, 0x3, 0xd4, 0xdf, 0x4a)
+HV
 cp "$W/dl/config-wsl" .config
 scripts/kconfig/merge_config.sh -m .config "$here/wsl2-cachyos-omarchy-7.4.config"
 make LLVM=1 LLVM_IAS=1 olddefconfig
 # Fail when the tree silently dropped a required option.
-for opt in DXGKRNL HYPERV_VMBUS HYPERV_STORAGE HYPERV_NET HYPERV_VSOCKETS 9P_FS VIRTIO_FS EXT4_FS BINFMT_MISC SCHED_BORE; do
+for opt in DXGKRNL PCI_HYPERV NET_9P_VIRTIO TRANSPARENT_HUGEPAGE_MADVISE HYPERV_VMBUS HYPERV_STORAGE HYPERV_NET HYPERV_VSOCKETS 9P_FS VIRTIO_FS EXT4_FS BINFMT_MISC SCHED_BORE; do
   grep -q "^CONFIG_$opt=y" .config || { echo "build-kernel: CONFIG_$opt is not =y after olddefconfig" >&2; exit 1; }
 done
 
