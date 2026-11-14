@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Aphrody Rust Ecosystem Showcase — Shared WASM + WebGPU + Material 3
+    </title>
+    <link rel="stylesheet" href="/tokens.css" />
+    <link rel="stylesheet" href="/fonts.css" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div id="app" class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="badge-primary">APHRODY</span>
+          <div>
+            <h1>Rust Ecosystem Showcase</h1>
+            <p class="subtitle">
+              Shared Core (`crates/rust-showcase`) &mdash; Desktop
+              (`winit`+`wgpu`) &amp; Web (`wasm32`+WebGPU+M3)
+            </p>
+          </div>
+        </div>
+        <div class="topbar-controls">
+          <span id="host-pill" class="chip-info">WASM Loading...</span>
+          <label class="control-group">
+            <span>Preset</span>
+            <select id="preset-select"></select>
+          </label>
+          <button id="dark-toggle" class="btn-tonal" type="button">
+            Toggle Light/Dark
+          </button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <nav class="rail" aria-label="Showcase Sections">
+          <div id="tab-list" class="tab-list"></div>
+          <section class="stats-card" id="stats-card"></section>
+        </nav>
+        <main id="content" class="content"></main>
+      </div>
+
+      <section class="webgpu-dock">
+        <div class="dock-header">
+          <strong
+            >Shared Rust `wgpu` + `showcase.wgsl` Live GPU Canvas (Identical
+            Scene Graph to Windows Native `.exe`)</strong
+          >
+          <span id="webgpu-status" class="muted"
+            >Initializing WebGPU adapter...</span
+          >
+        </div>
+        <canvas id="gpu-canvas" width="1440" height="900"></canvas>
+      </section>
+    </div>
+    <style id="dynamic-theme-vars"></style>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

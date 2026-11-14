@@ -1,0 +1,2 @@
+# checkdeps layer rules: Showcase sits at Layer 5 (surfaces), allowed to read L0-L4 workspace crates.
+layer = 5

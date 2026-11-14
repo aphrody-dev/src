@@ -1,0 +1,11 @@
+{
+  "name": "@aphrody/rust-showcase",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run server.ts",
+    "start": "bun run server.ts"
+  },
+  "dependencies": {}
+}

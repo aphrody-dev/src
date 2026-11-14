@@ -824,6 +824,7 @@ pub fn compute_primitive_taffy_box(
     gap: f32,
     children: usize,
 ) -> Vec<taffy::LayoutRect> {
+    use taffy::style_helpers::{auto, length, percent};
     if children == 0 {
         return Vec::new();
     }
@@ -834,8 +835,8 @@ pub fn compute_primitive_taffy_box(
             .new_leaf(taffy::Style {
                 flex_grow: 1.0,
                 size: taffy::Size {
-                    width: taffy::percent(1.0),
-                    height: taffy::auto(),
+                    width: percent(1.0),
+                    height: auto(),
                 },
                 ..taffy::Style::DEFAULT
             })
@@ -848,18 +849,18 @@ pub fn compute_primitive_taffy_box(
                 display: taffy::Display::Flex,
                 flex_direction: taffy::FlexDirection::Column,
                 padding: taffy::Rect {
-                    left: taffy::length(padding.max(0.0)),
-                    right: taffy::length(padding.max(0.0)),
-                    top: taffy::length(padding.max(0.0)),
-                    bottom: taffy::length(padding.max(0.0)),
+                    left: length(padding.max(0.0)),
+                    right: length(padding.max(0.0)),
+                    top: length(padding.max(0.0)),
+                    bottom: length(padding.max(0.0)),
                 },
                 gap: taffy::Size {
-                    width: taffy::length(0.0),
-                    height: taffy::length(gap.max(0.0)),
+                    width: length(0.0),
+                    height: length(gap.max(0.0)),
                 },
                 size: taffy::Size {
-                    width: taffy::length(width.max(0.0)),
-                    height: taffy::length(height.max(0.0)),
+                    width: length(width.max(0.0)),
+                    height: length(height.max(0.0)),
                 },
                 ..taffy::Style::DEFAULT
             },
