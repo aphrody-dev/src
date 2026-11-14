@@ -68,3 +68,19 @@ Causes restantes : un echec `(unnamed)` dans better-auth (erreur de hook asynchr
 - Contexte Context7 : `/oven-sh/bun`.
 
 Graphe : `docs/better-auth/graph/` (GRAPH_REPORT.md, ARCHITECTURE.mermaid, graph.svg).
+
+## Tour 3 (usa, commits `7b94e882a` puis rebase `5c261e101`, 2026-11-14)
+
+Fork reconstruit en serie lineaire `aphrody:` (6 commits) sur upstream `54c1b693c` : conflit unique de `ay upstream sync better-auth` (patch 2, `packages/core/src/oauth2/dpop.test.ts`, import vitest -> `bun:test` a cote du nouvel import de type) resolu ; deux nouveaux tests amont (`oauth-provider/challenge-exposure`, `local-jwks`) convertis. Les "import/runtime failures" du tour precedent venaient d'un lancement sans `--preload ../../bun-test.plugin.ts` (resolution `dev-source`), pas de bugs.
+
+| Cible (sans bases de donnees) | Avant | Apres |
+| --- | --- | --- |
+| core | 866 / 6 | 873 / 0 |
+| telemetry | 6 / 4 | 9 / 0 |
+| cimd | 197 / 6 | 202 / 0 (1 skip Bun) |
+| better-auth (hook `(unnamed)`) | 1 | 0 ; reste 3 echecs Postgres (pas de base) |
+| mongo-adapter | 35 / 6 | 40 / 1 (commit reel exige un replSet) |
+| oauth-provider | 1171 / 7 | 1173 / 7 (non diagnostique) |
+| e2e/adapter sqlite (kysely + drizzle 0.x + drizzle 1.0-rc, 19 fichiers, 175 s) | `better-sqlite3` refuse par Bun (28+ echecs) | 1921 pass / 0 fail |
+
+Correctifs : tests sqlite sur `bun:sqlite` (`drizzle-orm/bun-sqlite`, `BunSqliteDialect`), `pushDrizzleSchema` via l'API `drizzle-kit/api` (0.x) ou CLI avec preload masquant `better-sqlite3` (1.x, driver `bun`) ; `it.each([[null],[[]],...])` (bun deplie les tableaux) ; `afterAll` s'execute dans l'ordre d'enregistrement ; `Bun` global non configurable (`skipIf`) ; Response Bun accepte `statusText` avec controle (`skipIf`) ; attentes telemetry perimees ; source `telemetry/src/index.ts` : un `customTrack` qui leve de facon synchrone etait un rejet non gere (try/catch). Reste : Prisma sqlite (`@prisma/adapter-better-sqlite3`), `packages/cli`/`electron` (better-sqlite3), bases Postgres/MySQL/Mongo non relancees ce tour (chiffres du tableau precedent inchanges).

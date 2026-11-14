@@ -41,3 +41,18 @@ Builds lourds sur vps (fr1), jamais sur le PC.
 - `test/setupBun.ts` : `mock.module('vitest')` expose `beforeEach`/`afterEach` enveloppes sans parametre (bun traite un parametre declare comme callback `done`) qui passent le contexte vitest `{ expect, task, onTestFinished }`; `onTestFinished` execute dans un `afterEach`; `test/setupVitest.ts` (chai, chai-dom, RTL cleanup, fail-on-console) est importe par le preload. `packages/react/bunfig.toml` charge le preload. Scripts `test:bun:utils`, `test:bun:react` (un process bun par fichier, `-P4`).
 - Mesures (hors `*.spec.*`) : packages/react avant 0 pass / tous fail (Button : 0 pass / 21 fail, 1.64 s) ; apres 9238 pass / 129 fail sur 352 fichiers (47 fichiers avec echecs, aucun timeout), 290 s en 4 process paralleles ; Button 21 pass / 0 fail, 1.57 s (hyperfine, 3 runs). packages/utils : 89 pass / 83 fail -> 151 pass / 21 fail.
 - Restant : `bun test src` en un seul process se bloque apres `MenuPositioner.test.tsx` (fuite d'etat entre fichiers, d'ou un process par fichier) ; 129 echecs concentres dans select, toast viewport, autocomplete, context-menu, drawer, menu filter (timers factices `vi.*`, layout jsdom).
+
+## Shim bun:test, tour 2 (commit `393c6a5`, fr2, bun 1.4.5-canary.1)
+
+Causes regroupees puis corrigees dans `test/setupBun.ts` / `test/setupVitest.ts` :
+
+- `AbortController`/`AbortSignal`/`FormData` natifs Bun melanges a jsdom (`addEventListener` signal, `new FormData(form)` vide) : globaux jsdom.
+- `window === globalThis` mais `Event` jsdom : `addEventListener`/`dispatchEvent` relies a jsdom ; `document.defaultView` renvoie `globalThis` (donc `vi.stubGlobal`, `vi.spyOn(window, ...)`, `CloseWatcher` stub visibles pour `ownerWindow`).
+- Contexte de test vitest (`{ skip, onTestFinished, expect, task }`) : `it`/`test` enveloppes (bun prend un parametre declare pour un callback `done`) ; `skip()` leve un sentinelle.
+- Matchers chai de `@mui/internal-test-utils` (`toBeInaccessible`, `toErrorDev`, `toBeVisible`, `toHaveFocus`...) pontes vers `expect.extend` (sous vitest ils surchargent jest-dom).
+- Avertissements `act()` tardifs (floating-ui `computePosition().then`) : demontage RTL des la fin de la fonction de test (vitest demonte avant l'arrivee de la mise a jour, bun execute `afterEach` plus tard).
+- Erreurs jsdom `Not implemented` (navigation, `requestSubmit`) filtrees du `VirtualConsole`.
+- Tests : `toContain(element)` (chai-dom) remplace par `.contains()` (AlertDialogRoot, DialogViewport).
+
+Mesures (hors `*.spec.*`, 6 process paralleles) : packages/react 9238 pass / 129 fail (47 fichiers) -> 9364 pass / 3 fail (2 fichiers), 245 s ; packages/utils 151 / 21 -> 172 / 0.
+Restant (3) : `MenuCheckboxItem` x2 (avertissement act dans `state management`), `NumberFieldInput` (blur NaN, corps vide apres le test precedent).

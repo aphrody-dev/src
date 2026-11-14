@@ -36,3 +36,7 @@ Aucun correctif de code requis : seul le binaire natif manquait. `cargo test`, `
 - bun test, `expect.addSnapshotSerializer`, `onTestFinished`, preload : Context7 `/oven-sh/bun` (docs/test/snapshots.mdx, docs/test/lifecycle.mdx).
 - `Bun.WebView` : Context7 `/oven-sh/bun` (docs/runtime/webview.mdx).
 - `bun fmt --help --all` (bun 1.4.4 canary.1 sur fr2) pour `--ignore-pattern`, `--no-script`, config prettier.
+
+## cargo test (fr2, rustc 1.95.0 via rust-toolchain.toml, 2026-11-14)
+
+`cargo test --workspace` : 396 pass / 0 fail / 12 ignored (ignore 183, tailwindcss-oxide 127 + scanner 71, gitignore 6, node 1, doctests 8). `integrations/` non execute : `vitest --root=./integrations` cree un projet par test et installe via `pnpm` (workspace pnpm, tarballs `pnpm pack`, reseau), non convertible sous bun sans perdre l'objet du test.

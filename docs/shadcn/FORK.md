@@ -73,3 +73,9 @@ bun scripts/upstream-scan.ts shadcn
 ```
 
 Builds lourds sur vps (fr1), jamais sur le PC.
+
+## e2e complet (fr2, bun 1.4.5-canary.1, `bun run test`, 2026-11-14)
+
+222 tests / 9 fichiers, 836 s : 217 pass / 1 skip / 4 fail (et non 222/0). Les 4 echecs de `add.test.ts` viennent de l'hote : `npm` et `pnpm` absents de fr2 (le CLI lance `npm install` / `pnpm add` selon le lockfile des fixtures), plus 1 diff dependant d'une installation prealable. Avec `npm` et `pnpm@10` (shim bun, `pnpm@11` etant un binaire natif) installes : voir ligne suivante.
+
+Avec `npm` et `pnpm@10` dans le PATH : `add.test.ts` 43 pass / 0 fail (serveur v4 dev + `bun test`), soit 221 pass / 1 skip / 0 fail sur les 222 tests (le skip est `--force` sur components.json existant, volontaire). Prerequis fr2 : `bun add -g npm pnpm@10` + shim `~/.local/bin/pnpm` (`exec bun .../pnpm/bin/pnpm.cjs`).
