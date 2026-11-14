@@ -1,0 +1,6242 @@
+{
+ "source": "bzr https://bzr.savannah.gnu.org/r/gsrc/trunk revno 12334",
+ "count": 434,
+ "packages": {
+  "3dldf": {
+   "label": "3DLDF",
+   "tarball": "3dldf",
+   "version": "2.0.3",
+   "description": "3D drawing with MetaPost output",
+   "home": "http://www.gnu.org/software/3dldf/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "3DLDF-2.0.3.tar.gz": "0739a6abf9f2673565dddb9e07f060d3b1e9182178fa40d7d643d5493bc122cc",
+    "3DLDF-2.0.3-examples.tar.gz": "d894a10ffc86a9022d3f78b2e0140893459601ebe2b0a28f03ccd1c29f306f3f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "8sync": {
+   "label": "8sync",
+   "tarball": "8sync",
+   "version": "0.4.2",
+   "description": "An asynchronous programming library for Guile",
+   "home": "http://www.gnu.org/software/8sync/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "8sync-0.4.2.tar.gz": "1c0361ef31c5faa45b38ab714d2abbe12511d7aa421e4aade663aaac47a83c0c"
+   },
+   "builddeps": [
+    "#guile"
+   ],
+   "libdeps": []
+  },
+  "a2ps": {
+   "label": "a2ps",
+   "tarball": "a2ps",
+   "version": "4.15.8",
+   "description": "Any file to PostScript, including pretty-printing",
+   "home": "http://www.gnu.org/software/a2ps/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "a2ps-4.15.8.tar.gz": "8d13915a36ebbfa8e7b236b350cc81adc714acb217a18e8d8c60747c0ad353f9"
+   },
+   "builddeps": [
+    "bdw-gc",
+    "libpaper",
+    "help2man"
+   ],
+   "libdeps": []
+  },
+  "acct": {
+   "label": "The GNU Accounting Utilities",
+   "tarball": "acct",
+   "version": "6.6.4",
+   "description": "Standard login and process accounting utilities",
+   "home": "http://www.gnu.org/software/acct/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "acct-6.6.4.tar.bz2": "13c2d18bdfa11ca0200d8c0f9df2e4572113d3fa5f44db219e5c71e04ae3fa03"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "acm": {
+   "label": "ACM",
+   "tarball": "acm",
+   "version": "5.1",
+   "description": "Multiplayer aerial combat simulation",
+   "home": "http://www.gnu.org/software/acm/",
+   "subdir": "acm/",
+   "sha256": {
+    "acm-5.1.tar.gz": "01efbf11a1c23f0b896532f8f8c5cbcb9ca1a655fa6b06919f9664b8c32ea687",
+    "acm-5.1-fix-install.diff": "77a65191581d7fbc6c6f783415ea6ca74939040b9bba7ef55788fd84a1d5bf00"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "adns": {
+   "label": "adns",
+   "tarball": "adns",
+   "version": "1.7.0",
+   "description": "Asynchronous DNS client library and utilities",
+   "home": "http://www.gnu.org/software/adns/",
+   "subdir": "~ian/adns/ftp/",
+   "sha256": {
+    "adns-1.7.0.tar.gz": "2ffabc4853bb1c70e29e6585ea15dfef8b2bdb86b6ccaad0a3b8c92b5d526d1b"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "alive": {
+   "label": "Alive",
+   "tarball": "alive",
+   "version": "2.0.5",
+   "description": "Autologin and keep-alive daemon",
+   "home": "http://www.gnu.org/software/alive/",
+   "subdir": "alive/",
+   "sha256": {
+    "alive-2.0.5.tar.lz": "94cf3dbffd9644405ed4944f94a7bb989674321607318c5a35d5fabc56a75089"
+   },
+   "builddeps": [
+    "guile"
+   ],
+   "libdeps": []
+  },
+  "anastasis": {
+   "label": "anastasis",
+   "tarball": "anastasis",
+   "version": "0.8.1",
+   "description": "GNU Anastasis is a key backup and recovery tool",
+   "home": "http://www.gnu.org/software/anastasis",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "anastasis-0.8.1.tar.gz": "818b130760feb5a6b602904257e4b1dd99f8f0d186897609048be3539f33a363"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "anastasis-gtk": {
+   "label": "anastasis-gtk",
+   "tarball": "anastasis-gtk",
+   "version": "0.8.1",
+   "description": "GNU key manager gui",
+   "home": "http://www.gnu.org/software/anastasis",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "anastasis-gtk-0.8.1.tar.gz": "934404a4a383f0bce91117521601222911df7766bf50de4a06ac9a4092a22d02"
+   },
+   "builddeps": [
+    "anastasis"
+   ],
+   "libdeps": []
+  },
+  "anubis": {
+   "label": "Anubis",
+   "tarball": "anubis",
+   "version": "4.3",
+   "description": "SMTP message submission daemon",
+   "home": "http://www.gnu.org/software/anubis/",
+   "subdir": "anubis/",
+   "sha256": {
+    "anubis-4.3.tar.gz": "ff0af3337c462218e5ee244c7ef90188af9efdf095bc05b6333401cf9882af2c"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "libgpg-error"
+   ]
+  },
+  "apl": {
+   "label": "GNU APL",
+   "tarball": "apl",
+   "version": "2.0",
+   "description": "APL interpreter",
+   "home": "http://www.gnu.org/software/apl/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "archimedes": {
+   "label": "Archimedes",
+   "tarball": "archimedes",
+   "version": "2.0.1",
+   "description": "Semiconductor device simulator",
+   "home": "http://www.gnu.org/software/archimedes/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "archimedes-2.0.1.tar.gz": "7facfaa198bd4391445101138d3659a5d6fb74d989f0b83aebbc687b47b3d749",
+    "constants.h.2018.update.patch": "c4529c54e2718dc2c32124f4f84f17c0d7123c870dd986f9dc860aec645bad08"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "aris": {
+   "label": "aris",
+   "tarball": "aris",
+   "version": "2.2",
+   "description": "Natural deduction first-order logic interface",
+   "home": "http://www.gnu.org/software/aris/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "aris-2.2.tar.gz": "f850fa20bddd8aac90aa75b6f27def94e369c23d0c0a5180d52937ecf34128e0",
+    "aris-2.2-fix.diff": "9db1ff2aaf770798592709fec3a76382eb884edfd63a3e96e08cf5843159871f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "artanis": {
+   "label": "artanis",
+   "tarball": "artanis",
+   "version": "1.3.0",
+   "description": "Web application framework written in Guile scheme",
+   "home": "http://www.gnu.org/software/artanis/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "artanis-1.3.0.tar.bz2": "3e9cff813207a539e51f215b4e60e00a772c928c53c3dc68057cd9308196946f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "aspell": {
+   "label": "aspell",
+   "tarball": "aspell",
+   "version": "0.60.8.3",
+   "description": "Spell checker, library or stand-alone",
+   "home": "http://www.gnu.org/software/aspell",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "aspell-0.60.8.3.tar.gz": "0534eae11132405120d11e46bf595bd5dd189bc124ba77a5dd6aae861b48a162"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "auctex": {
+   "label": "AUCTeX",
+   "tarball": "auctex",
+   "version": "13.3",
+   "description": "Emacs environment for editing (all flavors of) TeX files",
+   "home": "http://www.gnu.org/software/auctex/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "auctex-13.3.tar.gz": "4f7e57e1241a499f34861d59f3c4652fb47e3896c7a2768edbbbec1e54c91252"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "autoconf": {
+   "label": "Autoconf",
+   "tarball": "autoconf",
+   "version": "2.73",
+   "description": "Create source code configuration scripts",
+   "home": "http://www.gnu.org/software/autoconf/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "autoconf-2.73.tar.xz": "9fd672b1c8425fac2fa67fa0477b990987268b90ff36d5f016dae57be0d6b52e"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "m4"
+   ]
+  },
+  "autoconf-archive": {
+   "label": "Autoconf Archive",
+   "tarball": "autoconf-archive",
+   "version": "2026.11.11",
+   "description": "Collection of freely reusable Autoconf macros",
+   "home": "http://www.gnu.org/software/autoconf-archive/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "autoconf-archive-2026.11.11.tar.xz": "2c18f15e2b3bb79e09622b27391df07d8608ce9f07fbfc7c1143fa683891ab26"
+   },
+   "builddeps": [
+    "m4"
+   ],
+   "libdeps": []
+  },
+  "autogen": {
+   "label": "autogen",
+   "tarball": "autogen",
+   "version": "master",
+   "description": "autogen",
+   "home": "http://www.gnu.org/software/autogen",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "autogen-alpha": {
+   "label": "autogen-alpha",
+   "tarball": "autogen-alpha",
+   "version": "5.19.96",
+   "description": "autogen, alpha version",
+   "home": "http://www.gnu.org/software/autogen/",
+   "subdir": "$(UPSTREAMNAME)/",
+   "sha256": {
+    "autogen-5.19.96.tar.gz": "48725c6dd94ca0eb703d0b92d7e7efcad6b5f4e8935a65af0423e2d0cfb4e195"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "automake": {
+   "label": "Automake",
+   "tarball": "automake",
+   "version": "1.20",
+   "description": "Making GNU standards-compliant Makefiles",
+   "home": "http://www.gnu.org/software/automake/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "automake-1.20.tar.xz": "f6f34dad4cbe395715762b0710f7c511e39bd5cf777e6b95818ccbecf7714248"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "avl": {
+   "label": "libavl",
+   "tarball": "avl",
+   "version": "2.0.3",
+   "description": "Binary and balanced search trees",
+   "home": "http://www.gnu.org/software/avl",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "avl-2.0.3.tar.gz": "e8153fbf412681aa1cc76761c9edf698af92f18f7d0d7646cc477040c2cfbbc5"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ballandpaddle": {
+   "label": "Ball and Paddle",
+   "tarball": "ballandpaddle",
+   "version": "0.8.1",
+   "description": "Ball and paddle game extensible with Guile",
+   "home": "http://www.gnu.org/software/ballandpaddle/",
+   "subdir": "ballandpaddle/",
+   "sha256": {
+    "ballandpaddle-0.8.1.tar.gz": "de82d17ab032e9a997eb0537820053d6a84661b283df1be7724756d054f3f77d",
+    "fix-build.diff": "6609e26b02f1ed8d861922f28ff2e0de537881d67db9ccc1407a3f62ec8d5957"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "barcode": {
+   "label": "Barcode",
+   "tarball": "barcode",
+   "version": "0.99",
+   "description": "Convert text strings to printed bars in various standards",
+   "home": "http://www.gnu.org/software/barcode/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "barcode-0.99.tar.xz": "e87ecf6421573e17ce35879db8328617795258650831affd025fba42f155cdc6",
+    "barcodefix.patch": "8f9d0739765389ea4e1271e181c88f1162cd13b7c04bf9f8fc1f0a64664be151"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "bash": {
+   "label": "bash",
+   "tarball": "bash",
+   "version": "5.3",
+   "description": "The GNU Bourne-Again SHell",
+   "home": "http://www.gnu.org/software/bash/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "bash-5.3.tar.gz": "0d5cd86965f869a26cf64f4b71be7b96f90a3ba8b3d74e27e8e9d9d5550f31ba",
+    "bash53-001": "1f608434364af86b9b45c8b0ea3fb3b165fb830d27697e6cdfc7ac17dee3287f",
+    "bash53-002": "e385548a00130765ec7938a56fbdca52447ab41fabc95a25f19ade527e282001",
+    "bash53-003": "f245d9c7dc3f5a20d84b53d249334747940936f09dc97e1dcb89fc3ab37d60ed",
+    "bash53-004": "9591d245045529f32f0812f94180b9d9ce9023f5a765c039b852e5dfc99747d0",
+    "bash53-005": "cca1ef52dbbf433bc98e33269b64b2c814028efe2538be1e2c9a377da90bc99d",
+    "bash53-006": "29119addefed8eff91ae37fd51822c31780ee30d4a28376e96002706c995ff10",
+    "bash53-007": "c0976bbfffa1453c7cfdd62058f206a318568ff2d690f5d4fa048793fa3eb299",
+    "bash53-008": "097cd723cbfb8907674ac32214063a3fd85282657ec5b4e544d2c0f719653fb4",
+    "bash53-009": "eee30fe78a4b0cb2fe20e010e00308899cfc613e0774ebb3c8557a1552f24f8c",
+    "bash53-010": "cf76f1cce2ea300c18bff9f002d21f280cc931acd17c28518110b93fe6e72569",
+    "bash53-011": "0298df8f5ea2a31d3be43ed7d269c5b3c7c342dd5b570bea7f64d66dcbbe7531",
+    "bash53-012": "d71379b39bebaedaf123414414e77fb458a0a43b9ad3116594c6df7ca6754573",
+    "bash53-013": "042f9cda967e24bf4211944697441e93d06ff42b4b998629a98a1b249279f200",
+    "bash53-014": "bd4360b401d38507e358783dcad8536a99c6789f0d3a5bd0cfb8c4a34144696c",
+    "bash53-015": "55b79ceee2fc27f6767eed697e939a7eb2fe2a28c01556bd75f18d581014f46e",
+    "bash53-016": "9ea29b266b7d24cb34d0ff3f1c4631e4d527bfe2d1ef15d17cdb924bf31ef767",
+    "bash53-017": "443b927b45c1558ca72052410f8b8f6e5152b617ed707061a2781d4375b0d1c3",
+    "bash53-018": "ae715d76c50341d7d7095e9a8d2eeed1ca9546152c2ac7289206f90cf30ac697",
+    "bash53-019": "a25c581e4d0057dea3833918438a930e2e86ee4c6dc17fe15267b7f04cbc4e3d",
+    "bash53-020": "df217ed3a9122aa2286d9b67bbe348661b6a9db262b580c29150dae55d532896"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "bayonne": {
+   "label": "Bayonne",
+   "tarball": "bayonne",
+   "version": "2.3.2",
+   "description": "Telephony server",
+   "home": "http://www.gnu.org/software/bayonne/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "bayonne2-2.3.2.tar.gz": "ef59d8d75f8a50720d834b57db05d19af888fa9cf49552c8f0d96fd9d9e4bf48"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "ccaudio",
+    "ccscript"
+   ]
+  },
+  "bc": {
+   "label": "bc",
+   "tarball": "bc",
+   "version": "1.08.2",
+   "description": "Arbitrary precision numeric processing language",
+   "home": "http://www.gnu.org/software/bc/",
+   "subdir": "bc/",
+   "sha256": {
+    "bc-1.08.2.tar.lz": "79e31e022a84b31dd809815063d4b8ea590b409637a52c50ec9f42c2bf332711"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "binutils": {
+   "label": "binutils",
+   "tarball": "binutils",
+   "version": "2.47",
+   "description": "binary utilities: bfd, gas, gprof, ld, nm, objdump etc.",
+   "home": "http://www.gnu.org/software/binutils/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "binutils-2.47.tar.lz": "e1c9797dc1de7eb17d9257a3031c8fa2103fa22ad4905a8a93172c26347442f8"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "bison": {
+   "label": "Bison",
+   "tarball": "bison",
+   "version": "3.8.2",
+   "description": "Parser generator",
+   "home": "http://www.gnu.org/software/bison/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "bison-3.8.2.tar.lz": "fdf98bfe82abb04a34d4356753f7748dbbd2ef1221b1f202852a2b5ce0f78534"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "bool": {
+   "label": "Bool",
+   "tarball": "bool",
+   "version": "0.2.2",
+   "description": "Finding text and HTML files that match boolean expressions",
+   "home": "http://www.gnu.org/software/bool/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "bool-0.2.2.tar.xz": "dc75d36344c93c49eac3196f7543ed67f3bde9e0bdebdb5677099455f3ab2dbb"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "bpel2owfn": {
+   "label": "BPEL2oWFN",
+   "tarball": "bpel2owfn",
+   "version": "2.0.4",
+   "description": "Translating web service in BPEL to Open Workflow Nets",
+   "home": "http://www.gnu.org/software/bpel2owfn/",
+   "subdir": "$(GARNAME)/2.0.4/",
+   "sha256": {
+    "bpel2owfn-2.0.4.tar.gz": "ede9b484dd8dc80b9383692aa5f8620191c0e3c0301ace2d30ad1a930ad69940",
+    "bjpel2owfn.2.0.4.partial.patch": "3a6768dad703d846d88ef0d3f4812fd5373c58832d5015498cc67fc5ceb96472"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "breezy": {
+   "label": "breezy aka brz",
+   "tarball": "brz",
+   "version": "3.3.22",
+   "description": "distributed version control system",
+   "home": "http://www.breezy-vcs.org",
+   "subdir": "breezy-team/breezy/archive/refs/tags/",
+   "sha256": {
+    "brz-3.3.22.tar.gz": "03ad9404810cc50d80cc3b4f808740543b31702add66496d3e7dd5dd6f17750a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "bzr": {
+   "label": "Bazaar aka bzr",
+   "tarball": "bzr",
+   "version": "2.7.0",
+   "description": "The GNU distributed version control system",
+   "home": "http://www.gnu.org/software/bzr",
+   "subdir": "$(GARNAME)/$(SERIES)/$(GARVERSION)$(RELEASE)/+download/",
+   "sha256": {
+    "bzr-2.7.0.tar.gz": "0d451227b705a0dd21d8408353fe7e44d3a5069e6c4c26e5f146f1314b8fdab3"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "c-graph": {
+   "label": "C-Graph",
+   "tarball": "c-graph",
+   "version": "2.0.1",
+   "description": "Visualizing and demonstrating convolution",
+   "home": "http://www.gnu.org/software/c-graph/",
+   "subdir": "c-graph/",
+   "sha256": {
+    "c-graph-2.0.1.tar.gz": "2d267de3c9d75d8de95e5b51da11e7aa5e981291ee9a34ef6edcf8fea5084424"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "c-intro-and-ref": {
+   "label": "The GNU C Intro and Reference",
+   "tarball": "c-intro-and-ref",
+   "version": "0.1",
+   "description": "Intro and Reference for the GNU C programming language",
+   "home": "http://www.gnu.org/software/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "c-intro-and-ref-0.1.tar.gz": "e399ad9e5cb3d91b98524e09cdafa5646181c5ece98914bfbfbd31c7588ac444"
+   },
+   "builddeps": [
+    "texinfo"
+   ],
+   "libdeps": []
+  },
+  "ccaudio": {
+   "label": "ccAudio2",
+   "tarball": "ccaudio",
+   "version": "2.2.0",
+   "description": "Standalone C++ class framework for manipulating audio data",
+   "home": "http://www.gnu.org/software/ccaudio/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ccaudio2-2.2.0.tar.gz": "2756b3c4765f62f69578bbf03b18ccd56baca385a85a1a6679ac6af633b17fb0"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "ucommon",
+    "gmp"
+   ]
+  },
+  "ccd2cue": {
+   "label": "ccd2cue",
+   "tarball": "ccd2cue",
+   "version": "0.5",
+   "description": "CCD to CUE sheet conversion",
+   "home": "http://www.gnu.org/software/ccd2cue/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ccd2cue-0.5.tar.gz": "8725cfdbcb963259ff094a878aa0e49ea8284e1071ea36ac7ea47358c49b99c5"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ccide": {
+   "label": "Ccide",
+   "tarball": "ccide",
+   "version": "0.6.6",
+   "description": "Decision table code generator",
+   "home": "http://www.gnu.org/s/ccide",
+   "subdir": "$(GARNAME)/files/",
+   "sha256": {
+    "ccide-0.6.6.tar.gz": "b125935a86f6f687fc0bed66f9e80d70b44816c40db03278b1ed7dd7cb2d06dc"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ccrtp": {
+   "label": "ccRTP",
+   "tarball": "ccrtp",
+   "version": "2.1.2",
+   "description": "Implementation of RTP (real-time transport protocol)",
+   "home": "http://www.gnu.org/software/ccrtp/",
+   "subdir": "ccrtp/",
+   "sha256": {
+    "ccrtp-2.1.2.tar.gz": "f035ca0e1b5d37b78e358f07a25b05c5cdaf2c85c4b31cf29f6be17f288a349e"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "libgcrypt",
+    "commoncpp"
+   ]
+  },
+  "ccscript": {
+   "label": "ccScript3",
+   "tarball": "ccscript",
+   "version": "5.1.0",
+   "description": "C++ class framework for virtual machine execution",
+   "home": "http://www.gnu.org/software/ccscript/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ccscript-5.1.0.tar.gz": "bc1157a77fa05a89de3c9c69872ed74a703fd59ef18c7bb1c0ed78d4d2011c6e"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "ucommon"
+   ]
+  },
+  "cfengine": {
+   "label": "Cfengine",
+   "tarball": "cfengine",
+   "version": "2.0.6",
+   "description": "Configuration engine for system and network administration",
+   "home": "http://www.gnu.org/software/cfengine/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "cfengine-2.0.6.tar.gz": "c5e308a30e004b505c3f948bad774bb837581ad1edab1885e9c05f60fe723d79",
+    "cfengine-2.0.6-fix-build.diff": "c669fbc642426920e2461847bf4f884753de3bef30555424aa3b922ec5c3eb39"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "cflow": {
+   "label": "cflow",
+   "tarball": "cflow",
+   "version": "1.8",
+   "description": "Create a graph of control flow within a program",
+   "home": "http://www.gnu.org/software/cflow/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "cflow-1.8.tar.xz": "a5830a708a587ebbf3b475b585935f89c33fc8fbd057af7d817d517aceaa7afa"
+   },
+   "builddeps": [
+    "gettext"
+   ],
+   "libdeps": []
+  },
+  "cgicc": {
+   "label": "cgicc",
+   "tarball": "cgicc",
+   "version": "3.2.20",
+   "description": "C++ class library for writing CGI applications",
+   "home": "http://www.gnu.org/software/cgicc/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "cgicc-3.2.20.tar.gz": "0f91c5ce8adf406ad35a46152ffb2b9c8d6079604b796d81f48b66d1f068ad4e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "challenger": {
+   "label": "challenger",
+   "tarball": "challenger",
+   "version": "1.6.1",
+   "description": "challenger is part of taler payment system",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "challenger-1.6.1.tar.gz": "c25a7e891273c6bf560d41875610ab94d972a3384ca174b79e497dcc4e4eba98"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "cim": {
+   "label": "Cim",
+   "tarball": "cim",
+   "version": "5.1",
+   "description": "Simula compiler",
+   "home": "http://www.gnu.org/software/cim/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "cim-5.1.tar.gz": "b90717b66ec400503bdd69e537e8b7f3e8a9d106c3ba9a08a04ae57369a069a9"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "classpath": {
+   "label": "Classpath",
+   "tarball": "classpath",
+   "version": "0.99",
+   "description": "Core class libraries for Java",
+   "home": "http://www.gnu.org/software/classpath/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "classpath-0.99.tar.gz": "f929297f8ae9b613a1a167e231566861893260651d913ad9b6c11933895fecc8",
+    "classpath-0.99-fix-build.diff": "1346302220440bfeb264a3b53c1a29b1bffd7fd2d46228259186cbd7ff1b9055"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#antlr2"
+   ]
+  },
+  "classpathx-activation": {
+   "label": "Classpathx Activation Framework",
+   "tarball": "classpathx-activation",
+   "version": "1.1.2",
+   "description": "Type data and locate components suitable for acting on it",
+   "home": "http://www.gnu.org/software/classpathx-activation/",
+   "subdir": "classpathx/",
+   "sha256": {
+    "activation-1.1.2.tar.gz": "7e386ebce4337ae9ca75965fe16e89821efd8d69184befe4e0b1d71e94ec889e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "classpathx-comm": {
+   "label": "Classpathx Comm",
+   "tarball": "classpathx-comm",
+   "version": "20040420",
+   "description": "An implementation of the javax.comm API",
+   "home": "http://www.gnu.org/software/classpathx-comm/",
+   "subdir": "classpathx/",
+   "sha256": {
+    "comm-20040420.tar.gz": "c69b1391fd54d00c726002e41a2aed6af1312ec5e140311db47b528cf5d2c237"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "classpathx-mail": {
+   "label": "Classpathx JavaMail",
+   "tarball": "classpathx-mail",
+   "version": "1.1.2",
+   "description": "A complete internet mail system, including MIME, for Java",
+   "home": "http://www.gnu.org/software/classpathx-mail/",
+   "subdir": "classpathx/",
+   "sha256": {
+    "mail-1.1.2.tar.gz": "5eb09597a8f81bfc943206e3e0f45b963ba605a646051c353374f1b475bb9f04",
+    "classpathx-mail-1.1.2-fix-build.diff": "6618f2951f2f2604c16ac25643eeee06715b74e06779f61b37cbe424fefd69b4"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "classpathx-activation",
+    "inetlib"
+   ]
+  },
+  "classpathx-servletapi": {
+   "label": "Classpathx Servlet API",
+   "tarball": "classpathx-servletapi",
+   "version": "3.0",
+   "description": "An extensible framework for building web applications",
+   "home": "http://www.gnu.org/software/classpathx/",
+   "subdir": "classpathx/$(UPSTREAMNAME)/",
+   "sha256": {
+    "servletapi-3.0.tar.gz": "a3cf8051a40fe6e1eada1d2cd25877585fc0981f530330bac1492b326f422479"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "clisp": {
+   "label": "CLISP",
+   "tarball": "clisp",
+   "version": "2.49",
+   "description": "A Common Lisp implementation",
+   "home": "http://www.gnu.org/software/clisp/",
+   "subdir": "clisp/release/$(GARVERSION)/",
+   "sha256": {
+    "clisp-2.49.tar.gz": "bd2f6252c681337c0b6aa949fae3f92d3202dee3998c98a88ec28c72b115e866"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "com_payage_taler": {
+   "label": "com_payage_taler",
+   "tarball": "com_payage_taler",
+   "version": "1.0",
+   "description": "com_payage_taler",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "com_payage_taler-1.0.zip": "82156f27127cbd641d982cbfb7411c98494623c71e1f115f9fdf677f8392666a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "combine": {
+   "label": "combine",
+   "tarball": "combine",
+   "version": "0.4.0",
+   "description": "Extensible file matching and filtering",
+   "home": "http://www.gnu.org/software/combine/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "combine-0.4.0.tar.gz": "56e71cd9cc38404fc4e6dac02d5fb76e894d481f9be8719072b1f8b1d8afbe14",
+    "combine.0.4.0.patch": "1a00dfc04bc5773d19fff60065a67e4579bac20ce244b64876da9cca053a7ef7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "commoncpp": {
+   "label": "Common C++",
+   "tarball": "commoncpp",
+   "version": "1.8.1",
+   "description": "(u)Common C++ framework for threaded applications",
+   "home": "http://www.gnu.org/software/commoncpp/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "commoncpp2-1.8.1.tar.gz": "53ced4aff74e28a1d8018eb2b4974519028db3c12471ab6dff1c873578c9af4e"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "ucommon"
+   ]
+  },
+  "complexity": {
+   "label": "Complexity",
+   "tarball": "complexity",
+   "version": "1.13",
+   "description": "Analyze complexity of C functions",
+   "home": "http://www.gnu.org/software/complexity/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "complexity-1.13.tar.xz": "80a625a87ee7c17fed02fb39482a7946fc757f10d8a4ffddc5372b4c4b739e67"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "autogen"
+   ]
+  },
+  "config": {
+   "label": "config",
+   "tarball": "config",
+   "version": "20260517",
+   "description": "config.guess and config.sub scripts",
+   "home": "http://www.gnu.org/software/config/",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [
+    "help2man"
+   ],
+   "libdeps": []
+  },
+  "coreutils": {
+   "label": "coreutils",
+   "tarball": "coreutils",
+   "version": "9.12",
+   "description": "Core GNU utilities (file, text, shell)",
+   "home": "http://www.gnu.org/software/coreutils/",
+   "subdir": "coreutils/",
+   "sha256": {
+    "coreutils-9.12.tar.xz": "a480198559733e9b3da999e90543ac6f888a2caa544d8d664c5a1f17e528e210"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "cpio": {
+   "label": "cpio",
+   "tarball": "cpio",
+   "version": "2.15",
+   "description": "Manage cpio and tar file archives",
+   "home": "http://www.gnu.org/software/cpio/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "cpio-2.15.tar.bz2": "937610b97c329a1ec9268553fb780037bcfff0dcffe9725ebc4fd9c1aa9075db"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "cppi": {
+   "label": "Cppi",
+   "tarball": "cppi",
+   "version": "1.18",
+   "description": "Indent C preprocessor directives to reflect nesting and more",
+   "home": "http://www.gnu.org/software/cppi",
+   "subdir": "cppi/",
+   "sha256": {
+    "cppi-1.18.tar.xz": "12a505b98863f6c5cf1f749f9080be3b42b3eac5a35b59630e67bea7241364ca"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "cssc": {
+   "label": "CSSC",
+   "tarball": "cssc",
+   "version": "1.5.0",
+   "description": "File-based version control replacing SCCS",
+   "home": "http://www.gnu.org/software/cssc/",
+   "subdir": "gnu/$(GARNAME)/",
+   "sha256": {
+    "CSSC-1.5.0.tar.gz": "8483a31aac756955843ef574bed6fa9e052ea492217f3882033487d2704c6cf4",
+    "cssc-1.5.0.patch": "5b6efeef9c38393a108c67b02c2f8a1ab2bb54b544851871ff972e64e4c3d9bb"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "cursynth": {
+   "label": "Cursynth",
+   "tarball": "cursynth",
+   "version": "1.5",
+   "description": "Polyphonic and MIDI subtractive music synthesizer using curses",
+   "home": "http://www.gnu.org/software/cursynth/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "cursynth-1.5.tar.gz": "1b9066526a368df8e337c507f8896e9aeac59da16933eccd473b07a2bc8617b6"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "dap": {
+   "label": "Dap",
+   "tarball": "dap",
+   "version": "3.10",
+   "description": "Statistics and graphics package",
+   "home": "http://www.gnu.org/software/dap/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "dap-3.10.tar.gz": "064e6cb72ff8dfc8cb6f53e9bab310e4ea8c6ebe89a94bae423720d9b7a38766"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "datamash": {
+   "label": "datamash",
+   "tarball": "datamash",
+   "version": "1.9",
+   "description": "Scriptable statistics and data calculation",
+   "home": "http://www.gnu.org/software/datamash/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "datamash-1.9.tar.gz": "f382ebda03650dd679161f758f9c0a6cc9293213438d4a77a8eda325aacb87d2"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ddd": {
+   "label": "DDD",
+   "tarball": "ddd",
+   "version": "3.4.1",
+   "description": "Graphical front-end for GDB and other debuggers",
+   "home": "http://www.gnu.org/software/ddd/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ddd-3.4.1.tar.gz": "b87517a6c3f9611566347e283a2cf931fa369919b553536a2235e63402f4ee89"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ddrescue": {
+   "label": "ddrescue",
+   "tarball": "ddrescue",
+   "version": "1.30",
+   "description": "Data recovery utility",
+   "home": "http://www.gnu.org/software/ddrescue/ddrescue.html/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ddrescue-1.30.tar.lz": "2264622d309d6c87a1cfc19148292b8859a688e9bc02d4702f5cd4f288745542"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "dejagnu": {
+   "label": "DejaGnu",
+   "tarball": "dejagnu",
+   "version": "1.6.3",
+   "description": "GNU software testing framework",
+   "home": "http://www.gnu.org/software/dejagnu/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "dejagnu-1.6.3.tar.gz": "87daefacd7958b4a69f88c6856dbd1634261963c414079d0c371f589cd66a2e3"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "denemo": {
+   "label": "Denemo",
+   "tarball": "denemo",
+   "version": "2.6.0",
+   "description": "Graphical music notation, front-end to GNU Lilypond",
+   "home": "http://www.gnu.org/software/denemo",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "denemo-2.6.0.tar.gz": "4be5970c69847f97f1f876275c9744e5034e7c983b12a1045fb20c236494b55d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "dico": {
+   "label": "Dico",
+   "tarball": "dico",
+   "version": "2.12",
+   "description": "Implementation of DICTionary server (RFC 2229)",
+   "home": "http://www.gnu.org/software/dico/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "dico-2.12.tar.xz": "728b89c50e090bff839e8f7b3043b5c7023f861a9211c93048b42ab455866af7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "diction": {
+   "label": "Style and Diction",
+   "tarball": "diction",
+   "version": "1.11",
+   "description": "Identifies wordy and commonly misused phrases",
+   "home": "http://www.gnu.org/software/diction/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "diction-1.11.tar.gz": "35c2f1bf8ddf0d5fa9f737ffc8e55230736e5d850ff40b57fdf5ef1d7aa024f6"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "diffutils": {
+   "label": "Diffutils",
+   "tarball": "diffutils",
+   "version": "3.12",
+   "description": "Comparing and merging files, diff, cmp",
+   "home": "http://www.gnu.org/software/diffutils/diffutils.html/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "diffutils-3.12.tar.xz": "7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "dionysus": {
+   "label": "Dionysus",
+   "tarball": "dionysus",
+   "version": "1.4.0",
+   "description": "Local search for universal constants and scientific values",
+   "home": "http://www.gnu.org/software/dionysus/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "dionysus-1.4.0.tar.xz": "538bee787a43761232d8ac00044b9d0c16184c1a189fb10de7446a5a83fe97a4"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "direvent": {
+   "label": "Direvent",
+   "tarball": "direvent",
+   "version": "5.5",
+   "description": "Daemon to monitor directories for events such as file removal",
+   "home": "http://www.gnu.org/software/direvent/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "direvent-5.5.tar.gz": "0e16c0b4b3e6f7673e9b4f31d81ab01236ad22f83538512f3b2f58f9f96fdcb7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "dominion": {
+   "label": "Dominion",
+   "tarball": "dominion",
+   "version": "2.8.2",
+   "description": "Multi-player world simulation and role-playing game",
+   "home": "http://www.gnu.org/software/dominion/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "dominion-2.8.2.tar.gz": "93ef0a44776b65b513a664e77b160349bd17917a364300913ab0d6e2d312aab8",
+    "dominion-2.8.2-upstream-fixes.diff": "336d7bff73cc1ad5429d7fee367570768afa65763360f8b575ef072f85663b4f",
+    "dominion-2.8.2-remove-new-world-deps.diff": "27e67f7c9ba3c333b068bc06954fc13881f9fc8bbffb42ac72f36745d02dd800"
+   },
+   "builddeps": [
+    "ncurses"
+   ],
+   "libdeps": []
+  },
+  "donau": {
+   "label": "donau",
+   "tarball": "donau",
+   "version": "1.6.6",
+   "description": "GNU Taler is a privacy-preserving payment system, donau part.",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "donau-1.6.6.tar.gz": "7091f775fc73ca8b3151eea9cbc8b623777b85e91faa9a293a59d623b566ff63"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "drgeo": {
+   "label": "Dr Geo",
+   "tarball": "drgeo",
+   "version": "24.06a",
+   "description": "interactive geometry program for education",
+   "home": "http://www.drgeo.eu",
+   "subdir": "hilaire/$(GARNAME)/releases/download/24.06/",
+   "sha256": {
+    "DrGeo-gnulinux-24.06a-beta.zip": "748d88846773be70a7b9cebffbaa4bf34f3e50b9efe1d442c90cab317f2ffb20"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "easejs": {
+   "label": "ease.js",
+   "tarball": "easejs",
+   "version": "0.2.9",
+   "description": "Classical object-oriented framework for JavaScript",
+   "home": "http://www.gnu.org/software/easejs/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "easejs-0.2.9.tar.gz": "e4b50e41ed6a010ec35284618dc524ae262d2c565a7912b1252c1867e63c9c83"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ed": {
+   "label": "ed",
+   "tarball": "ed",
+   "version": "1.22.6",
+   "description": "Line-oriented text editor",
+   "home": "http://www.gnu.org/software/ed/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ed-1.22.6.tar.lz": "3f33b22135219c39c3c695f7b7171c2567d3e2a17c798c0a90607320cbb268f2"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "electric": {
+   "label": "Electric",
+   "tarball": "electric",
+   "version": "9.08.1",
+   "description": "Electrical CAD system",
+   "home": "https://staticfreesoft.com/ http://www.gnu.org/software/electric/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "electric-9.08.1.jar": "a4fabcedfb50cf8fb04d9e0f91be80c55c026f2f5c5b1214e493128f2b8e022c"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "emacs": {
+   "label": "Emacs",
+   "tarball": "emacs",
+   "version": "31.1",
+   "description": "The extensible, customizable, self-documenting text editor",
+   "home": "http://www.gnu.org/software/emacs/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "emacs-31.1.tar.xz": "1da5790d9580c81932b5bf700633114468da7b3412d69faa767daebf974f4586"
+   },
+   "builddeps": [
+    "texinfo"
+   ],
+   "libdeps": []
+  },
+  "emms": {
+   "label": "EMMS",
+   "tarball": "emms",
+   "version": "6.00",
+   "description": "Emacs Multimedia System",
+   "home": "http://www.gnu.org/software/emms/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "emms-6.00.tar.gz": "6b05b5a6ff811d0cb1f0119b9fe831a87dd6a252994168257cd0b7bbc0dbb8da"
+   },
+   "builddeps": [
+    "emacs",
+    "texinfo"
+   ],
+   "libdeps": []
+  },
+  "enscript": {
+   "label": "Enscript",
+   "tarball": "enscript",
+   "version": "1.6.6",
+   "description": "Generating PostScript, including pretty-printing",
+   "home": "http://www.gnu.org/software/enscript/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "enscript-1.6.6.tar.gz": "6d56bada6934d055b34b6c90399aa85975e66457ac5bf513427ae7fc77f5c0bb"
+   },
+   "builddeps": [
+    "gettext"
+   ],
+   "libdeps": []
+  },
+  "epsilon": {
+   "label": "epsilon",
+   "tarball": "epsilon",
+   "version": "master",
+   "description": "GNU epsilon, an extensible programming language",
+   "home": "http://www.gnu.org/software/epsilon",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ferret": {
+   "label": "Ferret",
+   "tarball": "ferret",
+   "version": "0.7",
+   "description": "Entity/relationship based data modeler",
+   "home": "http://www.gnu.org/software/ferret/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ferret-0.7.tar.gz": "b7b00f3fd908ef8d3ba9f6db2edc1c15089e975dbbcc642218b9f3dcb7223ac9"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "tcl",
+    "tk"
+   ]
+  },
+  "findutils": {
+   "label": "Findutils",
+   "tarball": "findutils",
+   "version": "4.11.0",
+   "description": "Operating on files matching given criteria",
+   "home": "http://www.gnu.org/software/findutils/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "findutils-4.11.0.tar.xz": "bfd19cb06cc71f3352d567e90284d8cdac02ac89774bbeadf0b533b0c11432fd"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "foliot": {
+   "label": "foliot",
+   "tarball": "foliot",
+   "version": "0.9.8",
+   "description": "An application for tracking time spent on projects",
+   "home": "http://www.gnu.org/software/foliot/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "foliot-0.9.8.tar.gz": "4e634171f1371eacbf096071ac1c9019d09c914098e53787e8f26bdfa71ac89f"
+   },
+   "builddeps": [
+    "#guile",
+    "guile-gtk"
+   ],
+   "libdeps": []
+  },
+  "fontopia": {
+   "label": "fontopia",
+   "tarball": "fontopia",
+   "version": "2.0",
+   "description": "A console font editor",
+   "home": "http://www.gnu.org/software/fontopia/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "fontopia-2.0.tar.gz": "0daa54bb1153f6108661e619f9b5e717f6c1e2385b25fc3a5135d4f64e5b6773"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "gnudos"
+   ]
+  },
+  "fontutils": {
+   "label": "Fontutils",
+   "tarball": "fontutils",
+   "version": "0.7",
+   "description": "Scanned image, bitmap, outline font manipulation",
+   "home": "http://www.gnu.org/software/fontutils/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "fontutils-0.7.tar.gz": "75d44bdfc4002238f4ebcba857b913b57ae9e5b356416413f4776f832409939e",
+    "fontutils-0.7-fix-build.diff": "4a95036f880a012a96c1cec19ccd8b4c71aead1771715f4582daf4a676d8c95d",
+    "fontutils-0.7-add-info-dir-entry.diff": "743d8bc369abb154cf7c2fe68cd0e4c7789407d49b207007a6b653072cec79bc"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "freedink": {
+   "label": "FreeDink",
+   "tarball": "freedink",
+   "version": "109.6",
+   "description": "Twisted adventures of young pig farmer Dink Smallwood",
+   "home": "http://www.gnu.org/software/freedink/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "freedink-109.6.tar.gz": "5e0b35ac8f46d7bb87e656efd5f9c7c2ac1a6c519a908fc5b581e52657981002",
+    "freedink-data-1.08.20190120.tar.gz": "715f44773b05b73a9ec9b62b0e152f3f281be1a1512fbaaa386176da94cffb9d",
+    "dfarc-3.14.tar.gz": "a51124ecd11eeca0f1d16732ef58ee690e2fa2db06cc0ec2a5b61b41f8b0e8fa"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "freefont": {
+   "label": "FreeFont",
+   "tarball": "freefont",
+   "version": "20120503",
+   "description": "Unicode-encoded outline fonts",
+   "home": "http://www.gnu.org/software/freefont/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "freefont-src-20120503.tar.gz": "0d62e2e22655f841c3ac5fb8c8059a52fe2c09c695d9e8eda9903406e942657a",
+    "freefont-20120503-pyfix.diff": "56b1a6c48810357cd79d4fdc96d837d2655f7af5e9f259c3e8c021601952abb6"
+   },
+   "builddeps": [
+    "fontforge"
+   ],
+   "libdeps": []
+  },
+  "freeipmi": {
+   "label": "FreeIPMI",
+   "tarball": "freeipmi",
+   "version": "1.6.20",
+   "description": "Platform management, including sensor and power monitoring",
+   "home": "http://www.gnu.org/software/freeipmi/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "freeipmi-1.6.20.tar.gz": "9cc644530ee629ffb94d6fd209e7cb4a8b8ae6677f89d2dc461efed9b2e709f2"
+   },
+   "builddeps": [
+    "libgcrypt",
+    "libgpg-error"
+   ],
+   "libdeps": []
+  },
+  "freetalk": {
+   "label": "Freetalk",
+   "tarball": "freetalk",
+   "version": "4.2",
+   "description": "Extensible console-based Jabber client",
+   "home": "http://www.gnu.org/software/freetalk/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "freetalk-4.2.tar.gz": "bb5b4f29a706af2f891987802200e26b737bcece44338172419755f1eee1b580"
+   },
+   "builddeps": [
+    "#readline",
+    "guile",
+    "#",
+    "loudmouth"
+   ],
+   "libdeps": []
+  },
+  "fribidi": {
+   "label": "FriBidi",
+   "tarball": "fribidi",
+   "version": "1.0.16",
+   "description": "Implementation of the Unicode bidirectional algorithm",
+   "home": "http://www.gnu.org/software/fribidi/",
+   "subdir": "$(GARNAME)/$(GARNAME)/releases/download/v$(GARVERSION)/",
+   "sha256": {
+    "fribidi-1.0.16.tar.xz": "1b1cde5b235d40479e91be2f0e88a309e3214c8ab470ec8a2744d82a5a9ea05c"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "g-golf": {
+   "label": "GNU G-Golf",
+   "tarball": "g-golf",
+   "version": "master",
+   "description": "GNU G-Golf is Guile Object Library For GNOME",
+   "home": "https://www.gnu.org/software/g-golf",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gama": {
+   "label": "gama",
+   "tarball": "gama",
+   "version": "2.33",
+   "description": "Adjustment of geodetic networks",
+   "home": "http://www.gnu.org/software/gama/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gama-2.33.tar.gz": "a1a8aac402a90c9ac0f59516029f7763bb5f4e82eecd0334ac2e40e0de43fb5d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gama-qt": {
+   "label": "Gama-qt",
+   "tarball": "gama-qt",
+   "version": "1-02",
+   "description": "Adjustment of geodetic networks GUI",
+   "home": "http://www.gnu.org/software/gama/",
+   "subdir": "gama/$(GARNAME)/",
+   "sha256": {
+    "qt-gama-qt-1-02.tar.gz": "114cb27de795bcad779493422f80d43aa7787d516c0c60f9a4f40b1f41ffde33"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "garpd": {
+   "label": "Gratuitous ARP Daemon",
+   "tarball": "garpd",
+   "version": "0.2.0",
+   "description": "Broadcast gratuitous ARP requests for IPMI and more",
+   "home": "http://www.gnu.org/software/garpd/",
+   "subdir": "$(GARNAME)/$(GARVERSION)/",
+   "sha256": {
+    "garpd-0.2.0.tar.gz": "5dcaac1e9f4a71a1c7404269065e5973aff013e863ed4fd3ec78e4f65c1a1fb8"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gawk": {
+   "label": "gawk",
+   "tarball": "gawk",
+   "version": "5.4.1",
+   "description": "Text scanning and processing language",
+   "home": "http://www.gnu.org/software/gawk/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gawk-5.4.1.tar.lz": "e5cf1994979ccee99a4e97223c687b67be27015b2f8f368c62250fe81109813b"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gcal": {
+   "label": "gcal",
+   "tarball": "gcal",
+   "version": "4.2.0",
+   "description": "Calculating and printing a wide variety of calendars",
+   "home": "http://www.gnu.org/software/gcal/",
+   "subdir": "gnu/",
+   "sha256": {
+    "gcal-4.2.0.tar.xz": "d8bd2d7411e78251d67064aa0f1ca60a523bf856ee3e6d89d07d85a1233478dc"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gcc10": {
+   "label": "The GNU Compiler Collection version 10",
+   "tarball": "gcc10",
+   "version": "10.5.0",
+   "description": "GNU Compiler Collection 10",
+   "home": "http://www.gnu.org/software/gcc",
+   "subdir": "$(UPSTREAMNAME)/$(DISTNAME)/",
+   "sha256": {
+    "gcc-10.5.0.tar.xz": "25109543fdf46f397c347b5d8b7a2c7e5694a5a51cce4b9c6e1ea8a71ca307c1"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc11": {
+   "label": "The GNU Compiler Collection version 11",
+   "tarball": "gcc11",
+   "version": "11.5.0",
+   "description": "GNU Compiler Collection 11",
+   "home": "http://www.gnu.org/software/gcc",
+   "subdir": "$(UPSTREAMNAME)/$(DISTNAME)/",
+   "sha256": {
+    "gcc-11.5.0.tar.xz": "a6e21868ead545cf87f0c01f84276e4b5281d672098591c1c896241f09363478"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib",
+    "isl"
+   ],
+   "libdeps": []
+  },
+  "gcc12": {
+   "label": "The GNU Compiler Collection version 12",
+   "tarball": "gcc12",
+   "version": "12.5.0",
+   "description": "GNU Compiler Collection 12",
+   "home": "http://www.gnu.org/software/gcc",
+   "subdir": "$(UPSTREAMNAME)/$(DISTNAME)/",
+   "sha256": {
+    "gcc-12.5.0.tar.xz": "71cd373d0f04615e66c5b5b14d49c1a4c1a08efa7b30625cd240b11bab4062b3"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc13": {
+   "label": "The GNU Compiler Collection version 13",
+   "tarball": "gcc13",
+   "version": "13.5.0",
+   "description": "GNU Compiler Collection 13",
+   "home": "https://www.gnu.org/software/gcc",
+   "subdir": "$(UPSTREAMNAME)/$(DISTNAME)/",
+   "sha256": {
+    "gcc-13.5.0.tar.xz": "ec3df0015ed01411f91f9a9cd5b4da3070eb1222b02fadf4133c30c090399855"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc14": {
+   "label": "The GNU Compiler Collection version 14",
+   "tarball": "gcc14",
+   "version": "14.4.0",
+   "description": "GNU Compiler Collection 14",
+   "home": "https://www.gnu.org/software/gcc",
+   "subdir": "$(UPSTREAMNAME)/$(DISTNAME)/",
+   "sha256": {
+    "gcc-14.4.0.tar.xz": "752b6f567beac83159c77a7680b1316bdd784738bff9a9d070112c09da90f6d9"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc14snapshot": {
+   "label": "The GNU Compiler Collection version 14 development version",
+   "tarball": "gcc14snapshot",
+   "version": "14-20261112",
+   "description": "GNU Compiler Collection 14 snapshot",
+   "home": "https://www.gnu.org/software/gcc",
+   "subdir": "pub/gcc/snapshots/$(GARVERSION)/",
+   "sha256": {
+    "gcc-14-20261112.tar.xz": "f14454a5af5968c958328f93e84398d5d88a18f5b068a5dbf87a2a5d042d23b5"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc15": {
+   "label": "The GNU Compiler Collection version 15",
+   "tarball": "gcc15",
+   "version": "15.3.0",
+   "description": "GNU Compiler Collection 15 snapshot",
+   "home": "https://www.gnu.org/software/gcc",
+   "subdir": "$(GARNAME)/$(DISTNAME)/",
+   "sha256": {
+    "gcc-15.3.0.tar.xz": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc15snapshot": {
+   "label": "The GNU Compiler Collection version 15 development version",
+   "tarball": "gcc15snapshot",
+   "version": "15-20261106",
+   "description": "GNU Compiler Collection 15 snapshot",
+   "home": "https://www.gnu.org/software/gcc",
+   "subdir": "pub/gcc/snapshots/$(GARVERSION)/",
+   "sha256": {
+    "gcc-15-20261106.tar.xz": "c1f45957673b3a49dfe95bdb0adc3f3778682a9231716c43cf7f548775761f4d"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc16": {
+   "label": "The GNU Compiler Collection version 16",
+   "tarball": "gcc16",
+   "version": "16.2.0",
+   "description": "GNU Compiler Collection 16",
+   "home": "https://www.gnu.org/software/gcc",
+   "subdir": "gnu/gcc/gcc-$(GARVERSION)/",
+   "sha256": {
+    "gcc-16.2.0.tar.xz": "e6738e29597f733270731aa90600f37ffdc045079dfc27ec7e8192cc81085c3e"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc16snapshot": {
+   "label": "The GNU Compiler Collection version 16 development version",
+   "tarball": "gcc16snapshot",
+   "version": "16-20261107",
+   "description": "GNU Compiler Collection 16 snapshot",
+   "home": "https://www.gnu.org/software/gcc",
+   "subdir": "pub/gcc/snapshots/$(GARVERSION)/",
+   "sha256": {
+    "gcc-16-20261107.tar.xz": "e83ef7aee2b1d60d305dc749af49cc4272b7ec792b5b8053bb1747f80c3595c7"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc17snapshot": {
+   "label": "The GNU Compiler Collection version 17 development version",
+   "tarball": "gcc17snapshot",
+   "version": "17-20261108",
+   "description": "GNU Compiler Collection 17 snapshot",
+   "home": "https://www.gnu.org/software/gcc",
+   "subdir": "pub/gcc/snapshots/$(GARVERSION)/",
+   "sha256": {
+    "gcc-17-20261108.tar.xz": "9cdb6db806b2c82a121c6e055e014de587c8c80ad08b1a85c50a9d06d95e208d"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc7": {
+   "label": "The GNU Compiler Collection version 7",
+   "tarball": "gcc7",
+   "version": "7.5.0",
+   "description": "GNU Compiler Collection  version 7",
+   "home": "http://www.gnu.org/software/gcc",
+   "subdir": "$(UPSTREAMNAME)/$(DISTNAME)/",
+   "sha256": {
+    "gcc-7.5.0.tar.xz": "b81946e7f01f90528a1f7352ab08cc602b9ccc05d4e44da4bd501c5a189ee661"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc8": {
+   "label": "The GNU Compiler Collection version 8",
+   "tarball": "gcc8",
+   "version": "8.5.0",
+   "description": "GNU Compiler Collection  version 8",
+   "home": "http://www.gnu.org/software/gcc",
+   "subdir": "$(UPSTREAMNAME)/$(DISTNAME)/",
+   "sha256": {
+    "gcc-8.5.0.tar.xz": "d308841a511bb830a6100397b0042db24ce11f642dab6ea6ee44842e5325ed50"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcc9": {
+   "label": "The GNU Compiler Collection version 9",
+   "tarball": "gcc9",
+   "version": "9.5.0",
+   "description": "GNU Compiler Collection version 9",
+   "home": "http://www.gnu.org/software/gcc",
+   "subdir": "gcc/$(DISTNAME)/",
+   "sha256": {
+    "gcc-9.5.0.tar.xz": "27769f64ef1d4cd5e2be8682c0c93f9887983e6cfd1a927ce5a0a2915a95cf8f"
+   },
+   "builddeps": [
+    "gmp",
+    "mpfr",
+    "mpc",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "gcide": {
+   "label": "Collaborative International Dictionary of English",
+   "tarball": "gcide",
+   "version": "0.54",
+   "description": "GNU Collaborative International Dictionary of English",
+   "home": "http://www.gnu.org/software/gcide",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gcide-0.54.tar.xz": "22416f6f36175b160dc388b7547512514d464473cf7d7c898d738efb26c51d42"
+   },
+   "builddeps": [
+    "dico"
+   ],
+   "libdeps": []
+  },
+  "gcl": {
+   "label": "GNU Common Lisp",
+   "tarball": "gcl",
+   "version": "2.7.1",
+   "description": "GNU  Common Lisp implementation",
+   "home": "http://www.gnu.org/software/gcl/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gcl-2.7.1.tar.gz": "79d0bb65b82df81c078bc55c4cda3fe4d766d87e3bfe10fde0b2f728204e1015"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gcompris": {
+   "label": "GCompris",
+   "tarball": "gcompris",
+   "version": "26.1",
+   "description": "\"Educational\" games for small children",
+   "home": "https://www.gnu.org/software/gcompris/",
+   "subdir": "stable/gcompris/qt/src/",
+   "sha256": {
+    "gcompris-qt-26.1.tar.xz": "c389b863b29f012ccc1b3eef740982ff6c7654c13a2e343397ee466124f31339"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gdb": {
+   "label": "gdb GNU debugger",
+   "tarball": "gdb",
+   "version": "18.1",
+   "description": "gdb, The GNU debugger",
+   "home": "http://www.gnu.org/software/gdb/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gdb-18.1.tar.xz": "cd9fc3fe2b47743840e42c1592d3d87f8302eb18639c0b8b4ba0898002e2348f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gdbm": {
+   "label": "gdbm",
+   "tarball": "gdbm",
+   "version": "1.26",
+   "description": "Hash library of database functions compatible with traditional dbm",
+   "home": "http://www.gnu.org/software/gdbm/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gdbm-1.26.tar.gz": "6a24504a14de4a744103dcb936be976df6fbe88ccff26065e54c1c47946f4a5e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gecb": {
+   "label": "GECB",
+   "tarball": "gecb",
+   "version": "0.8.4",
+   "description": "A graphical class browser for GNU EDMA",
+   "home": "http://www.gnu.org/software/edma/",
+   "subdir": "edma/",
+   "sha256": {
+    "gecb-0.8.4.tar.gz": "75b7d08831a090a90f7ad3f227ebef72a607541d5e28ddd2ae878165db8015d2"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "edma",
+    "gtk"
+   ]
+  },
+  "gengen": {
+   "label": "Gengen",
+   "tarball": "gengen",
+   "version": "1.4.2",
+   "description": "A parameterized-text-generator generator based on a template",
+   "home": "http://www.gnu.org/software/gengen/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gengen-1.4.2.tar.gz": "f49bde616c09156cf7a91f40cb37b476fcd20fe899be15ecd194ca8ed40798e9"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gengetopt": {
+   "label": "Gengetopt",
+   "tarball": "gengetopt",
+   "version": "2.23.1",
+   "description": "Create parsers for command line options",
+   "home": "http://www.gnu.org/software/gengetopt/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gengetopt-2.23.1.tar.xz": "3b9def48422bd45f78af95936200b7f9287369a3db76c4907c42fe10f4922ab6"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gettext": {
+   "label": "gettext",
+   "tarball": "gettext",
+   "version": "1.0",
+   "description": "Tools and documentation for language translation",
+   "home": "http://www.gnu.org/software/gettext/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gettext-1.0.tar.lz": "d6342cbe1411a2fe7d139bfed80c2d63b1babc92acfedc72501cc105184f61ee"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gforth": {
+   "label": "gforth",
+   "tarball": "gforth",
+   "version": "1.0.1",
+   "description": "Forth interpreter, with virtual machine generator \"vmgen\"",
+   "home": "https://gforth.org",
+   "subdir": "forth/$(GARNAME)/",
+   "sha256": {
+    "gforth-1.0.1.tar.xz": "d7cb2a1d0d0d9e4d895bce0739179ba97037a9da790fea536afcdc91f6d93d00"
+   },
+   "builddeps": [
+    "swig"
+   ],
+   "libdeps": []
+  },
+  "ggradebook": {
+   "label": "gradebook",
+   "tarball": "ggradebook",
+   "version": "0.91",
+   "description": "GNOME application to track students' grades for teachers",
+   "home": "http://www.gnu.org/software/ggradebook/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ggradebook-0.91.tar.gz": "ec21b7921a92db289c1d5a068ca209342cd3928c7a1e482cc14d2b251fd21f34"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "gtk1"
+   ]
+  },
+  "ghostscript": {
+   "label": "Ghostscript",
+   "tarball": "ghostscript",
+   "version": "10.08.0",
+   "description": "PostScript and PDF interpreter",
+   "home": "http://www.gnu.org/software/ghostscript/",
+   "subdir": "ArtifexSoftware/ghostpdl-downloads/releases/download/gs10080/",
+   "sha256": {
+    "ghostscript-10.08.0.tar.xz": "c20492bc8ebb96c87fa2e52a0926e1cda8cde95d66145e018ac713fed5da38cf"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gidfwizard": {
+   "label": "Graphical IDF Wizard",
+   "tarball": "gidfwizard",
+   "version": "0.6.4",
+   "description": "A tool to build GNU EDMA Interface Definition files",
+   "home": "http://www.gnu.org/software/edma/",
+   "subdir": "edma/",
+   "sha256": {
+    "gidfwizard-0.6.4.tar.gz": "1ee704d652b110b580f724cb41bd1a8ef9442bd26ece8683d9bf8b6e42091719"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gift": {
+   "label": "gift, GNU Image-Finding Tool",
+   "tarball": "gift",
+   "version": "master",
+   "description": "GNU Image Finding Tool, with query by example",
+   "home": "http://www.gnu.org/software/gift/",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gimp": {
+   "label": "gimp, GNU Image Manipulation Program",
+   "tarball": "gimp",
+   "version": "3.2.8",
+   "description": "gimp, GNU Image Manipulation Program",
+   "home": "http://www.gnu.org/software/gimp",
+   "subdir": "$(GARNAME)/v$(SERIES)/",
+   "sha256": {
+    "gimp-3.2.8.tar.xz": "16a2696cadc9e03a2ef97ccb895e062f654cb2b8211fb57074db85f26646c847"
+   },
+   "builddeps": [
+    "babl",
+    "gegl"
+   ],
+   "libdeps": []
+  },
+  "git-merge-changelog": {
+   "label": "git-merge-changelog vc-changelog",
+   "tarball": "git-merge-changelog",
+   "version": "1.0",
+   "description": "append to changelog from git.",
+   "home": "http://www.gnu.org/software/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "git-merge-changelog-1.0.tar.gz": "65b7c98eed59f90f51510ff44641ca82e880be8e88f7d7906740a30e105c90c0"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gjdoc": {
+   "label": "gjdoc",
+   "tarball": "gjdoc",
+   "version": "0.7.9",
+   "description": "A documentation generation framework for Java source files",
+   "home": "http://www.gnu.org/software/gjdoc/",
+   "subdir": "classpath/",
+   "sha256": {
+    "gjdoc-0.7.9.tar.gz": "3d07eb7ea85c71614ae1ff8a64f70f9b9df0210194313ac159b71fef63389043"
+   },
+   "builddeps": [
+    "#",
+    "antlr2"
+   ],
+   "libdeps": []
+  },
+  "glean": {
+   "label": "glean",
+   "tarball": "glean",
+   "version": "0.1",
+   "description": "personal learning environment with collaborative content",
+   "home": "https://www.gnu.org/software/glean/",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "glibc": {
+   "label": "The GNU C Library glibc",
+   "tarball": "glibc",
+   "version": "2.44",
+   "description": "GNU standard C library",
+   "home": "http://www.gnu.org/software/libc/",
+   "subdir": "$(UPSTREAMNAME)/",
+   "sha256": {
+    "glibc-2.44.tar.xz": "37f600f2bef3c5e8300147059568b2a2e40a7ad6ccc65ce942556d49429cc667"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "global": {
+   "label": "global",
+   "tarball": "global",
+   "version": "6.7",
+   "description": "Cross-environment source code tag system",
+   "home": "http://www.gnu.org/software/global/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "global-6.7.tar.gz": "fdab590c9bda2d68d55e99c51c7e60c2c8595ae4dcebab9bbbb0795f2a5c8bf7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "glpk": {
+   "label": "GNU Linear Programming Kit",
+   "tarball": "glpk",
+   "version": "5.0",
+   "description": "GNU Linear Programming Kit, supporting the MathProg language",
+   "home": "http://www.gnu.org/software/glpk/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "glpk-5.0.tar.gz": "4a1013eebb50f728fc601bdd833b0b2870333c3b3e5a816eeba921d95bec6f15"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gmediaserver": {
+   "label": "GMediaServer",
+   "tarball": "gmediaserver",
+   "version": "0.13.0",
+   "description": "UPnP compatible media server",
+   "home": "http://www.gnu.org/software/gmediaserver/",
+   "subdir": "releases/$(GARNAME)/",
+   "sha256": {
+    "gmediaserver-0.13.0.tar.gz": "357030911bcce4ac9e47c2c9219b72e88705a8465899d4e0553bce540fb0fd12",
+    "gmediaserver-0.13.0-support-libupnp-1.6.12.diff": "fe23a8ae2640add7b3de3b183e6f5d22b1f26b5deed7b2eeccea90535ca4e003"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gmp": {
+   "label": "GNU MP, gmp",
+   "tarball": "gmp",
+   "version": "6.3.0-20261101102428",
+   "description": "Multiple-precision arithmetic library",
+   "home": "https://www.gnu.org/software/gmp/",
+   "subdir": "download/snapshot/gmp-next/",
+   "sha256": {
+    "gmp-6.3.0-20261101102428.tar.zst": "a149bb1336350670828ffc705ca86b6e98859d7791567a3489126607d5a5f7da"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnash": {
+   "label": "Gnash",
+   "tarball": "gnash",
+   "version": "0.8.10",
+   "description": "Flash movie player",
+   "home": "http://www.gnu.org/software/gnash/",
+   "subdir": "$(GARNAME)/$(GARVERSION)/",
+   "sha256": {
+    "gnash-0.8.10.tar.gz": "7d69d36d143ba9e2fd639decbde44f31d17cd1ef1a80ff9c350aecbd78404875",
+    "gnash-0.8.10-fix-build.diff": "5d277c4ec8a5df58110a56466230bbc2f9d52f36a7496b507a73dc4e4ffab1c1"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "boost",
+    "zlib",
+    "libpng",
+    "gtk2",
+    "pango",
+    "atk",
+    "cairo",
+    "zlib",
+    "libpng",
+    "glib",
+    "#libsdl",
+    "libxml2",
+    "curl",
+    "freetype2",
+    "fontconfig",
+    "expat",
+    "gstreamer",
+    "#gst-plugins-base",
+    "agg",
+    "giflib",
+    "speex",
+    "jpeg",
+    "netcat"
+   ]
+  },
+  "gnats": {
+   "label": "GNATS",
+   "tarball": "gnats",
+   "version": "4.2.0",
+   "description": "GNU problem report and bug management system",
+   "home": "http://www.gnu.org/software/gnats/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnats-4.2.0.tar.gz": "54e3f4eb5e6ceaec3f9579332e5ff492ce743f763b9c9cdd7ad72fe9cc2b142d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnatsweb": {
+   "label": "Gnatsweb",
+   "tarball": "gnatsweb",
+   "version": "4.00",
+   "description": "Web interface to GNATS",
+   "home": "http://www.gnu.org/software/gnatsweb/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnatsweb-4.00.tar.gz": "ee26aa8739a2e47fdebd174ef21fcd1aed3ec47775a5f2ba52aa1e7a36c8c95f"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "gnats"
+   ]
+  },
+  "gnu-c-manual": {
+   "label": "The GNU C Reference Manual",
+   "tarball": "gnu-c-manual",
+   "version": "0.2.5",
+   "description": "Reference manual for the C programming language",
+   "home": "http://www.gnu.org/software/gnu-c-manual/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnu-c-manual-0.2.5.tar.gz": "da331cb3db3a49ebe8da3a89846c44589d336081e2a947fdc72870534492dae9"
+   },
+   "builddeps": [
+    "texinfo"
+   ],
+   "libdeps": []
+  },
+  "gnu-pw-mgr": {
+   "label": "gnu-pw-mgr",
+   "tarball": "gnu-pw-mgr",
+   "version": "2.7.4",
+   "description": "Retrieve login credentials without recording passwords",
+   "home": "http://www.gnu.org/software/gnu-pw-mgr/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnu-pw-mgr-2.7.4.tar.xz": "e8cb8b8d6c81ac2b01a226f2d2ce7698bf8be830cf65b5a3dd805facabde1c3a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuastro": {
+   "label": "gnuastro",
+   "tarball": "gnuastro",
+   "version": "0.24",
+   "description": "Astronomy utilities",
+   "home": "http://www.gnu.org/software/gnuastro/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnuastro-0.24.tar.lz": "dfc5a4c4cb64b298d1d3a57010ab413436fe46310ea5e72d4835744e3a2b517c"
+   },
+   "builddeps": [
+    "gsl",
+    "cfitsio",
+    "wcslib"
+   ],
+   "libdeps": [
+    "#libgit2",
+    "ghostscript"
+   ]
+  },
+  "gnubatch": {
+   "label": "GNUbatch",
+   "tarball": "gnubatch",
+   "version": "1.11",
+   "description": "Advanced batch scheduling and job control",
+   "home": "http://www.gnu.org/software/gnubatch/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnubatch-1.11.tar.gz": "f69129ecfab1e1d8f5b6ef802388b3adb842f5195a025eea16e955d0b5094ba9"
+   },
+   "builddeps": [
+    "bison"
+   ],
+   "libdeps": []
+  },
+  "gnubg": {
+   "label": "GNU Backgammon",
+   "tarball": "gnubg",
+   "version": "1.08.003",
+   "description": "GNU Backgammon game",
+   "home": "http://www.gnu.org/software/gnubg",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnubg-release-1.08.003-sources.tar.gz": "6f7d969b13cfff786fba90ff8cc5e5d564b97f4f0aa69afe4f3838f18c445979"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnubiff": {
+   "label": "gnubiff",
+   "tarball": "gnubiff",
+   "version": "2.2.16",
+   "description": "Mail notification program",
+   "home": "http://www.gnu.org/software/gnubiff/",
+   "subdir": "$(GARNAME)/files/$(GARNAME)/$(GARVERSION)/",
+   "sha256": {
+    "gnubiff-2.2.16.tar.gz": "1e02950c58115daa7ff25109d48a04622f6f8d8c48788666d82f0adb4ae0fd5a"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "gtk",
+    "intltool"
+   ]
+  },
+  "gnubik": {
+   "label": "Gnubik",
+   "tarball": "gnubik",
+   "version": "2.4.3",
+   "description": "3d Rubik's cube game",
+   "home": "http://www.gnu.org/software/gnubik/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnubik-2.4.3.tar.gz": "2b3ed36fb5ba9eec80fd86f94eabbe866506f4fe1948a9d7480f225c89488eee"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuboot": {
+   "label": "GNU Boot",
+   "tarball": "gnuboot",
+   "version": "0.1-rc6-1",
+   "description": "gnuboot source, 301 MB",
+   "home": "http://www.gnu.org/software/gnuboot",
+   "subdir": "$(GARNAME)/$(GARNAME)-$(GARVER)/",
+   "sha256": {
+    "gnuboot-0.1-rc6-1_src.tar.xz": "6059bea5991b3617d87fdefc59f2958eafe1c7e7d1106cdb57f080b11ee0ce4a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnucap": {
+   "label": "Gnucap",
+   "tarball": "gnucap",
+   "version": "20171003",
+   "description": "GNU Circuit Analysis Package, mixed analog and digital circuit simulator",
+   "home": "http://www.gnu.org/software/gnucap",
+   "subdir": "gnucap.git/snapshot/",
+   "sha256": {
+    "gnucap-20171003.tar.gz": "2facf5e945cf253727bef9b8e2602767599ea77a6c0d8c5d91101764544fa09a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnucash": {
+   "label": "GnuCash",
+   "tarball": "gnucash",
+   "version": "5.17",
+   "description": "Personal and small business financial accounting software",
+   "home": "http://www.gnu.org/software/gnucash",
+   "subdir": "Gnucash/$(GARNAME)/releases/download/$(GARVERSION)/",
+   "sha256": {
+    "gnucash-5.17.tar.bz2": "3d18a88f5b8230f01e04c2d2d73bf95e7dcd3bf8d8cee6ffa54bb24dee58b85f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuchess": {
+   "label": "GNUChess",
+   "tarball": "gnuchess",
+   "version": "6.3.0",
+   "description": "Full chess implementation",
+   "home": "http://www.gnu.org/software/chess/",
+   "subdir": "chess/",
+   "sha256": {
+    "gnuchess-6.3.0.tar.gz": "0b37bec2098c2ad695b7443e5d7944dc6dc8284f8d01fcc30bdb94dd033ca23a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnucobol": {
+   "label": "GnuCOBOL",
+   "tarball": "gnucobol",
+   "version": "3.2",
+   "description": "A modern COBOL compiler",
+   "home": "http://www.gnu.org/software/cobol/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnucobol-3.2.tar.lz": "8ecc77d0a4c9401618b8b99adf2050adef14767916767c54bb42341f0ab504fb",
+    "gnucobol3.2.inc.patch": "c1b366256cb9e56f9b20fc6db3bfbc4c834564f82787e89e29ca20e976c41375"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnudos": {
+   "label": "GnuDOS",
+   "tarball": "gnudos",
+   "version": "2.0",
+   "description": "MS-DOS-like file manager, editor, and other tools",
+   "home": "http://www.gnu.org/software/gnudos/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnudos-2.0.tar.gz": "887c88f8c94a3c35469dda1b96a3ea46e6b2fbcaba625ca722c5197ea4b1c41a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuedma": {
+   "label": "EDMA alpha",
+   "tarball": "edma-alpha",
+   "version": "0.19.1",
+   "description": "Object-oriented component-based development environment",
+   "home": "http://www.gnu.org/software/edma/",
+   "subdir": "gnu/edma/",
+   "sha256": {
+    "gnuedma-0.19.1.tar.gz": "3eb8d216ab3733798c52add7260021963efd12706402677e057744d353b4465c",
+    "gnuedma-0.19.1-add-info-dir-entry.2.diff": "4c847e96d4edb1d7f5f3eaa7338b137d68a56c2e8b37dd80bdef0de199226ef9"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnufdisk": {
+   "label": "GNUfdisk",
+   "tarball": "gnufdisk",
+   "version": "2.0.0a1",
+   "description": "Low-level disk partitioning and formatting",
+   "home": "http://www.gnu.org/software/fdisk/",
+   "subdir": "fdisk/",
+   "sha256": {
+    "gnufdisk-2.0.0a1.tar.gz": "c963d84dff11c41210fff994742e9f90a72dfdcb0481bcc4b530223ed3511fb5",
+    "gnufdisk-2.0.0a1-add-info-dir-entry.diff": "390a11e3364f588514c2cc88f866601a63bbec6e04acf4031cb18ea5260e37f5"
+   },
+   "builddeps": [
+    "guile"
+   ],
+   "libdeps": [
+    "#",
+    "gettext",
+    "libtool",
+    "ncurses",
+    "e2fsprogs",
+    "parted"
+   ]
+  },
+  "gnugo": {
+   "label": "GNU Go",
+   "tarball": "gnugo",
+   "version": "3.8",
+   "description": "Play the game of Go",
+   "home": "http://www.gnu.org/software/gnugo/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnugo-3.8.tar.gz": "da68d7a65f44dcf6ce6e4e630b6f6dd9897249d34425920bfdd4e07ff1866a72",
+    "gnugo-3.8.diff": "31df3eebcda17c66c82bd2ee271ceebec59f8d65961092ceb73d9176bc5da29a"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "ncurses"
+   ]
+  },
+  "gnuhealth": {
+   "label": "GNU Health",
+   "tarball": "gnuhealth",
+   "version": "5.0.7",
+   "description": "Health and hospital information system",
+   "home": "http://www.gnu.org/software/health/",
+   "subdir": "health/",
+   "sha256": {
+    "gnuhealth-his-server-patchset-5.0.7-bundle.tar.gz": "d4ffb9d3b94936f4cecaccd1c0cfdbe991617e62a026fa4ae1502604adf5d400"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuhealth-client": {
+   "label": "gnuhealth-client",
+   "tarball": "gnuhealth-client",
+   "version": "5.0.2",
+   "description": "Health and hospital information system; client",
+   "home": "http://www.gnu.org/software/health/",
+   "subdir": "health/",
+   "sha256": {
+    "gnuhealth-client-5.0.2.tar.gz": "add201a288ddabd8427e0ca90018a507e8d62abcfbee902c00d3641467dc19b9"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuhealth-control": {
+   "label": "gnuhealth-control",
+   "tarball": "gnuhealth-control",
+   "version": "5.0.3",
+   "description": "Health and hospital information system; control",
+   "home": "http://www.gnu.org/software/health/",
+   "subdir": "health/",
+   "sha256": {
+    "gnuhealth-control-5.0.3.tar.gz": "104bc42473cc94488c386b2436e2c8d555f6ed99654142cc69922392201d1b53"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuhealth-setup": {
+   "label": "gnuhealth-setup",
+   "tarball": "gnuhealth-setup",
+   "version": "4.2.0",
+   "description": "Health and hospital information system; setup",
+   "home": "http://www.gnu.org/software/health/",
+   "subdir": "health/",
+   "sha256": {
+    "gnuhealth-setup-4.2.0.tar.gz": "862f4a114fbdc95d305a26a5b4c00b807aa0e82afa9b3585f46724d51ab74b82"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuit": {
+   "label": "GNU Interactive Tools",
+   "tarball": "gnuit",
+   "version": "4.9.5",
+   "description": "Interactive utilities for file browsing, viewing, and more",
+   "home": "http://www.gnu.org/software/gnuit/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnuit-4.9.5.tar.gz": "6b6e96db13bafa5ad35c735b2277699d4244088c709a3e134fb1a3e8c8a8557c"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnujump": {
+   "label": "GNUjump",
+   "tarball": "gnujump",
+   "version": "1.0.8",
+   "description": "Game of jumping to the next floor, trying not to fall",
+   "home": "http://www.gnu.org/software/gnujump/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnujump-1.0.8.tar.gz": "13c3fe5f430eb0c010560c7e438123a573ca61a55c6708aa750cfbf56bf25e17"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnulib": {
+   "label": "gnulib",
+   "tarball": "gnulib",
+   "version": "master",
+   "description": "Source files to share among other software projects",
+   "home": "http://www.gnu.org/software/gnulib/",
+   "subdir": null,
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnumed-client": {
+   "label": "GNUmed-client",
+   "tarball": "gnumed-client",
+   "version": "1.8.15",
+   "description": "medical records software",
+   "home": "http://www.gnumed.de",
+   "subdir": "downloads/client/1.8/",
+   "sha256": {
+    "gnumed-client.1.8.15.tgz": "b6b6ea81c24634df92bbbd2755d39342ce1f3579bb01ab910e2b5b991b34ffcb"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnumed-server": {
+   "label": "GNUmed-server",
+   "tarball": "gnumed-server",
+   "version": "22.25",
+   "description": "medical records software, server part",
+   "home": "http://www.gnumed.de",
+   "subdir": "downloads/server/v22/",
+   "sha256": {
+    "gnumed-server.22.25.tgz": "6af0c0657d0aa5854bba679096f5ed690c8ce1790010dd1b141629c07dabe1f0"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnump3d": {
+   "label": "GNUMP3d",
+   "tarball": "gnump3d",
+   "version": "3.0",
+   "description": "Server for streaming audio, video, and other files",
+   "home": "http://www.gnu.org/software/gnump3d/",
+   "subdir": "releases/$(GARNAME)/",
+   "sha256": {
+    "gnump3d-3.0.tar.gz": "a8c6b7ca6fb20988d51e849fa633ff9c0e744afc51ca71b0f27fd10969dc948d",
+    "Makefile.patch": "9c3aa4607115a8467101d636d12db3100fe66d72c30e2cba779696660f8d23b8"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnun": {
+   "label": "GNUnited Nations",
+   "tarball": "gnun",
+   "version": "1.6",
+   "description": "Build system for www.gnu.org translations",
+   "home": "http://www.gnu.org/software/gnun/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnun-1.6.tar.gz": "7d74b854fffbd72a59ad28d19c78f2359e6eff921363e24c782a89b4fc5ce4d6"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnunet": {
+   "label": "GNUnet",
+   "tarball": "gnunet",
+   "version": "0.29.0",
+   "description": "Secured, decentralized, peer-to-peer networking framework",
+   "home": "http://www.gnu.org/software/gnunet",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnunet-0.29.0.tar.gz": "c27055165d347388dd487a07d7d131506cae2eeca5ee2d49cfcccada1ac29acc"
+   },
+   "builddeps": [
+    "libunistring",
+    "libgcrypt",
+    "libmicrohttpd",
+    "libextractor",
+    "gnurl"
+   ],
+   "libdeps": []
+  },
+  "gnunet-fuse": {
+   "label": "GNUnet-fuse",
+   "tarball": "gnunet-fuse",
+   "version": "0.26.0",
+   "description": "A FUSE filesystem client for GNUnet",
+   "home": "http://www.gnu.org/software/gnunet/",
+   "subdir": "gnunet/",
+   "sha256": {
+    "gnunet-fuse-0.26.0.tar.gz": "94d4982d1357f2d41edf6d5edaa7e51adbccd9b919cd49ff04c6bbd568cdec25"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnunet-gns-registrar": {
+   "label": "GNUnet-gns-registrar",
+   "tarball": "gnunet-gns-registrar",
+   "version": "1.0.7",
+   "description": "Secured, peer-to-peer networking framework gns-registrar",
+   "home": "http://www.gnu.org/software/gnunet",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnunet-gns-registrar-1.0.7.tar.gz": "013630bffdfaeea354463b046853ebb7f4ded9f133740de83523e5257a8f478c"
+   },
+   "builddeps": [
+    "libunistring",
+    "libgcrypt",
+    "libmicrohttpd",
+    "libextractor",
+    "gnurl"
+   ],
+   "libdeps": []
+  },
+  "gnunet-gtk": {
+   "label": "GNUnet-gtk",
+   "tarball": "gnunet-gtk",
+   "version": "0.24.0",
+   "description": "GNUnet GTK+ interface",
+   "home": "http://www.gnu.org/software/gnunet/",
+   "subdir": "gnunet/",
+   "sha256": {
+    "gnunet-gtk-0.24.0.tar.gz": "aec43332f3a8404baeb217748c1190b7d8facd78f61b548c6b1f1de10a0357ab"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnupg": {
+   "label": "GnuPG",
+   "tarball": "gnupg",
+   "version": "2.5.24",
+   "description": "GNU Privacy Guard gpg gnupg",
+   "home": "http://www.gnu.org/software/gnupg",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnupg-2.5.24.tar.bz2": "bf149d01a2b9fcc0e4589b8ae8697d3d5c557ea48ed95a3fa55dd3b1187e6039"
+   },
+   "builddeps": [
+    "libgpg-error",
+    "libgcrypt",
+    "libassuan",
+    "libksba",
+    "npth",
+    "zlib",
+    "nettle",
+    "gnutls"
+   ],
+   "libdeps": []
+  },
+  "gnupod": {
+   "label": "GNUpod",
+   "tarball": "gnupod",
+   "version": "0.99.8",
+   "description": "Manage portable audio device",
+   "home": "http://www.gnu.org/software/gnupod/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnupod-0.99.8.tgz": "bd566295a2e14352e6d05f5c816cab36b0e80d3ab36d29c4bbb45c581d3f3c31"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuprologjava": {
+   "label": "Prolog for Java",
+   "tarball": "gnuprologjava",
+   "version": "0.2.6",
+   "description": "Implementation of Prolog as a Java library",
+   "home": "http://www.gnu.org/software/gnuprologjava/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnuprologjava-0.2.6-src.zip": "cfc6e5b6a9da9fc865df03293c657253283e7cafdae6024f4863866a23f78198"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuradio": {
+   "label": "GNU Radio 3",
+   "tarball": "gnuradio",
+   "version": "3.11.0.0git",
+   "description": "Software-defined radio implementations",
+   "home": "http://www.gnu.org/software/gnuradio",
+   "subdir": "/$(GARNAME)/$(GARNAME)/archive/refs/tags/",
+   "sha256": {
+    "v3.11.0.0git.tar.gz": "fbd5d4b13efd084abcacb1e12432947097e33b022387d4d69694ea2235cd8932"
+   },
+   "builddeps": [
+    "volk"
+   ],
+   "libdeps": []
+  },
+  "gnuradio4": {
+   "label": "GNU Radio 4",
+   "tarball": "gnuradio4",
+   "version": "4.0.0-RC2",
+   "description": "Software-defined radio signal processing",
+   "home": "http://www.gnu.org/software/gnuradio",
+   "subdir": "/gnuradio/$(GARNAME)/archive/refs/tags/",
+   "sha256": {
+    "4.0.0-RC2.tar.gz": "0f73b3bdd82d60c9329267bb23c1c0d985ba75ba75fcba24566778cdc111fa9e"
+   },
+   "builddeps": [
+    "volk"
+   ],
+   "libdeps": []
+  },
+  "gnurl": {
+   "label": "gnurl",
+   "tarball": "gnurl",
+   "version": "7.72.0",
+   "description": "a fork of curl, HTTP downloader, needed for gnunet",
+   "home": "http://www.gnu.org/software/gnunet/",
+   "subdir": "gnunet/",
+   "sha256": {
+    "gnurl-7.72.0.tar.gz": "b1e72be03fcf9b3fdaf01ae0702c686e9de10f67ef538918447c9e81555694f8"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnurobots": {
+   "label": "Robots",
+   "tarball": "gnurobots",
+   "version": "1.2.0",
+   "description": "Program a little robot and watch him explore a game world",
+   "home": "http://www.gnu.org/software/gnurobots/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnurobots-1.2.0.tar.gz": "8b6f4f0d40bef5cfdfb7eb7c82ea1402d2747c37b2c7b7aa92faff55351df11d",
+    "fix-build.diff": "1d182f6dcfbfd7b0b1950293fb32bc8d7fe4ec8bf3742d56a130aae317e81321"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#guile",
+    "glib",
+    "readline"
+   ]
+  },
+  "gnuschool": {
+   "label": "gnuschool",
+   "tarball": "gnuschool",
+   "version": "0.2",
+   "description": "Web application for educators, students, and school administrators",
+   "home": "http://www.gnu.org/software/gnuschool/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnuschool-0.2.tar.gz": "40e8613b77fb436c570e0ffbec1a0d8282cd512923d79c9cea1dd0f3fa77b789"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnushogi": {
+   "label": "Shogi",
+   "tarball": "gnushogi",
+   "version": "1.4.2",
+   "description": "The game of Shogi (Japanese chess)",
+   "home": "http://www.gnu.org/software/gnushogi/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnushogi-1.4.2.tar.gz": "1ecc48a866303c63652552b325d685e7ef5e9893244080291a61d96505d52b29",
+    "gnushogi-1.4.2-fix-install.diff": "75278f2f9efc34f1a564928d6fc8861bb9d15b761b9d5835d006c56b16aac458"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "termcap"
+   ]
+  },
+  "gnusound": {
+   "label": "GNUsound",
+   "tarball": "gnusound",
+   "version": "0.7.5",
+   "description": "Multi-track sound editor for GNOME",
+   "home": "http://www.gnu.org/software/gnusound/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnusound-0.7.5.tar.bz2": "8121d42858429c7b845e9e1bcc36872e0daa2da5615765122bf689c2bcb46269",
+    "fix-install.diff": "d436995b7a8ce2c2b8db44b05b6905eeb8ddbc6dbfefe6d37d27fdb5e7ebb610"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "gtk2",
+    "glib",
+    "cairo",
+    "gdk-pixbuf",
+    "atk",
+    "libgnomeui",
+    "#",
+    "libglade",
+    "gthread"
+   ]
+  },
+  "gnuspeech_sa": {
+   "label": "gnuspeech_sa",
+   "tarball": "gnuspeech_sa",
+   "version": "0.1.8",
+   "description": "Extensible rule-based text-to-speech",
+   "home": "http://www.gnu.org/software/gnuspeech/",
+   "subdir": "mym-br/$(GARNAME)_sa/archive/refs/tags/",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnuspool": {
+   "label": "GNUspool",
+   "tarball": "gnuspool",
+   "version": "1.8",
+   "description": "Spooling system with a variety of interfaces",
+   "home": "http://www.gnu.org/software/gnuspool/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gnuspool-1.8.tar.gz": "3ec91f291d5f49385e126fa26db2e1aefe688fc26570b4da412e470162e7bacb",
+    "fix-build2.diff": "58a3d51a986ec1df9d2a8f64e9d0ea4c46beb8273f13f49cd47d787d861b2974"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnustandards": {
+   "label": "GNU Coding Standards",
+   "tarball": "gnustandards",
+   "version": "2026.04.28",
+   "description": "GNU coding standards and maintainer information",
+   "home": "https://www.gnu.org/prep/standards/",
+   "subdir": "prep/standards/",
+   "sha256": {
+    "standards.info.tar.gz": "005010bc7fd1848e665bb12cd997f0e4d4d2b0c25f6455fe5b588dd6f731b854"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gnutls": {
+   "label": "GnuTLS",
+   "tarball": "gnutls",
+   "version": "3.8.13",
+   "description": "Transport layer security library",
+   "home": "http://gnutls.org",
+   "subdir": "gcrypt/$(GARNAME)/v$(SERIES)/",
+   "sha256": {
+    "gnutls-3.8.13.tar.xz": "ffed8ec1bf09c2426d4f14aae377de4753b53e537d685e604e99a8b16ca9c97e"
+   },
+   "builddeps": [
+    "#",
+    "autogen",
+    "bdw-gc",
+    "libunistring",
+    "libgcrypt",
+    "nettle",
+    "gmp",
+    "zlib"
+   ],
+   "libdeps": [
+    "#",
+    "lzo"
+   ]
+  },
+  "gnutrition": {
+   "label": "GNUtrition",
+   "tarball": "gnutrition",
+   "version": "0.33",
+   "description": "Nutrition analysis",
+   "home": "http://www.gnu.org/software/gnutrition/",
+   "subdir": "gnu/$(GARNAME)/",
+   "sha256": {
+    "gnutrition-0.33.tar.gz": "470841a84180d8ec2b18cf73c66f216d9cdbb0063c710ac8eafe0994913b9b74"
+   },
+   "builddeps": [
+    "ncurses"
+   ],
+   "libdeps": []
+  },
+  "gnuzilla": {
+   "label": "GNUzilla and IceCat",
+   "tarball": "gnuzilla",
+   "version": "master",
+   "description": "Entirely free browser derived from Mozilla Firefox",
+   "home": "https://www.gnu.org/software/gnuzilla/",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "goptical": {
+   "label": "Goptical",
+   "tarball": "goptical",
+   "version": "2011",
+   "description": "C++ optical design and simulation library",
+   "home": "http://www.gnu.org/software/goptical/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "goptical-1.0.tar.gz": "15a12639dfbc216febc07a0ce2f9eeb07f5233dd72a7637abb05c4c2db36cf69",
+    "goptical-1.0-fix-build.diff": "bb2b769f83947bc62aa292708e277a32ad4b7eb0bee7abd5d1ce1d99d1473afc"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#gsl"
+   ]
+  },
+  "gpa": {
+   "label": "gpa",
+   "tarball": "gpa",
+   "version": "0.11.1",
+   "description": "gpa is a graphical frontend to GnuPG.",
+   "home": "http://www.gnu.org/software/gnupg",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gpa-0.11.1.tar.bz2": "0bc5b2cd3e0641d07a2d8af372a09659decd918bee22fdfbefd2133d7c4d5d0b"
+   },
+   "builddeps": [
+    "gpgme"
+   ],
+   "libdeps": []
+  },
+  "gpaint": {
+   "label": "gpaint",
+   "tarball": "gpaint",
+   "version": "0.3.4",
+   "description": "Simple paint program for GNOME",
+   "home": "http://www.gnu.org/software/gpaint/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gpaint-2-0.3.4.tar.gz": "b0ec9186de2ee26de4fa1ec4b95b0518cf9c11a01ef4a4dce1b27bbbf0075b8e"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#gtk2"
+   ]
+  },
+  "gpc": {
+   "label": "GNU Pascal gpc",
+   "tarball": "gpc",
+   "version": "master",
+   "description": "GNU Pascal compiler",
+   "home": "https://www.gnu-pascal.de",
+   "subdir": null,
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gperf": {
+   "label": "gperf",
+   "tarball": "gperf",
+   "version": "3.3",
+   "description": "Perfect hash function generator",
+   "home": "http://www.gnu.org/software/gperf/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gperf-3.3.tar.gz": "fd87e0aba7e43ae054837afd6cd4db03a3f2693deb3619085e6ed9d8d9604ad8"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gpgme": {
+   "label": "gpgme",
+   "tarball": "gpgme",
+   "version": "2.2.0",
+   "description": "gpgme, GPG Made Easy, library connection to GNU Privacy Guard",
+   "home": "http://www.gnu.org/software/gnupg",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gpgme-2.2.0.tar.bz2": "7160e80e84dafd00d956c84891c533bb7ab16a6a54fbe1574b2f3acf0496977b"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gpgmepp": {
+   "label": "gpgmepp gpgme++",
+   "tarball": "gpgmepp",
+   "version": "2.2.0",
+   "description": "gpgmepp, gpgme++, GPG Made Easy, library connection to GNU Privacy Guard",
+   "home": "http://www.gnu.org/software/gnupg",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gpgmepp-2.2.0.tar.xz": "6651c5f7f801543d5b676719df9fec8053b0a6f5aba40b98ca0d2bee11136f30"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gprofng-gui": {
+   "label": "gprofng-gui",
+   "tarball": "gprofng-gui",
+   "version": "2.2",
+   "description": "gprofng-gui  a gui for gprofng",
+   "home": "http://www.gnu.org/software/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gprofng-gui-2.2.tar.gz": "4a974d82f9e360bc442a4b548f170f92f4845b28e17e831007542b7dddfd1d95"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gprolog": {
+   "label": "gprolog",
+   "tarball": "gprolog",
+   "version": "1.6.0",
+   "description": "GNU Prolog compiler and interpreter",
+   "home": "http://www.gprolog.org",
+   "subdir": "didoudiaz",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gr-howto-write-a-block": {
+   "label": "GNU Radio How to write a block",
+   "tarball": "gr-howto-write-a-block",
+   "version": "3.6.0",
+   "description": "GnuRadio Software defined radio implementation documentation",
+   "home": "http://www.gnu.org/software/gnuradio",
+   "subdir": "/releases/gnuradio/",
+   "sha256": {
+    "gr-howto-write-a-block-3.6.0.tar.gz": "f45929d07f74acb10f571d677adc2dd2ee4c7a097dad75aae2560bbabe493626"
+   },
+   "builddeps": [
+    "gnuradio",
+    "#guile",
+    "boost",
+    "libsdl"
+   ],
+   "libdeps": []
+  },
+  "grabcomics": {
+   "label": "phpGrabComics",
+   "tarball": "grabcomics",
+   "version": "1.5.4",
+   "description": "Saves comic strips from the web",
+   "home": "http://www.gnu.org/software/grabcomics/",
+   "subdir": "$(UPSTREAMNAME)/files/$(UPSTREAMNAME)/$(DISTNAME)/",
+   "sha256": {
+    "phpgrabcomics-1.5.4.zip": "0706ac0452f5d79e9abda0ee3cd9f4e47861d77fb5b77272c93934cd9a60dabf"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "greg": {
+   "label": "Greg",
+   "tarball": "greg",
+   "version": "1.4",
+   "description": "Software testing framework",
+   "home": "http://www.gnu.org/software/greg/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "greg-1.4.tar.gz": "af7f3abef1546e74f6a72ecd845f24e8aa03866d5889587243ec230a01796cc3",
+    "fix-build.diff": "829a62ff97eb7787c5ef736bde93128f99fc14dc39dcef16b01c31fd6ee0b827"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "guile",
+    "libtool"
+   ]
+  },
+  "grep": {
+   "label": "grep",
+   "tarball": "grep",
+   "version": "3.12",
+   "description": "Print lines matching a text pattern",
+   "home": "http://www.gnu.org/software/grep/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "grep-3.12.tar.xz": "2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gretl": {
+   "label": "gretl",
+   "tarball": "gretl",
+   "version": "2024d",
+   "description": "Statistical analysis of economic data (econometrics)",
+   "home": "http://www.gnu.org/software/gretl/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gretl-2024d.tar.xz": "9903568c273db09b6931bc2077408d8c08b2bda4e783a0ea5b2cbc59b5b5dbac"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "groff": {
+   "label": "groff, troff etc",
+   "tarball": "groff",
+   "version": "1.25.0",
+   "description": "Typesetting from plain text mixed with formatting commands",
+   "home": "http://www.gnu.org/software/groff/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "groff-1.25.0.tar.gz": "24d103a07eb79e418963bce206c8771b649871f83bda2fd4c2e65529c1c56921"
+   },
+   "builddeps": [
+    "#",
+    "ghostscript",
+    "#perl"
+   ],
+   "libdeps": []
+  },
+  "grub": {
+   "label": "GRUB",
+   "tarball": "grub",
+   "version": "2.14",
+   "description": "GRand Unified Boot loader",
+   "home": "http://www.gnu.org/software/grub/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "grub-2.14.tar.xz": "bc8d3c73535b8838d8c8e2654d73edc4e6ae8c8acdb45d5df5dc9a1547446d43"
+   },
+   "builddeps": [
+    "gettext",
+    "bison",
+    "#flex"
+   ],
+   "libdeps": []
+  },
+  "gsasl": {
+   "label": "GNU sasl",
+   "tarball": "gsasl",
+   "version": "2.2.4",
+   "description": "Simple Authentication and Security Layer command tools",
+   "home": "http://www.gnu.org/software/gsasl/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gsasl-2.2.4.tar.gz": "d32be15efd3a04cb19b232f721bdca02cc6ad7ab415df7d79fb2dd2c0da3e0be"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gsegrafix": {
+   "label": "GSEGrafix",
+   "tarball": "gsegrafix",
+   "version": "1.0.6",
+   "description": "GNOME application to create scientific and engineering plots",
+   "home": "http://www.gnu.org/software/gsegrafix/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gsegrafix-1.0.6.tar.gz": "aab15e67f11e71a46c6e0bca674be3d0f4cb03e90b94e3c149fb0f03fa8623ac"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "intltool",
+    "gtk",
+    "libgnomecanvas",
+    "libbonoboui",
+    "gconf",
+    "gnome-vfs",
+    "#gnome-keyring",
+    "libgnome",
+    "libgnomeui"
+   ]
+  },
+  "gsl": {
+   "label": "The GNU Scientific Library",
+   "tarball": "gsl",
+   "version": "2.8",
+   "description": "Numerical library for C and C++",
+   "home": "http://www.gnu.org/software/gsl/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gsl-2.8.tar.gz": "6a99eeed15632c6354895b1dd542ed5a855c0f15d9ad1326c6fe2b2c9e423190"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gslip": {
+   "label": "GNU Slip",
+   "tarball": "gslip",
+   "version": "1.0.2",
+   "description": "SLIP (Symmetric LIst Processor) implementation",
+   "home": "http://www.gnu.org/software/gslip/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gslip-1.0.2.tar.xz": "e439485688469118e25e9426e734b02c79aafc916e0946aef179309508c013bb"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gss": {
+   "label": "gss Generic Security Service",
+   "tarball": "gss",
+   "version": "1.0.4",
+   "description": "Generic Security Service library",
+   "home": "http://www.gnu.org/software/gss/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gss-1.0.4.tar.gz": "ecceabdef4cae3fce7218b2ecb83eb4227dba44b53b61b8c2b2e88ae02419c73"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gtick": {
+   "label": "GTick",
+   "tarball": "gtick",
+   "version": "0.5.4",
+   "description": "Customizable metronome application",
+   "home": "http://www.gnu.org/software/gtick/",
+   "subdir": "download/",
+   "sha256": {
+    "gtick-0.5.4.tar.gz": "409439e231892ffcfafc8d06a713c0f8c7e333920e1b885817d36e096db2fa7c"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gtypist": {
+   "label": "Typist",
+   "tarball": "gtypist",
+   "version": "2.10.1",
+   "description": "Typing tutor",
+   "home": "http://www.gnu.org/software/gtypist/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gtypist-2.10.1.tar.xz": "ca618054e91f1ed5ef043fcc43500bbad701c959c31844d4688ff22849ac252d"
+   },
+   "builddeps": [
+    "#",
+    "ncurses"
+   ],
+   "libdeps": []
+  },
+  "guile": {
+   "label": "Guile",
+   "tarball": "guile",
+   "version": "3.0.11",
+   "description": "Scheme implementation intended especially for extensions",
+   "home": "http://www.gnu.org/software/guile/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "guile-3.0.11.tar.lz": "0ce531798f2d80cbdb27649308de95a1a940c730904b6cf376ba04c66dc5537e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "guile-clutter": {
+   "label": "guile-clutter",
+   "tarball": "guile-clutter",
+   "version": "1.12.2.1",
+   "description": "A Guile interface to the Clutter library",
+   "home": "http://www.gnu.org/software/guile-gnome/",
+   "subdir": "releases/grip/$(GARNAME)/",
+   "sha256": {
+    "guile-clutter-1.12.2.1.tar.gz": "d568f30083225be0919f4dd1cf19c01746c0001dca9602f9c90ddf2157faa14b"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "guile-cv": {
+   "label": "guile-cv",
+   "tarball": "guile-cv",
+   "version": "0.4.0",
+   "description": "Computer Vision functional programming library for Guile",
+   "home": "http://www.gnu.org/software/guile-cv",
+   "subdir": "$(GARNAME)/$(SERIES)/",
+   "sha256": {
+    "guile-cv-0.4.0.tar.gz": "eb4771d2346849efd222cbc8fff5c8c69bc5fe17f707bb8fe6b4e750fb07c200"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "guile-dbi": {
+   "label": "guile-dbi",
+   "tarball": "guile-dbi",
+   "version": "2.1.9",
+   "description": "Guile database abstraction layer",
+   "home": "http://www.gnu.org/software/guile-dbi/",
+   "subdir": "opencog/$(GARNAME)/archive/",
+   "sha256": {},
+   "builddeps": [
+    "autoconf",
+    "automake"
+   ],
+   "libdeps": []
+  },
+  "guile-debbugs": {
+   "label": "guile-debbugs",
+   "tarball": "guile-debbugs",
+   "version": "0.0.3",
+   "description": "Guile library to communicate with Debbugs bug tracker",
+   "home": "http://www.gnu.org/software/guile-dbi/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "guile-debbugs-0.0.3.tar.gz": "c9ee7c19f301dd5e9a17c3337c59c1aeb6484b33191586a6cbd2b53eb81d86b1"
+   },
+   "builddeps": [
+    "guile"
+   ],
+   "libdeps": []
+  },
+  "guile-gnome-gstreamer": {
+   "label": "guile-gnome-gstreamer",
+   "tarball": "guile-gnome-gstreamer",
+   "version": "0.9.91",
+   "description": "Guile bindings to the GStreamer audio framework",
+   "home": "http://www.gnu.org/software/guile-gnome/",
+   "subdir": "guile-gnome/$(GARNAME)/",
+   "sha256": {
+    "guile-gnome-gstreamer-0.9.91.tar.gz": "3e90dbb81f905fe514ee73527809a1c2fa728cfef98308bc83b316741da7e1d0"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "guile-gnome-platform",
+    "gstreamer",
+    "g-wrap"
+   ]
+  },
+  "guile-gnome-platform": {
+   "label": "guile-gnome-platform",
+   "tarball": "guile-gnome-platform",
+   "version": "2.16.5",
+   "description": "A Guile interface to GNOME development libraries",
+   "home": "http://www.gnu.org/software/guile-gnome/",
+   "subdir": "guile-gnome/$(GARNAME)/",
+   "sha256": {
+    "guile-gnome-platform-2.16.5.tar.gz": "298d8c4f9b567bfe87beda18ed58d047c2e01b88c80895129de5466b921ccebe"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "guile-gnutls": {
+   "label": "guile-GnuTLS",
+   "tarball": "guile-gnutls",
+   "version": "5.0.3",
+   "description": "Transport layer security library, guile interface",
+   "home": "http://www.gnu.org/software/guile-gnutls/",
+   "subdir": "gnutls/",
+   "sha256": {
+    "guile-gnutls-5.0.3.tar.gz": "230ae4f89dffac6d57fff618410611820e1550907aeef6065b121fe6410a7b6b"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "guile-gtksourceview": {
+   "label": "guile-gtksourceview",
+   "tarball": "guile-gtksourceview",
+   "version": "1.8.0",
+   "description": "Guile bindings to the gtksourceview widget",
+   "home": "http://www.gnu.org/software/guile-gnome/",
+   "subdir": "guile-gnome/$(UPSTREAMNAME)/",
+   "sha256": {
+    "guile-gnome-gtksourceview-1.8.0.tar.gz": "303f73184558acc33d5b199f714d7f735b8c4f06751ce5a70ffd7bea9bea34d2"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "guile",
+    "guile-gnome-platform",
+    "g-wrap",
+    "gtksourceview"
+   ]
+  },
+  "guile-ncurses": {
+   "label": "guile-ncurses",
+   "tarball": "guile-ncurses",
+   "version": "3.1",
+   "description": "Guile bindings to ncurses",
+   "home": "http://www.gnu.org/software/guile-ncurses/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "guile-ncurses-3.1.tar.gz": "ee89e8ceafcab9dd0ef3fc1acc9b10f4d21ba4b256d329d842d6183e63f8d733"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "guile",
+    "ncurses"
+   ]
+  },
+  "guile-opengl": {
+   "label": "Guile-OpenGL",
+   "tarball": "guile-opengl",
+   "version": "0.2.0",
+   "description": "Guile binding for the OpenGL graphics API",
+   "home": "http://www.gnu.org/software/guile-opengl/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "guile-opengl-0.2.0.tar.gz": "b8f087ec28823d099fb842c3ba94104bb04fa9e708166487a471989e1c176c65"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "guile"
+   ]
+  },
+  "guile-rpc": {
+   "label": "Guile-RPC",
+   "tarball": "guile-rpc",
+   "version": "0.4",
+   "description": "Pure Scheme implementation for the ONC RPC standard",
+   "home": "http://www.gnu.org/software/guile-rpc/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "guile-rpc-0.4.tar.gz": "c915952c0b6ea61c037c4954b04982c375815d335cf7e1cb4d2393dd58fb894c"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "guile"
+   ]
+  },
+  "guile-sdl": {
+   "label": "Guile-SDL",
+   "tarball": "guile-sdl",
+   "version": "0.6.1",
+   "description": "Guile interface for SDL (Simple DirectMedia Layer)",
+   "home": "http://www.gnu.org/software/guile-sdl/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "guile-sdl-0.6.1.tar.lz": "ffdb134ef9ed9115dc93716845a9513a3a94402f2191e3ed2d39c7359a2d28e1"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gurgle": {
+   "label": "GURGLE",
+   "tarball": "gurgle",
+   "version": "1.61",
+   "description": "GNU Report Generator Language",
+   "home": "http://www.gnu.org/software/gurgle",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gurgle-1.61.tar.gz": "cd621d942fc3560ede3d9e3f3b21e610bfd35b0236bdc5e1923f01be43392ecb",
+    "gurgleincludefix.diff": "d8eeb75e5a9ddd0b570959a258797de25ecf77a5ff7728f3e6caf9ae9b3bc999"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gv": {
+   "label": "GV",
+   "tarball": "gv",
+   "version": "3.7.4",
+   "description": "PostScript and PDF viewer using Ghostscript as a back-end",
+   "home": "http://www.gnu.org/software/gv/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gv-3.7.4.tar.gz": "2162b3b3a95481d3855b3c4e28f974617eef67824523e56e20b56f12fe201a61"
+   },
+   "builddeps": [
+    "ghostscript"
+   ],
+   "libdeps": []
+  },
+  "gvpe": {
+   "label": "gvpe GNU Virtual Private Ethernet",
+   "tarball": "gvpe",
+   "version": "3.1",
+   "description": "Secure VPN among multiple nodes over an untrusted network",
+   "home": "https://www.gnu.org/software/gvpe",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gvpe-3.1.tar.gz": "f1ebd572d725bb940e080771a1c10867c3509dcd8316f6114814503dcbb1e8b3"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "gwl": {
+   "label": "gwl",
+   "tarball": "gwl",
+   "version": "0.5.1",
+   "description": "Guix Workflow Language",
+   "home": "http://www.gnu.org/software/gwl",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gwl-0.5.1.tar.gz": "475496c15bf0f84b18446e24403ef790aa07bec7fd2b45ca901e577856340722"
+   },
+   "builddeps": [
+    "guile"
+   ],
+   "libdeps": []
+  },
+  "gxmessage": {
+   "label": "gxmessage",
+   "tarball": "gxmessage",
+   "version": "4.1.1",
+   "description": "Open popup message window with buttons for return",
+   "home": "http://www.gnu.org/software/gxmessage/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gxmessage-4.1.1.tar.gz": "8c227cb6fdeb4aa4fed7c55f0a33240990ea329e3bcd3bb43552a82e302651f4"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "gtk",
+    "intltool"
+   ]
+  },
+  "gzip": {
+   "label": "gzip",
+   "tarball": "gzip",
+   "version": "1.15",
+   "description": "General file (de)compression (using lzw)",
+   "home": "http://www.gnu.org/software/gzip/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "gzip-1.15.tar.xz": "9aa0cc780dec156b8282844833b342ab7cb08c25d2cd9a1869cdd0df31deff48"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "halifax-sender": {
+   "label": "HaliFAX Sender",
+   "tarball": "halifax-sender",
+   "version": "0.4.2",
+   "description": "A program for sending faxes",
+   "home": "http://www.gnu.org/software/halifax/",
+   "subdir": "halifax/",
+   "sha256": {
+    "gfax-0.4.2.tar.gz": "20849272c1cf4eafc2e1bd55df8cc03d96b0c5e102fb43865c89d974e9000986"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "gtk1"
+   ]
+  },
+  "halifax-viewer": {
+   "label": "HaliFAX Viewer",
+   "tarball": "halifax-viewer",
+   "version": "0.22.0",
+   "description": "A program for viewing faxes",
+   "home": "http://www.gnu.org/software/halifax/",
+   "subdir": "halifax/",
+   "sha256": {
+    "ghfaxviewer-0.22.0.tar.gz": "66acdb920a2baa8199360634943f09bf16cf82796db688a1dda7ecbedfc863ce"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "gtk1"
+   ]
+  },
+  "hello": {
+   "label": "Hello",
+   "tarball": "hello",
+   "version": "2.12.3",
+   "description": "Hello, GNU world: An example GNU package",
+   "home": "http://www.gnu.org/software/hello/manual/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "hello-2.12.3.tar.gz": "0d5f60154382fee10b114a1c34e785d8b1f492073ae2d3a6f7b147687b366aa0"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "help2man": {
+   "label": "help2man",
+   "tarball": "help2man",
+   "version": "1.49.3",
+   "description": "Automatically generate man pages from program --help",
+   "home": "http://www.gnu.org/software/help2man/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "help2man-1.49.3.tar.xz": "4d7e4fdef2eca6afe07a2682151cea78781e0a4e8f9622142d9f70c083a2fd4f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "hp2xx": {
+   "label": "hp2xx",
+   "tarball": "hp2xx",
+   "version": "3.4.4",
+   "description": "Convert HP-GL format graphics to other vector and bitmap formats",
+   "home": "http://www.gnu.org/software/hp2xx/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "hp2xx-3.4.4.tar.gz": "47b72fb386a189b52f07e31e424c038954c4e0ce405803841bed742bab488817",
+    "fix-install.diff": "bc38c888d4e267de82076e93a5a1db0b9cea8e086ea04a2fcc49135049b1041c",
+    "fix-build.diff": "1500753c6fa630c4b4b8d2c3d960655bfa1825ca3753e1ae81760d2edc4d6fb8"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "zlib",
+    "libpng"
+   ]
+  },
+  "httptunnel": {
+   "label": "httptunnel",
+   "tarball": "httptunnel",
+   "version": "3.3",
+   "description": "Bidirectional connection tunnelled inside HTTP requests",
+   "home": "http://www.gnu.org/software/httptunnel/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "httptunnel-3.3.tar.gz": "142f82b204876c2aa90f19193c7ff78d90bb4c2cba99dfd4ef625864aed1c556",
+    "httptunnel3.3.patch": "26b3eb24aa93d21b060e73d5f944d988dc4d85d029c91137a55c0a1a668325c7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "hyperbole": {
+   "label": "Hyperbole",
+   "tarball": "hyperbole",
+   "version": "9.3.2",
+   "description": "Emacs hypertext system via customizable buttons",
+   "home": "http://www.gnu.org/software/hyperbole/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "hyperbole-9.3.2.tar.gz": "8be6053ab4561d5248a3bebe96ff378754330c986a0a06e7e2960eb97d8a49d3"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "idutils": {
+   "label": "ID Utils",
+   "tarball": "idutils",
+   "version": "4.6",
+   "description": "Identifier database utilities",
+   "home": "http://www.gnu.org/software/idutils/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "idutils-4.6.tar.xz": "8181f43a4fb62f6f0ccf3b84dbe9bec71ecabd6dfdcf49c6b5584521c888aac2",
+    "idutils.4.6.warning.patch": "89bcc131cedddbcf77c276eda5e03c1800eccca0e5de5552baacb34895c61d2d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ignuit": {
+   "label": "ignuit",
+   "tarball": "ignuit",
+   "version": "2.24.3",
+   "description": "Memorization aid based on Leitner flashcards",
+   "home": "http://www.gnu.org/software/ignuit/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ignuit-2.24.3.tar.gz": "0333024c74ba04903701500e342cadf5efba85ebfb738222a3364c592bba33c7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "indent": {
+   "label": "Indent",
+   "tarball": "indent",
+   "version": "2.2.13",
+   "description": "source code reformatter",
+   "home": "http://www.gnu.org/software/indent/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "indent-2.2.13.tar.xz": "1b81ba4e9a006ca8e6eb5cbbe4cf4f75dfc1fc9301b459aa0d40393e85590a0b"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "inetlib": {
+   "label": "inetlib",
+   "tarball": "inetlib",
+   "version": "1.1.2",
+   "description": "A Java library of clients for common internet protocols",
+   "home": "http://www.gnu.org/software/classpath/inetlib.html",
+   "subdir": "classpath/",
+   "sha256": {
+    "inetlib-1.1.2.tar.gz": "8df333b2b5101c6c2cbabe2f8d50314ed96e68e3d19f263593af2a49594a1004"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "inetutils": {
+   "label": "inetutils",
+   "tarball": "inetutils",
+   "version": "2.8",
+   "description": "Basic networking utilities",
+   "home": "http://www.gnu.org/software/inetutils/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "inetutils-2.8.tar.gz": "57b3cf4f77555992881e5ba2a09a63b05aa2c56342a60ed4305b5f45938390b5",
+    "inetutils-2.8.tar.gz.proof": "d3563a20debee69312110cbd3223cd1c03bb791edc9652fcb6a181771f56eba9"
+   },
+   "builddeps": [
+    "#ncurses"
+   ],
+   "libdeps": []
+  },
+  "inklingreader": {
+   "label": "inklingreader",
+   "tarball": "inklingreader",
+   "version": "0.8",
+   "description": "Wacom Inkling sketch format conversion and manipulation",
+   "home": "http://www.gnu.org/software/inklingreader/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "inklingreader-0.8.tar.gz": "cf24fadff065f2a60c8521bd23f6c64c311f5b7573ff46f002103bfe6a496f46"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "intlfonts": {
+   "label": "Intlfonts",
+   "tarball": "intlfonts",
+   "version": "1.4.2",
+   "description": "TrueType and BDF fonts covering many scripts",
+   "home": "http://www.gnu.org/software/intlfonts/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "intlfonts-1.4.2.tar.gz": "cd3b3f186a1468de04593ca61a85d6f07782dcde87e1fd3ac1e31b4ce6f32b9d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "jacal": {
+   "label": "JACAL",
+   "tarball": "jacal",
+   "version": "2a1",
+   "description": "Symbolic mathematics system in scheme",
+   "home": "http://www.gnu.org/software/jacal",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "jacal-2a1.tar.gz": "f8882903aab280cc0b111aeac548fbc761246346e9599f71b91dbebd2e7e1314"
+   },
+   "builddeps": [
+    "#scm"
+   ],
+   "libdeps": [
+    "#slib"
+   ]
+  },
+  "jami": {
+   "label": "Jami, formerly \"Ring\"",
+   "tarball": "jami",
+   "version": "20260917.0",
+   "description": "A privacy-respecting communication program for video, voice, text, data",
+   "home": "https://jami.net",
+   "subdir": "release/tarballs/",
+   "sha256": {
+    "jami-20260917.0.tar.gz": "50ae4ea4e84983c064ed487204639c15e25b403baec567ec7e432dc6c75841f3"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "java-getopt": {
+   "label": "Java getopt",
+   "tarball": "java-getopt",
+   "version": "1.0.14",
+   "description": "Java port of GNU getopt",
+   "home": "http://www.gnu.org/software/java-getopt/",
+   "subdir": "getopt/",
+   "sha256": {
+    "java-getopt-1.0.14.tar.gz": "ad0d5cd146d676a3ac0ef4bf6a292eb7f79d32d0cb4f202fa7e3d43dcb52d98e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "java-training-wheels": {
+   "label": "java-training-wheels",
+   "tarball": "java-training-wheels",
+   "version": "2.8",
+   "description": "A simplified Java environment for learning programming",
+   "home": "http://davin.50webs.com/research/2009/anpl4tj.html",
+   "subdir": "jtw/",
+   "sha256": {
+    "java-training-wheels-2.8.tar.gz": "9a7e8f67155521ea9c561e050fe3ed17138c1dec6914fc018a37f466767d1caa"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "jel": {
+   "label": "JEL",
+   "tarball": "jel",
+   "version": "2.1.2",
+   "description": "Java expression library and compiler",
+   "home": "http://www.gnu.org/software/jel/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "jel-2.1.2.tar.gz": "628eb56ef172ac759bb04965a591b9c0e940e484f895f6ce90a836d5d8a88578"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "jitter": {
+   "label": "GNU jitter",
+   "tarball": "jitter",
+   "version": "master",
+   "description": "GNU jitter, language virtual machine generator",
+   "home": "http://www.gnu.org/software/jitter/",
+   "subdir": null,
+   "sha256": {},
+   "builddeps": [
+    "gettext",
+    "gnunet"
+   ],
+   "libdeps": []
+  },
+  "jwhois": {
+   "label": "JWHOIS",
+   "tarball": "jwhois",
+   "version": "4.0",
+   "description": "An extended whois client in Java",
+   "home": "http://www.gnu.org/software/jwhois/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "jwhois-4.0.tar.gz": "fa9bb86782b915c6d730bb723f876dc9b345a617db375aaf3416ec22553cd64e",
+    "fix-build.diff": "802dc1fb72fb52d01d1ffd31270080e46bc71bcaca8d78a039806713175a4e16"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "libiconv"
+   ]
+  },
+  "kawa": {
+   "label": "Kawa",
+   "tarball": "kawa",
+   "version": "3.1.1",
+   "description": "Java framework and implementation of Scheme, Elisp, and more",
+   "home": "http://www.gnu.org/software/kawa/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "kawa-3.1.1.tar.gz": "8c9a50cd6b100154c901bd190b3acd2fb8353f33622c4a2ce8fa392a7f09e019"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#readline"
+   ]
+  },
+  "leg": {
+   "label": "Leg",
+   "tarball": "leg",
+   "version": "",
+   "description": "Libraries and engines for game programming",
+   "home": "http://www.gnu.org/software/leg/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "leg.tar.gz": "2361774428a98396861a3ec97ca84320b7368254be423f72adcd1f5eeb95defc"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "less": {
+   "label": "less",
+   "tarball": "less",
+   "version": "710",
+   "description": "Paginator for terminals",
+   "home": "http://greenwoodsoftware.com/less/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "less-710.tar.gz": "d1008fb78dcae1323ddab664bcb352a61f022b1b131bd8018548e021d975ec7a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libassuan": {
+   "label": "libassuan",
+   "tarball": "libassuan",
+   "version": "3.0.2",
+   "description": "A library implementing the Assuan IPC protocol",
+   "home": "http://www.gnupg.org/related_software/libassuan/index.en.html/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libassuan-3.0.2.tar.bz2": "d2931cdad266e633510f9970e1a2f346055e351bb19f9b78912475b8074c36f6"
+   },
+   "builddeps": [
+    "libgpg-error"
+   ],
+   "libdeps": []
+  },
+  "libcdio": {
+   "label": "Compact Disc Input and Control Library",
+   "tarball": "libcdio",
+   "version": "2.1.0",
+   "description": "CD Input and Control library",
+   "home": "http://www.gnu.org/software/libcdio/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libcdio-2.1.0.tar.bz2": "8550e9589dbd594bfac93b81ecf129b1dc9d0d51e90f9696f1b2f9b2af32712b"
+   },
+   "builddeps": [
+    "ncurses",
+    "help2man"
+   ],
+   "libdeps": []
+  },
+  "libcdio-paranoia": {
+   "label": "libcdio-paranoia",
+   "tarball": "libcdio-paranoia",
+   "version": "10.2+2.0.2",
+   "description": "A library providing CD data extraction capabilities",
+   "home": "http://www.gnu.org/software/libcdio/",
+   "subdir": "libcdio/",
+   "sha256": {
+    "libcdio-paranoia-10.2+2.0.2.tar.bz2": "186892539dedd661276014d71318c8c8f97ecb1250a86625256abd4defbf0d0c"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libdbh": {
+   "label": "libdbh",
+   "tarball": "libdbh",
+   "version": "5.0.22",
+   "description": "Advanced library for disk-based hash tables",
+   "home": "http://gnu.org/software/libdbh/",
+   "subdir": "dbh/files/dbh/$(GARVERSION)/",
+   "sha256": {
+    "libdbh2-5.0.22.tar.gz": "8df54e7d1c1d071e385b59256b42a9538cb1b744b11ecc022e188d99046e91d7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "liberty-eiffel": {
+   "label": "liberty-eiffel",
+   "tarball": "liberty-eiffel",
+   "version": "bell",
+   "description": "Eiffel compiler, a fork of SmartEiffel",
+   "home": "http://www.gnu.org/software/liberty-eiffel/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "bell.tar.gz": "e4707c4d55548173fac9ebeccd88ba9eec06836f108e3a0778d6f6155764f8bd"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libeufin": {
+   "label": "libeufin",
+   "tarball": "libeufin",
+   "version": "1.6.8",
+   "description": "libeufin some EU thing for taler payment system",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "libeufin-1.6.8.tar.gz": "8d3e4b7672660598f9d8149898826e693c2365824c671ac70b2bbd7ad5f72d7f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libextractor": {
+   "label": "libextractor",
+   "tarball": "libextractor",
+   "version": "1.20",
+   "description": "Library to extract meta-data from media files",
+   "home": "http://www.gnu.org/software/libextractor/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libextractor-1.20.tar.gz": "f4fd6c67076e04e907a3032e42bbaa7c0b35aa3a503393c5d74e303ec3eb84b4"
+   },
+   "builddeps": [
+    "libtool"
+   ],
+   "libdeps": []
+  },
+  "libffcall": {
+   "label": "libffcall",
+   "tarball": "libffcall",
+   "version": "2.5",
+   "description": "foreign function call library",
+   "home": "http://www.gnu.org/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libffcall-2.5.tar.gz": "7f422096b40498b1389093955825f141bb67ed6014249d884009463dc7846879"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libgcrypt": {
+   "label": "Libgcrypt",
+   "tarball": "libgcrypt",
+   "version": "1.12.4",
+   "description": "Cryptographic function library",
+   "home": "http://www.gnu.org/software/libgcrypt/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libgcrypt-1.12.4.tar.bz2": "d77f68f48879510e79a2f65977ccc68981781ea0923e5bdffac2a193ea3d660e"
+   },
+   "builddeps": [
+    "libgpg-error"
+   ],
+   "libdeps": []
+  },
+  "libgnunetchat": {
+   "label": "libgnunetchat",
+   "tarball": "libgnunetchat",
+   "version": "0.8.0",
+   "description": "A client-side library for apps to utilize the messenger service of GNUnet.",
+   "home": "http://www.gnu.org/software/gnunet",
+   "subdir": "gnunet/",
+   "sha256": {
+    "libgnunetchat-0.8.0.tar.gz": "1c241904f2c16218c0d60fa9354f86bc7577330a46ffe61898c6b9e9046e6aa6"
+   },
+   "builddeps": [
+    "gnunet"
+   ],
+   "libdeps": []
+  },
+  "libgpg-error": {
+   "label": "libgpg-error",
+   "tarball": "libgpg-error",
+   "version": "1.61",
+   "description": "A library that defines common error values for GnuPG",
+   "home": "http://gnupg.org/software/libgpg-error",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libgpg-error-1.61.tar.bz2": "7a85413f2bc354f4f8aa832b718af122e48965e9e0eb9012ee659c13c6385c93"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libgsasl": {
+   "label": "libgsasl",
+   "tarball": "libgsasl",
+   "version": "1.10.0",
+   "description": "Simple Authentication and Security Layer library",
+   "home": "http://www.gnu.org/software/gsasl/",
+   "subdir": "gsasl/",
+   "sha256": {
+    "libgsasl-1.10.0.tar.gz": "f1b553384dedbd87478449775546a358d6f5140c15cccc8fb574136fdc77329f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libiconv": {
+   "label": "libiconv",
+   "tarball": "libiconv",
+   "version": "1.19.1",
+   "description": "Character set conversion library",
+   "home": "http://www.gnu.org/software/libiconv/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libidn": {
+   "label": "lib IDN Library",
+   "tarball": "libidn",
+   "version": "1.44",
+   "description": "Internationalized domain name string processing library",
+   "home": "http://www.gnu.org/software/libidn/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libidn-1.44.tar.gz": "499608bab3a65650a0ea52888c13a8deebe3f71408e319acd9ec52e02eb13959"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libidn2": {
+   "label": "IDN Library 2",
+   "tarball": "libidn2",
+   "version": "2.3.8",
+   "description": "Internationalized domain name string processing library",
+   "home": "http://www.gnu.org/software/libidn/",
+   "subdir": "libidn/",
+   "sha256": {
+    "libidn2-2.3.8.tar.gz": "f557911bf6171621e1f72ff35f5b1825bb35b52ed45325dcdee931e5d3c0787a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libksba": {
+   "label": "Libksba",
+   "tarball": "libksba",
+   "version": "1.8.1",
+   "description": "A library for working with X.509 certificates and CMS  data",
+   "home": "http://www.gnupg.org/related_software/libksba/index.en.html",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libksba-1.8.1.tar.bz2": "c2f84393011827219ae117131dba8e7684c2bed0961eed11b0642c2acba440b5"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "libgpg-error"
+   ]
+  },
+  "libmatheval": {
+   "label": "libmatheval",
+   "tarball": "libmatheval",
+   "version": "1.1.12",
+   "description": "Library for evaluating symbolic expressions",
+   "home": "http://www.gnu.org/software/libmatheval/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libmatheval-1.1.12.tar.gz": "65dc61b5866af6531b23aa7b0eac378f4b758986d3c8c057074c1557584b28b7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libmicrohttpd": {
+   "label": "libmicrohttpd",
+   "tarball": "libmicrohttpd",
+   "version": "1.0.10",
+   "description": "C library implementing an HTTP 1.1 server",
+   "home": "http://www.gnu.org/software/libmicrohttpd/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libmicrohttpd-1.0.10.tar.gz": "04bfe8ef75db7d629a33de767599765cecadc56274a39822d5d081030d577685"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libosip2": {
+   "label": "liboSIP",
+   "tarball": "libosip2",
+   "version": "5.3.2",
+   "description": "Library implementing SIP (RFC-3261)",
+   "home": "http://www.gnu.org/software/osip/",
+   "subdir": "osip/",
+   "sha256": {
+    "libosip2-5.3.2.tar.gz": "16186f6f5540936b62c3aaca6e8409e1af25cd22abc3882b393be215f49d3b00"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libredwg": {
+   "label": "LibreDWG",
+   "tarball": "libredwg",
+   "version": "0.14",
+   "description": "3d CAD dwg format library",
+   "home": "http://www.gnu.org/software/libredwg/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libredwg-0.14.tar.xz": "62ebb73b984f865960f20ed26619ea5f8789d5e3fd088fa40a2598384da81275"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "librejs": {
+   "label": "LibreJS",
+   "tarball": "librejs",
+   "version": "7.21.1",
+   "description": "Browser add-on that blocks nonfree nontrivial JavaScript",
+   "home": "http://www.gnu.org/software/librejs/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "librejs-7.21.1.tar.gz": "b4a7bb2dcb9ded0ee2eea7abd6efdf6476c0efec5ec341e6956252995d7c7575"
+   },
+   "builddeps": [
+    "#addon-sdk"
+   ],
+   "libdeps": []
+  },
+  "libsigsegv": {
+   "label": "libsigsegv",
+   "tarball": "libsigsegv",
+   "version": "2.16",
+   "description": "Library for handling page faults",
+   "home": "http://www.gnu.org/software/libsigsegv/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libsigsegv-2.16.tar.gz": "f8b2fac06c091fc29d6474733d118dc163ed7cd6be4783240d31ad7af11efa30"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libtasn1": {
+   "label": "Libtasn1",
+   "tarball": "libtasn1",
+   "version": "4.21.0",
+   "description": "ASN.1 library, machine-neutral encodings of data objects",
+   "home": "http://www.gnu.org/software/libtasn1/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libtasn1-4.21.0.tar.gz": "1d8a444a223cc5464240777346e125de51d8e6abf0b8bac742ac84609167dc87"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libtextstyle": {
+   "label": "libtextstyle",
+   "tarball": "libtextstyle",
+   "version": "0.8",
+   "description": "Ear training",
+   "home": "http://www.gnu.org/software/gettext/",
+   "subdir": "gettext/",
+   "sha256": {
+    "libtextstyle-0.8.tar.gz": "5cd91ef7683111af2734095e00f4ee4995c916cf32ea38e314aee251f8683216"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libtool": {
+   "label": "libtool",
+   "tarball": "libtool",
+   "version": "2.6.2",
+   "description": "Generic shared library support tools",
+   "home": "http://www.gnu.org/software/libtool/",
+   "subdir": "gnu/$(GARNAME)/",
+   "sha256": {
+    "libtool-2.6.2.tar.xz": "2ef1067c16c97db930fd740cc9bc3d3ba9a583804ae5ac42cc3e8719e49e191e"
+   },
+   "builddeps": [
+    "m4"
+   ],
+   "libdeps": []
+  },
+  "libunistring": {
+   "label": "libunistring",
+   "tarball": "libunistring",
+   "version": "1.5",
+   "description": "C library for manipulating Unicode strings",
+   "home": "http://www.gnu.org/software/libunistring/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libunistring-1.5.tar.xz": "fe89007a8a414ae4790b816b86859e877d3ab135db3c37f06541ff7e85ac344b"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "libxmi": {
+   "label": "Libxmi",
+   "tarball": "libxmi",
+   "version": "1.2",
+   "description": "Library for rasterizing 2-d vector graphics",
+   "home": "http://www.gnu.org/software/libxmi/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "libxmi-1.2.tar.gz": "9d56af6d6c41468ca658eb6c4ba33ff7967a388b606dc503cd68d024e08ca40d"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "libtool"
+   ]
+  },
+  "libzrtpcpp": {
+   "label": "libzrtpcpp",
+   "tarball": "libzrtpcpp",
+   "version": "2.3.4",
+   "description": "A C++ implementation of the ZRTP specification",
+   "home": "http://www.gnu.org/software/ccrtp",
+   "subdir": "ccrtp/",
+   "sha256": {
+    "libzrtpcpp-2.3.4.tar.gz": "03e5d4de487fd154177cf2b7a45600b1c8df783136e4f01a9ebc6104b3771008"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#libgcrypt",
+    "ccrtp",
+    "openssl"
+   ]
+  },
+  "lightning": {
+   "label": "lightning",
+   "tarball": "lightning",
+   "version": "2.2.3",
+   "description": "Library for generating assembly code at runtime",
+   "home": "http://www.gnu.org/software/lightning/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "lightning-2.2.3.tar.gz": "c045c7a33a00affbfeb11066fa502c03992e474a62ba95977aad06dbc14c6829"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "lilypond": {
+   "label": "LilyPond",
+   "tarball": "lilypond",
+   "version": "2.26.0",
+   "description": "Music typesetting",
+   "home": "http://lilypond.org/",
+   "subdir": "download/sources/v$(SERIES)/",
+   "sha256": {
+    "lilypond-2.26.0.tar.gz": "bbe82dbeba7f7f99ddcd8d1fa134a0d89cafa6e8f815fde5bb01f4208b06fe05"
+   },
+   "builddeps": [
+    "#ghostscript",
+    "texinfo",
+    "bison",
+    "pkg-config",
+    "#",
+    "freetype2",
+    "pango",
+    "fontconfig",
+    "help2man",
+    "texinfo",
+    "#",
+    "t1utils",
+    "imagemagick",
+    "flex",
+    "perl",
+    "dblatex",
+    "netpbm",
+    "fontforge"
+   ],
+   "libdeps": []
+  },
+  "linux-libre": {
+   "label": "Linux Libre kernel",
+   "tarball": "linux-libre",
+   "version": "$(GARVER)-gnu",
+   "description": "100% free redistribution of a cleaned Linux kernel",
+   "home": "http://www.gnu.org/software/linux-libre",
+   "subdir": "pub/$(GARNAME)/releases/$(GARVERSION)/",
+   "sha256": {
+    "linux-libre-7.3-gnu.tar.lz": "dbaced78a58dc365a171923077f322dad36f7439615dd5b6e7fb8e0aa1d88740",
+    "linux-libre-7.3-gnu.tar.lz.sign": "e7e1868f70496f24d0914d25fbdee74a35150b4c8a062d18cb6c16dd07843188"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "liquidwar6": {
+   "label": "Liquid War 6",
+   "tarball": "liquidwar6",
+   "version": "0.6.3902",
+   "description": "Multiplayer wargame where your army is a blob of liquid",
+   "home": "http://www.gnu.org/software/liquidwar6/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "liquidwar6-0.6.3902.tar.gz": "d605549afae403439524e572322e45ebf5b6db8ea59505e5d51cb581a8b5e6a4"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "guile",
+    "gmp",
+    "gc",
+    "libtool",
+    "zlib",
+    "libpng",
+    "libsdl",
+    "libsdl_image",
+    "#",
+    "libsdl_ttf",
+    "libsdl_mixer",
+    "expat",
+    "libjpeg"
+   ]
+  },
+  "lrzsz": {
+   "label": "lrzsz",
+   "tarball": "lrzsz",
+   "version": "0.12.20",
+   "description": "Implementation of XMODEM/YMODEM/ZMODEM transfer protocols",
+   "home": "http://www.gnu.org/software/lrzsz/",
+   "subdir": "releases/",
+   "sha256": {
+    "lrzsz-0.12.20.tar.gz": "c28b36b14bddb014d9e9c97c52459852f97bd405f89113f30bee45ed92728ff1"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "lsh": {
+   "label": "lsh",
+   "tarball": "lsh",
+   "version": "2.1",
+   "description": "GNU implementation of the Secure Shell (ssh) protocols",
+   "home": "http://www.gnu.org/software/lsh/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "lsh-2.1.tar.gz": "8bbf94b1aa77a02cac1a10350aac599b7aedda61881db16606debeef7ef212e3"
+   },
+   "builddeps": [
+    "nettle",
+    "liboop"
+   ],
+   "libdeps": []
+  },
+  "m4": {
+   "label": "M4",
+   "tarball": "m4",
+   "version": "1.4.21",
+   "description": "m4 Macro processor",
+   "home": "http://www.gnu.org/software/m4/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "m4-1.4.21.tar.xz": "f25c6ab51548a73a75558742fb031e0625d6485fe5f9155949d6486a2408ab66"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "macchanger": {
+   "label": "MAC Changer",
+   "tarball": "macchanger",
+   "version": "1.6.0",
+   "description": "Viewing and manipulating MAC addresses of network interfaces",
+   "home": "http://www.gnu.org/software/macchanger",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "macchanger-1.6.0.tar.gz": "31534f138f1d21fa247be74ba6bef3fbfa47bbcd5033e99bd10c432fe58e51f7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mailman": {
+   "label": "Mailman",
+   "tarball": "mailman",
+   "version": "2.1.39",
+   "description": "Mailing list manager",
+   "home": "http://www.gnu.org/software/mailman/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "mailman-2.1.39.tgz": "7b8e9222364abdfd25cb2053c422319aac7b620c287dd979703e0399d72f4390"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mailutils": {
+   "label": "mailutils",
+   "tarball": "mailutils",
+   "version": "3.21.90",
+   "description": "Utilities and library for reading and serving mail",
+   "home": "http://www.gnu.org/software/mailutils/",
+   "subdir": "gnu/$(GARNAME)/",
+   "sha256": {
+    "mailutils-3.21.90.tar.xz": "6951e1d4db559fc931814fecc72e619cc3bf022be7ceb38995aa458c0b7223f3"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#gettext",
+    "gdbm",
+    "readline",
+    "ncurses",
+    "gnutls",
+    "guile",
+    "m4",
+    "pam"
+   ]
+  },
+  "make": {
+   "label": "Make",
+   "tarball": "make",
+   "version": "4.4.1",
+   "description": "Make compiled files automatically",
+   "home": "http://www.gnu.org/software/make/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "make-4.4.1.tar.lz": "8814ba072182b605d156d7589c19a43b89fc58ea479b9355146160946f8cf6e9"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "marst": {
+   "label": "MARST",
+   "tarball": "marst",
+   "version": "2.8",
+   "description": "Algol-60-to-C translator",
+   "home": "http://www.gnu.org/software/marst/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "marst-2.8.tar.gz": "d77f4703b0b44b50be57908f9d556ee6c3bedd97d638c42949d6aec84f8070ba"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "maverik": {
+   "label": "MAVERIK",
+   "tarball": "maverik",
+   "version": "6.5",
+   "description": "Support interactive 3d virtual environments",
+   "home": "http://www.gnu.org/software/maverik/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "maverik-6.5.tar.gz": "3ed567bcb685048c597e6795826b9d6df5fc98b9bae45e0b5645614175b81654"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mc": {
+   "label": "Midnight Commander",
+   "tarball": "mc",
+   "version": "4.6.1",
+   "description": "Graphical file manager",
+   "home": "http://www.gnu.org/software/mc/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "mc-4.6.1.tar.gz": "086ab03daaac28a28c0ddb9a709040b59e1322f6bfa68e39d004d9c66b119e7e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mcron": {
+   "label": "Mcron",
+   "tarball": "mcron",
+   "version": "1.2.3",
+   "description": "Run jobs at scheduled times, cron replacement using Scheme",
+   "home": "http://www.gnu.org/software/mcron/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "mcron-1.2.3.tar.gz": "1bc8c0d362d3b1a30fa0071d7fab696bbfc1da1ed536c42e0480bb9ffd22154e"
+   },
+   "builddeps": [
+    "guile",
+    "which",
+    "ed"
+   ],
+   "libdeps": []
+  },
+  "mcsim": {
+   "label": "MCSim",
+   "tarball": "mcsim",
+   "version": "6.2.0",
+   "description": "Monte Carlo simulation and analysis",
+   "home": "http://www.gnu.org/software/mcsim/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "mcsim-6.2.0.tar.gz": "c6a3a685dfb9a6f0e99760f2628a91cf40798f6f05d4577e49fade9d80664f7e"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "gsl"
+   ]
+  },
+  "mdk": {
+   "label": "MIX Development Kit",
+   "tarball": "mdk",
+   "version": "1.3.1",
+   "description": "Virtual development environment for Knuth_s MIX",
+   "home": "http://www.gnu.org/software/mdk/",
+   "subdir": "$(GARNAME)/v$(GARVERSION)/",
+   "sha256": {
+    "mdk-1.3.1.tar.gz": "ebb963938c688c150ff6aaedc29f30d09020a1e31d55b30c2101f08773516d19"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "intltool"
+   ]
+  },
+  "mediagoblin": {
+   "label": "MediaGoblin",
+   "tarball": "mediagoblin",
+   "version": "0.15.0",
+   "description": "Photo, audio, video media sharing to the net",
+   "home": "http://www.mediagoblin.org/",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mes": {
+   "label": "GNU Mes",
+   "tarball": "mes",
+   "version": "0.28",
+   "description": "GNU Mes is a Scheme interpreter and C compiler for bootstrapping the GNU System",
+   "home": "http://www.gnu.org/software/mes/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "mes-0.28.tar.gz": "22d92e0b76d413dacd2eaa6db864093926f111389aa515a447555d4a2ff07842"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "messenger-cli": {
+   "label": "messenger-cli",
+   "tarball": "messenger-cli",
+   "version": "0.5.0",
+   "description": "Secure, decentralized, peer-to-peer networking; GNUnet messenger-cli",
+   "home": "http://www.gnu.org/software/gnunet",
+   "subdir": "$(PACKAGE)/",
+   "sha256": {
+    "messenger-cli-0.5.0.tar.gz": "a5da4e93b039e66fae36c8b6f6b35130c5b09e084a9eff9f93d148243742a2ba"
+   },
+   "builddeps": [
+    "libgnunetchat"
+   ],
+   "libdeps": []
+  },
+  "messenger-gtk": {
+   "label": "messenger-gtk",
+   "tarball": "messenger-gtk",
+   "version": "0.12.0",
+   "description": "Secure, decentralized, peer-to-peer networking; GNUnet messenger-gtk",
+   "home": "http://www.gnu.org/software/gnunet",
+   "subdir": "gnunet/",
+   "sha256": {
+    "messenger-gtk-0.12.0.tar.gz": "e842660302e349ed4bf80b146b0bcf3ea58a48d2a5d5f14ead84f0d38fd57588"
+   },
+   "builddeps": [
+    "libgnunetchat"
+   ],
+   "libdeps": []
+  },
+  "metahtml": {
+   "label": "Meta-HTML",
+   "tarball": "metahtml",
+   "version": "5.091",
+   "description": "Combining HTML and Lisp, specifically designed for Web servers",
+   "home": "http://www.gnu.org/software/metahtml",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "metahtml-5.091.tar.gz": "c1b39352c4868895087b72fa2beb0c0d36e50ce4b7f4e53686ffe15ae8fbd9c9"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "gdbm"
+   ]
+  },
+  "metalogic-inference": {
+   "label": "metalogic-inference mli",
+   "tarball": "metalogic-inference",
+   "version": "master",
+   "description": "metalogic inference",
+   "home": "http://www.gnu.org/software/metalogic-inference",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [
+    "gmp",
+    "bdw-gc"
+   ],
+   "libdeps": []
+  },
+  "micron": {
+   "label": "micron",
+   "tarball": "micron",
+   "version": "1.4",
+   "description": "micron , a cron daemon replacement, run jobs at times",
+   "home": "http://www.gnu.org/software/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "micron-1.4.tar.gz": "036e662f5a60cf98bb6a4b0e6ad39f9d5c213ea07efe9f586b567f192573cda4"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mifluz": {
+   "label": "Mifluz",
+   "tarball": "mifluz",
+   "version": "0.26.0",
+   "description": "Full text indexing library",
+   "home": "http://www.gnu.org/software/mifluz/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "mifluz-0.26.0.tar.gz": "e220ad4a23a972acfffedb05d63e8c7b13a422f9008bd6af95fdb4339f94b6a4"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "zlib"
+   ]
+  },
+  "miscfiles": {
+   "label": "Miscfiles",
+   "tarball": "miscfiles",
+   "version": "1.5",
+   "description": "Data files for airport codes, zip codes, a dictionary, and more",
+   "home": "http://www.gnu.org/software/miscfiles/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "miscfiles-1.5.tar.gz": "6aaaa8898b0f6dac18bcaa5492874a6cd1243ffbe7a6dd347ca8f3ec3642a500"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mit-scheme": {
+   "label": "MIT/GNU Scheme",
+   "tarball": "mit-scheme",
+   "version": "12.1",
+   "description": "A Scheme implementation with integrated editor and debugger",
+   "home": "http://www.gnu.org/software/mit-scheme/",
+   "subdir": "$(GARNAME)/stable.pkg/$(GARVERSION)/",
+   "sha256": {
+    "mit-scheme-12.1.tar.gz": "5509fb69482f671257ab4c62e63b366a918e9e04734feb9f5ac588aa19709bc6",
+    "mit-schemettermc.patch": "40bd8debbde7bb5228ed97e79fdfc7e38ef4cc1f766d50aa10f1d6c18fce1d5d"
+   },
+   "builddeps": [
+    "ncurses"
+   ],
+   "libdeps": []
+  },
+  "moe": {
+   "label": "Moe",
+   "tarball": "moe",
+   "version": "1.16",
+   "description": "Modeless, multiple-buffer, user-friendly 8-bit text editor",
+   "home": "http://www.gnu.org/software/moe/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "moe-1.16.tar.lz": "4c25cd78919272aebec0a7f8c126011bb5a4b5d87422807a3423216f0a17a868"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "motti": {
+   "label": "Motti",
+   "tarball": "motti",
+   "version": "3.1.1",
+   "description": "Multiplayer strategy game",
+   "home": "http://www.gnu.org/software/motti/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "motti-3.1.1.tar.gz": "632d9a84d3b2e3eee4c9d9199d66d42576516ea6c291058c01830ae2fb7de429"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mpc": {
+   "label": "MPC",
+   "tarball": "mpc",
+   "version": "1.4.1",
+   "description": "C library for arbitrary precision complex arithmetic",
+   "home": "http://www.multiprecision.org/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "mpc-1.4.1.tar.xz": "91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mpfr": {
+   "label": "MPFR",
+   "tarball": "mpfr",
+   "version": "4.2.2",
+   "description": "C library for arbitrary precision floating-point arithmetic",
+   "home": "http://www.mpfr.org",
+   "subdir": "mpfr-4.2.2/",
+   "sha256": {
+    "mpfr-4.2.2.tar.xz": "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01",
+    "mpfr-4.2.2.tar.xz.asc": "c6264c9a3652bc40775205ce90e7c96cea5058629e2e68f9eede5d8213f23ee6"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mpria": {
+   "label": "mpria",
+   "tarball": "mpria",
+   "version": "0.7.3",
+   "description": "C library for arbitrary precision rational arithmetic",
+   "home": "http://www.gnu.org/software/mpria/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "mpria-0.7.3.tar.xz": "6a7070e9bbeb3f4bc2ce0beb950754eb82f549a685c7f8037a3a1c6cee3c6280"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "mtools": {
+   "label": "mtools",
+   "tarball": "mtools",
+   "version": "4.0.50",
+   "description": "Access MS-DOS disks without mounting",
+   "home": "http://www.gnu.org/software/mtools/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "mtools-4.0.50.tar.lz": "6adccaf371081efb6cf2fe687c88746c0978bafeb9deed5c2b03992704a1a6ab",
+    "mtools.spec": "a24f5dbecb8dd85a1f3d31fb195e3d864601390adb9fd9aa8b0335702cd4f36f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "muse": {
+   "label": "muse emacs-muse",
+   "tarball": "muse",
+   "version": "mastergit",
+   "description": "Authoring and publishing environment for Emacs",
+   "home": "http://www.gnu.org/software/emacs-muse/",
+   "subdir": "alexott",
+   "sha256": {},
+   "builddeps": [
+    "emacs"
+   ],
+   "libdeps": []
+  },
+  "mygnuhealth": {
+   "label": "mygnuhealth",
+   "tarball": "mygnuhealth",
+   "version": "2.2.1",
+   "description": "personal health and hospital information system",
+   "home": "http://www.gnu.org/software/health/",
+   "subdir": "health/mygnuhealth/",
+   "sha256": {
+    "mygnuhealth-2.2.1.tar.gz": "28d83b52eacb2561beb68b3fe83a93d6ede8f20f809286f44239767cbee1d75d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "nana": {
+   "label": "nana",
+   "tarball": "nana",
+   "version": "2.5",
+   "description": "Library for assertions, logging, performance measurement",
+   "home": "http://www.gnu.org/software/nana/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "nana-2.5.tar.gz": "fd1819ffea94b209513959447e4802afe2719600e7d161cd78b265a42812affa",
+    "nana-2.5-fix-install.diff": "dba73cdd7c4a64e4ed4bb5f5b53ca70bed998f54665e92bd8f821b8074db1ca2"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "nano": {
+   "label": "nano",
+   "tarball": "nano",
+   "version": "9.3",
+   "description": "Small, user-friendly console text editor",
+   "home": "http://www.gnu.org/software/nano/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "nano-9.3.tar.xz": "a9affc52c9596ee0682bcdd4ceb3c0b235eb221d83d733dfd9b0dff45897cb0d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "nano-archimedes": {
+   "label": "nano-archimedes",
+   "tarball": "nano-archimedes",
+   "version": "2.0",
+   "description": "Simulation of quantum systems using the Wigner Monte Carlo method",
+   "home": "http://www.gnu.org/software/nano-archimedes/",
+   "subdir": "download/",
+   "sha256": {
+    "nano-archimedes-ballistic-1D-2D-1body-2bodies-2.0.tar": "3efe850a2d1005efbbc04e57a3d800947923c973446702a1ff791a506ae95d2e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ncurses": {
+   "label": "ncurses",
+   "tarball": "ncurses",
+   "version": "6.6-20261107",
+   "description": "ncurses text-to-termimal library",
+   "home": "http://www.gnu.org/software/ncurses/",
+   "subdir": "archives/$(GARNAME)/current/",
+   "sha256": {
+    "ncurses-6.6-20261107.tgz": "e38f3b527c6870788207928df07fd687089495c468a5fe1bf75e49a6422e907d",
+    "ncurses-6.6-20261107.tgz.asc": "adfa582d10651acf1b2afb0741b17e6114d0f0d30a24a393ab873600cc3f8506"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "nettle": {
+   "label": "nettle",
+   "tarball": "nettle",
+   "version": "4.0",
+   "description": "C library for low-level cryptographic functionality",
+   "home": "http://www.gnu.org/software/nettle/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "nettle-4.0.tar.gz": "3addbc00da01846b232fb3bc453538ea5468da43033f21bb345cb1e9073f5094"
+   },
+   "builddeps": [
+    "gmp"
+   ],
+   "libdeps": []
+  },
+  "npth": {
+   "label": "nPth",
+   "tarball": "npth",
+   "version": "1.8",
+   "description": "A reimplementation of the Portable Threads Library, pth",
+   "home": "https://gnupg.org/software/npth/index.html",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "npth-1.8.tar.bz2": "8bd24b4f23a3065d6e5b26e98aba9ce783ea4fd781069c1b35d149694e90ca3e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ntbtls": {
+   "label": "ntbTLS",
+   "tarball": "ntbtls",
+   "version": "0.3.2",
+   "description": "not too bad tiny TLS 1.2 only library  used with Libgcrypt and LibKSBA",
+   "home": "https://gnupg.org/software/ntbtls/index.html",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ntbtls-0.3.2.tar.bz2": "bdfcb99024acec9c6c4b998ad63bb3921df4cfee4a772ad6c0ca324dbbf2b07c"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ocrad": {
+   "label": "Ocrad",
+   "tarball": "ocrad",
+   "version": "0.29",
+   "description": "Optical character recognition based on feature extraction",
+   "home": "http://www.gnu.org/software/ocrad/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "ocrad-0.29.tar.lz": "11200cc6b0b7ba16884a72dccb58ef694f7aa26cd2b2041e555580f064d2d9e9"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "octave": {
+   "label": "Octave",
+   "tarball": "octave",
+   "version": "11.3.0",
+   "description": "High-level language for numerical computation",
+   "home": "http://www.gnu.org/software/octave/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "octave-11.3.0.tar.lz": "4057e37ec2cbf98a78ca3412e56718ba567c3797a77b9bfd8cb2c2b8e044b270"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "oleo": {
+   "label": "Oleo",
+   "tarball": "oleo",
+   "version": "1.99.16",
+   "description": "Spreadsheet for both terminal and graphical interfaces",
+   "home": "http://www.gnu.org/software/oleo/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "oleo-1.99.16.tar.gz": "6598df85d06ff2534ec08ed0657508f17dbbc58dd02d419160989de7c487bc86",
+    "oleo-1.99.16-debian-patches.diff": "413ea7ab0aa86256f60cc05f9bfef515af185605f73a23e29377221ab96b8718"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "ncurses",
+    "gettext"
+   ]
+  },
+  "orgadoc": {
+   "label": "OrgaDoc",
+   "tarball": "orgadoc",
+   "version": "1.3",
+   "description": "program to maintain and query documents across machines",
+   "home": "http://www.gnu.org/software/orgadoc/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "orgadoc-1.3.tar.gz": "c11ef7c7118df640eb599d0b44c332a8f5ee4a24bc4174fd2cf5c4c70d8fe706"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "paivana": {
+   "label": "paivana",
+   "tarball": "paivana",
+   "version": "1.6.2",
+   "description": "GNU Taler  payment system. paivana reverse proxy",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "paivana-1.6.2.tar.gz": "26200b546489eabf6d702e37b9cb76676718966f4fa23d44c7cbb282135c3abf"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "panorama": {
+   "label": "Panorama",
+   "tarball": "panorama",
+   "version": "0.18.01",
+   "description": "Framework for 3D graphics production",
+   "home": "http://www.gnu.org/software/panorama/",
+   "subdir": "$(GARNAME)/files/$(GARNAME)/$(SERIES)/",
+   "sha256": {
+    "panorama-0.18.01.tar.gz": "c76ed89a3ead6cfdd13abe52e764dbf08d1df4bc80cdcf8599c5050de56df3f9"
+   },
+   "builddeps": [
+    "libtool"
+   ],
+   "libdeps": []
+  },
+  "parallel": {
+   "label": "parallel",
+   "tarball": "parallel",
+   "version": "20261022",
+   "description": "Build and execute command lines in parallel",
+   "home": "http://www.gnu.org/software/parallel/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "parallel-20261022.tar.bz2": "4fb0d2d4d14a4ef6448c788cb2bcfde9fbe00b8d4bdc637a7e4c08f8c5453a55"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "parted": {
+   "label": "parted",
+   "tarball": "parted",
+   "version": "3.8",
+   "description": "Disk partition editor",
+   "home": "http://www.gnu.org/software/parted/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "parted-3.8.tar.xz": "a2b7811f47b0ddb1f7b1d0aa456f7c1270da70708ce231c2fe054c7199eafa63"
+   },
+   "builddeps": [
+    "#gettext",
+    "readline"
+   ],
+   "libdeps": [
+    "#util-linux"
+   ]
+  },
+  "patch": {
+   "label": "patch",
+   "tarball": "patch",
+   "version": "2.8.1",
+   "description": "Apply differences to files, with optional backups",
+   "home": "http://www.gnu.org/software/patch",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "patch-2.8.1.tar.xz": "3240c7959c5347c8ed347e3c4201c0337bf4240d5cf09d68889e58eeaba30e17"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "paxutils": {
+   "label": "paxutils",
+   "tarball": "paxutils",
+   "version": "2.4h",
+   "description": "Manage cpio, tar, and pax file archives",
+   "home": "http://www.gnu.org/software/paxutils/",
+   "subdir": "$(GARNAME)/archive/",
+   "sha256": {
+    "v2.4h.tar.gz": "e3dedb13f4fb3ac1d033af01a77dcba2c34a776c437511b8da112beb9835d6c1"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "pcb": {
+   "label": "PCB",
+   "tarball": "pcb",
+   "version": "4.0.0",
+   "description": "Design printed circuit board layouts",
+   "home": "http://pcb.geda-project.org/",
+   "subdir": "$(GARNAME)/files/$(GARNAME)/$(DISTNAME)/",
+   "sha256": {
+    "pcb-4.0.0.tar.gz": "8ede13acd0bdc1bc3c347b603718a92c5420b63f80724182ae5b25881e9adac4"
+   },
+   "builddeps": [
+    "libgd"
+   ],
+   "libdeps": []
+  },
+  "pem": {
+   "label": "Pem",
+   "tarball": "pem",
+   "version": "0.7.9",
+   "description": "Personal expenses manager",
+   "home": "http://www.gnu.org/software/pem/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "pem-0.7.9.tar.gz": "e23ddcd94c4c65284f8b68c00ce8500dbfaba4a4dbb7a9c264732a1ae264380e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "pexec": {
+   "label": "pexec",
+   "tarball": "pexec",
+   "version": "1.0rc8",
+   "description": "Execute a command in parallel on multiple hosts",
+   "home": "http://www.gnu.org/software/pexec/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "pexec-1.0rc8.tar.gz": "a968e4774eef80b8b1de3c10e6c0ad2ebeeb732b10e438596f110aa6aaf94a64",
+    "pexec-1.0rc8-fix-install.diff": "c69358e1a42dfeed891e2929d7da40218b06594c31bc180a67b5671e2ff342a2"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "pies": {
+   "label": "Pies",
+   "tarball": "pies",
+   "version": "1.9",
+   "description": "Program invocation and execution supervisor",
+   "home": "http://www.gnu.org/software/pies/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "pies-1.9.tar.bz2": "3bd993752fa479faaf19a2e03f613a67e989c9b2a40980eced61a25bb31d0cf3"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "pinentry": {
+   "label": "pinentry",
+   "tarball": "pinentry",
+   "version": "1.3.3",
+   "description": "pin entry, needed for GNU Privacy Guard",
+   "home": "http://www.gnu.org/software/gnupg",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "pinentry-1.3.3.tar.bz2": "c2970f16d6afb66ecddfca767d743936c86239bff936eed7fd7597a678414b63"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "plotutils": {
+   "label": "plotutils",
+   "tarball": "plotutils",
+   "version": "2.6",
+   "description": "Plotting utilities and library",
+   "home": "http://www.gnu.org/software/plotutils/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "plotutils-2.6.tar.gz": "4f4222820f97ca08c7ea707e4c53e5a3556af4d8f1ab51e0da6ff1627ff433ab",
+    "plotutils-2.6-fix-build.diff": "cc355d45a3f02c4672b5f0f0bddfd75da98273a3fb28e0e28c4bf514147efe7f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "poke": {
+   "label": "GNU poke",
+   "tarball": "poke",
+   "version": "5.0",
+   "description": "GNU poke, an extensible editor for structured binary data",
+   "home": "http://www.jemarch.net/poke.html",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "poke-5.0.tar.gz": "6873d59abe821c8111b88623ea7ad9e090892fa95c75562606dd88374e2f5b8f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "proxyknife": {
+   "label": "Proxyknife",
+   "tarball": "proxyknife",
+   "version": "1.7",
+   "description": "Customizable multithread proxy hunter",
+   "home": "http://www.gnu.org/software/proxyknife/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "proxyknife-1.7.tar.gz": "622d7117f14175683551f9004b6f9713d3c0352470c0b2dce926c765c2e63e71"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "pspp": {
+   "label": "PSPP",
+   "tarball": "pspp",
+   "version": "2.1.3",
+   "description": "PSPP Statistical analysis",
+   "home": "http://www.gnu.org/software/pspp/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "pspp-2.1.3.tar.gz": "5095bc01f20f285032fb41fe757c7674e8c45dac95252663ea04670577df2727"
+   },
+   "builddeps": [
+    "gsl",
+    "plotutils",
+    "ncurses",
+    "libxml2",
+    "zlib"
+   ],
+   "libdeps": []
+  },
+  "psychosynth": {
+   "label": "Psychosynth",
+   "tarball": "psychosynth",
+   "version": "0.3.0",
+   "description": "Interactive software synthesizer",
+   "home": "http://www.gnu.org/software/psychosynth/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "psychosynth-0.3.0.tar.gz": "5993fa4a8c0b793456f43b18932684eab45ca708db270b9508ca300c6d85197e",
+    "psychosynth-0.3.0-fix-boost-linking.diff": "ecc5f6d8dee46d7577a6b8ebe885f0d78e8058191a79212c14782d73a0aa69fe"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "boost",
+    "soundtouch"
+   ]
+  },
+  "pth": {
+   "label": "pth",
+   "tarball": "pth",
+   "version": "2.0.7",
+   "description": "GNU Portable threads library",
+   "home": "http://www.gnu.org/software/pth/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "pth-2.0.7.tar.gz": "72353660c5a2caafd601b20e12e75d865fd88f6cf1a088b306a3963f0bc77232"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "pycdio": {
+   "label": "pycdio",
+   "tarball": "pycdio",
+   "version": "2.1.0",
+   "description": "A Python interface to libcdio",
+   "home": "http://www.gnu.org/software/libcdio/",
+   "subdir": "libcdio/",
+   "sha256": {
+    "pycdio-2.1.0.tar.gz": "d6d2e59d16339788835eed62ff75cfa38e7caa6f7e290dcc0d07f8ec30de6705"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "pythonwebkit": {
+   "label": "pythonwebkit",
+   "tarball": "pythonwebkit",
+   "version": "master",
+   "description": "pythonwebkit, python as peer of javascript",
+   "home": "https://www.gnu.org/software/pythonwebkit/",
+   "subdir": "git",
+   "sha256": {},
+   "builddeps": [],
+   "libdeps": []
+  },
+  "qalbum": {
+   "label": "qalbum",
+   "tarball": "qalbum",
+   "version": "1.2",
+   "description": "Java code to make webpages of pictures",
+   "home": "http://www.gnu.org/software/kawa/",
+   "subdir": "kawa/",
+   "sha256": {
+    "qalbum-1.2.tgz": "2f878f64db126aba16cc2788853f5c49eef43685765f89d54cc718367c5c8db3"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "qgama": {
+   "label": "qgama",
+   "tarball": "qgama",
+   "version": "2.08",
+   "description": "Adjustment of geodetic networks , gama gui",
+   "home": "http://www.gnu.org/software/gama/",
+   "subdir": "gama/qgama/",
+   "sha256": {
+    "qgama-2.08.tar.gz": "53254f1784758f1df8b47123a87b631721b7b87a98fa504f480b512f9c15855b"
+   },
+   "builddeps": [
+    "gama"
+   ],
+   "libdeps": []
+  },
+  "qgpgme": {
+   "label": "qgpgme",
+   "tarball": "qgpgme",
+   "version": "2.2.0",
+   "description": "QT version, qgpgme, GPG Made Easy, library connection to GNU Privacy Guard",
+   "home": "http://www.gnu.org/software/gnupg",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "qgpgme-2.2.0.tar.xz": "3c6290ff5bfeab981bb48b2951703761f1dbea640cb637beb3560d5fefb0e0b3"
+   },
+   "builddeps": [
+    "gpgme",
+    "gpgmepp"
+   ],
+   "libdeps": []
+  },
+  "r": {
+   "label": "R",
+   "tarball": "r",
+   "version": "4.6.2",
+   "description": "Environment for statistical computing and graphics",
+   "home": "https://cran.r-project.org",
+   "subdir": "R-4/",
+   "sha256": {
+    "R-4.6.2.tar.gz": "c297040f6392b1dac6e5c0eb398422cfdaedf540ae2205edb9ad0d10cb10ee00"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "radius": {
+   "label": "Radius",
+   "tarball": "radius",
+   "version": "1.7",
+   "description": "Authentication and accounting services and daemon",
+   "home": "http://www.gnu.org/software/radius/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "radius-1.7.tar.gz": "643a3f8bf142e0ecf702963ae5b4c2fdb5efa17a46e9bbe3b1d026e060e33e82"
+   },
+   "builddeps": [
+    "#",
+    "m4",
+    "groff",
+    "readline"
+   ],
+   "libdeps": []
+  },
+  "rcs": {
+   "label": "RCS",
+   "tarball": "rcs",
+   "version": "5.10.1",
+   "description": "Per-file local revision control system",
+   "home": "http://www.gnu.org/software/rcs/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "rcs-5.10.1.tar.lz": "43ddfe10724a8b85e2468f6403b6000737186f01e60e0bd62fde69d842234cc5"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "diffutils",
+    "ed"
+   ]
+  },
+  "readline": {
+   "label": "Readline",
+   "tarball": "readline",
+   "version": "8.3",
+   "description": "Edit command lines while typing, with history support",
+   "home": "http://www.gnu.org/software/readline/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "readline-8.3.tar.gz": "fe5383204467828cd495ee8d1d3c037a7eba1389c22bc6a041f627976f9061cc",
+    "readline83-001": "21f0a03106dbe697337cd25c70eb0edbaa2bdb6d595b45f83285cdd35bac84de",
+    "readline83-002": "e27364396ba9f6debf7cbaaf1a669e2b2854241ae07f7eca74ca8a8ba0c97472",
+    "readline83-003": "72dee13601ce38f6746eb15239999a7c56f8e1ff5eb1ec8153a1f213e4acdb29",
+    "readline83-004": "1f189c4566aa35950964647b9ec3be1a821e42b86048129c63eb7f9d4d2f5a74",
+    "readline83-005": "5481adbe161c9f6ba972c74db9e18c7aa351d3df3035cc4a673a1aa06247d1c6",
+    "readline83-006": "4ebd261a608287796e171af0ea9af5a1e3122e46672accda2484b6698c47c1a4"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "recutils": {
+   "label": "Recutils",
+   "tarball": "recutils",
+   "version": "1.9",
+   "description": "Manipulate plain text files as databases",
+   "home": "http://www.gnu.org/software/recutils/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "recutils-1.9.tar.gz": "6301592b0020c14b456757ef5d434d49f6027b8e5f3a499d13362f205c486e0e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "reftex": {
+   "label": "RefTeX",
+   "tarball": "reftex",
+   "version": "4.34",
+   "description": "Emacs support for LaTeX cross-references of all kinds",
+   "home": "http://www.gnu.org/software/auctex/reftex.html",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "reftex-4.34.tar.gz": "9e477ef3eb83dac06fb1e576e57b6f5171aebd22abdde47cb8bee622773a595f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "remotecontrol": {
+   "label": "remotecontrol",
+   "tarball": "remotecontrol",
+   "version": "2.0",
+   "description": "Management of IP-enabled thermostats and other HVAC devices",
+   "home": "http://www.gnu.org/software/remotecontrol/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "remotecontrol-2.0.tar.gz": "13ebc97853839b66035c282164e3f0c4d8ff25f679808311659d5fbb6ccedba0"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "rottlog": {
+   "label": "Rot[t]log",
+   "tarball": "rottlog",
+   "version": "0.72.2",
+   "description": "Log rotation and management",
+   "home": "http://www.gnu.org/software/rottlog/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "rottlog-0.72.2.tar.gz": "a7cdb1f5a70d4cf4c86060f2485b10a1b968158d081bb9c7cc123841d3aaa11c",
+    "rottlog-0.72.2-fix-install.diff": "7bd61d601ea990d6f264d061d22883903d40effd05933b41b6077af7015713ce"
+   },
+   "builddeps": [
+    "automake"
+   ],
+   "libdeps": []
+  },
+  "rpge": {
+   "label": "GNU Role Playing Game Engine",
+   "tarball": "rpge",
+   "version": "0.0.3",
+   "description": "Role playing game engine",
+   "home": "http://www.gnu.org/software/rpge/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "rpge-0.0.3.tar.gz": "65599e466a00c1632274c6ef0bf0ba43b60be173bd11fd3d64b70b20d9d50d72"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "rush": {
+   "label": "Rush",
+   "tarball": "rush",
+   "version": "2.4",
+   "description": "Restricted user (login) shell",
+   "home": "http://www.gnu.org/software/rush/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "rush-2.4.tar.xz": "fa95af9d2c7b635581841cc27a1d27af611f60dd962113a93d23a8874aa060f4"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "sather": {
+   "label": "Sather",
+   "tarball": "sather",
+   "version": "1.2.3",
+   "description": "An object-oriented language designed to be simple, efficient, safe",
+   "home": "http://www.gnu.org/software/sather/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "sather-1.2.3.tar.gz": "1c95ecd4c081693b0acfd5d6da05efb3e98e2146510f0818342fd9b5995c8bb2"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "sauce": {
+   "label": "SAUCE",
+   "tarball": "sauce",
+   "version": "0.9.6",
+   "description": "An anti-spam SMTP mail filter",
+   "home": "http://www.gnu.org/software/sauce/",
+   "subdir": "debian/pool/main/s/sauce/",
+   "sha256": {
+    "sauce_0.9.6.tar.gz": "cc63d9775974fcebf80b55dc20f7669bb5e48af54b273ac0f53776fa8510b0d8"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "scm": {
+   "label": "scm  scheme",
+   "tarball": "scm",
+   "version": "5f6",
+   "description": "A scheme implementation, includes scheme-to-c compiler",
+   "home": "http://www.gnu.org/software/scm",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "scm-5f6.tar.gz": "454d3f173f6b129e3190fc28239326e4a430a4d5e1becb83697ed9601ce61868"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "screen": {
+   "label": "screen",
+   "tarball": "screen",
+   "version": "5.0.2",
+   "description": "Full-screen window manager providing multiple terminals",
+   "home": "http://www.gnu.org/software/screen/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "screen-5.0.2.tar.gz": "ca9a2c7e240919bc7ac12124593ae4529bb4eb5f7349d8857829b7e3f0b3b332"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "scute": {
+   "label": "scute",
+   "tarball": "scute",
+   "version": "1.7.0",
+   "description": "Scute is a PKCS_11 provider on top of GnuPG.",
+   "home": "http://www.gnu.org/software/gnupg",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "scute-1.7.0.tar.bz2": "437fe758b27c243a5ee2535c6b065ea1d09f2c9a02d83567d2f934bb6395c249"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "sed": {
+   "label": "sed",
+   "tarball": "sed",
+   "version": "4.10",
+   "description": "Stream editor",
+   "home": "http://www.gnu.org/software/sed/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "sed-4.10.tar.xz": "b8e72182b2ec96a3574e2998c47b7aaa64cc20ce000d8e9ac313cc07cecf28c7"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "serveez": {
+   "label": "Serveez",
+   "tarball": "serveez",
+   "version": "0.3.1",
+   "description": "Framework for implementing IP-based servers",
+   "home": "http://www.gnu.org/software/serveez/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "serveez-0.3.1.tar.lz": "9d2a3eb8fd2f773d2e86bf2285bab9c3e1e710a14d841bf71a754c1dc85d087b"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#guile"
+   ]
+  },
+  "sharutils": {
+   "label": "Sharutils",
+   "tarball": "sharutils",
+   "version": "4.15.2",
+   "description": "Archives in shell scripts, uuencode/uudecode",
+   "home": "http://www.gnu.org/software/sharutils/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "sharutils-4.15.2.tar.gz": "ee336e68549664e7a19b117adf02edfdeac6307f22e5ba78baca457116914637"
+   },
+   "builddeps": [
+    "gettext"
+   ],
+   "libdeps": []
+  },
+  "shepherd": {
+   "label": "shepherd",
+   "tarball": "shepherd",
+   "version": "1.0.9",
+   "description": "System service manager daemon",
+   "home": "http://www.gnu.org/software/shepherd/",
+   "subdir": "$(GARNAME)/../shepherd/",
+   "sha256": {
+    "shepherd-1.0.9.tar.gz": "e488c585c8418df6e8f476dca81b72910f337c9cd3608fb467de5260004000d6"
+   },
+   "builddeps": [
+    "fibers"
+   ],
+   "libdeps": []
+  },
+  "shishi": {
+   "label": "Shishi",
+   "tarball": "shishi",
+   "version": "1.0.3",
+   "description": "Implementation of the Kerberos 5 network security system",
+   "home": "http://www.gnu.org/software/shishi/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "shishi-1.0.3.tar.gz": "95798ffd12dd01a4f88e0311ee03ca4a26e5cb4e5e9059a40e4fc4d9f2917e92"
+   },
+   "builddeps": [
+    "libtasn1",
+    "libgcrypt",
+    "gnutls"
+   ],
+   "libdeps": []
+  },
+  "shmm": {
+   "label": "SHMM",
+   "tarball": "shmm",
+   "version": "1.0",
+   "description": "Shared memory manager utility",
+   "home": "http://www.gnu.org/software/shmm/",
+   "subdir": "$(GARNAME)/$(GARVERSION)/",
+   "sha256": {
+    "shmm-1.0.tar.gz": "229537a620c937dd72c79d928c348a6a06dc3515d991aec0ab110c61a62c5163"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "shtool": {
+   "label": "shtool",
+   "tarball": "shtool",
+   "version": "2.0.8",
+   "description": "Compilation of utility shell scripts into a shell tool",
+   "home": "http://www.gnu.org/software/shtool/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "shtool-2.0.8.tar.gz": "1298a549416d12af239e9f4e787e6e6509210afb49d5cf28eb6ec4015046ae19"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "sipwitch": {
+   "label": "SIP Witch",
+   "tarball": "sipwitch",
+   "version": "1.9.15",
+   "description": "Secure peer-to-peer VoIP server for the SIP protocol",
+   "home": "http://www.gnu.org/software/sipwitch/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "sipwitch-1.9.15.tar.gz": "2a7aa86a653f6810b3cd9cce6c37b3f70e937e7d14b09fd5c2a70d70588a9482"
+   },
+   "builddeps": [
+    "libexosip2"
+   ],
+   "libdeps": [
+    "ucommon",
+    "gnutls"
+   ]
+  },
+  "slib": {
+   "label": "SLIB scheme library",
+   "tarball": "slib",
+   "version": "3c3",
+   "description": "Portable library for Scheme",
+   "home": "http://www.gnu.org/software/slib",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "slib-3c3.tar.gz": "2803e42eba3277d40647f1074b57dd94d06274f2b6c2f622cbf127872542b76f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "smalltalk": {
+   "label": "Smalltalk",
+   "tarball": "smalltalk",
+   "version": "3.2.5",
+   "description": "Smalltalk environment",
+   "home": "http://www.gnu.org/software/smalltalk/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "smalltalk-3.2.5.tar.xz": "819a15f7ba8a1b55f5f60b9c9a58badd6f6153b3f987b70e7b167e7755d65acc",
+    "smalltalk-3.2.5-use-tcl_getresult.diff": "690b947181d1b3410e9dec95d044f8a66a77512fadf33835726030b2f94693dd"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "smalltalk-alpha": {
+   "label": "Smalltalk alpha",
+   "tarball": "smalltalk-alpha",
+   "version": "3.2.91",
+   "description": "Smalltalk environment alpha version",
+   "home": "http://www.gnu.org/software/smalltalk/",
+   "subdir": "$(UPSTREAMNAME)/",
+   "sha256": {
+    "smalltalk-3.2.91.tar.xz": "00628239fcd7c76a3a591cee2df5919ca632387594082af1f29c85bf588162fd"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "solfege": {
+   "label": "Solfege",
+   "tarball": "solfege",
+   "version": "3.22.2",
+   "description": "Ear training",
+   "home": "http://www.gnu.org/software/solfege/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "solfege-3.22.2.tar.gz": "e46a0960c83e4998d9dcf7bb07b8269e03fc81fab6c4485f8112c5a3e6488fe4"
+   },
+   "builddeps": [
+    "#",
+    "txt2man"
+   ],
+   "libdeps": []
+  },
+  "solfege-alpha": {
+   "label": "Solfege",
+   "tarball": "solfege-alpha",
+   "version": "3.23.4",
+   "description": "Ear training",
+   "home": "http://www.gnu.org/software/solfege/",
+   "subdir": "$(UPSTREAMNAME)/",
+   "sha256": {
+    "solfege-3.23.4.tar.gz": "b7a249c601a4e61a4defaa3db27c6d334eed9189f0a50f34f0cffc4edc3e8169"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "spacechart": {
+   "label": "SpaceChart",
+   "tarball": "spacechart",
+   "version": "0.9.5",
+   "description": "Stargazing in 3D under GNOME",
+   "home": "http://www.gnu.org/software/spacechart/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "spacechart-0.9.5.tar.gz": "a5235cb2669ae9e4adb36b401bf803a0a8749539f3f8695ec8d18d362971435f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "spell": {
+   "label": "spell",
+   "tarball": "spell",
+   "version": "1.1",
+   "description": "Spell checking",
+   "home": "http://www.gnu.org/software/spell/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "spell-1.1.tar.gz": "7cc243547eb31360ff769835dc88b5ba4f2f47385daa230523beecf9e1c29744",
+    "spell-1.1-fix-install.diff": "e4d2cb2bfa77c28c4761864d38bbe9c8eef0a21de45be2ca66035a7ab78ac24f"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "aspell"
+   ]
+  },
+  "spread-sheet-widget": {
+   "label": "spread-sheet-widget ssw",
+   "tarball": "spread-sheet-widget",
+   "version": "0.10",
+   "description": "spread-sheet-widget using gtk3",
+   "home": "http://www.gnu.org/software/ssw/",
+   "subdir": "$(GARNAME)/../ssw/",
+   "sha256": {
+    "spread-sheet-widget-0.10.tar.gz": "80692ec350271995e147dc759929cdd79d3b645e6b5efaa6b57f4d2d05e847e5"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "sqltutor": {
+   "label": "Sqltutor",
+   "tarball": "sqltutor",
+   "version": "1.0",
+   "description": "Interactively learn SQL by example",
+   "home": "http://www.gnu.org/software/sqltutor/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "sqltutor-1.0.tar.gz": "d11debbd187670688bb82aff84650cec7f3d6fc903a4634c55679046b021aae1"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "src-highlite": {
+   "label": "Source-highlight",
+   "tarball": "src-highlite",
+   "version": "3.1.9",
+   "description": "Produce a document with syntax highlighting from a source file",
+   "home": "http://www.gnu.org/software/src-highlite/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "source-highlight-3.1.9.tar.gz": "3a7fd28378cb5416f8de2c9e77196ec915145d44e30ff4e0ee8beb3fe6211c91"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "boost"
+   ]
+  },
+  "stow": {
+   "label": "Stow",
+   "tarball": "stow",
+   "version": "2.4.1",
+   "description": "Manage installed software packages",
+   "home": "http://www.gnu.org/software/stow/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "stow-2.4.1.tar.bz2": "0d85a8513677e7923697bce42cdbb33d2b57af915abde1d0671e7ae80b2ef0b4"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "stump": {
+   "label": "STUMP",
+   "tarball": "stump",
+   "version": "2.5",
+   "description": "Secure team-based Usenet moderation program",
+   "home": "http://www.gnu.org/software/stump/",
+   "subdir": "$(GARNAME)/download/",
+   "sha256": {
+    "STUMP_2_5.tar.gz": "5cd4a44a3585a15ec2463158eb7f13099e7b5df952a1a8da0a11eb8dcccdfafe"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "superopt": {
+   "label": "Superopt",
+   "tarball": "superopt",
+   "version": "2.5",
+   "description": "Super-optimizer of given functions",
+   "home": "http://www.gnu.org/software/superopt/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "superopt-2.5.tar.gz": "4e28eb00a835730b8f33487c78094a6ced2c4e7cbcd37937ac6081b9b59925d7",
+    "superopt-2.5-fix-install.diff": "23635e4ef3b4192642000e95f9d50fa311d248b0379b721b95fc136c3e5a781c"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "swbis": {
+   "label": "swbis",
+   "tarball": "swbis",
+   "version": "1.13.3",
+   "description": "POSIX software management utilities",
+   "home": "http://www.gnu.org/software/swbis/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "swbis-1.13.3.tar.gz": "b88930826066d70798f42dad6480ebd89d7f5d6d3209234af520358adcda697a",
+    "swbis.patch": "8d7a0a2f8ff40c66148e2b50cfd41499225034a96b2e3385df0ea17f59b3b08b"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "sync": {
+   "label": "sync",
+   "tarball": "sync",
+   "version": "1.5.0",
+   "description": "An HTTP server that allows clients to backup sensitive data.",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "sync-1.3.0.tar.gz": "bb090b3ad39cd7ce5eaeaf088bc2a901179da80723d5a94f4e34ab01cf41c946"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "tack": {
+   "label": "tack",
+   "tarball": "tack",
+   "version": "1.10",
+   "description": "terminfo action checker,  tests terminfo files",
+   "home": "http://invisible-island.net/ncurses",
+   "subdir": "ncurses/",
+   "sha256": {
+    "tack-1.10.tar.gz": "39c476d8a3b8b610bd4e2f80ee74a9fd2b568c6b4381cc1893c7b46d5a32fabf"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taldir": {
+   "label": "taldir",
+   "tarball": "taldir",
+   "version": "1.1.0",
+   "description": "GNU Taldir is part of a privacy-preserving payment system",
+   "home": "http://taler.net",
+   "subdir": "gnunet/",
+   "sha256": {
+    "taldir-1.1.0.tar.gz": "7d04b29c49d1632cd074bae741039a26a45a90fcdeef4730f619838eaab27e47"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taler-bank": {
+   "label": "taler-bank",
+   "tarball": "taler-bank",
+   "version": "0.8.2",
+   "description": "GNU Taler-bank is a privacy-preserving payment system",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-bank-0.8.2.tar.gz": "5d3853fb42bda3d98a34371bab7acf613501a67662bf3fe893fa6395102b35db"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taler-challenger-helpers": {
+   "label": "taler-challenger-helpers",
+   "tarball": "taler-challenger-helpers",
+   "version": "1.6.1",
+   "description": "taler-challenger-helpers",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-challenger-helpers-1.6.1.tar.gz": "3bc89ffd473537d9af1622077304fd31794e9117f72fdf7dc219a7bc553a70b6"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taler-directory": {
+   "label": "taler-directory",
+   "tarball": "taler-directory",
+   "version": "1.5.1",
+   "description": "GNU Taler-directory, part of a privacy-preserving payment system",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-directory-1.5.1.tar.gz": "b9262d42c4d56fbf3e68a5beee3700cf188cf677d7b41a1a8d8f9189a428a37d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taler-exchange": {
+   "label": "taler-exchange",
+   "tarball": "taler-exchange",
+   "version": "1.6.13",
+   "description": "GNU Taler is a privacy-preserving payment system. Exchange part.",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-exchange-1.6.13.tar.gz": "1013d1bf909a44c9360b20be2993d908f545492c2291802f97d33f061fed15a4"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#gnunet",
+    "libmicrohttpd"
+   ]
+  },
+  "taler-mailbox": {
+   "label": "taler-mailbox",
+   "tarball": "taler-mailbox",
+   "version": "1.5.1",
+   "description": "GNU Taler-mailbox is part of a privacy-preserving payment system",
+   "home": "http://taler.net",
+   "subdir": "gnunet/",
+   "sha256": {
+    "taler-mailbox-1.1.0.tar.gz": "f52f1be86401f5ad45a2b753322e23f8bb4c8d2289e678e58de4b59c2658909d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taler-mdb": {
+   "label": "taler-mdb",
+   "tarball": "taler-mdb",
+   "version": "1.6.0",
+   "description": "GNU Taler is a privacy-preserving payment system, merchant snack machine",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-mdb-1.6.0.tar.gz": "062f12deff4f57b6716f5ffcd384ef7582364cd85cd62a4a3bc341d7e97e4c5a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taler-merchant": {
+   "label": "taler-merchant",
+   "tarball": "taler-merchant",
+   "version": "1.6.16",
+   "description": "GNU Taler is a privacy-preserving payment system, merchant part.",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-merchant-1.6.16.tar.gz": "702d434b400183bb991c4653994f17633120bfc7d224419dded31feda017ef35"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "#",
+    "libgcrypt",
+    "gnunet"
+   ]
+  },
+  "taler-twister": {
+   "label": "taler-twister",
+   "tarball": "taler-twister",
+   "version": "1.6.0",
+   "description": "GNU Taler-twister",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-twister-1.6.0.tar.gz": "e8d9fe17bfc5620b1212eda0c1db65d340950ebb932ba5cbcd75e274c389ff04"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taler-typescript-core": {
+   "label": "taler-typescript-core",
+   "tarball": "taler-typescript-core",
+   "version": "1.5.3",
+   "description": "GNU Taler-typescript-core privacy-preserving payment system",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-typescript-core-1.5.3.tar.gz": "c1116b731c16c2b7794b1f8590d10073e642c6cefc8b5329e2ab2bd9a68ad338"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taler-wallet": {
+   "label": "taler-wallet",
+   "tarball": "taler-wallet",
+   "version": "1.3.1",
+   "description": "payment system, taler-wallet",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-wallet-1.3.1.tar.gz": "d1bb487b6985ce3ba3717c6d5666c7f39127adc03cdcd48fb55983657f2947d9"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "taler-wallet-webex": {
+   "label": "taler-wallet-webex",
+   "tarball": "taler-wallet-webex",
+   "version": "0.5.0",
+   "description": "Electronic payments for a liberal society, wallet-webex part",
+   "home": "http://taler.net",
+   "subdir": "taler/",
+   "sha256": {
+    "taler-wallet-webex-0.5.0-src.tar.gz": "a28bf8409f4138a4d0f85457952ea27d2f9c68c2f47364abba284fc3e7b1daae"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "talkfilters": {
+   "label": "Talk Filters",
+   "tarball": "talkfilters",
+   "version": "2.3.8",
+   "description": "Convert English text to humorous dialects",
+   "home": "http://www.gnu.org/software/talkfilters/",
+   "subdir": "packages/",
+   "sha256": {
+    "talkfilters-2.3.8.tar.gz": "98a1e3a50bed6aac08cd367f1e8d857b5985f4a6c0740818bc3be1e2b003821a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "tar": {
+   "label": "tar",
+   "tarball": "tar",
+   "version": "1.35",
+   "description": "Managing tar archives",
+   "home": "http://www.gnu.org/software/tar/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "tar-1.35.tar.xz": "4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "termcap": {
+   "label": "Termcap",
+   "tarball": "termcap",
+   "version": "1.3.1",
+   "description": "Terminal-independent display support",
+   "home": "http://www.gnu.org/software/termcap/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "termcap-1.3.1.tar.gz": "91a0e22e5387ca4467b5bcb18edf1c51b930262fd466d5fda396dd9d26719100",
+    "fix-install.diff": "4856982c31d2df1972b7d8a20a8df9e16081bc5f1e16ac68bbf41cee2317f53f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "termutils": {
+   "label": "Termutils",
+   "tarball": "termutils",
+   "version": "2.0",
+   "description": "The tput and tabs utilities for terminal operations",
+   "home": "http://www.gnu.org/software/termutils/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "termutils-2.0.tar.gz": "4c2b3721a88b58b8a3918bf57b043fbd446ba334a2153a88305c9bf66f31f403",
+    "termutils.2.0.diff": "73292c00f6e12d84459eab86b98866613a2ae23d2ad8e3597d4c716e18012d28"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "teseq": {
+   "label": "Teseq",
+   "tarball": "teseq",
+   "version": "1.1.1",
+   "description": "Analyze files with terminal control sequences, for debugging",
+   "home": "http://www.gnu.org/software/teseq/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "teseq-1.1.1.tar.bz2": "4e681dbc05c61b4b60720fe00dfcc9a4527a1e847a08440ac64107f0065d1957"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "teximpatient": {
+   "label": "TeX for the Impatient",
+   "tarball": "teximpatient",
+   "version": "2.4",
+   "description": "Book on TeX, plain TeX, and Eplain",
+   "home": "http://www.gnu.org/software/teximpatient/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "teximpatient-2.4.tar.gz": "4d070b6fac20ff10bba5c166bb72aeb0daf7d08c5a93469f23b0a5d484e0a640",
+    "install-sh": "608b76d735bb2ec2bcb1271644c3d5e7a428fb8d2338e114e8a48ebf91ccfd23"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "texinfo": {
+   "label": "texinfo",
+   "tarball": "texinfo",
+   "version": "7.3",
+   "description": "The GNU documentation format",
+   "home": "http://www.gnu.org/software/texinfo/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "texinfo-7.3.tar.xz": "51f74eb0f51cfa9873b85264dfdd5d46e8957ec95b88f0fb762f63d9e164c72e"
+   },
+   "builddeps": [
+    "#",
+    "ncurses"
+   ],
+   "libdeps": []
+  },
+  "texmacs": {
+   "label": "TeXmacs",
+   "tarball": "texmacs",
+   "version": "2.1.5",
+   "description": "Editing platform with special features for scientists",
+   "home": "http://www.gnu.org/software/texmacs/",
+   "subdir": "Download/ftp/tmftp/source/",
+   "sha256": {
+    "TeXmacs-2.1.5-src.tar.gz": "b3a127bdba8e79010b239291415cbe3431333521e24477a814b586e1b4027360"
+   },
+   "builddeps": [
+    "freetype",
+    "guile"
+   ],
+   "libdeps": []
+  },
+  "thalamus": {
+   "label": "thalamus",
+   "tarball": "thalamus",
+   "version": "0.9.18",
+   "description": "Thalamus  The GNU Health Federation Message and Authentication Server",
+   "home": "https://www.gnu.org/software/health/",
+   "subdir": "health/thalamus/",
+   "sha256": {
+    "thalamus-0.9.18.tar.gz": "71be43ed32059239efbdade20961e791bb7cf3883eda3fc45badd81fcf1493a9"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "time": {
+   "label": "time",
+   "tarball": "time",
+   "version": "1.10",
+   "description": "Run a command, then display its resource usage",
+   "home": "http://www.gnu.org/software/time/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "time-1.10.tar.gz": "e8c29fb4ab599d8478e41e8618f50db8aede9c90af27d0d2ef28ae50d5de09c3"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "tramp": {
+   "label": "tramp",
+   "tarball": "tramp",
+   "version": "2.8.2",
+   "description": "Transparent Remote Access, Multiple Protocol GNU Emacs package",
+   "home": "http://www.gnu.org/software/tramp/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "tramp-2.8.2.tar.gz": "e43253662ff70b9598ead47ae00c42d9a923122d22ee7042c49336634fb6066a"
+   },
+   "builddeps": [
+    "emacs"
+   ],
+   "libdeps": []
+  },
+  "trueprint": {
+   "label": "trueprint",
+   "tarball": "trueprint",
+   "version": "5.4",
+   "description": "Pretty-print C sources and other plain text to PostScript",
+   "home": "http://www.gnu.org/software/trueprint/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "trueprint-5.4.tar.gz": "104be483905f4f4dc4b5d475389b72b6d95f12b62d796f8af31d04f51c60338f",
+    "trueprint.missing.headers.patch": "f6df286b4d72107e53054a8eef8ba81ea12c3fc339a5011f8f5091757958c7fc"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "ucommon": {
+   "label": "uCommon C++",
+   "tarball": "ucommon",
+   "version": "7.0.0",
+   "description": "A portable C++ library",
+   "home": "https://www.gnu.org/software/commoncpp/",
+   "subdir": "commoncpp/",
+   "sha256": {
+    "ucommon-7.0.0.tar.gz": "6ac9f76c2af010f97e916e4bae1cece341dc64ca28e3881ff4ddc3bc334060d7"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "gnutls"
+   ]
+  },
+  "unifont": {
+   "label": "unifont",
+   "tarball": "unifont",
+   "version": "18.0.01",
+   "description": "Large bitmap font covering Unicode_s Basic Multilingual Plane",
+   "home": "http://unifoundry.com",
+   "subdir": "$(GARNAME)/$(DISTNAME)/",
+   "sha256": {
+    "unifont-18.0.01.tar.gz": "eab60847aac34c8768765cecc7821faf50de2636187b452b9b5fa50a12b00bc3"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "units": {
+   "label": "Units",
+   "tarball": "units",
+   "version": "2.27",
+   "description": "Conversion between units of measure",
+   "home": "http://www.gnu.org/software/units/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "units-2.27.tar.gz": "e1bbdb09672e7c08eee986749e7a1629eb84a6bdf41f5a2a79d6804444abbe10"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "unrtf": {
+   "label": "UnRTF",
+   "tarball": "unrtf",
+   "version": "0.21.13",
+   "description": "Convert Rich Text Format documents to other formats",
+   "home": "http://www.gnu.org/software/unrtf/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "unrtf-0.21.13.tar.gz": "ff227d1a0adb84a9e1a51b5e5c3cecbda3d67c8a31dbd7e8593a040a438fb44c"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "userv": {
+   "label": "userv",
+   "tarball": "userv",
+   "version": "1.2.3",
+   "description": "Daemon to control service access",
+   "home": "http://www.gnu.org/software/userv/",
+   "subdir": "~ian/userv/",
+   "sha256": {
+    "userv.tar.gz": "f8476af41a36f35e906e5ec7984f2a3f1c5f8eec9ed452f1af60b50f2b578e52",
+    "userv-1.2.3.patch": "466da8305a39d419815fac7989e20d71970f7bfbc2511847c9ae2f3cffb4d3b8"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "uucp": {
+   "label": "Taylor UUCP",
+   "tarball": "uucp",
+   "version": "1.07",
+   "description": "UUCP protocol implementation",
+   "home": "http://www.gnu.org/software/uucp/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "uucp-1.07.tar.gz": "060c15bfba6cfd1171ad81f782789032113e199a5aded8f8e0c1c5bd1385b62c",
+    "uucp.1.07.patch": "88dc3f37663f5abfc1c01e8a8317b21f8168a33cebeff26dbfebe50a3baeb839"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "vc-dwim": {
+   "label": "vc-dwim",
+   "tarball": "vc-dwim",
+   "version": "1.10",
+   "description": "Version-control-agnostic ChangeLog diff and commit tool",
+   "home": "http://www.gnu.org/software/vc-dwim/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "vc-dwim-1.10.tar.xz": "f06662720c1eae023fd82d03b79aa68d6c0f466a593ef01edfa2cedd7a57a62a"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "vcdimager": {
+   "label": "VCDImager",
+   "tarball": "vcdimager",
+   "version": "2.0.1",
+   "description": "Authoring, disassembling and analyzing (super and) video CDs",
+   "home": "http://www.gnu.org/software/vcdimager/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "vcdimager-2.0.1.tar.gz": "67515fefb9829d054beae40f3e840309be60cda7d68753cafdd526727758f67a"
+   },
+   "builddeps": [
+    "libcdio"
+   ],
+   "libdeps": []
+  },
+  "vera": {
+   "label": "V.E.R.A.(Virtual Entity of Relevant Acronyms)",
+   "tarball": "vera",
+   "version": "1.24",
+   "description": "List of acronyms",
+   "home": "http://www.gnu.org/software/vera/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "vera-1.24.tar.gz": "ac8be41aa77912fff9d0e75dfa73b53e8c99d0336f3165ccd94b1cbed331b7c8"
+   },
+   "builddeps": [
+    "texinfo"
+   ],
+   "libdeps": []
+  },
+  "volk": {
+   "label": "volk Vector Optimized Library of Kernels",
+   "tarball": "volk",
+   "version": "3.3.0",
+   "description": "Vector Optimized Library of Kernels, part of GNUradio",
+   "home": "https://www.libvolk.org",
+   "subdir": "gnuradio/volk/releases/download/v$(GARVERSION)/",
+   "sha256": {
+    "volk-3.3.0.tar.xz": "10e9c26c8d9362f5cb14a58752116f4268dc107505a1d7f50efe4ba06d90982b",
+    "volk-3.3.0.tar.xz.asc": "3186ef950a62ea1c4149fa504a49fbaf7353978b3cad7a1f4ad3aaefa0541c3d"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "wb": {
+   "label": "WB",
+   "tarball": "wb",
+   "version": "2b4",
+   "description": "Disk-based associative array B-tree database library",
+   "home": "http://www.gnu.org/software/wb",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "wb-2b4.tar.gz": "0ec9b3c93f07ed120aeb8caf3853b213842bc477f31e21588bc7e7842176fa65"
+   },
+   "builddeps": [
+    "#scm"
+   ],
+   "libdeps": []
+  },
+  "wdiff": {
+   "label": "wdiff",
+   "tarball": "wdiff",
+   "version": "1.2.3",
+   "description": "Word difference finder",
+   "home": "http://www.gnu.org/software/wdiff/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "wdiff-1.2.3.tar.gz": "29a4457eb0ed35c902e6732d71f25e1d6c7fe7fa0eda0fb6c371ed6779b49fd6"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "websocket4j": {
+   "label": "Gnu WebSocket4J",
+   "tarball": "websocket4j",
+   "version": "1.3",
+   "description": "WebSocket protocol implementation for Java-HTML5 communication",
+   "home": "http://www.gnu.org/software/websocket4j/",
+   "subdir": "$(GARNAME)/trunk/v$(GARVERSION)/+download/",
+   "sha256": {
+    "websocket4j-1.3.tar.gz": "71b1d9004a48646936841b5c4df394a4185b91fb770af274441ac51a38247d3b"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "webstump": {
+   "label": "WebSTUMP",
+   "tarball": "webstump",
+   "version": "2.0",
+   "description": "Web interface to STUMP",
+   "home": "http://www.gnu.org/software/webstump",
+   "subdir": "stump/download/",
+   "sha256": {
+    "webstump.tar.gz": "04e012c3adcb6f2151bfa5f8e3eed69c7ee731c2763cf0e28c5fe6d9fcaf68c7",
+    "webstump.patch": "69ca5aef948397d434853f9e4f05bce595c9365913065d7e07d610e9efcc9f19"
+   },
+   "builddeps": [],
+   "libdeps": [
+    "stump"
+   ]
+  },
+  "wget": {
+   "label": "wget",
+   "tarball": "wget",
+   "version": "1.25.0",
+   "description": "Non-interactive command-line utility for downloading files",
+   "home": "http://www.gnu.org/software/wget/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "wget-1.25.0.tar.lz": "19225cc756b0a088fc81148dc6a40a0c8f329af7fd8483f1c7b2fe50f4e08a1f"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "wget2": {
+   "label": "Wget2",
+   "tarball": "wget2",
+   "version": "2.3.0",
+   "description": "Non-interactive command-line utility for downloading files",
+   "home": "http://www.gnu.org/software/wget/",
+   "subdir": "wget/",
+   "sha256": {
+    "wget2-2.3.0.tar.lz": "becf0a06fcfb7760be88db4b29048b31cb7c789e33dc571475071144b0f2caf4"
+   },
+   "builddeps": [
+    "gnutls"
+   ],
+   "libdeps": []
+  },
+  "which": {
+   "label": "which",
+   "tarball": "which",
+   "version": "2.25",
+   "description": "Find full path of shell commands",
+   "home": "http://www.gnu.org/software/which",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "which-2.25.tar.gz": "1cb83e4f702e60b8211ab5ec4c2afbab1b1dec80209456a7d2faf7584ed225ea"
+   },
+   "builddeps": [
+    "#",
+    "readline"
+   ],
+   "libdeps": []
+  },
+  "xaos": {
+   "label": "XaoS",
+   "tarball": "xaos",
+   "version": "4.2.1",
+   "description": "Real-time fractal zoomer",
+   "home": "http://www.gnu.org/software/xaos/",
+   "subdir": "$(GARNAME)-project/XaoS/archive/refs/tags/",
+   "sha256": {
+    "release-4.2.1.tar.gz": "bf21d3f50d7c1626c5c96da475f84ea24d24a164ec6cc2bbc4ee229bc4a65967"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "xboard": {
+   "label": "XBoard",
+   "tarball": "xboard",
+   "version": "4.9.1",
+   "description": "Graphical user interface for chess programs",
+   "home": "http://www.gnu.org/software/xboard/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "xboard-4.9.1.tar.gz": "2b2e53e8428ad9b6e8dc8a55b3a5183381911a4dae2c0072fa96296bbb1970d6",
+    "xboard-4.9.1.diff": "fc9bac2b18699c7c3c956cc4fa2189dcc6aec3b7b17457a6ee14f0f51888044e"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "xlogmaster": {
+   "label": "Xlogmaster",
+   "tarball": "xlogmaster",
+   "version": "1.6.2",
+   "description": "GUI program for monitoring log and other files",
+   "home": "http://www.gnu.org/software/xlogmaster/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "xlogmaster-1.6.2.tar.gz": "9de31a89cf589b3ab510b746da65bd64091860c6d1f08959d36d52721f35cf11"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "xnee": {
+   "label": "Xnee",
+   "tarball": "xnee",
+   "version": "3.19",
+   "description": "Record, replay and distribute user actions under X11",
+   "home": "http://www.gnu.org/software/xnee/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "xnee-3.19.tar.gz": "52a41e5cf62f81b7a3e5b58124eb3565e1e12028abda63f547fbbe0d98a2c212"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "xorriso": {
+   "label": "xorriso",
+   "tarball": "xorriso",
+   "version": "1.5.8.pl02",
+   "description": "Create, manipulate, burn ISO-9660 filesystems",
+   "home": "http://www.gnu.org/software/xorriso/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "xorriso-1.5.8.pl02.tar.gz": "b1455ecafbf0692ddafe1d71002a96f2ce2d77f4deae602678261ce033f97bc8"
+   },
+   "builddeps": [],
+   "libdeps": []
+  },
+  "zile": {
+   "label": "zile",
+   "tarball": "zile",
+   "version": "2.6.4",
+   "description": "Zile is a lightweight Emacs clone",
+   "home": "http://www.gnu.org/software/zile/",
+   "subdir": "$(GARNAME)/",
+   "sha256": {
+    "zile-2.6.4.tar.gz": "d5d44b85cb490643d0707e1a2186f3a32998c2f6eabaa9481479b65caeee57c0"
+   },
+   "builddeps": [
+    "ncurses",
+    "help2man",
+    "bdw-gc"
+   ],
+   "libdeps": []
+  },
+  "ZRTPCPP": {
+   "label": "ZRTPCPP",
+   "tarball": "ZRTPCPP",
+   "version": "4.7.0",
+   "description": "ZRTPCPP library for ZRTP protocol",
+   "home": "http://www.gnu.org/software/",
+   "subdir": "wernerd/ZRTPCPP/archive/refs/tags/",
+   "sha256": {
+    "4.7.0.tar.gz": "05e451c85755300f84899d7b71c4ed2ef3ed5d272b13019a7aa88c0b51288c35",
+    "ZRTPCPP.bool.patch": "3e3e120d4aa32099c3721b5a1fac843eec75a28797cc5acd72b6fdacb4a214b4"
+   },
+   "builddeps": [],
+   "libdeps": []
+  }
+ }
+}
