@@ -23,7 +23,7 @@ import {
 } from "node:fs";
 import { hostname, tmpdir } from "node:os";
 import { join, resolve, sep } from "node:path";
-import { relayHome } from "../../ai-os/src/relay/cdp.ts";
+import { relayHome } from "@aphrody/ai-os/relay/cdp";
 
 type Hosts = { hosts?: string[] };
 type Marketplace = Hosts & {

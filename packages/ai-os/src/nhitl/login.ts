@@ -7,7 +7,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { relayHome } from "../relay/cdp";
-import { register, setSecret, sync } from "../../../vault/src/index.ts";
+import { register, setSecret, sync } from "@aphrody/vault";
 
 const TOKEN = /sk-ant-oat01-[A-Za-z0-9_-]{60,}/;
 const DEVICE = /\b[A-Z0-9]{4}-[A-Z0-9]{5}/; // 9 caractères ; sous ConPTY, le texte suivant est collé au code

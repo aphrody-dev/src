@@ -5,7 +5,7 @@
 // shader reads the same roles at run time and again when the theme changes.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { catalogs } from "../../i18n/src/index.ts";
+import { catalogs } from "@aphrody/i18n";
 
 const NOTES = Object.fromEntries(
   Object.entries(catalogs).map(([l, c]) => [

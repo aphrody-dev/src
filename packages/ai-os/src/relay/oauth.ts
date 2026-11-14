@@ -28,7 +28,7 @@ import {
   readDocument,
   shred,
   writeDocument,
-} from "../../../vault/src/index.ts";
+} from "@aphrody/vault";
 
 export const SCOPES: Record<string, string> = {
   mcp: "outils MCP du relais (POST /mcp)",

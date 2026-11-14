@@ -16,11 +16,14 @@
     "./research": "./src/research/index.ts",
     "./relay": "./src/relay/protocols.ts",
     "./relay/server": "./src/relay/server.ts",
+    "./term": "./src/term/index.ts",
     "./stitch": "./src/google/stitch/src/index.ts",
     "./stitch/tools": "./src/google/stitch/src/tools.ts",
     "./jules": "./src/google/jules/index.ts",
     "./google": "./src/google/cli.ts",
-    "./relay/mcp-http": "./src/relay/mcp-http.ts"
+    "./relay/mcp-http": "./src/relay/mcp-http.ts",
+    "./llm/agents": "./src/llm/agents.ts",
+    "./relay/cdp": "./src/relay/cdp.ts"
   },
   "scripts": {
     "test": "bun test test",
@@ -28,13 +31,14 @@
     "relay": "bun src/relay/cli.ts serve"
   },
   "dependencies": {
+    "@aphrody/core": "workspace:*",
     "@aphrody/design": "workspace:*"
   },
   "devDependencies": {},
   "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aphrody-labs/src.git",
+    "url": "git+https://github.com/aphrody-labs/aphrody.git",
     "directory": "packages/ai-os"
   }
 }

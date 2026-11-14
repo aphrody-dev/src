@@ -17,11 +17,14 @@
   "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aphrody-labs/src.git",
+    "url": "git+https://github.com/aphrody-labs/aphrody.git",
     "directory": "packages/wck"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "exports": {
+    ".": "./src/index.ts"
   }
 }

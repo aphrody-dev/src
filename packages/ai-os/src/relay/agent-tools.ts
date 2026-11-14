@@ -11,7 +11,7 @@ import {
   scanLegacyPatterns,
   searchUseCases,
   validateWeb,
-} from "../../../wck/src/index";
+} from "@aphrody/wck";
 import { run } from "../core/agent";
 import { CLI, council } from "../core/council";
 import { layout } from "../core/home";

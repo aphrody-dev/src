@@ -1,7 +1,7 @@
 // Server-rendered HTML of aphrody.app (landing, labs, dashboard). Design system: packages/design (tokens.css in the
 // registry, Material Web components loaded from /_/md.js, Google Sans Flex). Only M3 tokens are referenced in CSS.
 // Pages read without JavaScript: Material Web elements upgrade links, lists and chips that already carry their text.
-import { catalogs } from "../../i18n/src/index.ts";
+import { catalogs } from "@aphrody/i18n";
 import { FONT_LINK, NATIVE_CSS, m3List, paintMark, type } from "./m3.ts";
 import { UI_CSS, themeButton } from "./ui.ts";
 import { METRICS, rating, type Summary } from "./runtime.ts";

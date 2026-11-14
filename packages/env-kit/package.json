@@ -18,11 +18,16 @@
   "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aphrody-labs/src.git",
+    "url": "git+https://github.com/aphrody-labs/aphrody.git",
     "directory": "packages/env-kit"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./github-app": "./src/github-app.ts",
+    "./secret-store": "./src/secret-store.ts"
   }
 }

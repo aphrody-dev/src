@@ -10,7 +10,7 @@ import {
   WAIT_REASON,
 } from "./ntsys-format.ts";
 import shaderSrc from "./scene.wgsl" with { type: "text" };
-import { role, tokens } from "../../../../packages/design/src/index.ts";
+import { role, tokens } from "@aphrody/design";
 
 const W = 3840;
 const H = 2160;

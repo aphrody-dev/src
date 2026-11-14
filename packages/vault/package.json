@@ -12,5 +12,8 @@
   },
   "dependencies": {},
   "license": "MIT OR Apache-2.0",
-  "private": true
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  }
 }

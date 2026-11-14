@@ -17,7 +17,7 @@
 import {
   McpHttpClient,
   McpHttpError as StreamableHTTPError,
-} from "../../../relay/mcp-http.ts";
+} from "@aphrody/ai-os/relay/mcp-http";
 import type { Tool } from "./types.js";
 import {
   StitchConfigSchema,

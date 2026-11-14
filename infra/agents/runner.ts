@@ -26,7 +26,7 @@ import {
 } from "node:fs";
 import { homedir, hostname } from "node:os";
 import { join, resolve } from "node:path";
-import { resolveExe } from "../../packages/ai-os/src/llm/agents.ts";
+import { resolveExe } from "@aphrody/ai-os/llm/agents";
 
 type Role = { timeout_s: number; budget_usd: number; heavy?: boolean };
 type Host = { roles: string[]; src: string; ssh?: string[] };
@@ -1003,7 +1003,7 @@ function ciWatch() {
         "run",
         "list",
         "-R",
-        "aphrody-labs/src",
+        "aphrody-labs/aphrody",
         "-w",
         wf,
         "-b",
@@ -1032,7 +1032,7 @@ function ciWatch() {
       host: HOST,
       created_by: "ci-watch",
       created_at: now(),
-      prompt: `Workflow \`${wf}\` is red on main at ${run.headSha} (${run.url}). Run \`git pull --ff-only origin main\` first. If HEAD already contains a revert of ${run.headSha.slice(0, 12)} or a newer ${wf} run on main is green, stop without changes. Otherwise read the failing log with \`gh run view --log-failed -R aphrody-labs/src ${run.databaseId}\`, fix the root cause with the smallest change, run the matching \`just\` recipe locally, and stop. Do not commit: the runner commits.`,
+      prompt: `Workflow \`${wf}\` is red on main at ${run.headSha} (${run.url}). Run \`git pull --ff-only origin main\` first. If HEAD already contains a revert of ${run.headSha.slice(0, 12)} or a newer ${wf} run on main is green, stop without changes. Otherwise read the failing log with \`gh run view --log-failed -R aphrody-labs/aphrody ${run.databaseId}\`, fix the root cause with the smallest change, run the matching \`just\` recipe locally, and stop. Do not commit: the runner commits.`,
       commit: {
         paths: [""],
         message: `fix: ${wf} rouge sur main à ${run.headSha.slice(0, 12)}`,
