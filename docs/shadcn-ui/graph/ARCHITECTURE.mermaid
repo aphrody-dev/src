@@ -1,0 +1,119 @@
+flowchart TD
+    file_CONTRIBUTING_md["CONTRIBUTING.md"]
+    file_LICENSE_md["LICENSE.md"]
+    file_README_md["README.md"]
+    file_RELEASING_md["RELEASING.md"]
+    file_SECURITY_md["SECURITY.md"]
+    file_apps_v4__env_example[".env.example"]
+    file_apps_v4_AGENTS_md["AGENTS.md"]
+    file_apps_v4_CLAUDE_md["CLAUDE.md"]
+    file_apps_v4_README_md["README.md"]
+    file_apps_v4_app__app___create__components_accent_picker_tsx["accent-picker.tsx"]
+    function_apps_v4_app__app___create__components_accent_picker_tsx_MenuAccentPicker["MenuAccentPicker"]
+    mod___registry_config["@/registry/config"]
+    mod___app__app___create__components_lock_button["@/app/app/create/components/lock-button"]
+    mod___app__app___create__components_picker["@/app/app/create/components/picker"]
+    mod___app__app___create__components_preview_override["@/app/app/create/components/preview-override"]
+    mod___app__app___create__lib_search_params["@/app/app/create/lib/search-params"]
+    fn_useDesignSystemSearchParams["useDesignSystemSearchParams"]
+    fn_usePreviewOverride["usePreviewOverride"]
+    fn_MENU_ACCENTS_find["MENU_ACCENTS.find"]
+    fn_clearOverride["clearOverride"]
+    fn_setParams["setParams"]
+    fn_setOverride["setOverride"]
+    fn_MENU_ACCENTS_map["MENU_ACCENTS.map"]
+    file_apps_v4_app__app___create__components_action_menu_tsx["action-menu.tsx"]
+    function_apps_v4_app__app___create__components_action_menu_tsx_ActionMenu["ActionMenu"]
+    function_apps_v4_app__app___create__components_action_menu_tsx_ActionMenuScript["ActionMenuScript"]
+    mod_next_script["next/script"]
+    mod_shadcn_schema["shadcn/schema"]
+    mod___styles_base_nova_ui_command["@/styles/base-nova/ui/command"]
+    mod___app__app___create__hooks_use_action_menu["@/app/app/create/hooks/use-action-menu"]
+    fn_useActionMenu["useActionMenu"]
+    fn_groups_map["groups.map"]
+    fn_group_items_map["group.items.map"]
+    fn_getCommandValue["getCommandValue"]
+    fn_handleSelect["handleSelect"]
+    file_apps_v4_app__app___create__components_base_color_picker_tsx["base-color-picker.tsx"]
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker["BaseColorPicker"]
+    mod_react["react"]
+    mod___hooks_use_mounted["@/hooks/use-mounted"]
+    fn_useMounted["useMounted"]
+    fn_React_useMemo["React.useMemo"]
+    fn_BASE_COLORS_find["BASE_COLORS.find"]
+    fn_BASE_COLORS_map["BASE_COLORS.map"]
+    file_apps_v4_app__app___create__components_base_picker_tsx["base-picker.tsx"]
+    function_apps_v4_app__app___create__components_base_picker_tsx_BasePicker["BasePicker"]
+    fn_BASES_find["BASES.find"]
+    fn_React_useCallback["React.useCallback"]
+    fn_BASES_map["BASES.map"]
+    file_apps_v4_app__app___create__components_chart_color_picker_tsx["chart-color-picker.tsx"]
+    function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker["ChartColorPicker"]
+    file_apps_v4_app__app___create__components_accent_picker_tsx -->|defines| function_apps_v4_app__app___create__components_accent_picker_tsx_MenuAccentPicker
+    file_apps_v4_app__app___create__components_accent_picker_tsx -->|imports| mod___registry_config
+    file_apps_v4_app__app___create__components_accent_picker_tsx -->|imports| mod___app__app___create__components_lock_button
+    file_apps_v4_app__app___create__components_accent_picker_tsx -->|imports| mod___app__app___create__components_picker
+    file_apps_v4_app__app___create__components_accent_picker_tsx -->|imports| mod___app__app___create__components_preview_override
+    file_apps_v4_app__app___create__components_accent_picker_tsx -->|imports| mod___app__app___create__lib_search_params
+    function_apps_v4_app__app___create__components_accent_picker_tsx_MenuAccentPicker -->|calls| fn_useDesignSystemSearchParams
+    function_apps_v4_app__app___create__components_accent_picker_tsx_MenuAccentPicker -->|calls| fn_usePreviewOverride
+    function_apps_v4_app__app___create__components_accent_picker_tsx_MenuAccentPicker -->|calls| fn_MENU_ACCENTS_find
+    function_apps_v4_app__app___create__components_accent_picker_tsx_MenuAccentPicker -->|calls| fn_clearOverride
+    function_apps_v4_app__app___create__components_accent_picker_tsx_MenuAccentPicker -->|calls| fn_setParams
+    function_apps_v4_app__app___create__components_accent_picker_tsx_MenuAccentPicker -->|calls| fn_setOverride
+    function_apps_v4_app__app___create__components_accent_picker_tsx_MenuAccentPicker -->|calls| fn_MENU_ACCENTS_map
+    file_apps_v4_app__app___create__components_action_menu_tsx -->|defines| function_apps_v4_app__app___create__components_action_menu_tsx_ActionMenu
+    file_apps_v4_app__app___create__components_action_menu_tsx -->|defines| function_apps_v4_app__app___create__components_action_menu_tsx_ActionMenuScript
+    file_apps_v4_app__app___create__components_action_menu_tsx -->|imports| mod_next_script
+    file_apps_v4_app__app___create__components_action_menu_tsx -->|imports| mod_shadcn_schema
+    file_apps_v4_app__app___create__components_action_menu_tsx -->|imports| mod___styles_base_nova_ui_command
+    file_apps_v4_app__app___create__components_action_menu_tsx -->|imports| mod___app__app___create__hooks_use_action_menu
+    function_apps_v4_app__app___create__components_action_menu_tsx_ActionMenu -->|calls| fn_useActionMenu
+    function_apps_v4_app__app___create__components_action_menu_tsx_ActionMenu -->|calls| fn_groups_map
+    function_apps_v4_app__app___create__components_action_menu_tsx_ActionMenu -->|calls| fn_group_items_map
+    function_apps_v4_app__app___create__components_action_menu_tsx_ActionMenu -->|calls| fn_getCommandValue
+    function_apps_v4_app__app___create__components_action_menu_tsx_ActionMenu -->|calls| fn_handleSelect
+    file_apps_v4_app__app___create__components_base_color_picker_tsx -->|defines| function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker
+    file_apps_v4_app__app___create__components_base_color_picker_tsx -->|imports| mod_react
+    file_apps_v4_app__app___create__components_base_color_picker_tsx -->|imports| mod___hooks_use_mounted
+    file_apps_v4_app__app___create__components_base_color_picker_tsx -->|imports| mod___registry_config
+    file_apps_v4_app__app___create__components_base_color_picker_tsx -->|imports| mod___app__app___create__components_lock_button
+    file_apps_v4_app__app___create__components_base_color_picker_tsx -->|imports| mod___app__app___create__components_picker
+    file_apps_v4_app__app___create__components_base_color_picker_tsx -->|imports| mod___app__app___create__components_preview_override
+    file_apps_v4_app__app___create__components_base_color_picker_tsx -->|imports| mod___app__app___create__lib_search_params
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker -->|calls| fn_useMounted
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker -->|calls| fn_useDesignSystemSearchParams
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker -->|calls| fn_usePreviewOverride
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker -->|calls| fn_React_useMemo
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker -->|calls| fn_BASE_COLORS_find
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker -->|calls| fn_clearOverride
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker -->|calls| fn_setParams
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker -->|calls| fn_setOverride
+    function_apps_v4_app__app___create__components_base_color_picker_tsx_BaseColorPicker -->|calls| fn_BASE_COLORS_map
+    file_apps_v4_app__app___create__components_base_picker_tsx -->|defines| function_apps_v4_app__app___create__components_base_picker_tsx_BasePicker
+    file_apps_v4_app__app___create__components_base_picker_tsx -->|imports| mod_react
+    file_apps_v4_app__app___create__components_base_picker_tsx -->|imports| mod___registry_config
+    file_apps_v4_app__app___create__components_base_picker_tsx -->|imports| mod___app__app___create__components_picker
+    file_apps_v4_app__app___create__components_base_picker_tsx -->|imports| mod___app__app___create__lib_search_params
+    function_apps_v4_app__app___create__components_base_picker_tsx_BasePicker -->|calls| fn_useDesignSystemSearchParams
+    function_apps_v4_app__app___create__components_base_picker_tsx_BasePicker -->|calls| fn_React_useMemo
+    function_apps_v4_app__app___create__components_base_picker_tsx_BasePicker -->|calls| fn_BASES_find
+    function_apps_v4_app__app___create__components_base_picker_tsx_BasePicker -->|calls| fn_React_useCallback
+    function_apps_v4_app__app___create__components_base_picker_tsx_BasePicker -->|calls| fn_setParams
+    function_apps_v4_app__app___create__components_base_picker_tsx_BasePicker -->|calls| fn_BASES_map
+    file_apps_v4_app__app___create__components_chart_color_picker_tsx -->|defines| function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker
+    file_apps_v4_app__app___create__components_chart_color_picker_tsx -->|imports| mod_react
+    file_apps_v4_app__app___create__components_chart_color_picker_tsx -->|imports| mod___hooks_use_mounted
+    file_apps_v4_app__app___create__components_chart_color_picker_tsx -->|imports| mod___registry_config
+    file_apps_v4_app__app___create__components_chart_color_picker_tsx -->|imports| mod___app__app___create__components_lock_button
+    file_apps_v4_app__app___create__components_chart_color_picker_tsx -->|imports| mod___app__app___create__components_picker
+    file_apps_v4_app__app___create__components_chart_color_picker_tsx -->|imports| mod___app__app___create__components_preview_override
+    file_apps_v4_app__app___create__components_chart_color_picker_tsx -->|imports| mod___app__app___create__lib_search_params
+    function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker -->|calls| fn_useMounted
+    function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker -->|calls| fn_useDesignSystemSearchParams
+    function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker -->|calls| fn_usePreviewOverride
+    function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker -->|calls| fn_React_useMemo
+    function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker -->|calls| fn_BASE_COLORS_find
+    function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker -->|calls| fn_clearOverride
+    function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker -->|calls| fn_setParams
+    function_apps_v4_app__app___create__components_chart_color_picker_tsx_ChartColorPicker -->|calls| fn_setOverride
