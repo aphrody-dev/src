@@ -20,6 +20,12 @@ Reproducible through `just agents-sync` (`infra/agents/toolchain.toml`, applier 
 - Skills also hidden from the listing: 10 `replica-*` (entry `replica-recon`), 7 `steam-*` (entry `steam-web-api`).
 - Output style: one style, `Autonome` (French, 3 lines, no questions, finish the task, parallel and native tools), for user and project; the project no longer overrides it with the built-in `Proactive`.
 - Status line: 22 ms per run (average of 5; `bun -e 0` alone is 14 ms), left as is. PostToolUse hook: the shell now tests for `git commit` before starting bun, 38 ms -> 23 ms per Bash call (average of 5), and bun no longer loads the relay server module on every call.
+- PreToolUse Bash guard (2026-11-14, pure shell `case`, no bun; 42 ms per Bash call on niubash, which is bash startup itself, while `bun -e 0` is 16 ms) denies:
+  - `cat`, `grep`, `sed`, `ls`, `find`, `du`, `curl` and `cd` as command words;
+  - `git commit` without `--`, because it commits the whole shared index;
+  - `git add -A`, `git add .` and `git stash`.
+- Subagents: project types in `.claude/agents/` (`rust-crates`, `c-core`, `upstream-absorber`, `chromium-integrator`, `ts-packages`, `coherence-fixer`, `fact-checker`) with `skills:` preloaded and `memory: project`; `Agent(general-purpose)` is denied in `.claude/settings.json`.
+- bunfig: `telemetry = false`, `[run] shell = "bun"`, `bun = true`, `silent`, `noOrphans`, `[test] onlyFailures` (keys from bun.com/docs/runtime/bunfig).
 - Skills: 141 -> 129 by merging overlaps; 36 `android-*` skills carry `disable-model-invocation: true` (about 30 000 characters of descriptions out of every session; `android-cli` lists them).
 - 5 marketplaces without an installed plugin removed; 8 project-scope plugins removed.
 - `MEMORY.md`: 6.7 KB, 47 lines (limit loaded per session: 200 lines or 25 KB).
