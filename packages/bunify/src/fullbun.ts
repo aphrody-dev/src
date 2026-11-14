@@ -135,7 +135,7 @@ export function useCore(on: boolean) {
 
 const grammarPath = (p: string) => (/\.(tsx|jsx)$/.test(p) ? "x.tsx" : /\.(ts|mts|cts)$/.test(p) ? "x.ts" : "x.js");
 
-function astCalls(path: string, text: string, locals: Set<string>): Call[] | null {
+function astCalls(path: string, text: string, locals: Set<string> | null): Call[] | null {
   if (forceRegex || !core) return null;
   try {
     const rows = core.query(grammarPath(path), text, "(call_expression function: (_) @f arguments: (arguments) @a) @c") as {
@@ -154,7 +154,7 @@ function astCalls(path: string, text: string, locals: Set<string>): Call[] | nul
       } else if (r.capture_name === "f" && cur) cur.callee = r.text;
       else if (r.capture_name === "a" && cur?.callee) {
         const head = cur.callee.split(".")[0]!;
-        if (locals.has(head) && /^[\w$]+(\.[\w$]+)?$/.test(cur.callee))
+        if ((!locals || locals.has(head)) && /^[\w$]+(\.[\w$]+)?$/.test(cur.callee))
           calls.push({ callee: cur.callee, args: splitTop(r.text.slice(1, -1)), start: cur.start!, end: cur.end! });
       }
     }
@@ -163,7 +163,20 @@ function astCalls(path: string, text: string, locals: Set<string>): Call[] | nul
     return null;
   }
 }
-function regexCalls(text: string, locals: Set<string>): Call[] {
+/** Every `name(...)` or `a.b(...)` call of a file (tree-sitter when the core is loaded, else a regex); call `await engine()` first. */
+export function allCalls(path: string, text: string): { callee: string; args: string[]; start: number; end: number }[] {
+  return astCalls(path, text, null) ?? regexCalls(text, null);
+}
+function regexCalls(text: string, locals: Set<string> | null): Call[] {
+  if (!locals) {
+    const calls: Call[] = [];
+    for (let m, re = /(?<![.\w$])([\w$]+(?:\.[\w$]+)?)\s*\(/g; (m = re.exec(text)); ) {
+      const open = m.index + m[0].length - 1;
+      const close = matchParen(text, open);
+      if (close >= 0) calls.push({ callee: m[1]!, args: splitTop(text.slice(open + 1, close)), start: m.index, end: close + 1 });
+    }
+    return calls;
+  }
   const calls: Call[] = [];
   for (const local of locals) {
     const re = new RegExp(`(?<![.\\w$])${local.replace(/\$/g, "\\$")}(\\.[\\w$]+)?\\s*\\(`, "g");

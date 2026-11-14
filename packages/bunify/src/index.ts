@@ -2,9 +2,14 @@
 import { Glob, $ } from "bun";
 import { existsSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { runRust, type RustPlan } from "./rust.ts";
 import { esc, plannedPatches, runFullbun, type Engine, type Manual, type RuleStats, RULES } from "./fullbun.ts";
 
 export { RULES, ruleSummary, type Manual, type Rule } from "./fullbun.ts";
+export { planMarkdown, rewriteTool, rewriteToolScript, type RustPlan } from "./rust.ts";
+
+/** bun: lock/workspaces/scripts; fullbun: bun + Node-era dependencies -> Bun built-ins; rust: plan (and mechanical rewrites) toward Rust; all: every stage. */
+export type Stage = "bun" | "fullbun" | "rust" | "all";
 
 export type Source = "pnpm" | "yarn" | "npm" | "bun";
 export interface Options {
@@ -18,6 +23,8 @@ export interface Options {
   tools?: string[];
   /** Replace Node-era dependencies by Bun built-ins (see RULES). */
   fullbun?: boolean;
+  /** Migration stage (default `bun`; `fullbun: true` is the same as stage `fullbun`). */
+  stage?: Stage;
   /** Restrict the fullbun pass to these rule ids. */
   rules?: string[];
   log?: (line: string) => void;
@@ -28,6 +35,7 @@ export interface Report {
   lock: "migrated" | "kept" | "skipped";
   /** Sites a fullbun rule could not rewrite safely. */
   manual: Manual[];
+  rust?: RustPlan;
   fullbun?: { engine: Engine; rules: Record<string, RuleStats>; jest: { package: string; unsafeFiles: number }[] };
 }
 
@@ -166,6 +174,8 @@ async function* scan(root: string, patterns: string[]) {
 
 export async function bunify(opts: Options): Promise<Report> {
   const { root, check = false } = opts;
+  const stage: Stage = opts.stage ?? (opts.fullbun ? "fullbun" : "bun");
+  opts = { ...opts, fullbun: stage === "fullbun" || stage === "all" };
   const log = opts.log ?? (() => {});
   const source = detect(root);
   const changed: string[] = [];
@@ -175,6 +185,11 @@ export async function bunify(opts: Options): Promise<Report> {
     if (!check) await Bun.write(join(root, rel), after);
     log(`${check ? "would change" : "changed"} ${rel}`);
   };
+
+  if (stage === "rust") {
+    const rust = await runRust({ root, files: await sourceFiles(root), save });
+    return { source, changed, lock: "skipped", manual: [], rust };
+  }
 
   // 1. Lock migration first: Bun reads pnpm-lock.yaml, yarn.lock and package-lock.json itself.
   let lock: Report["lock"] = "kept";
@@ -297,7 +312,11 @@ export async function bunify(opts: Options): Promise<Report> {
       changed.push(f.slice(root.length + 1));
       if (!check) rmSync(f);
     }
-  return { source, changed, lock, manual, fullbun };
+  let rust: RustPlan | undefined;
+  if (stage === "all") {
+    rust = await runRust({ root, files: await sourceFiles(root), save });
+  }
+  return { source, changed, lock, manual, rust, fullbun };
 }
 
 const SRC_EXT = /\.(?:[cm]?[jt]s|[jt]sx)$/;

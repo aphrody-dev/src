@@ -1,7 +1,7 @@
 {
   "name": "@aphrody/bunify",
   "version": "0.1.0",
-  "description": "Switch any JS/TS monorepo from pnpm, yarn, npm or lerna + Node to Bun, idempotently",
+  "description": "legacy Node/TS/JS -> Bun -> Rust migrator",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -9,7 +9,8 @@
     "directory": "packages/bunify"
   },
   "bin": {
-    "bunify": "./src/cli.ts"
+    "bunify": "./src/cli.ts",
+    "n2r": "./src/cli.ts"
   },
   "files": [
     "src"

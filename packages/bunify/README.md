@@ -1,9 +1,9 @@
 # @aphrody/bunify
 
-Switch a JS/TS monorepo (pnpm, yarn, npm, lerna) to Bun, idempotently. Run again after each upstream sync; `--check` exits 1 when anything is not bunified yet.
+Legacy Node/TS/JS -> Bun -> Rust migrator (bins `bunify` and `n2r`). Idempotent stages: `bun`, `fullbun`, `rust`; run again after each upstream sync. Run again after each upstream sync; `--check` exits 1 when anything is not bunified yet.
 
 ```sh
-bunify [root] [--check] [--no-lock] [--fullbun] [--rules id ...] [--json]
+bunify [root] [--stage bun|fullbun|rust|all] [--check] [--no-lock] [--fullbun] [--rules id ...] [--json] [--plan out]
 bunify --list-rules
 ```
 
@@ -40,3 +40,26 @@ Sources are parsed with the tree-sitter core (`@aphrody/core` `query`, loaded fr
 ## Known differences
 
 Bun.Glob returns native separators on Windows; `glob@7` callback forms, `ignore` and array patterns are manual.
+
+## Stages
+
+| stage | does |
+|---|---|
+| `bun` (default) | lock, workspaces, scripts, tooling spawns |
+| `fullbun` (= `--fullbun`) | `bun` + Node-era dependencies -> Bun built-ins |
+| `rust` | plan toward Rust, mechanical rewrites only; no lock work |
+| `all` | `fullbun` then `rust` |
+
+## --stage rust
+
+Scans package.json files and JS/TS sources (tree-sitter via @aphrody/core when its library is built, regex otherwise; `examples`, tests, e2e and fixtures are skipped) and emits `<out>.json` + `<out>.md` with `--plan <out>` (`--check --plan` changes nothing).
+
+- Native addons (binding.gyp, node-gyp/nan/node-addon-api/bindings, `*.node`, `process.dlopen`): planned as a Rust cdylib behind a C ABI, loaded with `bun:ffi`. Always `plan`.
+- CPU-hot pure modules (hashing, parsing, compression, image, glob/walk, crypto): mapped to a Rust crate; the pin is an aphrody-labs fork when one exists (oxc, swc), else the upstream GitHub repo (names checked with `gh api`). Always `plan`.
+- JS CLIs run from scripts or `child_process`/execa calls: prettier -> `bun fmt`, eslint -> oxlint, tsc --noEmit -> `bun check`, babel -> swc, webpack -> rspack, postcss/autoprefixer -> lightningcss. Rewritten when every flag maps (`rewritten`), otherwise `manual` with the reason.
+
+## Relationship with n2b and depot-migrate
+
+- `n2b` (~/.local/bin/n2b.exe, `n2b migrate`) and `crates/depot-migrate` (skill ay-monorepo-migrator) are the Rust engines: whole-tree transform, rule tables in `rules.rs` (Node builtin scheme, fetch, bun:sqlite, Bun.password) and `manifest.rs` (`OBSOLETE_NODE_PACKAGES`).
+- bunify stays the TS, idempotent, CI-friendly migrator (rerun after upstream syncs, standalone single file for forks). Rule tables are not duplicated: its `fullbun` rules cover the same packages per call site; the rust-stage addon dependency list (node-gyp, nan, node-addon-api) is checked against `manifest.rs` by `test/rust.test.ts`.
+- Split: depot-migrate/n2b = Rust-side repo surgery and AOT; bunify = Node -> Bun, plus the Rust plan that n2b can consume (`--json`).
