@@ -1,0 +1,59 @@
+# Blog (57 articles, https://ui.shadcn.com/rss.xml)
+
+- [October 2026 - Trace, Code Block and AI Elements](https://ui.shadcn.com/docs/changelog/2026-10-ai-elements) — 2026-10-14: Two new components for the steps an agent takes and the code it writes, and AI Elements, patterns for agentic interfaces built from shadcn/ui components.
+- [September 2026 - cn](https://ui.shadcn.com/docs/changelog/2026-09-cn) — 2026-09-03: Components now import cn from the cn package. One dependency instead of two, and no local helper to maintain.
+- [August 2026 - Private GitHub Registries](https://ui.shadcn.com/docs/changelog/2026-08-private-github-registries) — 2026-08-24: Install registry items from private GitHub repositories using the GitHub CLI or a token.
+- [August 2026 - Human in the Loop](https://ui.shadcn.com/docs/changelog/2026-08-helpers-human-in-the-loop) — 2026-08-12: Mock paused tool calls, approvals, and continuations for the AI SDK with @shadcn/helpers.
+- [August 2026 - Questionnaire](https://ui.shadcn.com/docs/changelog/2026-08-questionnaire) — 2026-08-05: A new component for building multi-step question flows with fixed, freeform, multiple, and skippable answers.
+- [July 2026 - Dynamic Search](https://ui.shadcn.com/docs/changelog/2026-07-dynamic-search) — 2026-07-31: Registries can now handle search server-side.
+- [July 2026 - Toast](https://ui.shadcn.com/docs/changelog/2026-07-toast) — 2026-07-23: A new Toast component built on Base UI primitives.
+- [July 2026 - React Aria](https://ui.shadcn.com/docs/changelog/2026-07-react-aria) — 2026-07-17: React Aria is now available as a component base in shadcn/ui.
+- [July 2026 - Introducing @shadcn/helpers](https://ui.shadcn.com/docs/changelog/2026-07-helpers) — 2026-07-14: Small, focused helpers for developing apps, starting with AI SDK and TanStack AI.
+- [July 2026 - Introducing shadcn/typeset](https://ui.shadcn.com/docs/changelog/2026-07-typeset) — 2026-07-10: A complete typography system for HTML, from blog posts to streaming chat. One CSS file you own.
+- [July 2026 - Base UI as the Default](https://ui.shadcn.com/docs/changelog/2026-07-base-ui-default) — 2026-07-02: New projects now use Base UI by default. Radix is still fully supported.
+- [June 2026 - Components for Chat Interfaces](https://ui.shadcn.com/docs/changelog/2026-06-chat-components) — 2026-06-26: MessageScroller, Message, Bubble, Attachment, and Marker. Components for building chat interfaces.
+- [June 2026 - GitHub Registries](https://ui.shadcn.com/docs/changelog/2026-06-github-registries) — 2026-06-01: Turn any public GitHub repository into a shadcn registry.
+- [May 2026 - shadcn eject](https://ui.shadcn.com/docs/changelog/2026-05-shadcn-eject) — 2026-05-31: Inline shadcn/tailwind.css and remove the shadcn dependency.
+- [May 2026 - Introducing Rhea](https://ui.shadcn.com/docs/changelog/2026-05-rhea) — 2026-05-26: A more compact Luma. Smaller spacing. Denser surfaces. Built for focused product interfaces.
+- [May 2026 - Registry Include and Validate](https://ui.shadcn.com/docs/changelog/2026-05-registry-include) — 2026-05-20: Organize and validate source registries.
+- [May 2026 - Package Imports and Target Aliases](https://ui.shadcn.com/docs/changelog/2026-05-package-imports-target-aliases) — 2026-05-05: Configure shadcn/ui with package.json imports and portable registry target aliases.
+- [April 2026 - shadcn preset](https://ui.shadcn.com/docs/changelog/2026-04-preset-commands) — 2026-04-28: Decode, share, open, and resolve preset codes from the shadcn CLI.
+- [April 2026 - Pointer Cursor](https://ui.shadcn.com/docs/changelog/2026-04-pointer-cursor) — 2026-04-25: Add cursor pointer behavior for buttons during project setup.
+- [April 2026 - Partial Preset Apply](https://ui.shadcn.com/docs/changelog/2026-04-partial-preset-apply) — 2026-04-22: Apply only the theme or fonts from a preset while keeping your existing components.
+- [April 2026 - Introducing Sera](https://ui.shadcn.com/docs/changelog/2026-04-sera) — 2026-04-16: Minimal. Editorial. Typographic. Underline Controls and Uppercase Headings. Shaped by Print Design Principles.
+- [April 2026 - shadcn apply](https://ui.shadcn.com/docs/changelog/2026-04-shadcn-apply) — 2026-04-08: Switch presets in existing projects without starting over.
+- [April 2026 - Component Composition](https://ui.shadcn.com/docs/changelog/2026-04-component-composition) — 2026-04-06: Composition sections across component pages—structured trees that help you and your agents build correct UI.
+- [March 2026 - Introducing Luma](https://ui.shadcn.com/docs/changelog/2026-03-luma) — 2026-03-31: Rounded geometry. Soft elevation. Breathable layouts. Inspired by macOS Tahoe, minus the glass.
+- [March 2026 - shadcn/cli v4](https://ui.shadcn.com/docs/changelog/2026-03-cli-v4) — 2026-03-06: More capable, easier to use. Built for you and your coding agents. Skills, presets, dry run, new templates, monorepo and more.
+- [February 2026 - Blocks for Radix and Base UI](https://ui.shadcn.com/docs/changelog/2026-02-blocks) — 2026-02-06: All blocks are now available for both Radix and Base UI.
+- [February 2026 - Unified Radix UI Package](https://ui.shadcn.com/docs/changelog/2026-02-radix-ui) — 2026-02-02: The new-york style now uses the unified radix-ui package.
+- [January 2026 - RTL Support](https://ui.shadcn.com/docs/changelog/2026-01-rtl) — 2026-01-28: The shadcn CLI now supports RTL (right-to-left) layouts by automatically converting physical CSS classes to logical equivalents.
+- [January 2026 - Inline Start and End Styles](https://ui.shadcn.com/docs/changelog/2026-01-inline-side-styles) — 2026-01-23: We've updated the styles for Base UI components to support inline-start and inline-end side values.
+- [January 2026 - Base UI Documentation](https://ui.shadcn.com/docs/changelog/2026-01-base-ui) — 2026-01-20: Full documentation for Base UI components.
+- [December 2025 - npx shadcn create](https://ui.shadcn.com/docs/changelog/2025-12-shadcn-create) — 2025-12-12: Customize everything. Pick your component library, icons, base color, theme, fonts and create your own version of shadcn/ui.
+- [October 2025 - Registry Directory](https://ui.shadcn.com/docs/changelog/2025-10-registry-directory) — 2025-10-28: A list of code registries you can browse and pull code and components from.
+- [October 2025 - New Components](https://ui.shadcn.com/docs/changelog/2025-10-new-components) — 2025-10-03: Spinner, Kbd, Button Group, Input Group, Field, Item, and Empty components.
+- [September 2025 - Registry Index](https://ui.shadcn.com/docs/changelog/2025-09-registry-index) — 2025-09-02: An index of open source registries that you can install items from.
+- [August 2025 - shadcn CLI 3.0 and MCP Server](https://ui.shadcn.com/docs/changelog/2025-08-cli-3-mcp) — 2025-08-27: Namespaced registries, advanced authentication, new commands and a completely rewritten registry engine.
+- [July 2025 - Universal Registry Items](https://ui.shadcn.com/docs/changelog/2025-07-universal-registry) — 2025-07-11: Create registry items that can be distributed to any project.
+- [July 2025 - Local File Support](https://ui.shadcn.com/docs/changelog/2025-07-local-file-support) — 2025-07-07: Initialize projects and add components from local JSON files.
+- [June 2025 - radix-ui Migration](https://ui.shadcn.com/docs/changelog/2025-06-radix-ui) — 2025-06-11: A new command to migrate to the new radix-ui package.
+- [June 2025 - Calendar Component](https://ui.shadcn.com/docs/changelog/2025-06-calendar) — 2025-06-06: Upgraded Calendar component with React DayPicker and 30+ calendar blocks.
+- [May 2025 - New Site](https://ui.shadcn.com/docs/changelog/2025-05-new-site) — 2025-05-30: Upgraded ui.shadcn.com to Next.js 15.3 and Tailwind v4.
+- [April 2025 - MCP](https://ui.shadcn.com/docs/changelog/2025-04-mcp) — 2025-04-30: Zero-config MCP support for shadcn/ui registry.
+- [April 2025 - shadcn 2.5.0](https://ui.shadcn.com/docs/changelog/2025-04-shadcn-2-5) — 2025-04-26: Resolve anywhere - registries can now place files anywhere in an app.
+- [April 2025 - Cross-framework Route Support](https://ui.shadcn.com/docs/changelog/2025-04-cross-framework) — 2025-04-09: The shadcn CLI can now auto-detect your framework and adapt routes for you.
+- [February 2025 - Tailwind v4](https://ui.shadcn.com/docs/changelog/2025-02-tailwind-v4) — 2025-02-19: First preview of Tailwind v4 and React 19 support.
+- [February 2025 - Updated Registry Schema](https://ui.shadcn.com/docs/changelog/2025-02-registry-schema) — 2025-02-06: Updated registry schema to support more features.
+- [January 2025 - Blocks Community](https://ui.shadcn.com/docs/changelog/2025-01-blocks) — 2025-01-14: Inviting the community to contribute to the blocks library.
+- [December 2024 - Monorepo Support](https://ui.shadcn.com/docs/changelog/2024-12-monorepo) — 2024-12-20: New monorepo support in the CLI.
+- [November 2024 - Icons](https://ui.shadcn.com/docs/changelog/2024-11-icons) — 2024-11-06: The new-york style now uses Lucide as the default icon set.
+- [October 2024 - React 19](https://ui.shadcn.com/docs/changelog/2024-10-react-19) — 2024-10-29: shadcn/ui is now compatible with React 19 and Next.js 15.
+- [October 2024 - Sidebar](https://ui.shadcn.com/docs/changelog/2024-10-sidebar) — 2024-10-18: 25 components to help you build all kinds of sidebars.
+- [August 2024 - npx shadcn init](https://ui.shadcn.com/docs/changelog/2024-08-npx-shadcn-init) — 2024-08-31: Complete CLI rewrite with support for all major React frameworks.
+- [April 2024 - Lift Mode](https://ui.shadcn.com/docs/changelog/2024-04-lift-mode) — 2024-04-05: A new mode for Blocks to lift smaller components for copy and paste.
+- [March 2024 - Introducing Blocks](https://ui.shadcn.com/docs/changelog/2024-03-blocks) — 2024-03-22: Ready-made components for dashboards and authentication pages.
+- [March 2024 - Breadcrumb and Input OTP](https://ui.shadcn.com/docs/changelog/2024-03-breadcrumb-otp) — 2024-03-08: New Breadcrumb and Input OTP components.
+- [December 2023 - New Components](https://ui.shadcn.com/docs/changelog/2023-12-new-components) — 2023-12-22: Carousel, Drawer, Pagination, Resizable, Sonner, and CLI updates.
+- [July 2023 - JavaScript](https://ui.shadcn.com/docs/changelog/2023-07-javascript) — 2023-07-04: JavaScript version of components available via the CLI.
+- [June 2023 - New CLI, Styles and more](https://ui.shadcn.com/docs/changelog/2023-06-new-cli) — 2023-06-22: Complete CLI rewrite with new styles, theming options, and more.

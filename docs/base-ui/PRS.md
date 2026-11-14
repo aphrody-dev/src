@@ -1,0 +1,289 @@
+# Pull requests mui/base-ui
+
+Instantané du 2026-11-14.
+
+## Fusionnées sur master depuis 2026-10-15 (138)
+
+| PR | Titre | Auteur | Date | Labels |
+|---|---|---|---|---|
+| [#6215](https://github.com/mui/base-ui/pull/6215) | [docs] Reframe preventBaseUIHandler as a supported control lever | jjenzz | 2026-11-12 | docs |
+| [#6209](https://github.com/mui/base-ui/pull/6209) | Bump @mui/internal-docs-infra to 0.13.1-canary.30 | app/code-infra-renovate | 2026-11-10 | dependencies |
+| [#6208](https://github.com/mui/base-ui/pull/6208) | [code-infra] Update stylelint to v18 | Janpot | 2026-11-09 | dependencies |
+| [#6201](https://github.com/mui/base-ui/pull/6201) | [toast] Collapse the viewport when the pointer leaves after closing the hovered toast | lord-0011 | 2026-11-10 | type: bug, component: toast |
+| [#6199](https://github.com/mui/base-ui/pull/6199) | [popup] Keep highlight when pointer moves onto nested item content | mdm317 | 2026-11-10 | component: select, component: menu, type: bug, component: combobox |
+| [#6191](https://github.com/mui/base-ui/pull/6191) | Bump Vite & Vitest | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6190](https://github.com/mui/base-ui/pull/6190) | Bump vale-cli/vale to 3.26.0 | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6189](https://github.com/mui/base-ui/pull/6189) | Bump pnpm to 12.18.0 | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6188](https://github.com/mui/base-ui/pull/6188) | Bump lucide-react to ^1.70.0 | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6187](https://github.com/mui/base-ui/pull/6187) | Bump eslint to 10.14.0 | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6186](https://github.com/mui/base-ui/pull/6186) | Bump playwright monorepo | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6185](https://github.com/mui/base-ui/pull/6185) | Bump Tailwind CSS to 4.3.4 | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6184](https://github.com/mui/base-ui/pull/6184) | Bump react-router to 8.5.1 | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6183](https://github.com/mui/base-ui/pull/6183) | Bump nextjs monorepo to 16.4.5 | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6182](https://github.com/mui/base-ui/pull/6182) | Bump @tanstack/react-virtual to ^3.14.26 | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6172](https://github.com/mui/base-ui/pull/6172) | Lock file maintenance | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6165](https://github.com/mui/base-ui/pull/6165) | [popups] Ignore outside presses stopped before reaching their target | willhoney7 | 2026-11-10 | type: bug, scope: all components |
+| [#6164](https://github.com/mui/base-ui/pull/6164) | [combobox] Ignore presses in nested portals | chuganzy | 2026-11-10 | type: bug, component: combobox |
+| [#6160](https://github.com/mui/base-ui/pull/6160) | [menu] Avoid re-rendering every item when the popup closes | mdm317 | 2026-11-02 | component: menu, performance |
+| [#6153](https://github.com/mui/base-ui/pull/6153) | [toast][drawer] Deduplicate swipe dismissal math | hoanle0126 | 2026-11-12 | component: drawer, component: toast |
+| [#6146](https://github.com/mui/base-ui/pull/6146) | Bump unist-util-visit-parents to ^6.1.0 | app/code-infra-renovate | 2026-10-30 | dependencies |
+| [#6145](https://github.com/mui/base-ui/pull/6145) | Bump react-hook-form to ^7.91.0 | app/code-infra-renovate | 2026-10-30 | dependencies |
+| [#6144](https://github.com/mui/base-ui/pull/6144) | Bump pnpm to 12.16.0 | app/code-infra-renovate | 2026-10-30 | dependencies |
+| [#6143](https://github.com/mui/base-ui/pull/6143) | Bump es-toolkit to ^1.53.0 | app/code-infra-renovate | 2026-10-30 | dependencies |
+| [#6142](https://github.com/mui/base-ui/pull/6142) | Bump typescript-eslint to 8.72.1 | app/code-infra-renovate | 2026-10-30 | dependencies |
+| [#6141](https://github.com/mui/base-ui/pull/6141) | Bump nx to ~23.3.1 | app/code-infra-renovate | 2026-10-30 | dependencies |
+| [#6140](https://github.com/mui/base-ui/pull/6140) | Bump nextjs monorepo to 16.4.3 | app/code-infra-renovate | 2026-10-30 | dependencies |
+| [#6139](https://github.com/mui/base-ui/pull/6139) | Bump code-infra:patchUpdates | app/code-infra-renovate | 2026-11-09 | dependencies |
+| [#6138](https://github.com/mui/base-ui/pull/6138) | Bump @tanstack/react-virtual to ^3.14.23 | app/code-infra-renovate | 2026-10-30 | dependencies |
+| [#6137](https://github.com/mui/base-ui/pull/6137) | Bump GitHub Actions | app/code-infra-renovate | 2026-11-10 | dependencies |
+| [#6131](https://github.com/mui/base-ui/pull/6131) | [docs-infra] Bump @mui/internal-docs-infra to 0.13.1-canary.29 | Janpot | 2026-10-30 | dependencies, scope: docs-infra |
+| [#6129](https://github.com/mui/base-ui/pull/6129) | [toast] Fix passing id to loading options | sai6855 | 2026-11-02 | type: enhancement, component: toast, typescript |
+| [#6128](https://github.com/mui/base-ui/pull/6128) | Bump MUI infra packages | app/code-infra-renovate | 2026-11-10 | dependencies |
+| [#6124](https://github.com/mui/base-ui/pull/6124) | [docs] Avoid viewport units on animated modal demo parts | atomiks | 2026-11-10 | component: alert dialog, docs, component: drawer, component: dialog |
+| [#6121](https://github.com/mui/base-ui/pull/6121) | [drawer] Detect keyboards that resize the layout viewport on Android | atomiks | 2026-10-29 | type: bug, component: drawer |
+| [#6114](https://github.com/mui/base-ui/pull/6114) | [select] Fix a React 18 flake in a closing test | michaldudak | 2026-10-27 | component: select, test |
+| [#6111](https://github.com/mui/base-ui/pull/6111) | [popups] Apply the same open-change rules to every popup | michaldudak | 2026-10-29 | type: bug, scope: all components |
+| [#6110](https://github.com/mui/base-ui/pull/6110) | [drawer] Keep native taps on a focused input on Android | atomiks | 2026-10-28 | type: bug, component: drawer |
+| [#6108](https://github.com/mui/base-ui/pull/6108) | [useDismiss] Ignore presses inside layers opened later | jjenzz | 2026-11-13 | component: alert dialog, type: bug, component: dialog, component: popover |
+| [#6097](https://github.com/mui/base-ui/pull/6097) | Bump vite to 8.3.3 [SECURITY] | app/code-infra-renovate | 2026-10-26 | dependencies, security |
+| [#6096](https://github.com/mui/base-ui/pull/6096) | Bump @vitest/ui to 5.0.5 [SECURITY] | app/code-infra-renovate | 2026-10-26 | dependencies, security |
+| [#6095](https://github.com/mui/base-ui/pull/6095) | [docs][popover] Add close button to demos | aarongarciah | 2026-11-10 | docs, component: popover |
+| [#6091](https://github.com/mui/base-ui/pull/6091) | [website] Simplify resolved mp4 paths | andy-hook | 2026-10-23 | website |
+| [#6089](https://github.com/mui/base-ui/pull/6089) | [code-infra] Update Node.js and Next.js for security fixes | jjenzz | 2026-10-23 | security, internal, website |
+| [#6088](https://github.com/mui/base-ui/pull/6088) | [popups] Skip the focus-out close for a popup that already closed | mkantautas | 2026-11-10 | type: bug, component: dialog, component: popover |
+| [#6087](https://github.com/mui/base-ui/pull/6087) | Bump vale-cli/vale to 3.25.1 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6086](https://github.com/mui/base-ui/pull/6086) | Bump react-router to 8.5.0 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6085](https://github.com/mui/base-ui/pull/6085) | Bump pnpm to 12.15.0 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6084](https://github.com/mui/base-ui/pull/6084) | Bump lucide-react to ^1.61.0 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6083](https://github.com/mui/base-ui/pull/6083) | Bump js-yaml@4 to ^5.5.0 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6082](https://github.com/mui/base-ui/pull/6082) | Bump eslint | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6080](https://github.com/mui/base-ui/pull/6080) | Bump Vite & Vitest | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6079](https://github.com/mui/base-ui/pull/6079) | Bump react to 19.3.1 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6078](https://github.com/mui/base-ui/pull/6078) | Bump nextjs monorepo to 16.4.2 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6077](https://github.com/mui/base-ui/pull/6077) | Bump GitHub Actions | app/code-infra-renovate | 2026-10-28 | dependencies |
+| [#6076](https://github.com/mui/base-ui/pull/6076) | Bump code-infra:patchUpdates | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6075](https://github.com/mui/base-ui/pull/6075) | Bump @testing-library/user-event to 14.6.8 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6074](https://github.com/mui/base-ui/pull/6074) | Bump @tanstack/react-virtual to ^3.14.22 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6073](https://github.com/mui/base-ui/pull/6073) | Bump @playwright/test to 1.64.1 | app/code-infra-renovate | 2026-10-26 | dependencies |
+| [#6072](https://github.com/mui/base-ui/pull/6072) | [context menu] Close the open menu on Tab | rohits2501 | 2026-11-10 | type: bug, component: context menu |
+| [#6069](https://github.com/mui/base-ui/pull/6069) | [drawer] Avoid repeated keyboard alignment scrolls on Android | atomiks | 2026-10-28 | type: enhancement, component: drawer |
+| [#6067](https://github.com/mui/base-ui/pull/6067) | [accordion][collapsible][slider] Reflect the part's own `disabled` in `data-disabled` | flaviendelangle | 2026-10-28 | component: slider, type: bug, component: collapsible, component: accordion |
+| [#6066](https://github.com/mui/base-ui/pull/6066) | [tooltip] Keep the trigger disabled when the root is disabled | flaviendelangle | 2026-10-22 | type: bug, component: tooltip |
+| [#6064](https://github.com/mui/base-ui/pull/6064) | [menu][select] Keep the popup open when the press is released inside a shadow root | flaviendelangle | 2026-10-28 | component: select, component: menu, type: bug |
+| [#6061](https://github.com/mui/base-ui/pull/6061) | [internal] Use existing helpers instead of inline copies | flaviendelangle | 2026-10-22 | internal |
+| [#6060](https://github.com/mui/base-ui/pull/6060) | [combobox] Remove unused `query` from the derived items context | flaviendelangle | 2026-10-22 | performance, component: autocomplete, component: combobox |
+| [#6059](https://github.com/mui/base-ui/pull/6059) | [popups] Reuse `popupTransitionStateMapping` | flaviendelangle | 2026-10-22 | internal |
+| [#6058](https://github.com/mui/base-ui/pull/6058) | [code-infra] Remove redundant `only-allow` preinstall hook | Janpot | 2026-10-22 | scope: code-infra, internal |
+| [#6057](https://github.com/mui/base-ui/pull/6057) | [dialog] Fix outside press crash when the target is the document | skrabe | 2026-10-22 | type: bug, component: dialog |
+| [#6049](https://github.com/mui/base-ui/pull/6049) | [form controls] Avoid a compositor layer per hidden input without a name | flaviendelangle | 2026-10-28 | component: form, performance |
+| [#6048](https://github.com/mui/base-ui/pull/6048) | [select] Ignore unrelated mouseup after a fast trigger click | atomiks | 2026-11-10 | component: select, type: bug |
+| [#6046](https://github.com/mui/base-ui/pull/6046) | [popups] Flip capped popups to the larger side after they grow | atomiks | 2026-10-22 | type: bug, scope: all components |
+| [#6044](https://github.com/mui/base-ui/pull/6044) | [docs] Add an RSS feed for the blog | jjenzz | 2026-10-21 | docs |
+| [#6040](https://github.com/mui/base-ui/pull/6040) | [code-infra] Include resolution settings in lockfile | Janpot | 2026-10-20 | scope: code-infra, internal |
+| [#6038](https://github.com/mui/base-ui/pull/6038) | [internals] Export `resolveRenderedId` | flaviendelangle | 2026-10-28 | type: enhancement |
+| [#6036](https://github.com/mui/base-ui/pull/6036) | [popups] Keep focus inside modal popups when Tab is pressed faster than a frame | atomiks | 2026-10-20 | type: bug, scope: all components |
+| [#6035](https://github.com/mui/base-ui/pull/6035) | [popups] Center an arrow that mounts after the popup is positioned | atomiks | 2026-10-22 | type: bug, scope: all components |
+| [#6034](https://github.com/mui/base-ui/pull/6034) | Bump @mui/internal-docs-infra to 0.13.1-canary.21 | app/code-infra-renovate | 2026-10-28 | dependencies |
+| [#6024](https://github.com/mui/base-ui/pull/6024) | [select] Avoid re-rendering every item when the popup closes | mdm317 | 2026-10-19 | component: select, performance |
+| [#6022](https://github.com/mui/base-ui/pull/6022) | [radio group] Skip the tab stop when the group is disabled | rohits2501 | 2026-10-19 | type: bug, component: radio group |
+| [#6018](https://github.com/mui/base-ui/pull/6018) | Bump MUI infra packages | app/code-infra-renovate | 2026-10-28 | dependencies |
+| [#6016](https://github.com/mui/base-ui/pull/6016) | [popups] Focus the trigger before a screen reader press opens it | henryqdineen | 2026-10-19 | type: bug, scope: all components |
+| [#6015](https://github.com/mui/base-ui/pull/6015) | [popover] Keep focus that moved elsewhere before the deferred focus restore | cristianchiriac | 2026-10-20 | type: bug, scope: all components |
+| [#6014](https://github.com/mui/base-ui/pull/6014) | [select][combobox] Run on the shared popup store and Root | michaldudak | 2026-10-27 | component: select, component: autocomplete, component: combobox |
+| [#6011](https://github.com/mui/base-ui/pull/6011) | [code-infra] Detect store hook methods in rules-of-hooks | michaldudak | 2026-10-26 | scope: code-infra, internal |
+| [#6008](https://github.com/mui/base-ui/pull/6008) | [autocomplete][otp field] Submit the owning form when used outside a Field | atomiks | 2026-10-19 | type: bug, component: autocomplete, component: otp field |
+| [#6006](https://github.com/mui/base-ui/pull/6006) | Bump react-hook-form to ^7.90.0 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#6005](https://github.com/mui/base-ui/pull/6005) | Bump nx to ~23.3.0 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#6004](https://github.com/mui/base-ui/pull/6004) | Bump lerna to 10.1.1 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#6003](https://github.com/mui/base-ui/pull/6003) | Bump prettier to 3.9.10 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#6002](https://github.com/mui/base-ui/pull/6002) | Bump @tanstack/react-virtual to ^3.14.18 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#6001](https://github.com/mui/base-ui/pull/6001) | [autocomplete] Fix update depth error and lost keystrokes when controlled | atomiks | 2026-10-19 | type: bug, component: autocomplete |
+| [#6000](https://github.com/mui/base-ui/pull/6000) | [slider] Fix edge-aligned thumbs not re-measuring after resize | atomiks | 2026-10-19 | component: slider, type: bug |
+| [#5999](https://github.com/mui/base-ui/pull/5999) | [select][combobox][autocomplete] Use a hidden input type outside of forms | Psycarlo | 2026-10-16 | component: select, type: enhancement, performance, component: autocomplete, component: combobox |
+| [#5998](https://github.com/mui/base-ui/pull/5998) | [code-infra] Use the shared no-response and status label workflows | Janpot | 2026-10-26 | internal, scope: support-infra |
+| [#5997](https://github.com/mui/base-ui/pull/5997) | [menu][combobox][autocomplete] Handle Space and Left/Right based on input text | jjenzz | 2026-10-22 | component: menu, type: enhancement, component: autocomplete, component: combobox |
+| [#5996](https://github.com/mui/base-ui/pull/5996) | [docs] Clarify filterable menu keyboard behavior | jjenzz | 2026-10-15 | docs |
+| [#5992](https://github.com/mui/base-ui/pull/5992) | [useDismiss] Close only the topmost layer when Escape reaches the document | lyzno1 | 2026-10-19 | type: bug, component: dialog |
+| [#5990](https://github.com/mui/base-ui/pull/5990) | [floating-ui-react] Use shadow-DOM-safe contains in isEventTargetWithin fallback | gilsmt | 2026-10-16 | type: bug, scope: all components, internal |
+| [#5987](https://github.com/mui/base-ui/pull/5987) | [all components] Batch animation lookups for elements closing together | flaviendelangle | 2026-10-23 | performance, scope: all components |
+| [#5985](https://github.com/mui/base-ui/pull/5985) | [progress][meter][slider] Fix SSR hydration mismatch on formatted values | cpruijsen | 2026-10-16 | component: slider, component: progress, component: meter |
+| [#5982](https://github.com/mui/base-ui/pull/5982) | [checkbox][switch][radio] Respect a render element's aria-label over associated labels | henryqdineen | 2026-10-19 | component: switch, component: checkbox, radio |
+| [#5978](https://github.com/mui/base-ui/pull/5978) | [popups] Dismiss after dropped IME compositions | jjenzz | 2026-10-20 | component: alert dialog, type: bug, component: dialog, component: popover, browser: Firefox, browser: Chrome |
+| [#5974](https://github.com/mui/base-ui/pull/5974) | [code-infra] Port the benchmarks to new library | Janpot | 2026-10-23 | internal |
+| [#5972](https://github.com/mui/base-ui/pull/5972) | [toast] Fix focus traps and timer resets during keyboard and pointer interaction | atomiks | 2026-10-15 | type: bug, component: toast |
+| [#5971](https://github.com/mui/base-ui/pull/5971) | [popups] Skip hidden return-focus targets inside closed keepMounted popups | atomiks | 2026-10-15 | type: bug, scope: all components |
+| [#5970](https://github.com/mui/base-ui/pull/5970) | [popover] Fix Tab from a hover-opened trigger stopping on a focus guard | atomiks | 2026-10-15 | type: bug, component: popover |
+| [#5963](https://github.com/mui/base-ui/pull/5963) | [portal] Wait for container refs before mounting | LukasTy | 2026-10-20 | component: select, component: menu, component: alert dialog, type: regression, component: drawer, component: tooltip, component: dialog, component: popover, component: toast, component: portal, component: preview card |
+| [#5961](https://github.com/mui/base-ui/pull/5961) | [popups] Extract hover intent and the popup Positioner, and type and rename the interaction store | michaldudak | 2026-10-19 | internal |
+| [#5960](https://github.com/mui/base-ui/pull/5960) | [popups] Unify popup open changes, store and Root | michaldudak | 2026-10-16 | internal |
+| [#5959](https://github.com/mui/base-ui/pull/5959) | [popups] Move the floating-ui-react fork into utils/popups | michaldudak | 2026-10-16 | internal |
+| [#5954](https://github.com/mui/base-ui/pull/5954) | [infra] Remove engines.node from UI packages | Janpot | 2026-10-15 | scope: code-infra |
+| [#5953](https://github.com/mui/base-ui/pull/5953) | Bump next to 16.3.8 [SECURITY] | app/code-infra-renovate | 2026-10-16 | dependencies, security |
+| [#5949](https://github.com/mui/base-ui/pull/5949) | [infra] Remove redundant pnpm pre/post scripts setting | chuganzy | 2026-10-26 | scope: code-infra |
+| [#5948](https://github.com/mui/base-ui/pull/5948) | Bump motion to 14.1.1 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5947](https://github.com/mui/base-ui/pull/5947) | Bump stylelint to 17.16.0 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5946](https://github.com/mui/base-ui/pull/5946) | Bump radix-ui to ^1.8.1 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5945](https://github.com/mui/base-ui/pull/5945) | Bump pnpm to 12.11.2 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5944](https://github.com/mui/base-ui/pull/5944) | Bump lucide-react to ^1.56.0 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5943](https://github.com/mui/base-ui/pull/5943) | Bump GitHub Actions | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5942](https://github.com/mui/base-ui/pull/5942) | Bump eslint | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5941](https://github.com/mui/base-ui/pull/5941) | Bump code-infra:devDependencies | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5940](https://github.com/mui/base-ui/pull/5940) | Bump playwright monorepo | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5939](https://github.com/mui/base-ui/pull/5939) | Bump Vite & Vitest | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5938](https://github.com/mui/base-ui/pull/5938) | Bump remark-typography to 0.8.10 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5937](https://github.com/mui/base-ui/pull/5937) | Bump nextjs monorepo to 16.4.0 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5936](https://github.com/mui/base-ui/pull/5936) | Bump code-infra:patchUpdates | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5935](https://github.com/mui/base-ui/pull/5935) | Bump @types/node to 22.20.5 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5931](https://github.com/mui/base-ui/pull/5931) | [menu] Focus list items before click activation | jjenzz | 2026-10-16 | component: menu, type: bug |
+| [#5920](https://github.com/mui/base-ui/pull/5920) | Bump MUI infra packages | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5919](https://github.com/mui/base-ui/pull/5919) | Bump @mui/internal-docs-infra to 0.13.1-canary.17 | app/code-infra-renovate | 2026-10-16 | dependencies |
+| [#5918](https://github.com/mui/base-ui/pull/5918) | [docs] Fix the group labeling snippets in the forms handbook | aarongarciah | 2026-10-21 | component: slider, docs, component: radio group |
+| [#5914](https://github.com/mui/base-ui/pull/5914) | [utils] Use `useReducer` in `useForcedRerendering` | romgrk | 2026-10-16 | type: enhancement, performance, package: utils |
+| [#5903](https://github.com/mui/base-ui/pull/5903) | [select] Keep controlled value current during item updates | jjenzz | 2026-10-22 | component: select, type: bug, scope: store |
+| [#5902](https://github.com/mui/base-ui/pull/5902) | [context menu] Fix `actionsRef` type | lyzno1 | 2026-10-26 | docs, component: context menu |
+| [#5897](https://github.com/mui/base-ui/pull/5897) | [drawer] Reopen the keyboard after native dismissal on iOS 27 | atomiks | 2026-10-19 | type: bug, component: drawer |
+| [#5810](https://github.com/mui/base-ui/pull/5810) | [number field] Fix native form ownership | lyzno1 | 2026-11-09 | component: number field, stale |
+| [#5771](https://github.com/mui/base-ui/pull/5771) | [pnpm] Prune stale minimumReleaseAgeExclude entries | Janpot | 2026-10-22 | scope: code-infra |
+
+## Ouvertes (138)
+
+| PR | Titre | Auteur | Date | Labels |
+|---|---|---|---|---|
+| [#6242](https://github.com/mui/base-ui/pull/6242) | [types] Export the popup children render function type | lfhwnqe | 2026-11-14 |  |
+| [#6241](https://github.com/mui/base-ui/pull/6241) | [popups] Preserve focus when an open Activity is revealed | Hanan88 | 2026-11-14 |  |
+| [#6240](https://github.com/mui/base-ui/pull/6240) | [toast] Keep timers running when focus moves into an iframe on the page | lord-0011 | 2026-11-14 |  |
+| [#6238](https://github.com/mui/base-ui/pull/6238) | [combobox] Avoid an extra commit when the popup unmounts on close | mdm317 | 2026-11-14 |  |
+| [#6237](https://github.com/mui/base-ui/pull/6237) | [docs] Name preventBaseUIHandler in the native events caveat | jjenzz | 2026-11-13 | docs |
+| [#6236](https://github.com/mui/base-ui/pull/6236) | [fieldset] Add Fieldset.Description part | officialasishkumar | 2026-11-13 |  |
+| [#6235](https://github.com/mui/base-ui/pull/6235) | [combobox] Highlight the new selection when reopening during the close animation | jjenzz | 2026-11-13 | type: bug, component: combobox |
+| [#6234](https://github.com/mui/base-ui/pull/6234) | [all components] Render default elements without copying their props | Janpot | 2026-11-13 |  |
+| [#6232](https://github.com/mui/base-ui/pull/6232) | Bump @testing-library/user-event to 14.6.9 | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6231](https://github.com/mui/base-ui/pull/6231) | [menu] Fix left-button drag-release in a menu nested in `ContextMenu.Trigger` | MintCoderpro | 2026-11-13 |  |
+| [#6230](https://github.com/mui/base-ui/pull/6230) | Bump Vite & Vitest | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6229](https://github.com/mui/base-ui/pull/6229) | Bump vale-cli/vale to 3.27.0 | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6228](https://github.com/mui/base-ui/pull/6228) | Bump typescript-eslint to 8.72.2 | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6227](https://github.com/mui/base-ui/pull/6227) | Bump Tailwind CSS to 4.3.5 | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6226](https://github.com/mui/base-ui/pull/6226) | Bump remark-typography to 0.8.11 | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6225](https://github.com/mui/base-ui/pull/6225) | Bump node | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6224](https://github.com/mui/base-ui/pull/6224) | Bump nextjs monorepo to 16.4.6 | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6223](https://github.com/mui/base-ui/pull/6223) | Bump code-infra:patchUpdates | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6222](https://github.com/mui/base-ui/pull/6222) | Bump mui/mui-public digest to 66349fd | app/code-infra-renovate | 2026-11-13 | dependencies |
+| [#6220](https://github.com/mui/base-ui/pull/6220) | [listbox] Add ItemSelectionToggle with selection painting | michaldudak | 2026-11-12 | type: new feature, component: listbox |
+| [#6219](https://github.com/mui/base-ui/pull/6219) | [popups] Share markOthers lock state across Base UI copies | jasleenkaur-qed42 | 2026-11-12 |  |
+| [#6218](https://github.com/mui/base-ui/pull/6218) | [popover] Close on leave after hovering another trigger following a click | jasleenkaur-qed42 | 2026-11-12 |  |
+| [#6216](https://github.com/mui/base-ui/pull/6216) | [docs] Add guidelines for page descriptions and keywords | bernardobelchior | 2026-11-11 | docs |
+| [#6214](https://github.com/mui/base-ui/pull/6214) | Bump MUI infra packages | app/code-infra-renovate | 2026-11-11 | dependencies |
+| [#6213](https://github.com/mui/base-ui/pull/6213) | Bump @mui/internal-docs-infra to 0.13.1-canary.33 | app/code-infra-renovate | 2026-11-11 | dependencies |
+| [#6212](https://github.com/mui/base-ui/pull/6212) | [tree] Add Tree component | flaviendelangle | 2026-11-10 | type: new feature |
+| [#6210](https://github.com/mui/base-ui/pull/6210) | [all components] Follow native form reset | atomiks | 2026-11-10 | type: new feature, component: form, scope: all components |
+| [#6198](https://github.com/mui/base-ui/pull/6198) | [popups] Fix events from portaled popups reaching React ancestors twice | TIMMLOPK | 2026-11-07 | component: portal |
+| [#6196](https://github.com/mui/base-ui/pull/6196) | [select] Avoid re-rendering scroll arrows on position updates | Birzool | 2026-11-06 | component: select |
+| [#6195](https://github.com/mui/base-ui/pull/6195) | [popups] Avoid re-rendering focus guards with their parent | Birzool | 2026-11-06 |  |
+| [#6193](https://github.com/mui/base-ui/pull/6193) | [radio group] Skip a disabled checked radio for the tab stop | helloigig | 2026-11-06 | component: radio group |
+| [#6178](https://github.com/mui/base-ui/pull/6178) | [menubar] Reset stale focus blocking when focus interactions are disabled | Linruoxin-Sy | 2026-11-05 | component: menubar |
+| [#6176](https://github.com/mui/base-ui/pull/6176) | [combobox] Fix stale IME text after pointer selection | rvitaliy | 2026-11-05 | component: combobox |
+| [#6175](https://github.com/mui/base-ui/pull/6175) | [popups] Avoid forced reflows while positioning | oyobbeb | 2026-11-05 | scope: all components |
+| [#6171](https://github.com/mui/base-ui/pull/6171) | [popups][scroll-area][tabs] Deduplicate viewport rendering and scroll-area/tabs helpers | hoanle0126 | 2026-11-04 | component: tabs, performance, component: scroll area |
+| [#6170](https://github.com/mui/base-ui/pull/6170) | [accordion][collapsible] Share root, trigger, and panel wiring | hoanle0126 | 2026-11-03 | component: collapsible, component: accordion |
+| [#6166](https://github.com/mui/base-ui/pull/6166) | [menu][checkbox][radio][switch] Share selection indicators, menu item wiring, and checked state mapping | hoanle0126 | 2026-11-02 | scope: all components |
+| [#6163](https://github.com/mui/base-ui/pull/6163) | [context-menu] Allow trigger to get focus and focus 1st option when menu is opened through keyboard | sai6855 | 2026-11-02 |  |
+| [#6159](https://github.com/mui/base-ui/pull/6159) | [popups] Don't ignore Escape after compositionend outside WebKit | AdzerKI | 2026-11-01 |  |
+| [#6156](https://github.com/mui/base-ui/pull/6156) | [popups] Deduplicate shared popup part helpers | hoanle0126 | 2026-10-31 | performance, scope: all components |
+| [#6155](https://github.com/mui/base-ui/pull/6155) | [popups] Deduplicate popup store and handle helpers | hoanle0126 | 2026-10-31 | performance, scope: all components |
+| [#6152](https://github.com/mui/base-ui/pull/6152) | [toolbar] Move focus with Home and End | EduKegler | 2026-10-30 | component: toolbar |
+| [#6148](https://github.com/mui/base-ui/pull/6148) | [docs] Resolve experiment imports whose name contains a dot | michaldudak | 2026-10-30 | scope: docs-infra |
+| [#6147](https://github.com/mui/base-ui/pull/6147) | Bump nx to ~24.0.6 | app/code-infra-renovate | 2026-10-30 | dependencies |
+| [#6135](https://github.com/mui/base-ui/pull/6135) | [composite] Deduplicate scroll and grid navigation branches | hoanle0126 | 2026-10-29 | component: composite |
+| [#6130](https://github.com/mui/base-ui/pull/6130) | [utils] Avoid duplicate React 17 ids with `@mui/utils/useId` | LukasTy | 2026-10-29 | type: bug, package: utils |
+| [#6125](https://github.com/mui/base-ui/pull/6125) | [dialog] Return focus inside the parent modal when a nested trigger is removed | atomiks | 2026-10-28 | type: bug, component: dialog |
+| [#6123](https://github.com/mui/base-ui/pull/6123) | [popups] Pin dismissal and return focus across popups | michaldudak | 2026-10-28 | scope: all components, internal |
+| [#6122](https://github.com/mui/base-ui/pull/6122) | [popups] Type the popup tree and its queries | michaldudak | 2026-10-28 | PR: out-of-date, scope: all components, internal |
+| [#6117](https://github.com/mui/base-ui/pull/6117) | [select][combobox] Apply `data-instant` to the popup | michaldudak | 2026-10-27 | component: select, component: autocomplete, component: combobox |
+| [#6115](https://github.com/mui/base-ui/pull/6115) | [menu][select][combobox] Keep the popup open when pressing a trigger's extended hit area | Dolat-Hamza | 2026-10-27 | component: select, component: menu, component: combobox |
+| [#6113](https://github.com/mui/base-ui/pull/6113) | [navigation menu] Keep item open when clicked right after a hover switch | jjenzz | 2026-10-27 | type: bug, on hold, component: navigation menu |
+| [#6109](https://github.com/mui/base-ui/pull/6109) | [drawer] Place a swipe-opened popup under the pointer on its first frame | atomiks | 2026-10-27 | type: bug, component: drawer |
+| [#6107](https://github.com/mui/base-ui/pull/6107) | [navigation menu] Preserve suspended content during ref detachment | flaviendelangle | 2026-10-26 | type: bug, component: navigation menu |
+| [#6103](https://github.com/mui/base-ui/pull/6103) | [menu] Add generic value typing for Menu.RadioGroup | sai6855 | 2026-10-26 | component: menu, type: enhancement, typescript |
+| [#6094](https://github.com/mui/base-ui/pull/6094) | [internal] Guess composite item indexes from render order | Janpot | 2026-10-23 | performance, internal, component: composite |
+| [#6093](https://github.com/mui/base-ui/pull/6093) | [slider] Don't re-render every part when the thumbs register | Janpot | 2026-10-23 | component: slider, performance |
+| [#6090](https://github.com/mui/base-ui/pull/6090) | [navigation menu] Keep anchor tracking instant | dagemawinegash | 2026-10-23 | type: bug, component: navigation menu |
+| [#6081](https://github.com/mui/base-ui/pull/6081) | Bump code-infra:devDependencies | app/code-infra-renovate | 2026-10-23 | dependencies |
+| [#6070](https://github.com/mui/base-ui/pull/6070) | [composite] Ignore keys from portaled popups | flaviendelangle | 2026-10-22 | component: menu, type: bug, component: popover, component: toolbar, component: preview card, component: toggle group |
+| [#6068](https://github.com/mui/base-ui/pull/6068) | [menu][select][combobox] Share the press release check | flaviendelangle | 2026-10-22 | component: select, component: menu, component: context menu, internal, component: combobox |
+| [#6062](https://github.com/mui/base-ui/pull/6062) | [combobox][otp field][menu] Share IME composition handling | flaviendelangle | 2026-10-22 | type: bug, internal, component: autocomplete, component: combobox |
+| [#6056](https://github.com/mui/base-ui/pull/6056) | [navigation menu] Fix Maximum update depth exceeded error with Suspense | monsterlag | 2026-10-22 | type: bug, component: navigation menu |
+| [#6054](https://github.com/mui/base-ui/pull/6054) | [drawer] Allow configuring virtual keyboard focus scrolling | maiconcarraro | 2026-10-21 | component: drawer |
+| [#6045](https://github.com/mui/base-ui/pull/6045) | [menu][select] Keep popups open when the release lands inside a shadow root | zwarunek | 2026-10-20 | component: select, component: menu |
+| [#6039](https://github.com/mui/base-ui/pull/6039) | [composite] Add a uniform grid navigator without the cell map | flaviendelangle | 2026-10-20 | type: enhancement, performance, component: composite |
+| [#6028](https://github.com/mui/base-ui/pull/6028) | [menu] Keep focus outside a root menu opened by hover | ivanjohn121523 | 2026-10-19 | component: menu |
+| [#6027](https://github.com/mui/base-ui/pull/6027) | [otp field] Keep characters outside the BMP in a single slot | RaphaelFakhri | 2026-10-18 | component: otp field |
+| [#6023](https://github.com/mui/base-ui/pull/6023) | [menu] Document missing data attributes | lyzno1 | 2026-10-18 | component: menu |
+| [#6009](https://github.com/mui/base-ui/pull/6009) | [popups] Keep anchor tracking instant outside trigger switches | LukasTy | 2026-10-16 | component: menu, type: bug, component: tooltip, component: popover, component: preview card, component: context menu, component: menubar |
+| [#5977](https://github.com/mui/base-ui/pull/5977) | [code-infra] Remove redundant prebuild cleanup | bernardobelchior | 2026-10-12 | scope: code-infra |
+| [#5976](https://github.com/mui/base-ui/pull/5976) | [code-infra] Replace rimraf with node:fs | bernardobelchior | 2026-10-12 |  |
+| [#5975](https://github.com/mui/base-ui/pull/5975) | [toolbar] Follow the caret direction of an input in a composite | flaviendelangle | 2026-10-12 | type: bug, component: toolbar |
+| [#5968](https://github.com/mui/base-ui/pull/5968) | [popups] Ignore key auto-repeat from held keys | atomiks | 2026-10-12 | type: bug, PR: out-of-date, scope: all components |
+| [#5962](https://github.com/mui/base-ui/pull/5962) | [popups] Add a trigger ownership module | michaldudak | 2026-10-09 | scope: all components, internal |
+| [#5958](https://github.com/mui/base-ui/pull/5958) | [docs][scroll area] Add hover and active states demo | jsabutis | 2026-10-09 | component: scroll area |
+| [#5957](https://github.com/mui/base-ui/pull/5957) | [menu] Mark arrow-key open and close as instant | lyzno1 | 2026-10-09 | component: menu |
+| [#5951](https://github.com/mui/base-ui/pull/5951) | [select] Remove the trigger's mouseup listener on close and unmount | flaviendelangle | 2026-10-09 | component: select, type: bug, PR: out-of-date |
+| [#5950](https://github.com/mui/base-ui/pull/5950) | [toast] Queue toast manager calls until a provider subscribes | flaviendelangle | 2026-10-09 | type: bug, component: toast |
+| [#5932](https://github.com/mui/base-ui/pull/5932) | [checkbox group] Fix parent checkbox cycle after outside value changes | lyzno1 | 2026-10-08 | component: checkbox group |
+| [#5925](https://github.com/mui/base-ui/pull/5925) | [combobox] Apply data-instant attribute to Popup on Escape dismiss | pintu544 | 2026-10-08 | component: combobox |
+| [#5912](https://github.com/mui/base-ui/pull/5912) | [popover][menu] Fix openOnHover after a controlled close | lyzno1 | 2026-10-07 | component: popover |
+| [#5908](https://github.com/mui/base-ui/pull/5908) | [select] Pass the close type to finalFocus functions | michaldudak | 2026-10-07 | component: select, type: bug, PR: out-of-date, stale |
+| [#5899](https://github.com/mui/base-ui/pull/5899) | [popover][menu][preview card] Keep a deferred reopen's state through the exit completion | michaldudak | 2026-10-06 | component: menu, type: bug, PR: out-of-date, component: popover, component: preview card, scope: store |
+| [#5898](https://github.com/mui/base-ui/pull/5898) | [popups] Fix duplicate and dropped `actionsRef.unmount()` on controlled closes | michaldudak | 2026-10-06 | type: bug, PR: out-of-date, scope: all components |
+| [#5874](https://github.com/mui/base-ui/pull/5874) | [toggle] Support focusableWhenDisabled | gmcnaughton | 2026-10-03 |  |
+| [#5867](https://github.com/mui/base-ui/pull/5867) | [filter] Honor ignored punctuation and Unicode equivalence | lyzno1 | 2026-10-02 | PR: out-of-date, component: combobox |
+| [#5835](https://github.com/mui/base-ui/pull/5835) | [popups] Prevent local portals from scrolling on open | minwookshin | 2026-09-30 | type: bug, scope: all components, stale |
+| [#5827](https://github.com/mui/base-ui/pull/5827) | [composite] Reduce `CompositeList` overhead | romgrk | 2026-09-29 | type: enhancement, performance, internal, component: composite |
+| [#5822](https://github.com/mui/base-ui/pull/5822) | [collapsible][accordion] Keep hiddenUntilFound panels out of server-rendered hidden attribute | dimuuu | 2026-09-29 | component: collapsible |
+| [#5820](https://github.com/mui/base-ui/pull/5820) | [checkbox][radio][switch] Avoid quadratic native label lookup | atomiks | 2026-09-29 | component: switch, type: enhancement, component: checkbox, performance, component: radio group, stale |
+| [#5817](https://github.com/mui/base-ui/pull/5817) | [field] Sync filled state after native form reset | minwookshin | 2026-09-29 | PR: out-of-date, component: field |
+| [#5807](https://github.com/mui/base-ui/pull/5807) | [all components] Follow moving anchors automatically until they settle | PhilLehmann | 2026-09-25 | PR: out-of-date, scope: all components |
+| [#5792](https://github.com/mui/base-ui/pull/5792) | [checkbox-group] Add opt-in paint selection | flaviendelangle | 2026-09-24 | PR: out-of-date, component: checkbox group, stale |
+| [#5790](https://github.com/mui/base-ui/pull/5790) | Add indeterminate Menu checkbox items | sarthakmalik0810 | 2026-09-24 | component: menu, PR: out-of-date, stale |
+| [#5741](https://github.com/mui/base-ui/pull/5741) | [select] Add filterable selects | atomiks | 2026-09-18 | component: select, type: new feature |
+| [#5737](https://github.com/mui/base-ui/pull/5737) | [docs] Add missing Tailwind v4 demo variants | lyzno1 | 2026-09-17 | docs |
+| [#5731](https://github.com/mui/base-ui/pull/5731) | [toast] Refactor live region announcements | jjenzz | 2026-09-16 | on hold, component: toast |
+| [#5727](https://github.com/mui/base-ui/pull/5727) | [use-render] Fix Base UI event prop types | jjenzz | 2026-09-15 | on hold, hook: useRender |
+| [#5722](https://github.com/mui/base-ui/pull/5722) | [fieldset] Keep the legend association in server-rendered markup | Sammii-HK | 2026-09-15 | PR: out-of-date, component: field, stale |
+| [#5716](https://github.com/mui/base-ui/pull/5716) | [select][combobox][navigation menu] Document children={null} to remove default glyphs under render | 3o14 | 2026-09-13 | scope: all components, stale |
+| [#5712](https://github.com/mui/base-ui/pull/5712) | [radio] Put a roving tab stop in server-rendered markup | cpruijsen | 2026-09-11 | component: radio group |
+| [#5711](https://github.com/mui/base-ui/pull/5711) | [internal] mark EMPTY_ARRAY as readonly never[] | MonstraG | 2026-09-11 | PR: out-of-date, internal, stale |
+| [#5708](https://github.com/mui/base-ui/pull/5708) | [docs] Add ViewTransition demos in the animation guide | mnajdova | 2026-09-11 | docs, PR: out-of-date, scope: store |
+| [#5617](https://github.com/mui/base-ui/pull/5617) | [select] Prepare the component to work with Virtualizer | michaldudak | 2026-09-02 | component: select, PR: out-of-date, poc, component: virtualizer |
+| [#5614](https://github.com/mui/base-ui/pull/5614) | [docs] Point AI agents at Markdown page versions | brijeshb42 | 2026-09-01 | docs, PR: out-of-date |
+| [#5590](https://github.com/mui/base-ui/pull/5590) | [menubar] Don't reopen a menu closed by a controlled handoff | duz52 | 2026-08-28 | PR: out-of-date, component: menubar |
+| [#5568](https://github.com/mui/base-ui/pull/5568) | [tabs] Add generic value typing to Root | lyzno1 | 2026-08-25 |  |
+| [#5559](https://github.com/mui/base-ui/pull/5559) | [DO NOT MERGE] Virtualizer + drag engine build for the Tree proof of concept | michaldudak | 2026-08-24 | PR: out-of-date, poc |
+| [#5557](https://github.com/mui/base-ui/pull/5557) | [number-field] Reject dotted text that is not plausibly grouped | sujeito-operator | 2026-08-22 | component: number field, PR: out-of-date, stale |
+| [#5537](https://github.com/mui/base-ui/pull/5537) | [popups] Keep closing popups out of the a11y tree and focus order | michaldudak | 2026-08-19 | component: select, component: menu, component: alert dialog, component: drawer, component: tooltip, component: dialog, PR: out-of-date, accessibility, component: popover, component: preview card, component: context menu, component: menubar, component: navigation menu, component: autocomplete, component: combobox |
+| [#5487](https://github.com/mui/base-ui/pull/5487) | [draggable] Create new Draggable component | flaviendelangle | 2026-08-13 | type: new feature, scope: all components |
+| [#5482](https://github.com/mui/base-ui/pull/5482) | [drawer] adding payload to certain Drawer.SwipeArea for modularity | nayounsang | 2026-08-13 | component: drawer |
+| [#5466](https://github.com/mui/base-ui/pull/5466) | [virtualizer] Create the standalone Virtualizer component | michaldudak | 2026-08-11 | PR: out-of-date, component: combobox, poc, component: virtualizer |
+| [#5421](https://github.com/mui/base-ui/pull/5421) | [number field] Add imperative control of the raw input value | michaldudak | 2026-08-05 | component: number field, type: new feature, PR: out-of-date, stale, poc |
+| [#5412](https://github.com/mui/base-ui/pull/5412) | [number-field] Add raw input value control | michaldudak | 2026-08-04 | component: number field, type: new feature, PR: out-of-date, poc |
+| [#5382](https://github.com/mui/base-ui/pull/5382) | [combobox] Fill inline input on selection | chuganzy | 2026-07-31 | type: bug, component: combobox |
+| [#5367](https://github.com/mui/base-ui/pull/5367) | [toolbar] Prevent IME text entry while disabled | LEECHANHYUNG | 2026-07-29 | type: bug, PR: out-of-date, component: toolbar, stale |
+| [#5319](https://github.com/mui/base-ui/pull/5319) | [docs-infra] Integrate with lite version of demo loader | brijeshb42 | 2026-07-23 | PR: out-of-date, scope: docs-infra |
+| [#5315](https://github.com/mui/base-ui/pull/5315) | [combobox] Support predicate function for autoHighlight | atomiks | 2026-07-23 | type: new feature, PR: out-of-date, stale, component: combobox |
+| [#5304](https://github.com/mui/base-ui/pull/5304) | fix(Slider): update aria-valuenow before blur/focus cycle to fix VoiceOver stale value | haimp-wix | 2026-07-22 |  |
+| [#5293](https://github.com/mui/base-ui/pull/5293) | [popups] Scope queued focus cancellation to its target element | m2na7 | 2026-07-21 | PR: out-of-date, scope: all components |
+| [#5283](https://github.com/mui/base-ui/pull/5283) | [form][field] Ignore controls in disabled native fieldsets | atomiks | 2026-07-20 | type: bug, component: form, PR: out-of-date, component: field |
+| [#5235](https://github.com/mui/base-ui/pull/5235) | [all components] Prevent initial position transitions in React 17 | wanxiankai | 2026-07-14 | component: popover |
+| [#5124](https://github.com/mui/base-ui/pull/5124) | [popover][tooltip] Integrate inline positioning | oleksandr-danylchenko | 2026-06-25 | component: tooltip, component: popover |
+| [#5115](https://github.com/mui/base-ui/pull/5115) | [listbox] Create the Listbox component | michaldudak | 2026-06-24 | type: new feature, component: listbox |
+| [#5114](https://github.com/mui/base-ui/pull/5114) | [password field] Create new PasswordField component | atomiks | 2026-06-24 | type: new feature |
+| [#4962](https://github.com/mui/base-ui/pull/4962) | [combobox] Add SelectAll part for multiple selection | soheilnikroo | 2026-06-02 | type: new feature, PR: out-of-date, component: combobox |
+| [#4946](https://github.com/mui/base-ui/pull/4946) | [combobox] Clear value on Escape from Trigger in input-inside-popup | spokodev | 2026-05-29 | component: combobox |
+| [#4765](https://github.com/mui/base-ui/pull/4765) | [utils] Import `Store` changes from `x-internals` | romgrk | 2026-05-07 | type: enhancement, PR: out-of-date, package: utils |
+| [#4758](https://github.com/mui/base-ui/pull/4758) | [code-infra] Enable mui/no-presentation-role lint rule | Janpot | 2026-05-07 | PR: out-of-date, scope: code-infra |
+| [#4714](https://github.com/mui/base-ui/pull/4714) | fix(FloatingFocusManager): apply inert to background elements (#4678) | Kushagra001 | 2026-04-30 | component: dialog, PR: out-of-date, stale |
+| [#4405](https://github.com/mui/base-ui/pull/4405) | [triggers] Fix `ref: HTMLElement` type | mj12albert | 2026-03-20 | PR: out-of-date, typescript |
+| [#3982](https://github.com/mui/base-ui/pull/3982) | Poc/editor | michelengelen | 2026-02-05 | type: new feature, PR: out-of-date |
+| [#3751](https://github.com/mui/base-ui/pull/3751) | [popover][dialog] Select whole text in initially focused input | michaldudak | 2026-01-15 | component: dialog, PR: out-of-date, component: popover, stale |
+| [#3586](https://github.com/mui/base-ui/pull/3586) | [navigation menu] Add support for opening menu on hover during hydration | theskillwithin | 2025-12-20 | type: bug, PR: out-of-date, component: navigation menu |
+| [#3515](https://github.com/mui/base-ui/pull/3515) | [internal] Lazy effects | romgrk | 2025-12-12 | type: enhancement, PR: out-of-date, performance, internal |
+| [#1314](https://github.com/mui/base-ui/pull/1314) | [test] Use vitest's `userEvent` implementation in browser tests | michaldudak | 2025-01-09 | PR: out-of-date, test, internal |

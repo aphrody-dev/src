@@ -1206,3 +1206,43 @@ sha = "2e82e0145fe7741ef7fbcda77b342b521e436e8a"
 kind = "web"
 used_by = ["third_party/next.js (dependances a remplacer par Bun via @aphrody/bunify --fullbun)"]
 status = "fork"
+
+[entry.shadcn]
+path = "third_party/shadcn-ui"
+url = "https://github.com/aphrody-labs/ui.git"
+upstream = "https://github.com/shadcn-ui/ui.git"
+branch = "main"
+sha = "dd41d19e2f80ff6891951f7ced74c2c9a650b065"
+kind = "web"
+used_by = ["apps/shenron/apps/site (composants shadcn base-nova)"]
+status = "fork"
+
+[entry.base-ui]
+path = "third_party/base-ui"
+url = "https://github.com/aphrody-labs/base-ui.git"
+upstream = "https://github.com/mui/base-ui.git"
+branch = "master"
+sha = "fb9fbbf35e72bd4a5494b678c85d2ea0457fed60"
+kind = "web"
+used_by = ["apps/shenron/apps/site (primitives @base-ui/react 1.9.0)"]
+status = "fork"
+
+[entry.tailwindcss]
+path = "third_party/tailwindcss"
+url = "https://github.com/aphrody-labs/tailwindcss.git"
+upstream = "https://github.com/tailwindlabs/tailwindcss.git"
+branch = "main"
+sha = "b08bf83a327271dfb7e3cd485fd793da15013f7c"
+kind = "web"
+used_by = ["apps/shenron/apps/site (Tailwind CSS 4.3.5, oxide en Rust)"]
+status = "fork"
+
+[entry.better-auth]
+path = "third_party/better-auth"
+url = "https://github.com/aphrody-labs/better-auth.git"
+upstream = "https://github.com/better-auth/better-auth.git"
+branch = "main"
+sha = "2039e7303c3d92fcd0b1bf2d8e2378407e057259"
+kind = "web"
+used_by = ["apps/shenron (authentification, 1.7.24)"]
+status = "fork"

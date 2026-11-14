@@ -1,5 +1,5 @@
 // Snapshot of an upstream fork into docs/<target>: PRs, commits, releases, blog, packages, crates.
-// Usage: bun scripts/upstream-scan.ts <nextjs|bun> [--days 30]
+// Usage: bun scripts/upstream-scan.ts <nextjs|bun|shadcn|base-ui|tailwindcss|better-auth> [--days 30]
 import { $ } from "bun";
 import { readdirSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
@@ -8,6 +8,10 @@ const ROOT = join(import.meta.dir, "..");
 const TARGETS = {
   nextjs: { dir: "next.js", gh: "vercel/next.js", base: "canary", feed: "https://nextjs.org/feed.xml", crates: ["crates", "turbopack/crates"] },
   bun: { dir: "bun", gh: "oven-sh/bun", base: "main", feed: "https://bun.com/rss.xml", crates: ["src", "packages"] },
+  shadcn: { dir: "shadcn-ui", gh: "shadcn-ui/ui", base: "main", feed: "https://ui.shadcn.com/rss.xml", crates: [] },
+  "base-ui": { dir: "base-ui", gh: "mui/base-ui", base: "master", feed: "", crates: [] },
+  tailwindcss: { dir: "tailwindcss", gh: "tailwindlabs/tailwindcss", base: "main", feed: "https://tailwindcss.com/feeds/feed.xml", crates: ["crates"] },
+  "better-auth": { dir: "better-auth", gh: "better-auth/better-auth", base: "main", feed: "https://better-auth.com/blog/rss.xml", crates: [] },
 } as const;
 const T = TARGETS[process.argv[2] as keyof typeof TARGETS];
 if (!T) throw new Error("usage: upstream-scan.ts <" + Object.keys(TARGETS).join("|") + "> [--days N]");
@@ -52,13 +56,13 @@ async function releases() {
 }
 
 async function blog() {
-  const xml = await (await fetch(T.feed)).text().catch(() => "");
+  const xml = T.feed ? await (await fetch(T.feed)).text().catch(() => "") : "";
   const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => {
     const g = (t: string) => m[1]!.match(new RegExp(`<${t}>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?</${t}>`))?.[1]?.trim() ?? "";
     return { title: g("title"), link: g("link"), date: g("pubDate"), desc: g("description") };
   });
   const rows = items.map((i) => `- [${md(i.title)}](${i.link}) — ${new Date(i.date).toISOString().slice(0, 10)}: ${md(i.desc).slice(0, 240)}`);
-  await write("BLOG.md", `# Blog (${rows.length} articles, ${T.feed})\n\n${rows.join("\n") || "Flux indisponible."}`);
+  await write("BLOG.md", `# Blog (${rows.length} articles, ${T.feed})\n\n${rows.join("\n") || "Pas de flux"}`);
 }
 
 function workspace() {

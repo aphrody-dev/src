@@ -47,13 +47,16 @@ google-labs-code/stitch-sdk TypeScript
 google-labs-code/stitch-skills TypeScript
 google/dawn C++
 GoogleChromeLabs/chrome-for-testing JavaScript
+gradle/gradle Groovy
 h4ckf0r0day/obscura Rust
 HansKristian-Work/vkd3d-proton C
+jni-rs/jni-rs Rust
 joshka/tui-markdown Rust
 KhronosGroup/Vulkan-Headers C++
 KhronosGroup/Vulkan-Loader C
 KhronosGroup/Vulkan-Tools C++
 KhronosGroup/Vulkan-ValidationLayers C++
+koute/ghidra-decompiler Rust
 landaire/steamroom Rust
 lfs-book/lfs XSLT
 longbridge/gpui-kit Rust
@@ -64,16 +67,23 @@ microsoft/GSL C++
 microsoft/playwright TypeScript
 microsoft/playwright-mcp TypeScript
 microsoft/playwright-python Python
+mnemonikr/libsla Rust
+mnemonikr/sleigh-compiler C++
 mozilla-firefox/firefox C++
+NationalSecurityAgency/ghidra Java
+NationalSecurityAgency/ghidra-data
 nodejs/node JavaScript
 open-source-parsers/jsoncpp C++
 Open-Wine-Components/umu-launcher Python
 oven-sh/bun Rust
 oven-sh/WebKit C++
 puppeteer/puppeteer TypeScript
+PyO3/pyo3 Rust
 quinn-rs/quinn Rust
+raphamorim/rio Rust
 ratatui/ratatui Rust
 sched-ext/scx C
+seiunx-dev/cridecoder Rust
 servo/servo Rust
 storytold/artcraft Rust
 torvalds/linux C
@@ -83,6 +93,7 @@ ValveSoftware/gamescope C++
 ValveSoftware/Proton Python
 ValveSoftware/steam-devices Shell
 vercel-labs/agent-browser Rust
+vercel-labs/wterm TypeScript
 wayland/wayland C
 WebAssembly/binaryen C++
 WebAssembly/component-model WebAssembly
@@ -98,6 +109,7 @@ WebAssembly/wasi-sdk CMake
 WebAssembly/wasi-webgpu Rust
 WebAssembly/wasm-c-api C++
 wine-mirror/wine C
+Z3Prover/z3 C++
 zed-industries/embedded_gpui Rust
 zed-industries/zed Rust
 webpack/webpack JavaScript
@@ -107,3 +119,7 @@ lukeed/taskr JavaScript
 felixge/node-require-like JavaScript
 GoogleChrome/modern-web-guidance-src JavaScript
 wasm-bindgen/wasm-bindgen Rust
+shadcn-ui/ui TypeScript
+mui/base-ui TypeScript
+tailwindlabs/tailwindcss TypeScript
+better-auth/better-auth TypeScript

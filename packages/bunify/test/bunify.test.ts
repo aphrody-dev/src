@@ -2,20 +2,20 @@ import { beforeEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, writeFileSync, existsSync, readFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { bunify, fixLockIntegrity, rewriteScript, rewriteSource } from "../src/index.ts";
+import { bunify, fixLockIntegrity, normalizeOverrides, rewriteScript, rewriteSource } from "../src/index.ts";
 
 describe("rewriteScript", () => {
   test.each([
-    ["pnpm --filter \"./packages/**\" run clean", "bun --filter \"./packages/**\" run clean"],
-    ["pnpm -r run build", "bun --filter '*' run build"],
+    ["pnpm --filter \"./packages/**\" run clean", "bun run --filter \"./packages/**\" clean"],
+    ["pnpm -r run build", "bun run --filter '*' build"],
     ["pnpm i && pnpm build", "bun install && bun run build"],
-    ["yarn workspaces foreach -A run lint", "bun --filter '*' run lint"],
-    ["lerna run test", "bun --filter '*' run test"],
+    ["yarn workspaces foreach -A run lint", "bun run --filter '*' lint"],
+    ["lerna run test", "bun run --filter '*' test"],
     ["cross-env NODE_ENV=1 node x.js", "NODE_ENV=1 bun x.js"],
     ["npx tsc -p .", "bunx tsc -p ."],
     ["pnpm dlx turbo build", "bunx turbo build"],
     ["ts-node a.ts", "bun a.ts"],
-    ["npm run a --workspaces", "bun --filter '*' run a"],
+    ["npm run a --workspaces", "bun run --filter '*' a"],
   ])("%s", (input, out) => expect(rewriteScript(input)).toBe(out));
   test("idempotent", () => {
     const once = rewriteScript("pnpm i && node a.js && pnpm --filter x run y");
@@ -49,7 +49,7 @@ test("pnpm monorepo end to end, then --check is clean", async () => {
   expect(pkg.workspaces).toEqual(["packages/*"]);
   expect(pkg.overrides).toEqual({ "left-pad": "1.3.0" });
   expect(pkg.trustedDependencies).toEqual(["esbuild"]);
-  expect(pkg.scripts).toEqual({ build: "bun --filter '*' run build", preinstall: "bun pre.js" });
+  expect(pkg.scripts).toEqual({ build: "bun run --filter '*' build", preinstall: "bun pre.js" });
   expect(pkg.packageManager.startsWith("bun@")).toBe(true);
   expect(pkg.devDependencies["cross-env"]).toBeUndefined();
   expect(JSON.parse(readFileSync(join(root, "packages/a/package.json"), "utf8")).scripts.build).toBe("bun build.js");
@@ -170,4 +170,8 @@ test("bunify --fullbun: drops dep, patches taskr, reports jest, idempotent", asy
   expect(root2.patchedDependencies["@taskr/esnext@1.1.0"]).toBe("patches/@taskr%2Fesnext@1.1.0.patch");
   expect(existsSync(join(root, "patches/@taskr%2Fesnext@1.1.0.patch"))).toBe(true);
   expect((await bunify({ ...opts, check: true })).changed).toEqual([]);
+});
+
+test("normalizeOverrides", () => {
+  expect(normalizeOverrides({ "a>b": "-", c: "-", "fast-xml-parser@": "5.1.0", d: "^1" })).toEqual({ "fast-xml-parser": "5.1.0", d: "^1" });
 });

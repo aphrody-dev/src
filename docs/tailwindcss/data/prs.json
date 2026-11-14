@@ -1,0 +1,1842 @@
+{
+ "open": [
+  {
+   "author": {
+    "id": "U_kgDODWaSxg",
+    "is_bot": false,
+    "login": "TanmayNileshShinde",
+    "name": "Tanmay Nilesh Shinde"
+   },
+   "createdAt": "2026-11-14T16:46:20Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20721,
+   "state": "OPEN",
+   "title": "Remove invalid `justify-baseline` utility",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20721"
+  },
+  {
+   "author": {
+    "id": "U_kgDOBeEbAQ",
+    "is_bot": false,
+    "login": "SudeepGowda55",
+    "name": "Sudeep Gowda"
+   },
+   "createdAt": "2026-11-14T16:15:16Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20720,
+   "state": "OPEN",
+   "title": "Canonicalization: keep arbitrary variants a compound variant can't replace",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20720"
+  },
+  {
+   "author": {
+    "id": "U_kgDOBeEbAQ",
+    "is_bot": false,
+    "login": "SudeepGowda55",
+    "name": "Sudeep Gowda"
+   },
+   "createdAt": "2026-11-14T16:09:26Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20719,
+   "state": "OPEN",
+   "title": "Canonicalization: keep whitespace-only arbitrary property values",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20719"
+  },
+  {
+   "author": {
+    "id": "U_kgDOBeEbAQ",
+    "is_bot": false,
+    "login": "SudeepGowda55",
+    "name": "Sudeep Gowda"
+   },
+   "createdAt": "2026-11-14T16:02:50Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20718,
+   "state": "OPEN",
+   "title": "Don't generate invalid CSS for `*-inherit` colors with an opacity modifier",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20718"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjg3NzEzMTY4",
+    "is_bot": false,
+    "login": "Mwrnk",
+    "name": "mwerneck"
+   },
+   "createdAt": "2026-11-13T18:22:16Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20716,
+   "state": "OPEN",
+   "title": "Recognize `abs(…)` and `sign(…)` as math functions in arbitrary values",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20716"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjEwNTkxMzk=",
+    "is_bot": false,
+    "login": "benface",
+    "name": "Benoît Rouleau"
+   },
+   "createdAt": "2026-11-13T05:22:11Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20715,
+   "state": "OPEN",
+   "title": "Canonicalization: don't treat different `@scope` variants as the same",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20715"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjQ2NjA5MTkw",
+    "is_bot": false,
+    "login": "darrenfdes",
+    "name": "Darren Fernandes"
+   },
+   "createdAt": "2026-11-12T07:13:15Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20710,
+   "state": "OPEN",
+   "title": "Preserve declaration sources in JavaScript keyframes",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20710"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjM1OTY5MDY4",
+    "is_bot": false,
+    "login": "Sudhakar7J",
+    "name": "Sudhakar J"
+   },
+   "createdAt": "2026-11-12T05:17:51Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20708,
+   "state": "OPEN",
+   "title": "fix: accept readonly arrays for build candidates and Scanner sources",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20708"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjQzMjMxODA=",
+    "is_bot": false,
+    "login": "adamwathan",
+    "name": "Adam Wathan"
+   },
+   "createdAt": "2026-11-11T20:55:40Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20703,
+   "state": "OPEN",
+   "title": "Reduce the size of `@tailwindcss/browser` and only scan the elements that changed",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20703"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-10T22:59:59Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20700,
+   "state": "OPEN",
+   "title": "Ensure `@tailwindcss/vite` rebuilds when a plugin changes the input CSS in memory",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20700"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-10T22:42:15Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20699,
+   "state": "OPEN",
+   "title": "Don't treat `/*` inside an unquoted `url(…)` as a comment in the CSS parser",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20699"
+  },
+  {
+   "author": {
+    "id": "U_kgDODBc8yw",
+    "is_bot": false,
+    "login": "rudy-07",
+    "name": "Rudransh Shekhar"
+   },
+   "createdAt": "2026-11-10T18:21:56Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20698,
+   "state": "OPEN",
+   "title": "Canonicalization: reuse dynamic utility lookups across candidate collapse groups",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20698"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-10T13:06:27Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20691,
+   "state": "OPEN",
+   "title": "Discard candidates that contain `</style`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20691"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjUwODAzNzg=",
+    "is_bot": false,
+    "login": "suasgn",
+    "name": ""
+   },
+   "createdAt": "2026-11-09T17:22:24Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20684,
+   "state": "OPEN",
+   "title": "Add a single-threaded browser build of `@tailwindcss/oxide`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20684"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjUxODgyMjkz",
+    "is_bot": false,
+    "login": "solquin",
+    "name": ""
+   },
+   "createdAt": "2026-11-08T06:10:11Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20679,
+   "state": "OPEN",
+   "title": "Don't generate invalid CSS for `drop-shadow-inherit` with an opacity modifier",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20679"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjU0NTgzMjM2",
+    "is_bot": false,
+    "login": "GautamKumarOffical",
+    "name": "Gautam Kumar"
+   },
+   "createdAt": "2026-11-05T14:09:49Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20671,
+   "state": "OPEN",
+   "title": "Prefix relative selectors with \\:scope\\ inside \\@scope\\ rules",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20671"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjYzOTU3NDM=",
+    "is_bot": false,
+    "login": "b84330808",
+    "name": "Wei-Lun Li"
+   },
+   "createdAt": "2026-11-04T10:47:29Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20664,
+   "state": "OPEN",
+   "title": "Negate combined conditions as a whole in `not-*` variants",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20664"
+  },
+  {
+   "author": {
+    "id": "U_kgDOCNM5eQ",
+    "is_bot": false,
+    "login": "akasakariko",
+    "name": "Asuka"
+   },
+   "createdAt": "2026-11-02T16:11:59Z",
+   "labels": [
+    {
+     "id": "MDU6TGFiZWwyODY5ODE4OTc0",
+     "name": "v3",
+     "description": "",
+     "color": "31E4B8"
+    }
+   ],
+   "mergedAt": null,
+   "number": 20656,
+   "state": "OPEN",
+   "title": "[v3] Reject invalid hyphen-prefixed arbitrary property names",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20656"
+  },
+  {
+   "author": {
+    "id": "U_kgDOBt_75Q",
+    "is_bot": false,
+    "login": "Gourav224",
+    "name": "Gourav Kumar Dhiman"
+   },
+   "createdAt": "2026-11-01T12:58:45Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20649,
+   "state": "OPEN",
+   "title": "Keep a single-file `@source` exact when automatic source detection is on",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20649"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIwNTAxNzI1",
+    "is_bot": false,
+    "login": "lazerg",
+    "name": "Lazizbek Ergashev"
+   },
+   "createdAt": "2026-11-01T01:13:54Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20639,
+   "state": "OPEN",
+   "title": "Resolve `@import`s that failed in a previous compile once the file exists",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20639"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjExOTE4NDI=",
+    "is_bot": false,
+    "login": "hadrienblanc",
+    "name": "Hadrien Blanc"
+   },
+   "createdAt": "2026-10-31T12:05:08Z",
+   "labels": [
+    {
+     "id": "MDU6TGFiZWwyODY5ODE4OTc0",
+     "name": "v3",
+     "description": "",
+     "color": "31E4B8"
+    }
+   ],
+   "mergedAt": null,
+   "number": 20636,
+   "state": "OPEN",
+   "title": "Fix stale file reads during a CLI rebuild",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20636"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjU2NTkyNA==",
+    "is_bot": false,
+    "login": "andrewfader",
+    "name": "Andrew K. Fader"
+   },
+   "createdAt": "2026-10-31T04:22:10Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20635,
+   "state": "OPEN",
+   "title": "Extract classes from multi-line Ruby in Haml templates",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20635"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjYzOTU3NDM=",
+    "is_bot": false,
+    "login": "b84330808",
+    "name": "Wei-Lun Li"
+   },
+   "createdAt": "2026-10-29T15:35:28Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20630,
+   "state": "OPEN",
+   "title": "Treat a lone CR and form feed as line breaks in the CSS parser",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20630"
+  },
+  {
+   "author": {
+    "id": "U_kgDODz0m7A",
+    "is_bot": false,
+    "login": "PerryLink",
+    "name": "PerryLink"
+   },
+   "createdAt": "2026-10-29T13:07:44Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20629,
+   "state": "OPEN",
+   "title": "Load Lightning CSS lazily so `optimize: false` works without a native binding",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20629"
+  },
+  {
+   "author": {
+    "id": "U_kgDOCKxieQ",
+    "is_bot": false,
+    "login": "Boulea7",
+    "name": "Langning Zhang"
+   },
+   "createdAt": "2026-10-28T03:30:02Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20624,
+   "state": "OPEN",
+   "title": "Preserve inline theme aliases during canonicalization",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20624"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIwNTAxNzI1",
+    "is_bot": false,
+    "login": "lazerg",
+    "name": "Lazizbek Ergashev"
+   },
+   "createdAt": "2026-10-28T01:53:41Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20623,
+   "state": "OPEN",
+   "title": "Fix `SOURCEMAP_BROKEN` warning for Tailwind CSS roots in `@tailwindcss/vite` builds",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20623"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIwNTAxNzI1",
+    "is_bot": false,
+    "login": "lazerg",
+    "name": "Lazizbek Ergashev"
+   },
+   "createdAt": "2026-10-25T01:53:59Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20615,
+   "state": "OPEN",
+   "title": "Don't add whitespace around math operators inside strings in arbitrary values",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20615"
+  },
+  {
+   "author": {
+    "id": "U_kgDOB14zIg",
+    "is_bot": false,
+    "login": "NgoQuocViet2001",
+    "name": "Ngo Quoc Viet"
+   },
+   "createdAt": "2026-10-23T13:24:27Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20612,
+   "state": "OPEN",
+   "title": "Rewrite `url(…)`s next to an `image-set(…)` when inlining imported stylesheets",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20612"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE1MDM2OTU2",
+    "is_bot": false,
+    "login": "otarampinelli",
+    "name": "Otavio Rampinelli"
+   },
+   "createdAt": "2026-10-22T18:18:29Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20609,
+   "state": "OPEN",
+   "title": "Reject bare color opacity modifiers above 100",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20609"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIwNTAxNzI1",
+    "is_bot": false,
+    "login": "lazerg",
+    "name": "Lazizbek Ergashev"
+   },
+   "createdAt": "2026-10-22T14:22:23Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20608,
+   "state": "OPEN",
+   "title": "Canonicalization: print utilities named `@` without a `-` after the `@`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20608"
+  },
+  {
+   "author": {
+    "id": "U_kgDODCsxnw",
+    "is_bot": false,
+    "login": "koreahghg",
+    "name": "한국"
+   },
+   "createdAt": "2026-10-22T04:55:09Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20606,
+   "state": "OPEN",
+   "title": "Keep opacity in the `color-mix(…)` fallback when using a theme prefix",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20606"
+  },
+  {
+   "author": {
+    "id": "U_kgDODklhIQ",
+    "is_bot": false,
+    "login": "spokodev",
+    "name": "Spoko Dev"
+   },
+   "createdAt": "2026-10-21T11:12:25Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20604,
+   "state": "OPEN",
+   "title": "Don't treat the `/` in theme keys like `width.1/2` as an opacity modifier",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20604"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIwNTAxNzI1",
+    "is_bot": false,
+    "login": "lazerg",
+    "name": "Lazizbek Ergashev"
+   },
+   "createdAt": "2026-10-21T08:55:01Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20603,
+   "state": "OPEN",
+   "title": "Canonicalization: collapse `text-{x} leading-none` into `text-{x}/none` consistently",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20603"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjEzODg4NzU=",
+    "is_bot": false,
+    "login": "samm-git",
+    "name": "Alex Samorukov"
+   },
+   "createdAt": "2026-10-20T20:59:40Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20601,
+   "state": "OPEN",
+   "title": "feat(oxide): add FreeBSD arm64 native binding",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20601"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE5NzUzNzEx",
+    "is_bot": false,
+    "login": "mkantautas",
+    "name": "Mantas Kantautas"
+   },
+   "createdAt": "2026-10-20T15:45:19Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20599,
+   "state": "OPEN",
+   "title": "Process stylesheets that only use `@theme` in `@tailwindcss/vite`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20599"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE5NzUzNzEx",
+    "is_bot": false,
+    "login": "mkantautas",
+    "name": "Mantas Kantautas"
+   },
+   "createdAt": "2026-10-20T15:42:44Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20598,
+   "state": "OPEN",
+   "title": "Keep `@keyframes` referenced by `animation-name`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20598"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE5NzUzNzEx",
+    "is_bot": false,
+    "login": "mkantautas",
+    "name": "Mantas Kantautas"
+   },
+   "createdAt": "2026-10-20T15:42:18Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20597,
+   "state": "OPEN",
+   "title": "Process Vue `<style module>` blocks in `@tailwindcss/vite`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20597"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE1MDM2OTU2",
+    "is_bot": false,
+    "login": "otarampinelli",
+    "name": "Otavio Rampinelli"
+   },
+   "createdAt": "2026-10-16T18:51:34Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20585,
+   "state": "OPEN",
+   "title": "Avoid floating point noise when constant folding `calc()` and unit conversion",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20585"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIyMDI5ODk=",
+    "is_bot": false,
+    "login": "johannpinson",
+    "name": "Johann Pinson"
+   },
+   "createdAt": "2026-10-09T10:13:05Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20555,
+   "state": "OPEN",
+   "title": "Sort logical sizing utilities next to their physical counterparts",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20555"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjEwMjA5MTE1",
+    "is_bot": false,
+    "login": "debanjanbasu",
+    "name": "Debanjan Basu"
+   },
+   "createdAt": "2026-10-08T03:46:52Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20552,
+   "state": "OPEN",
+   "title": "Add Windows ARM64 standalone binary",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20552"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjQ5MzY0NDA5",
+    "is_bot": false,
+    "login": "yazansalhi",
+    "name": "Yazan Salhi "
+   },
+   "createdAt": "2026-10-05T12:46:16Z",
+   "labels": [
+    {
+     "id": "MDU6TGFiZWwyODY5ODE4OTc0",
+     "name": "v3",
+     "description": "",
+     "color": "31E4B8"
+    }
+   ],
+   "mergedAt": null,
+   "number": 20541,
+   "state": "OPEN",
+   "title": "v3: Drop the `braces` dependency chain (`fast-glob`, `micromatch`, `chokidar` v3)",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20541"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjQxNzUwOTc=",
+    "is_bot": false,
+    "login": "benjaminkincses",
+    "name": "Benjamin Kincses"
+   },
+   "createdAt": "2026-10-02T00:44:24Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20535,
+   "state": "OPEN",
+   "title": "fix(upgrade): don't migrate `variant` prop values in expressions or comments",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20535"
+  },
+  {
+   "author": {
+    "id": "U_kgDOCaCj0g",
+    "is_bot": false,
+    "login": "abdelrhmanahmed255",
+    "name": "abdelrhmanahmed"
+   },
+   "createdAt": "2026-09-27T13:31:37Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20526,
+   "state": "OPEN",
+   "title": "Fix unmet dependency errors by stripping bundledDependencies in WASM package ",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20526"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjEzODEwMjkx",
+    "is_bot": false,
+    "login": "irontaek",
+    "name": "Minho Yoo"
+   },
+   "createdAt": "2026-09-27T10:48:19Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20525,
+   "state": "OPEN",
+   "title": "Fix Vite input dependency rebuild race",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20525"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjg3NDI5MDc0",
+    "is_bot": false,
+    "login": "Lukecele",
+    "name": "Luca Celebrano"
+   },
+   "createdAt": "2026-09-27T10:02:20Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20524,
+   "state": "OPEN",
+   "title": "Respect git global ignore files (core.excludesFile) in source scanner",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20524"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjY0MjA5MDY2",
+    "is_bot": false,
+    "login": "kwy404",
+    "name": "Alexandre Kohler"
+   },
+   "createdAt": "2026-09-27T02:44:27Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20523,
+   "state": "OPEN",
+   "title": "Don't crash when `container` padding uses a screen that isn't a breakpoint",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20523"
+  },
+  {
+   "author": {
+    "id": "U_kgDOCaCj0g",
+    "is_bot": false,
+    "login": "abdelrhmanahmed255",
+    "name": "abdelrhmanahmed"
+   },
+   "createdAt": "2026-09-26T23:37:38Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20521,
+   "state": "OPEN",
+   "title": "Fix `sr-only` table caption visibility in Firefox (#20510)",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20521"
+  },
+  {
+   "author": {
+    "id": "U_kgDOCaCj0g",
+    "is_bot": false,
+    "login": "abdelrhmanahmed255",
+    "name": "abdelrhmanahmed"
+   },
+   "createdAt": "2026-09-26T23:31:12Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20520,
+   "state": "OPEN",
+   "title": "Add `content-visibility` utilities",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20520"
+  },
+  {
+   "author": {
+    "id": "U_kgDOCaCj0g",
+    "is_bot": false,
+    "login": "abdelrhmanahmed255",
+    "name": "abdelrhmanahmed"
+   },
+   "createdAt": "2026-09-26T23:26:02Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20519,
+   "state": "OPEN",
+   "title": "Add `text-stable` utility for `text-wrap: stable`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20519"
+  },
+  {
+   "author": {
+    "id": "U_kgDOCaCj0g",
+    "is_bot": false,
+    "login": "abdelrhmanahmed255",
+    "name": "abdelrhmanahmed"
+   },
+   "createdAt": "2026-09-26T23:20:28Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20518,
+   "state": "OPEN",
+   "title": "feat: add interpolate-size utilities for keyword interpolation in animations",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20518"
+  },
+  {
+   "author": {
+    "id": "U_kgDOB5GD1w",
+    "is_bot": false,
+    "login": "aceeyz",
+    "name": "Alan Eyzaguirre"
+   },
+   "createdAt": "2026-09-25T19:17:03Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20515,
+   "state": "OPEN",
+   "title": "Enable lightningcss scroll navigation drafts so :target-current parses",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20515"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIwNTAxNzI1",
+    "is_bot": false,
+    "login": "lazerg",
+    "name": "Lazizbek Ergashev"
+   },
+   "createdAt": "2026-09-21T03:42:22Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20503,
+   "state": "OPEN",
+   "title": "Do not retain the finished build's plugin context in `@tailwindcss/vite`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20503"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjQxNzUwOTc=",
+    "is_bot": false,
+    "login": "benjaminkincses",
+    "name": "Benjamin Kincses"
+   },
+   "createdAt": "2026-09-19T23:07:33Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20499,
+   "state": "OPEN",
+   "title": "Merge user resolve.conditions in @tailwindcss/vite CSS @import resolver",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20499"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjczMzg1NTkz",
+    "is_bot": false,
+    "login": "OllieinCanada",
+    "name": ""
+   },
+   "createdAt": "2026-09-11T15:15:57Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20485,
+   "state": "OPEN",
+   "title": "Fix scanning Yarn PnP workspace packages",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20485"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjczMzg1NTkz",
+    "is_bot": false,
+    "login": "OllieinCanada",
+    "name": ""
+   },
+   "createdAt": "2026-09-11T14:44:21Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20484,
+   "state": "OPEN",
+   "title": "Ignore Vite build output when scanning sources",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20484"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE1OTIxNTE5",
+    "is_bot": false,
+    "login": "cuishuang",
+    "name": "cui fliter"
+   },
+   "createdAt": "2026-09-10T01:55:33Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20475,
+   "state": "OPEN",
+   "title": "Support formatted Vue Pug template tags",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20475"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjI1MzYzNQ==",
+    "is_bot": false,
+    "login": "bompus",
+    "name": "Aaron Queen"
+   },
+   "createdAt": "2026-09-08T12:20:40Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20471,
+   "state": "OPEN",
+   "title": "Keep Oxide loaded on Windows after Node worker exit",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20471"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjYwMTM2",
+    "is_bot": false,
+    "login": "michaelglass",
+    "name": "Michael Glass"
+   },
+   "createdAt": "2026-08-31T09:47:16Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20446,
+   "state": "OPEN",
+   "title": "Prevent older watch rebuilds from overwriting newer CSS",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20446"
+  },
+  {
+   "author": {
+    "id": "U_kgDODCsxnw",
+    "is_bot": false,
+    "login": "koreahghg",
+    "name": "한국"
+   },
+   "createdAt": "2026-08-31T07:04:07Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20445,
+   "state": "OPEN",
+   "title": "Fix `drop-shadow` ignoring its opacity modifier when no size is specified",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20445"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE2OTczMTk=",
+    "is_bot": false,
+    "login": "bmaurer",
+    "name": "Ben Maurer"
+   },
+   "createdAt": "2026-08-30T05:37:00Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20444,
+   "state": "OPEN",
+   "title": "Add a colorMixPolyfill option to @tailwindcss/postcss",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20444"
+  },
+  {
+   "author": {
+    "id": "U_kgDOEDxzIw",
+    "is_bot": false,
+    "login": "yiheng-kkk",
+    "name": ""
+   },
+   "createdAt": "2026-08-29T10:20:22Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20440,
+   "state": "OPEN",
+   "title": "Vite: Exclude build output directories from source scanning in watch mode",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20440"
+  },
+  {
+   "author": {
+    "id": "U_kgDOBeTB9g",
+    "is_bot": false,
+    "login": "HuzaifaChaudary",
+    "name": "Huzaifa Iftikhar"
+   },
+   "createdAt": "2026-08-27T23:05:49Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20436,
+   "state": "OPEN",
+   "title": "Do not migrate a variant literal behind a conditional",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20436"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjczOTk4NA==",
+    "is_bot": false,
+    "login": "benjamincanac",
+    "name": "Benjamin Canac"
+   },
+   "createdAt": "2026-08-10T16:47:56Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20406,
+   "state": "OPEN",
+   "title": "Don't scan sibling files of a concrete `@source` inside an auto source root",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20406"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjk2NjI0MzA=",
+    "is_bot": false,
+    "login": "andershagbard",
+    "name": "Anders Søgaard"
+   },
+   "createdAt": "2026-08-07T08:24:54Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20395,
+   "state": "OPEN",
+   "title": "Fix @tailwindcss/postcss losing watch dependencies after a compile error",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20395"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjgzMDA1MjIw",
+    "is_bot": false,
+    "login": "thejamesgore",
+    "name": "James Gore"
+   },
+   "createdAt": "2026-08-06T20:24:22Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20394,
+   "state": "OPEN",
+   "title": "Ensure custom --spacing-* values don't shadow spacing utility keywords",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20394"
+  },
+  {
+   "author": {
+    "id": "U_kgDOBYbjhw",
+    "is_bot": false,
+    "login": "SomSamantray",
+    "name": "Som Samantray"
+   },
+   "createdAt": "2026-08-05T15:38:00Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20388,
+   "state": "OPEN",
+   "title": "fix(cli): exclude noise directories from --watch file watcher",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20388"
+  },
+  {
+   "author": {
+    "id": "U_kgDOBc4f0Q",
+    "is_bot": false,
+    "login": "satyamg1620",
+    "name": "Satyam Gupta"
+   },
+   "createdAt": "2026-07-14T06:22:29Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20327,
+   "state": "OPEN",
+   "title": "Add s390x-unknown-linux-gnu target",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20327"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjY3NjMwODA=",
+    "is_bot": false,
+    "login": "social4hyq",
+    "name": ""
+   },
+   "createdAt": "2026-06-25T09:38:35Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20276,
+   "state": "OPEN",
+   "title": "feat(oxide): add OpenHarmony (aarch64-unknown-linux-ohos) prebuilt binary support",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20276"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjczNDIwMjM=",
+    "is_bot": false,
+    "login": "saadeghi",
+    "name": "Pouya Saadeghi"
+   },
+   "createdAt": "2026-06-24T19:13:42Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20274,
+   "state": "OPEN",
+   "title": "Support prefixed custom CSS imports",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20274"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjExNjU2OQ==",
+    "is_bot": false,
+    "login": "gounthar",
+    "name": "Bruno Verachten"
+   },
+   "createdAt": "2026-06-05T15:53:11Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20201,
+   "state": "OPEN",
+   "title": "Add riscv64 (linux-gnu) prebuilt binary",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20201"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE3MzkyMjUx",
+    "is_bot": false,
+    "login": "mrleblanc101",
+    "name": "Sébastien LeBlanc"
+   },
+   "createdAt": "2026-06-04T15:20:08Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20199,
+   "state": "OPEN",
+   "title": "Add display-mode variants for pwa",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20199"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjY4NzI5NTY=",
+    "is_bot": false,
+    "login": "lubomirblazekcz",
+    "name": "Lubomír Blažek"
+   },
+   "createdAt": "2026-05-11T07:41:23Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 20036,
+   "state": "OPEN",
+   "title": "Add Vite polyfills option",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20036"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjQ1NTE0MA==",
+    "is_bot": false,
+    "login": "mvanhorn",
+    "name": "Matt Van Horn"
+   },
+   "createdAt": "2026-03-10T07:53:38Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 19774,
+   "state": "OPEN",
+   "title": "Fix case-sensitive file path comparison in watch mode on Windows",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/19774"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjQ1NTE0MA==",
+    "is_bot": false,
+    "login": "mvanhorn",
+    "name": "Matt Van Horn"
+   },
+   "createdAt": "2026-03-10T07:50:53Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 19773,
+   "state": "OPEN",
+   "title": "Fix custom spacing values shadowing leading-none staticValues",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/19773"
+  },
+  {
+   "author": {
+    "id": "U_kgDOCvV3Ug",
+    "is_bot": false,
+    "login": "NssGourav",
+    "name": "Gourav N S S"
+   },
+   "createdAt": "2026-02-09T11:53:14Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 19653,
+   "state": "OPEN",
+   "title": " fix(compat): map maxWidth to max-width namespace in v4 migration",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/19653"
+  },
+  {
+   "author": {
+    "id": "U_kgDOCv9OFw",
+    "is_bot": false,
+    "login": "SHARMA1525",
+    "name": "Ramamuni Sai Praneeth Sharma"
+   },
+   "createdAt": "2025-11-12T14:21:15Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 19299,
+   "state": "OPEN",
+   "title": "Fix @scope variant output and add test for scoped variant",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/19299"
+  },
+  {
+   "author": {
+    "id": "U_kgDOBzlrzw",
+    "is_bot": false,
+    "login": "baptisthecht",
+    "name": "Baptist HECHT"
+   },
+   "createdAt": "2025-11-12T14:01:58Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 19298,
+   "state": "OPEN",
+   "title": "Add `corner-shape` utility classes (`corner-*`)",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/19298"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjYxNDk5Mw==",
+    "is_bot": false,
+    "login": "thecrypticace",
+    "name": "Jordan Pittman"
+   },
+   "createdAt": "2025-11-03T17:36:51Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 19254,
+   "state": "OPEN",
+   "title": "Handle utilities with `1` keys in a JS config",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/19254"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjQ1ODU5MQ==",
+    "is_bot": false,
+    "login": "philipp-spiess",
+    "name": "Philipp Spiess"
+   },
+   "createdAt": "2025-10-29T11:15:48Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 19228,
+   "state": "OPEN",
+   "title": "Add reference CSS syntax showcase",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/19228"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjYxNDk5Mw==",
+    "is_bot": false,
+    "login": "thecrypticace",
+    "name": "Jordan Pittman"
+   },
+   "createdAt": "2025-09-25T17:50:15Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 18994,
+   "state": "OPEN",
+   "title": "Use custom implementation of canonicalize for wasi",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/18994"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIzMTIz",
+    "is_bot": false,
+    "login": "jlukic",
+    "name": "Jack Lukic"
+   },
+   "createdAt": "2025-06-12T00:29:15Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 18292,
+   "state": "OPEN",
+   "title": "Feat: Adds rust config options to detect threading support in oxide",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/18292"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjU5MTMyNTQ=",
+    "is_bot": false,
+    "login": "brandonmcconnell",
+    "name": "Brandon McConnell"
+   },
+   "createdAt": "2025-05-09T07:42:54Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 17945,
+   "state": "OPEN",
+   "title": "Adds default styles for `[popover]`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/17945"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjU2MTM3NDEx",
+    "is_bot": false,
+    "login": "zackradisic",
+    "name": "Zack Radisic"
+   },
+   "createdAt": "2025-02-06T04:16:40Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 16295,
+   "state": "OPEN",
+   "title": "Bun plugin",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/16295"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjU5MTMyNTQ=",
+    "is_bot": false,
+    "login": "brandonmcconnell",
+    "name": "Brandon McConnell"
+   },
+   "createdAt": "2024-03-28T10:29:27Z",
+   "labels": [],
+   "mergedAt": null,
+   "number": 13389,
+   "state": "OPEN",
+   "title": "Add first-class support for height media/container queries",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/13389"
+  }
+ ],
+ "merged": [
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-10T17:53:59Z",
+   "labels": [],
+   "mergedAt": "2026-11-10T21:40:19Z",
+   "number": 20697,
+   "state": "MERGED",
+   "title": "Replace CSS escapes that are not needed during canonicalization",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20697"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-10T14:03:46Z",
+   "labels": [],
+   "mergedAt": "2026-11-10T14:30:36Z",
+   "number": 20694,
+   "state": "MERGED",
+   "title": "Improve performance when scanning long lines with many `[` characters",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20694"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-10T13:14:01Z",
+   "labels": [],
+   "mergedAt": "2026-11-10T14:08:24Z",
+   "number": 20693,
+   "state": "MERGED",
+   "title": "Improve performance of candidates with long variant chains",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20693"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-10T13:08:56Z",
+   "labels": [],
+   "mergedAt": "2026-11-10T14:17:10Z",
+   "number": 20692,
+   "state": "MERGED",
+   "title": "Discard candidates whose selectors grow exponentially when variants are stacked",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20692"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-10T12:59:26Z",
+   "labels": [],
+   "mergedAt": "2026-11-11T00:01:54Z",
+   "number": 20690,
+   "state": "MERGED",
+   "title": "Ignore arbitrary values that start a CSS comment",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20690"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-10T00:16:41Z",
+   "labels": [],
+   "mergedAt": "2026-11-10T18:13:15Z",
+   "number": 20688,
+   "state": "MERGED",
+   "title": "Use the incremental build when `from` is set",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20688"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-09T22:19:36Z",
+   "labels": [],
+   "mergedAt": "2026-11-09T22:21:16Z",
+   "number": 20686,
+   "state": "MERGED",
+   "title": "Clarify the install effect of the WASM fallback in the 4.3.4 changelog",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20686"
+  },
+  {
+   "author": {
+    "id": "U_kgDOChlQ_Q",
+    "is_bot": false,
+    "login": "Rohan-Dedhia",
+    "name": "Rohan Dedhia"
+   },
+   "createdAt": "2026-11-09T16:21:57Z",
+   "labels": [],
+   "mergedAt": "2026-11-10T14:43:23Z",
+   "number": 20683,
+   "state": "MERGED",
+   "title": "Avoid climbing across Windows drives when rebasing URLs in stylesheets",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20683"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjQzMjMxODA=",
+    "is_bot": false,
+    "login": "adamwathan",
+    "name": "Adam Wathan"
+   },
+   "createdAt": "2026-11-08T16:12:32Z",
+   "labels": [],
+   "mergedAt": "2026-11-10T18:03:25Z",
+   "number": 20680,
+   "state": "MERGED",
+   "title": "Only optimize and print new utilities on rebuilds",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20680"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjMyODU1Mzg0",
+    "is_bot": false,
+    "login": "huuyafwww",
+    "name": "huuya"
+   },
+   "createdAt": "2026-11-08T06:02:30Z",
+   "labels": [],
+   "mergedAt": "2026-11-10T23:21:18Z",
+   "number": 20678,
+   "state": "MERGED",
+   "title": "Improve `@tailwindcss/vite` build performance by scanning the same sources only once per build",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20678"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-05T22:16:52Z",
+   "labels": [],
+   "mergedAt": "2026-11-06T14:49:51Z",
+   "number": 20672,
+   "state": "MERGED",
+   "title": "4.3.5",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20672"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-04T20:44:38Z",
+   "labels": [],
+   "mergedAt": "2026-11-05T14:39:09Z",
+   "number": 20669,
+   "state": "MERGED",
+   "title": "Make the integration tests resilient to slow package installs",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20669"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-04T18:52:01Z",
+   "labels": [],
+   "mergedAt": "2026-11-04T19:43:17Z",
+   "number": 20667,
+   "state": "MERGED",
+   "title": "Fix `@tailwindcss/oxide-wasm32-wasi` hanging forever when it loads",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20667"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-04T18:16:44Z",
+   "labels": [],
+   "mergedAt": "2026-11-05T22:35:51Z",
+   "number": 20666,
+   "state": "MERGED",
+   "title": "Skip the `color-mix(…)` polyfill without a color interpolation method",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20666"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjYzOTU3NDM=",
+    "is_bot": false,
+    "login": "b84330808",
+    "name": "Wei-Lun Li"
+   },
+   "createdAt": "2026-11-04T16:55:37Z",
+   "labels": [],
+   "mergedAt": "2026-11-04T21:06:46Z",
+   "number": 20665,
+   "state": "MERGED",
+   "title": "Ignore `<!--` and `-->` between top-level rules in the CSS parser",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20665"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjEwNTkxMzk=",
+    "is_bot": false,
+    "login": "benface",
+    "name": "Benoît Rouleau"
+   },
+   "createdAt": "2026-11-04T01:23:20Z",
+   "labels": [],
+   "mergedAt": "2026-11-04T18:07:23Z",
+   "number": 20663,
+   "state": "MERGED",
+   "title": "Canonicalization: don't sort all parsed variants when compiling a single candidate",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20663"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIwNTAxNzI1",
+    "is_bot": false,
+    "login": "lazerg",
+    "name": "Lazizbek Ergashev"
+   },
+   "createdAt": "2026-11-03T13:53:32Z",
+   "labels": [],
+   "mergedAt": "2026-11-04T20:57:25Z",
+   "number": 20660,
+   "state": "MERGED",
+   "title": "Don't break CSS modules in the `@tailwindcss/turbopack` README setup",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20660"
+  },
+  {
+   "author": {
+    "id": "U_kgDOBsJTKA",
+    "is_bot": false,
+    "login": "zerotohero3",
+    "name": "Victor Hugo Macedo Paes Leme"
+   },
+   "createdAt": "2026-11-02T19:30:28Z",
+   "labels": [],
+   "mergedAt": "2026-11-04T18:27:24Z",
+   "number": 20658,
+   "state": "MERGED",
+   "title": "Don't crash on a `color-mix(…)` with a single color and no interpolation method",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20658"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-02T10:25:49Z",
+   "labels": [],
+   "mergedAt": "2026-11-02T11:57:12Z",
+   "number": 20655,
+   "state": "MERGED",
+   "title": "Keep a declaration without a `;` at the end of the CSS input",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20655"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjYzOTU3NDM=",
+    "is_bot": false,
+    "login": "b84330808",
+    "name": "Wei-Lun Li"
+   },
+   "createdAt": "2026-11-02T04:19:50Z",
+   "labels": [],
+   "mergedAt": "2026-11-02T10:26:35Z",
+   "number": 20653,
+   "state": "MERGED",
+   "title": "Parse a custom property at the end of the input without a trailing `;`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20653"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-01T21:09:03Z",
+   "labels": [],
+   "mergedAt": "2026-11-01T21:40:04Z",
+   "number": 20651,
+   "state": "MERGED",
+   "title": "Move CI jobs off the retired macos-14 runner image",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20651"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-11-01T21:01:04Z",
+   "labels": [],
+   "mergedAt": "2026-11-01T21:16:48Z",
+   "number": 20650,
+   "state": "MERGED",
+   "title": "Fix flaky bun upgrade integration test",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20650"
+  },
+  {
+   "author": {
+    "id": "U_kgDOD9aPuA",
+    "is_bot": false,
+    "login": "wook10",
+    "name": "김민욱"
+   },
+   "createdAt": "2026-10-30T00:53:41Z",
+   "labels": [],
+   "mergedAt": "2026-11-05T23:10:36Z",
+   "number": 20632,
+   "state": "MERGED",
+   "title": "Fix unshipped relative imports in `@tailwindcss/node` type declarations",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20632"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjYzOTU3NDM=",
+    "is_bot": false,
+    "login": "b84330808",
+    "name": "Wei-Lun Li"
+   },
+   "createdAt": "2026-10-28T15:27:33Z",
+   "labels": [],
+   "mergedAt": "2026-11-01T23:58:16Z",
+   "number": 20627,
+   "state": "MERGED",
+   "title": "Don't treat `!important` inside a declaration value as the important flag",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20627"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-10-19T15:21:01Z",
+   "labels": [],
+   "mergedAt": "2026-10-19T15:50:54Z",
+   "number": 20594,
+   "state": "MERGED",
+   "title": "Add changelog entry for #20591",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20594"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-10-19T12:42:58Z",
+   "labels": [],
+   "mergedAt": "2026-10-19T12:53:02Z",
+   "number": 20593,
+   "state": "MERGED",
+   "title": "Canonicalization: only ignore `--tw-{property}` next to the related property",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20593"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-10-19T12:41:24Z",
+   "labels": [],
+   "mergedAt": "2026-11-01T20:48:10Z",
+   "number": 20592,
+   "state": "MERGED",
+   "title": "Add changelog fragments in `.changelog/`",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20592"
+  },
+  {
+   "author": {
+    "id": "U_kgDOD-hkIA",
+    "is_bot": false,
+    "login": "jiwoo1222",
+    "name": "양지우"
+   },
+   "createdAt": "2026-10-19T01:20:14Z",
+   "labels": [],
+   "mergedAt": "2026-10-19T15:17:02Z",
+   "number": 20591,
+   "state": "MERGED",
+   "title": "Decode single-digit hexadecimal CSS escapes",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20591"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-10-16T11:09:04Z",
+   "labels": [],
+   "mergedAt": "2026-10-16T11:28:05Z",
+   "number": 20582,
+   "state": "MERGED",
+   "title": "Rebuild `@tailwindcss/turbopack` and `@tailwindcss/webpack` when the input CSS changes",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20582"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-10-15T13:38:39Z",
+   "labels": [],
+   "mergedAt": "2026-10-15T15:18:03Z",
+   "number": 20579,
+   "state": "MERGED",
+   "title": "Fix out of memory error in the canonicalize tests on macOS CI",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20579"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjcwOTczNDY1",
+    "is_bot": false,
+    "login": "i098",
+    "name": ""
+   },
+   "createdAt": "2026-10-15T07:22:42Z",
+   "labels": [],
+   "mergedAt": "2026-10-15T21:18:06Z",
+   "number": 20578,
+   "state": "MERGED",
+   "title": "Bump Bun to 1.4 so macOS standalone binaries get a valid code signature",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20578"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE1MDM2OTU2",
+    "is_bot": false,
+    "login": "otarampinelli",
+    "name": "Otavio Rampinelli"
+   },
+   "createdAt": "2026-10-14T23:50:15Z",
+   "labels": [],
+   "mergedAt": "2026-10-15T11:15:01Z",
+   "number": 20577,
+   "state": "MERGED",
+   "title": "Reject arbitrary values with unbalanced parens or brackets",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20577"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-10-14T22:25:54Z",
+   "labels": [],
+   "mergedAt": "2026-10-15T00:19:04Z",
+   "number": 20575,
+   "state": "MERGED",
+   "title": "Drop nested rules that put a combinator after a pseudo-element",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20575"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjY4NTE1MTY4",
+    "is_bot": false,
+    "login": "SahinurDEV",
+    "name": "Sahinur"
+   },
+   "createdAt": "2026-10-12T03:30:58Z",
+   "labels": [],
+   "mergedAt": "2026-10-15T12:26:54Z",
+   "number": 20558,
+   "state": "MERGED",
+   "title": "Canonicalization: avoid exponential collapse when a utility sets many properties",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20558"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjIxMjI5NzE3",
+    "is_bot": false,
+    "login": "kkrausse",
+    "name": "Kevin Krausse"
+   },
+   "createdAt": "2026-09-12T03:27:01Z",
+   "labels": [],
+   "mergedAt": "2026-11-05T23:08:57Z",
+   "number": 20487,
+   "state": "MERGED",
+   "title": "Fix incremental source scanning in WASM builds",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20487"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjczMzg1NTkz",
+    "is_bot": false,
+    "login": "OllieinCanada",
+    "name": ""
+   },
+   "createdAt": "2026-09-11T15:29:49Z",
+   "labels": [],
+   "mergedAt": "2026-10-15T20:35:16Z",
+   "number": 20486,
+   "state": "MERGED",
+   "title": "Handle vendor-prefixed selector functions in custom variants",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20486"
+  },
+  {
+   "author": {
+    "id": "MDQ6VXNlcjE4MzQ0MTM=",
+    "is_bot": false,
+    "login": "RobinMalfait",
+    "name": "Robin Malfait"
+   },
+   "createdAt": "2026-08-31T11:25:23Z",
+   "labels": [],
+   "mergedAt": "2026-11-02T18:51:20Z",
+   "number": 20447,
+   "state": "MERGED",
+   "title": "4.3.4",
+   "url": "https://github.com/tailwindlabs/tailwindcss/pull/20447"
+  }
+ ]
+}

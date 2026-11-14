@@ -50,17 +50,18 @@ export function detect(root: string): Source {
 export function rewriteScript(cmd: string): string {
   return cmd
     .replace(/\bcross-env(?:-shell)?\s+/g, "")
-    .replace(/\b(?:pnpm|yarn)\s+--filter[= ]("[^"]+"|'[^']+'|\S+)\s+(?:--\S+\s+)*(?:run\s+|exec\s+)?/g, "bun --filter $1 run ")
-    .replace(/\bpnpm\s+(?:-r|--recursive)\s+(?:--\S+\s+)*(?:run\s+)?/g, "bun --filter '*' run ")
-    .replace(/\byarn\s+workspaces\s+(?:foreach\s+(?:-\S+\s+)*)?run\s+/g, "bun --filter '*' run ")
-    .replace(/\blerna\s+run\s+/g, "bun --filter '*' run ")
-    .replace(/\bnpm\s+run\s+(\S+)\s+--workspaces?\b/g, "bun --filter '*' run $1")
+    .replace(/\b(?:pnpm|yarn)\s+--filter[= ]("[^"]+"|'[^']+'|\S+)\s+(?:--\S+\s+)*(?:run\s+|exec\s+)?/g, "bun run --filter $1 ")
+    .replace(/\bpnpm\s+(?:-r|--recursive)\s+(?:--\S+\s+)*(?:run\s+)?/g, "bun run --filter '*' ")
+    .replace(/\byarn\s+workspaces\s+(?:foreach\s+(?:-\S+\s+)*)?run\s+/g, "bun run --filter '*' ")
+    .replace(/\blerna\s+run\s+/g, "bun run --filter '*' ")
+    .replace(/\bnpm\s+run\s+(\S+)\s+--workspaces?\b/g, "bun run --filter '*' $1")
     .replace(/\b(?:pnpm|yarn|npm)\s+(?:i|install|ci)\b(?:\s+--frozen-lockfile)?/g, "bun install")
     .replace(/\b(?:pnpm|yarn)\s+(?:dlx|exec)\s+/g, "bunx ")
     .replace(/\bnpm\s+exec\s+(?:--\s+)?/g, "bunx ")
     .replace(/\b(?:pnpm|yarn|npm)\s+run\s+/g, "bun run ")
     .replace(/\b(?:pnpm|yarn)\s+(?=[\w@.:-])(?!add\b|remove\b|why\b)/g, "bun run ")
     .replace(/\bnpm\s+test\b/g, "bun run test")
+    .replace(/\bbun --filter ("[^"]+"|'[^']+'|\S+) run /g, "bun run --filter $1 ")
     .replace(/\bnpx\s+/g, "bunx ")
     .replace(/(^|[\s;&|(])node(?=\s)/g, "$1bun")
     .replace(/(^|[\s;&|(])ts-node(?:-esm)?(?=\s)/g, "$1bun")
@@ -77,6 +78,16 @@ export function rewriteSource(text: string): string {
     .replace(/(['"`])(?:pnpm|yarn|npm) run /g, "$1bun run ")
     .replace(/(['"`])npx /g, "$1bunx ")
     .replace(/^#!\/usr\/bin\/env (?:node|ts-node|tsx)\b/m, "#!/usr/bin/env bun");
+}
+
+/** pnpm-only override forms Bun rejects: removal ("-"), parent selectors (a>b), empty range ("pkg@"). */
+export function normalizeOverrides(o: Record<string, string>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(o)) {
+    if (v === "-" || k.includes(">")) continue;
+    out[k.replace(/@$/, "")] = v;
+  }
+  return out;
 }
 
 /** Root manifest fields from pnpm-workspace.yaml, lerna.json, yarn resolutions. */
@@ -120,6 +131,7 @@ export function migrateRoot(pkg: any, root: string): { bunfig: string | null; dr
       pkg.scripts[to] = pkg.scripts[to] ? `${pkg.scripts[hook]} && ${pkg.scripts[to]}` : pkg.scripts[hook];
       delete pkg.scripts[hook];
     }
+  if (pkg.overrides) pkg.overrides = normalizeOverrides(pkg.overrides);
   pkg.packageManager = `bun@${Bun.version.replace(/-.*/, "")}`;
   if (pkg.engines) {
     delete pkg.engines.node;
