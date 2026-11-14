@@ -224,6 +224,11 @@ name = "agent-browser"
 hosts = ["pc"]
 state = "absent"
 
+# Context7 public MCP (Streamable HTTP + SSE, no key needed; tools resolve-library-id, query-docs; probed 2026-11-14).
+[[hub.mcp]]
+name = "context7"
+url = "https://mcp.context7.com/mcp"
+
 [[hub.mcp]]
 name = "agent-desktop"
 command = ["{bin}/agent-desktop.exe", "mcp"]
