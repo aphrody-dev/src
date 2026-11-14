@@ -4,11 +4,11 @@ import { runTests } from "../../src/test.ts";
 
 const root = join(import.meta.dir, "..", "..", "..", "..");
 
-test("every committed library asset passes the Bun-side validators", async () => {
+test("every committed Bevy asset, .meta RON sidecar, and SVG2 file passes validators", async () => {
   const { results } = await runTests({
     root,
     recursive: true,
-    types: ["image", "model", "hdri"],
+    types: ["image", "svg", "model", "font", "hdri"],
   });
   expect(results.length).toBeGreaterThan(0);
   expect(

@@ -1,0 +1,13 @@
+(
+    meta_format_version: "1.0",
+    asset: Load(
+        loader: "bevy_gltf::loader::GltfLoader",
+        settings: (
+            load_meshes: (bits: 3),
+            load_materials: (bits: 3),
+            load_cameras: true,
+            load_lights: true,
+            include_source: false,
+        ),
+    ),
+)

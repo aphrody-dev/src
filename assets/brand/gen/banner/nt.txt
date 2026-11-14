@@ -1,3 +1,0 @@
-   /\
-  /~~\   nt
- /    \  This machine's Windows NT, rendered entirely by the GPU

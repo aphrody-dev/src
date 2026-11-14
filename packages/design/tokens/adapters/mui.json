@@ -1,18 +1,18 @@
 {
-  "$comment": "Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #3355FF, vibrant, MCU 0.4.0). Ne pas éditer. Usage : createTheme({ cssVariables: true, ...json }).",
+  "$comment": "Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #135B82, vibrant, MCU 0.4.0). Ne pas éditer. Usage : createTheme({ cssVariables: true, ...json }).",
   "colorSchemes": {
     "light": {
       "palette": {
         "primary": {
-          "main": "#1242FF",
+          "main": "#006492",
           "contrastText": "#FFFFFF"
         },
         "secondary": {
-          "main": "#605A7D",
+          "main": "#4D5F7C",
           "contrastText": "#FFFFFF"
         },
         "info": {
-          "main": "#6B5485",
+          "main": "#525C8B",
           "contrastText": "#FFFFFF"
         },
         "error": {
@@ -20,51 +20,51 @@
           "contrastText": "#FFFFFF"
         },
         "warning": {
-          "main": "#FFB300",
-          "contrastText": "#1A1B25"
+          "main": "#D1D293",
+          "contrastText": "#141D23"
         },
         "background": {
-          "default": "#FBF8FF",
-          "paper": "#F4F2FF"
+          "default": "#F6FAFF",
+          "paper": "#ECF5FE"
         },
         "text": {
-          "primary": "#1A1B25",
-          "secondary": "#444654"
+          "primary": "#141D23",
+          "secondary": "#3D4851"
         },
-        "divider": "#C5C5D6"
+        "divider": "#BCC8D3"
       }
     },
     "dark": {
       "palette": {
         "primary": {
-          "main": "#BAC3FF",
-          "contrastText": "#001E91"
+          "main": "#8BCEFF",
+          "contrastText": "#00344E"
         },
         "secondary": {
-          "main": "#C9C1EA",
-          "contrastText": "#312C4C"
+          "main": "#B4C7E9",
+          "contrastText": "#1E314C"
         },
         "info": {
-          "main": "#D7BBF3",
-          "contrastText": "#3B2654"
+          "main": "#BAC4FA",
+          "contrastText": "#232D5A"
         },
         "error": {
           "main": "#FFB4AB",
           "contrastText": "#690005"
         },
         "warning": {
-          "main": "#FFB300",
-          "contrastText": "#1A1B25"
+          "main": "#D1D293",
+          "contrastText": "#141D23"
         },
         "background": {
-          "default": "#11131C",
-          "paper": "#1A1B25"
+          "default": "#0C141B",
+          "paper": "#141D23"
         },
         "text": {
-          "primary": "#E2E1EF",
-          "secondary": "#C5C5D6"
+          "primary": "#DBE3ED",
+          "secondary": "#BCC8D3"
         },
-        "divider": "#444654"
+        "divider": "#3D4851"
       }
     }
   },

@@ -1,4 +1,4 @@
-/* Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #3355FF, vibrant, MCU 0.4.0). Ne pas éditer. */
+/* Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #135B82, vibrant, MCU 0.4.0). Ne pas éditer. */
 /* Transition seulement (sous-modules rosegriffon/shenron) : les couleurs shadcn deviennent les rôles M3 de la marque. */
 :root {
   --background: var(--md-sys-color-surface);

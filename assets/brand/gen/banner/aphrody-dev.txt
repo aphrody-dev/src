@@ -1,3 +1,0 @@
-   /\
-  /~~\   Aphrody Dev
- /    \  Upstream work on Bun, Rust and the Windows platform

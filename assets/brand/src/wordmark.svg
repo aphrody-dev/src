@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="64" viewBox="0 0 {width} 64">
-  <!-- Aphrody wordmark, original artwork (MIT OR Apache-2.0): 48 dp monogram, 14 dp gap, name in
-       Google Sans Flex 650 with -0.5 tracking, suffix in 420 and the scheme primary. Text is
-       outlined to paths by `ay brand build`, so the output needs no font.
-       Placeholders: {width} {mark} {font} {ink} {suffix_color} {name} {suffix}. -->
-  <g transform="translate(8 8)">{mark}</g>
-  <text x="70" y="44" font-family="{font}" font-size="34" font-weight="650" letter-spacing="-0.5" fill="{ink}">{name}<tspan dx="9" font-weight="420" fill="{suffix_color}">{suffix}</tspan></text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 680 180"><defs><linearGradient id="wordmark-grad" x1="0%" x2="100%" y1="50%" y2="50%"><stop offset="0%" stop-color="#fbf0df"/><stop offset="45%" stop-color="#febbd0"/><stop offset="80%" stop-color="#f472b6"/><stop offset="100%" stop-color="#9b72cb"/></linearGradient><linearGradient id="spark-grad" x1="0%" x2="100%" y1="100%" y2="0%"><stop offset="0%" stop-color="#4285f4"/><stop offset="50%" stop-color="#9b72cb"/><stop offset="100%" stop-color="#f472b6"/></linearGradient></defs><text x="32" y="132" fill="url(#wordmark-grad)" font-family="'Google Sans Flex', 'Google Sans', system-ui, sans-serif" font-size="116" font-weight="600" letter-spacing="-2.5" style="font-variation-settings:&quot;wght&quot;600,&quot;wdth&quot;100,&quot;opsz&quot;72,&quot;GRAD&quot;0,&quot;ROND&quot;85">aphrody</text><path fill="url(#spark-grad)" d="M618 22c0 27.6-22.4 50-50 50 27.6 0 50 22.4 50 50 0-27.6 22.4-50 50-50-27.6 0-50-22.4-50-50"/></svg>

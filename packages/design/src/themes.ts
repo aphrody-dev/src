@@ -17,10 +17,10 @@ export type ThemeDef = {
 export const THEMES: ThemeDef[] = [
   {
     name: "aphrody",
-    seed: "#3355FF",
+    seed: "#135B82",
     variant: "vibrant",
     default: "light",
-    note: "brand default (brand.toml)",
+    note: "Byron Love Zeus sapphire seed from brand.toml / zukan",
   },
   {
     name: "m3",

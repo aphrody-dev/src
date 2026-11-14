@@ -2,12 +2,15 @@
 // decoded by the repo's own decoders. Bun side here (Bun.Image, Khronos glTF-Validator, sha256); Rust side
 // (tv-ffmpeg, resvg, craft-svg/webp/exr, gltf crate, headless Bevy, ttf-parser) is crates/asset-test, run on
 // fr1 or in CI, whose JSON lines are merged into the same report.
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, extname } from "node:path";
+import { bevyLoaderFor, checkBevyMeta } from "./bevy.ts";
 import { libraryRoot, parseManifest, sha256, type Asset } from "./manifest.ts";
+import { validateSvg2 } from "./svg2.ts";
 
 /** manifest.toml plus manifest.<name>.toml packs (read here so the tester does not depend on loader changes). */
 export function manifestPaths(lib: string): string[] {
+  if (!existsSync(lib)) return [];
   return readdirSync(lib)
     .filter((n) => /^manifest(\.[\w-]+)?\.toml$/.test(n))
     .sort()
@@ -241,6 +244,7 @@ export async function runTests(
   o: TestOptions,
 ): Promise<{ results: TestResult[]; notes: string[]; assets: number }> {
   const lib = libraryRoot(o.root);
+  const hasLib = existsSync(lib);
   const assets: Asset[] = [];
   for (const f of manifestPaths(lib))
     assets.push(...parseManifest(await Bun.file(f).text()));
@@ -252,14 +256,19 @@ export async function runTests(
     assets.map((a) => [fileFor(lib, a), a]),
   );
 
-  const targets: { id: string; kind: string; abs: string; asset?: Asset }[] =
-    assets.map((a) => ({
-      id: a.id,
-      kind: a.kind,
-      abs: fileFor(lib, a),
-      asset: a,
-    }));
-  if (o.recursive) {
+  const targets: {
+    id: string;
+    kind: string;
+    abs: string;
+    asset?: Asset;
+    bevy?: boolean;
+  }[] = assets.map((a) => ({
+    id: a.id,
+    kind: a.kind,
+    abs: fileFor(lib, a),
+    asset: a,
+  }));
+  if (hasLib && o.recursive) {
     for (const f of walk(lib)) {
       if (
         listed.has(f) ||
@@ -276,11 +285,31 @@ export async function runTests(
           abs: f,
         });
     }
+  } else if (!hasLib) {
+    // Standard Bevy `assets/` + `crates/game/assets/` layout with `.meta` RON sidecars & SVG 2 validation.
+    for (const rootDir of [
+      join(o.root, "assets"),
+      join(o.root, "crates", "game", "assets"),
+    ]) {
+      if (!existsSync(rootDir)) continue;
+      for (const f of walk(rootDir)) {
+        if (f.endsWith(".meta")) continue;
+        const t = classify(f);
+        if (!t) continue;
+        const relRoot = relative(o.root, f).replaceAll("\\", "/");
+        targets.push({
+          id: relRoot,
+          kind: "bevy",
+          abs: f,
+          bevy: true,
+        });
+      }
+    }
   }
 
   for (const t of targets) {
     const type = classify(t.abs);
-    const rel = relative(lib, t.abs).replaceAll("\\", "/");
+    const rel = relative(hasLib ? lib : o.root, t.abs).replaceAll("\\", "/");
     if (!type) continue;
     if (!want(type)) continue;
     if (!existsSync(t.abs)) {
@@ -299,7 +328,28 @@ export async function runTests(
     }
     const bytes = new Uint8Array(await Bun.file(t.abs).arrayBuffer());
     const size = statSync(t.abs).size;
-    if (!t.asset) {
+    if (t.bevy) {
+      if (bevyLoaderFor(t.abs)) {
+        const r = await timed(async () => {
+          const metaPath = `${t.abs}.meta`;
+          if (!existsSync(metaPath))
+            throw new Error(`missing Bevy .meta sidecar: ${rel}.meta`);
+          const errs = checkBevyMeta(readFileSync(metaPath, "utf8"), rel);
+          if (errs.length) throw new Error(errs.join("; "));
+          return "AssetMeta v1.0 valid";
+        });
+        results.push({
+          id: t.id,
+          kind: t.kind,
+          type,
+          validator: "bevy-meta",
+          ok: r.ok,
+          ms: r.ms,
+          bytes: size,
+          detail: r.detail,
+        });
+      }
+    } else if (!t.asset) {
       results.push({
         id: t.id,
         kind: t.kind,
@@ -343,6 +393,15 @@ export async function runTests(
         detail: r.detail,
       });
     if (type === "image") push("Bun.Image", await timed(() => bunImage(bytes)));
+    else if (type === "svg")
+      push(
+        "svg2",
+        await timed(async () => {
+          const rep = validateSvg2(new TextDecoder().decode(bytes), rel);
+          if (!rep.ok) throw new Error(rep.errors.join("; "));
+          return `CR-SVG2-20261006 valid (${rep.bytes} B)`;
+        }),
+      );
     else if (type === "model")
       push("khronos-gltf-validator", await timed(() => khronos(bytes, t.abs)));
     else if (type === "hdri" && extname(t.abs).toLowerCase() === ".hdr")

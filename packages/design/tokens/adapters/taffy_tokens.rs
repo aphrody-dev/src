@@ -1,4 +1,4 @@
-// Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #3355FF, vibrant, MCU 0.4.0). Ne pas éditer.
+// Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #135B82, vibrant, MCU 0.4.0). Ne pas éditer.
 // Rust layout & theme constants shared with crates/taffy and crates/aphrody-ui.
 
 pub const GAP_PX: f32 = 12.0;
@@ -13,7 +13,7 @@ pub const SHAPE_EXTRA_LARGE_PX: f32 = 28.0;
 
 /// (id, seed_hex, variant, default_dark) matching packages/design/src/themes.ts
 pub const FUSION_PRESETS: &[(&str, &str, &str, bool)] = &[
-    ("aphrody", "#3355FF", "vibrant", false),
+    ("aphrody", "#135B82", "vibrant", false),
     ("m3", "#6750A4", "tonal-spot", false),
     ("fluent", "#0078D4", "content", false),
     ("hyprland", "#00E5FF", "vibrant", true),

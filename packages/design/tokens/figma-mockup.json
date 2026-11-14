@@ -135,7 +135,10 @@
       "textVariable": "Schemes/On Surface",
       "strokeVariable": "Schemes/Outline Variant",
       "radiusVariable": "Corner/None",
-      "variants": ["Mode=Workspace", "Mode=Compositor"]
+      "variants": [
+        "Mode=Workspace",
+        "Mode=Compositor"
+      ]
     },
     {
       "name": "TerminalPane",
@@ -148,7 +151,10 @@
       "textVariable": "Schemes/On Surface",
       "strokeVariable": "Schemes/Outline",
       "radiusVariable": "Corner/Medium",
-      "variants": ["Focus=Active", "Focus=Inactive"]
+      "variants": [
+        "Focus=Active",
+        "Focus=Inactive"
+      ]
     },
     {
       "name": "WaylandSurfaceSlot",

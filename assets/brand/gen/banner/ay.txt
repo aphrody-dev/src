@@ -1,3 +1,0 @@
-   /\
-  /~~\   ay
- /    \  One multicall CLI for the monorepo

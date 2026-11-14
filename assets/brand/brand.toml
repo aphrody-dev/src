@@ -1,146 +1,26 @@
-# Aphrody brand: single source of truth for every logo, icon, token, banner, badge and social image
-# of the monorepo. `ay brand build` (crates/aphrody-brand) reads this file and writes assets/brand/gen/.
-# All artwork is original (see LICENSE). No third-party character, logo or game asset is used.
+# Aphrody brand: generated from Rose Griffon Zukan crawl (Byron Love / Aphrody),
+# Google Material Symbols Rounded, W3C SVG 2 (CR-SVG2-20261006), and Bevy AssetMeta v1.0.
 
 [brand]
 name = "Aphrody"
-# CDN path version: https://cdn.aphrody.com/brand/v<version>/... (immutable; bump on any visual change).
-# v1 (2026-11-13 05:54) predates the M3 role colors of the marks: v2 is the first manifest-pinned release.
-version = 2
-# Material 3 dynamic scheme seed (electric indigo) and variant.
-seed = "#3355FF"
+version = 3
+seed = "#135B82"
 variant = "vibrant"
-# The bolt accent (amber), an M3 custom color harmonized nowhere: it stays the same hue in every theme.
-accent = "#FFB300"
-# Typeface: Google Sans Flex (SIL OFL 1.1, no Reserved Font Name; google/fonts ofl/googlesansflex).
-# Trademark terms (TRADEMARKS.md upstream): the font name must not be used as or within a product name.
+accent = "#D1D293"
 font = "Google Sans Flex"
 font_fallback = ["Roboto Flex", "Inter", "system-ui", "sans-serif"]
-# Variable font file, fetched by assets/brand/fetch.ts (pinned git blob, verified) into gen-cache/.
-font_file = "gen-cache/GoogleSansFlex.ttf"
 
-# The two organisations. `container` is the tile behind the monogram.
-[[org]]
-id = "aphrody-labs"
-name = "Aphrody"
-suffix = "Labs"
-tagline = "Systems, runtimes and desktops in Rust and Bun"
-container = "primary"
-url = "https://github.com/aphrody-labs"
+[zukan]
+source_url = "https://zukan.inazuma.jp/en/chara_list/?q=hN2RnpKaoIyano2cl93FpN2-j5eNkJuG392igg=="
+character = "Byron Love (Aphrody)"
+primary_seed = "#135B82"
+gold_accent = "#D1D293"
+go_crimson = "#EA6A6A"
+ares_flame = "#C63F00"
 
-[[org]]
-id = "aphrody-dev"
-name = "Aphrody"
-suffix = "Dev"
-tagline = "Upstream work on Bun, Rust and the Windows platform"
-container = "ink"
-url = "https://github.com/aphrody-dev"
-
-# One icon per product: an M3 rounded tile in the product hue (HCT, chroma 56, tone 40) and a
-# Material Symbols Rounded glyph (Apache-2.0, assets/brand/symbols/NOTICE).
-# Sites read their icon set from gen/icons/<id>/ at build time (apps/aphrody/build.ts, aphrody-app
-# dist.rs): no copy. `ico` lists the Windows .ico copies embedded in binaries (crates/ay/ay.ico).
-[[product]]
-id = "ay"
-name = "ay"
-symbol = "terminal"
-hue = 268
-tagline = "One multicall CLI for the monorepo"
-path = "crates/ay"
-ico = ["crates/ay/ay.ico"]
-
-[[product]]
-id = "nt"
-name = "nt"
-symbol = "desktop_windows"
-hue = 236
-tagline = "This machine's Windows NT, rendered entirely by the GPU"
-path = "apps/nt"
-# MSIX logos (icons/nt/msix/), linked by apps/nt/base/shell/explorer/Nt.App.csproj.
-msix = true
-
-[[product]]
-id = "ai-os"
-name = "ai-os"
-symbol = "neurology"
-hue = 322
-tagline = "Agent core, model bridge, relay and TUI in one Bun package"
-path = "packages/ai-os"
-
-[[product]]
-id = "relay"
-name = "relay"
-symbol = "hub"
-hue = 190
-tagline = "MCP, A2A and ACP relay of ai-os"
-path = "packages/ai-os/src/relay"
-
-[[product]]
-id = "unixwin"
-name = "unixwin"
-symbol = "conversion_path"
-hue = 150
-tagline = "Native Windows bash and coreutils in Rust"
-path = "apps/unixwin"
-
-[[product]]
-id = "aphrody"
-name = "aphrody.com"
-symbol = "bolt"
-hue = 290
-tagline = "Merged static SEO and brand asset portal (aphrody.com / aphrody.app)"
-path = "apps/aphrody"
-
-[[product]]
-id = "shenron"
-name = "Shenron"
-symbol = "local_fire_department"
-hue = 40
-tagline = "dragonballfr.com: site, Discord bot, translation pipeline"
-path = "apps/shenron"
-
-[[product]]
-id = "rosegriffon"
-name = "Rose Griffon"
-symbol = "sports_soccer"
-hue = 12
-tagline = "rosegriffon.fr: website, Discord bots, unified API"
-path = "apps/rosegriffon"
-
-# Static README badges (no badge service). `value = "@rust-toolchain"` is read from
-# rust-toolchain.toml at build time so a badge never states an unverified version.
-[[badge]]
-id = "license"
-label = "license"
-value = "MIT OR Apache-2.0"
-
-[[badge]]
-id = "rust"
-label = "rust"
-value = "@rust-toolchain"
-
-[[badge]]
-id = "bun"
-label = "runtime"
-value = "bun"
-
-[[badge]]
-id = "main-only"
-label = "workflow"
-value = "main only"
-
-# ---------------------------------------------------------------------------------------------
-# Web asset pipeline (`ay brand build`, crates/aphrody-brand/src/web.rs). Every output lands in gen/,
-# is listed with its sha256 in gen/manifest.json and is published once, immutable, under
-# https://cdn.aphrody.com/brand/v<version>/ by `bun assets/brand/publish.ts`.
-
-# Material Symbols Rounded (Apache-2.0, google/material-design-icons at the commit of fetch.ts): the
-# only icons of the sites. Outputs: gen/symbols/sprite.svg (<symbol id="name"> and "name-fill"),
-# one optimized SVG per icon, symbols.json (path data and codepoint) and the variable font
-# (FILL, GRAD, opsz, wght) subset to exactly these ligatures. Keep the list sorted.
 [symbols]
-font_file = "gen-cache/MaterialSymbolsRounded.ttf"
-codepoints_file = "gen-cache/MaterialSymbolsRounded.codepoints"
+font_file = "gen/symbols/material-symbols-rounded.woff2"
+sprite = "gen/symbols/sprite.svg"
 names = [
   "apps",
   "arrow_back",
@@ -170,124 +50,5 @@ names = [
   "storefront",
   "terminal",
   "tune",
-  "view_quilt",
+  "view_quilt"
 ]
-
-# Web fonts: SIL OFL 1.1 only, no Reserved Font Name (fetch.ts checks OFL.txt), from google/fonts at
-# the commit of fetch.ts, verified against `blob` (git blob SHA-1). Subset to the Latin range of
-# Google Fonts (French included), every variable axis kept, WOFF2. gen/fonts/fonts.css declares
-# them (font-display swap, axis ranges read from fvar); `preload = true` fonts go in fonts.json
-# `preload` for <link rel=preload>.
-[[font]]
-id = "google-sans-flex"
-family = "Google Sans Flex"
-path = "ofl/googlesansflex/GoogleSansFlex[ROND,opsz,slnt,wdth,wght].ttf"
-blob = "1d8d8ae5a7c6d0e48312d2a0a478bad92caee73a"
-# Not preloaded: five axes (ROND, opsz, slnt, wdth, wght) keep the Latin WOFF2 near 0.9 MB.
-
-[[font]]
-id = "google-sans-code"
-family = "Google Sans Code"
-path = "ofl/googlesanscode/GoogleSansCode[wght].ttf"
-blob = "4b63b009b1f32a2ad99b38790d1e8e87ae7d89df"
-
-[[font]]
-id = "roboto-flex"
-family = "Roboto Flex"
-path = "ofl/robotoflex/RobotoFlex[GRAD,XOPQ,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght].ttf"
-blob = "2a11e4cd5588a89e0047140b09c912059d1a150f"
-
-[[font]]
-id = "inter"
-family = "Inter"
-path = "ofl/inter/Inter[opsz,wght].ttf"
-blob = "047c92f6e2212473dc436020afed689527076d44"
-
-[[font]]
-id = "geist"
-family = "Geist"
-path = "ofl/geist/Geist[wght].ttf"
-blob = "f63f0afc6390323715972b6645115485f37cc9f4"
-
-[[font]]
-id = "geist-mono"
-family = "Geist Mono"
-path = "ofl/geistmono/GeistMono[wght].ttf"
-blob = "173867dce0580ea751e4b9c558740d34f20ce549"
-
-[[font]]
-id = "atkinson-hyperlegible-next"
-family = "Atkinson Hyperlegible Next"
-path = "ofl/atkinsonhyperlegiblenext/AtkinsonHyperlegibleNext[wght].ttf"
-blob = "92a357554bdcca62a7e80d5e3724bf4eb8932e5e"
-preload = true
-
-# Responsive raster images: every social card and wordmark in AVIF and WebP at these widths
-# (gen/img/, srcset strings in gen/img/srcset.json). The 1200 x 630 PNG stays for og:image.
-[images]
-widths = [480, 960, 1200]
-avif_quality = 60
-webp_quality = 82
-
-# Wallpapers and backgrounds (original artwork, src/wallpaper.svg): AVIF + WebP at every size;
-# 16:9 sizes share one srcset (img/wallpaper/<id>-<w>), portrait sizes go to <id>-portrait.
-[[wallpaper]]
-id = "aphrody-labs"
-mark = "aphrody-labs"
-template = "src/wallpaper.svg"
-sizes = ["1920x1080", "2560x1440", "3840x2160", "1290x2796"]
-
-[[wallpaper]]
-id = "nt"
-mark = "nt"
-template = "src/wallpaper.svg"
-sizes = ["1920x1080", "2560x1440", "3840x2160"]
-
-# Real captures of our products only (owner rule: no stock, no third-party or Level-5 asset), recorded
-# by `bun assets/brand/capture.ts` (headless Chrome on fr1) into captures/<id>.png and, with
-# video = true, captures/<id>.webm (lossless VP9). The build encodes stills to AVIF + WebP srcsets,
-# videos to AV1 and VP9 WebM with a poster. nt is a Windows desktop: captured on the PC. rosegriffon.fr
-# is not captured: its pages show Inazuma Eleven (Level-5) artwork, which no brand asset may carry.
-[[capture]]
-id = "aphrody-app"
-url = "https://aphrody.app/"
-widths = [640, 1280, 1920]
-video = true
-
-# Stills already taken by the site agent (docs/proofs), reused as is (file = path from the root).
-[[capture]]
-id = "aphrody-com"
-url = "https://aphrody.com/"
-file = "docs/proofs/sites-2026-11-13/after/aphrody.com.png"
-widths = [640, 1280]
-
-[[capture]]
-id = "yolo"
-url = "https://yolo.aphrody.com/"
-file = "docs/proofs/sites-2026-11-13/after/yolo.aphrody.app.png"
-widths = [640, 1280]
-
-[[capture]]
-id = "nt"
-url = "desktop:nt"
-widths = [640, 1280, 1920]
-
-# 3D: the brand tile as glTF 2.0 binary (gen/model/<id>.glb), geometry from crates/aphrody-brand-gpu,
-# EXT_meshopt_compression buffers, base color in KTX2 (UASTC + zstd, KHR_texture_basisu).
-[model]
-ids = ["aphrody-labs", "aphrody-dev"]
-
-# Image-based lighting for the PBR model: Poly Haven "Studio Small 09" (CC0 1.0), 1k OpenEXR fetched
-# by fetch.ts (md5 of the Poly Haven API and sha256 verified), written as KTX2 RGBA16F (zstd).
-[environment]
-id = "studio_small_09"
-file = "gen-cache/env/studio_small_09_1k.exr"
-license = "CC0 1.0 (https://polyhaven.com/license), Sergej Majboroda / Poly Haven"
-source = "https://polyhaven.com/a/studio_small_09"
-
-# Minimal wasm + WebGPU renderer of the same tile (gen/gpu/: brand-gpu.wasm from
-# crates/aphrody-brand-gpu, brand-gpu.js from assets/brand/web/gpu.ts). Without WebGPU the <img>
-# fallback inside the element stays.
-[gpu]
-crate = "aphrody-brand-gpu"
-loader = "web/gpu.ts"

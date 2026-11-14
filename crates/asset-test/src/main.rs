@@ -13,28 +13,59 @@ struct Entry {
     path: PathBuf,
 }
 
-fn load_manifest(root: &Path) -> Vec<Entry> {
-    let lib = root.join("assets").join("library");
-    let store = std::env::var_os("ASSETS_STORE").map(PathBuf::from);
-    let mut files: Vec<PathBuf> = std::fs::read_dir(&lib)
-        .expect("assets/library")
-        .filter_map(|e| e.ok().map(|e| e.path()))
-        .filter(|p| {
-            p.file_name().and_then(|n| n.to_str()).is_some_and(|n| n.starts_with("manifest") && n.ends_with(".toml"))
-        })
-        .collect();
-    files.sort();
-    let mut out = Vec::new();
-    for f in files {
-        let doc: toml::Table = std::fs::read_to_string(&f).expect("manifest").parse().expect("manifest parse");
-        for e in doc.get("asset").and_then(|a| a.as_array()).into_iter().flatten() {
-            let s = |k: &str| e.get(k)?.as_str().map(str::to_owned);
-            let (Some(id), Some(kind), Some(path)) = (s("id"), s("kind"), s("path")) else { continue };
-            let base = if s("storage").as_deref() == Some("remote") { store.clone().unwrap_or_else(|| lib.clone()) } else { lib.clone() };
-            out.push(Entry { id, kind, path: base.join(path) });
+fn walk_bevy_dir(dir: &Path, out: &mut Vec<PathBuf>) {
+    let Ok(rd) = std::fs::read_dir(dir) else { return };
+    for entry in rd.flatten() {
+        let p = entry.path();
+        if p.is_dir() {
+            let name = p.file_name().and_then(|n| n.to_str()).unwrap_or("");
+            if !matches!(name, "node_modules" | ".git" | "target" | "dist") {
+                walk_bevy_dir(&p, out);
+            }
+        } else {
+            out.push(p);
         }
     }
-    out
+}
+
+fn load_manifest(root: &Path) -> Vec<Entry> {
+    let lib = root.join("assets").join("library");
+    if lib.is_dir() {
+        let store = std::env::var_os("ASSETS_STORE").map(PathBuf::from);
+        let mut files: Vec<PathBuf> = std::fs::read_dir(&lib)
+            .expect("assets/library")
+            .filter_map(|e| e.ok().map(|e| e.path()))
+            .filter(|p| {
+                p.file_name().and_then(|n| n.to_str()).is_some_and(|n| n.starts_with("manifest") && n.ends_with(".toml"))
+            })
+            .collect();
+        files.sort();
+        let mut out = Vec::new();
+        for f in files {
+            let doc: toml::Table = std::fs::read_to_string(&f).expect("manifest").parse().expect("manifest parse");
+            for e in doc.get("asset").and_then(|a| a.as_array()).into_iter().flatten() {
+                let s = |k: &str| e.get(k)?.as_str().map(str::to_owned);
+                let (Some(id), Some(kind), Some(path)) = (s("id"), s("kind"), s("path")) else { continue };
+                let base = if s("storage").as_deref() == Some("remote") { store.clone().unwrap_or_else(|| lib.clone()) } else { lib.clone() };
+                out.push(Entry { id, kind, path: base.join(path) });
+            }
+        }
+        return out;
+    }
+
+    let mut files = Vec::new();
+    for dir in [root.join("assets"), root.join("crates").join("game").join("assets")] {
+        walk_bevy_dir(&dir, &mut files);
+    }
+    files.sort();
+    files
+        .into_iter()
+        .filter(|p| !p.extension().and_then(|x| x.to_str()).is_some_and(|x| x.eq_ignore_ascii_case("meta")))
+        .map(|p| {
+            let id = p.strip_prefix(root).unwrap_or(&p).to_string_lossy().replace('\\', "/");
+            Entry { id, kind: "bevy".into(), path: p }
+        })
+        .collect()
 }
 
 fn emit(e: &Entry, validator: &str, ms: f64, bytes: u64, res: Result<String, String>) {
@@ -172,7 +203,7 @@ mod bevy_load {
                 .set(AssetPlugin {
                     // Bevy resolves a relative file_path against the executable directory: pass an absolute path.
                     file_path: std::fs::canonicalize(lib).unwrap_or_else(|_| lib.to_path_buf()).to_string_lossy().into_owned(),
-                    meta_check: AssetMetaCheck::Never,
+                    meta_check: AssetMetaCheck::Always,
                     ..default()
                 })
                 .set(RenderPlugin {
@@ -209,7 +240,10 @@ fn main() {
     let only = args.iter().position(|a| a == "--type").and_then(|i| args.get(i + 1)).cloned();
     let no_bevy = args.iter().any(|a| a == "--no-bevy");
     let entries = load_manifest(&root);
-    let lib = root.join("assets").join("library");
+    let lib = {
+        let legacy = root.join("assets").join("library");
+        if legacy.is_dir() { legacy } else { root.join("crates").join("game").join("assets") }
+    };
     #[cfg(feature = "bevy-load")]
     let mut bevy_app = None;
 

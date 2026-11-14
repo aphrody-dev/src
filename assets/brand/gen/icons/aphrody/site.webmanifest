@@ -1,5 +1,5 @@
 {
-  "background_color": "#5A4FB8",
+  "background_color": "#0C141B",
   "display": "standalone",
   "icons": [
     {
@@ -26,5 +26,5 @@
   ],
   "name": "aphrody.com",
   "short_name": "aphrody.com",
-  "theme_color": "#5A4FB8"
+  "theme_color": "#135B82"
 }

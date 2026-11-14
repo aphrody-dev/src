@@ -32,7 +32,10 @@ import {
   polyhavenItems,
 } from "./sources.ts";
 import { pool, run, which } from "./util.ts";
-import { renderIconAttribution, syncIcons } from "./icons.ts";
+import { syncBevyMeta } from "./bevy.ts";
+import { syncMaterialSymbolsDir } from "./material-symbols.ts";
+import { validateSvg2 } from "./svg2.ts";
+import { runZukanBrandPipeline } from "./zukan.ts";
 import {
   exportJson,
   search as searchGames,
@@ -49,11 +52,7 @@ const num = (n: string, d: number) => Number(opt(n) ?? d);
 const pos = args.filter((a) => !a.startsWith("--"));
 const jobs = num("jobs", 8);
 
-if (!manifestFiles(root).length) {
-  console.error(`no manifest in ${libraryRoot(root)}`);
-  process.exit(2);
-}
-const assets = await loadAll(root);
+const assets = manifestFiles(root).length ? await loadAll(root) : [];
 const pick = (all = true): Asset[] => {
   const sel = assets.filter(
     (a) =>
@@ -159,19 +158,56 @@ switch (cmd) {
   case "attribution":
     await Bun.write(
       join(libraryRoot(root), "ATTRIBUTION.md"),
-      renderAttribution(assets) + renderIconAttribution(root),
+      renderAttribution(assets),
     );
     break;
-  case "icons": {
-    const r = await syncIcons(root, pos[0]);
-    for (const x of r.ok)
-      console.log(`${x.id}\t${x.file}\t${x.bytes}\t${x.origin}`);
-    for (const f of r.failed) console.error(`failed ${f}`);
-    await Bun.write(
-      join(libraryRoot(root), "ATTRIBUTION.md"),
-      renderAttribution(assets) + renderIconAttribution(root),
+  case "bevy-meta": {
+    const write = !flag("check");
+    const r = syncBevyMeta(join(root, "assets"), { write });
+    const g = syncBevyMeta(join(root, "crates", "game", "assets"), { write });
+    const errs = [...r.errors, ...g.errors];
+    for (const e of errs) console.error(e);
+    console.log(
+      `bevy-meta: assets=${r.checked} (+${r.written} written), game=${g.checked} (+${g.written} written), errors=${errs.length}`,
     );
-    process.exitCode = r.failed.length ? 1 : 0;
+    process.exitCode = errs.length ? 1 : 0;
+    break;
+  }
+  case "symbols": {
+    const r = syncMaterialSymbolsDir(
+      join(root, "assets", "brand", "gen", "symbols"),
+    );
+    for (const e of r.errors) console.error(e);
+    console.log(
+      `symbols: ${r.count} Material Symbols Rounded glyphs, errors=${r.errors.length}`,
+    );
+    process.exitCode = r.errors.length ? 1 : 0;
+    break;
+  }
+  case "svg2": {
+    const target = pos[0] ?? join(root, "assets");
+    const { walkBevyAssets } = await import("./bevy.ts");
+    const svgs = walkBevyAssets(target).filter((p) => p.endsWith(".svg"));
+    let bad = 0;
+    for (const s of svgs) {
+      const rep = validateSvg2(readFileSync(s, "utf8"), s);
+      if (!rep.ok) {
+        bad++;
+        for (const e of rep.errors) console.error(e);
+      }
+    }
+    console.log(`svg2: ${svgs.length} files checked, ${bad} failing`);
+    process.exitCode = bad ? 1 : 0;
+    break;
+  }
+  case "zukan-brand": {
+    const cache = opt("cache");
+    const r = await runZukanBrandPipeline(root, { offlineCacheDir: cache });
+    for (const e of r.errors) console.error(e);
+    console.log(
+      `zukan-brand: ${r.entries.length} characters, ${r.svgCount} SVG2 outputs, ${r.iconCount} Material Symbols, errors=${r.errors.length}`,
+    );
+    process.exitCode = r.errors.length ? 1 : 0;
     break;
   }
   case "games": {
@@ -335,14 +371,6 @@ switch (cmd) {
       await import("./test.ts")
     ).testCommand(root, args);
     break;
-  case "gen":
-    process.exitCode = await Bun.spawn(
-      ["bun", "run", join(import.meta.dir, "gen", "gen.ts"), ...args],
-      {
-        stdio: ["inherit", "inherit", "inherit"],
-      },
-    ).exited;
-    break;
   case "retest":
     process.exitCode = await (
       await import("./retest.ts")
@@ -350,7 +378,7 @@ switch (cmd) {
     break;
   default:
     console.error(
-      "usage: ay assets gen <stills|svg|brand|textures|video|gif|index|validate|all>; test|retest [--recursive] [--type=T] [--strict] [--fr1]; list|check|verify|attribution|fetch [--repos]|import <pack>|scan|optimize|bundle|publish <target>|targets|tools|run\n" +
+      "usage: ay assets zukan-brand [--cache=DIR]; bevy-meta [--check]; symbols; svg2 [dir]; test|retest [--recursive] [--type=T] [--strict] [--fr1]; list|check|verify|attribution|fetch [--repos]|import <pack>|scan|optimize|bundle|publish <target>|targets|tools|run\n" +
         "  filters: --kind=K --id=PREFIX --match=SUBSTR --limit=N --remote|--all --jobs=N --limit=N --dry-run --raw --prefix=P --to=a,b\n" +
         "  env: SRC_ROOT, ASSETS_STORE (remote store dir)",
     );

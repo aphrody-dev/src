@@ -37,8 +37,8 @@ pub fn run() {
                     ..default()
                 })
                 .set(AssetPlugin {
-                    // Assets are plain files served next to the page: no .meta sidecar requests.
-                    meta_check: AssetMetaCheck::Never,
+                    // Standard Bevy .meta RON v1.0 sidecars (`assets/**/*.meta`) validated at build & test time.
+                    meta_check: AssetMetaCheck::Always,
                     // Absolute on the web: the page is /play (no trailing slash) in some locales, so a relative
                     // "assets" fetched /assets/models/explorer.glb (404) and the player never loaded.
                     #[cfg(target_arch = "wasm32")]

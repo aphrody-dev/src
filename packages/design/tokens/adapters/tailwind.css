@@ -1,4 +1,4 @@
-/* Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #3355FF, vibrant, MCU 0.4.0). Ne pas éditer. */
+/* Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #135B82, vibrant, MCU 0.4.0). Ne pas éditer. */
 /* Usage : @import "tailwindcss"; @import "@aphrody/design/tokens.css"; @import "<ce fichier>"; puis bg-primary, text-on-surface, rounded-md, text-body-large. */
 @theme inline {
   --color-*: initial;

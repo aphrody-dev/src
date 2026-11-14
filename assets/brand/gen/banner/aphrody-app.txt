@@ -1,3 +1,0 @@
-   /\
-  /~~\   aphrody.app
- /    \  Rust WebGPU tiling desktop shell

@@ -7,7 +7,8 @@
   "types": "./src/manifest.ts",
   "scripts": {
     "verify": "bun run src/cli.ts verify",
-    "gen": "bun run src/gen/gen.ts",
+    "zukan": "bun run src/cli.ts zukan-brand",
+    "meta": "bun run src/cli.ts bevy-meta",
     "test": "bun test"
   },
   "devDependencies": {
@@ -18,7 +19,7 @@
   "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aphrody-labs/src.git",
+    "url": "git+https://github.com/aphrody-labs/aphrody.git",
     "directory": "packages/assets"
   },
   "publishConfig": {

@@ -1,13 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-  <!-- Aphrody monogram, original artwork (MIT OR Apache-2.0). 48 dp grid, 8 dp keyline padding.
-       Lambda: apex (24,9), feet at y=39, horizontal stem 8 dp (7.2 dp perpendicular), counter apex (24,25).
-       Bolt: two blades joined by parallel slanted steps, rising left to right;
-       tips at x=6.5 and x=41.5, it crosses both stems as the crossbar of the A.
-       The cut around the bolt is a separate stroke path (1.6 dp each side), so no renderer needs
-       paint-order; below 48 px the build thins it to 1 dp each side.
-       Placeholders {container} {glyph} {bolt} are filled by `ay brand build`. -->
-  <rect width="48" height="48" rx="12" fill="{container}"/>
-  <path fill="{glyph}" d="M24 9L39 39H31L24 25L17 39H9Z"/>
-  <path class="bolt-cut" fill="none" stroke="{container}" stroke-width="3.2" stroke-linejoin="round" d="M6.5 32.2L25.6 35.6L28.2 29.6L41.5 27.8L22.4 24.4L19.8 30.4Z"/>
-  <path fill="{bolt}" d="M6.5 32.2L25.6 35.6L28.2 29.6L41.5 27.8L22.4 24.4L19.8 30.4Z"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 48 48"><title>Aphrody</title><defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#135b82"/><stop offset="100%" stop-color="#0b3b59"/></linearGradient><linearGradient id="spark" x1="0" x2="1" y1="1" y2="0"><stop offset="0%" stop-color="#d1d293"/><stop offset="55%" stop-color="#f472b6"/><stop offset="100%" stop-color="#9b72cb"/></linearGradient></defs><rect width="48" height="48" fill="url(#bg)" rx="12"/><path fill="#fbf0df" fill-opacity=".9" d="M8 29c3.5-8 8-12 11.5-13.5-2.5 5-3.5 9-1.5 13-3.5-1-7-.5-10 .5m32 0c-3.5-8-8-12-11.5-13.5 2.5 5 3.5 9 1.5 13 3.5-1 7-.5 10 .5"/><path fill="url(#spark)" d="M24 9c0 8.3-6.7 15-15 15 8.3 0 15 6.7 15 15 0-8.3 6.7-15 15-15-8.3 0-15-6.7-15-15"/></svg>

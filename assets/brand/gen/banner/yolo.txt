@@ -1,3 +1,0 @@
-   /\
-  /~~\   yolo
- /    \  Bun fullstack framework with a Material 3 stack
