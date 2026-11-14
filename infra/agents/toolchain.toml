@@ -1,6 +1,6 @@
 # Manifeste versionné de l'outillage agent (Claude Code, Codex, agy, OpenCode, Pi, Gemini CLI ; PC et flotte). Toute installation passe ici ;
 # applier : packages/machine/src/toolchain.ts (`ay agents install|sync|check|list`).
-# Nettoyé le 2026-11-14 : ne conserve que les skills Aphrody (`aphrody-skills`, `aphrody-nhitl`) et les outils AI (`relay`, `ai-os`, `agent-desktop`, `agent-browser`).
+# Nettoyé le 2026-11-14 : plugins de skills tiers désinstallés ; les skills utiles (dont android-*, issues de android/skills) sont versionnées dans .agents/skills et servies par `aphrody-skills`. Outils AI : `relay`, `agent-desktop`, `agent-browser`.
 
 [[claude.marketplace]]
 name = "aphrody"
