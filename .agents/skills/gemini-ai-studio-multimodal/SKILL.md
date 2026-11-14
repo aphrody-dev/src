@@ -1,21 +1,15 @@
 ---
 name: gemini-ai-studio-multimodal
-description: Official google-gemini/gemini-skills, Gemini API SDKs, Live 3.8 bidirectional streaming, Omni 1.2 Flash video, and Grounded Google Search.
+description: Router to the official google-gemini/gemini-skills (Gemini API, Live bidirectional streaming, Omni video, shell CLI), vendored in third_party/gemini-skills. Use for Gemini API code, media generation or Live API work.
 ---
 
-# Gemini API, AI Studio, Live API & Omni Video
+# Gemini API, Live API and Omni video
 
-This progressive-disclosure umbrella skill routes to **4** official skills in collection `gemini-multimodal`.
-Use the unified `ai-os` MCP tool `skills_search` (or `agy collections inspect gemini-multimodal`) to load any sub-skill on demand without bloating idle context.
+Read the matching upstream skill before writing code; model names and parameters change faster than this file.
 
-## Unlocked Unified MCP Domains
+- `third_party/gemini-skills/skills/gemini-api-dev/SKILL.md`: code that calls the Gemini API (text, chat, multimodal input, image/video/speech generation, streaming, background tasks).
+- `third_party/gemini-skills/skills/gemini-api-cli/SKILL.md`: the same API from the shell (media generation, file and YouTube analysis, transcription, Deep Research).
+- `third_party/gemini-skills/skills/gemini-live-api-dev/SKILL.md`: real-time WebSocket audio/video/text streaming and migration between Live models.
+- `third_party/gemini-skills/skills/gemini-omni-flash-api/SKILL.md`: generative video editing and text/image/video-to-video.
 
-- `google_search`
-- `docs_context`
-
-## Indexed Official Sub-Skills (4 of 4 shown)
-
-- **`gemini-api-cli`**: Call the Gemini API from the shell with gemini-api. Use for media generation (images, TTS, music, video), file and YouTube analysi (`third_party/gemini-skills/skills/gemini-api-cli/SKILL.md`)
-- **`gemini-api-dev`**: Use this skill when writing code that calls the Gemini API for text generation, multi-turn chat, multimodal understanding, image g (`third_party/gemini-skills/skills/gemini-api-dev/SKILL.md`)
-- **`gemini-live-api-dev`**: Use this skill when building real-time, bidirectional streaming applications with the Gemini Live API, or migrating legacy Live mo (`third_party/gemini-skills/skills/gemini-live-api-dev/SKILL.md`)
-- **`gemini-omni-flash-api`**: Use this skill for generative video editing, text-to-video, image- and video-referenced video generation, first-frame-to-video, fi (`third_party/gemini-skills/skills/gemini-omni-flash-api/SKILL.md`)
+Refresh the clone with the monorepo's upstream flow (`src.lock.json`, `third_party/forks.txt`) before relying on a model id. In this repo Gemini is reached through the relay (`ai-os relay`, skill `ai-os-orchestrator`) and the `gemini-review` skill.

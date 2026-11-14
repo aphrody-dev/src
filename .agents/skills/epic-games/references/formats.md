@@ -1,6 +1,7 @@
 # Unreal archive and asset formats
 
-Folded from the former epic-games-engineering skill. EGS manifest magic, EAC module notes and the `depot epic` commands were dropped: the manifest magic conflicts with docs/epic/RESOURCES.md (`0x44BEC00C`, derrod/legendary) and the commands do not exist in crates/depot-*.
+Folded from the former epic-games-engineering skill. EGS manifest magic, EAC module notes and the `depot epic` commands were dropped: the manifest magic conflicts with docs/epic/RESOURCES.md (`0x44BEC00C`, derrod/legendary) and the commands do not exist in `src/depot/*`.
+
 ## 1. Unreal Engine Archive Formats (`repak`)
 
 ### 1.1 `.pak` Archive Structure

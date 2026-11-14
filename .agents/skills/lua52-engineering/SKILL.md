@@ -1,11 +1,11 @@
 ---
 name: lua52-engineering
-description: End-to-end Lua 5.2 engineering reference covering PUC-Rio Lua 5.2.4 specifications, _ENV lexical scoping, bytecode structure, 40 opcodes, mlua Rust integration, Tree-sitter AST queries, REA disassembly, and Bun/Next.js plugins.
+description: End-to-end Lua 5.2 engineering reference covering PUC-Rio Lua 5.2.4 specifications, _ENV lexical scoping, bytecode structure, 40 opcodes, mlua Rust integration, REA disassembly, WezTerm and Bevy scripting.
 ---
 
 # Lua 5.2 Sovereign Engineering Reference
 
-This skill guides development, reverse-engineering, AST analysis, and runtime embedding for **Lua 5.2.4 (PUC-Rio)** across the sovereign monorepo (`crates/depot`, `apps/rosegriffon`, `packages/bun-plugins`).
+This skill guides development, reverse-engineering, AST analysis, and runtime embedding for **Lua 5.2.4 (PUC-Rio)** in this monorepo (Lua code and tooling live in `apps/rosegriffon/crates/aphrody-nie-lua`, `apps/rosegriffon/crates/aphrody-nie-wasm`, `apps/shenron/docs/lua-5-2`; bytecode analysis in `src/re`).
 
 ---
 
@@ -97,98 +97,42 @@ All instructions are 32 bits wide with 6-bit opcode:
 
 ---
 
-## 3. Rust Integration (`crates/depot` & `aphrody-nie-lua`)
+## 3. Rust integration
 
-### 3.1 MLua with Lua 5.2 Vendored
-
-In `Cargo.toml`:
-
-```toml
-mlua = { version = "0.11", features = ["lua52", "vendored"] }
-```
-
-Creating a sandboxed runtime:
+`apps/rosegriffon/crates/aphrody-nie-lua/Cargo.toml` declares the VM behind an optional `vm` feature: `mlua = { version = "0.11", optional = true, features = ["lua52", "vendored"] }`. `aphrody-nie-wasm` decodes Lua 5.2 bytecode without the VM (`default-features = false` drops mlua). Read those manifests for the current versions.
 
 ```rust
 use mlua::Lua;
 
 pub fn create_lua52_vm() -> Result<Lua, mlua::Error> {
     let lua = Lua::new();
-    lua.load(r#"
-        local bit32 = require("bit32")
-        function hash(x) return bit32.bxor(x, 42) end
-    "#).exec()?;
+    lua.load("function hash(x) return bit32.bxor(x, 42) end").exec()?;
     Ok(lua)
 }
 ```
 
-### 3.2 Depot REA Bytecode Disassembler
+### 3.1 Bytecode disassembly
 
-Using `depot re <file.lua.bin>`:
-
-- Parses header, endianness, types.
-- Traverses prototype hierarchy.
-- Resolves constant pool and upvalues.
-- Outputs human-readable instruction listings with RK operand resolution.
+`ay re <file.lua.bin>` (`src/re`; `ay re --help` for the Lua 5.2 options): parses the header, walks the prototype tree, resolves the constant pool and upvalues, and prints instruction listings with RK operands resolved.
 
 ---
 
-## 4. Bun and Next.js Lua Plugins
-
-### 4.1 Bun Plugin (`bun-plugin-lua`)
-
-Enables importing `.lua` files directly in Bun applications:
-
-```ts
-import { plugin } from "bun";
-import { runLua52 } from "@rosegriffon/lua-plugin";
-
-plugin({
-  name: "bun-plugin-lua",
-  setup(build) {
-    build.onLoad({ filter: /\.lua$/ }, async (args) => {
-      const source = await Bun.file(args.path).text();
-      return {
-        contents: `export default ${JSON.stringify(source)};`,
-        loader: "js",
-      };
-    });
-  },
-});
-```
-
-### 4.2 Next.js Plugin (`withLua`)
-
-In `next.config.ts`:
-
-```ts
-import { withLua } from "@rosegriffon/lua-plugin";
-
-const nextConfig = withLua({
-  reactStrictMode: true,
-});
-
-export default nextConfig;
-```
-
----
-
-## 5. WezTerm Tuning for Lua Games & Terminal Applications
+## 4. WezTerm Tuning for Lua Games & Terminal Applications
 
 WezTerm (`.wezterm.lua`) is the premier GPU-accelerated terminal emulator configured via Lua. For low-latency terminal games and TUI development:
 
-### 5.1 Hardware & Rendering Directives
+### 4.1 Hardware & Rendering Directives
 
 ```lua
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder and wezterm.config_builder() or {}
 
--- WebGPU Backend on Discrete High-Performance GPU (NVIDIA RTX 4070 Ada Lovelace)
+-- WebGPU backend on the discrete high-performance GPU
 config.front_end = 'WebGpu'
 config.webgpu_power_preference = 'HighPerformance'
 config.prefer_egl = true
 
--- Refresh Rates: Bypass 60 FPS Cap for Fluid 144Hz Animation
+-- Refresh rate: set to the monitor (check with the OS display settings)
 config.max_fps = 144
 config.animation_fps = 120
 
@@ -202,7 +146,7 @@ config.custom_block_glyphs = true
 config.cursor_blink_rate = 0
 ```
 
-### 5.2 Input Latency & Raw Keyboard Protocols
+### 4.2 Input Latency & Raw Keyboard Protocols
 
 Terminal games require real-time input distinction (keydown vs keyup, WASD directions, chorded modifiers):
 
@@ -219,9 +163,9 @@ config.keys = {
 
 ---
 
-## 6. Lua Game IDE Best Practices & Tooling Stack
+## 5. Lua Game IDE Best Practices & Tooling Stack
 
-### 6.1 Static Typing with LuaCATS & LuaLS (`lua-language-server`)
+### 5.1 Static Typing with LuaCATS & LuaLS (`lua-language-server`)
 
 Dynamic Lua scripts in game engines require robust static typing without compilation overhead:
 
@@ -243,13 +187,13 @@ Dynamic Lua scripts in game engines require robust static typing without compila
 - **Engine Stubs & Meta Definitions**:
   Create `types/bevy.d.lua` marked with `---@meta` to declare game engine global namespaces and reflection types so LuaLS provides accurate autocomplete without declaring runtime logic.
 
-### 6.2 Linter, Formatter & Debugger Stack
+### 5.2 Linter, Formatter & Debugger Stack
 
 - **Formatter**: `StyLua` (Rust-based opinionated formatter).
 - **Linter**: `Selene` (Rust-based AST linter enforcing strict scoping rules and flagging accidental globals).
 - **Debugger**: VSCode / OpenCode / Neovim DAP with `local-lua-debugger-vscode` or `mobdebug`.
 
-### 6.3 State-Decoupled Hot Reload Architecture
+### 5.3 State-Decoupled Hot Reload Architecture
 
 When live-reloading Lua game scripts, avoid losing current world or player state:
 
@@ -258,9 +202,9 @@ When live-reloading Lua game scripts, avoid losing current world or player state
 
 ---
 
-## 7. Bevy Lua Engine Architecture (`bevy_mod_scripting` / `mlua`)
+## 6. Bevy Lua Engine Architecture (`bevy_mod_scripting` / `mlua`)
 
-### 7.1 Entity-Centric Script Component Pattern
+### 6.1 Entity-Centric Script Component Pattern
 
 Attach scripts directly to Bevy entities as components:
 
@@ -272,7 +216,7 @@ pub struct LuaScriptComponent {
 }
 ```
 
-### 7.2 Reflection Bridge (`bevy_reflect`)
+### 6.2 Reflection Bridge (`bevy_reflect`)
 
 Expose custom game components to Lua without manual FFI boilerplate:
 
@@ -288,7 +232,7 @@ pub struct Transform2D {
 app.register_type::<Transform2D>();
 ```
 
-### 7.3 Event-Driven Lifecycle Hooks
+### 6.3 Event-Driven Lifecycle Hooks
 
 Lua scripts react to engine callbacks:
 

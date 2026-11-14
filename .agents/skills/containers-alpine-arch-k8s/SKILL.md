@@ -18,9 +18,9 @@ Never use `debian`, `ubuntu`, `*-slim`, `*-bookworm`, `*-trixie`, `*-jammy`, or 
 
 ## Monorepo wiring
 
-- `Dockerfile` stages: `builder` (Alpine, compiles first-party CLIs as static musl binaries) -> `runtime` (Alpine) and `dev` (Arch). Building once on musl means the same binaries run in both.
-- `compose.yaml` services: `dev` (Arch shell), `verify` (`just verify-all` in Arch), `runtime` (Alpine). Repo bind-mounted at `/src`; `node_modules`, `target`, and caches live in named volumes so Linux outputs never mix with Windows ones.
-- Every version is a build arg with a default mirroring `src.lock.json` toolchains, overridable from the environment (`.env.example` section 0).
+- `infra/docker/Dockerfile`: Rust stages (`rust-base` -> `rust-build` -> `rust-runtime`, Alpine, static musl, cargo-chef), Bun stages (`bun-alpine` -> `bun-deps` -> `bun-build` -> `bun-runtime`), product targets (`loreserver`, `r3d`, `rust-stack`, `ai-os`, `api-gateway`), `runtime` (Alpine) and `dev` (Arch).
+- `infra/docker/compose.yaml` services include `dev` (Arch shell), `verify` (`just verify-all` in Arch), `runtime` (Alpine) and the deployable products. Repo bind-mounted at `/src`; `node_modules` and `target` live in named volumes so Linux outputs never mix with Windows ones. Recipes: `infra/docker/docker.just`.
+- Every version is an `ARG` at the top of the Dockerfile, overridable from the environment (`.env.example` section 0); read the current values there instead of copying them.
 - Recipes: `just docker-build`, `just docker-shell`, `just docker-runtime`, `just docker-run <recipe>`, `just nix-shell`, `just docs-sync`.
 
 ## Dockerfile checklist
@@ -30,7 +30,7 @@ Never use `debian`, `ubuntu`, `*-slim`, `*-bookworm`, `*-trixie`, `*-jammy`, or 
 3. `apk add --no-cache` (Alpine) / `pacman -Syu --noconfirm --needed ... && pacman -Scc --noconfirm` (Arch); sort package lists alphabetically.
 4. Non-root `USER` in runtime images; `ENTRYPOINT` exec form; no secrets in `ARG`/`ENV` (use `--mount=type=secret`).
 5. Pin: version tags at minimum, `@sha256:` digests for release images. Rebuild with `--pull` on a schedule.
-6. Keep `.dockerignore` excluding `.git`, `third_party/`, `target/`, `node_modules/`, `.env`.
+6. Keep `infra/docker/Dockerfile.dockerignore` excluding `.git`, `third_party/`, `target/`, `node_modules/`, `.env`.
 7. Multi-arch: `docker buildx build --platform linux/amd64,linux/arm64` (Alpine targets only; Arch is amd64 only).
 8. Lint with `hadolint Dockerfile`; check provenance/SBOM with `docker buildx build --provenance=true --sbom=true`.
 
@@ -44,9 +44,9 @@ Never use `debian`, `ubuntu`, `*-slim`, `*-bookworm`, `*-trixie`, `*-jammy`, or 
 6. Local clusters: `kind` (Docker Desktop also ships `kubectl` and a single-node cluster).
 7. Validate before apply: `kubectl apply --dry-run=server -f ...` and `kubectl diff -f ...`.
 
-## Local offline docs (`third_party/docs-ecosystem/`)
+## Local offline docs (clones in `third_party/`)
 
-Search these with Grep before going to the web; refresh with `just docs-sync`. Context7 remains the fallback for anything newer.
+Search these (paths relative to `third_party/`) with Grep before going to the web; refresh with `just docs-sync`. Context7 remains the fallback for anything newer.
 
 - Docker (`docker-docs/content/`): `manuals/build/building/best-practices.md`, `manuals/build/building/multi-stage.md`, `manuals/build/cache/optimize.md`, `manuals/build/building/multi-platform.md`, `manuals/build/metadata/attestations/`, `manuals/compose/how-tos/environment-variables/`, `reference/compose-file/`, `manuals/build/concepts/dockerfile.md` (the full Dockerfile reference is generated upstream; use Context7 for it).
 - Kubernetes (`kubernetes-website/content/en/docs/`): `concepts/configuration/manage-resources-containers.md`, `concepts/workloads/pods/probes.md`, `concepts/security/pod-security-standards.md`, `concepts/configuration/secret.md`, `tasks/manage-kubernetes-objects/kustomization.md`, `reference/kubectl/quick-reference.md`.

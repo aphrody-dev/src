@@ -5,34 +5,18 @@ description: Cloudflare Developer Platform reference covering Workers (workerd, 
 
 # Cloudflare Developer Platform Reference
 
-## Runtime & Tooling
+## Tooling
 
-- **Engine**: `workerd` (Open-Source JavaScript / Wasm Runtime).
-- **CLI**: `wrangler` (`bunx wrangler`).
-  - Dev server: `bunx wrangler dev`
-  - Deploy: `bunx wrangler deploy`
-  - Tail logs: `bunx wrangler tail`
-  - Types generation: `bunx wrangler types`
+- Default CLI: `cf` (`~/.bun/bin/cf.exe`). Find a command with `cf cli search "<task>"`, preview with `--dry-run` before executing. R2: `cf r2 buckets list`, `cf r2 objects list --bucket-name <b>` (skill `r2`).
+- Projects with a Wrangler config (`packages/deploy/wrangler.toml`) use `wrangler` (`~/.bun/bin/wrangler.exe`; install `bun add -g wrangler`; never `bunx wrangler`): `wrangler dev`, `wrangler deploy`, `wrangler tail`, `wrangler types`.
+- Engine: `workerd` (open-source JavaScript / Wasm runtime).
 
-## Core Storage & Database Primitives
+## Storage and database primitives
 
-- **Cloudflare D1 (Serverless SQLite)**:
-  - Local execute: `bunx wrangler d1 execute <DB_NAME> --local --file=./schema.sql`
-  - Remote execute: `bunx wrangler d1 execute <DB_NAME> --remote --command="SELECT * FROM users"`
-  - Migrations: `bunx wrangler d1 migrations apply <DB_NAME> --remote`
-- **Cloudflare R2 (S3-Compatible Object Storage)**:
-  - Bucket operations: `bunx wrangler r2 bucket create <BUCKET_NAME>`
-  - Binding in `wrangler.jsonc`:
-    ```jsonc
-    "r2_buckets": [
-      { "binding": "BUCKET", "bucket_name": "production-assets" }
-    ]
-    ```
-- **Workers KV & Queues**:
-  - KV: Ultra-low latency eventual consistency read-heavy key-value store.
-  - Queues: Guaranteed message delivery between background worker pipelines.
+- D1 (serverless SQLite): `wrangler d1 execute <DB_NAME> --local --file=./schema.sql`, `--remote --command="SELECT ..."`, `wrangler d1 migrations apply <DB_NAME> --remote`.
+- R2 (S3-compatible): `wrangler r2 bucket create <BUCKET_NAME>`; binding in `wrangler.jsonc`: `"r2_buckets": [{ "binding": "BUCKET", "bucket_name": "<bucket>" }]`. From Bun without the SDK: `Bun.S3Client` (see skill `bun`).
+- KV: read-heavy, eventually consistent key-value store. Queues: guaranteed delivery between worker pipelines.
 
-## MCP & Remote Documentation
+## MCP
 
-- Cloudflare Docs MCP Server: `https://docs.mcp.cloudflare.com/mcp`
-- Official Cloudflare MCP integration: `@cloudflare/mcp-server-cloudflare`
+Declared for Claude Code on the PC in `infra/agents/toolchain.toml`: `cloudflare` (`https://mcp.cloudflare.com/mcp`) and `cloudflare-docs` (`https://docs.mcp.cloudflare.com/mcp`).

@@ -1,137 +1,51 @@
 # Bun zero-dependency rules and native replacements (src)
 
-Absorbed from the former bun-native-zero-dep skill; legacy references (bun-plugins, frg, triad, turbo cache plugin) dropped because they no longer exist in the tree.
+## 1. Rules
 
-## 1. Core directives
+1. No `bunx` (or `npx`) in scripts, `package.json`, `justfile`, CI workflows, code comments or docs: it resolves and runs npm tarballs on demand. Use `bun fmt`, `bun check`, `bun lint`, `bun test`, `bun build --compile`, `bun run <script>` or `bun <script.ts>`, or an installed binary from `~/.local/bin` (`ay`, `ai-os`, `wck`).
+2. First-party packages declare `"dependencies": {}` and `"devDependencies": {}` whenever Bun APIs, Web Standards or `bun:ffi` cover the work (examples: `packages/wck/package.json`, `packages/ai-os/package.json`). `workspace:*` links between `@aphrody/*` packages are the only dependencies. No `@types/node`, `typescript`, prettier, biome, turbo, changesets, `postgres`, `better-sqlite3`, AWS SDK, `sharp`, `undici`, `axios`, `pino`, `glob`, `semver`, `chalk`.
+3. Never touch `C:\Windows\System32`; install built executables in `~/.local/bin`. Never print, log or commit `.env` secrets. No emoji.
 
-1. **Zero `bunx` Everywhere**:
-   - NEVER invoke `bunx` in scripts, `package.json`, `justfile`, CI workflows, code comments, or documentation.
-   - `bunx` resolves, downloads, and executes arbitrary npm tarballs on demand, violating deterministic supply-chain integrity, offline reproducibility, and sub-millisecond startup.
-   - Replace every `bunx <tool>` invocation with:
-     - Native Bun v1.4.4 subcommands: `bun fmt`, `bun check`, `bun test`, `bun build --compile --bytecode`.
-     - Workspace binary scripts: `bun run <bin>` or `bun <script.ts>`.
-     - Pre-compiled userland AOT binaries in `C:\Users\aphro\.local\bin` (`ay`, `wck`, `ai-os`).
+## 2. `bun check` without npm type packages
 
-2. **Zero Unnecessary `dependencies` and `devDependencies`**:
-   - First-party Bun v1.4.4 packages and services MUST declare `"dependencies": {}, "devDependencies": {}` whenever native Bun APIs, Web Standards, or C-ABI `bun:ffi` bridges cover the workload.
-   - Packages do NOT need `@types/bun`, `@types/node`, `typescript`, `prettier`, `biome`, `turbo`, `@changesets/cli`, `postgres`, `better-sqlite3`, `aws4fetch`, `@aws-sdk/client-s3`, `sharp` (for metadata/resize/transcode/ThumbHash), `undici`, `axios`, `pino`, `glob`, `semver`, `chalk`, or `@paralleldrive/cuid2`.
+`bun check` ships its own `lib.*.d.ts` (`ESNext`, `DOM`, `DOM.Iterable`). The shared ambient header is `packages/core/bun-native.d.ts`; include it from a package tsconfig (`"include": [..., "../core/bun-native.d.ts"]`, see `packages/chromium-bun/tsconfig.json`) or reference it with a triple-slash path. Several packages also set `"types": ["bun"]` (`packages/core/tsconfig.json`, `packages/wck/tsconfig.json`). Copy the closest package's `package.json` and `tsconfig.json` instead of writing new ones.
 
-3. **Sacred Host Userspace & Zero Emojis**:
-   - Never touch `C:\Windows\System32`. Install compiled `.exe` and `.dll` artifacts only in `C:\Users\aphro\.local\bin`.
-   - Never print, log, or commit raw secrets from `.env`.
-   - Zero emojis in code, JSON, Markdown, or commit messages.
+## 3. Replacement table
 
----
+Local docs live in `third_party/bun/docs/`; search them with `ay docs bun <words>`.
 
-## 2. Passing `bun check` With `"dependencies": {}, "devDependencies": {}`
+| Legacy dependency | Bun replacement | Doc |
+| --- | --- | --- |
+| `bunx <pkg>` / `npx <pkg>` | `bun <cmd>`, `bun run <bin>`, binary in `~/.local/bin` | |
+| `@types/bun`, `@types/node`, `typescript` | `bun check` + `packages/core/bun-native.d.ts` | `runtime/check.mdx` |
+| prettier, biome | `bun fmt` / `bun fmt --check` | `format/index.mdx` |
+| eslint, oxlint | `bun lint` (canary) | `bun lint --help` |
+| `postgres`, `pg`, `mysql2` | `Bun.SQL` (`import { sql, SQL } from "bun"`) | `runtime/sql.mdx` |
+| `better-sqlite3`, `sql.js` | `bun:sqlite` | `runtime/sqlite.mdx` |
+| `aws4fetch`, AWS S3 SDK | `Bun.S3Client` / `Bun.s3` (`presign`, multipart `writer()`) | `runtime/s3.mdx` |
+| `sharp`, `image-size`, `thumbhash` | `Bun.Image` / `Bun.file(p).image()` | `runtime/image.mdx` |
+| `tar`, `archiver`, `fflate` | `Bun.Archive`, `Bun.gzipSync`, `Bun.deflateSync`, `Bun.zstdCompressSync` | `runtime/archive.mdx` |
+| `express`, `fastify`, `hono`, `ws` | `Bun.serve({ routes, websocket })`, HTML imports, `HTMLRewriter` | `bundler/fullstack.mdx` |
+| `undici`, `node-fetch`, `axios` | global `fetch` | |
+| `uuid`, `nanoid`, `ulid`, `cuid2` | `Bun.randomUUIDv7()`, `crypto.randomUUID()` | `runtime/utils.mdx` |
+| `bcrypt`, `argon2`, `xxhash-wasm` | `Bun.password`, `Bun.CryptoHasher`, `Bun.hash.*` | `runtime/hashing.mdx` |
+| `glob`, `fast-glob`, `minimatch` | `new Bun.Glob(pattern)` | `runtime/glob.mdx` |
+| `chalk`, `kleur`, `picocolors` | `Bun.color(c, "ansi")` | `runtime/color.mdx` |
+| `yaml`, `js-yaml`, `@iarna/toml`, `json5` | `Bun.YAML`, `Bun.TOML`, `Bun.JSON5`, `Bun.JSONL` | |
+| `esbuild`, `swc`, `tsup`, `pkg` | `Bun.Transpiler`, `Bun.build()`, `bun build --compile --bytecode` | `runtime/transpiler.mdx`, `compiler/bytecode.mdx` |
+| `ffi-napi`, `koffi`, node-gyp addons | `bun:ffi` (`dlopen`, `FFIType`, `CString`, `ptr`) | `runtime/ffi.mdx`; first-party bridge: `packages/ffi-bridge`, `packages/core/src/ffi.ts` |
 
-Bun v1.4.4 ships a native multi-core Rust port of TypeScript 7 (`bun check`) with built-in standard library definitions (`ESNext`, `DOM`, `DOM.Iterable`, `WebWorker`).
-
-### Critical Rule: Omit `"types": ["bun"]` in `tsconfig.json`
-
-In TypeScript 7 (`bun check`), omitting `"types"` defaults to `types: []` (no automatic `node_modules/@types/*` lookup). Setting `"types": ["bun"]` forces the checker to search `node_modules/@types/bun` and fails with `TS2688` when `devDependencies` is `{}`.
-
-Instead, include the shared ambient header `packages/core/bun-native.d.ts` (or a local `src/bun-env.d.ts` triple-slash reference).
-
-### Canonical Zero-Dependency `package.json`
-
-```json
-{
-  "name": "@aphrody/example-pkg",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "main": "src/index.ts",
-  "scripts": {
-    "start": "bun run src/index.ts",
-    "test": "bun test",
-    "check": "bun check",
-    "fmt": "bun fmt",
-    "fmt:check": "bun fmt --check",
-    "compile": "bun build --compile --minify --bytecode src/index.ts --outfile C:/Users/aphro/.local/bin/example-pkg.exe"
-  },
-  "dependencies": {},
-  "devDependencies": {}
-}
-```
-
-### Canonical Zero-Dependency `tsconfig.json`
-
-```json
-{
-  "compilerOptions": {
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true
-  },
-  "include": ["src/**/*.ts", "test/**/*.ts", "../core/bun-native.d.ts"],
-  "exclude": ["dist", "node_modules"]
-}
-```
-
-### Standalone Minimal `bun-ambient.d.ts` Pattern (For Isolated Apps)
-
-If an app lives outside `packages/*` and prefers a self-contained header (like `apps/aphrody/src/globals.d.ts` or `packages/wck/src/globals.d.ts`), either reference `../../packages/core/bun-native.d.ts` or declare only the surface used:
+## 4. Idioms
 
 ```ts
-/// <reference path="../../packages/core/bun-native.d.ts" />
-```
-
----
-
-## 3. Complete Native Bun v1.4.4 Replacement Table
-
-| Legacy / Fragile Dependency                                        | Native Bun v1.4.4 Replacement                                                                                 | Local Docs & First-Party Reference                                                   |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `bunx <pkg>` / `npx <pkg>`                                         | `bun <cmd>`, `bun run <bin>`, or AOT binary in `~/.local/bin`                                                 | Zero external on-demand tarball execution                                            |
-| `@types/bun`, `@aphrody/bun-types`, `@types/node`, `typescript`    | `bun check` (built-in TS7 `lib.*.d.ts`) + `bun-native.d.ts`                                                   | `third_party/bun/docs/runtime/check.mdx`, `packages/core/bun-native.d.ts`     |
-| `prettier`, `@biomejs/biome` (formatting)                          | `bun fmt` / `bun fmt --check` (`sortImports`, `sortTailwindcss`, `sortPackageJson`)                           | `third_party/bun/docs/format/index.mdx`                                              |
-| `postgres`, `pg`, `mysql2`, `@aphrody/sql`                         | `Bun.SQL` (`import { sql, SQL } from "bun"`)                                                                  | `third_party/bun/docs/runtime/sql.mdx`                                               |
-| `better-sqlite3`, `sql.js`, `sqlite3`                              | `bun:sqlite` (`import { Database } from "bun:sqlite"`)                                                        | `third_party/bun/docs/runtime/sqlite.mdx`                                            |
-| `aws4fetch`, `@aws-sdk/client-s3`, `@aws-sdk/s3-request-presigner` | `Bun.S3Client` / `Bun.s3` (`s3.file()`, `s3.presign()`, multipart `writer()`)                                 | `third_party/bun/docs/runtime/s3.mdx`                                                |
-| `sharp`, `image-size`, `thumbhash`                                 | `Bun.Image` / `Bun.file(p).image()` (`metadata()`, `resize()`, `webp()`, `avif()`, `placeholder()`)           | `third_party/bun/docs/runtime/image.mdx`                                             |
-| `tar`, `archiver`, `decompress`, `fflate`, `fzstd`                 | `Bun.Archive`, `Bun.gzipSync`, `Bun.deflateSync`, `Bun.zstdCompressSync`, `CompressionStream("br" \| "zstd")` | `third_party/bun/docs/runtime/archive.mdx`, `packages/bun-parity`                    |
-| `express`, `fastify`, `hono`, `ws`, `@aphrody/http`                | `Bun.serve({ routes, websocket, development })` + HTML imports + `HTMLRewriter`                               | `third_party/bun/docs/bundler/fullstack.mdx`                                         |
-| `undici`, `undici-types`, `node-fetch`, `axios`                    | Global `fetch` (BoringSSL TLS 1.3, `Bun.dns.prefetch`, `AbortSignal.timeout`, Unix sockets)                   | Web Standards `fetch`                                                                |
-| `@paralleldrive/cuid2`, `uuid`, `nanoid`, `ulid`                   | `Bun.randomUUIDv7()` / `Bun.randomUUIDv7("base64url")` / `crypto.randomUUID()`                                | `third_party/bun/docs/runtime/utils.mdx`                                             |
-| `bcrypt`, `argon2`, `xxhash-wasm`                                  | `Bun.password` (`argon2id`/`bcrypt`), `Bun.CryptoHasher`, `Bun.hash.xxHash3` / `wyhash` / `rapidhash`         | `third_party/bun/docs/runtime/hashing.mdx`                                           |
-| `glob`, `fast-glob`, `globby`, `minimatch`, `@aphrody/paths`       | `new Bun.Glob(pattern)` + `import.meta.dir` + `node:path`                                                     | `third_party/bun/docs/runtime/glob.mdx`                                              |
-| `chalk`, `kleur`, `colorette`, `picocolors`, `pino-pretty`         | `Bun.color(c, "ansi")` + structured JSONL stdout + `Bun.JSONL`                                                | `third_party/bun/docs/runtime/color.mdx`                                             |
-| `yaml`, `js-yaml`, `@iarna/toml`, `json5`                          | `Bun.YAML`, `Bun.TOML`, `Bun.JSON5`, `Bun.JSONL`                                                              | Built-in zero-dependency parsers                                                     |
-| `esbuild`, `swc`, `tsup`, `pkg`                                    | `new Bun.Transpiler()`, `Bun.build()`, `bun build --compile --bytecode`                                       | `third_party/bun/docs/runtime/transpiler.mdx`, `compiler/bytecode.mdx`               |
-| `ffi-napi`, `koffi`, `node-gyp` addons                             | `bun:ffi` (`dlopen`, `FFIType`, `CString`, `ptr`, `toArrayBuffer`)                                            | `third_party/bun/docs/runtime/ffi.mdx`, `packages/ffi-bridge` (`src/dx12-hal.ts`)    |
-
----
-
-## 4. Native Bun v1.4.4 Code Idioms
-
-### 4.1 Unified SQL (`Bun.SQL` & `bun:sqlite`)
-
-```ts
-import { SQL } from "bun";
+import { SQL, S3Client } from "bun";
 import { Database } from "bun:sqlite";
 
-// Pooled binary-protocol Postgres / MySQL / SQLite driver
-const pg = new SQL({ url: Bun.env.DATABASE_URL, max: 20, idleTimeout: 30 });
+const pg = new SQL({ url: Bun.env.DATABASE_URL, max: 20 });
 const rows = await pg`SELECT id, slug FROM episodes WHERE season = ${1}`;
-await pg.begin(async (tx) => {
-  await tx`INSERT INTO audit_logs ${tx({ id: Bun.randomUUIDv7(), action: "sync" })}`;
-});
 
-// Embedded synchronous WAL SQLite
-using localDb = new Database("cache.sqlite", { create: true, strict: true });
-localDb.exec("PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL;");
-```
-
-### 4.2 Zero-Dependency Cloudflare R2 / S3 (`Bun.S3Client`)
-
-```ts
-import { S3Client } from "bun";
+using local = new Database("cache.sqlite", { create: true, strict: true });
+local.exec("PRAGMA journal_mode = WAL");
 
 const r2 = new S3Client({
   accessKeyId: Bun.env.R2_ACCESS_KEY_ID,
@@ -139,76 +53,30 @@ const r2 = new S3Client({
   bucket: "media-cdn",
   endpoint: `https://${Bun.env.CF_ACCOUNT_ID}.r2.cloudflarestorage.com`,
 });
+const url = r2.presign("videos/ep01.mp4", { expiresIn: 3600 }); // local SigV4, no network
 
-// Synchronous SigV4 presigning (zero network round-trip, replaces aws4fetch)
-const signedGetUrl = r2.presign("videos/ep01.mp4", {
-  expiresIn: 3600,
-  method: "GET",
-});
-
-// Direct upload or streaming multipart sink
-await r2.write("manifests/index.json", JSON.stringify({ ok: true }), {
-  type: "application/json",
-});
-```
-
-### 4.3 Zero-Dependency SIMD Image Pipeline (`Bun.Image`)
-
-```ts
-// Header-only metadata read without pixel decoding (replaces sharp/image-size)
 const img = Bun.file("hero.png").image();
-const { width, height, format } = await img.metadata();
-
-// SIMD Lanczos3 resize + WebP encode + ThumbHash LQIP placeholder
-const placeholderDataUrl = await img.placeholder();
-await img
-  .resize(1280, 720, { fit: "inside", withoutEnlargement: true })
-  .webp({ quality: 82 })
-  .write("hero.webp");
+await img.resize(1280, 720, { fit: "inside" }).webp({ quality: 82 }).write("hero.webp");
 ```
 
-### 4.4 Fullstack `Bun.serve` Routes + AOT Bytecode Compilation
+Fullstack server with an HTML import, compiled to one executable:
 
 ```ts
 import homepage from "./index.html";
-
-Bun.serve({
-  port: 3000,
-  routes: {
-    "/": homepage,
-    "/api/health": Response.json({ status: "ok", bun: Bun.version }),
-    "/api/items/:id": {
-      GET: (req) =>
-        Response.json({
-          id: req.params.id,
-          traceId: Bun.randomUUIDv7("base64url"),
-        }),
-    },
-  },
-});
+Bun.serve({ routes: { "/": homepage, "/api/items/:id": { GET: (req) => Response.json({ id: req.params.id }) } } });
 ```
 
-Compile into a standalone single-file native executable with pre-compiled JSC bytecode:
-
-```powershell
-bun build --compile --minify --bytecode --sourcemap ./src/server.ts --outfile C:/Users/aphro/.local/bin/my-service.exe
+```sh
+bun build --compile --minify --bytecode ./src/server.ts --outfile ~/.local/bin/my-service
 ```
 
----
+Check method names against the docs above before relying on them (`ay docs bun <name>`).
 
-## 5. Verification Checklist Before Completing Any Task
+## 5. Verification
 
-1. **Zero `bunx` Audit**:
-   ```powershell
-   rg -n "\bbunx\b" package.json justfile packages apps/rosegriffon -g "!**/submodules/**" -g "!**/node_modules/**"
-   ```
-   Confirm zero command invocations exist.
-2. **Manifest Purity**:
-   Verify `package.json` contains `"dependencies": {}, "devDependencies": {}` (unless a justified frontend framework or peer protocol library is strictly required by an app).
-3. **Native Toolchain Gate**:
-   ```powershell
-   bun fmt --check
-   bun check
-   bun test
-   ```
-   All three commands must exit `0`.
+```sh
+rg -n "\bbunx\b" package.json justfile packages -g "!**/node_modules/**"   # expect no command invocation
+bun fmt --check
+bun check
+bun test packages/<name>      # never bare `bun test` at the root
+```

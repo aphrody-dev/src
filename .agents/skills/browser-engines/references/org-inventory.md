@@ -1,6 +1,6 @@
 # Web and browser ecosystem (GitHub inventory, 2026-11-12)
 
-Source: `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08-14&sort=stars` (max 30/org), run on 2026-11-12. Columns: repository, stars, last push, language, description (truncated). Associated skill: [plugins/labs/skills/browser-engines](../SKILL.md). Engine measurements: [bench/REPORT.md](../../../../../docs/bench/REPORT.md).
+Source: `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08-14&sort=stars` (max 30/org), run on 2026-11-12. Columns: repository, stars, last push, language, description (truncated). Associated skill: [browser-engines](../SKILL.md). Engine measurements: [docs/native/bench/REPORT.md](../../../../docs/native/bench/REPORT.md).
 
 ## [GoogleChrome](https://github.com/GoogleChrome)
 
@@ -159,28 +159,6 @@ Source: `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08-
 | [ci-runners](https://github.com/servo/ci-runners)                         | 15    | 2026-11-11 | Rust       | GitHub Actions runners                                                 |
 | [internal-wpt-dashboard](https://github.com/servo/internal-wpt-dashboard) | 10    | 2026-11-12 | JavaScript | A simple wpt.fyi like dashboard to track progress of WPT scores for Se |
 | [perf-analysis-tools](https://github.com/servo/perf-analysis-tools)       | 3     | 2026-10-11 | Rust       |                                                                        |
-
-## [lightpanda-io](https://github.com/lightpanda-io)
-
-| repository                                                                | ★     | push       | lang       | description                                                            |
-| ------------------------------------------------------------------------- | ----- | ---------- | ---------- | ---------------------------------------------------------------------- |
-| [browser](https://github.com/lightpanda-io/browser)                       | 41946 | 2026-11-12 | Zig        | Lightpanda: the headless browser designed for AI and automation        |
-| [agent-skill](https://github.com/lightpanda-io/agent-skill)               | 118   | 2026-11-05 | Shell      | Lightpanda browser skill for agents                                    |
-| [awesome-lightpanda](https://github.com/lightpanda-io/awesome-lightpanda) | 83    | 2026-11-10 | null       | A curated list of cool things people are building with Lightpanda      |
-| [demo](https://github.com/lightpanda-io/demo)                             | 64    | 2026-11-12 | HTML       | Lightpanda browser demo                                                |
-| [zig-v8-fork](https://github.com/lightpanda-io/zig-v8-fork)               | 41    | 2026-11-10 | C++        |                                                                        |
-| [zenai](https://github.com/lightpanda-io/zenai)                           | 14    | 2026-11-12 | Zig        | Zig client for AI APIs                                                 |
-| [browser-docker](https://github.com/lightpanda-io/browser-docker)         | 14    | 2026-10-15 | Dockerfile | Official Docker image for Lightpanda browser                           |
-| [docs](https://github.com/lightpanda-io/docs)                             | 10    | 2026-11-12 | MDX        | Lightpanda Documentation                                               |
-| [homebrew-browser](https://github.com/lightpanda-io/homebrew-browser)     | 7     | 2026-11-12 | Shell      | Homebrew tap for Lightpanda, a headless browser for AI agents and auto |
-| [lightpanda-python](https://github.com/lightpanda-io/lightpanda-python)   | 7     | 2026-11-05 | Python     | Lightpanda for Python: scrape and automate the web with pip install li |
-| [node-packages](https://github.com/lightpanda-io/node-packages)           | 6     | 2026-10-22 | TypeScript |                                                                        |
-| [wpt](https://github.com/lightpanda-io/wpt)                               | 4     | 2026-09-22 | HTML       | web platform tests cases                                               |
-| [cdpproxy](https://github.com/lightpanda-io/cdpproxy)                     | 4     | 2026-09-25 | Go         | cdpproxy is a websocket proxy to logs all messages on cdp connections. |
-| [perf-fmt](https://github.com/lightpanda-io/perf-fmt)                     | 3     | 2026-11-12 | Go         | Transform, format and save perf results                                |
-| [pkg](https://github.com/lightpanda-io/pkg)                               | 3     | 2026-09-29 | Shell      | Lightpanda install packages                                            |
-| [agent-benchmarks](https://github.com/lightpanda-io/agent-benchmarks)     | 2     | 2026-11-12 | Python     |                                                                        |
-| [version-fmt](https://github.com/lightpanda-io/version-fmt)               | 0     | 2026-09-09 | Go         |                                                                        |
 
 ## [h4ckf0r0day](https://github.com/h4ckf0r0day)
 

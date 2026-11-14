@@ -1,11 +1,11 @@
 # Rust compiler and pinned toolchain
 
 Fork: `aphrody-labs/rust` (parent: `rust-lang/rust`, default branch: `main`, registered in `third_party/forks.txt`).
-Latest upstream release: `1.100.0` (2026-11-12).
+Latest upstream release: check `gh api repos/rust-lang/rust/releases/latest` (pipe to `jaq -r .tag_name`).
 
-## Pinned Toolchain in `C:\src`
+## Pinned toolchain
 
-Defined in `C:\src\rust-toolchain.toml`:
+Defined in `rust-toolchain.toml` at the repo root:
 
 ```toml
 [toolchain]
@@ -14,7 +14,7 @@ components = ["rustfmt", "clippy", "rust-src"]
 profile = "minimal"
 ```
 
-- `chromium-157` links `rustc 1.100.0-nightly (1edd55dcf 2026-09-09)` against LLVM 24.0.0, matching Chromium's `clang` and `lld` (`third_party/toolchain-157.toml`).
+- `chromium-157` is the rustc Chromium 157 builds on its own LLVM, matching Chromium's `clang` and `lld` (`third_party/toolchain-157.toml`; confirm with `rustc -vV`).
 - Installed and linked via `bun scripts/toolchain.ts install`.
 
 ## Cross-Language Linker-Plugin LTO
@@ -38,5 +38,5 @@ Note on `-C lto`: omitting `-C lto` performs thin local LTO on the local crate u
 
 ## Windows Native Stack
 
-- Use `windows` (`0.62.2` on crates.io) and `windows-bindgen` for Win32/NT APIs.
+- Use `windows` and `windows-bindgen` (versions in the root `Cargo.toml` `[workspace.dependencies]`) for Win32/NT APIs.
 - If `just install-ay` fails with `rustc` exit `0xfffffffe` under `sccache`, retry with `RUSTC_WRAPPER=""`.

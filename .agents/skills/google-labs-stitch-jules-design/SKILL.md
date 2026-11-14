@@ -6,7 +6,7 @@ description: Google Labs in src (google-labs-code forks absorbed): Stitch UI gen
 # Google Labs (Stitch, DESIGN.md, Jules, Stax) in src
 
 The nine `google-labs-code` repositories are forked in `aphrody-labs` (`third_party/forks.txt`), checked out in
-`third_party/<name>` and followed by `ay upstream sync google-labs` (`infra/upstream/stacks.d/google-labs.toml`).
+`third_party/<name>` (pins in `src.lock.json`) and followed by `ay upstream sync google-labs` (`infra/upstream/stacks.d/google-labs.toml`).
 Their code runs from src, bun-native, with no copy elsewhere.
 
 ## Surfaces
@@ -15,7 +15,7 @@ Their code runs from src, bun-native, with no copy elsewhere.
 | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Stitch from an agent                                                  | relay MCP tools `stitch__<tool>` (`mcp__relay__stitch__generate_screen_from_text`, `get_screen`, `upload_design_md`, ...), gcloud OAuth, no API key                                                                              |
 | Stitch from a script                                                  | `ay design stitch projects\|create\|generate\|screens\|html\|upload\|download\|design-md\|tools\|call`, or `import { Stitch, StitchToolClient } from "@aphrody/ai-os/stitch"`                                                    |
-| DESIGN.md                                                             | `ay design lint [file]`, `ay design export --format css-vars\|dtcg\|css-tailwind\|json-tailwind`, `ay design spec`; library `@aphrody/google-design/design-md`. The design system of the monorepo is `packages/design/DESIGN.md` |
+| DESIGN.md                                                             | `ay design lint [file]`, `ay design export --format css-vars\|dtcg\|css-tailwind\|json-tailwind`, `ay design spec`; library `aphrody-ui::design_md` (`src/ui/kit`). The design system of the monorepo is `packages/design/DESIGN.md` |
 | DESIGN.md to Stitch                                                   | `ay design push <projectId> [file]`                                                                                                                                                                                              |
 | Jules (cloud agent on GitHub, ends with a PR)                         | `ay jules run "<task>" [--repo o/r] [--wait]`, `ay jules sessions`, relay tools `jules_run` / `jules_status` / `jules_sessions`, orchestrator step `models: ["jules:aphrody-labs/src"]`, CI `.github/workflows/jules.yml`        |
 | Stax (AI evaluation platform: Spring Boot, Next.js, Terraform on GCP) | reference only, `third_party/stax`                                                                                                                                                                                               |
@@ -29,4 +29,4 @@ Their code runs from src, bun-native, with no copy elsewhere.
 - Stitch utilities: `stitch-design-md`, `stitch-enhance-prompt`, `stitch-site-md`, `stitch-loop`, `stitch-taste-design`
 - Jules: `jules-automate-github-issues`, `jules-local-action-verification`
 
-Community index of Jules prompts: `third_party/jules-awesome-list/README.md` (no license upstream: read, do not copy).
+Community index of Jules prompts: `third_party/jules-awesome-list/README.md`.

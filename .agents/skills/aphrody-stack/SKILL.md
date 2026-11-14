@@ -1,8 +1,8 @@
 ---
 name: aphrody-stack
-description: Pointer to Aphrody's Rust stack roadmap (docs/STACK-ROADMAP.md, NOT VERIFIED). Use for "roadmap stack", "classement moteurs/compilateurs" (engine/compiler ranking), "réorganisation labs" (labs reorganization), Dioxus, longbridge, blitz.
+description: Pointer to Aphrody's stack roadmaps. Use for "roadmap stack", "classement moteurs/compilateurs" (engine/compiler ranking), Dioxus, longbridge, blitz.
 ---
 
 # aphrody-stack
 
-**Not verified.** Read `C:\labs\docs\STACK-ROADMAP.md`. Its header states that most of it comes from model memory. Authoritative in its place: `docs/native/bench/REPORT.md`, `third_party/chrome-channels.toml`, `docs/ENGINE-DECISION.md` ("Décision mesurée"). Verify any version (gh api, clones `C:\src\third_party`) before citing it.
+The standalone stack roadmap and the engine decision paper no longer exist. Authoritative sources: `docs/native/ROADMAP.md` (native core, LLVM, Wasm), `docs/games/PLAN.md` (engine and creative suite), `docs/native/bench/REPORT.md` (engine measurements), `third_party/chrome-channels.toml` and `third_party/toolchain-157.toml` (Chromium and toolchain pins). Verify any version (gh api, clones in `third_party/`) before citing it.

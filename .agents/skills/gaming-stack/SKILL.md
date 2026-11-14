@@ -1,23 +1,23 @@
 ---
 name: gaming-stack
-description: This skill should be used when the user asks about "the gaming stack of src", "ay gaming", "which Proton, Wine, DXVK or vkd3d-proton source do we use", "Vulkan layers or ICDs on this host", "DirectX 12 / Agility SDK of a game", "install Proton or steamcmd headless on prd or fr1", "run a Windows exe with Proton outside Steam", "Bazzite, SteamOS or CachyOS images", or "what may be forked or redistributed under which license". For Steam client layout, steam-client-windows and steam-local-inspect apply; for Proton troubleshooting, steam-linux-proton.
+description: This skill should be used when the user asks about "the gaming stack of src", "ay gaming", "which Proton, Wine, DXVK or vkd3d-proton source do we use", "Vulkan layers or ICDs on this host", "DirectX 12 / Agility SDK of a game", "install Proton or steamcmd headless on prd or fr1", "run a Windows exe with Proton outside Steam", or "Bazzite, SteamOS or CachyOS images". For Steam client layout, steam-client-windows and steam-local-inspect apply; for Proton troubleshooting, steam-linux-proton.
 argument-hint: "[status|proton|layers|dx|forks|steamcmd|run] [appid|exe]"
 allowed-tools: Bash, Read
 ---
 
 # Gaming stack of the monorepo
 
-One owner per function (map: `docs/gaming/OWNERSHIP.md` in aphrody-labs/src):
+One owner per function (map: `docs/gaming/OWNERSHIP.md`):
 
-- Rust, low level: `src/steam` (VDF text and binary, appinfo.vdf, ACF, libraryfolders,
+- Rust, low level: `src/steam` (package `steam-depot`; VDF text and binary, appinfo.vdf, ACF, libraryfolders,
   compat tools, Proton launch env, depot client). CLI: `ay steam <root|libraries|apps|vdf|compat|host|env>`, JSON.
 - Bun: `packages/gaming` (`@aphrody/gaming`): SteamID, links, path map, Vulkan, DirectX, steamcmd,
   Proton runner. CLI: `ay gaming`. The `steam` plugin MCP imports it.
 - Sources (`third_party/<name>`, forks in aphrody-labs, pins in `src.lock.json`): Proton, wine,
   dxvk, vkd3d-proton, gamescope, mesa, Vulkan-Headers, Vulkan-Loader, Vulkan-ValidationLayers,
   Vulkan-Tools, SPIRV-*, DirectX-Headers, DirectXShaderCompiler, bazzite, steamos-manager,
-  steam-runtime-tools, steam-devices, GameNetworkingSockets, umu-launcher, MangoHud, gamemode,
-  steamroom. One Wine, one Proton, one DXVK: variants are remotes and fork branches
+  steam-runtime-tools, steam-devices, GameNetworkingSockets, umu-launcher, MangoHud, gamemode.
+  One Wine, one Proton, one DXVK: variants are remotes and fork branches
   (`ay gaming forks` lists them).
 - Image infra: `infra/gaming/` (downloads manifest of the proprietary pieces, image sources).
 
@@ -36,16 +36,15 @@ One owner per function (map: `docs/gaming/OWNERSHIP.md` in aphrody-labs/src):
    - `ay gaming run <exe> --prefix /srv/pfx/<app> --tool-path /srv/steam/proton-exp [--app <id>] [-- args]`:
      umu-run when installed, else `<proton>/proton waitforexitandrun` with `ay steam env`; `--dry-run`.
      On Windows `ay gaming run` starts the exe natively.
-6. Upstream updates of the forks: `ay upstream status` (stacks in `infra/upstream/stacks.toml`, daily timer).
+6. Upstream updates of the forks: `ay upstream status` (stacks in `infra/upstream/stacks.toml`).
 
 ## Rules
 
-- Proprietary pieces are never committed or redistributed: Steam client, steamcmd, Steam Runtime
-  images, Proton binaries from Steam, Steamworks SDK. Only wrappers, the official download manifest,
-  docs and skills live in the repo.
+- Valve binaries (Steam client, steamcmd, Steam Runtime images, Proton from Steam, Steamworks SDK) are
+  downloaded at run time from the official source, never committed. The repo holds wrappers, the
+  download manifest, docs and skills.
 - Credential files (`config.vdf`, `loginusers.vdf`, `local.vdf`, `ssfn*`) are refused by `ay steam vdf`.
-- Never build on the workstation: CI, or fr1 with `nice -n 19`; on prd take the heavy lock and keep
-  the load under nproc/2.
+- Never build on the workstation or on prd: CI, or fr1 with `nice -n 19` (`infra/agents/fleet.toml`: heavy roles run on fr1 only).
 
 ## Sources
 

@@ -5,8 +5,7 @@ description: "Manage Hostinger resources (VPS list/start/stop/restart, snapshots
 
 # Hostinger API
 
-Endpoints below were checked against `third_party/hostinger-api/openapi.json`
-(pinned in `src.lock.json`). Re-check there before using a new route.
+Endpoints below were checked against the Hostinger OpenAPI spec (no local copy in the repository). Re-check the spec before using a new route.
 
 ## Credentials
 
@@ -14,16 +13,11 @@ Endpoints below were checked against `third_party/hostinger-api/openapi.json`
   `/etc/aphrody/hostinger.env` on vps/cdn/prd, GitHub Actions secret, gcloud
   Secret Manager `hostinger-api-token`, Cloudflare Secrets Store
   `default-secrets-store`.
-- Never put the value on a command line. Pass it through a header file or env.
+- Never put the value on a command line (no `curl -H`, no `xh -a`): call the API from Bun code (below), which reads it from the environment.
 
 ## Calling the API
 
 Base URL `https://developers.hostinger.com`, header `Authorization: Bearer $HOSTINGER_API_TOKEN`.
-
-```sh
-printf 'Authorization: Bearer %s' "$HOSTINGER_API_TOKEN" > /tmp/hst.hdr
-curl -s -H @/tmp/hst.hdr https://developers.hostinger.com/api/vps/v1/virtual-machines
-```
 
 ```ts
 const res = await fetch(
@@ -88,8 +82,6 @@ Our public zones are on Cloudflare; Hostinger DNS only matters for domains still
 
 ## Tooling
 
-- MCP (token): user-scope server `hostinger-api` (`bun x --bun @hostinger/mcp`, env
-  `HOSTINGER_API_TOKEN=${HOSTINGER_API_TOKEN}`). Source: `third_party/hostinger-api-mcp-server`.
-- MCP (OAuth): plugin `hostinger@claude-plugins-official` (remote `https://mcp.hostinger.com`).
-- CLI: `third_party/hostinger-api-cli` (Go, `go build` gives `hostinger`).
-- SDK: `third_party/hostinger-api-typescript-sdk`. Upstream skills: `third_party/hostinger-hostinger-agent-skills`.
+- MCP: the token server `hostinger-api` is declared `state = "absent"` in `infra/agents/toolchain.toml` (not installed); upstream is `hostinger/api-mcp-server` on GitHub. Skill `cli-hostinger-api-mcp` covers it.
+- CLI: `hostinger/api-cli` on GitHub (Go; `go build` gives `hostinger`); not installed on the PC.
+- SDK: `hostinger/api-typescript-sdk`. Upstream skills: `hostinger/hostinger-agent-skills`.

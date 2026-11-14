@@ -1,11 +1,11 @@
 ---
 name: material-3
-description: Material Design 3 rules (including M3 Expressive) normalized for the C:\src monorepo. Use for any M3 decision on color, type, shape, elevation, state, motion, adaptive layout, accessibility or component (buttons, FAB, bars, navigation, fields, sheets, dialogs, menus, chips, lists, sliders, tabs, etc.), or to check that a UI follows M3. Also holds the general design.google principles (inclusion, low connectivity, AI, voice, wellbeing, design review) for framing or critiquing an experience beyond tokens. Complements ui-system (targets and tools); values are consumed from packages/design, never copied.
+description: Material Design 3 rules (including M3 Expressive) normalized for this monorepo. Use for any M3 decision on color, type, shape, elevation, state, motion, adaptive layout, accessibility or component (buttons, FAB, bars, navigation, fields, sheets, dialogs, menus, chips, lists, sliders, tabs, etc.), or to check that a UI follows M3. Also holds the general design.google principles (inclusion, low connectivity, AI, voice, wellbeing, design review) for framing or critiquing an experience beyond tokens. Complements ui-system (targets and tools); values are consumed from packages/design, never copied.
 ---
 
 # material-3
 
-Rewritten specs (m3.material.io is proprietary: no sentence or image reused; factual values verified on 2026-11-13, tokens taken from material-web and androidx under Apache-2.0):
+Rewritten specs (factual values verified on 2026-11-13; tokens taken from material-web and androidx):
 
 | Domain                                                                 | Human-readable                               | Machine |
 | ---------------------------------------------------------------------- | -------------------------------------------- | ------- |
@@ -35,7 +35,7 @@ Schema: `docs/design/specs/spec.schema.json`. Index of source pages: `docs/desig
 
 ## Verify before asserting
 
-- Token values: `gh api repos/material-components/material-web/contents/tokens/versions/latest/sass` (Apache-2.0); springs: `androidx/androidx` `compose/material3/.../tokens/*MotionTokens.kt`; contrast: `packages/google-design/upstream/material-color-utilities`.
+- Token values: `gh api repos/material-components/material-web/contents/tokens/versions/latest/sass`; springs: `androidx/androidx` `compose/material3/.../tokens/*MotionTokens.kt`; contrast: `material-foundation/material-color-utilities`.
 - Usage rules: reread the m3 page cited in `source` (SPA: `agent-browser open <url>` then `agent-browser read`, ~1 request/s).
 - Gap between spec and `packages/design`: fix the generator, regenerate, `bun test --cwd packages/design`.
 

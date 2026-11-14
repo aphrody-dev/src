@@ -23,7 +23,7 @@ description: GitHub upstream developer workflow reference covering gh CLI, git h
   gh pr list --state open
   gh pr create --title "feat: summary" --body "Detailed PR description"
   gh pr checkout <PR_NUMBER>
-  gh pr merge <PR_NUMBER> --squash --delete-branch
+  gh pr merge <PR_NUMBER> --squash
   gh issue list
   ```
 - Releases & Assets:
@@ -40,10 +40,7 @@ description: GitHub upstream developer workflow reference covering gh CLI, git h
 
 ## Git Conventions
 
-- Conventional Commits: `feat:`, `fix:`, `docs:`, `perf:`, `refactor:`, `test:`, `chore:`.
-- Fast-forward upstream rebase:
-  ```bash
-  git fetch upstream
-  git rebase upstream/main
-  ```
+- Commit subject: `<area>: <what changed>` or a Conventional Commits type (`feat:`, `fix:`, `docs:`, `perf:`, `refactor:`, `test:`, `chore:`); see `git log --oneline`.
+- Work directly on `main` (no branches, no worktrees); never stash on the shared tree. Sync with the remote: `git fetch aphrody main --no-tags` then `git merge --no-edit aphrody/main`; push with a bare `git push`.
+- `gh api ... --jq` with quotes breaks under the Windows shell: pipe the output to `jaq`.
 - Container Registry: `ghcr.io/<owner>/<image>:<tag>` authenticated via `gh auth token | docker login ghcr.io -u <username> --password-stdin`.

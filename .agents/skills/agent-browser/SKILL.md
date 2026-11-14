@@ -9,7 +9,7 @@ hidden: true
 
 Fast browser automation CLI for AI agents. Chrome/Chromium via CDP with accessibility-tree snapshots and compact `@eN` element refs.
 
-Install: `npm i -g agent-browser && agent-browser install`
+Install: `bun add -g agent-browser && agent-browser install` (already in `~/.bun/bin` and `~/.local/bin` on the PC; MCP: `agent_browser_*` tools behind the relay).
 
 ## Start here
 

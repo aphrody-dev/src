@@ -15,7 +15,7 @@ Virtual workspaces have `[workspace]` without `[package]`, so `resolver` must be
 ```toml
 [workspace]
 resolver = "3"
-members = ["crates/*"]
+members = ["src/ay", "src/core"]   # the root Cargo.toml lists members explicitly
 
 [workspace.package]
 edition = "2024"
@@ -23,7 +23,7 @@ rust-version = "1.85"
 ```
 
 - `resolver = "3"` (default for `edition = "2024"`, requires Rust 1.84+): changes `resolver.incompatible-rust-versions` default from `allow` to `fallback`.
-- In `C:\src\Cargo.toml`, `resolver = "3"` and `edition = "2024"` are set at workspace root, with `cargo-features = ["codegen-backend", "panic-immediate-abort"]`.
+- In the root `Cargo.toml`, `resolver = "3"` and `edition = "2024"` are set at workspace root, with `cargo-features = ["codegen-backend", "panic-immediate-abort"]`.
 
 ## Workspace Dependency Inheritance
 
@@ -59,7 +59,7 @@ Later entries in `global-credential-providers` take higher precedence; `cargo:wi
 
 ## Dependency Auditing with cargo-deny
 
-`cargo-deny` (`0.20.2` on crates.io) checks advisories, licenses, banned crates, and allowed sources:
+`cargo-deny` (`cargo info cargo-deny` for the version; config `deny.toml`) checks advisories, licenses, banned crates, and allowed sources:
 
 ```bash
 cargo deny check advisories bans sources
@@ -69,7 +69,7 @@ cargo deny check licenses
 ## Monorepo Execution Rules
 
 - Do not run heavy Rust builds on the workstation; compile in CI or on `fr1` via `just` or `ay`.
-- Single workspace `Cargo.lock` and target directory at `C:\src`.
+- Single workspace `Cargo.lock` and target directory at the repo root.
 
 ## References
 
