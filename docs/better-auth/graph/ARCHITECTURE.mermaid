@@ -1,0 +1,92 @@
+flowchart TD
+    file_CODE_OF_CONDUCT_md["CODE_OF_CONDUCT.md"]
+    file_LICENSE_md["LICENSE.md"]
+    file_README_md["README.md"]
+    file_SECURITY_md["SECURITY.md"]
+    file_context7_json["context7.json"]
+    constant_context7_json_url["url"]
+    constant_context7_json_public_key["public_key"]
+    file_demo_electron_README_md["README.md"]
+    file_demo_electron_electron_builder_yml["electron-builder.yml"]
+    file_demo_electron_electron_vite_config_ts["electron.vite.config.ts"]
+    mod_node_path["node:path"]
+    mod__tailwindcss_vite["@tailwindcss/vite"]
+    mod__vitejs_plugin_react["@vitejs/plugin-react"]
+    mod_electron_vite["electron-vite"]
+    fn_defineConfig["defineConfig"]
+    fn_resolve["resolve"]
+    fn_tailwindcss["tailwindcss"]
+    fn_react["react"]
+    file_demo_electron_package_json["package.json"]
+    constant_demo_electron_package_json_name["name"]
+    constant_demo_electron_package_json_productName["productName"]
+    constant_demo_electron_package_json_private["private"]
+    constant_demo_electron_package_json_version["version"]
+    constant_demo_electron_package_json_description["description"]
+    constant_demo_electron_package_json_main["main"]
+    constant_demo_electron_package_json_scripts["scripts"]
+    constant_demo_electron_package_json_typecheck_node["typecheck:node"]
+    constant_demo_electron_package_json_typecheck_web["typecheck:web"]
+    constant_demo_electron_package_json_typecheck["typecheck"]
+    constant_demo_electron_package_json_start["start"]
+    constant_demo_electron_package_json_dev["dev"]
+    constant_demo_electron_package_json_build["build"]
+    constant_demo_electron_package_json_postinstall["postinstall"]
+    constant_demo_electron_package_json_build_unpack["build:unpack"]
+    constant_demo_electron_package_json_build_win["build:win"]
+    constant_demo_electron_package_json_build_mac["build:mac"]
+    constant_demo_electron_package_json_build_linux["build:linux"]
+    constant_demo_electron_package_json_dependencies["dependencies"]
+    constant_demo_electron_package_json__better_auth_electron["@better-auth/electron"]
+    constant_demo_electron_package_json__electron_toolkit_utils["@electron-toolkit/utils"]
+    constant_demo_electron_package_json__radix_ui_react_avatar["@radix-ui/react-avatar"]
+    constant_demo_electron_package_json__radix_ui_react_slot["@radix-ui/react-slot"]
+    constant_demo_electron_package_json_better_auth["better-auth"]
+    constant_demo_electron_package_json_class_variance_authority["class-variance-authority"]
+    constant_demo_electron_package_json_clsx["clsx"]
+    constant_demo_electron_package_json_conf["conf"]
+    constant_demo_electron_package_json_electron_store["electron-store"]
+    constant_demo_electron_package_json_tailwind_merge["tailwind-merge"]
+    constant_demo_electron_package_json_tailwindcss_animate["tailwindcss-animate"]
+    constant_demo_electron_package_json_devDependencies["devDependencies"]
+    file_context7_json -->|defines| constant_context7_json_url
+    file_context7_json -->|defines| constant_context7_json_public_key
+    file_demo_electron_electron_vite_config_ts -->|imports| mod_node_path
+    file_demo_electron_electron_vite_config_ts -->|imports| mod__tailwindcss_vite
+    file_demo_electron_electron_vite_config_ts -->|imports| mod__vitejs_plugin_react
+    file_demo_electron_electron_vite_config_ts -->|imports| mod_electron_vite
+    file_demo_electron_electron_vite_config_ts -->|calls| fn_defineConfig
+    file_demo_electron_electron_vite_config_ts -->|calls| fn_resolve
+    file_demo_electron_electron_vite_config_ts -->|calls| fn_tailwindcss
+    file_demo_electron_electron_vite_config_ts -->|calls| fn_react
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_name
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_productName
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_private
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_version
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_description
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_main
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_scripts
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_typecheck_node
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_typecheck_web
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_typecheck
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_start
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_dev
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_build
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_postinstall
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_build_unpack
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_build_win
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_build_mac
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_build_linux
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_dependencies
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json__better_auth_electron
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json__electron_toolkit_utils
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json__radix_ui_react_avatar
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json__radix_ui_react_slot
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_better_auth
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_class_variance_authority
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_clsx
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_conf
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_electron_store
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_tailwind_merge
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_tailwindcss_animate
+    file_demo_electron_package_json -->|defines| constant_demo_electron_package_json_devDependencies

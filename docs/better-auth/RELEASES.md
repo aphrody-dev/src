@@ -1394,12 +1394,19 @@ Thanks to everyone who contributed to this release:
 ### ❗ Breaking Changes
 
 - Changed the custom `DeviceAuthorizationGrant` interface for device-code approval ([#11610](https://github.com/better-auth/better-auth/pull/11610))
+
 > **Migration:** Rename `assertSessionRedemption` to `assertStandaloneUse`, handle its new `use` argument, and remove uses of `getVerificationContext`, `verificationOpenAPIProperties`, and the interface's second type parameter.
+
 - Fixed sign-up emails and OAuth session caching to run after database work completes ([#11751](https://github.com/better-auth/better-auth/pull/11751))
+
 > **Migration:** Use a `databaseHooks.user.create.before` hook to reject sign-ups instead of throwing from `sendVerificationEmail` or `onExistingUserSignUp`, and account for logged cache-write failures no longer failing applicable sign-ins.
+
 - Fixed concurrent device-code decisions so only the first approval or denial takes effect ([#11772](https://github.com/better-auth/better-auth/pull/11772))
+
 > **Migration:** Replace checks for `device_code_already_processed` in `/device/approve` error types with checks for `invalid_request`.
+
 - Fixed device-token polling to report `expired_token` immediately after a code expires ([#11772](https://github.com/better-auth/better-auth/pull/11772))
+
 > **Migration:** Handle `expired_token` on the first poll after expiry rather than expecting an initial `slow_down` response.
 
 For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-auth/blob/f429179bcc0f690c78de0c92b57ce33e8e4215d9/packages/better-auth/CHANGELOG.md)
@@ -1409,16 +1416,27 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
 ### ❗ Breaking Changes
 
 - Moved OAuth device-code approval into the provider's sign-in and consent flow ([#11610](https://github.com/better-auth/better-auth/pull/11610))
+
 > **Migration:** Update OAuth device verification pages to send users to `/oauth2/authorize?user_code=<code>` instead of approving codes through `/device/approve` or `/device/deny`, and apply the new `deviceCode` columns before deploying.
+
 - Stopped recording consent for empty OAuth scopes ([#11610](https://github.com/better-auth/better-auth/pull/11610))
+
 > **Migration:** Stop relying on consent records for the empty `scope` value; omit empty entries from requested and accepted scopes.
+
 - Added `interactionRequests` for extensions that route additional approval flows through OAuth provider pages ([#11610](https://github.com/better-auth/better-auth/pull/11610))
+
 > **Migration:** If your OAuth provider extension implements a custom approval flow, register it through `interactionRequests` and resume it through `/oauth2/authorize`.
+
 - Fixed OAuth token revocation and introspection to handle unknown, mistyped, and invalid tokens consistently with RFC 7009 and RFC 7662 ([#11796](https://github.com/better-auth/better-auth/pull/11796))
+
 > **Migration:** Update clients and tests for the changed revocation, introspection, userinfo, and refresh-token error responses; extension grants should use `provider.requireActiveAccessToken` if an unknown token must throw.
+
 - Fixed OAuth endpoints to reject repeated form parameters and report malformed resources as `invalid_target` ([#11746](https://github.com/better-auth/better-auth/pull/11746))
+
 > **Migration:** Send token, introspection, and revocation form parameters only once except for `resource` and `audience`, and update error handling for malformed `resource` values from `invalid_request` to `invalid_target`.
+
 - Isolated pairwise `sub` values for newly registered native and loopback OAuth clients ([#11650](https://github.com/better-auth/better-auth/pull/11650))
+
 > **Migration:** Add the `sectorIdentifier` column to `oauthClient` with `npx auth@latest migrate`, or generate and apply the schema with your ORM, before upgrading.
 
 ### Features
@@ -2961,6 +2979,7 @@ Thanks to everyone who contributed to this release:
 ### ❗ Breaking Changes
 
 - Refactored OAuth device grant ownership to use `oauthDeviceAuthorization()` alongside `oauthProvider()` or `mcp()` ([#10746](https://github.com/better-auth/better-auth/pull/10746))
+
 > **Migration:** Replace the standalone `deviceCodeGrant()` plugin with `oauthDeviceAuthorization()` used alongside `oauthProvider()` or `mcp()`. Regenerate and apply the schema (`resource` column is replaced by `oauthClientId` and `resources`). Let any pending device codes expire or delete them before upgrading, as they cannot be exchanged through the new integration.
 
 ### Features
@@ -2974,6 +2993,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
 ### ❗ Breaking Changes
 
 - Refactored OAuth device grant ownership to use `oauthDeviceAuthorization()` alongside `oauthProvider()` or `mcp()` ([#10746](https://github.com/better-auth/better-auth/pull/10746))
+
 > **Migration:** Replace the standalone `deviceCodeGrant()` plugin with `oauthDeviceAuthorization()` used alongside `oauthProvider()` or `mcp()`. Regenerate and apply the schema (`resource` column is replaced by `oauthClientId` and `resources`). Let any pending device codes expire or delete them before upgrading, as they cannot be exchanged through the new integration.
 
 ### Features
@@ -3078,6 +3098,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
 ### ❗ Breaking Changes
 
 - Switched to async secure storage access to prevent crashes when iOS Keychain is unavailable ([#10438](https://github.com/better-auth/better-auth/pull/10438))
+
 > **Migration:** `getCookie()` now returns a Promise. Custom storage implementations must provide both sync and async `SecureStore` methods, and should use `setItemAsync()` when the write must be awaited.
 
 For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-auth/blob/f41b7c78575e4ea5505c5455ad8e4410a49407b6/packages/expo/CHANGELOG.md)
@@ -3165,8 +3186,11 @@ Thanks to everyone who contributed to this release:
 ### ❗ Breaking Changes
 
 - Added database indexes for device and user code lookups in the device authorization flow ([#10059](https://github.com/better-auth/better-auth/pull/10059))
+
 > **Migration:** MySQL and SQL Server users must convert device code and user code columns to bounded strings (max 191 characters) and resolve any oversized values before applying the migration.
+
 - Changed Microsoft and `microsoftEntraId` accounts to use the stable `oid` claim as the account identifier instead of `sub` ([#10204](https://github.com/better-auth/better-auth/pull/10204))
+
 > **Migration:** Migrate existing Microsoft account rows keyed by `sub` to `oid` before upgrading; tokens without a valid `oid` claim are rejected after the update.
 
 ### Features
@@ -3187,6 +3211,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
 ### ❗ Breaking Changes
 
 - Changed Microsoft and `microsoftEntraId` accounts to use the stable `oid` claim as the account identifier instead of `sub` ([#10204](https://github.com/better-auth/better-auth/pull/10204))
+
 > **Migration:** Migrate existing Microsoft account rows keyed by `sub` to `oid` before upgrading; tokens without a valid `oid` claim are rejected after the update.
 
 ### Features
@@ -3204,6 +3229,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
 ### ❗ Breaking Changes
 
 - Aligned MCP authorization with the 2026-07-28 specification, replacing legacy `type`/`public` client fields with `applicationType` and enforcing stricter redirect validation and scope controls ([#10577](https://github.com/better-auth/better-auth/pull/10577))
+
 > **Migration:** Apply a database migration to add `applicationType`, nullable `clientDiscoveryId`, and `clientCredentialsScopes` columns; backfill `applicationType` from existing values and `clientCredentialsScopes` to `[]` for all clients; deduplicate `(clientId, resourceId)` pairs before applying the new unique index. Replace `OAuthClient` string-index accesses with `OAuthClient & YourExtensionMetadata`, and compose `mcp()` with `cimd()` explicitly if using Client ID Metadata Documents.
 
 ### Features
@@ -3221,6 +3247,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
 ### ❗ Breaking Changes
 
 - Aligned MCP authorization with the 2026-07-28 specification, replacing legacy `type`/`public` client fields with `applicationType` and enforcing stricter redirect validation and scope controls ([#10577](https://github.com/better-auth/better-auth/pull/10577))
+
 > **Migration:** Apply a database migration to add `applicationType`, nullable `clientDiscoveryId`, and `clientCredentialsScopes` columns; backfill `applicationType` from existing values and `clientCredentialsScopes` to `[]` for all clients; deduplicate `(clientId, resourceId)` pairs before applying the new unique index. Replace `OAuthClient` string-index accesses with `OAuthClient & YourExtensionMetadata`, and compose `mcp()` with `cimd()` explicitly if using Client ID Metadata Documents.
 
 ### Bug Fixes
@@ -3234,6 +3261,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
 ### ❗ Breaking Changes
 
 - Aligned MCP authorization with the 2026-07-28 specification, replacing legacy `type`/`public` client fields with `applicationType` and enforcing stricter redirect validation and scope controls ([#10577](https://github.com/better-auth/better-auth/pull/10577))
+
 > **Migration:** Apply a database migration to add `applicationType`, nullable `clientDiscoveryId`, and `clientCredentialsScopes` columns; backfill `applicationType` from existing values and `clientCredentialsScopes` to `[]` for all clients; deduplicate `(clientId, resourceId)` pairs before applying the new unique index. Replace `OAuthClient` string-index accesses with `OAuthClient & YourExtensionMetadata`, and compose `mcp()` with `cimd()` explicitly if using Client ID Metadata Documents.
 
 For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-auth/blob/8bb588dde21a00c6159d0a58dd4b007b1059f596/packages/mcp/CHANGELOG.md)
@@ -3346,6 +3374,7 @@ Thanks to everyone who contributed to this release:
   ```
 
   Adapters that support native joins use them when enabled. If an adapter cannot return joined data for a query, Better Auth falls back to additional queries and combines the results. Drizzle and Prisma users should ensure their schema includes the required relations (`npx auth@latest generate`).
+
 - feat(auth)!: scope accounts by issuer ([#10403](https://github.com/better-auth/better-auth/pull/10403))
 
   This release is breaking. `Account.accountId` is renamed to `Account.providerAccountId`, and `Account.issuer` is required. Account-specific APIs select the local `Account.id` through `accountId`; token and provider-profile APIs can instead select the signed account cookie with `useAccountCookie: true`. Credential accounts use `local:credential` and the linked user's stable `id` as their provider identity.
@@ -3355,6 +3384,7 @@ Thanks to everyone who contributed to this release:
   SSO account subjects are now protocol-defined. OIDC uses the verified `sub` claim, and SAML uses the signed `NameID`; `mapping.id` is removed from both configurations. A manual SAML configuration without metadata XML must set `idpMetadata.entityID`, because `samlConfig.issuer` identifies the service provider and no longer acts as the IdP identity.
 
   Apply the reviewed account-identity backfill in the Better Auth 1.7 upgrade guide before deploying. The generated schema migration cannot assign trusted issuers or resolve existing identity collisions automatically.
+
 - feat(scim)!: decouple provisioning from the organization plugin ([#10390](https://github.com/better-auth/better-auth/pull/10390))
 
   This replaces the previous SCIM configuration, client APIs, database schema, and organization-backed Group model. Existing SCIM installations cannot migrate provisioning state in place. Follow the SCIM cutover in the 1.7 upgrade guide, including full directory reprovisioning, before resuming traffic.
@@ -3407,6 +3437,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   ```
 
   Adapters that support native joins use them when enabled. If an adapter cannot return joined data for a query, Better Auth falls back to additional queries and combines the results. Drizzle and Prisma users should ensure their schema includes the required relations (`npx auth@latest generate`).
+
 - feat(auth)!: scope accounts by issuer ([#10403](https://github.com/better-auth/better-auth/pull/10403))
 
   This release is breaking. `Account.accountId` is renamed to `Account.providerAccountId`, and `Account.issuer` is required. Account-specific APIs select the local `Account.id` through `accountId`; token and provider-profile APIs can instead select the signed account cookie with `useAccountCookie: true`. Credential accounts use `local:credential` and the linked user's stable `id` as their provider identity.
@@ -3416,6 +3447,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   SSO account subjects are now protocol-defined. OIDC uses the verified `sub` claim, and SAML uses the signed `NameID`; `mapping.id` is removed from both configurations. A manual SAML configuration without metadata XML must set `idpMetadata.entityID`, because `samlConfig.issuer` identifies the service provider and no longer acts as the IdP identity.
 
   Apply the reviewed account-identity backfill in the Better Auth 1.7 upgrade guide before deploying. The generated schema migration cannot assign trusted issuers or resolve existing identity collisions automatically.
+
 - feat(scim)!: decouple provisioning from the organization plugin ([#10390](https://github.com/better-auth/better-auth/pull/10390))
 
   This replaces the previous SCIM configuration, client APIs, database schema, and organization-backed Group model. Existing SCIM installations cannot migrate provisioning state in place. Follow the SCIM cutover in the 1.7 upgrade guide, including full directory reprovisioning, before resuming traffic.
@@ -3730,6 +3762,7 @@ Thanks to everyone who contributed to this release:
   The route helper is renamed `requireMcpAuth` (was `withMcpAuth`), and the remote client is `createMcpResourceClient` (was `createMcpAuthClient`). `requireMcpAuth` verifies the bearer token against the published JWKS and passes the verified JWT claims to your handler.
 
   To migrate, install `@better-auth/mcp`, add the `jwt()` plugin (now required for token signing), and move options that were nested under `oidcConfig` to flat options on `mcp({ ... })`. The database models change: `oauthApplication` becomes `oauthClient`, with new `oauthRefreshToken` and `oauthClientAssertion` tables. Regenerate or migrate your schema with `npx auth migrate` or `npx auth generate`.
+
 - feat(oauth-provider)!: add OIDC back-channel logout ([#9304](https://github.com/better-auth/better-auth/pull/9304))
 
   When a user's session ends at the OP (sign-out, `/oauth2/end-session`, admin revoke, ban), `@better-auth/oauth-provider` now notifies every Relying Party that holds tokens for that session. The user's API access is cut off right away, instead of access tokens staying usable until their own TTL. Each client opts in by registering a `backchannel_logout_uri` (and optionally `backchannel_logout_session_required`) via DCR or the admin client-create endpoint. The provider signs a `logout+jwt` Logout Token per client and POSTs it to that client in parallel, with a short per-RP timeout.
@@ -3749,6 +3782,7 @@ Thanks to everyone who contributed to this release:
   - `oauthAccessToken.revoked: Date | null`
 
   `better-auth`'s `signJWT` gains an optional `header` argument, forwarded to custom remote signers. JWT profiles that need an explicit media type, such as `typ: "logout+jwt"`, can now set it without reaching for the low-level signing primitives.
+
 - feat(oauth-provider)!: model OAuth protected resources explicitly ([#9648](https://github.com/better-auth/better-auth/pull/9648))
 
   `validAudiences` is removed. Move each existing resource identifier into `resources`; link clients that should be limited to specific resources through `oauthClientResource` or Dynamic Client Registration `resources`.
@@ -3764,25 +3798,24 @@ Thanks to everyone who contributed to this release:
   Resource servers should publish RFC 9728 protected-resource metadata at their own origin. The OAuth provider exposes challenge helpers that point clients at that metadata.
 
   `@better-auth/mcp` now requires an explicit `resource` option. The plugin stores that identifier as an OAuth resource, publishes RFC 9728 protected-resource metadata for it, and binds issued access tokens to that resource. Existing `mcp({ loginPage, consentPage })` setups should add a protected MCP resource identifier, for example `resource: "https://api.example.com/mcp"`.
+
 - feat(two-factor)!: add OTP enablement and discriminated response ([#9057](https://github.com/better-auth/better-auth/pull/9057))
 
   `enableTwoFactor` now accepts a `method` parameter (`"otp" | "totp"`, default `"totp"`) and returns a discriminated response with a `method` field.
 
   ### `method: "otp"`
-
   - Sets `twoFactorEnabled: true` immediately.
   - Returns `{ method: "otp" }`.
   - Requires `otpOptions.sendOTP` to be configured on the server; rejects with `OTP_NOT_CONFIGURED` otherwise.
 
   ### `method: "totp"` (default)
-
   - Returns `{ method: "totp", totpURI, backupCodes }`.
   - Rejects with `TOTP_NOT_CONFIGURED` if `totpOptions.disable` is set.
 
   ### Breaking changes
-
   - **Removed `skipVerificationOnEnable`**: use `method: "otp"` for immediate activation, or the standard TOTP verification flow.
   - **Response shape changed**: `enableTwoFactor` includes a `method` field in the response (`"otp"` or `"totp"`).
+
 - fix(auth)!: ignore x-forwarded headers by default on dynamic baseURL ([#9134](https://github.com/better-auth/better-auth/pull/9134))
 
   Requests using `baseURL: { allowedHosts }` now resolve the auth origin from `Host` by default, so forwarded headers cannot select another allowed host unless trusted proxy headers are enabled.
@@ -3799,11 +3832,13 @@ Thanks to everyone who contributed to this release:
     },
   });
   ```
+
 - fix(electron)!: enforce S256 PKCE and harden origin checks ([#9645](https://github.com/better-auth/better-auth/pull/9645))
 
   The Electron sign-in flow now mandates PKCE S256. Plain PKCE is rejected: the `code_challenge_method` parameter is gone and every authorization code is verified by hashing the verifier with SHA-256. The server no longer trusts an `electron-origin` header to set the request Origin. The Electron client now sends a real `Origin` (for example `myapp:/`), so upgrade the `@better-auth/electron` client and server together and make sure your app's scheme is in `trustedOrigins`. The unused `disableOriginOverride` option is removed.
 
   Custom-scheme entries in `trustedOrigins` now match by scheme and authority instead of string prefix. A host-less entry such as `myapp://` or `exp://` still trusts every host of that scheme, but a host-bearing entry such as `myapp://callback` matches that host exactly, so it is no longer satisfied by `myapp://callback.attacker.tld`.
+
 - fix(one-tap)!: require client id for audience validation ([#10036](https://github.com/better-auth/better-auth/pull/10036))
 - refactor!: remove deprecated oidc-provider plugin ([#10031](https://github.com/better-auth/better-auth/pull/10031))
 - refactor(generic-oauth)!: rewrite as first-class social provider with RFC compliance ([#9069](https://github.com/better-auth/better-auth/pull/9069))
@@ -3818,6 +3853,7 @@ Thanks to everyone who contributed to this release:
   - `authorizationUrlParams` and `tokenUrlParams` only accept `Record<string, string>`
   - `issuer` and `requireIssuerValidation` config fields removed; issuer validation is automatic via OIDC discovery
   - `mapProfileToUser` profile typed as `OAuth2UserInfo & Record<string, unknown>`
+
 - refactor(oauth)!: verify provider `id_tokens` with a single shared verifier ([#9828](https://github.com/better-auth/better-auth/pull/9828))
 
   Client-submitted id_token sign-in (`signIn.social({ idToken })` and account linking) is verified by one function instead of a per-provider `verifyIdToken` method. Each provider declares an `idToken` config with a JWKS source, issuer, and audience, and the core verifier runs the signature, issuer, audience, and nonce checks. A provider that declares no config rejects the client id_token path.
@@ -3879,6 +3915,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   The route helper is renamed `requireMcpAuth` (was `withMcpAuth`), and the remote client is `createMcpResourceClient` (was `createMcpAuthClient`). `requireMcpAuth` verifies the bearer token against the published JWKS and passes the verified JWT claims to your handler.
 
   To migrate, install `@better-auth/mcp`, add the `jwt()` plugin (now required for token signing), and move options that were nested under `oidcConfig` to flat options on `mcp({ ... })`. The database models change: `oauthApplication` becomes `oauthClient`, with new `oauthRefreshToken` and `oauthClientAssertion` tables. Regenerate or migrate your schema with `npx auth migrate` or `npx auth generate`.
+
 - feat(oauth-provider)!: add OIDC back-channel logout ([#9304](https://github.com/better-auth/better-auth/pull/9304))
 
   When a user's session ends at the OP (sign-out, `/oauth2/end-session`, admin revoke, ban), `@better-auth/oauth-provider` now notifies every Relying Party that holds tokens for that session. The user's API access is cut off right away, instead of access tokens staying usable until their own TTL. Each client opts in by registering a `backchannel_logout_uri` (and optionally `backchannel_logout_session_required`) via DCR or the admin client-create endpoint. The provider signs a `logout+jwt` Logout Token per client and POSTs it to that client in parallel, with a short per-RP timeout.
@@ -3898,10 +3935,12 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   - `oauthAccessToken.revoked: Date | null`
 
   `better-auth`'s `signJWT` gains an optional `header` argument, forwarded to custom remote signers. JWT profiles that need an explicit media type, such as `typ: "logout+jwt"`, can now set it without reaching for the low-level signing primitives.
+
 - feat(oauth-provider)!: enforce max_age ([#9936](https://github.com/better-auth/better-auth/pull/9936))
 - feat(oauth-provider)!: make id-token claim authority explicit ([#10140](https://github.com/better-auth/better-auth/pull/10140))
 
   `customIdTokenClaims`, extension ID-token claims, and per-issuance `idTokenClaims` can no longer set OIDC/JWT protocol claims such as issuer, subject, audience, token lifetime, nonce, session or hash binding, `auth_time`, `acr`, `amr`, or `azp`. Namespaced custom claims still appear in ID tokens.
+
 - feat(oauth-provider)!: model OAuth protected resources explicitly ([#9648](https://github.com/better-auth/better-auth/pull/9648))
 
   `validAudiences` is removed. Move each existing resource identifier into `resources`; link clients that should be limited to specific resources through `oauthClientResource` or Dynamic Client Registration `resources`.
@@ -3917,12 +3956,14 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   Resource servers should publish RFC 9728 protected-resource metadata at their own origin. The OAuth provider exposes challenge helpers that point clients at that metadata.
 
   `@better-auth/mcp` now requires an explicit `resource` option. The plugin stores that identifier as an OAuth resource, publishes RFC 9728 protected-resource metadata for it, and binds issued access tokens to that resource. Existing `mcp({ loginPage, consentPage })` setups should add a protected MCP resource identifier, for example `resource: "https://api.example.com/mcp"`.
+
 - fix(oauth-provider)!: bind client authentication to the issuing grant ([#10063](https://github.com/better-auth/better-auth/pull/10063))
 - fix(oauth-provider)!: bind RFC 8707 resource indicators to the authorization grant ([#9836](https://github.com/better-auth/better-auth/pull/9836))
 
   Breaking change: when the authorization includes a `resource`, the token and refresh requests may only narrow it. A request for a resource the authorization did not cover returns `invalid_target`. The `customAccessTokenClaims` callback now receives a `resources` array in place of the `resource` string.
 
   Migration: run the schema migration (`npx @better-auth/cli migrate`, or `generate` if you manage the schema yourself) to add the new resource columns.
+
 - fix(oauth-provider)!: return RFC-compliant error envelopes from validation failures ([#9277](https://github.com/better-auth/better-auth/pull/9277))
 
   An internal `createOAuthEndpoint` wrapper now translates zod validation failures into the envelope required by RFC 6749 §5.2, 7009 §2.2.1, 7662 §2.3, and 7591 §3.2.2. Failing issues are routed per field:
@@ -3937,6 +3978,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
 
   - `/oauth2/revoke` and `/oauth2/introspect` now ignore an unknown `token_type_hint` instead of rejecting it. RFC 7009 §2.2.1 and RFC 7662 §2.1 reserve `unsupported_token_type` for the token itself, not the hint value; servers MAY ignore unrecognized hints and search across supported token types.
   - `/oauth2/authorize` error redirects now respect OIDC Core 1.0 §5 response modes. Errors for `response_type=token` or `id_token` are delivered in the URL fragment per RFC 6749 §4.2.2.1; an explicit `response_mode=query` overrides the default.
+
 - refactor(generic-oauth)!: rewrite as first-class social provider with RFC compliance ([#9069](https://github.com/better-auth/better-auth/pull/9069))
 
   **Breaking changes:**
@@ -4014,23 +4056,22 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   **Fix**
 
   SAML Single Logout could fail to decrypt encrypted `LogoutResponse` payloads because the IdP entity was constructed without `privateKey`, `encPrivateKey`, or `encPrivateKeyPass` on that code path. All three are now applied on every IdP construction.
+
 - fix(auth)!: harden validateUserInfo source contract ([#9940](https://github.com/better-auth/better-auth/pull/9940))
 - fix(sso)!: harden SAML response validation (InResponseTo, Audience, SessionIndex) ([#9055](https://github.com/better-auth/better-auth/pull/9055))
 
   ### Breaking Changes
-
   - **`allowIdpInitiated` now defaults to `false`** — IdP-initiated SSO (unsolicited SAML responses) is disabled by default. Set `saml.allowIdpInitiated: true` to restore the previous behavior. This aligns with the SAML2Int interoperability profile which recommends against IdP-initiated SSO due to its susceptibility to injection attacks.
 
   ### Bug Fixes
-
   - **InResponseTo validation was completely non-functional** — The code read `extract.inResponseTo` (always `undefined`) instead of samlify's actual path `extract.response.inResponseTo`. SP-initiated InResponseTo validation now works as intended in both ACS handlers.
   - **Audience Restriction was never validated** — SAML assertions issued for a different service provider were accepted without checking the `<AudienceRestriction>` element. Audience is now validated against the configured `samlConfig.audience` value per SAML 2.0 Core §2.5.1.
   - **SessionIndex stored as object instead of string** — samlify returns `sessionIndex` from login responses as `{ authnInstant, sessionNotOnOrAfter, sessionIndex }`, but the code stored the whole object. SLO session-index comparisons always failed silently. The correct inner `sessionIndex` string is now extracted.
 
   ### Improvements
-
   - Extracted shared `validateInResponseTo()` and `validateAudience()` into `packages/sso/src/saml/response-validation.ts`, eliminating ~160 lines of duplicated validation logic between the two ACS handlers.
   - Fixed `SAMLAssertionExtract` type to match samlify's actual extractor output shape.
+
 - refactor(sso)!: remove callbackUrl, consolidate ACS endpoint, fix SLO ([#9117](https://github.com/better-auth/better-auth/pull/9117))
 
   **`callbackUrl` removed from `samlConfig`.**
@@ -4053,7 +4094,6 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   `decryptionPvk`, `additionalParams`, `idpMetadata.entityURL`, `idpMetadata.redirectURL`. These were stored but never read. Remove them from your configuration if present.
 
   ### Bug fixes
-
   - Fix SLO SessionIndex matching: LogoutRequests with a SessionIndex were silently failing to delete the correct session.
   - Audience validation now defaults to the SP entity ID when `audience` is not configured, per SAML Core section 2.5.1.
   - Restore `AllowCreate` in AuthnRequests, required by IdPs that use JIT provisioning.
@@ -4086,6 +4126,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   The route helper is renamed `requireMcpAuth` (was `withMcpAuth`), and the remote client is `createMcpResourceClient` (was `createMcpAuthClient`). `requireMcpAuth` verifies the bearer token against the published JWKS and passes the verified JWT claims to your handler.
 
   To migrate, install `@better-auth/mcp`, add the `jwt()` plugin (now required for token signing), and move options that were nested under `oidcConfig` to flat options on `mcp({ ... })`. The database models change: `oauthApplication` becomes `oauthClient`, with new `oauthRefreshToken` and `oauthClientAssertion` tables. Regenerate or migrate your schema with `npx auth migrate` or `npx auth generate`.
+
 - feat(oauth-provider)!: model OAuth protected resources explicitly ([#9648](https://github.com/better-auth/better-auth/pull/9648))
 
   `validAudiences` is removed. Move each existing resource identifier into `resources`; link clients that should be limited to specific resources through `oauthClientResource` or Dynamic Client Registration `resources`.
@@ -4120,6 +4161,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   Organization-scoped `active: false` now makes a user inactive in that organization while keeping SCIM group and team associations available for reactivation. Use `DELETE` to fully deprovision organization-scoped SCIM state.
 
   `defaultSCIM` has been replaced by `staticProviders`. `linkExistingUsers.trustedDomains` has been removed; use `requireExistingOrgMembership`, `shouldLinkUser`, or explicit `true` instead.
+
 - fix(scim)!: always bind personal SCIM connections to their creator ([#9840](https://github.com/better-auth/better-auth/pull/9840))
 
   `generateSCIMToken` now records the creator's `userId` on every personal connection. The `generate-token`, `list-provider-connections`, `get-provider-connection`, and `delete-provider-connection` endpoints grant access only to that owner. Organization-scoped connections keep their existing behavior and continue to use organization membership and the configured `requiredRole` checks.
@@ -4144,6 +4186,7 @@ For detailed changes, see [`CHANGELOG`](https://github.com/better-auth/better-au
   The Electron sign-in flow now mandates PKCE S256. Plain PKCE is rejected: the `code_challenge_method` parameter is gone and every authorization code is verified by hashing the verifier with SHA-256. The server no longer trusts an `electron-origin` header to set the request Origin. The Electron client now sends a real `Origin` (for example `myapp:/`), so upgrade the `@better-auth/electron` client and server together and make sure your app's scheme is in `trustedOrigins`. The unused `disableOriginOverride` option is removed.
 
   Custom-scheme entries in `trustedOrigins` now match by scheme and authority instead of string prefix. A host-less entry such as `myapp://` or `exp://` still trusts every host of that scheme, but a host-bearing entry such as `myapp://callback` matches that host exactly, so it is no longer satisfied by `myapp://callback.attacker.tld`.
+
 - refactor(generic-oauth)!: rewrite as first-class social provider with RFC compliance ([#9069](https://github.com/better-auth/better-auth/pull/9069))
 
   **Breaking changes:**
@@ -4525,6 +4568,7 @@ Thanks to everyone who contributed to this release:
 ### ❗ Breaking Changes
 
 - Restricted `customIdTokenClaims`, extension ID-token claims, and per-issuance `idTokenClaims` from overriding protected OIDC/JWT protocol claims ([#10140](https://github.com/better-auth/better-auth/pull/10140))
+
 > **Migration:** Remove any `iss`, `sub`, `aud`, `exp`, `nonce`, `auth_time`, `acr`, `amr`, or `azp` fields from `customIdTokenClaims`, extension ID-token claims, and per-issuance `idTokenClaims`. Use namespaced custom claims (e.g., `"https://example.com/role"`) for application-specific data instead.
 
 ### Features
