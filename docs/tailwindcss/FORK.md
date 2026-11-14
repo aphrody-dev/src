@@ -12,9 +12,19 @@ Conversion Bun, etat au commit `8ed754c0` (base `1ad5572d`). Hote de travail : f
 
 `bun test packages/tailwindcss/src` : 5400 pass, 0 fail, 1 todo (2112 snapshots). Les autres paquets JS passent (cli, node, upgrade, vite, browser) sauf ceux qui chargent `@tailwindcss/oxide`.
 
-## Blocages precis
+## Mesures oxide (fr2, 2026-11-14)
 
-- `@tailwindcss/oxide` (crates Rust, napi) : pas de cargo/rustc sur fr2 et `aphrody-heavy` refuse fr2 ("builds run on fr1"). Donc `packages/@tailwindcss-postcss/src/index.test.ts` et `@tailwindcss-upgrade/src/index.test.ts` echouent (`Cannot find module '@tailwindcss/oxide'`), `cargo test` et le build complet restent a faire sur fr1.
+rustup minimal + rustc 1.100.0 stable installes sur fr2 (user ubuntu). `bun run build:platform` (napi, release) dans `crates/node` : 1m24s, produit `tailwindcss-oxide.linux-x64-gnu.node`. Tests (hyperfine --runs 3) :
+
+| Suite | Avant (sans oxide) | Apres | Temps apres |
+|---|---|---|---|
+| `@tailwindcss-postcss/src` | 5 pass / 1 fail / 1 error | 23 pass / 0 fail | 0.69 s |
+| `@tailwindcss-upgrade/src` | 258 pass / 6 fail / 6 errors | 415 pass / 0 fail | 12.0 s |
+
+Aucun correctif de code requis : seul le binaire natif manquait. `cargo test`, `integrations/` et Playwright restent non executes.
+
+## Blocages restants
+
 - `compiler-lifetime.test.ts` : le test de liberation par GC utilise `v8.setFlagsFromString('--expose-gc')`; sous JavaScriptCore `Bun.gc(true)` ne libere pas les `WeakRef` (references conservatrices de pile). Passe en `test.todo`.
 - `*.bench.ts` : bun:test n'a pas de `bench`; `vitest bench` reste (dependance vitest conservee). `integrations/**` (vitest, `--root=./integrations`) non converti : necessite oxide + builds + navigateurs.
 - Playwright (`tests/ui.spec.ts`, 2596 lignes + 176) : non converti vers `Bun.WebView` (API Chrome seul sous Linux, perte de la couverture firefox/webkit; depend aussi d'oxide).
