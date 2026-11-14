@@ -39,6 +39,23 @@ api-key 203/203, better-auth 3140 pass / 10 fail, core 862 / 4, drizzle 72/72, e
 - `@better-auth/test-utils` cible desormais `bun:test` (plus de peer `vitest`).
 - Synchronisation amont (upstream HEAD, rebase) non realisee : exigerait un `--force-with-lease` non autorise par la consigne ; le travail reste sur `2039e7303`.
 
+## Tests avec bases reelles (usa, 2026-11-14, commit `1e7818ca8`)
+
+Isolation : espace reseau Docker jetable (projet `ba-throwaway`, reseau sans port publie, `nsenter -n` pour lancer `bun test` dedans) : Postgres 18 sur 5432-5435, MySQL 8.4 sur 3306-3308, Mongo 7 (replSet) sur 27017, Redis sur 6379, sans toucher `/srv/shenron` ni les ports de production (5432 et 6379 de l'hote sont pris par la production, d'ou l'espace reseau). Conteneurs et reseau supprimes apres les mesures. `better-sqlite3` : `make` + `gcc` installes (pacman), `bun install --frozen-lockfile` compile le binaire natif (73 s) ; Bun refuse malgre tout de le charger ("not yet supported in Bun", 28 echecs e2e/adapter).
+
+| Cible | Avant | Apres | Temps (hyperfine, 3 runs) |
+| --- | --- | --- | --- |
+| packages/better-auth (DB + reseau) | 3165 pass / 8 fail | 3173 pass / 1 fail | 28,6 s -> 32,2 s +/- 2,9 s |
+| kysely-adapter | 62 / 6 | 66 / 2 | 26 s |
+| core 866/6, oauth-provider 1171/7, scim 387/3, sso 668/4, cimd 197/6, mongo-adapter 35/6, expo 116/18, telemetry 6/4 | - | non modifies | 0-20 s |
+| api-key 204/0, drizzle 72/0, prisma 41/0, redis 15/0, stripe 196/0, passkey 82/0, i18n 18/0, mcp 101/0, memory 20/0, test-utils 3/0 | - | - | 0-2 s |
+| e2e/adapter | - | 1729 pass / 50 fail | 72 s |
+| test/ | - | 12859 pass / 563 fail | 429 s |
+
+Corrige (9 echecs) : `expect.assert` (-> `node:assert`), `.length.above` (chai), regex de pile `ErrorWithStack` (bun : `APIError`), assertion de pile hors debug (bun la laisse vide), hook `beforeEach({ skip })` kysely (parametre pris pour `done`, 5 s de timeout), message `ROLE_NOT_FOUND` (`.code`).
+
+Causes restantes : un echec `(unnamed)` dans better-auth (erreur de hook asynchrone) ; `kysely/migration` introuvable dans `sqlite-introspector.test.ts` et 1 echec de pool PG ferme ; mongo-adapter 6 (mocks de logger `field-level indexes`, aussi avec replSet) ; core 6 (detection de runtime, `Native export is unavailable`, Cloudflare) ; telemetry 4 (detection de runtime) ; cimd 6 (transport Node : `https.request` mocke, non intercepte par Bun) ; expo 18 (fuite de mocks entre fichiers quand le paquet est lance en bloc) ; oauth-provider 7, scim 3, sso 4 non diagnostiques ; `test/` et `e2e/adapter` : `better-sqlite3` et `drizzle-kit push` sous Bun. Les tests HIBP et social exigent un acces internet sortant (inclus dans le reseau jetable).
+
 ## Sources
 
 - Bun test, mocks (`vi`) : https://github.com/oven-sh/bun/blob/main/docs/test/mocks.mdx
