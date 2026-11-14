@@ -603,24 +603,23 @@ export async function toolchain({
       string,
       unknown
     >;
-    const want = Object.fromEntries(
+    const servers = Object.fromEntries(
       sharedMcp(m, f.mcp)
         .filter((x) => x.url)
         .map((x) => [
           x.name,
           f.shape === "opencode"
-            ? { type: "remote", url: x.url, enabled: true }
+            ? { type: "remote", url: x.url }
             : f.shape === "gemini"
               ? { httpUrl: x.url }
               : { type: "http", url: x.url },
         ]),
     );
-    if (!Object.keys(want).length) continue; // relais hors de cet hôte : fichier laissé tel quel
+    if (!Object.keys(servers).length) continue; // relais hors de cet hôte : fichier laissé tel quel
+    // OpenCode 2 (2.2.7, `opencode mcp add --global`) range ses serveurs sous mcp.servers.
+    const want = f.shape === "opencode" ? { servers } : servers;
     const ok = JSON.stringify(doc[f.key]) === JSON.stringify(want);
-    note(
-      ok,
-      `${f.agent} mcp ${Object.keys(want).join(",") || "aucun"} seul (${p})`,
-    );
+    note(ok, `${f.agent} mcp ${Object.keys(servers).join(",")} seul (${p})`);
     if (ok || check) continue;
     writeFileSync(p, `${JSON.stringify({ ...doc, [f.key]: want }, null, 2)}\n`);
   }
