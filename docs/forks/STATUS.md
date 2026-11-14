@@ -68,7 +68,7 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/steamroom | mirror | 21ba4f8b2117 | 21ba4f8b2117 | 0/0 | noop | - | 0 |
 | aphrody-labs/lfs | mirror | 581459fa3041 | 230818516003 | 0/29 | noop | - | 0 |
 | aphrody-labs/gpui-kit | mirror | - | - | ?/? | - | - | 0 |
-| aphrody-labs/nsh | mirror | 9efc3a2cd5bb | bdd07024661d | 0/0 | noop | - | 0 |
+| aphrody-labs/nsh | mirror | 27f288e2e8f6 | bdd07024661d | 0/0 | noop | - | 0 |
 | aphrody-labs/DirectX-Headers | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/DirectXShaderCompiler | mirror | 49fea47e722b | 49fea47e722b | 0/0 | noop | - | 0 |
 | aphrody-labs/GSL | mirror | - | - | ?/? | - | - | 0 |
@@ -91,7 +91,7 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/ratatui | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/scx | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/cridecoder | mirror | - | - | ?/? | - | - | 0 |
-| aphrody-labs/servo | mirror | 062b34416171 | 062b34416171 | 1/0 | fast-forwarded | - | 0 |
+| aphrody-labs/servo | mirror | d7d6eaa3feb3 | d7d6eaa3feb3 | 2/0 | fast-forwarded | - | 0 |
 | aphrody-labs/artcraft | mirror | 84a6a7dcf5cc | 79d87b2b54b5 | 22/0 | blocked: HTTP 403: Repository was archived so is read-only. (https://api.github.com/repos/aphrody-labs/artcraft/merge-upstream) | - | 0 |
 | aphrody-labs/linux | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/bazzite | mirror | ce9229d7b3b9 | ce9229d7b3b9 | 0/0 | noop | - | 0 |
@@ -118,7 +118,7 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/z3 | mirror | 1a1d88dde7cc | 1a1d88dde7cc | 0/0 | noop | - | 0 |
 | aphrody-labs/embedded_gpui | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/zed | mirror | 56a157e5b01b | 56a157e5b01b | 0/0 | noop | - | 0 |
-| aphrody-labs/webpack | mirror | a0a34d3bb394 | a0a34d3bb394 | 1/0 | fast-forwarded | - | 0 |
+| aphrody-labs/webpack | mirror | f89855948805 | f89855948805 | 1/0 | fast-forwarded | - | 0 |
 | aphrody-labs/swc | mirror | df1c01862bbe | df1c01862bbe | 0/0 | noop | - | 0 |
 | aphrody-labs/postcss | mirror | b6316e5d61e5 | b6316e5d61e5 | 0/0 | noop | - | 0 |
 | aphrody-labs/taskr | mirror | 7a50e6e8c1fb | 7a50e6e8c1fb | 0/0 | noop | - | 0 |
