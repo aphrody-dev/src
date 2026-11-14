@@ -1,6 +1,6 @@
 # VCS, task runner and Cargo acceleration tooling
 
-Folded from the former monorepo-vcs-cargo skill. Dropped as non-existent in the tree: `frg` forge (`third_party/vcs`), `@sovereign/bun-plugins`. Tools below were found installed on the PC (jj, gix, just, sccache, xwin, cargo-nextest, cargo-binstall).
+Tools below were found installed on the PC (jj, gix, just, sccache, xwin, cargo-nextest, cargo-binstall).
 
 ## Jujutsu (`jj`)
 

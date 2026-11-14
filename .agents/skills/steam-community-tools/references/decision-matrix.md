@@ -13,8 +13,8 @@
 | Workshop item download                                      | `steamroom workshop`                                 | `DepotDownloader -pubfile`, `steamctl workshop download` |                                                                |
 | Cloud files                                                 | `steamctl cloud list`                                | node-steam-user                                          |                                                                |
 | Steam Guard codes                                           | `steamctl authenticator code`                        |                                                          | sharing secrets in logs                                        |
-| Embed a CM client in Bun                                    | node-steam-user / node-steam-session                 | port from steam-vent                                     | copying SteamKit2/DepotDownloader                              |
-| Embed in Rust (bun-steam)                                   | steamroom crates, steam-vent (port with attribution) | steam-rs for Web API                                     | GPL/LGPL code                                                  |
+| Embed a CM client in Bun                                    | node-steam-user / node-steam-session                 | port from steam-vent                                     |                                                                |
+| Embed in Rust (bun-steam)                                   | steamroom crates, steam-vent                         | steam-rs for Web API                                     |                                                                |
 | Steamworks SDK features                                     | steamworks-rs (local Windows, client running)        |                                                          | headless servers                                               |
 | Proton compatibility                                        | ProtonDB (link only)                                 |                                                          | scraping ProtonDB                                              |
 | Fix a Proton prefix                                         | protontricks                                         |                                                          |                                                                |
@@ -24,16 +24,4 @@
 | Warm a lancache                                             | steam-lancache-prefill                               |                                                          |                                                                |
 | Card idling                                                 | none for this repo                                   |                                                          | ArchiSteamFarm, steamctl idle (Steam Subscriber Agreement 4.C) |
 
-# License reuse for Apache-2.0 bun-steam
-
-| License                            | Tools                                                                                                                                                                                       | Reuse in bun-steam                         |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| MIT, MIT OR Apache-2.0, Apache-2.0 | steamroom, steam-vent, steamworks-rs, steam-rs, steamctl, ValvePython steam, node-steam-user, node-steam-session, steam-lancache-prefill, steam-tui, ArchiSteamFarm, vdf-rs, steamlocate-rs | allowed with notice                        |
-| LGPL-2.1                           | SteamKit2                                                                                                                                                                                   | reference only                             |
-| GPL-2.0 / GPL-3.0                  | DepotDownloader, Decky Loader, protontricks, Steam ROM Manager                                                                                                                              | reference only; running the binary is fine |
-| none stated                        | SteamTracking                                                                                                                                                                               | reference only                             |
-
-The license table covers code reuse only, not use. Whether to run ArchiSteamFarm at all is covered by the ArchiSteamFarm caveat in [`../SKILL.md`](../SKILL.md).
-
-Sources: `src/steam/UPSTREAM.md`, license files under `third_party/`,
-GitHub repository pages listed in `../SKILL.md`.
+What `src/steam` takes from each upstream project: `src/steam/UPSTREAM.md`. Whether to run ArchiSteamFarm at all is covered by the ArchiSteamFarm caveat in [`../SKILL.md`](../SKILL.md).

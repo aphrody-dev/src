@@ -13,7 +13,7 @@ Advice, never authority: `ui-system` (M3 tokens, Material Web, GPUI, WebUI, Zig)
 ## Search
 
 ```bash
-S=C:/src/.agents/skills/ui-ux-pro-max/scripts/search.ts
+S=.agents/skills/ui-ux-pro-max/scripts/search.ts
 bun $S "developer tool dashboard dark" --brief          # product + style + landing + ux + chart (1 result each)
 bun $S "keyboard focus modal" --domain ux               # one concern = one domain
 bun $S "geometric sans variable" --domain google-fonts --ofl
@@ -51,4 +51,4 @@ Go through the checklist of `references/pro-rules.md`, then `gds audit-slop <pat
 
 ## Data
 
-`data/`: upstream subset (MIT, `LICENSE`) - `ux-guidelines`, `app-interface`, `styles`, `products`, `landing`, `charts`, `google-fonts` (+ `google-font-licenses.json`, google/fonts revision `038b637d`), `stacks/threejs`, `stacks/winui`, `data-provenance.json`. Removed because they are outside the stack: hex palettes, Tailwind pairs, third-party icons, GSAP, React performance, JS web stacks. Update: `git -C C:/src/third_party/ui-ux-pro-max-skill pull`, then copy the same files again.
+`data/`: upstream subset (MIT, `LICENSE`) - `ux-guidelines`, `app-interface`, `styles`, `products`, `landing`, `charts`, `google-fonts` (+ `google-font-licenses.json`, google/fonts revision `038b637d`), `stacks/threejs`, `stacks/winui`, `data-provenance.json`. Removed because they are outside the stack: hex palettes, Tailwind pairs, third-party icons, GSAP, React performance, JS web stacks. Update: compare with `nextlevelbuilder/ui-ux-pro-max-skill` (no local clone), then copy the same files again.

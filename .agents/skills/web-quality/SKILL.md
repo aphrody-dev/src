@@ -1,21 +1,21 @@
 ---
 name: web-quality
-description: Measure and fix web performance and quality with Lighthouse 13.6, Core Web Vitals (web-vitals 6.2.3) and modern web best practices, and check feature support/Baseline with MDN browser-compat-data. Use when the user says "lighthouse", "audit the page", "Core Web Vitals", "LCP / INP / CLS / TTFB / TBT", "page is slow", "perf score", "web-vitals", "attribution", "Baseline", "can I use", "browser support", "best practices", "accessibility/SEO audit", or runs headless benches (chrome-headless-shell) on fr1, normative src specs for WCAG 2.2 AA accessibility, technical SEO and CWV (web-a11y-seo-cwv), and the wck / Modern Web Guidance gate. Use also BEFORE creating or reviewing any web page, dashboard or HTML/CSS/JS component, or to set a focus, contrast, meta/canonical/robots/sitemap/hreflang rule or performance budget.
+description: Measure and fix web performance and quality with Lighthouse, Core Web Vitals (web-vitals) and modern web best practices, and check feature support/Baseline with MDN browser-compat-data. Use when the user says "lighthouse", "audit the page", "Core Web Vitals", "LCP / INP / CLS / TTFB / TBT", "page is slow", "perf score", "web-vitals", "attribution", "Baseline", "can I use", "browser support", "best practices", "accessibility/SEO audit", or runs headless benches (chrome-headless-shell) on fr1, normative src specs for WCAG 2.2 AA accessibility, technical SEO and CWV (web-a11y-seo-cwv), and the wck / Modern Web Guidance gate. Use also BEFORE creating or reviewing any web page, dashboard or HTML/CSS/JS component, or to set a focus, contrast, meta/canonical/robots/sitemap/hreflang rule or performance budget.
 ---
 
 # web-quality
 
-Versions verified 2026-11-12 from local clones (C:\src\third_party\web): lighthouse 13.6.0 @3e50684, web-vitals 6.2.3 @94b3b4b, modern-web-guidance @4dd9683, browser-compat-data 8.1.8 @e665ba4. Lighthouse needs Node >=22.19 (package.json engines).
+Versions: not pinned here. Check live: `lighthouse --version`, `bun info web-vitals`, `bun info @mdn/browser-compat-data`, `gh api repos/GoogleChrome/lighthouse/releases/latest` (pipe to `jaq -r .tag_name`). The upstream clones that this skill was first written from (lighthouse, web-vitals, modern-web-guidance, browser-compat-data) are not in `third_party/`; paths below name the upstream repository.
 
 ## Thresholds (p75 of page loads, mobile and desktop split)
 
 | Metric | Good      | Poor     | Kind                  | Source                                           |
 | ------ | --------- | -------- | --------------------- | ------------------------------------------------ |
-| LCP    | <=2500 ms | >4000 ms | CWV, loading          | web-vitals src/onLCP.ts; web.dev/articles/vitals |
-| INP    | <=200 ms  | >500 ms  | CWV, responsiveness   | src/onINP.ts                                     |
-| CLS    | <=0.1     | >0.25    | CWV, visual stability | src/onCLS.ts                                     |
-| FCP    | <=1800 ms | >3000 ms | diagnostic            | src/onFCP.ts                                     |
-| TTFB   | <=800 ms  | >1800 ms | diagnostic            | src/onTTFB.ts                                    |
+| LCP    | <=2500 ms | >4000 ms | CWV, loading          | GoogleChrome/web-vitals:src/onLCP.ts; web.dev/articles/vitals |
+| INP    | <=200 ms  | >500 ms  | CWV, responsiveness   | web-vitals src/onINP.ts                                  |
+| CLS    | <=0.1     | >0.25    | CWV, visual stability | web-vitals src/onCLS.ts                                     |
+| FCP    | <=1800 ms | >3000 ms | diagnostic            | web-vitals src/onFCP.ts                                     |
+| TTFB   | <=800 ms  | >1800 ms | diagnostic            | web-vitals src/onTTFB.ts                                    |
 
 Lab vs field: Lighthouse has no real INP in navigation mode (weight 0); use TBT as the lab proxy, and timespan user flows or field data for INP.
 
@@ -24,19 +24,19 @@ Lighthouse 13 perf score weights (core/config/default-config.js): TBT 30, LCP 25
 ## Run Lighthouse against chrome-headless-shell
 
 ```sh
-bun x lighthouse@13.6.0 https://google.com \
+lighthouse https://google.com \
   --chrome-flags="--headless --no-sandbox" \
   --preset=desktop --only-categories=performance \
   --output=json --output=html --output-path=./lh/site \
   --quiet
-# binary: CHROME_PATH=/path/to/chrome-headless-shell (CfT, e.g. chs-stable 157.0.8103.78 on fr1)
+# binary: CHROME_PATH=/path/to/chrome-headless-shell (Chrome for Testing headless shell, see third_party/chrome-channels.toml)
 ```
 
 - Already-running browser: launch it with `--remote-debugging-port=9222`, then `lighthouse <url> --port=9222`.
 - Programmatic (Puppeteer): `lighthouse(url, {output:'json'}, undefined, page)`; see references/lighthouse.md.
-- Median of >=3 runs, fresh process each run (Lighthouse docs/variability.md). Flag `--throttling-method=provided` only when you control the network.
+- Median of >=3 runs, fresh process each run (GoogleChrome/lighthouse:docs/variability.md). Flag `--throttling-method=provided` only when you control the network.
 - Categories: performance, accessibility, best-practices, seo, agentic-browsing (new in 13.x: agent a11y tree, WebMCP, llms.txt).
-- Engines that failed in our bench (docs/native/bench/REPORT.md): cef-156, electron-43, lightpanda, obscura (no Target.createTarget or session). helium 2/3 (FAILED_DOCUMENT_REQUEST). Use chs-stable, chs-canary, brave-nightly or pw-chromium.
+- Engines that failed in our bench (docs/native/bench/REPORT.md): cef-156, electron-43, obscura (no Target.createTarget or session). helium 2/3 (FAILED_DOCUMENT_REQUEST). Use chs-stable, chs-canary, brave-nightly or pw-chromium.
 
 Our reference numbers (fr1, 2026-11-12, desktop preset, median of 3, Next 16.5 app): chs-stable score 1.00, LCP 186 ms, TBT 0, CLS 0. Real sites on pw-chromium (1 run): nextjs.org 0.83, vercel.com 0.82 (LCP 1736 ms), react.dev 0.93, developers.cloudflare.com 0.99.
 
@@ -98,7 +98,7 @@ TTFB/FCP: server caching, fewer redirects, preconnect to critical origins, HTTP/
 - Quick BCD lookup (local clone, raw JSON; key path = file path):
 
 ```sh
-bun -e 'const j=await Bun.file("C:/src/third_party/web/mdn_browser-compat-data/css/properties/anchor-name.json").json();const c=j.css.properties["anchor-name"].__compat;console.log(c.status,Object.fromEntries(["chrome","edge","firefox","safari","safari_ios","chrome_android"].map(b=>[b,[c.support[b]].flat()[0]?.version_added])),c.tags)'
+bun -e 'const j=await (await fetch("https://raw.githubusercontent.com/mdn/browser-compat-data/main/css/properties/anchor-name.json")).json();const c=j.css.properties["anchor-name"].__compat;console.log(c.status,Object.fromEntries(["chrome","edge","firefox","safari","safari_ios","chrome_android"].map(b=>[b,[c.support[b]].flat()[0]?.version_added])),c.tags)'
 ```
 
 - `tags: ["web-features:<id>"]` links BCD to web-features, which holds the Baseline status (BCD itself has none). Lighthouse `baseline` audit (best-practices) lists features the page uses with status.
@@ -114,6 +114,5 @@ Search the modern-web-guidance corpus (accessibility, css, forms, html, js, perf
 - references/web-vitals.md: API, Metric object, attribution fields.
 - references/bcd.md: BCD layout and queries.
 - references/modern-web-guidance.md: guide catalog.
-- Licenses: references/LICENSE-*.txt (Apache-2.0 lighthouse, web-vitals, modern-web-guidance; CC0 BCD data).
 - references/src-specs.md: normative src specs (`docs/design/specs/{a11y,seo,perf}`), rule ids, a11y/CWV rules to apply before any web page change.
 - references/wck.md: `wck` CLI, Modern Web Guidance MCP tools, visual verification pipeline.

@@ -27,9 +27,9 @@ Authoritative spec: `docs/design/specs/gpu-wasm/webgpu-wasm.md` + `.json` (ids `
 ## Procedure
 
 1. Read the spec, apply the MUSTs, cite the ids in review and in commits.
-2. Test on the workstation (RTX 4070, Chrome 157; skill `chrome` for flags, `chrome://gpu`, headless) and in software mode for the fallback.
+2. Test on the workstation (its GPU and stable Chrome, `third_party/chrome-channels.toml`; skill `chrome` for flags, `chrome://gpu`, headless) and in software mode for the fallback.
 3. Any new version or availability: read `developer.chrome.com/docs/web-platform/webgpu/news` live, update the JSON then the `.md`, record the conflict.
 
 ## Neighbouring skills
 
-`threejs-webgpu` (3D scenes, native wgpu), `ui-system` (targets and tokens), `gpui-kit` (GPUI desktop), `modern-web-guidance:modern-web-guidance` (web APIs, WebAssembly section), `chrome` (browser GPU configuration).
+`threejs-webgpu` (3D scenes, native wgpu), `ui-system` (targets and tokens), `web-quality` (perf and a11y), `chrome` (browser GPU configuration).

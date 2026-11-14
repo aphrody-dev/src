@@ -1,6 +1,6 @@
 # Steam community tools: reference
 
-Local source root: `third_party/`.
+Upstream repositories are cited by GitHub name; only steamlocate-rs is cloned under `third_party/` on this host. Versions of the tools on `vps` (fr1): run `<tool> --version` there.
 
 ## SteamDB
 
@@ -12,7 +12,7 @@ Local source root: `third_party/`.
   The live site returned HTTP 403 to `curl -I` from vps and a Cloudflare challenge in the
   browser (2026-11-12), which was not bypassed.
 - In this plugin: build links with the MCP tool `steamdb_link`; it does not fetch pages.
-- Related: SteamTracking (`third_party/steamtracking`, sparse, no license stated, `src/steam/UPSTREAM.md`).
+- Related: `SteamTracking/SteamTracking` (client and web resources) and `SteamTracking/Protobufs` (canonical `.proto` files), see `src/steam/UPSTREAM.md`.
 
 ## SteamCMD
 
@@ -25,68 +25,50 @@ Local source root: `third_party/`.
 - Never pass a real password or branch password on a command line; prefer
   `+login anonymous` where the content allows it.
 
-## DepotDownloader (SteamRE)
+## DepotDownloader (SteamRE/DepotDownloader)
 
-- GPL-2.0 (`third_party/depotdownloader/LICENSE`). Built on SteamKit2.
-- Never pass a real password on a command line: use `-qr` or `-remember-password`
-  (both listed below) instead of `-password`.
-- Args (`third_party/depotdownloader/README.md`): `-app <#>`, `-depot <#>`, `-manifest <id>` (needs
-  `-depot`), `-branch <name>`, `-branchpassword <pass>`, `-ugc <#>`, `-pubfile <#>`,
-  `-username <user>`, `-password <pass>`, `-remember-password`, `-qr`, `-os windows|macos|linux`,
-  `-osarch 32|64`, `-all-platforms`, `-language`, `-dir <dir>`, `-filelist <file>` (`regex:`
-  prefix supported), `-validate`, `-manifest-only`.
-- `-beta` / `-betapassword` are not in the 3.x README or `--help`, but `Program.cs` (lines 249-250)
-  still accepts them as aliases of `-branch` / `-branchpassword`. Prefer `-branch`.
-- vps: `DepotDownloader` 3.4.0 (`src/steam/UPSTREAM.md`). Reference only for `bun-steam`.
+- C# CLI built on SteamKit2.
+- Never pass a real password on a command line: use `-qr` or `-remember-password` instead of `-password`.
+- Args (upstream README): `-app <#>`, `-depot <#>`, `-manifest <id>` (needs `-depot`), `-branch <name>`, `-branchpassword <pass>`, `-ugc <#>`, `-pubfile <#>`, `-username <user>`, `-password <pass>`, `-remember-password`, `-qr`, `-os windows|macos|linux`, `-osarch 32|64`, `-all-platforms`, `-language`, `-dir <dir>`, `-filelist <file>` (`regex:` prefix supported), `-validate`, `-manifest-only`. `-beta` / `-betapassword` were accepted as aliases of `-branch` / `-branchpassword` in the 3.x source; prefer `-branch`.
+- vps: `~/.local/bin/DepotDownloader` (checked 2026-11-14).
 
-## steamroom
+## steamroom (landaire/steamroom)
 
-- MIT OR Apache-2.0 (`third_party/steamroom/LICENSE-MIT`, `LICENSE-APACHE`). Rust cleanroom
-  reimplementation of DepotDownloader made to avoid GPL (`third_party/steamroom/README.md`).
-- Commands (`third_party/steamroom/README.md`): `login`, `download`, `info`, `manifests`,
-  `save-manifest`, `files`, `diff`, `packages`, `workshop`, `local-info`.
-- Examples: `steamroom info --app 730 --os linux --format json`;
-  `steamroom manifests --app 480 --branch previous`;
-  `steamroom download --app 480 --depot 481 --manifest <id> --file-regex '\.dll$' --verify -o out/`;
-  `--branch-password`, `--max-downloads 16`, `--local-keys`.
-- Offline manifest read: `steamroom files --manifest-file <file.manifest>` (`third_party/steamroom/README.md`).
-- vps: steamroom-cli 0.3.0 (`src/steam/UPSTREAM.md`).
+- Rust reimplementation of DepotDownloader (CM client, PICS, depot keys, manifest decode, CDN chunks).
+- Commands (upstream README): `login`, `download`, `info`, `manifests`, `save-manifest`, `files`, `diff`, `packages`, `workshop`, `local-info`.
+- Examples: `steamroom info --app 730 --os linux --format json`; `steamroom manifests --app 480 --branch previous`; `steamroom download --app 480 --depot 481 --manifest <id> --file-regex '\.dll$' --verify -o out/`; `--branch-password`, `--max-downloads 16`, `--local-keys`.
+- Offline manifest read: `steamroom files --manifest-file <file.manifest>`.
+- vps: `~/.local/bin/steamroom` (checked 2026-11-14). `src/steam` depends on the `steamroom` crates (`src/steam/UPSTREAM.md`).
 
-## steamctl
+## steamctl (ValvePython/steamctl)
 
-- MIT (`third_party/steamctl/LICENSE`). Python CLI on ValvePython steam.
-- Command groups (`third_party/steamctl/README.rst`): `apps` (activate_key, licenses list/add, list,
-  product_info, idle-games, idle-cards), `authenticator` (add, remove, list, status, code),
-  `clear`, `cloud` (list, list_apps), `depot` (info, list, download, diff), `hlmaster query`,
-  `ugc info`, `webapi` (set-key, clear-key, list), `workshop` (search, info, download,
-  subscribe, unsubscribe, favorite).
-- Offline manifest read: `steamctl depot info -f <file.manifest>` (`src/steam/UPSTREAM.md`).
-- vps: steamctl 0.9.5, uv tool from commit 274a8db0 (`src/steam/UPSTREAM.md`).
+- Python CLI on ValvePython steam.
+- Command groups (upstream README): `apps` (activate_key, licenses list/add, list, product_info, idle-games, idle-cards), `authenticator` (add, remove, list, status, code), `clear`, `cloud` (list, list_apps), `depot` (info, list, download, diff), `hlmaster query`, `ugc info`, `webapi` (set-key, clear-key, list), `workshop` (search, info, download, subscribe, unsubscribe, favorite).
+- Offline manifest read: `steamctl depot info -f <file.manifest>`.
+- vps: `~/.local/bin/steamctl` (uv tool, checked 2026-11-14).
 
-## Libraries and mirrored tools
+## Libraries
 
-| Library                | Lang | License           | Source path                          | Notes                                                        |
-| ---------------------- | ---- | ----------------- | ------------------------------------ | ------------------------------------------------------------ |
-| SteamKit2              | C#   | LGPL-2.1          | `third_party/steamkit`               | EMsg, manifest format reference                              |
-| node-steam-user        | JS   | MIT               | `third_party/node-steam-user`        | CM client; runs under Bun (`src/steam/UPSTREAM.md`) |
-| node-steam-session     | JS   | MIT               | `third_party/node-steam-session`     | IAuthenticationService login                                 |
-| ValvePython steam      | Py   | MIT               | `third_party/valvepython-steam`      | CM client and CDN                                            |
-| steam-vent             | Rust | MIT               | `third_party/steam-vent`             | repository is Codeberg (`Cargo.toml`)                        |
-| steamworks-rs          | Rust | MIT OR Apache-2.0 | `third_party/steamworks-rs`          | needs running Steam client                                   |
-| steam-rs               | Rust | MIT               | `third_party/steam-rs`               | Web API                                                      |
-| vdf-rs                 | Rust | MIT OR Apache-2.0 | `third_party/vdf-rs`                 | text VDF parser (`keyvalues-parser`)                         |
-| steamlocate-rs         | Rust | MIT               | `third_party/steamlocate-rs`         | library discovery, StateFlags                                |
-| steam-lancache-prefill | C#   | MIT               | `third_party/steam-lancache-prefill` | lancache prefill                                             |
+| Library                | Lang | Repository                                   | Notes                                                |
+| ---------------------- | ---- | -------------------------------------------- | ---------------------------------------------------- |
+| SteamKit2              | C#   | `SteamRE/SteamKit`                           | EMsg, manifest format reference                      |
+| node-steam-user        | JS   | `DoctorMcKay/node-steam-user`                | CM client; runs under Bun                            |
+| node-steam-session     | JS   | `DoctorMcKay/node-steam-session`             | IAuthenticationService login                         |
+| ValvePython steam      | Py   | `ValvePython/steam`                          | CM client and CDN                                    |
+| steam-vent             | Rust | crates.io `steam-vent` (repository on Codeberg) | CM client                                            |
+| steamworks-rs          | Rust | `Noxime/steamworks-rs`                       | needs running Steam client                           |
+| steam-rs               | Rust | `garhow/steam-rs`                            | Web API                                              |
+| keyvalues-parser       | Rust | crates.io `keyvalues-parser` (vdf-rs)          | text VDF parser                                      |
+| steamlocate-rs         | Rust | `WilliamVenner/steamlocate-rs`               | library discovery, StateFlags (`third_party/steamlocate-rs`) |
+| steam-lancache-prefill | C#   | `tpill90/steam-lancache-prefill`             | lancache prefill                                     |
 
-License sources: `third_party/vdf-rs/keyvalues-parser/Cargo.toml`, `third_party/vdf-rs/LICENSE-MIT`, `third_party/vdf-rs/LICENSE-APACHE`; `third_party/steamlocate-rs/Cargo.toml`, `third_party/steamlocate-rs/LICENSE`; `third_party/steam-lancache-prefill/LICENSE`; `third_party/steam-vent/Cargo.toml` (`repository`).
+## Ecosystem applications
 
-## Ecosystem applications (not mirrored locally)
-
-| Tool              | License    | Purpose                                                                                                                                                                                                                                   | Source                                            |
-| ----------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| ArchiSteamFarm    | Apache-2.0 | card farming on multiple accounts; conflicts with SSA 4.C                                                                                                                                                                                 | https://github.com/JustArchiNET/ArchiSteamFarm    |
-| Steam ROM Manager | GPL-3.0    | bulk game importer and artwork manager                                                                                                                                                                                                    | https://github.com/SteamGridDB/steam-rom-manager  |
-| Decky Loader      | GPL-2.0    | plugin loader for the Steam Deck (game mode)                                                                                                                                                                                              | https://github.com/SteamDeckHomebrew/decky-loader |
-| protontricks      | GPL-3.0    | winetricks for Proton prefixes: `protontricks <APPID> <ACTIONS>` passes the actions to winetricks, `protontricks -c <COMMAND> <APPID>` runs a command in the prefix (https://github.com/Matoking/protontricks README, fetched 2026-11-12) | https://github.com/Matoking/protontricks          |
-| steam-tui         | MIT        | Rust TUI wrapper, requires steamcmd                                                                                                                                                                                                       | https://github.com/dmadisetti/steam-tui           |
-| ProtonDB          | n/a        | Proton compatibility reports; link `/app/<appid>` only, no scraping                                                                                                                                                                       | https://www.protondb.com                          |
+| Tool              | Purpose                                                                                                                                                                                                                                   | Source                                            |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| ArchiSteamFarm    | card farming on multiple accounts; conflicts with SSA 4.C                                                                                                                                                                                 | https://github.com/JustArchiNET/ArchiSteamFarm    |
+| Steam ROM Manager | bulk game importer and artwork manager                                                                                                                                                                                                    | https://github.com/SteamGridDB/steam-rom-manager  |
+| Decky Loader      | plugin loader for the Steam Deck (game mode)                                                                                                                                                                                              | https://github.com/SteamDeckHomebrew/decky-loader |
+| protontricks      | winetricks for Proton prefixes: `protontricks <APPID> <ACTIONS>` passes the actions to winetricks, `protontricks -c <COMMAND> <APPID>` runs a command in the prefix (https://github.com/Matoking/protontricks README, fetched 2026-11-12) | https://github.com/Matoking/protontricks          |
+| steam-tui         | Rust TUI wrapper, requires steamcmd                                                                                                                                                                                                       | https://github.com/dmadisetti/steam-tui           |
+| ProtonDB          | Proton compatibility reports; link `/app/<appid>` only, no scraping                                                                                                                                                                       | https://www.protondb.com                          |

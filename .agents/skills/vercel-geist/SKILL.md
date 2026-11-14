@@ -9,8 +9,8 @@ description: Geist reference (Vercel's design system) and Vercel's front-end per
 
 - Web UI target: Material 3 via the `ui-system` skill (`@aphrody/design`, Material Web, Material Symbols). Geist is not a dependency there.
 - Geist serves as a **quality reference** (density, typography, states, grid, accessibility) and as a target **only** for a product that explicitly adopts it (decision recorded in its README).
-- vercel.com is proprietary (https://vercel.com/legal/terms): never copy text, code, image, SVG, logo or icon. Only facts (token names, scales, values) are reused.
-- Geist font: SIL OFL 1.1 (verified via `gh api repos/vercel/geist-font/license`, release v1.9.2). Credit it and load it from its official distribution; do not version its files.
+- The specs record facts (token names, scales, values) read from vercel.com, not its text or assets.
+- Geist font: `vercel/geist-font`; load it from its official distribution (check the latest release with `gh api repos/vercel/geist-font/releases/latest`) and do not version its files.
 
 ## Specs (source of truth in src)
 
@@ -33,7 +33,7 @@ Schema: `docs/design/specs/spec.schema.json`. Index of pages read: `docs/design/
 
 ## Links
 
-- Cross-cutting interface rules: skill `vercel-agent-skills:web-design-guidelines` (fork aphrody-labs/agent-skills, `.agents/skills/web-design-guidelines`); do not duplicate.
-- Generic web perf: skills `web-quality-skills:core-web-vitals`, `cloudflare:web-perf`.
+- Cross-cutting interface rules: skill `web-design-guidelines`; do not duplicate.
+- Generic web perf: skill `web-quality`.
 - Sources: https://vercel.com/geist/introduction, https://vercel.com/design/guidelines, https://vercel.com/docs/speed-insights/metrics, https://github.com/vercel/geist-font.
-- Reread live (`curl -H "Accept: text/markdown"`, ~1 request/1.5 s) before citing a value; update `verified` in the JSON files.
+- Reread live (`xh -b <url> Accept:text/markdown`, ~1 request/1.5 s) before citing a value; update `verified` in the JSON files.

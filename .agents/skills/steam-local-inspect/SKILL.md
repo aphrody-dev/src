@@ -8,7 +8,7 @@ allowed-tools: Bash, Read
 # Inspect the local Steam install
 
 Read-only inspection of the Steam client on this machine (Windows, Linux, Flatpak, Snap,
-macOS) through `ay steam` (JSON from the Rust parsers of `crates/steam-depot`, the only VDF,
+macOS) through `ay steam` (JSON from the Rust parsers of `src/steam`, the only VDF,
 ACF and appinfo parsers of the monorepo) and `ay gaming` (`packages/gaming`). The `steam` MCP
 server calls the same code (docs/gaming/OWNERSHIP.md in aphrody-labs/src).
 
@@ -36,7 +36,7 @@ a parse error or a refused file; 2 is a usage error.
 - Never read or print `config/config.vdf`, `config/loginusers.vdf`,
   `userdata/<accountid>/config/local.vdf` or `ssfn*` files: they hold login tokens or machine
   auth. `ay steam vdf` and the `read_vdf` MCP tool refuse them (`is_secret_file` in
-  `crates/ay/src/low/steam.rs`, `isSecretFile` in `packages/gaming/src/steam.ts`).
+  `src/ay/src/low/steam.rs`, `isSecretFile` in `packages/gaming/src/steam.ts`).
 - Treat everything as read-only. Close Steam before editing any file it owns.
 - Prefer the MCP tools when the `steam` server is connected: `local_apps`, `app_paths`,
   `read_vdf`, `compat_tools`, `launch_env`. They return the same data.
@@ -56,6 +56,6 @@ The verified IEVR example (AppID 2799860) is in [`references/layout.md`](referen
 ## Sources
 
 - `third_party/steamlocate-rs/src` (library discovery, StateFlag bit offsets)
-- `third_party/steamappinfo/README.md` (appinfo.vdf v39 to v41 layout)
-- `third_party/valvekeyvalue` (binary KeyValues type bytes)
-- `crates/steam-depot/src/install.rs` and `crates/steam-depot/src/vdf.rs`
+- `xPaw/SteamAppInfo:README.md` (appinfo.vdf v39 to v41 layout)
+- `ValveResourceFormat/ValveKeyValue` (binary KeyValues type bytes)
+- `src/steam/src/install.rs` and `src/steam/src/vdf.rs`

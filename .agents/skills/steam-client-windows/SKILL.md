@@ -13,7 +13,7 @@ Prefer the plugin MCP tools before shelling out:
 - `app_paths`: resolve install dir, manifest, compatdata/userdata paths for one app id.
 - `read_vdf`: parse a text VDF/ACF or binary KV file into JSON.
 
-They are implemented in `apps/rosegriffon/plugins/steam/servers/steam-mcp.ts` over `packages/gaming`, which runs the Rust parsers of `crates/steam-depot/src/vdf.rs` (text KV, binary KV and appinfo.vdf v39 to v41) through `ay steam`. Credential files that `read_vdf` refuses: [`../steam-local-inspect/SKILL.md`](../steam-local-inspect/SKILL.md) (Rules). The Rust equivalents live in `crates/steam-depot/src/vdf.rs` and `crates/steam-depot/src/install.rs`.
+They are implemented in `apps/rosegriffon/plugins/steam/servers/steam-mcp.ts` over `packages/gaming`, which runs the Rust parsers of `src/steam/src/vdf.rs` (text KV, binary KV and appinfo.vdf v39 to v41) through `ay steam`. Credential files that `read_vdf` refuses: [`../steam-local-inspect/SKILL.md`](../steam-local-inspect/SKILL.md) (Rules). The Rust equivalents live in `src/steam/src/vdf.rs` and `src/steam/src/install.rs`.
 
 ## 1. Locate the install
 
@@ -74,7 +74,7 @@ From the Valve wiki page Command_line_options_(Steam) (Wayback snapshot 20251230
 - `-applaunch <appid> [args]`: launches a game through Steam.
 - `-login <user|anonymous> [password]`: Steam must be closed. Never pass a real password on a command line.
 
-Prefer `steam://rungameid/<appid>` for launching a game through a running client (`crates/steam-depot/src/launch.rs`; it accepts only `steam://` URIs without quotes or control characters).
+Prefer `steam://rungameid/<appid>` for launching a game through a running client (`src/steam/src/launch.rs`; it accepts only `steam://` URIs without quotes or control characters).
 
 - `steamwebhelper.exe` (`bin/cef/cef.win64/`): Chromium Embedded Framework process tree that renders the client UI; `-cef-disable-gpu` is the documented switch for GPU rendering problems.
 - Steam Client Service: `steamservice.exe` in `C:\Program Files (x86)\Common Files\Steam` (with `SteamService.dll` and `service_log.txt`, verified locally), the privileged helper used by `-forceservice`.
@@ -87,4 +87,4 @@ Text VDF, binary KeyValues type bytes, `appinfo.vdf` and `packageinfo.vdf` layou
 
 - Local install `C:/Program Files (x86)/Steam` (directory listing, `bin/cef/`, `steamapps/libraryfolders.vdf`, `steamapps/appmanifest_2799860.acf`, `logs/`, key names in `localconfig.vdf` and `sharedconfig.vdf`, strings in `steamclient64.dll`), `C:/Program Files (x86)/Common Files/Steam`, `reg query` of `HKCU\Software\Valve\Steam`, `HKCU\Software\Valve\Steam\ActiveProcess`, `HKLM\SOFTWARE\WOW6432Node\Valve\Steam` (read 2026-11-12).
 - https://web.archive.org/web/20251230201815/https://developer.valvesoftware.com/wiki/Command_line_options_(Steam) (accessed 2026-11-12; the live page is behind an Anubis bot check).
-- `crates/steam-depot/src/vdf.rs`, `crates/steam-depot/src/install.rs`, `crates/steam-depot/src/launch.rs`.
+- `src/steam/src/vdf.rs`, `src/steam/src/install.rs`, `src/steam/src/launch.rs`.

@@ -1,6 +1,6 @@
 # Lighthouse 13.6.0 (repo @3e50684, 2026-11-11, Apache-2.0, see LICENSE-lighthouse.txt)
 
-Run: `bun x lighthouse@13.6.0 <url> [flags]` (Node >=22.19). Browser binary: `CHROME_PATH`.
+Run: `lighthouse <url> [flags]` (installed in `~/.bun/bin`; needs a recent Node, see its package.json engines). Browser binary: `CHROME_PATH`.
 
 | Flag                                                                                          | Use                                      |
 | --------------------------------------------------------------------------------------------- | ---------------------------------------- |
@@ -55,4 +55,4 @@ Modes: navigation (page load), timespan (interactions: INP, post-load CLS), snap
 
 Variability (docs/variability.md): >=3 runs, median, quiet host, same Chrome build. Lighthouse CI (`@lhci/cli`) for budgets: not verified here.
 
-fr1 bench gotchas (docs/bench/REPORT.md, 2026-11-12): cef-156 "Failed to create a page for context", electron-43 "Target.createTarget: Not supported", lightpanda/obscura "session not found", helium 2/3 ok (FAILED_DOCUMENT_REQUEST).
+fr1 bench gotchas (docs/native/bench/REPORT.md, 2026-11-12): cef-156 "Failed to create a page for context", electron-43 "Target.createTarget: Not supported", obscura "session not found", helium 2/3 ok (FAILED_DOCUMENT_REQUEST).

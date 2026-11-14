@@ -1,4 +1,4 @@
-# MDN browser-compat-data 8.1.8 (@e665ba4, 2026-11-11, CC0, see LICENSE-bcd.txt)
+# MDN browser-compat-data (`@mdn/browser-compat-data`)
 
 Local clone: C:\src\third_party\web\mdn_browser-compat-data. Top dirs: api, css, html, http, javascript, mathml, svg, webassembly, webdriver, webextensions, manifests, mediatypes, browsers. The key path mirrors the file path: `css/properties/anchor-name.json` -> `css.properties["anchor-name"].__compat`; sub-features are nested keys.
 
@@ -6,12 +6,12 @@ Local clone: C:\src\third_party\web\mdn_browser-compat-data. Top dirs: api, css,
 
 Core browser ids: chrome, chrome_android, edge, firefox, firefox_android, safari, safari_ios. Release dates: `browsers/<id>.json` -> `browsers.<id>.releases["<ver>"].release_date`.
 
-Example (checked 2026-11-12): anchor-name chrome 125, firefox 147, safari 26, tag web-features:anchor-positioning.
+Example (checked 2026-11-12, will change): anchor-name chrome 125, firefox 147, safari 26, tag web-features:anchor-positioning.
 
-Baseline is not stored in BCD. web-features (npm `web-features`) computes it (`status.baseline: high|low|false`, `baseline_low_date`, `baseline_high_date`). It is not cloned locally, so the field names are unverified. Online sources: the MDN page banner, https://webstatus.dev, caniuse. The Lighthouse `baseline` audit uses its bundled `core/lib/baseline/web-features-data.json`.
+Baseline is not stored in BCD. web-features (npm `web-features`) computes it (`status.baseline: high|low|false`, `baseline_low_date`, `baseline_high_date`). Its field names are not verified here. Online sources: the MDN page banner, https://webstatus.dev, caniuse. The Lighthouse `baseline` audit uses its bundled `core/lib/baseline/web-features-data.json`.
 
 List CSS properties that have no Safari support:
 
 ```sh
-bun -e 'const R="C:/src/third_party/web/mdn_browser-compat-data/";for await(const f of new Bun.Glob("css/properties/*.json").scan(R)){const j=await Bun.file(R+f).json();for(const[k,v]of Object.entries(j.css.properties)){const s=[v.__compat?.support.safari].flat()[0];if(s&&!s.version_added)console.log(k)}}'
+bun -e 'const j=await (await fetch("https://unpkg.com/@mdn/browser-compat-data/data.json")).json();for(const[k,v]of Object.entries(j.css.properties)){const s=[v.__compat?.support.safari].flat()[0];if(s&&!s.version_added)console.log(k)}'
 ```

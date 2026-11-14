@@ -27,7 +27,7 @@ Servers come from `GetServersForSteamPipe`, manifest downloads need a code from 
 
 ## Tools
 
-DepotDownloader, steamctl (offline manifest reads) and steamroom (the Rust library `crates/steam-depot` depends on; see `crates/steam-depot/src/depot/`). Licenses, commands and the versions installed on vps: [`../steam-community-tools/references/tools.md`](../steam-community-tools/references/tools.md).
+DepotDownloader, steamctl (offline manifest reads) and steamroom (the Rust library `src/steam` depends on; see `src/steam/src/depot/`). Commands and the tools installed on vps: [`../steam-community-tools/references/tools.md`](../steam-community-tools/references/tools.md).
 
 ## Steam Cloud
 
@@ -46,7 +46,6 @@ DNS, cache key, trigger domain, and prefill rules: [`references/lancache.md`](re
 1. Resolve app, depot, manifest IDs (PICS or depotcache file names via `app_paths`).
 2. Read an existing local manifest before downloading anything.
 3. To fetch: get servers, request code, optional CDN token, then manifest, then chunks; verify sizes and checksums.
-4. Check the license before reusing upstream code in `bun-steam` ([`../steam-community-tools/references/decision-matrix.md`](../steam-community-tools/references/decision-matrix.md)).
 
 ## Additional Resources
 
@@ -57,14 +56,14 @@ DNS, cache key, trigger domain, and prefill rules: [`references/lancache.md`](re
 
 ## Sources
 
-- `third_party/steam-protobufs/steam/content_manifest.proto`
-- `third_party/steam-protobufs/steam/steammessages_contentsystem.steamclient.proto`
-- `third_party/steam-protobufs/steam/steammessages_cloud.steamclient.proto`
-- `third_party/steamkit/SteamKit2/SteamKit2/Types/DepotManifest.cs`
-- `third_party/steamkit/SteamKit2/SteamKit2/Steam/CDN/Client.cs`, `DepotChunk.cs`, `ClientLancache.cs`
-- `third_party/lancache-monolithic/overlay/`, `third_party/lancache-dns/Dockerfile`
-- `third_party/steam-lancache-prefill/SteamPrefill/Settings/AppConfig.cs`
-- `crates/steam-depot/UPSTREAM.md`, `crates/steam-depot/src/depot/`
+- `SteamTracking/Protobufs:steam/content_manifest.proto`
+- `SteamTracking/Protobufs:steam/steammessages_contentsystem.steamclient.proto`
+- `SteamTracking/Protobufs:steam/steammessages_cloud.steamclient.proto`
+- `SteamRE/SteamKit:SteamKit2/SteamKit2/Types/DepotManifest.cs`
+- `SteamRE/SteamKit:SteamKit2/SteamKit2/Steam/CDN/Client.cs`, `DepotChunk.cs`, `ClientLancache.cs`
+- `lancachenet/monolithic:overlay/`, `lancachenet/lancache-dns:Dockerfile`
+- `tpill90/steam-lancache-prefill:SteamPrefill/Settings/AppConfig.cs`
+- `src/steam/UPSTREAM.md`, `src/steam/src/depot/`
 - https://partner.steamgames.com/doc/sdk/uploading
 - https://partner.steamgames.com/doc/store/application/depots
 - https://partner.steamgames.com/doc/features/cloud (fetched 2026-11-12)

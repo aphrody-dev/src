@@ -1,6 +1,6 @@
 # Depot manifest format
 
-Sources: `third_party/steam-protobufs/steam/content_manifest.proto`, `third_party/steamkit/SteamKit2/SteamKit2/Types/DepotManifest.cs`, `third_party/steamkit/SteamKit2/SteamKit2/Steam/CDN/Client.cs`.
+Sources: `SteamTracking/Protobufs:steam/content_manifest.proto`, `SteamRE/SteamKit:SteamKit2/SteamKit2/Types/DepotManifest.cs`, `SteamRE/SteamKit:SteamKit2/SteamKit2/Steam/CDN/Client.cs`.
 
 ## Container
 

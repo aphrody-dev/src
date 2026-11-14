@@ -1,8 +1,8 @@
 # modern-web-guidance guide catalog (adapted)
 
-Source: C:\src\third_party\web\GoogleChrome_modern-web-guidance @ 4dd9683 (2026-11-10), Apache-2.0 (see LICENSE-modern-web-guidance.txt). Guides are vanilla HTML/CSS/JS; read the file directly, offline: `skills/modern-web-guidance/guides/<area>/<id>.md`.
+Source: upstream `GoogleChrome/modern-web-guidance` (guides in `skills/modern-web-guidance/guides/<area>/<id>.md`); a working copy is `third_party/modern-web-guidance-src`. Guides are vanilla HTML/CSS/JS.
 
-Online CLI (needs network): `npx -y modern-web-guidance@latest search "<2-5 word query>"` then `retrieve "<id>"`; `legacy-scan <path> --json` only for broad modernization (covers ~20% of corpus). On Windows use `npx.cmd`.
+Online CLI (needs network): `modern-web-guidance search "<2-5 word query>"` then `retrieve "<id>"`; `legacy-scan <path> --json` only for broad modernization (covers ~20% of corpus). Install once with `bun add -g modern-web-guidance`.
 
 Rules kept from upstream: assume Baseline Widely available = safe without fallback; otherwise apply the guide's fallback. One query = one capability. Do not guess guide ids.
 

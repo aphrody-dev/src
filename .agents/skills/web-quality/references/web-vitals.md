@@ -1,4 +1,4 @@
-# web-vitals 6.2.3 API (README @94b3b4b, Apache-2.0, see LICENSE-web-vitals.txt)
+# web-vitals API (README of GoogleChrome/web-vitals; check the version with `bun info web-vitals`)
 
 Builds: `web-vitals` (standard), `web-vitals/attribution` (+~1.5 KB brotli). Dist: `dist/web-vitals.iife.js`, `dist/web-vitals.attribution.iife.js` (+ ES module variants). README CDN examples still pin `web-vitals@5`; use `@6` for 6.x. Prefer self-hosting.
 

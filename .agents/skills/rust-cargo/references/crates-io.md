@@ -19,11 +19,11 @@ Cargo reads crate metadata over HTTP without cloning the git index:
 Always send a descriptive `User-Agent` header per crates.io API policy:
 
 ```bash
-# Query single crate metadata
-curl -s -H "User-Agent: aphrody-src-agent/1.0" "https://crates.io/api/v1/crates/serde"
+# single crate metadata (pipe to jaq to filter)
+xh -b https://crates.io/api/v1/crates/serde User-Agent:aphrody-src-agent/1.0
 
-# Query top crates by downloads
-curl -s -H "User-Agent: aphrody-src-agent/1.0" "https://crates.io/api/v1/crates?sort=downloads&per_page=10"
+# top crates by downloads
+xh -b "https://crates.io/api/v1/crates?sort=downloads&per_page=10" User-Agent:aphrody-src-agent/1.0
 ```
 
 
@@ -34,6 +34,6 @@ cargo publish --dry-run -p <crate>
 cargo publish -p <crate>
 ```
 
-Verify secret scan is clean before publishing public crates from `C:\src`.
+Verify secret scan is clean before publishing public crates from this repo.
 
 Crate versions change daily: query the API above instead of trusting any list.

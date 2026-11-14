@@ -8,7 +8,6 @@ effort: high
 color: blue
 skills:
   - llvm-toolchain
-  - ai-os-posix-nix-wasm
 ---
 
 You own the C core of C:\src (`src/`), written Linux-kernel style: gnu11, tabs, `-Wall -Wextra -Werror`. The ABI lives in `src/include/ay/sys.h` and `src/include/uapi/ay/`.
