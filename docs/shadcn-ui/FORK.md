@@ -11,8 +11,8 @@ Build et tests exécutés sur fr1 (`~/work/shadcn-ui`, bun 1.4.4 canary) ; aucun
 | `packages/registry` | 3814 pass, 0 fail (6 tests proxy ignorés sous Bun) |
 | `packages/shadcn` | 491 pass, 0 fail |
 | `packages/react` | 140 pass, 0 fail (fichiers `*.browser.test.*` exclus) |
-| `apps/v4` | 182 pass, 1 fail (voir blocages) |
-| `packages/tests` (e2e) | non vérifié (blocage 8) |
+| `apps/v4` | 182 pass, 1 fail -> 200 pass, 0 fail (0,92 s, hyperfine 3 runs, usa) |
+| `packages/tests` (e2e) | non exécuté -> 220 pass, 2 fail -> 222 pass, 0 fail (12 min 23 s, usa, serveur Next dev sur port 14001) |
 
 `tsc --noEmit` : 0 erreur sur helpers, registry, shadcn, react, tests (les `*.test.ts(x)` sont exclus du typecheck, voir blocages).
 
@@ -30,11 +30,9 @@ Build et tests exécutés sur fr1 (`~/work/shadcn-ui`, bun 1.4.4 canary) ; aucun
 
 1. Tests navigateur `packages/react/src/**/*.browser.test.tsx` (3057 lignes) : dépendent de `@vitest/browser` (`userEvent`) et de la disposition réelle (scroll). Conversion vers `Bun.WebView` possible (bundle `Bun.build` + runner in-page + pont `view.click/type/press`) mais non faite ; `vitest`, `@vitest/browser`, `playwright` restent dans `packages/react` pour `test:browser`.
 2. `proxy.integration.test.ts` : 6 tests utilisent le `dispatcher` undici ; le `fetch` de Bun l'ignore (option `proxy` propre à Bun). Ignorés via `describe.skipIf(typeof Bun !== "undefined")`.
-3. `apps/v4/registry/calendar.test.ts` : 1 échec (`aria/ui/calendar.tsx` ne contient pas la clé `month_grid` attendue), contenu de registre amont, indépendant de Bun.
 4. Types : `vi.mocked`, `vi.stubEnv`, `vi.importActual`, `vi.stubGlobal` fonctionnent à l'exécution mais ne figurent pas dans les types de `bun:test` (environ 270 erreurs TS) ; fichiers de test exclus de `tsc`.
 5. `Bun.WebView` : pas de facteur d'échelle (captures en 1x au lieu de 2x) ni de capture d'élément (le viewport est redimensionné sur l'élément).
 6. Les paquets publiés tournent sur Node chez les utilisateurs : `exec`/`glob` gardent donc un repli Node ; un remplacement strict par `Bun.$` casserait la CLI publiée.
-8. e2e : `bun run --filter v4 registry:build` réussit (369 s) et le serveur Next dev démarre, mais `GET /` ne répond pas en 120 s sur fr1 (compilation à froid Turbopack) ; `scripts/test-e2e.ts` attend donc le serveur sans lancer la suite. Le preload e2e est écrit mais jamais exécuté.
 9. `ay graph build` n'accepte qu'un chemin ; graphe généré sur le dépôt entier.
 
 ## Sources
@@ -45,3 +43,11 @@ Build et tests exécutés sur fr1 (`~/work/shadcn-ui`, bun 1.4.4 canary) ; aucun
 - `bun lint` / `bun fmt` (`--doctor`, `--no-script`) : sortie de `bun lint --help` et `bun fmt --help` sur fr1 (bun 1.4.4 canary), https://bun.com/docs/lint
 - `Bun.spawn` : https://bun.com/docs/runtime/child-process
 - Graphe : `graph/` (GRAPH_REPORT.md, ARCHITECTURE.mermaid, graph.svg), `ay graph build -o /tmp/g-shadcn shadcn-ui` sur fr1.
+
+## Passe 3 : blocages 3 et 8 levés (commit `19f5724ea`, usa, `/root/work/ui`, nice 19, port 14001)
+
+- `calendar.test.ts` : la base `aria` (react-aria-components) n'utilise pas react-day-picker ; les fichiers `aria`/`aria-*` sont exclus du test.
+- e2e : `GET /` ne répondait pas car `next.config.mjs` lève une erreur quand `styles/<style>/ui` manque (seul `base-nova` est généré par défaut) ; le serveur écoute mais ne sert rien. Il faut `registry:build --style all` puis `registry:build --registry all` (publie `public/r/styles/*`, dont `new-york-v4`). Avec ces styles, `GET /` répond 200 en 34 s à froid. Le script racine `test` enchaîne ces deux builds ; `scripts/test-e2e.ts` lit `E2E_PORT`, lance `next dev` directement et échoue si le serveur sort.
+- `bun test --timeout 120000` explicite (le `timeout` de bunfig n'est pas appliqué : les tests expiraient à 5 s). Hôte de test : `npm`/`pnpm` absents, shim `bun add` dans le PATH (hors dépôt).
+- 2 tests (`search`/`view` "network timeouts") attendaient le message undici `failed, reason:` ; Bun renvoie `ECONNREFUSED` : regex élargie.
+- Mesures (usa) : `apps/v4` `bun test` 200 pass / 0 fail, 0,915 s ± 0,017 s (avant : 10 fail une fois les styles générés, 1,07 s ± 0,22 s) ; e2e 222 tests.
