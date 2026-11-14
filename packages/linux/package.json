@@ -1,0 +1,21 @@
+{
+  "name": "@aphrody/linux",
+  "version": "1.0.0",
+  "description": "ay linux and ay pkg: kernel patchsets, kernel builds off the PC, one package recipe for every distro",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "linux": "./src/cli.ts"
+  },
+  "scripts": {
+    "check": "bun check",
+    "fmt": "bun fmt",
+    "test": "bun test"
+  },
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/src.git",
+    "directory": "packages/linux"
+  }
+}
