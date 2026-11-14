@@ -50,5 +50,5 @@ names = [
   "storefront",
   "terminal",
   "tune",
-  "view_quilt"
+  "view_quilt",
 ]

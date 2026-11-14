@@ -69,13 +69,7 @@
   ],
   "analyses": {
     "byron-ie1": {
-      "seeds": [
-        "#BBB27F",
-        "#A48260",
-        "#135B83",
-        "#010000",
-        "#9CA3A4"
-      ],
+      "seeds": ["#BBB27F", "#A48260", "#135B83", "#010000", "#9CA3A4"],
       "topHct": {
         "hue": 102.9,
         "chroma": 22.5,
@@ -169,13 +163,7 @@
       }
     },
     "byron-go": {
-      "seeds": [
-        "#EA6A6A",
-        "#C9CB8E",
-        "#FFCE9E",
-        "#C4876B",
-        "#EEFEFE"
-      ],
+      "seeds": ["#EA6A6A", "#C9CB8E", "#FFCE9E", "#C4876B", "#EEFEFE"],
       "topHct": {
         "hue": 20,
         "chroma": 58.7,
@@ -269,13 +257,7 @@
       }
     },
     "byron-ares": {
-      "seeds": [
-        "#C63F00",
-        "#C0B380",
-        "#CEAB87",
-        "#F8FBFF",
-        "#D0ADB2"
-      ],
+      "seeds": ["#C63F00", "#C0B380", "#CEAB87", "#F8FBFF", "#D0ADB2"],
       "topHct": {
         "hue": 37.1,
         "chroma": 75,
@@ -369,13 +351,7 @@
       }
     },
     "zeus-bust": {
-      "seeds": [
-        "#AAA173",
-        "#195476",
-        "#BC8D6F",
-        "#837476",
-        "#959C9B"
-      ],
+      "seeds": ["#AAA173", "#195476", "#BC8D6F", "#837476", "#959C9B"],
       "topHct": {
         "hue": 101.9,
         "chroma": 20.9,
@@ -469,13 +445,7 @@
       }
     },
     "coach-bust": {
-      "seeds": [
-        "#EB6B6B",
-        "#C2BB85",
-        "#DFA983",
-        "#98805D",
-        "#D5EBE1"
-      ],
+      "seeds": ["#EB6B6B", "#C2BB85", "#DFA983", "#98805D", "#D5EBE1"],
       "topHct": {
         "hue": 20,
         "chroma": 58.6,

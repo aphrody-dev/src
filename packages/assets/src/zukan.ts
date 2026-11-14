@@ -359,12 +359,12 @@ export async function runZukanBrandPipeline(
       "Byron Love (Ares)",
     ],
     [
-      join(root, "assets", "Copy of 0rjt3mohwqe_r0.webp"),
+      join(rawImgDir, "zeus-bust.webp"),
       join(zukanDir, "zeus-bust.svg"),
       "Byron Love Zeus Bust",
     ],
     [
-      join(root, "assets", "Copy of xw6ypvgrl_c_r0.webp"),
+      join(rawImgDir, "coach-bust.webp"),
       join(zukanDir, "coach-bust.svg"),
       "Byron Love Coach Bust",
     ],
