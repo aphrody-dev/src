@@ -559,6 +559,10 @@ agents-install host:
 gemini-setup *args:
     bun "{{root}}/packages/machine/src/gemini-setup.ts" {{args}}
 
+# LLM provider inventory from infra/ai/providers.toml (usage: just ai-providers [--check])
+ai-providers *args:
+    bun "{{root}}/infra/ai/providers.ts" {{args}}
+
 # Agent tooling (infra/agents/toolchain.toml): skills, plugins, MCP for Claude Code, Codex, agy, Gemini CLI (usage: just agents-sync [--check])
 agents-sync *args:
     bun "{{root}}/packages/machine/src/toolchain.ts" {{args}}

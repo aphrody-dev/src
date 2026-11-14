@@ -1,0 +1,25 @@
+# LLM provider inventory sources, read by infra/ai/providers.ts (`just ai-providers`, workflow ai-providers.yml).
+# Add a registry: one [[source]] entry, no code change.
+# kind = "openrouter" | "modelsdev" | "litellm" (how the JSON is read).
+# Recursion: every provider found with a public `api` base URL is probed at <api>/models (OpenAI-compatible
+# listing, no key); `depth = 0` disables it. Results: docs/ai/providers.json (data) and docs/ai/PROVIDERS.md.
+
+[settings]
+depth = 1
+concurrency = 16
+timeout_ms = 15000
+
+[[source]]
+name = "openrouter"
+kind = "openrouter"
+url = "https://openrouter.ai/api/v1/models"
+
+[[source]]
+name = "models.dev"
+kind = "modelsdev"
+url = "https://models.dev/api.json"
+
+[[source]]
+name = "litellm"
+kind = "litellm"
+url = "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json"
