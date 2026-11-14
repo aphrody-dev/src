@@ -123,3 +123,9 @@ shadcn-ui/ui TypeScript
 mui/base-ui TypeScript
 tailwindlabs/tailwindcss TypeScript
 better-auth/better-auth TypeScript
+Far-Beyond-Pulsar/Pulsar-Native Rust
+gpui-ce/gpui-ce Rust
+longbridge/gpui-fast Rust
+remorses/gpuix Rust
+zed-industries/awesome-gpui Python
+zed-industries/create-gpui-app Rust
