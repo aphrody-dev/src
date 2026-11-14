@@ -156,10 +156,12 @@ pub fn bump_depot_deps(root: &Path, write: bool, check_remotes: bool) -> Value {
         });
     };
 
-    let parsed = match depot_gclient::eval::exec(&content, "DEPS", None, None)
-        .and_then(|scope| depot_gclient::deps::parse(&scope, None))
-    {
-        Ok(p) => p,
+    let parsed = match depot_gclient::deps::parse(&content, "DEPS", None, None) {
+        Ok(scope) => scope
+            .get("deps")
+            .and_then(depot_gclient::Value::as_dict)
+            .cloned()
+            .unwrap_or_default(),
         Err(e) => {
             return json!({
                 "tool": "depot-gclient",
@@ -177,17 +179,20 @@ pub fn bump_depot_deps(root: &Path, write: bool, check_remotes: bool) -> Value {
     let lock_repos = lock_json.get("repositories").and_then(Value::as_object);
 
     let mut updates = Vec::new();
-    let mut editor = if write {
-        depot_gclient::edit::DepsEditor::new(&content, "DEPS").ok()
-    } else {
-        None
-    };
+    let mut editor = write.then(|| depot_gclient::edit::DepsEditor::new(content.as_str(), "DEPS", None));
 
-    for (path, entry) in &parsed.deps {
-        let Some(git) = entry.git.as_ref() else {
+    for (path, entry) in parsed.iter() {
+        let Some(dep) = entry.as_dict() else {
             continue;
         };
-        let pinned = git.revision.as_deref().unwrap_or("");
+        if dep.get("dep_type").and_then(depot_gclient::Value::as_str) != Some("git") {
+            continue;
+        }
+        // Standardized git deps carry `url` = "<repo>@<revision>" (gclient `Dependency.ParseDepsFile`).
+        let Some(url_rev) = dep.get("url").and_then(depot_gclient::Value::as_str) else {
+            continue;
+        };
+        let (url, pinned) = url_rev.rsplit_once('@').unwrap_or((url_rev, ""));
         let mut target_rev = lock_repos
             .and_then(|m| m.get(path))
             .and_then(|r| r.get("commit"))
@@ -195,7 +200,7 @@ pub fn bump_depot_deps(root: &Path, write: bool, check_remotes: bool) -> Value {
             .map(str::to_string);
 
         if check_remotes {
-            let (rc, out, _) = run_capture("git", &["ls-remote", &git.url, "HEAD"], root);
+            let (rc, out, _) = run_capture("git", &["ls-remote", url, "HEAD"], root);
             if rc == 0 {
                 if let Some(sha) = out.split_whitespace().next() {
                     target_rev = Some(sha.to_string());
@@ -210,7 +215,7 @@ pub fn bump_depot_deps(root: &Path, write: bool, check_remotes: bool) -> Value {
                 }
                 updates.push(json!({
                     "path": path,
-                    "url": git.url,
+                    "url": url,
                     "from": pinned,
                     "to": next,
                 }));
@@ -221,7 +226,7 @@ pub fn bump_depot_deps(root: &Path, write: bool, check_remotes: bool) -> Value {
     let mut wrote = false;
     if write && !updates.is_empty() {
         if let Some(ed) = editor {
-            if std::fs::write(&deps_path, ed.text()).is_ok() {
+            if std::fs::write(&deps_path, ed.content()).is_ok() {
                 wrote = true;
             }
         }
@@ -230,7 +235,7 @@ pub fn bump_depot_deps(root: &Path, write: bool, check_remotes: bool) -> Value {
     json!({
         "tool": "depot-gclient",
         "present": true,
-        "deps_count": parsed.deps.len(),
+        "deps_count": parsed.len(),
         "updates": updates,
         "written": wrote,
     })

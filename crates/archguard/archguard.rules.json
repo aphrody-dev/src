@@ -6,18 +6,16 @@
     ".agents",
     ".cargo",
     ".claude",
-    ".coordkit-bus",
     ".gemini",
     ".git",
     ".github",
     ".jj",
-    ".repo",
     ".cache",
     ".claude-plugin",
+    ".worktrees",
     "apps",
     "assets",
     "conformance",
-    "licenses",
     "plugins",
     "scripts",
     "crates",
@@ -26,6 +24,7 @@
     "infra",
     "node_modules",
     "packages",
+    "src",
     "target",
     "third_party",
     "tools",
@@ -40,7 +39,7 @@
     },
     "linux": {
       "maintainers_file": "MAINTAINERS",
-      "patch_series_file": "docs/patches/series",
+      "patch_series_file": "docs/native/patches/series",
       "canonical_status": [
         "Supported",
         "Maintained",
@@ -51,7 +50,7 @@
       "verify_patterns_on_disk": true
     },
     "bun": {
-      "runtime_version": "1.4.4",
+      "runtime_version": "1.4.5",
       "full_rust_parity": true,
       "forbidden_glue_files": ["binding.gyp"],
       "forbidden_lifecycle_scripts": ["postinstall", "preinstall"]
@@ -60,8 +59,8 @@
       "layers": [
         {
           "level": 0,
-          "name": "Layer 0: Native Kernel & Primitives",
-          "path": "crates/unix-*"
+          "name": "Layer 0: Pure C, Assembly & WebAssembly Core (src/)",
+          "paths": ["src/*", "crates/unix-*"]
         },
         {
           "level": 1,

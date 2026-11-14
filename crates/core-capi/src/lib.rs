@@ -7,6 +7,7 @@
 //! - Build with the shared LLVM toolchain (docs/llvm/UNIFIED-TOOLCHAIN.md) for cross-language LTO.
 
 pub mod cabi;
+pub mod sys;
 #[cfg(feature = "ai-os")]
 pub mod ai_os;
 

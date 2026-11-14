@@ -6,7 +6,7 @@ edition.workspace = true
 license.workspace = true
 authors.workspace = true
 description = "ay: one multicall CLI for the Aphrody monorepo (arch gate, lock, git, ingest, graph, deploy, bench, build)"
-repository = "https://github.com/aphrody-labs/src"
+repository = "https://github.com/aphrody-labs/aphrody"
 
 # Released with dist (dist-workspace.toml); the only dist package in the workspace.
 [package.metadata.dist]
@@ -25,6 +25,7 @@ doctest = false
 [dependencies]
 archguard.workspace = true
 aphrody-conformance = { version = "0.4.0", path = "../conformance" }
+aphrody-re.workspace = true
 clap.workspace = true
 depot-cli.workspace = true
 depot-cipd.workspace = true
@@ -38,6 +39,7 @@ serde.workspace = true
 toml.workspace = true
 ureq.workspace = true
 regex.workspace = true
+# `ay code`: parser-backed refs/mv/stage.
 tree-sitter.workspace = true
 tree-sitter-typescript.workspace = true
 tree-sitter-javascript.workspace = true

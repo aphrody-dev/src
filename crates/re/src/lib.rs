@@ -1,24 +1,82 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
-//! `depot-re`: Consolidated reverse-engineering and runtime execution analysis engine.
+//! `aphrody-re`: Reverse-engineering and runtime execution analysis engine.
 //! Unifies binary format triage (`goblin`), x86-64 disassembly (`iced-x86`),
-//! MinGW CRT noise filtration (`rea`), C++/Rust/Unreal ABI classification,
-//! and Lua 5.2 compiled bytecode disassembly & REA audit.
+//! Ghidra P-Code CFG + Pseudo-C lifting, MinGW CRT noise filtration (`rea`),
+//! C++/Rust/Unreal ABI classification, and Lua 5.2 bytecode disassembly & transcoding.
 
 pub mod abi;
+pub mod adobe;
+pub mod android;
+pub mod asar;
 pub mod binary;
+pub mod bun_engine_binary;
+pub mod cli;
+pub mod cpu;
+#[cfg(feature = "decompile")]
+pub mod decompile;
 pub mod disasm;
+pub mod dump;
+pub mod electron;
+#[cfg(feature = "game")]
+pub mod game;
+pub mod ghidra;
+pub mod golang;
+pub mod google;
+pub mod headers;
+#[cfg(feature = "leveldb")]
+pub mod leveldb;
 pub mod lua;
+#[cfg(feature = "magika")]
+pub mod magika;
+pub mod mingw;
+pub mod minidump;
+pub mod pdata;
+pub mod pe_forge;
+pub mod pe_inspect;
+#[cfg(feature = "pipeline")]
+pub mod pipeline;
+pub mod propagate;
 pub mod rea;
+pub mod steam_drm;
+pub mod triage;
+pub mod virtualization;
+#[cfg(any(feature = "wasm", target_arch = "wasm32"))]
+pub mod wasm_container;
+#[cfg(feature = "yara")]
+pub mod yara;
+
+pub use pe_inspect as pe;
+pub use steam_drm as steam;
+#[cfg(any(feature = "wasm", target_arch = "wasm32"))]
+pub use wasm_container as wasm;
 
 pub use abi::{CppAbiClass, classify_symbol_abi};
 pub use binary::{BinaryFormatReport, SectionSummary, inspect_binary_bytes};
 pub use disasm::{DisassembledInstruction, disassemble_x64};
+pub use ghidra::{
+    BinaryContainerFormat, BinarySreReport, CfgBasicBlock, DecompiledFunctionReport,
+    ExtractedString, PcodeInstruction, PcodeOpcode, SectionInfo, SreAnalyzeOptions,
+    analyze_binary_bytes, analyze_binary_file, decompile_x86_slice,
+};
 pub use lua::{
     Lua52BytecodeAudit, LuaBytecodeHeader, LuaDisassembledInstruction, LuaGlobalAccess,
     LuaLocalVar, LuaPrototypeAudit, LuaUpvalueDesc, RawConstant, audit_lua52_bytecode,
     decode_lua52_instruction, is_lua52_bytecode, transcode_lua52_bytecode,
 };
+pub use mingw::{
+    MingwReaBinaryAudit, MingwReaDoctorReport, ProxyDllSynthesisReport, analyze_pe_mingw_rea,
+    is_mingw_crt_or_thunk, probe_mingw_rea_environment, synthesize_proxy_hook_dll,
+};
 pub use rea::{MINGW_CRT_NOISE_SYMBOLS, ReaNoiseFilterReport, filter_crt_boilerplate};
+pub use triage::{
+    AesCtrResult, AobScanResult, ArchitectureSlice, BinaryString, DISASM_LIMIT, DisasmInsn,
+    EntropyMap, ExtractedStrings, Format, MultiHash, PeAnalysis, PeAnalysisImport,
+    PeAnalysisSection, PeAnalysisSymbol, PeHeader, PeSection, ReError, STRINGS_MIN_LEN,
+    STRINGS_SAMPLE_LIMIT, Section, SectionDumpResult, TriageReport, XorResult, aes_ctr_file,
+    analyze_pe_file, disasm, entropy_map_file, extract_strings, extract_strings_file, hash_file,
+    list_cpk_file, parse_pe_header_file, section_dump_file, shannon_entropy, triage,
+    triage_bounded, xor_file,
+};
 
 use std::path::Path;
 

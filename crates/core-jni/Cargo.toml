@@ -1,0 +1,25 @@
+[package]
+name = "aphrody-core-jni"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Native JNI (Java 25+) core bridge exposing aphrody-core (Tree-sitter, BLAKE3, index) and aphrody-re (RE triage, disasm, Ghidra P-Code/Pseudo-C, MinGW-REA, Lua 5.2)"
+keywords = ["java", "jni", "tree-sitter", "reverse-engineering", "blake3"]
+categories = ["api-bindings", "development-tools::debugging"]
+
+[lib]
+name = "aphrody_jni"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+aphrody-core.workspace = true
+aphrody-re.workspace = true
+jni = "0.22.4"
+serde_json.workspace = true
+
+[lints]
+workspace = true

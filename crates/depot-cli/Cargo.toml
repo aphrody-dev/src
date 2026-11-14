@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository = "https://github.com/aphrody-dev/depot"
-description = "depot command set (VCS, ingest, code graph, RE) behind `ay git`, `ay ingest` and `ay graph`"
+description = "depot command set (VCS, depot_tools, ingest, code graph) behind `ay git`, `ay ingest` and `ay graph`"
 
 [lib]
 name = "depot_cli"
@@ -13,7 +13,6 @@ path = "src/lib.rs"
 [dependencies]
 depot-core.workspace = true
 aphrody-core.workspace = true
-depot-re.workspace = true
 depot-migrate.workspace = true
 depot-forge.workspace = true
 depot-ingest.workspace = true

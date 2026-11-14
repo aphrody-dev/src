@@ -2,14 +2,16 @@ use std::os::raw::c_char;
 use std::path::Path;
 use serde_json::json;
 
-use aphrody_core::apply_helix_rope_edits;
+use aphrody_core::{SupportedLanguage, apply_helix_rope_edits};
 use aphrody_core_capi::cabi::{c_str, free_c_string, into_c_string, json_err, json_ok, raw_slice};
 use depot_core::{GixEngine, JustEngine, detect_content};
 use depot_forge::GitHubClient;
 use depot_graph::{GraphQuery, QueryOptions, build_graph_for_dir};
 use depot_ingest::{DigestFormat, IngestConfig, ingest_codebase};
-use depot_migrate::MigrateEngine;
-use depot_re::{ReEngine, transcode_lua52_bytecode};
+use depot_migrate::{
+    MigrateEngine, generate_dotnet_rust_bun_bindings, parse_llvm_ir_text,
+    probe_dotnet_environment, probe_llvm_rust_bun_toolchain, transform_source,
+};
 
 pub const DEPOT_ABI_VERSION: u32 = 20261111;
 
@@ -166,68 +168,79 @@ pub extern "C" fn depot_migrate_run_json(root_dir_ptr: *const c_char, dry_run: b
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn depot_re_audit_json(path_ptr: *const c_char) -> *mut c_char {
+pub extern "C" fn depot_dotnet_doctor_json() -> *mut c_char {
+    match probe_dotnet_environment() {
+        Ok(rep) => json_ok(&rep),
+        Err(e) => json_err(e),
+    }
+}
+
+fn resolve_transform_language(spec: &str) -> Option<SupportedLanguage> {
+    let trimmed = spec.trim().trim_start_matches('.');
+    match trimmed.to_ascii_lowercase().as_str() {
+        "ts" | "mts" | "cts" | "typescript" => Some(SupportedLanguage::TypeScript),
+        "tsx" => Some(SupportedLanguage::Tsx),
+        "js" | "mjs" | "cjs" | "jsx" | "javascript" => Some(SupportedLanguage::JavaScript),
+        "lua" => Some(SupportedLanguage::Lua),
+        _ => SupportedLanguage::from_path(Path::new(trimmed))
+            .or_else(|| SupportedLanguage::from_path(Path::new(&format!("input.{trimmed}")))),
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn depot_transform_source_json(
+    lang_or_path_ptr: *const c_char,
+    source_ptr: *const c_char,
+) -> *mut c_char {
+    // SAFETY: caller passes NUL-terminated strings valid for the call.
+    let lang_spec = unsafe { c_str(lang_or_path_ptr) };
+    let source = unsafe { c_str(source_ptr) };
+    let Some(lang) = resolve_transform_language(lang_spec) else {
+        return json_err(format!("unsupported transform language: {lang_spec}"));
+    };
+    json_ok(&transform_source(lang, source))
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn depot_llvm_probe_json(vendor_llvm_dir_ptr: *const c_char) -> *mut c_char {
     // SAFETY: caller passes a NUL-terminated string valid for the call.
-    let p_str = unsafe { c_str(path_ptr) };
-    let path = Path::new(p_str);
-
-    match ReEngine::audit_file(path) {
-        Ok(audit) => json_ok(&audit),
-        Err(e) => into_c_string(json!({ "error": e, "path": p_str }).to_string()),
-    }
+    let dir_str = unsafe { c_str(vendor_llvm_dir_ptr) };
+    let path = if dir_str.is_empty() {
+        Path::new("third_party/llvm-project")
+    } else {
+        Path::new(dir_str)
+    };
+    json_ok(&probe_llvm_rust_bun_toolchain(path))
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn depot_re_audit_bytes_json(
-    label_ptr: *const c_char,
-    bytes_ptr: *const u8,
-    bytes_len: usize,
+pub extern "C" fn depot_llvm_ir_analyze_json(
+    source_label_ptr: *const c_char,
+    ir_text_ptr: *const c_char,
 ) -> *mut c_char {
-    // SAFETY: caller passes a NUL-terminated string and `bytes_len` readable bytes.
-    let label = unsafe { c_str(label_ptr) };
-    let slice = unsafe { raw_slice(bytes_ptr, bytes_len) };
-    if slice.is_empty() {
-        return into_c_string(json!({ "error": "empty bytecode buffer", "path": label }).to_string());
-    }
-
-    match ReEngine::audit_bytes(slice, label) {
-        Ok(audit) => json_ok(&audit),
-        Err(e) => into_c_string(json!({ "error": e, "path": label }).to_string()),
-    }
+    // SAFETY: caller passes NUL-terminated strings valid for the call.
+    let label = unsafe { c_str(source_label_ptr) };
+    let ir_text = unsafe { c_str(ir_text_ptr) };
+    let safe_label = if label.is_empty() { "module.ll" } else { label };
+    json_ok(&parse_llvm_ir_text(ir_text, safe_label))
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn depot_lua52_transcode_hex(
-    bytes_ptr: *const u8,
-    bytes_len: usize,
-    target_int: u8,
-    target_sizet: u8,
+pub extern "C" fn depot_dotnet_bindgen_json(
+    cs_path_ptr: *const c_char,
+    assembly_name_ptr: *const c_char,
 ) -> *mut c_char {
-    // SAFETY: caller guarantees `bytes_ptr` points to `bytes_len` readable bytes.
-    let slice = unsafe { raw_slice(bytes_ptr, bytes_len) };
-    if slice.is_empty() {
-        return json_err("empty Lua 5.2 bytecode buffer");
-    }
-
-    match transcode_lua52_bytecode(slice, target_int, target_sizet) {
-        Ok(out) => {
-            let mut hex = String::with_capacity(out.len() * 2);
-            for b in &out {
-                use std::fmt::Write;
-                let _ = write!(&mut hex, "{b:02x}");
-            }
-            into_c_string(
-                json!({
-                    "ok": true,
-                    "byte_length": out.len(),
-                    "target_size_int": target_int,
-                    "target_size_size_t": target_sizet,
-                    "hex": hex,
-                })
-                .to_string(),
-            )
-        }
-        Err(e) => into_c_string(json!({ "ok": false, "error": e }).to_string()),
+    // SAFETY: caller passes NUL-terminated strings valid for the call.
+    let cs_path = unsafe { c_str(cs_path_ptr) };
+    let assembly_name = unsafe { c_str(assembly_name_ptr) };
+    let asm = if assembly_name.is_empty() {
+        "AphrodyNative"
+    } else {
+        assembly_name
+    };
+    match generate_dotnet_rust_bun_bindings(Path::new(cs_path), asm) {
+        Ok(bundle) => json_ok(&bundle),
+        Err(e) => into_c_string(json!({ "error": e, "path": cs_path }).to_string()),
     }
 }
 
@@ -265,44 +278,35 @@ mod tests {
     }
 
     #[test]
-    fn test_lua52_ffi_pipeline() {
-        // 1. Magika LuaBytecode detection
+    fn test_magika_lua52_detect_ffi() {
         let luac_path = CString::new("quest.lua.bin").unwrap();
         let mut chunk = Vec::new();
         chunk.extend_from_slice(b"\x1bLua\x52\x00");
         chunk.extend_from_slice(&[1, 4, 8, 4, 8, 0]);
         chunk.extend_from_slice(b"\x19\x93\r\n\x1a\n");
         chunk.extend_from_slice(&0u32.to_le_bytes());
-        chunk.extend_from_slice(&0u32.to_le_bytes());
-        chunk.extend_from_slice(&[0, 1, 2]);
-        let ret_instr = 31u32 | (1u32 << 23);
-        chunk.extend_from_slice(&1u32.to_le_bytes());
-        chunk.extend_from_slice(&ret_instr.to_le_bytes());
-        chunk.extend_from_slice(&0u32.to_le_bytes()); // constants
-        chunk.extend_from_slice(&0u32.to_le_bytes()); // protos
-        chunk.extend_from_slice(&1u32.to_le_bytes()); // upvalues
-        chunk.extend_from_slice(&[1, 0]);
-        chunk.extend_from_slice(&0u64.to_le_bytes()); // source = nil
-        chunk.extend_from_slice(&0u32.to_le_bytes()); // lineinfo
-        chunk.extend_from_slice(&0u32.to_le_bytes()); // locals
-        chunk.extend_from_slice(&0u32.to_le_bytes()); // upval names
 
         let magika_ptr = depot_magika_detect_json(luac_path.as_ptr(), chunk.as_ptr(), chunk.len());
         let magika_str = unsafe { CStr::from_ptr(magika_ptr).to_str().unwrap() };
         assert!(magika_str.contains("LuaBytecode"));
         depot_free_string(magika_ptr);
+    }
 
-        // 2. RE audit bytes FFI
-        let audit_ptr = depot_re_audit_bytes_json(luac_path.as_ptr(), chunk.as_ptr(), chunk.len());
-        let audit_str = unsafe { CStr::from_ptr(audit_ptr).to_str().unwrap() };
-        assert!(audit_str.contains("\"is_lua_bytecode\":true"));
-        assert!(audit_str.contains("RETURN"));
-        depot_free_string(audit_ptr);
+    #[test]
+    fn test_transform_and_llvm_ir_ffi() {
+        let lang = CString::new("ts").unwrap();
+        let src = CString::new("import { readFileSync } from 'fs';\nexport const n = 1;").unwrap();
+        let res_ptr = depot_transform_source_json(lang.as_ptr(), src.as_ptr());
+        let res_str = unsafe { CStr::from_ptr(res_ptr).to_str().unwrap() };
+        assert!(res_str.contains("node:fs"));
+        depot_free_string(res_ptr);
 
-        // 3. Lua 5.2 x64 -> wasm32 transcode FFI
-        let trans_ptr = depot_lua52_transcode_hex(chunk.as_ptr(), chunk.len(), 4, 4);
-        let trans_str = unsafe { CStr::from_ptr(trans_ptr).to_str().unwrap() };
-        assert!(trans_str.contains("\"ok\":true"));
-        depot_free_string(trans_ptr);
+        let label = CString::new("vec.ll").unwrap();
+        let ir = CString::new("target triple = \"x86_64-pc-windows-msvc\"\ndefine void @vadd() nounwind {\nentry:\n  %1 = add <8 x i32> zeroinitializer, zeroinitializer\n  ret void\n}\n").unwrap();
+        let ir_ptr = depot_llvm_ir_analyze_json(label.as_ptr(), ir.as_ptr());
+        let ir_str = unsafe { CStr::from_ptr(ir_ptr).to_str().unwrap() };
+        assert!(ir_str.contains("\"total_functions\":1"));
+        assert!(ir_str.contains("\"simd_vectorized_functions\":1"));
+        depot_free_string(ir_ptr);
     }
 }

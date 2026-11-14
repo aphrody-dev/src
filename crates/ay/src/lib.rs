@@ -177,6 +177,9 @@ pub enum Cmd {
     /// Cross-shell conformance matrix (packages/machine/matrix)
     #[command(disable_help_flag = true)]
     ShellMatrix(Rest),
+    /// Reverse engineering, Ghidra P-Code/Pseudo-C, MinGW-REA, and Lua 5.2 bytecode analysis (aphrody-re)
+    #[command(disable_help_flag = true)]
+    Re(Rest),
     /// Update `ay` itself from the dist GitHub Releases (axoupdater)
     SelfUpdate(self_update::SelfUpdateArgs),
     /// Upstream watch of oven-sh/bun for the fork: watch [--json] [--apply] [--install-schedule], bump [--write]
@@ -228,6 +231,7 @@ pub enum Route {
     Package(&'static str, Vec<String>),
     Ssh(Vec<String>),
     Conformance(Vec<String>),
+    Re(Vec<String>),
     Rt(Vec<String>),
     Chromium(chromium::Tool, Vec<String>),
     Build(build::BuildArgs),
@@ -329,6 +333,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Index(r) => Route::Package("core", r.args),
         Cmd::I18n(r) => Route::Package("i18n", r.args),
         Cmd::ShellMatrix(r) => Route::Package("machine", prefixed(&["matrix"], &r.args)),
+        Cmd::Re(r) => Route::Re(r.args),
         Cmd::SelfUpdate(a) => Route::SelfUpdate(a),
         Cmd::Bun(a) => Route::Bun(a),
         Cmd::Bump(a) => Route::Bump(a),
@@ -370,6 +375,7 @@ fn run_route(route: Route) -> i32 {
         Route::EnvKit(args) => exec::run_env_kit(&args),
         Route::Ssh(args) => remote::run("ay ssh", &args, &repo_root()),
         Route::Conformance(args) => run_conformance(&args),
+        Route::Re(args) => aphrody_re::cli::run(&args),
         Route::Rt(args) => rt::run("ay rt", &args),
         Route::Chromium(tool, args) => chromium::run(tool, &args),
         Route::Build(args) => build::run(args),
@@ -593,6 +599,7 @@ mod tests {
     fn conformance_and_manifests_verify() {
         assert_eq!(parse("conformance --fetch wpt"), Route::Conformance(v(&["--fetch", "wpt"])));
         assert_eq!(parse("manifests verify"), Route::Xtk(v(&["manifests", "--check"])));
+        assert_eq!(parse("re --ghidra target/debug/ay.exe"), Route::Re(v(&["--ghidra", "target/debug/ay.exe"])));
     }
 
     #[test]

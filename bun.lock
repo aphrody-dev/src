@@ -38,48 +38,40 @@
       "version": "0.2.0",
       "bin": {
         "ai-os": "./src/cli.ts",
-        "relay": "./src/relay/cli.ts",
       },
       "dependencies": {
+        "@aphrody/core": "workspace:*",
         "@aphrody/design": "workspace:*",
       },
     },
     "packages/assets": {
       "name": "@aphrody/assets",
       "version": "0.1.0",
-      "bin": {
-        "assets": "./src/cli.ts",
-      },
       "devDependencies": {
         "gltf-validator": "catalog:",
         "svgo": "catalog:",
         "wawoff2": "catalog:",
       },
     },
-    "packages/browser": {
-      "name": "@aphrody/browser",
+    "packages/bunify": {
+      "name": "@aphrody/bunify",
       "version": "0.1.0",
+      "bin": {
+        "bunify": "./src/cli.ts",
+        "n2r": "./src/cli.ts",
+      },
     },
     "packages/chromium-bun": {
       "name": "@aphrody/chromium-bun",
       "version": "0.0.0",
-      "bin": {
-        "chromium-bun": "./src/cli.ts",
-      },
     },
     "packages/core": {
       "name": "@aphrody/core",
       "version": "0.1.0",
-      "bin": {
-        "ay-index": "./src/cli.ts",
-      },
     },
     "packages/deploy": {
       "name": "@aphrody/deploy",
       "version": "0.1.0",
-      "bin": {
-        "aphrody-deploy": "./src/cli.ts",
-      },
     },
     "packages/design": {
       "name": "@aphrody/design",
@@ -93,9 +85,6 @@
     "packages/env-kit": {
       "name": "@aphrody/env-kit",
       "version": "1.0.0",
-      "bin": {
-        "env-kit": "./src/cli.ts",
-      },
     },
     "packages/ffi-bridge": {
       "name": "@aphrody/ffi-bridge",
@@ -104,16 +93,10 @@
     "packages/gaming": {
       "name": "@aphrody/gaming",
       "version": "1.0.0",
-      "bin": {
-        "gaming": "./src/cli.ts",
-      },
     },
     "packages/i18n": {
       "name": "@aphrody/i18n",
       "version": "0.1.0",
-      "bin": {
-        "aphrody-i18n": "./src/cli.ts",
-      },
     },
     "packages/machine": {
       "name": "@aphrody/machine",
@@ -130,23 +113,14 @@
     "packages/release": {
       "name": "@aphrody/release",
       "version": "1.0.0",
-      "bin": {
-        "release": "./src/cli.ts",
-      },
     },
     "packages/upstream": {
       "name": "@aphrody/upstream",
       "version": "1.0.0",
-      "bin": {
-        "upstream": "./src/cli.ts",
-      },
     },
     "packages/vault": {
       "name": "@aphrody/vault",
       "version": "0.1.0",
-      "bin": {
-        "vault": "./src/cli.ts",
-      },
     },
     "packages/wck": {
       "name": "@aphrody/wck",
@@ -180,7 +154,7 @@
 
     "@aphrody/assets": ["@aphrody/assets@workspace:packages/assets"],
 
-    "@aphrody/browser": ["@aphrody/browser@workspace:packages/browser"],
+    "@aphrody/bunify": ["@aphrody/bunify@workspace:packages/bunify"],
 
     "@aphrody/chromium-bun": ["@aphrody/chromium-bun@workspace:packages/chromium-bun"],
 
@@ -209,7 +183,6 @@
     "@aphrody/nt": ["@aphrody/nt@workspace:apps/nt"],
 
     "@aphrody/release": ["@aphrody/release@workspace:packages/release"],
-
 
     "@aphrody/upstream": ["@aphrody/upstream@workspace:packages/upstream"],
 

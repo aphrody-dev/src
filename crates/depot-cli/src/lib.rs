@@ -18,8 +18,6 @@ enum Commands {
     Ingest(IngestArgs),
     Graph(GraphSubArgs),
     Ast(AstArgs),
-    Lua(LuaSubArgs),
-    Re(ReArgs),
     Migrate(MigrateArgs),
     Rope(RopeArgs),
     Just(JustArgs),
@@ -180,32 +178,26 @@ pub struct AstArgs {
     pub json: bool,
 }
 
-// RE (Reverse Engineering & Binary Analysis)
-#[derive(FromArgs, PartialEq, Debug)]
-#[argh(subcommand, name = "re")]
-/// Reverse-engineering & runtime execution analysis (PE/ELF/Mach-O triage, MinGW CRT filter, x86-64 disasm, ABI classification)
-pub struct ReArgs {
-    /// target binary to inspect (e.g. .exe, .dll, .so)
-    #[argh(positional)]
-    pub binary: PathBuf,
-
-    /// output as JSON
-    #[argh(switch)]
-    pub json: bool,
-}
-
 // Migrate (AST Codemods targeting Bun v1.4.4 & Rust LTO)
 #[derive(FromArgs, PartialEq, Debug)]
 #[argh(subcommand, name = "migrate")]
-/// Universal AST codemods & migrations targeting Bun v1.4.4 and Rust LTO
+/// Universal AST codemods, LLVM IR analysis, and .NET CoreCLR interop migrations
 pub struct MigrateArgs {
-    /// root directory to migrate (default: ".")
+    /// root directory or file to migrate (default: ".")
     #[argh(positional, default = "PathBuf::from(\".\")")]
     pub root: PathBuf,
 
     /// dry run without modifying files on disk
     #[argh(switch)]
     pub dry_run: bool,
+
+    /// inspect LLVM IR compilation / vectorization pipeline
+    #[argh(switch)]
+    pub llvm: bool,
+
+    /// inspect CoreCLR hostfxr/.NET SDK readiness
+    #[argh(switch)]
+    pub dotnet: bool,
 }
 
 // Rope (Helix Transactional Span Editor)
@@ -566,90 +558,6 @@ pub struct IgnoreArgs {
 /// Display environment, native Windows NT kernel32 status, and feature flags
 pub struct InfoArgs {}
 
-// Lua 5.2 Sovereign Suite
-#[derive(FromArgs, PartialEq, Debug)]
-#[argh(subcommand, name = "lua")]
-/// Lua 5.2 AST inspector, REA bytecode disassembler, x64<->wasm32 transcoder & project initializer
-pub struct LuaSubArgs {
-    #[argh(subcommand)]
-    pub sub: LuaCommands,
-}
-
-#[derive(FromArgs, PartialEq, Debug)]
-#[argh(subcommand)]
-pub enum LuaCommands {
-    Ast(LuaAstArgs),
-    Disasm(LuaDisasmArgs),
-    Transcode(LuaTranscodeArgs),
-    Migrate(LuaMigrateArgs),
-    Init(LuaInitArgs),
-}
-
-#[derive(FromArgs, PartialEq, Debug)]
-#[argh(subcommand, name = "ast")]
-/// Parse Lua 5.2 source AST (functions, methods, ::labels::, _ENV, imports)
-pub struct LuaAstArgs {
-    /// path to .lua source file
-    #[argh(positional)]
-    pub file: PathBuf,
-
-    /// emit structured JSON output
-    #[argh(switch, short = 'j')]
-    pub json: bool,
-}
-
-#[derive(FromArgs, PartialEq, Debug)]
-#[argh(subcommand, name = "disasm")]
-/// Disassemble PUC-Rio Lua 5.2 bytecode (.luac / .lua.bin) and audit _ENV globals
-pub struct LuaDisasmArgs {
-    /// path to compiled .luac or .lua.bin file
-    #[argh(positional)]
-    pub file: PathBuf,
-
-    /// emit structured JSON output
-    #[argh(switch, short = 'j')]
-    pub json: bool,
-}
-
-#[derive(FromArgs, PartialEq, Debug)]
-#[argh(subcommand, name = "transcode")]
-/// Transcode Lua 5.2 bytecode header & size_t strings between x64 (8B) and wasm32 (4B)
-pub struct LuaTranscodeArgs {
-    /// input .luac / .lua.bin path
-    #[argh(positional)]
-    pub input: PathBuf,
-
-    /// output .luac path
-    #[argh(option, short = 'o')]
-    pub output: PathBuf,
-
-    /// target architecture: wasm32 or x64 (default: wasm32)
-    #[argh(option, short = 'a', default = "String::from(\"wasm32\")")]
-    pub arch: String,
-}
-
-#[derive(FromArgs, PartialEq, Debug)]
-#[argh(subcommand, name = "migrate")]
-/// Migrate Lua 5.1 idioms (unpack, bit.*, loadstring) to Lua 5.2 via Helix Rope
-pub struct LuaMigrateArgs {
-    /// path to .lua file
-    #[argh(positional)]
-    pub file: PathBuf,
-
-    /// apply edits in-place
-    #[argh(switch, short = 'w')]
-    pub write: bool,
-}
-
-#[derive(FromArgs, PartialEq, Debug)]
-#[argh(subcommand, name = "init")]
-/// Scaffold a Lua 5.2 project (.luarc.json, stylua.toml, selene.toml, src/main.lua)
-pub struct LuaInitArgs {
-    /// target directory (default: ".")
-    #[argh(positional, default = "PathBuf::from(\".\")")]
-    pub dir: PathBuf,
-}
-
 /// Run the depot command set. `cmd` is the name shown in usage (e.g. `ay git`), `args`
 /// follow it. Returns the process exit code.
 pub fn run(cmd: &str, args: &[String]) -> i32 {
@@ -730,17 +638,7 @@ pub fn run(cmd: &str, args: &[String]) -> i32 {
             }
         }
 
-        Commands::Re(r) => re::execute_re(&r.binary, r.json),
-
-        Commands::Lua(l) => match l.sub {
-            LuaCommands::Ast(a) => lua::run_lua_ast(&a.file, a.json),
-            LuaCommands::Disasm(d) => lua::run_lua_disasm(&d.file, d.json),
-            LuaCommands::Transcode(t) => lua::run_lua_transcode(&t.input, &t.output, &t.arch),
-            LuaCommands::Migrate(m) => lua::run_lua_migrate(&m.file, m.write),
-            LuaCommands::Init(i) => lua::run_lua_init(&i.dir),
-        },
-
-        Commands::Migrate(m) => migrate::execute_migrate(&m.root, m.dry_run),
+        Commands::Migrate(m) => migrate::execute_migrate(&m.root, m.dry_run, m.llvm, m.dotnet),
 
         Commands::Rope(rp) => rope::execute_rope(&rp.file, &rp.replace),
 

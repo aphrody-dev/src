@@ -3,11 +3,22 @@
 //! Combines Tree-Sitter AST inspection, Helix Rope transactional rewrites, and package sanitization.
 
 pub mod archetype;
+pub mod dotnet;
+pub mod llvm;
 pub mod manifest;
 pub mod rules;
 pub mod transformer;
 
 pub use archetype::{ProjectArchetype, detect_archetype};
+pub use dotnet::{
+    CoreClrHost, CsExportedMethod, CsExportedParam, CsExportedType, DotNetBindgenBundle,
+    DotNetDoctorReport, DotNetInvokeReport, generate_dotnet_rust_bun_bindings,
+    parse_csharp_jsexports, probe_dotnet_environment,
+};
+pub use llvm::{
+    LlvmIrAnalysisReport, LlvmIrFunctionSummary, LlvmToolchainStatus,
+    compile_and_analyze_llvm_ir, parse_llvm_ir_text, probe_llvm_rust_bun_toolchain,
+};
 pub use manifest::{generate_bunfig, sanitize_package_json};
 pub use rules::{CodemodRule, MIGRATION_RULES};
 pub use transformer::{TransformFinding, TransformResult, transform_source};
@@ -58,6 +69,10 @@ impl MigrateEngine {
         let walker = WalkBuilder::new(root)
             .hidden(true)
             .git_ignore(true)
+            .filter_entry(|entry| {
+                let name = entry.file_name().to_str().unwrap_or("");
+                !matches!(name, "node_modules" | "target" | ".git")
+            })
             .build();
 
         for entry in walker.flatten() {
@@ -69,7 +84,8 @@ impl MigrateEngine {
 
             let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("");
             let lang = match ext {
-                "ts" | "mts" | "cts" | "tsx" => SupportedLanguage::TypeScript,
+                "ts" | "mts" | "cts" => SupportedLanguage::TypeScript,
+                "tsx" => SupportedLanguage::Tsx,
                 "js" | "mjs" | "cjs" | "jsx" => SupportedLanguage::JavaScript,
                 "lua" => SupportedLanguage::Lua,
                 _ => continue,

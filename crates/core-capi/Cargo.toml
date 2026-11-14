@@ -3,17 +3,25 @@ name = "aphrody-core-capi"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "C ABI over aphrody-core (core_* symbols), loaded by packages/core through bun:ffi"
-publish = false
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+keywords = ["c-abi", "ffi", "tree-sitter", "aphrody"]
+categories = ["api-bindings", "development-tools::ffi"]
+description = "C ABI over aphrody-core (core_* symbols), loaded by bun:ffi, Python, and Java"
 
 [lib]
 name = "aphrody_core_capi"
 crate-type = ["cdylib", "rlib"]
 
+[lints]
+workspace = true
+
 [features]
 default = ["core", "ai-os"]
 core = ["dep:aphrody-core"]
 ai-os = ["dep:agent-context", "dep:rusqlite"]
+aysys-link = []
 
 [dependencies]
 agent-context = { workspace = true, optional = true }

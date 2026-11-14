@@ -1,5 +1,5 @@
-List of maintainers (C:\src Sovereign Monorepo)
-===============================================
+List of maintainers (aphrody-labs/aphrody Monorepo)
+===================================================
 
 Descriptions of section entries and preferred order
 ---------------------------------------------------
@@ -14,6 +14,27 @@ Descriptions of section entries and preferred order
 
 Maintainers List
 ----------------
+
+PURE C, ASSEMBLY & WEBASSEMBLY CORE: LINUX, DRM/MESA, WAYLAND, NT, WINE & WASM (`src/`)
+M:	Aphrody Engineering <contact@aphrody.com>
+L:	contact@aphrody.com
+S:	Supported
+W:	https://about.aphrody.com
+T:	git https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+T:	git https://github.com/llvm/llvm-project.git
+T:	git https://github.com/WebAssembly/binaryen.git
+T:	git https://github.com/WebAssembly/wasi-sdk.git
+T:	git https://github.com/emscripten-core/emscripten.git
+T:	git https://gitlab.freedesktop.org/mesa/mesa.git
+T:	git https://gitlab.freedesktop.org/wayland/wayland.git
+T:	git https://gitlab.freedesktop.org/wine/wine.git
+F:	src/
+F:	docs/native/
+F:	third_party/linux/
+F:	third_party/llvm-project/
+F:	third_party/mesa/
+F:	third_party/wayland/
+F:	third_party/wine/
 
 ANDROID AOSP, GKI & APHRODY MOBILE SHELL
 M:	Aphrody Engineering <contact@aphrody.com>
@@ -47,14 +68,15 @@ F:	packages/browser/
 F:	packages/native/
 F:	packages/wck/
 
-BUN V1.4.4 FULL-RUST RUNTIME & PARITY PATCH ENGINE
+BUN V1.4.5 FULL-RUST RUNTIME & UPSTREAM PATCH ENGINE
 M:	Aphrody Engineering <contact@aphrody.com>
 L:	contact@aphrody.com
 S:	Supported
 W:	https://about.aphrody.com
 T:	git https://github.com/aphrody-labs/bun.git
 T:	git https://github.com/oven-sh/bun.git
-T:	quilt packages/bun-parity/patches/
+F:	docs/bun/
+F:	packages/upstream/
 F:	third_party/bun/
 
 CHROMIUM, BLINK, V8 & DEPOT_TOOLS INTEGRATION
@@ -76,8 +98,6 @@ F:	crates/depot-ingest/
 F:	crates/depot-migrate/
 F:	crates/depot-re/
 F:	crates/core/
-F:	crates/aphrody-v8/
-F:	crates/aphrody-cef/
 F:	packages/chromium-bun/
 F:	third_party/chromium/
 F:	third_party/depot_tools/
@@ -122,11 +142,12 @@ T:	git https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 T:	git https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
 T:	git https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 T:	git https://github.com/aphrody-dev/unix.git
-T:	quilt docs/patches/
+T:	quilt docs/native/patches/
 F:	MAINTAINERS
 F:	crates/unix-omarchy/
-F:	docs/linux-kernel-story/
-F:	docs/patches/
+F:	docs/native/linux/
+F:	docs/native/linux-kernel-story/
+F:	docs/native/patches/
 F:	third_party/aether/
 F:	third_party/ananicy-rules/
 F:	third_party/archinstall/
@@ -157,7 +178,7 @@ M:	Aphrody Engineering <contact@aphrody.com>
 L:	contact@aphrody.com
 S:	Supported
 W:	https://about.aphrody.com
-T:	git https://github.com/aphrody-labs/src.git
+T:	git https://github.com/aphrody-labs/aphrody.git
 T:	git https://github.com/aphrody-dev/xtask.git
 T:	git https://github.com/aphrody-dev/forge.git
 F:	.gitattributes
@@ -166,8 +187,10 @@ F:	.gitmodules
 F:	crates/archguard/
 F:	crates/ay/
 F:	crates/xtask/
+F:	docs/native/VCS-FORGE.md
 F:	justfile
 F:	packages/env-kit/
+F:	scripts/vcs.ts
 F:	src.lock.json
 
 RING-3 HARDWARE TELEMETRY, BENCHMARKS & PURE-RUST STACK
@@ -228,7 +251,7 @@ S:	Supported
 F:	DEPS.rules
 F:	scripts/checkdeps.ts
 F:	docs/ARCHITECTURE.md
-F:	docs/PHILOSOPHY.md
+F:	docs/native/NAMESPACE-ISOLATION.md
 F:	justfile
 
 UPSTREAM PATCH STACKS (BUN, CHROMIUM FORKS)

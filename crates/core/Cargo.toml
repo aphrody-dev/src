@@ -3,10 +3,18 @@ name = "aphrody-core"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+keywords = ["tree-sitter", "ast", "indexing", "blake3", "aphrody"]
+categories = ["development-tools", "parsing"]
 description = "Common lib: tree-sitter parsing, symbol/ref index, content hashing (BLAKE3)"
 
 [lib]
 name = "aphrody_core"
+
+[lints]
+workspace = true
 
 [dependencies]
 blake3.workspace = true

@@ -1,0 +1,25 @@
+[package]
+name = "aphrody-core-py"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Native PyO3 (ABI3) Python core extension exposing aphrody-core (Tree-sitter, BLAKE3, index) and aphrody-re (RE triage, disasm, Ghidra P-Code/Pseudo-C, MinGW-REA, Lua 5.2)"
+keywords = ["python", "pyo3", "tree-sitter", "reverse-engineering", "blake3"]
+categories = ["api-bindings", "development-tools::debugging"]
+
+[lib]
+name = "aphrody_native"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+aphrody-core.workspace = true
+aphrody-re.workspace = true
+pyo3 = { workspace = true, features = ["abi3-py310", "extension-module"] }
+serde_json.workspace = true
+
+[lints]
+workspace = true

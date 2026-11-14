@@ -50,14 +50,30 @@ char *depot_helix_rope_edit(const char *source_ptr, const char *edits_json_ptr);
 
 char *depot_migrate_run_json(const char *root_dir_ptr, bool dry_run);
 
-char *depot_re_audit_json(const char *path_ptr);
+char *depot_dotnet_doctor_json(void);
 
-char *depot_re_audit_bytes_json(const char *label_ptr, const uint8_t *bytes_ptr, size_t bytes_len);
+char *depot_transform_source_json(const char *lang_or_path_ptr, const char *source_ptr);
 
-char *depot_lua52_transcode_hex(const uint8_t *bytes_ptr,
-                                size_t bytes_len,
-                                uint8_t target_int,
-                                uint8_t target_sizet);
+char *depot_llvm_probe_json(const char *vendor_llvm_dir_ptr);
+
+char *depot_llvm_ir_analyze_json(const char *source_label_ptr, const char *ir_text_ptr);
+
+char *depot_dotnet_bindgen_json(const char *cs_path_ptr, const char *assembly_name_ptr);
+
+char *aphrody_re_audit_json(const char *path_ptr);
+
+char *aphrody_re_audit_bytes_json(const char *label_ptr,
+                                  const uint8_t *bytes_ptr,
+                                  size_t bytes_len);
+
+char *aphrody_ghidra_decompile_json(const char *path_ptr, size_t max_functions);
+
+char *aphrody_mingw_audit_json(const char *path_ptr, size_t max_functions);
+
+char *aphrody_lua52_transcode_hex(const uint8_t *bytes_ptr,
+                                  size_t bytes_len,
+                                  uint8_t target_int,
+                                  uint8_t target_sizet);
 
 /**
  * Free a framed buffer returned by any `aphrody_*` C-ABI function.

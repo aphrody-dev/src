@@ -227,6 +227,17 @@ pub fn build_monorepo_graph(root: &Path) -> MonorepoGraph {
     let mut graph = MonorepoGraph::new();
 
     // 1. Discover nodes across domains
+    // Layer 0 Pure C, Assembly & WebAssembly Core (src/)
+    let src_dir = root.join("src");
+    if src_dir.is_dir() {
+        graph.add_node(
+            "src".to_string(),
+            "aysys".to_string(),
+            normalize_rel(root, &src_dir),
+            MonorepoLayer::Layer0Kernel,
+        );
+    }
+
     // Crates
     let crates_dir = root.join("crates");
     if let Ok(entries) = fs::read_dir(&crates_dir) {

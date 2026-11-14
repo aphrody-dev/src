@@ -20,7 +20,7 @@ edition = "2024"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
 authors = ["aphrody-dev"]
-repository = "https://github.com/aphrody-labs/src"
+repository = "https://github.com/aphrody-labs/aphrody"
 homepage = "https://labs.aphrody.com"
 
 [workspace.dependencies]
@@ -34,8 +34,7 @@ depot-cipd = { version = "0.4.0", path = "crates/depot-cipd" }
 agent-context = { version = "0.1.0", path = "crates/agent-context" }
 aphrody-core = { version = "0.4.0", path = "crates/core" }
 aphrody-core-capi = { version = "0.4.0", path = "crates/core-capi" }
-aphrody-v8 = { version = "0.4.0", path = "crates/aphrody-v8" }
-depot-re = { version = "0.4.0", path = "crates/re" }
+aphrody-re = { version = "0.4.0", path = "crates/re" }
 # WSLg stack: Windows host crates and the portable Wayland wire (docs/ARCHITECTURE.md §6).
 dx12-hal = { version = "0.4.0", path = "crates/dx12-hal" }
 smithay-wayland-wire = { version = "0.4.0", path = "crates/smithay-wayland-wire" }
@@ -101,6 +100,7 @@ tracing-subscriber = { version = "0.3.23", features = [
 windows-sys = { version = "0.61.2", features = [
   "Win32_Foundation",
   "Win32_System_Console",
+  "Win32_System_LibraryLoader",
   "Win32_System_SystemInformation",
   "Win32_Storage_FileSystem",
   "Win32_System_Performance",
@@ -562,6 +562,7 @@ opt-level = 1
 # Every git source is pinned by rev (branch noted for `ay lock --deps --bump`); deny.toml allows only these repos.
 russh = { git = "https://github.com/aphrody-dev/russh", rev = "a9f644259fa57ddb2da0f980e6ae813b829f7ad4" } # aphrody/sntrup761
 sntrup761 = { git = "https://github.com/aphrody-labs/sntrup761", rev = "54e3a99495e974586085df0c86583eb7c606854e" } # aphrody/pure-rust
+age = { git = "https://github.com/aphrody-labs/rage", rev = "b5b68c4f4f7ea5c368bc060f6fe0237549c3a13f" } # main: ml-kem 0.3 (kem 0.3 shared with russh); 0.12.1 on crates.io needs kem 0.3.0-pre.0
 # Lore patches (sites marked `LORE:`), formerly vendored in third_party/patches.
 # quinn-proto 0.11.19 + max_rtt, is_crypto, windowed BBR min_rtt, bounded BBR window.
 quinn-proto = { git = "https://github.com/aphrody-labs/quinn", rev = "6e76339be91de7b5784cca640307329d1cf372a2" } # aphrody/lore

@@ -3,9 +3,11 @@
 //!
 //! Symbol names are a stable contract with their consumers and never change:
 //! - Unified ABI entrypoints: `aphrody_abi_version`, `aphrody_free`.
-//! - feature `depot` (default): `depot_*`, native depot FFI contract (`crates/depot*`, `packages/ffi-bridge`).
+//! - feature `depot` (default): `depot_*`, native depot FFI contract (`crates/depot*`).
 //!   Strings are NUL-terminated and released with `depot_free_string` (or `aphrody_free`);
 //!   `depot_abi_version` returns [`depot::DEPOT_ABI_VERSION`].
+//! - feature `re` (default): `aphrody_re_*`, `aphrody_ghidra_*`, `aphrody_mingw_*`, `aphrody_lua52_*`
+//!   (`crates/re`). Strings are released with `aphrody_free`.
 //! - feature `web` (default): `aphrody_*` from `corelib::web` (Boq parser; the adblock engine is
 //!   `crates/adblock-capi`),
 //!   framed buffers released with `aphrody_chromium_buf_free`.
@@ -20,5 +22,7 @@ pub use aphrody_core_capi::{aphrody_abi_version, aphrody_free};
 #[cfg(feature = "depot")]
 pub mod depot;
 pub mod mwg;
+#[cfg(feature = "re")]
+pub mod re;
 #[cfg(feature = "web")]
 pub mod web;

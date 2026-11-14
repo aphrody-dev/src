@@ -8,7 +8,14 @@ repository = "https://github.com/aphrody-dev/depot"
 
 [dependencies]
 aphrody-core.workspace = true
+blake3.workspace = true
 ignore.workspace = true
+parking_lot.workspace = true
 regex.workspace = true
+rustc-hash.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+tree-sitter.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows-sys.workspace = true
