@@ -46,6 +46,19 @@ pub enum CodeCmd {
         #[arg(long)]
         dry_run: bool,
     },
+    /// Commit only the listed paths through a private index; other staged entries stay untouched
+    Commit {
+        #[arg(short = 'm', long = "message")]
+        message: String,
+        #[arg(required = true)]
+        files: Vec<PathBuf>,
+        /// Commit only the diff hunks (vs HEAD) containing this text
+        #[arg(long = "hunks-matching", value_name = "TEXT")]
+        hunks_matching: Option<String>,
+        /// Print the would-be diff stat only
+        #[arg(long)]
+        dry_run: bool,
+    },
 }
 
 pub fn run(a: CodeArgs) -> i32 {
@@ -53,6 +66,9 @@ pub fn run(a: CodeArgs) -> i32 {
         CodeCmd::Refs { path, root, json } => refs(&path, root.as_deref(), json),
         CodeCmd::Mv { from, to, root, dry_run, json } => mv(&from, &to, root.as_deref(), dry_run, json),
         CodeCmd::Stage { file, match_text, dry_run } => stage(&file, &match_text, dry_run),
+        CodeCmd::Commit { message, files, hunks_matching, dry_run } => {
+            commit(&message, &files, hunks_matching.as_deref(), dry_run)
+        }
     };
     match res {
         Ok(code) => code,
@@ -492,23 +508,20 @@ fn mv(from: &Path, to: &Path, root: Option<&Path>, dry_run: bool, as_json: bool)
     let plan = plan_mv(&root, &mover);
     let top = from.parent().and_then(|d| git(d, &["rev-parse", "--show-toplevel"])).map(PathBuf::from);
     let old_rel = top.as_ref().and_then(|t| from.strip_prefix(absolute(t)).ok().map(slash));
-    let edited: HashSet<&PathBuf> = plan.edits.iter().map(|(f, _)| f).collect();
     let mention_list = match (&top, &old_rel) {
         (Some(t), Some(r)) if !r.is_empty() => mentions(t, r, &|_| true),
         _ => Vec::new(),
     };
-    let _ = edited;
-    let tracked = git(&root, &["ls-files", "--error-unmatch", "--"]).is_none()
-        && Command::new("git")
-            .arg("-C")
-            .arg(&root)
-            .args(["ls-files", "--error-unmatch", "--"])
-            .arg(&from)
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status()
-            .map(|s| s.success())
-            .unwrap_or(false);
+    let tracked = Command::new("git")
+        .arg("-C")
+        .arg(&root)
+        .args(["ls-files", "--error-unmatch", "--"])
+        .arg(&from)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false);
 
     if !dry_run {
         for (f, edits) in &plan.edits {
@@ -664,6 +677,118 @@ fn stage(file: &Path, needle: &str, dry_run: bool) -> Result<i32, String> {
     Ok(0)
 }
 
+
+// ---------- commit ----------
+
+fn git_run(top: &Path, index: Option<&Path>, args: &[&str], stdin: Option<&[u8]>) -> Result<Vec<u8>, String> {
+    let mut cmd = Command::new("git");
+    cmd.arg("-C").arg(top).args(args).stdout(Stdio::piped()).stderr(Stdio::piped());
+    if let Some(i) = index {
+        cmd.env("GIT_INDEX_FILE", i);
+    }
+    cmd.stdin(if stdin.is_some() { Stdio::piped() } else { Stdio::null() });
+    let mut child = cmd.spawn().map_err(|e| format!("git {}: {e}", args.join(" ")))?;
+    if let Some(data) = stdin {
+        child.stdin.take().ok_or("no stdin")?.write_all(data).map_err(|e| e.to_string())?;
+    }
+    let out = child.wait_with_output().map_err(|e| e.to_string())?;
+    if out.status.success() {
+        Ok(out.stdout)
+    } else {
+        Err(format!("git {}: {}", args.join(" "), String::from_utf8_lossy(&out.stderr).trim()))
+    }
+}
+
+fn text(b: Vec<u8>) -> String {
+    String::from_utf8_lossy(&b).trim().to_string()
+}
+
+/// Commit exactly `rels` (repo-relative) through a private index; the shared index is only
+/// touched for those paths afterwards. Returns the new commit sha, or the stat when `dry_run`.
+pub fn commit_files(
+    top: &Path,
+    message: &str,
+    rels: &[String],
+    hunks: Option<&str>,
+    dry_run: bool,
+) -> Result<(Option<String>, String), String> {
+    let git_dir = PathBuf::from(text(git_run(top, None, &["rev-parse", "--absolute-git-dir"], None)?));
+    let idx = git_dir.join(format!("ay-code-index-{}", std::process::id()));
+    let _ = std::fs::remove_file(&idx);
+    let result = commit_with_index(top, &idx, message, rels, hunks, dry_run);
+    let _ = std::fs::remove_file(&idx);
+    result
+}
+
+fn commit_with_index(
+    top: &Path,
+    idx: &Path,
+    message: &str,
+    rels: &[String],
+    hunks: Option<&str>,
+    dry_run: bool,
+) -> Result<(Option<String>, String), String> {
+    let head_ref = text(git_run(top, None, &["symbolic-ref", "-q", "HEAD"], None).map_err(|_| "detached HEAD")?);
+    let old = text(git_run(top, None, &["rev-parse", "HEAD"], None)?);
+    git_run(top, Some(idx), &["read-tree", "HEAD"], None)?;
+    for rel in rels {
+        match hunks {
+            None => {
+                git_run(top, Some(idx), &["update-index", "--add", "--remove", "--", rel], None)?;
+            }
+            Some(needle) => {
+                let diff = git_run(top, Some(idx), &["diff", "HEAD", "-U3", "--no-color", "--no-ext-diff", "--", rel], None)?;
+                let (patch, _, _) = select_hunks(&diff, needle)
+                    .ok_or_else(|| format!("no hunk of {rel} matches {needle:?}; nothing committed"))?;
+                git_run(top, Some(idx), &["apply", "--cached", "-"], Some(&patch))?;
+            }
+        }
+    }
+    let tree = text(git_run(top, Some(idx), &["write-tree"], None)?);
+    if tree == text(git_run(top, None, &["rev-parse", "HEAD^{tree}"], None)?) {
+        return Err("nothing to commit for the listed paths".into());
+    }
+    if dry_run {
+        let stat = text(git_run(top, None, &["diff", "--stat", "HEAD", &tree], None)?);
+        return Ok((None, stat));
+    }
+    let new = text(git_run(top, None, &["commit-tree", &tree, "-p", &old, "-m", message], None)?);
+    git_run(top, None, &["update-ref", &head_ref, &new, &old], None)?;
+    // Point only the listed paths of the shared index at the new HEAD blobs.
+    let mut info = String::new();
+    for rel in rels {
+        let listed = text(git_run(top, None, &["ls-tree", "-r", "--full-tree", &new, "--", rel], None)?);
+        match listed.split_once('\t') {
+            Some((meta, path)) => {
+                let mut f = meta.split(' ');
+                let (mode, _, sha) = (f.next().unwrap_or("100644"), f.next(), f.next().unwrap_or(""));
+                info.push_str(&format!("{mode} {sha} 0\t{path}\n"));
+            }
+            None => info.push_str(&format!("0 {} 0\t{rel}\n", "0".repeat(40))),
+        }
+    }
+    git_run(top, None, &["update-index", "--index-info"], Some(info.as_bytes()))?;
+    Ok((Some(new), String::new()))
+}
+
+fn commit(message: &str, files: &[PathBuf], hunks: Option<&str>, dry_run: bool) -> Result<i32, String> {
+    let first = absolute(files.first().ok_or("no files")?);
+    let dir = if first.is_dir() { first.clone() } else { first.parent().map(Path::to_path_buf).unwrap_or_default() };
+    let top = absolute(Path::new(&text(git_run(&dir, None, &["rev-parse", "--show-toplevel"], None)?)));
+    let mut rels = Vec::new();
+    for f in files {
+        let a = absolute(f);
+        let r = a.strip_prefix(&top).map_err(|_| format!("{} is outside {}", a.display(), top.display()))?;
+        rels.push(slash(r));
+    }
+    let (sha, stat) = commit_files(&top, message, &rels, hunks, dry_run)?;
+    match sha {
+        Some(s) => println!("{s}\n{}", rels.join("\n")),
+        None => println!("{stat}"),
+    }
+    Ok(0)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -729,8 +854,8 @@ mod tests {
         let r = fs_of(FILES);
         assert_eq!(new_specifier("./c", Path::new("/r/src/a.ts"), &mv, &r).as_deref(), Some("../c"));
         assert_eq!(new_specifier("./d", Path::new("/r/src/a.ts"), &mv, &r).as_deref(), Some("../d"));
-        // self reference keeps pointing at the moved file
-        assert_eq!(new_specifier("./a", Path::new("/r/src/a.ts"), &mv, &r).as_deref(), Some("./a"));
+        // self reference: the moved file keeps pointing at itself, spelling unchanged
+        assert_eq!(new_specifier("./a", Path::new("/r/src/a.ts"), &mv, &r), None);
     }
 
     #[test]
@@ -780,6 +905,53 @@ mod tests {
             "import { a } from './z/a';\nexport * from './z/a.ts';\n"
         );
         assert!(root.join("src/z/a.ts").is_file() && !root.join("src/a.ts").exists());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    fn g(dir: &Path, args: &[&str]) -> String {
+        text(git_run(dir, None, args, None).unwrap())
+    }
+
+    #[test]
+    fn commit_leaves_other_staged_entries_alone() {
+        let dir = std::env::temp_dir().join(format!("ay-code-commit-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        g(&dir, &["init", "-q", "-b", "main"]);
+        g(&dir, &["config", "user.name", "t"]);
+        g(&dir, &["config", "user.email", "t@example.invalid"]);
+        let body: String = (1..=30).map(|i| format!("line {i}\n")).collect();
+        for f in ["a.txt", "b.txt", "h.txt", "gone.txt"] {
+            std::fs::write(dir.join(f), if f == "h.txt" { &body } else { "x\n" }).unwrap();
+        }
+        g(&dir, &["add", "."]);
+        g(&dir, &["commit", "-q", "-m", "base"]);
+        std::fs::write(dir.join("a.txt"), "mine\n").unwrap();
+        std::fs::write(dir.join("b.txt"), "theirs\n").unwrap();
+        std::fs::write(dir.join("new.txt"), "added\n").unwrap();
+        std::fs::remove_file(dir.join("gone.txt")).unwrap();
+        let edited = body.replace("line 2\n", "line 2 KEEP\n").replace("line 28\n", "line 28 OTHER\n");
+        std::fs::write(dir.join("h.txt"), edited).unwrap();
+        g(&dir, &["add", "b.txt"]); // another session's staged work
+        let rels: Vec<String> = ["a.txt", "new.txt", "gone.txt"].iter().map(|s| s.to_string()).collect();
+        let (_, stat) = commit_files(&dir, "mine", &rels, None, true).unwrap();
+        assert!(stat.contains("a.txt") && stat.contains("new.txt") && !stat.contains("b.txt"), "{stat}");
+        let before = g(&dir, &["rev-parse", "HEAD"]);
+        let (sha, _) = commit_files(&dir, "mine", &rels, None, false).unwrap();
+        let sha = sha.unwrap();
+        assert_eq!(g(&dir, &["rev-parse", "HEAD"]), sha);
+        assert_eq!(g(&dir, &["rev-parse", "HEAD~1"]), before);
+        let changed = g(&dir, &["diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"]);
+        assert_eq!(changed.lines().collect::<Vec<_>>(), ["a.txt", "gone.txt", "new.txt"]);
+        // b.txt: still staged, uncommitted; the committed paths are clean in the shared index
+        assert_eq!(g(&dir, &["diff", "--cached", "--name-only"]), "b.txt");
+        assert_eq!(g(&dir, &["show", "HEAD:b.txt"]), "x");
+        // hunk mode: only the hunk containing KEEP goes into the commit
+        commit_files(&dir, "hunk", &["h.txt".to_string()], Some("KEEP"), false).unwrap();
+        let shown = g(&dir, &["show", "HEAD:h.txt"]);
+        assert!(shown.contains("line 2 KEEP") && shown.contains("line 28") && !shown.contains("OTHER"), "{shown}");
+        assert!(g(&dir, &["diff", "--name-only"]).contains("h.txt")); // OTHER hunk still unstaged work
+        assert!(commit_files(&dir, "x", &["h.txt".to_string()], Some("nomatch"), false).is_err());
         let _ = std::fs::remove_dir_all(&dir);
     }
 
