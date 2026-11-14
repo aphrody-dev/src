@@ -22,8 +22,8 @@ mod tests {
 
     #[test]
     fn primaire_de_marque() {
-        assert_eq!(md::light::PRIMARY, 0x1242FFFF);
-        assert_eq!(md::dark::PRIMARY, 0xBAC3FFFF);
+        assert_eq!(md::light::PRIMARY, 0x006492FF);
+        assert_eq!(md::dark::PRIMARY, 0x8BCEFFFF);
         assert_eq!(rgba_f32(md::light::ON_PRIMARY), [1.0, 1.0, 1.0, 1.0]);
     }
 }
