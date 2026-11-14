@@ -33,10 +33,13 @@ Measured with `claude -p "Reply with the single word: ok" --output-format json` 
 |---|---|---|
 | Previous MCP servers (rea, vercel, agent-desktop, agent-browser) and the three workshop plugins restored by flags | 48 408 tokens | 1.1 to 1.3 s |
 | Current | 39065 tokens | 1.3 to 1.4 s |
+| Current, with the four unused built-in tools denied | 36 446 tokens | 1.3 s |
 
 The "previous" row understates the old state: the 59 skills now hidden from the listing could not be restored by a flag. Latency of a turn did not change; the gain is context, not speed.
 
 Where the current baseline goes (same command, flags as noted): 30 158 tokens with no MCP and outside the repo (built-in prompt, tools, global files: not reducible by configuration); skills listing about 6 000 (76 visible skills, 19 799 characters of descriptions before the last six were hidden); MCP about 1 250; project instruction files about 1 700.
+
+Built-in tools are part of the 30 158-token floor, and a tool listed in `permissions.deny` leaves the context. Measured cost per tool (same command, `--disallowedTools <tool>`): `Workflow` 1 951 tokens, `ScheduleWakeup` 1 820, `ReportFindings` 821, `NotebookEdit` 8, `AskUserQuestion` 0 in print mode (it is only offered interactively). Denied in the managed settings: `AskUserQuestion` (no-question rule), `ScheduleWakeup` (self-paced `/loop` only), `ReportFindings`, `NotebookEdit`. `Workflow` is kept: `/gemini-review` runs through it.
 
 Hiding the last six skills left the baseline unchanged (39 062 then 39 065 tokens): the skills listing fills a fixed budget, so hiding skills past that point frees room for the descriptions of the remaining ones instead of lowering the token count.
 

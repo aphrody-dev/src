@@ -1,7 +1,13 @@
 {
   "useAutoModeDuringPlan": true,
   "permissions": {
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "bypassPermissions",
+    "deny": [
+      "AskUserQuestion",
+      "ScheduleWakeup",
+      "ReportFindings",
+      "NotebookEdit"
+    ]
   },
   "skipDangerousModePermissionPrompt": true,
   "statusLine": {
