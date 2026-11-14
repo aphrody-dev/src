@@ -2,6 +2,8 @@
 
 Releve du 2026-11-14 via `gh api`, crates.io API et fichiers locaux `third_party/{zed,gpui-kit,embedded_gpui}`. Les etoiles et dates `pushed_at` viennent de `gh api repos/<repo>` / `search/repositories` (2026-11-14).
 
+Règle : GPUI se consomme depuis GitHub, jamais depuis crates.io. Dépendances `git = "https://github.com/aphrody-labs/<repo>"` + `rev` épinglé (zed, gpui-kit, gpui-fast, gpui-ce), sync par `upstream` ; les versions crates.io ci-dessous sont indicatives.
+
 ## 1. GPUI dans zed-industries/zed
 
 - Repo: https://github.com/zed-industries/zed, HEAD vu `56a157e5b01b` (2026-11-14); checkout local `3def8bad0b62` (2026-11-10).
