@@ -1,6 +1,6 @@
 ---
 name: humanizer
-description: Remove AI writing tics from a text (French or English) without changing what it says - interface text, pages, docs, READMEs, commit messages, release notes. Use before shipping any public text of src and during the anti-slop review of an interface. Absorbs blader/humanizer (MIT); automatic check by `gds audit-slop`.
+description: Remove AI writing tics from a text (French or English) without changing what it says - interface text, pages, docs, READMEs, commit messages, release notes. Use before shipping any public text of src and during the anti-slop review of an interface. Absorbs blader/humanizer (MIT).
 license: MIT
 metadata:
   upstream: "blader/humanizer@b48c832f0f80 (fork aphrody-labs/humanizer)"
@@ -10,14 +10,7 @@ metadata:
 
 Rewrite for a specific reader, keep the meaning, the facts and the useful length. Full catalogue of the 26 tics, with before/after examples: `references/patterns.md` (upstream, English). Read it in full before a long rewrite.
 
-## Tools
-
-```bash
-bun C:/src/packages/google-design/cli.ts audit-slop <path> [--json]   # exit code 1 if findings
-bun C:/src/packages/google-design/cli.ts humanize <file> [--write]    # mechanical rewrites only
-```
-
-`gds humanize` only replaces safe phrasings; the rest is rewritten by hand from the catalogue.
+No CLI: the `gds audit-slop` / `gds humanize` commands of the removed `packages/google-design` are gone (`packages/design` has none). Rewrite by hand from the catalogue.
 
 ## Tics to remove (summary)
 
