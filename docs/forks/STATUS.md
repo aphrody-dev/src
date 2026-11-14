@@ -7,9 +7,9 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 
 | fork | kind | upstream sha | fork sha | behind/ahead | last action | last PR | open issues |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| aphrody-labs/next.js | patched | 8d1f4ed9c010 | 7f5aded5bbb6 | 0/6 | error: JSON Parse error: Unexpected identifier "the" | - | 0 |
+| aphrody-labs/next.js | patched | 8d1f4ed9c010 | 7f5aded5bbb6 | 0/6 | noop | - | 0 |
 | aphrody-labs/bun | patched | 9098897a1737 | b6c3f857f7b7 | 0/25 | noop | - | 0 |
-| aphrody-labs/agent-browser | mirror | f18b8bb5275e | f18b8bb5275e | 6/0 | error: JSON Parse error: Unexpected identifier "the" | - | 0 |
+| aphrody-labs/agent-browser | mirror | f18b8bb5275e | f18b8bb5275e | 6/0 | fast-forwarded | - | 0 |
 | aphrody-labs/A2A | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/terminal-control | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/apify-cli | mirror | - | - | ?/? | - | - | 0 |
