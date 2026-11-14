@@ -1,8 +1,9 @@
 [Unit]
-Description=Daily fleet disk cleanup
+Description=Fleet disk and memory cleanup, every 30 min
 [Timer]
-OnCalendar=*-*-* 05:23:00
-RandomizedDelaySec=20min
+OnBootSec=5min
+OnUnitActiveSec=30min
+RandomizedDelaySec=2min
 Persistent=true
 [Install]
 WantedBy=timers.target

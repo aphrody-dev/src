@@ -12,7 +12,7 @@ CONF=${FLEET_TUNE_CONF:-/etc/fleet/tune.conf}
 [ -r "$CONF" ] || { echo "fleet-tune: $CONF missing" >&2; exit 2; }
 SYSCTL="" ZRAM_SIZE="" ZRAM_ALGO=zstd SWAPFILE="" SWAP_SIZE="" SWAP_PRIO=10 NOATIME="" CLEAN_USERS="root"
 TARGET_ROOTS="" TARGET_MAX_DAYS=14 BUN_CACHE_MAX_MB=2048 SCCACHE_MAX_MB=20480 DOCKER_KEEP_HOURS=336 BUILDER_KEEP=10GB
-JOURNAL_MAX=1G HEAVY_LOCK=/var/lock/aphrody-heavy.lock
+JOURNAL_MAX=1G TMP_MAX_HOURS=24 HEAVY_LOCK=/var/lock/aphrody-heavy.lock
 # shellcheck source=/dev/null
 . "$CONF"
 mode=${1:-check}; rc=0
@@ -145,6 +145,12 @@ clean() {
   fi
   command -v podman >/dev/null && podman image prune -af --filter "until=${DOCKER_KEEP_HOURS}h" >/dev/null 2>&1
   journalctl -q --vacuum-size="$JOURNAL_MAX" >/dev/null 2>&1
+  # tmp files idle > TMP_MAX_HOURS, package caches, freed blocks to the hypervisor, page cache and memory compaction.
+  find /tmp /var/tmp -xdev -mindepth 1 -mmin "+$((TMP_MAX_HOURS * 60))" ! -name "*.lock" ! -name ".X*" -delete 2>/dev/null
+  if command -v pacman >/dev/null; then paccache -rk1 >/dev/null 2>&1 || pacman -Scc --noconfirm >/dev/null 2>&1; fi
+  command -v apt-get >/dev/null && apt-get clean >/dev/null 2>&1
+  fstrim -a >/dev/null 2>&1
+  sync; echo 1 > /proc/sys/vm/drop_caches; echo 1 > /proc/sys/vm/compact_memory 2>/dev/null
   after=$(df -BM --output=avail / | tail -1 | tr -dc 0-9)
   log "clean: / free ${before} MiB -> ${after} MiB"
 }
