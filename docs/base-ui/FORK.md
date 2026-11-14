@@ -35,3 +35,9 @@ Builds lourds sur vps (fr1), jamais sur le PC.
 - Modes navigateur `@vitest/browser-playwright` (chromium/firefox/webkit), e2e et regressions (vite + vitest) : non convertis; Bun.WebView est Chrome seul (Context7 `/oven-sh/bun`, docs/runtime/webview.mdx). Playwright screen-reader (guidepup) conserve.
 - `bun lint` : echec au chargement de `eslint.config.mjs` (`Cannot find module 'zod-validation-error/v4'` depuis eslint-plugin-react-hooks 7.1.1, peer non lie par le linker isole); eslint 10 et ses regles MUI custom (`test:lint-rules`) restent la reference. `bun lint` n'a donc pas ete valide ici.
 - `docs` build/link-check et build complet : non relances (fr2 limite, builds lourds sur fr1).
+
+## Shim bun:test pour @mui/internal-test-utils (commit `6b3b5642`, fr2, bun 1.4.5-canary.1)
+
+- `test/setupBun.ts` : `mock.module('vitest')` expose `beforeEach`/`afterEach` enveloppes sans parametre (bun traite un parametre declare comme callback `done`) qui passent le contexte vitest `{ expect, task, onTestFinished }`; `onTestFinished` execute dans un `afterEach`; `test/setupVitest.ts` (chai, chai-dom, RTL cleanup, fail-on-console) est importe par le preload. `packages/react/bunfig.toml` charge le preload. Scripts `test:bun:utils`, `test:bun:react` (un process bun par fichier, `-P4`).
+- Mesures (hors `*.spec.*`) : packages/react avant 0 pass / tous fail (Button : 0 pass / 21 fail, 1.64 s) ; apres 9238 pass / 129 fail sur 352 fichiers (47 fichiers avec echecs, aucun timeout), 290 s en 4 process paralleles ; Button 21 pass / 0 fail, 1.57 s (hyperfine, 3 runs). packages/utils : 89 pass / 83 fail -> 151 pass / 21 fail.
+- Restant : `bun test src` en un seul process se bloque apres `MenuPositioner.test.tsx` (fuite d'etat entre fichiers, d'ou un process par fichier) ; 129 echecs concentres dans select, toast viewport, autocomplete, context-menu, drawer, menu filter (timers factices `vi.*`, layout jsdom).
