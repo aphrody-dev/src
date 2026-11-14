@@ -96,7 +96,7 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/linux | mirror | 23c62304dde2 | 23c62304dde2 | 21/0 | fast-forwarded | - | 0 |
 | aphrody-labs/bazzite | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/GameNetworkingSockets | mirror | d534c19aa760 | d534c19aa760 | 0/0 | noop | - | 0 |
-| aphrody-labs/gamescope | mirror | 56603967059a | 56603967059a | 13/2831 | diverged: fork has 2831 own commit(s); declare kind = "patched" to rebase | - | 0 |
+| aphrody-labs/gamescope | mirror | 0be04e4e968e | 56603967059a | 13/2831 | diverged: fork has 2831 own commit(s); declare kind = "patched" to rebase | - | 0 |
 | aphrody-labs/Proton | mirror | 1f089f5610a8 | 1f089f5610a8 | 0/0 | noop | - | 0 |
 | aphrody-labs/steam-devices | mirror | 22ec85e5ff5e | 22ec85e5ff5e | 0/0 | noop | - | 0 |
 | aphrody-labs/wterm | mirror | - | - | ?/? | - | - | 0 |
@@ -126,7 +126,7 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/modern-web-guidance-src | mirror | 5e5cd33a7738 | 5e5cd33a7738 | 0/0 | noop | - | 0 |
 | aphrody-labs/wasm-bindgen | mirror | ce77fe15277c | ce77fe15277c | 0/0 | noop | - | 0 |
 | aphrody-labs/ui | mirror | e62c9435fff7 | 19f5724ea534 | 0/3 | noop | - | 0 |
-| aphrody-labs/base-ui | mirror | 315eba7a3d8a | 6b3b5642d74d | 0/3 | noop | - | 0 |
+| aphrody-labs/base-ui | mirror | 315eba7a3d8a | 393c6a5abdda | 0/4 | noop | - | 0 |
 | aphrody-labs/tailwindcss | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/better-auth | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/Pulsar-Native | mirror | - | - | ?/? | - | - | 0 |
