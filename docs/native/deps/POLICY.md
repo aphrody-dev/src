@@ -8,7 +8,7 @@ flat `third_party/`, CIPD binaries pinned by hash) and intelligent-terminal
 `cgmanifest.json` per component, workstation described in `.config/configuration.winget`).
 
 Source studies: `docs/packaging/PACKAGE-MANAGERS.md`, `docs/packaging/RECOMMENDATION.md`,
-`docs/llvm/UNIFIED-TOOLCHAIN.md`, `docs/compat/TARGETS.md`, `docs/infra/INSTALL_UPDATE.md`. This document
+`docs/native/llvm/UNIFIED-TOOLCHAIN.md`, `docs/native/compat/TARGETS.md`, `docs/infra/INSTALL_UPDATE.md`. This document
 settles them. Only deviation: the `distroless/*-debian13` images cited in `RECOMMENDATION.md` are
 rejected, because src never uses Debian or Ubuntu.
 
@@ -20,7 +20,7 @@ rejected, because src never uses Debian or Ubuntu.
    3. an `aphrody-labs` fork pinned by commit (`src.lock.json` then DEPS), only when it carries a patch or an optimization;
    4. the system manager, as a last resort: winget on Windows; in containers, apk (Alpine), pacman (Arch) or nix.
       Never apt, snap or a Debian/Ubuntu image. flatpak/Flathub is used only for Linux desktop applications, outside the build chain.
-      Bounded exception (2026-11-13, owner request): Debian and Ubuntu are **output targets** of `ay pkg` (`infra/pkg`, `docs/linux/OWNERSHIP.md`); their digest-pinned containers are used only to build and test our `.deb` in CI, and the `base-debian` image for that test. No src tool depends on them, apt remains forbidden on the PC.
+      Bounded exception (2026-11-13, owner request): Debian and Ubuntu are **output targets** of `ay pkg` (`infra/pkg`, `docs/native/linux/OWNERSHIP.md`); their digest-pinned containers are used only to build and test our `.deb` in CI, and the `base-debian` image for that test. No src tool depends on them, apt remains forbidden on the PC.
 2. **One lock per ecosystem, at the root**: `Cargo.lock`, `bun.lock`, `uv.lock`, `infra/go.sum` and `src.lock.json` (git repositories). DEPS, `.repo/manifests/default.xml` and MAINTAINERS are generated from it by `ay lock`. An `apps/*` submodule keeps the lock of its own repository.
 3. **One version per package.**
    - Rust: each crates.io dependency is declared only once in `[workspace.dependencies]`; members write `{ workspace = true }` and may only add `features` or `optional`.
@@ -38,7 +38,7 @@ rejected, because src never uses Debian or Ubuntu.
    - The clone is partial (`--filter=blob:none`), possibly sparse; `ay git slim --all` compacts it (commit-graph, multi-pack-index, repack).
    - Patches live in the forks, never in a vendored copy.
    - Updating goes through `ay lock`, then through the commit of `src.lock.json` and DEPS.
-9. **FFI, IR, ABI.** A single C ABI at the center (`crates/core-capi`, `crates/ffi`, `infra/cshared`, `bun:ffi`). A single LLVM: clang, lld and rustc on the same major version. Cross-language LTO goes through `-Clinker-plugin-lto` (`docs/llvm/UNIFIED-TOOLCHAIN.md`).
+9. **FFI, IR, ABI.** A single C ABI at the center (`crates/core-capi`, `crates/ffi`, `infra/cshared`, `bun:ffi`). A single LLVM: clang, lld and rustc on the same major version. Cross-language LTO goes through `-Clinker-plugin-lto` (`docs/native/llvm/UNIFIED-TOOLCHAIN.md`).
    - Third-party C/C++ libraries come from vcpkg in manifest mode. Each `vcpkg.json` declares `builtin-baseline` and `overrides`, on the `aphrody-labs/vcpkg` fork and the chained LLVM triplet: outputs are LLVM bitcode, measured on fr2 on 2026-11-12.
    - Large upstreams (Chromium, LLVM, kernel, WebKit) remain `third_party/` units built by their own system, on fr1.
 
@@ -96,7 +96,7 @@ Rules checked:
 
 CI, on fr1 or prd, runs `ay lock --deps --bump --dedupe` every week, then `cargo check --workspace --locked`, `cargo test`, `bun test` per package and `ay doctor --deps`. It commits the locks on main when everything is green. On prd, only one heavy job at a time: `flock /var/lock/aphrody-heavy.lock`, `nice -n 19`, `ionice -c 3`, `-j 2`, and only when the load is under half the cores. Otherwise, GitHub CI takes over.
 
-Major bumps (`--breaking`) and the nightly date are changed by hand, in a dedicated commit. The remaining duplicate of each bump is recorded in `docs/deps/DEDUP.md`.
+Major bumps (`--breaking`) and the nightly date are changed by hand, in a dedicated commit. The remaining duplicate of each bump is recorded in `docs/native/deps/DEDUP.md`.
 
 ## 5. A single source of tools
 

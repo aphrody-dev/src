@@ -222,7 +222,7 @@ assets.macos-aarch64 = "cargo-dist-aarch64-apple-darwin.tar.xz"
 # ---------------------------------------------------------------------------------------------
 # CLI tools from docs/WORKSTATION_INVENTORY.md 5.2 and the install.ps1 / install.sh tool list.
 # Every tool is a pinned GitHub release asset verified by sha256 (GitHub release digest, or measured
-# when the release predates digests); no `source = "ubi"` left (docs/deps/POLICY.md rule 5).
+# when the release predates digests); no `source = "ubi"` left (docs/native/deps/POLICY.md rule 5).
 # Pins match what is installed on the workstation so `ay up` adds no second copy.
 # ---------------------------------------------------------------------------------------------
 
@@ -895,7 +895,7 @@ package = "apify-cli"
 # épingle la même version et vérifie le binaire sur le PATH. Preuves : dépôt nt,
 # docs/research/shell-replacement.md (test Claude Code de bout en bout, imports PE).
 # Première installation seulement : le niu.exe en service vient des forks aphrody-labs (niubash + rubash)
-# construits par prd ou par la CI du fork, puis `just unixwin-install` (docs/unixwin/BUILD.md, DEDUP.md).
+# construits par prd ou par la CI du fork, puis `just unixwin-install` (docs/native/unixwin/BUILD.md, DEDUP.md).
 # `bin` n'est pas un gabarit {version} : à mettre à jour avec `version`.
 [[tool]]
 name = "niubash"
@@ -1057,7 +1057,7 @@ version = "23.1.5"
 source = "github"
 repo = "llvm/llvm-project"
 hosts = ["pc", "fr1"]
-why = "clang/clang-cl/lld shared with Chromium and rustc (docs/llvm/UNIFIED-TOOLCHAIN.md); bindgen/clang-sys, aws-lc-sys"
+why = "clang/clang-cl/lld shared with Chromium and rustc (docs/native/llvm/UNIFIED-TOOLCHAIN.md); bindgen/clang-sys, aws-lc-sys"
 windows-x86_64 = { url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-23.1.5/clang%2Bllvm-23.1.5-x86_64-pc-windows-msvc.tar.xz", sha256 = "62fdada7f6fa2b73856486dfbbdba3d2c1882991621615bcb55c60207611c6d4" }
 linux-x86_64 = { url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-23.1.5/LLVM-23.1.5-Linux-X64.tar.xz", sha256 = "f72edb0b36580ece7f52e23858f00c18fad4e87395ea7ad05d7e55c39f8fc78a" }
 linux-aarch64 = { url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-23.1.5/LLVM-23.1.5-Linux-ARM64.tar.xz", sha256 = "44f1e4b7a125b2763d56386a199928dd57ec32e151cc6042dce2f7b0da7bb651" }

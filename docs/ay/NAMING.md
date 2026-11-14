@@ -59,7 +59,7 @@ AOT-compiled binaries until they are ported.
   `cargo` and `bun`. Flags follow GNU style (`--long`, `-s`), parsed with clap.
 - Crate directories: `crates/<area>` (flat, one level), package name `aphrody-<area>` when published,
   plain `<area>` when `publish = false`. Rust library names use `snake_case`.
-- Bun packages live in `packages/<name>`; `infra/` keeps deploy config and Go (`infra/ffi-bridge` became
+- Bun packages live in `packages/<name>`; `infra/` keeps deploy config and Go (`packages/ffi-bridge` became
   `packages/ffi-bridge` on 2026-11-13). A Windows-only platform crate is named after its API (`dx12-hal`),
   is `cfg(windows)` and empty elsewhere, and leaves its UI host (WinUI 3) to the L5 binary (`wslg-cli`).
 - Exit codes follow Unix: 0 success, 1 failure, 2 usage error.

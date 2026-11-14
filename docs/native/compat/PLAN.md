@@ -1,6 +1,6 @@
 # Plan : purge du legacy, stack LLVM 2026
 
-Aligné sur docs/llvm/UNIFIED-TOOLCHAIN.md et TOOLCHAIN-FORKS.md : une seule révision LLVM (CLANG_REVISION de Chromium), lld, ThinLTO, et `*-windows-gnullvm` quand l'ABI MinGW est requise. Aucun GCC. C:\src est en lecture seule : les purges se font par patchs dans nos forks aphrody-labs ou dans labs/forks.
+Aligné sur docs/native/llvm/UNIFIED-TOOLCHAIN.md et TOOLCHAIN-FORKS.md : une seule révision LLVM (CLANG_REVISION de Chromium), lld, ThinLTO, et `*-windows-gnullvm` quand l'ABI MinGW est requise. Aucun GCC. C:\src est en lecture seule : les purges se font par patchs dans nos forks aphrody-labs ou dans labs/forks.
 
 ## Purge (14 éléments)
 

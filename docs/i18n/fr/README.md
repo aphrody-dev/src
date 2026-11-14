@@ -39,7 +39,7 @@ just verify-all      # garde d'architecture, doctor, suites Bun, puis ci.yml pou
 
 | Sujet                                      | Document                                                                 |
 | :----------------------------------------- | :----------------------------------------------------------------------- |
-| Design system et UI                        | `docs/DESIGN_SYSTEM.md`, `docs/ui/STACK.md`, `packages/design/DESIGN.md` |
+| Design system et UI                        | `docs/design/DESIGN_SYSTEM.md`, `docs/ui/STACK.md`, `packages/design/DESIGN.md` |
 | Média (`crates/tv-*`)                      | `docs/tv`                                                                |
 | Jeux vidéo et Steam                        | `docs/gaming/OWNERSHIP.md`                                               |
 | Epic Games et Unreal Engine                | `docs/epic/RESOURCES.md`, `docs/epic/TRACKING.md`                        |
@@ -59,6 +59,6 @@ Aphrody Labs : travail de plateforme auto-hébergée ; son ancien binaire est d�
 | `[patch.crates-io]`                                                            | crates patchées, forks aphrody-labs épinglés par `rev` (quinn-proto, glob-match) |
 | `third_party/oils`, `third_party/{vendor.lock,chrome-channels.toml,forks.txt}` | fork oils et épinglages                                                          |
 | `infra/chromium-factory`                                                       | usine de build Chromium                                                          |
-| `plugins/labs`                                                                 | plugin Claude Code `labs` (`docs/PLUGIN.md`)                                     |
+| `plugins/labs`                                                                 | plugin Claude Code `labs` (`docs/agents/PLUGIN.md`)                                     |
 
 Recettes : `just lab-build`, `just lab-dev`, `just lab-conformance`.

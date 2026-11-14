@@ -36,7 +36,7 @@ bun x lighthouse@13.6.0 https://google.com \
 - Programmatic (Puppeteer): `lighthouse(url, {output:'json'}, undefined, page)`; see references/lighthouse.md.
 - Median of >=3 runs, fresh process each run (Lighthouse docs/variability.md). Flag `--throttling-method=provided` only when you control the network.
 - Categories: performance, accessibility, best-practices, seo, agentic-browsing (new in 13.x: agent a11y tree, WebMCP, llms.txt).
-- Engines that failed in our bench (docs/bench/REPORT.md): cef-156, electron-43, lightpanda, obscura (no Target.createTarget or session). helium 2/3 (FAILED_DOCUMENT_REQUEST). Use chs-stable, chs-canary, brave-nightly or pw-chromium.
+- Engines that failed in our bench (docs/native/bench/REPORT.md): cef-156, electron-43, lightpanda, obscura (no Target.createTarget or session). helium 2/3 (FAILED_DOCUMENT_REQUEST). Use chs-stable, chs-canary, brave-nightly or pw-chromium.
 
 Our reference numbers (fr1, 2026-11-12, desktop preset, median of 3, Next 16.5 app): chs-stable score 1.00, LCP 186 ms, TBT 0, CLS 0. Real sites on pw-chromium (1 run): nextjs.org 0.83, vercel.com 0.82 (LCP 1736 ms), react.dev 0.93, developers.cloudflare.com 0.99.
 

@@ -1,6 +1,6 @@
 // Chaîne unixwin de src : épinglage des clones, build de niu (niubash + rubash) depuis les forks aphrody-labs, sur prd
 // (cargo xwin pour Windows, nice -n 19, 4 tâches) ou par la CI du fork (.github/workflows/aphrody-build.yml),
-// puis installation du binaire sur le poste. Décisions : docs/unixwin/DEDUP.md, procédure : docs/unixwin/BUILD.md.
+// puis installation du binaire sur le poste. Décisions : docs/native/unixwin/DEDUP.md, procédure : docs/native/unixwin/BUILD.md.
 // Usage (racine du dépôt) :
 //   bun infra/unixwin/unixwin.ts status                     écarts forks / amont, pins, niu installé
 //   bun infra/unixwin/unixwin.ts lock                       épingle les clones unixwin dans src.lock.json
@@ -80,7 +80,7 @@ const pinOf = async (rel: string) => {
   return c;
 };
 
-// Entrée au format de src.lock.json (version 2), chemin relatif (règle LOCK-ABS de docs/deps/POLICY.md).
+// Entrée au format de src.lock.json (version 2), chemin relatif (règle LOCK-ABS de docs/native/deps/POLICY.md).
 const entry = (rel: string): Entry => {
   const dir = join(repo, rel);
   const remotes: Record<string, string> = {};

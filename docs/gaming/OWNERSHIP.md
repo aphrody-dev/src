@@ -3,7 +3,7 @@
 Scope: Steam (client, steamcmd, Steam Runtime, Steamworks), Proton, Wine, DXVK, VKD3D-Proton,
 gamescope, Mesa/RADV, Vulkan, DirectX, SteamOS, Bazzite, CachyOS on the gaming side (proton-cachyos,
 wine-cachyos). The CachyOS kernel and packages, the Linux patchsets and the base images
-belong to the system layer: `docs/linux/OWNERSHIP.md`.
+belong to the system layer: `docs/native/linux/OWNERSHIP.md`.
 
 Commands: `ay steam` (Rust, `crates/ay/src/low/steam.rs`) and `ay gaming` (`packages/gaming`, run by bun).
 
@@ -59,7 +59,7 @@ Vulkan-Loader, SPIRV-Headers, glslang...) are not initialized: the checkouts bel
 | `steamroom`                                                                                                                                                                                            | pre-existing                                             | landaire/steamroom                               | MIT OR Apache-2.0                                                     | dependency of `crates/steam-depot`                                                                                    |
 | `steamkit`, `steam-vent`, `steamlocate-rs`, `steamworks-rs`, `steamappinfo`, `steam-protobufs`, `steamtracking`, `valvepython-steam`, `steamctl`, `node-steam-*`, `steam-lancache-prefill`, `steam-rs` | not forked (reference, `crates/steam-depot/UPSTREAM.md`) | various                                          | GPL/LGPL: read-only, never copied                                     |                                                                                                                       |
 
-CachyOS (kernel `linux-cachyos`, `CachyOS-PKGBUILDS`): system layer, `docs/linux/OWNERSHIP.md`.
+CachyOS (kernel `linux-cachyos`, `CachyOS-PKGBUILDS`): system layer, `docs/native/linux/OWNERSHIP.md`.
 
 ## 4. Excluded for license reasons
 

@@ -58,7 +58,7 @@ archguard graph --format mermaid -o C:\src\docs\ARCH_GRAPH.mermaid
 12. `ARCH-012` (`atlas-link-integrity`): Every `file:///C:/src/...` link in `AGENTS.md` and `docs/MONOREPO_ATLAS.md` must resolve to an existing file/folder on disk.
 13. `ARCH-013` (`manifest-versioning-integrity`): Root `package.json` must declare CalVer `YYYY.MM.PATCH`, and all apps, packages, crates, tools, and infra must declare valid SemVer/CalVer versions.
 14. `ARCH-014` (`chromium-deps-binary-hygiene`): Chromium `DEPS` manifest must pin exact 40-character commit SHAs, and source trees must contain zero unapproved binaries > 50MB (Presubmit gate).
-15. `ARCH-015` (`linux-upstream-maintainers-hygiene`): Linux upstream `MAINTAINERS` file must declare valid canonical status and existing file patterns `F:`, and `docs/patches/series` must contain valid unified diffs.
+15. `ARCH-015` (`linux-upstream-maintainers-hygiene`): Linux upstream `MAINTAINERS` file must declare valid canonical status and existing file patterns `F:`, and `docs/native/patches/series` must contain valid unified diffs.
 16. `ARCH-016` (`bun-speed-zero-glue-hygiene`): Bun upstream speed contracts: zero `binding.gyp` glue, no `postinstall` native rebuild hooks, and pure Rust FFI vertical integration.
 17. `ARCH-017` (`graph-acyclic-boundaries`): Architecture dependency graph must enforce monotonic layers (`Layer0Kernel` -> `Layer1Systems` -> `Layer2Packages` -> `Layer3AppsAndTools`) and zero cyclic dependencies.
 

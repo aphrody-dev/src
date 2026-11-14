@@ -13,7 +13,7 @@ BUN=$(command -v bun) || { echo "upstream install: bun missing" >&2; exit 1; }
 command -v gh >/dev/null || { echo "upstream install: gh missing" >&2; exit 1; }
 
 # Weight split (CLAUDE.md, docs/infra/FLEET.md): bun, Linux system and gaming mirror stacks on prd (git only, no build),
-# Chromium only on fr1. Linux stacks: docs/linux/PATCHSETS.md.
+# Chromium only on fr1. Linux stacks: docs/native/linux/PATCHSETS.md.
 if [ -d /srv/chromium/src/.git ]; then
   STACKS=chromium GC=chromium ENV="Environment=AY_UPSTREAM_CHECKOUT_CHROMIUM=/srv/chromium/src"
 else
@@ -24,7 +24,7 @@ STACKS=${UPSTREAM_STACKS:-$STACKS}
 UNITS=$HOME/.config/systemd/user
 mkdir -p "$UNITS"
 UNIT_FILES="$SRC/infra/upstream/systemd/*"
-# Linux layer (docs/linux/OWNERSHIP.md): patchset watch on prd, partial kernel mirror on fr1.
+# Linux layer (docs/native/linux/OWNERSHIP.md): patchset watch on prd, partial kernel mirror on fr1.
 case $STACKS in *linux-cachyos*) LINUX_TIMER=aphrody-linux-watch.timer UNIT_FILES="$UNIT_FILES $SRC/infra/linux/systemd/prd/*" ;; esac
 case $STACKS in *chromium*) LINUX_TIMER=aphrody-linux-mirror.timer UNIT_FILES="$UNIT_FILES $SRC/infra/linux/systemd/fr1/*" ;; esac
 for f in $UNIT_FILES; do

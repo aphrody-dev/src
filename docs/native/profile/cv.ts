@@ -1,8 +1,8 @@
-// Renders docs/profile/CV.md to a print-ready HTML page in the Aphrody style (brand tokens from
+// Renders docs/native/profile/CV.md to a print-ready HTML page in the Aphrody style (brand tokens from
 // assets/brand/gen/tokens/tokens.css, Google Sans Flex), then to PDF with headless Chrome.
 // The PDF step runs on fr1 (no rendering on the workstation):
-//   bun docs/profile/cv.ts            -> docs/profile/CV.html
-//   bun docs/profile/cv.ts --pdf      -> also docs/profile/CV.pdf (needs google-chrome)
+//   bun docs/native/profile/cv.ts            -> docs/profile/CV.html
+//   bun docs/native/profile/cv.ts --pdf      -> also docs/native/profile/CV.pdf (needs google-chrome)
 import { join } from "node:path";
 
 const DIR = import.meta.dir;
@@ -57,5 +57,5 @@ if (process.argv.includes("--pdf")) {
     { stdout: "inherit", stderr: "inherit" },
   );
   if (p.exitCode !== 0) process.exit(p.exitCode ?? 1);
-  console.log("docs/profile/CV.pdf");
+  console.log("docs/native/profile/CV.pdf");
 }

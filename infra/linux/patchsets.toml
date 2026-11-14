@@ -1,4 +1,4 @@
-# Kernel patchsets, distro kernels and GPU stacks that src follows (docs/linux/PATCHSETS.md).
+# Kernel patchsets, distro kernels and GPU stacks that src follows (docs/native/linux/PATCHSETS.md).
 # `ay linux status` reads the live upstream value of every entry with its `method` and compares it with
 # `pinned`; `ay linux sync --write` moves the pins (daily on prd: infra/linux/systemd). The entries that
 # carry Aphrody patches are also stacks of `ay upstream` (infra/upstream/stacks.toml).
@@ -114,7 +114,7 @@ url = "https://chromium.googlesource.com/chromiumos/manifest"
 pattern = '^release-R(\d+)-\d+\.B$'
 pinned = "159"
 
-# GPU and compute (docs/linux/GPU.md). Download manifests only: nothing proprietary is redistributed.
+# GPU and compute (docs/native/linux/GPU.md). Download manifests only: nothing proprietary is redistributed.
 [patchset.nvidia-open]
 group = "gpu"
 method = "github-release"
@@ -146,7 +146,7 @@ method = "github-release"
 repo = "ROCm/TheRock"
 pinned = "therock-10.1"
 
-# Windows cross toolchain (docs/linux/CROSS-WINDOWS.md).
+# Windows cross toolchain (docs/native/linux/CROSS-WINDOWS.md).
 [patchset.llvm-mingw]
 group = "cross"
 method = "github-release"

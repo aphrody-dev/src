@@ -156,7 +156,7 @@
     {
       "id": "geist.comp.web-guidelines",
       "level": "MUST",
-      "rule": "Les règles transverses d'interface (focus, cibles, formulaires, contenu, performance perçue) ne sont pas dupliquées ici : appliquer la skill vercel-agent-skills:web-design-guidelines (fork aphrody-labs/agent-skills, plugins/labs/skills/web-design-guidelines).",
+      "rule": "Les règles transverses d'interface (focus, cibles, formulaires, contenu, performance perçue) ne sont pas dupliquées ici : appliquer la skill vercel-agent-skills:web-design-guidelines (fork aphrody-labs/agent-skills, .agents/skills/web-design-guidelines).",
       "source": "https://vercel.com/design/guidelines"
     }
   ],

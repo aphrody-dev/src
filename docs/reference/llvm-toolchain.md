@@ -1,6 +1,6 @@
 # Shared LLVM toolchain (clang/lld/rustc) in src
 
-Native C ABI (crates/core-capi, cdylib) built with the shared LLVM toolchain for cross-language LTO (docs/llvm/PURE-C-LLVM.mdx).
+Native C ABI (crates/core-capi, cdylib) built with the shared LLVM toolchain for cross-language LTO (docs/native/llvm/PURE-C-LLVM.mdx).
 
 Sources:
 

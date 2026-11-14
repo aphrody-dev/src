@@ -39,7 +39,7 @@ a fork is created (skill gh-fork, `third_party/forks.txt`) only if a patch becom
 ## 2. Executed in this workstream (2026-11-13)
 
 - Deleted: `infra/cmd/src-deploy`, `infra/internal/{detect,envvault,oci,providers}`, `infra/cshared`, `infra/go.mod`,
-  the Go part of `infra/ffi-bridge` (`index.ts`, `polyglot.test.ts`, crate `src/lib.rs`), `infra/generated/Caddyfile`,
+  the Go part of `packages/ffi-bridge` (`index.ts`, `polyglot.test.ts`, crate `src/lib.rs`), `infra/generated/Caddyfile`,
   `infra/generated/deploy-plan.json`, `infra/generated/systemd/sovereign-*@.service`, `infra/gcloud/cloudbuild.yaml`,
   the `src-deploy` step of `tools.toml`, the `deploy-plan` and `go test` recipes of `verify-all`.
 - `ay deploy <sub>` routes to `just docker-<sub>` (`crates/ay/src/lib.rs`, unit test updated); `just deploy` =

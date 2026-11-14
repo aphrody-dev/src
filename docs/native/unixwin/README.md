@@ -9,7 +9,7 @@ WebFetch du site).
 | ---------------------------- | ----------------------------------------------------------------------------------------------------- |
 | [SITE.md](SITE.md)           | index structuré du site unixwin.dev (produits, docs, agents, benchmarks, changelog), avec les sources |
 | [DEDUP.md](DEDUP.md)         | décisions de déduplication avec ce que src possède déjà : quel composant fait autorité                |
-| [DEPS.md](DEPS.md)           | dépendances des dépôts unixwin, alignées sur [docs/deps/POLICY.md](../deps/POLICY.md)                 |
+| [DEPS.md](DEPS.md)           | dépendances des dépôts unixwin, alignées sur [docs/native/deps/POLICY.md](../deps/POLICY.md)                 |
 | [BUILD.md](BUILD.md)         | chaîne de build et d'installation depuis les forks (prd ou CI du fork), recettes `just unixwin-*`     |
 | [LEARNINGS.md](LEARNINGS.md) | défauts trouvés par la suite de bout en bout, correctifs et contournements                            |
 

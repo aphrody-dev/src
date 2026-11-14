@@ -39,7 +39,7 @@ just verify-all      # architecture gate, doctor, Bun suites, then ci.yml for Ru
 
 | トピック                                         | ドキュメント                                                             |
 | :----------------------------------------------- | :----------------------------------------------------------------------- |
-| デザインシステムと UI                            | `docs/DESIGN_SYSTEM.md`、`docs/ui/STACK.md`、`packages/design/DESIGN.md` |
+| デザインシステムと UI                            | `docs/design/DESIGN_SYSTEM.md`、`docs/ui/STACK.md`、`packages/design/DESIGN.md` |
 | メディア(`crates/tv-*`)                          | `docs/tv`                                                                |
 | ゲームと Steam                                   | `docs/gaming/OWNERSHIP.md`                                               |
 | Epic Games と Unreal Engine                      | `docs/epic/RESOURCES.md`、`docs/epic/TRACKING.md`                        |

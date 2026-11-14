@@ -33,7 +33,7 @@ Schema: `docs/design/specs/spec.schema.json`. Index of pages read: `docs/design/
 
 ## Links
 
-- Cross-cutting interface rules: skill `vercel-agent-skills:web-design-guidelines` (fork aphrody-labs/agent-skills, `plugins/labs/skills/web-design-guidelines`); do not duplicate.
+- Cross-cutting interface rules: skill `vercel-agent-skills:web-design-guidelines` (fork aphrody-labs/agent-skills, `.agents/skills/web-design-guidelines`); do not duplicate.
 - Generic web perf: skills `web-quality-skills:core-web-vitals`, `cloudflare:web-perf`.
 - Sources: https://vercel.com/geist/introduction, https://vercel.com/design/guidelines, https://vercel.com/docs/speed-insights/metrics, https://github.com/vercel/geist-font.
 - Reread live (`curl -H "Accept: text/markdown"`, ~1 request/1.5 s) before citing a value; update `verified` in the JSON files.

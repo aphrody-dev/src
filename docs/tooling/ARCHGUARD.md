@@ -20,7 +20,7 @@ flowchart LR
 
 - **Never Break Userspace (`ARCH-007`)**: Windows host directories (`C:\Windows\System32`, `C:\Windows\SysWOW64`) are strictly immutable. All userland binaries live in `C:\Users\aphro\.local\bin` or user winget/Cargo/Bun paths.
 - **Good Taste in Data Structures**: Data structures in systems code are flat and cache-friendly without special edge-case branching.
-- **Upstream Linux Standards (`ARCH-015`)**: Upstream `MAINTAINERS` file format is validated against disk reality. File patterns `F:` must resolve to actual directories or files. Patch series in `docs/patches/series` follow Quilt / b4 / git-am unified diff standards.
+- **Upstream Linux Standards (`ARCH-015`)**: Upstream `MAINTAINERS` file format is validated against disk reality. File patterns `F:` must resolve to actual directories or files. Patch series in `docs/native/patches/series` follow Quilt / b4 / git-am unified diff standards.
 
 ### 1.2 Jarred Sumner: Bun v1.4.4 Full-Rust Vertical Speed
 
@@ -105,7 +105,7 @@ ARCH-011   tools-domain-purity                  tools/* must have a pure Rust 20
 ARCH-012   atlas-link-integrity                 Every file:///C:/src/... link in AGENTS.md and docs/MONOREPO_ATLAS.md must resolve to an existing file or directory
 ARCH-013   manifest-versioning-integrity        Monorepo root and all first-party apps, packages, crates, tools, and infra must declare valid SemVer or CalVer versions without omissions
 ARCH-014   chromium-deps-binary-hygiene         Chromium DEPS manifest must pin exact 40-char commit SHAs, and source trees must contain zero unapproved binaries > 50MB (Presubmit gate)
-ARCH-015   linux-upstream-maintainers-hygiene   Linux upstream MAINTAINERS file must declare existing file patterns F:, and docs/patches/series must contain valid unified diffs
+ARCH-015   linux-upstream-maintainers-hygiene   Linux upstream MAINTAINERS file must declare existing file patterns F:, and docs/native/patches/series must contain valid unified diffs
 ARCH-016   bun-speed-zero-glue-hygiene          Bun upstream speed contracts: zero node-gyp glue, no postinstall compile hooks, and full native Rust FFI vertical integration
 ARCH-017   graph-acyclic-boundaries             Architecture dependency graph must enforce monotonic layers (Kernel -> Systems -> Packages -> Apps) and zero cyclic dependencies
 ```

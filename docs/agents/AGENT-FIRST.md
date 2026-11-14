@@ -24,7 +24,7 @@ The runner never chooses a provider: it runs what the task names, in the given o
 | `designer` | PRD, `DESIGN.md` (design-first gate of AGENTS.md)        | mockups, tokens                      | `wck` / Lighthouse                                              | fr1, pc       |
 | `deployer` | `just deploy <target>`                                   | deployment                           | target health                                                   | prd           |
 | `sre`      | health, logs, restarts; `ci-watch` creates `coder` tasks | light fix                            | green `judge`                                                   | prd, fr1, fr2 |
-| `chromium` | Chromium/LLVM tasks                                      | builds                               | factory (`docs/CHROMIUM-FACTORY.md`)                            | fr1           |
+| `chromium` | Chromium/LLVM tasks                                      | builds                               | factory (`docs/native/CHROMIUM-FACTORY.md`)                            | fr1           |
 | `build`    | images, artifacts, toolchains (`aphrody-heavy`)          | artifacts                            | `just` recipe                                                   | fr1           |
 | `training` | training                                                 | models                               | evaluation                                                      | fr1           |
 | `growth`   | templates `infra/agents/tasks/*`                         | drafts in `var/agents/publish/<id>/` | owner review                                                    | prd, pc       |

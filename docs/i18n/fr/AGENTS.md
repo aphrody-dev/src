@@ -20,7 +20,7 @@ src est le monorepo public d'Aphrody. Sa direction : un moteur de jeu et une sui
 
 - Les agents sont libres : ni approbation, ni confirmation, ni humain dans la boucle. Décider, exécuter, vérifier, dire ce qui est fait et ce qui ne l'est pas.
 - Tout est commité et poussé directement sur `main` ; ni branches, ni worktrees, jamais de push vers un upstream.
-- Interface unique : `just` et la CLI `ay` (`docs/NAMING.md`). Rust compile en CI ou sur fr1, jamais sur le poste ; prd exécute uniquement les backends de production, fr2 l'edge.
+- Interface unique : `just` et la CLI `ay` (`docs/ay/NAMING.md`). Rust compile en CI ou sur fr1, jamais sur le poste ; prd exécute uniquement les backends de production, fr2 l'edge.
 - Le framework d'UI est libre (Bevy UI, egui, iced, WinUI 3, Tauri, GPUI, WebUI) : les critères sont la qualité de rendu, la performance et la fonction. Les tokens viennent de `packages/design` et `crates/aphrody-ui`.
 - Les fonctions d'IA vivent uniquement dans `packages/ai-os` ; fournisseurs et modèles sont découverts à l'exécution, aucun n'est codé en dur.
 - Publier en ouvert : dépôts publics, releases et tags GitHub, crates.io et npm, une fois le scan de secrets propre (`docs/publish/STATUS.md`).

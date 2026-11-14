@@ -1,4 +1,4 @@
-# Index docs/shell (2026-11-12)
+# Index docs/native/shell (2026-11-12)
 
 ## Fichiers
 

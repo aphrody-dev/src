@@ -37,7 +37,7 @@ timeout_s = 1200
 budget_usd = 2
 
 [roles.chromium]
-# Chromium/LLVM factory tasks (docs/CHROMIUM-FACTORY.md).
+# Chromium/LLVM factory tasks (docs/native/CHROMIUM-FACTORY.md).
 heavy = true
 timeout_s = 21600
 budget_usd = 5

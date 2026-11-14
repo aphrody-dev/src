@@ -1,6 +1,6 @@
 # Plan : remplacement et réécriture des composants GNU (2026-11-12)
 
-Cohérent avec docs/llvm/UNIFIED-TOOLCHAIN.md, docs/compat/PLAN.md et docs/shell/MATRIX.md :
+Cohérent avec docs/native/llvm/UNIFIED-TOOLCHAIN.md, docs/native/compat/PLAN.md et docs/native/shell/MATRIX.md :
 
 - une seule toolchain LLVM, celle de Chromium (CLANG_REVISION), et aucun GCC ;
 - réécritures Rust préférées ;
@@ -46,4 +46,4 @@ Aucun pour l'instant. Pour chaque cible du top 10, un projet Rust existe et il e
 2. Linux prd : installer `uutils-coreutils` en parallèle, rejouer nos scripts (justfile, `ay`), comparer avec la baseline GNU et consigner le résultat dans PROOF.md.
 3. Signatures : passer les vérifications d'artefacts R2 de gpg à minisign + b3sum, et sqv pour les clés OpenPGP tierces.
 4. Builds : achever la purge GCC (compat/PLAN.md, 14 éléments) ; mettre lld par défaut partout.
-5. Mettre à jour la revue chaque trimestre : `bun tools/gnu-index/build.ts <raw> docs/gnu` régénère gnu-packages.json, PACKAGES.md et la partie générée de DISTROS.md (sources brutes : voir INDEX.md).
+5. Mettre à jour la revue chaque trimestre : `bun tools/gnu-index/build.ts <raw> docs/native/gnu` régénère gnu-packages.json, PACKAGES.md et la partie générée de DISTROS.md (sources brutes : voir INDEX.md).

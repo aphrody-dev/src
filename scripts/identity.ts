@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // identity: identity.toml is the single source of the product identity; this script checks and
-// rewrites every manifest that copies it (docs/ARCHITECTURE-ROOT.md invariant 5).
+// rewrites every manifest that copies it (docs/core/ARCHITECTURE-ROOT.md invariant 5).
 //
 //   bun scripts/identity.ts check [--root DIR]   exit 1 on drift (gate in `just check` and CI)
 //   bun scripts/identity.ts apply [--root DIR]   rewrite the derived fields from identity.toml
@@ -9,7 +9,7 @@
 // Derived fields:
 // - Cargo.toml [workspace.package] authors/repository/homepage; crates/ay package and [[bin]] name;
 // - crates/*/Cargo.toml package names: `<dir>` or `<crate_prefix><dir>` (crates.io collisions,
-//   docs/NAMING.md), except [naming.crate_names]; renames follow every `package = "..."` key;
+//   docs/ay/NAMING.md), except [naming.crate_names]; renames follow every `package = "..."` key;
 // - npm: every bun workspace (root package.json `workspaces` globs) is named `<scope>/<dir>`
 //   (`<scope>/<binary>` for [products.*], `<scope>/monorepo` at the root), and every `workspace:`
 //   dependency must name one of them.
@@ -309,7 +309,7 @@ export function plan(root: string, id = loadIdentity(root)): Edit[] {
   return edits;
 }
 
-/** Anonymity gate (docs/IDENTITY.md): the personal terms come from APHRODY_PII_TERMS (comma list: CI secret, vault
+/** Anonymity gate (docs/infra/IDENTITY.md): the personal terms come from APHRODY_PII_TERMS (comma list: CI secret, vault
  * locally), never from the repository. Fail-closed in CI outside fork pull requests. Prints file:line only. */
 function piiGate(root: string): number {
   const terms = (process.env.APHRODY_PII_TERMS ?? "")

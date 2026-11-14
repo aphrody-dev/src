@@ -39,7 +39,7 @@ just verify-all      # 架构检查、doctor、Bun 测试，然后运行 Rust �
 
 | 主题                                 | 文档                                                                                                                                                    |
 | :----------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 设计系统与 UI                        | [docs/DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)、[docs/ui/STACK.md](../../ui/STACK.md)、[packages/design/DESIGN.md](../../../packages/design/DESIGN.md) |
+| 设计系统与 UI                        | [docs/design/DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)、[docs/ui/STACK.md](../../ui/STACK.md)、[packages/design/DESIGN.md](../../../packages/design/DESIGN.md) |
 | 媒体（`crates/tv-*`）                | [docs/tv](../../tv)                                                                                                                                     |
 | 游戏与 Steam                         | [docs/gaming/OWNERSHIP.md](../../gaming/OWNERSHIP.md)                                                                                                   |
 | Epic Games 与 Unreal Engine 资料     | [docs/epic/RESOURCES.md](../../epic/RESOURCES.md)、[docs/epic/TRACKING.md](../../epic/TRACKING.md)                                                      |
@@ -59,6 +59,6 @@ Aphrody Labs：自托管平台相关工作，其原二进制现为 `ay conforman
 | `[patch.crates-io]`                           | 以 `rev` 固定的 aphrody-labs 分叉补丁 crate（quinn-proto、glob-match） |
 | `third_party/oils`                            | oils 分叉及其固定版本                                                  |
 | `infra/chromium-factory`                      | Chromium 构建工厂                                                      |
-| `plugins/labs`                                | Claude Code 插件 `labs`（[docs/PLUGIN.md](../../PLUGIN.md)）           |
+| `plugins/labs`                                | Claude Code 插件 `labs`（[docs/agents/PLUGIN.md](../../PLUGIN.md)）           |
 
 相关命令：`just lab-build`、`just lab-dev`、`just lab-conformance`。

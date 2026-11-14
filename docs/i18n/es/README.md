@@ -37,7 +37,7 @@ just verify-all      # arquitectura, doctor, suites de Bun y ci.yml para Rust
 
 | Tema                                        | Documento                                             |
 | :------------------------------------------ | :---------------------------------------------------- |
-| Diseño e interfaz                           | [docs/DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)       |
+| Diseño e interfaz                           | [docs/design/DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md)       |
 | Medios (`crates/tv-*`)                      | [docs/tv](../../tv)                                   |
 | Juegos y Steam                              | [docs/gaming/OWNERSHIP.md](../../gaming/OWNERSHIP.md) |
 | Juegos y suite creativa (plan, sin empezar) | [docs/games/PLAN.md](../../games/PLAN.md)             |

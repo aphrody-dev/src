@@ -44,7 +44,7 @@ rules = "chromium"
 runner = "fr1"
 
 
-# Linux system stacks (docs/linux/OWNERSHIP.md, docs/linux/PATCHSETS.md). Series model: the fork mirrors
+# Linux system stacks (docs/native/linux/OWNERSHIP.md, docs/native/linux/PATCHSETS.md). Series model: the fork mirrors
 # upstream on its default branch (merge-upstream API at each `sync --push`), our patches live in
 # infra/upstream/patches/<stack>/ and are checked against the upstream tip every day on prd (git only).
 # Kernel source patchsets we only follow (zen, xanmod, liquorix, GKI, ChromeOS) are in

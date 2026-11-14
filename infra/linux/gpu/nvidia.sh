@@ -1,5 +1,5 @@
 #!/bin/sh
-# NVIDIA open kernel modules + CUDA + container toolkit from official repositories (docs/linux/GPU.md).
+# NVIDIA open kernel modules + CUDA + container toolkit from official repositories (docs/native/linux/GPU.md).
 # Non-interactive and idempotent; run as root. --dry-run prints the commands. Versions: manifest.toml.
 #   gpu-nvidia [--dry-run] [--no-cuda] [--no-container]
 set -eu

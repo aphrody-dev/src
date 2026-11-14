@@ -65,7 +65,7 @@ Rule: drive the existing page for CEF/Electron; BiDi for Gecko; direct CDP other
 
 1. Need for pixel/Lighthouse truth → chs-stable; diff → + Firefox BiDi + WebKit.
 2. Cheap massive reading/scraping → Lightpanda; fall back to chs-stable for layout/iframe/Turnstile.
-3. New version of an engine → rerun the `docs/bench` harness (`bun bench.ts`), update REPORT.md then this table.
+3. New version of an engine → rerun the `docs/native/bench` harness (`bun bench.ts`), update REPORT.md then this table.
 4. Inventory of the orgs (Chrome, Chromium, Brave, imputnet, Servo, Lightpanda, h4ckf0r0day, vercel-labs) → `references/org-inventory.md` (= `C:\labs\docs\WEB-ECOSYSTEM.md`).
 
 ## Links

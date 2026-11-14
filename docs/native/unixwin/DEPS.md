@@ -1,4 +1,4 @@
-# unixwin : dépendances et alignement sur docs/deps/POLICY.md
+# unixwin : dépendances et alignement sur docs/native/deps/POLICY.md
 
 Relevé le 2026-11-13 dans les clones de `third_party/`, aux commits de `src.lock.json`.
 

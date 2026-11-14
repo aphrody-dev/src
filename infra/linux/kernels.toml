@@ -1,13 +1,13 @@
 # Kernel flavors built from aphrody-labs/linux-cachyos (linux-cachyos/PKGBUILD + the series in
 # infra/upstream/patches/linux-cachyos). Each `env` entry overrides a `: "${_name:=default}"` knob of
-# the PKGBUILD. `ay linux build <flavor>` prints (or with --run starts) the build; docs/linux/PATCHSETS.md.
+# the PKGBUILD. `ay linux build <flavor>` prints (or with --run starts) the build; docs/native/linux/PATCHSETS.md.
 #
 # Where: fr1 in a CachyOS container, `nice -n 19`, only while no Chromium/LLVM build runs there (the
 # build stops itself when one starts), or GitHub Actions (.github/workflows/linux-kernel.yml).
 # Never on the PC, never on prd.
 
 [toolchain]
-# LLVM shared with Chromium (docs/llvm/UNIFIED-TOOLCHAIN.md). On fr1 the factory checkout holds it; the
+# LLVM shared with Chromium (docs/native/llvm/UNIFIED-TOOLCHAIN.md). On fr1 the factory checkout holds it; the
 # bin directory has clang, ld.lld, llvm-ar, llvm-nm, llvm-objcopy, llvm-objdump, llvm-readelf and
 # llvm-strip (listed on fr1 2026-11-13, clang 24.0.0git 86922d51). No llvm-profdata: AutoFDO and
 # Propeller use the system LLVM until the factory publishes it.

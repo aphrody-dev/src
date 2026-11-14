@@ -97,7 +97,7 @@ bun: `aphrody-labs/bun` (`b6c3f857f7`) = `oven-sh/bun` `9098897a1737` (1.4.5-can
 
 Tracked `oven-sh/bun` Windows/related issues (`ay bun watch`): `#25042`, `#30084`, `#38052`, `#39747`, `#39760`, `#44761`, `#45059`, `#45410`, `#45742`, `#47420`, `#48351`, `#48385`, `#48531`, `#48581`, `#48689`, `#48698`.
 
-Linux stacks (2026-11-13): `linux-cachyos` (1 patch, `_llvm_prefix`), `cachyos-pkgbuilds`, `kernel-patches`, `liquorix`, `scx` (empty series), "series" model, patches in `infra/upstream/patches/<stack>/`, synchronized on prd with bun; patchsets tracked without a fork in `infra/linux/patchsets.toml` (`docs/linux/PATCHSETS.md`).
+Linux stacks (2026-11-13): `linux-cachyos` (1 patch, `_llvm_prefix`), `cachyos-pkgbuilds`, `kernel-patches`, `liquorix`, `scx` (empty series), "series" model, patches in `infra/upstream/patches/<stack>/`, synchronized on prd with bun; patchsets tracked without a fork in `infra/linux/patchsets.toml` (`docs/native/linux/PATCHSETS.md`).
 
 No `bunx-sh/bun` stack: org abandoned by the owner on 2026-11-13.
 

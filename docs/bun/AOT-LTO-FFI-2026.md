@@ -1,6 +1,6 @@
 # bun : AOT, LTO, FFI (novembre 2026)
 
-Date : 2026-11-12. Source principale : `oven-sh/bun` main `ccb3611f2a` (2026-11-12), lu dans `C:\src\third_party\bun` (branche `upstream/main`). [V] = lu dans la session, [NV] = non vérifié. Aligné sur `docs/llvm/UNIFIED-TOOLCHAIN.md` et `docs/llvm/C-ABI-2026.md`.
+Date : 2026-11-12. Source principale : `oven-sh/bun` main `ccb3611f2a` (2026-11-12), lu dans `C:\src\third_party\bun` (branche `upstream/main`). [V] = lu dans la session, [NV] = non vérifié. Aligné sur `docs/native/llvm/UNIFIED-TOOLCHAIN.md` et `docs/native/llvm/C-ABI-2026.md`.
 
 ## Versions
 

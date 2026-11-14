@@ -1,7 +1,7 @@
 # One toolchain with Chromium 157: clang, lld and rustc on LLVM 24 (2026-11-13)
 
 Owner rule: src builds with the toolchain Chromium ships, so C, C++ and Rust share one LLVM and
-cross-language LTO works (`docs/llvm/UNIFIED-TOOLCHAIN.md` section 1). Until today the root
+cross-language LTO works (`docs/native/llvm/UNIFIED-TOOLCHAIN.md` section 1). Until today the root
 `rust-toolchain.toml` pinned `nightly-2026-11-12` (LLVM 23.1.5) while Chromium 157 is LLVM 24.
 This file records the switch and its proof.
 
@@ -65,5 +65,5 @@ compiles nothing.
   switched.
 - **The bun fork** (`third_party/bun`) is its own workspace and keeps `nightly-2026-09-15`
   (LLVM 23) until bun is ported to LLVM 24 (`UNIFIED-TOOLCHAIN.md` section 2).
-- **Build speed**: the dev profile loses Cranelift; `docs/BUILD_SPEED.md` numbers for Cranelift no
+- **Build speed**: the dev profile loses Cranelift; `docs/native/BUILD_SPEED.md` numbers for Cranelift no
   longer apply to the default profile.

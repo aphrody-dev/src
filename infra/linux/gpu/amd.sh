@@ -1,5 +1,5 @@
 #!/bin/sh
-# AMD GPU: RADV (Mesa Vulkan) everywhere, ROCm where AMD or the distribution builds it (docs/linux/GPU.md).
+# AMD GPU: RADV (Mesa Vulkan) everywhere, ROCm where AMD or the distribution builds it (docs/native/linux/GPU.md).
 # Non-interactive and idempotent; run as root. --dry-run prints the commands. Versions: manifest.toml.
 #   gpu-amd [--dry-run] [--no-rocm]
 set -eu

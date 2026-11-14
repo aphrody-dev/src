@@ -1,6 +1,6 @@
 # Gaming OS images followed by the monorepo (sources, not builds). Owner: docs/gaming/OWNERSHIP.md.
 # Nothing here is built on the workstation; an image build runs in CI (ghcr.io/aphrody-labs/*) or on
-# fr1 with nice -n 19. CachyOS kernel and packages belong to the Linux layer (docs/linux/OWNERSHIP.md,
+# fr1 with nice -n 19. CachyOS kernel and packages belong to the Linux layer (docs/native/linux/OWNERSHIP.md,
 # infra/pkg); this file only records the gaming-facing images.
 
 [bazzite]

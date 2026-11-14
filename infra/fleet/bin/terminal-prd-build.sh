@@ -1,5 +1,5 @@
 #!/bin/sh
-# Central terminal stack (docs/terminal/ARCHITECTURE.md): standalone Linux validation on prd of the
+# Central terminal stack (docs/native/terminal/ARCHITECTURE.md): standalone Linux validation on prd of the
 # third_party forks around intelligent-terminal. Nothing built here is consumed by the Windows build:
 # WindowsTerminal.exe, wta.exe and installer/bootstrap build in the aphrody-labs/intelligent-terminal
 # GitHub CI (`just terminal-ci`), because their C/Rust dependencies need the MSVC CRT and Windows SDK.

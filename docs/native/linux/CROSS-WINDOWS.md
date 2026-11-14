@@ -11,6 +11,6 @@ Forks : `aphrody-labs/mingw-w64` (`third_party/mingw-w64`), `aphrody-labs/llvm-m
 
 Licences : les fichiers Microsoft (CRT, SDK) ne sont jamais intégrés à une image publiée ; mingw-w64 (ZPL 2.1, parties domaine public, BSD ou LGPL marquées : `COPYING`, `COPYING.MinGW-w64-runtime`) et llvm-mingw (scripts ISC, `LICENSE.txt` ; LLVM Apache-2.0 avec exception LLVM) sont redistribuables, avec leurs fichiers de licence (présents dans l'archive).
 
-Écart avec la toolchain partagée (`docs/llvm/UNIFIED-TOOLCHAIN.md`) : Chromium 157 est sur LLVM 24, llvm-mingw 20261104 sur LLVM 23.1.5. Pour un LTO inter-langages avec les objets Chromium, la cible MSVC se construit sur fr1 avec le clang-cl et le lld-link de l'usine (`/srv/chromium/src/third_party/llvm-build/Release+Asserts/bin`, qui n'a pas `llvm-rc`) ; la cible GNU attend une llvm-mingw reconstruite sur ce LLVM (`build-mingw-w64.sh` et compagnie dans le fork), à faire en CI.
+Écart avec la toolchain partagée (`docs/native/llvm/UNIFIED-TOOLCHAIN.md`) : Chromium 157 est sur LLVM 24, llvm-mingw 20261104 sur LLVM 23.1.5. Pour un LTO inter-langages avec les objets Chromium, la cible MSVC se construit sur fr1 avec le clang-cl et le lld-link de l'usine (`/srv/chromium/src/third_party/llvm-build/Release+Asserts/bin`, qui n'a pas `llvm-rc`) ; la cible GNU attend une llvm-mingw reconstruite sur ce LLVM (`build-mingw-w64.sh` et compagnie dans le fork), à faire en CI.
 
 ReactOS et LiberNT : la direction clang-cl est celle de `UNIFIED-TOOLCHAIN.md` §2 ; leurs builds restent du ressort de nt.

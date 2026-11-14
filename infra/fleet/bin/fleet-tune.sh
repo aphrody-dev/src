@@ -5,7 +5,7 @@
 #                         fleet-clean.timer
 #   fleet-tune.sh check   OK/FAIL per item, exit 1 on any FAIL
 #   fleet-tune.sh clean   disk cleanup with quotas (called by fleet-clean.timer)
-# Never reboots. A kernel change goes through docs/linux and infra/fleet/bin/fleet-reboot-precheck.sh.
+# Never reboots. A kernel change goes through docs/native/linux and infra/fleet/bin/fleet-reboot-precheck.sh.
 # Security hardening is out of scope here (sysctl hardening keys stay in 90-aphrody-serve.conf / fr1 sysctl).
 set -uo pipefail
 CONF=${FLEET_TUNE_CONF:-/etc/fleet/tune.conf}

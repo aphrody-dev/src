@@ -99,7 +99,7 @@ Account notes (2026-11-12):
 | C/C++      | MSVC 19.51, clang 23.1.4, zig 0.17 (musl cross C compiler)                   | `ay sys`                         |
 | Containers | Docker 29.9 (Alpine runtime, Arch dev images)                                | `Dockerfile`, `compose.yaml`     |
 | WASM       | `gamescope-web-wasm`, wasm32 presets of `ay build`                           | `crates/`                        |
-| Linux VPS  | static musl binaries from `ay build --target linux-musl` (zig as C compiler) | `docs/WINDOWS_UNIX_TOOLCHAIN.md` |
+| Linux VPS  | static musl binaries from `ay build --target linux-musl` (zig as C compiler) | `docs/native/WINDOWS_UNIX_TOOLCHAIN.md` |
 
 ## 6. Products
 

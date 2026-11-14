@@ -1,4 +1,4 @@
-# GPU and compute download manifest (docs/linux/GPU.md). Official vendor and distribution sources only;
+# GPU and compute download manifest (docs/native/linux/GPU.md). Official vendor and distribution sources only;
 # src redistributes none of these files (NVIDIA driver and CUDA: NVIDIA licences; ROCm: AMD repository).
 # Versions read live on 2026-11-13 and followed by `ay linux status` (infra/linux/patchsets.toml).
 

@@ -13,7 +13,7 @@ Sustituye a la primera versión, retirada por proponer decisiones ya tomadas en 
 | Pines de motor y GPU | bevy 0.20, egui 0.37, wgpu 30.0.1, winit 0.31.0-beta.4, image 0.25.10 (`Cargo.toml`)                                                                         |
 | Medios               | `crates/tv-core`, `tv-ffmpeg` (sobre `ffmpeg-next` 9.1.0), `tv-cli`, `tv-i18n`                                                                               |
 | Licencias            | Lista de permitidas en `deny.toml`; se rechazan GPL, LGPL, AGPL y no OSI salvo revisión; libav* de FFmpeg se enlaza dinámicamente                            |
-| ABI C                | `crates/core-capi` (`include/aphrody_core.h`) sobre `crates/core`; binding en `packages/core/src/ffi.ts`; reglas en `docs/llvm/C-ABI-2026.md`                |
+| ABI C                | `crates/core-capi` (`include/aphrody_core.h`) sobre `crates/core`; binding en `packages/core/src/ffi.ts`; reglas en `docs/native/llvm/C-ABI-2026.md`                |
 | Grafo de código      | `ay graph build`, `just graph <path> <name>`, salida en `graphify-out/<name>` (no versionada)                                                                |
 | Aplanado             | `ay flat list\|sync\|check` copia crates hoja del fork de bun en `crates/bun-flat`, con licencia por módulo en `flat.toml`                                   |
 | Checkouts fijados    | `third_party/artcraft` (`83aad5eb`), `third_party/ffmpeg` (`46d13a83`), `third_party/storyteller-bevy` (`4ce8b72c`), `third_party/wgpu`, `third_party/winit` |

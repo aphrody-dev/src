@@ -1,6 +1,6 @@
 # Dépendances : minimisation et verrous (2026-11-13)
 
-Suite de `docs/deps/POLICY.md` (règles) et `docs/deps/DEDUP.md` (doublons Cargo). Principe : src ne
+Suite de `docs/native/deps/POLICY.md` (règles) et `docs/native/deps/DEDUP.md` (doublons Cargo). Principe : src ne
 versionne aucun code tiers. Un amont est soit une dépendance de registre (crates.io, npm via le catalogue
 bun, PyPI via uv), soit un fork `aphrody-labs` épinglé par commit (`src.lock.json` puis `DEPS`), soit,
 pour un patch Rust, un `[patch.crates-io]` git épinglé par `rev` sur ce fork.
@@ -68,7 +68,7 @@ les deux.
 ## Restes, avec leur cause
 
 - **Doublons Cargo** : tous transitifs (familles RustCrypto, `rand`, `windows`, `syn`, `hashbrown` ;
-  détail dans `docs/deps/DEDUP.md`). Au niveau des membres, les seuls écarts étaient `zerocopy` 0.9-alpha
+  détail dans `docs/native/deps/DEDUP.md`). Au niveau des membres, les seuls écarts étaient `zerocopy` 0.9-alpha
   et `sha2` 0.10 dans `next`, déjà alignés dans les manifestes en cours. `multiple-versions` reste donc
   en `warn`.
 - **Dépendances directes sans release depuis plus de 18 mois** (relevé crates.io, 212 directes) : `hex`,

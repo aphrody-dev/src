@@ -4,7 +4,7 @@
 # pinned to a release). Skipped while the series is empty. Doc: docs/upstream/STRATEGY.md.
 #   ssh vps 'sh ~/agents/src/infra/upstream/chromium-verify.sh'
 # Subset: the test executables that depend on the files the series touches (`gn refs --testonly`),
-# not the whole tree. Builds through the NativeLink REAPI pool (docs/CHROMIUM-FACTORY.md, F1).
+# not the whole tree. Builds through the NativeLink REAPI pool (docs/native/CHROMIUM-FACTORY.md, F1).
 set -eu
 SRC=${AGENTS_SRC:-$HOME/agents/src}
 SERIES=$SRC/infra/upstream/chromium/patches

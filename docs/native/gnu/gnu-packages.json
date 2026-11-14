@@ -818,7 +818,7 @@
           "name": "brush 0.4.0 (2026-05-03), main e9d45efe",
           "lang": "Rust",
           "maturity": "beta",
-          "compat": "shell-matrix 31/34 (docs/shell/MATRIX.md)"
+          "compat": "shell-matrix 31/34 (docs/native/shell/MATRIX.md)"
         },
         {
           "name": "oils (osh) 0.38.0",

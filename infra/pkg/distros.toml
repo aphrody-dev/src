@@ -1,9 +1,9 @@
-# Distribution matrix of `ay pkg` (docs/linux/OWNERSHIP.md). One entry per target format; `image` is
+# Distribution matrix of `ay pkg` (docs/native/linux/OWNERSHIP.md). One entry per target format; `image` is
 # the build container, pinned by digest (Docker Hub registry API, 2026-11-13). `ci = true`: built by
 # .github/workflows/linux-pkg.yml on ubuntu-latest; otherwise the files are generated and linted only.
 #
 # Debian and Ubuntu are output targets for users of those distributions: their containers serve to build
-# and test the .deb only, never as a base of src's own toolchain (docs/deps/POLICY.md, rule 1.4).
+# and test the .deb only, never as a base of src's own toolchain (docs/native/deps/POLICY.md, rule 1.4).
 
 [distro.arch]
 format = "arch"

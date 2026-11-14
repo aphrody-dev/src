@@ -1,6 +1,6 @@
 # Écosystème web et navigateurs (inventaire GitHub, 2026-11-12)
 
-Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08-14&sort=stars` (max 30/org), exécuté le 2026-11-12. Colonnes : dépôt, étoiles, dernier push, langage, description (tronquée). Skill associé : [plugins/labs/skills/browser-engines](../../.agents/skills/browser-engines/SKILL.md). Mesures moteurs : [bench/REPORT.md](bench/REPORT.md).
+Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08-14&sort=stars` (max 30/org), exécuté le 2026-11-12. Colonnes : dépôt, étoiles, dernier push, langage, description (tronquée). Skill associé : [.agents/skills/browser-engines](../../.agents/skills/browser-engines/SKILL.md). Mesures moteurs : [bench/REPORT.md](bench/REPORT.md).
 
 ## [GoogleChrome](https://github.com/GoogleChrome)
 

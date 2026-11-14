@@ -14,9 +14,9 @@ It extends and does not repeat:
 - `docs/AY_LOW_LEVEL.md`: targets, LTO/AOT, wasm and micro-VMs.
 - `docs/DEPOT_TOOLS_RUST.md`: depot_tools rewritten in Rust (`ay gclient`, `ay fetch`, `ay vpy`,
   `ay cipd`, `ay cl`, `ay gn`, `ay ninja`).
-- `docs/CHROMIUM-FACTORY.md`, `infra/chromium-factory/`: the fr1 factory (sync, gn, siso over
+- `docs/native/CHROMIUM-FACTORY.md`, `infra/chromium-factory/`: the fr1 factory (sync, gn, siso over
   NativeLink, R2 publish).
-- `docs/llvm/UNIFIED-TOOLCHAIN.md`: one LLVM for Chromium, Rust and bun.
+- `docs/native/llvm/UNIFIED-TOOLCHAIN.md`: one LLVM for Chromium, Rust and bun.
 
 ## 1. What is really Rust in the fork
 

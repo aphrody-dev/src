@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // The one LLVM toolchain of src: Chromium 157's clang/lld and the rustc Chromium builds on the same
-// LLVM (third_party/toolchain-157.toml, docs/llvm/CHROMIUM-157-TOOLCHAIN.md). Downloads the host's
+// LLVM (third_party/toolchain-157.toml, docs/native/llvm/CHROMIUM-157-TOOLCHAIN.md). Downloads the host's
 // packages from Chromium's public bucket (source_url), checks source_sha256, unpacks them under
 // $AY_TOOLCHAIN_DIR (default ~/.local/share/aphrody/toolchain/157) and links the rust package as
 // the rustup toolchain `chromium-157` that rust-toolchain.toml names.
