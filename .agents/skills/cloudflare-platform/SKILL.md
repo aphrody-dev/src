@@ -8,7 +8,7 @@ description: Cloudflare Developer Platform reference covering Workers (workerd, 
 ## Runtime & Tooling
 
 - **Engine**: `workerd` (Open-Source JavaScript / Wasm Runtime).
-- **CLI**: `wrangler` (`bunx wrangler` / `npx wrangler`).
+- **CLI**: `wrangler` (`bunx wrangler`).
   - Dev server: `bunx wrangler dev`
   - Deploy: `bunx wrangler deploy`
   - Tail logs: `bunx wrangler tail`

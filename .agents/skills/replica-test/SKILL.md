@@ -45,8 +45,8 @@ Use roles and labels for selectors (`getByRole('button', { name: 'Book' })`),
 never CSS classes. See `e2e.example.spec.ts`.
 
 ```bash
-npm i -D @playwright/test && npx playwright install chromium
-npx playwright test
+bun add -d @playwright/test && bunx playwright install chromium
+bunx playwright test
 ```
 
 Add to every spec: fail on console errors, fail on any 5xx response, and an

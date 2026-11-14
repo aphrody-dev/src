@@ -91,7 +91,7 @@ Please confirm the Vercel project name or ID and the team slug/name, or tell me 
 Check blockers before gating:
 
 ```bash
-jq '{frameworkSupportBlocker, observabilityPlus, observabilityPlusUsable, observabilityPlusBlocker, observabilityPlusBlockerDetail}' "$RUN_DIR/signals.json"
+jaq '{frameworkSupportBlocker, observabilityPlus, observabilityPlusUsable, observabilityPlusBlocker, observabilityPlusBlockerDetail}' "$RUN_DIR/signals.json"
 ```
 
 Required actions:

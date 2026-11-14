@@ -22,5 +22,5 @@ description: Canonical sovereign upstream reference covering Google Rust (argh, 
 
 ## Userland Tooling & System Hygiene
 
-- Multi-call binaries (`coreutils.exe`, `uutils.exe`, `findutils`, `diffutils`) reside in `C:\Users\aphro\.local\bin` or user WinGet links.
+- Multi-call binaries (`coreutils.exe`, `findutils`, `diffutils`) reside in `C:\Users\aphro\.local\bin` or user WinGet links.
 - `C:\Windows\System32` is strictly preserved with zero userland shims or shadowed builtins.
