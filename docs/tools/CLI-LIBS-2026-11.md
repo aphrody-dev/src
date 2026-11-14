@@ -28,7 +28,12 @@ Declaration : `C:\src\tools.toml` (`ay up --list`). Politique : bun remplace tou
 | LSP | clangd 23.1.0, rust-analyzer 2026-11-09, typescript 7.0.2 (tsgo) | [clangd](https://github.com/clangd/clangd), [rust-analyzer](https://github.com/rust-lang/rust-analyzer), [typescript-go](https://github.com/microsoft/typescript-go) | - | - | - |
 | JS | bun v1.4.4 (release 2026-10-22, ay installe 1.4.5) | [oven-sh/bun](https://github.com/oven-sh/bun) | node, npm, npx, pnpm, tsc, prettier, esbuild, swc, ts-node | - | - |
 | Lint/format | bun fmt/lint ; oxlint 1.93.0 et biome 2.6.7 seulement si bun ne couvre pas | [oxc](https://github.com/oxc-project/oxc), [biome](https://github.com/biomejs/biome) | - | - | - |
-| Code structurel | ast-grep 0.51.2 (2026-11-11) | [ast-grep](https://github.com/ast-grep/ast-grep) | - | - | - |
+| Code structurel | ast-grep 0.51.2 (2026-11-11), declare et installe | [ast-grep](https://github.com/ast-grep/ast-grep) | - | - | - |
+| Deps Rust inutilisees | cargo-shear 1.14.1 (precis, via cargo metadata) + cargo-machete 0.10.0 (porte d entree rapide) | [cargo-shear](https://github.com/Boshen/cargo-shear), [cargo-machete](https://github.com/bnjbvr/cargo-machete) | - | machete 23.6 ms, shear 1366 ms (src/up, hyperfine -N -i -w 2 -r 10) | les deux gardes |
+| Audit/licences Rust | cargo-deny 0.20.2, cargo-audit 0.23.0, cargo-hack 0.6.46 | [cargo-deny](https://github.com/EmbarkStudios/cargo-deny), [rustsec](https://github.com/rustsec/rustsec), [cargo-hack](https://github.com/taiki-e/cargo-hack) | - | - | - |
+| Orthographe code | typos 1.52.2 | [crate-ci/typos](https://github.com/crate-ci/typos) | - | - | - |
+| Diff structurel | difftastic 0.72.0 (binaire difft) | [Wilfred/difftastic](https://github.com/Wilfred/difftastic) | - | - | - |
+| Build Google | bazelisk 1.30.0 (ninja reste dans [toolchain.ninja]) | [bazelbuild/bazelisk](https://github.com/bazelbuild/bazelisk) | - | - | - |
 
 Limite : le benchmark `fd` vs `find` a echoue (find.exe de coreutils retourne une erreur sous hyperfine), cette ligne n'est pas une mesure comparative. Les categories sans colonne "Mesure" sont classees sur activite du depot et usage, pas sur benchmark.
 
@@ -37,7 +42,7 @@ Limite : le benchmark `fd` vs `find` a echoue (find.exe de coreutils retourne un
 | Emplacement | Contenu | Declare dans tools.toml |
 |---|---|---|
 | `~/.local/bin` | ay, wck, ske, n2b, ruff, ty, sccache, btm, lazygit, b3sum, wasm-*, binaires locaux | oui pour l'outillage tiers ; non pour les binaires maison (ay-*, ske, wck...) construits depuis le depot |
-| `~/.cargo/bin` | ~69 apres purge : rustup, cargo-*, jaq, gix, rust-analyzer | partiel (cargo-nextest, cargo-binstall, gitoxide declares ; cargo-deny, audit, hack, machete, shear, sweep, outdated non declares) |
+| `~/.cargo/bin` | ~69 apres purge : rustup, cargo-*, jaq, gix, rust-analyzer | partiel (cargo-nextest, cargo-binstall, gitoxide, cargo-deny, audit, hack, machete, shear declares ; sweep, outdated non declares) |
 | `~/.bun/bin` | 50+ paquets globaux (`bun pm ls -g`) | wrangler, agent-browser declares ; le reste hors manifeste |
 | WinGet Links | rg, fd, eza, dust, dua, delta, jj, yq, xh, zoxide, fzf, sd, uv, hyperfine, bat, tokei, watchexec | rg, fd, eza, dust, delta, jj, yq, xh, zoxide, sd, uv, hyperfine, bat, tokei, watchexec declares |
 | uv tool | graphifyy, litellm | non |
@@ -60,7 +65,11 @@ Non touches : PATH, profils shell, git config, WSL, Docker (autres agents), Syst
 
 ## Declares dans tools.toml ce jour
 
-jaq 3.1.2, b3sum 1.8.7, oha 1.17.0, fzf 0.75.0, dua 3.0.3, ouch 0.8.3, ruff 0.17.5, ty 0.0.104, cargo-llvm-cov 0.9.1. Installes via `ay up` : oha, ouch, dua, cargo-llvm-cov, coreutils. Les pins existants plus anciens (fd 10.5.0, uv 0.13.7, nextest 0.9.151) sont a bumper avec leurs sha256.
+jaq 3.1.2, b3sum 1.8.7, oha 1.17.0, fzf 0.75.0, dua 3.0.3, ouch 0.8.3, ruff 0.17.5, ty 0.0.104, cargo-llvm-cov 0.9.1. Installes via `ay up` : oha, ouch, dua, cargo-llvm-cov, coreutils. 
+
+2026-11-14, session suivante : ast-grep 0.51.2, bazelisk 1.30.0, cargo-deny 0.20.2, cargo-audit 0.23.0, cargo-machete 0.10.0, cargo-shear 1.14.1, cargo-hack 0.6.46, typos 1.52.2, difftastic 0.72.0 declares (sha256 = digest des assets GitHub) et installes par `ay up`. Bumps : fd 10.5.2, sd 1.1.0, obscura 0.2.7 (la table sha256 d obscura/servo etait decalee et rendait tools.toml illisible : corrigee). Preuves machine : [cli-proof-2026-11.json](cli-proof-2026-11.json). Skills `cli-<outil>` generes depuis le manuel de chaque binaire : `just cli-skills` (`scripts/cli-skills.ts`, `--check` pour la derive).
+
+Non retenus : w3c/reffy (aucune release GitHub), llvm-project (clang/lld/clangd viennent de la chaine Chromium partagee), shellcheck et tree-sitter-cli (pas de besoin declare), taplo (derniere release 2025-05-23).
 
 ## Remplacements dans les references
 

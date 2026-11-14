@@ -1,0 +1,801 @@
+{
+  "generated": "2026-11-14",
+  "platform": "windows-x86_64",
+  "method": "versions from `<bin> --version`; manifest sha256 = digest of the GitHub release asset (API, fetched 2026-11-14), verified by `ay up` at install; installed_binary_sha256 = sha256 of the executable on PATH",
+  "discovery": {
+    "github_latest_checked": [
+      "ast-grep/ast-grep 0.51.2",
+      "bazelbuild/bazelisk v1.30.0",
+      "EmbarkStudios/cargo-deny 0.20.2",
+      "rustsec/rustsec cargo-audit/v0.23.0",
+      "bnjbvr/cargo-machete v0.10.0",
+      "Boshen/cargo-shear v1.14.1",
+      "taiki-e/cargo-hack v0.6.46",
+      "crate-ci/typos v1.52.2",
+      "Wilfred/difftastic 0.72.0",
+      "sharkdp/fd v10.5.2",
+      "chmln/sd v1.1.0",
+      "h4ckf0r0day/obscura v0.2.7",
+      "koalaman/shellcheck v0.11.0",
+      "tree-sitter/tree-sitter v0.27.2",
+      "llvm/llvm-project llvmorg-23.1.5",
+      "validator/validator latest",
+      "ninja-build/ninja v1.13.2"
+    ],
+    "not_added": {
+      "w3c/reffy": "no GitHub release (404)",
+      "llvm/llvm-project": "clang/lld/clangd come from the shared Chromium toolchain",
+      "ninja": "already in [toolchain.ninja]",
+      "shellcheck, tree-sitter-cli": "not declared: archive layouts (.zip without bin dir / per-platform names) not yet needed",
+      "taplo": "last release 2025-05-23, stale",
+      "validator/vnu": "Java jar, not declared",
+      "depot_tools, repo, cros, AOSP": "linux-only, third_party/depot_tools exists; not touched (out of scope)"
+    }
+  },
+  "benchmarks": {
+    "hyperfine -N -w 2 -r 10 (hyperfine 2.0.0)": {
+      "cargo-machete vs cargo-shear on src/up (unused deps)": [
+        {
+          "command": "cargo-machete C:/src/src/up",
+          "mean_ms": 23.6,
+          "stddev_ms": 0.8,
+          "runs": 10
+        },
+        {
+          "command": "cargo-shear C:/src/src/up",
+          "mean_ms": 1366,
+          "stddev_ms": 18.6,
+          "runs": 10
+        }
+      ],
+      "note": "machete = heuristic, fast gate; shear = cargo metadata, precise; both kept",
+      "fd vs rg --files (*.toml in src/up)": [
+        {
+          "command": "fd -e toml . C:/src/src/up",
+          "mean_ms": 16.8,
+          "stddev_ms": 1.1,
+          "runs": 10
+        },
+        {
+          "command": "rg --files -g *.toml C:/src/src/up",
+          "mean_ms": 13.6,
+          "stddev_ms": 2.9,
+          "runs": 10
+        }
+      ],
+      "fd_note": "rg is faster on this small tree; fd kept for its syntax"
+    }
+  },
+  "tools": [
+    {
+      "name": "ay",
+      "manifest_version": "0.2.0",
+      "change": "unchanged",
+      "installed_version_output": "ay 0.2.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\ay.exe",
+      "installed_binary_sha256": "80c24b877963e1d6dd74b3a4ab857e708c573254137a7527acd3897fa0e3aea2",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/aphrody-labs/aphrody/releases/download/v0.2.0/aphrody-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "bun",
+      "manifest_version": "1.4.4",
+      "change": "unchanged",
+      "installed_version_output": "1.4.5",
+      "install_path": "C:\\Users\\aphro\\.bun\\bin\\bun.exe",
+      "installed_binary_sha256": "50ff010de8902f24c0ab5a4858b1769d76af55bd2cd5395dcc6470ab53059c0a",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-windows-x64.zip"
+    },
+    {
+      "name": "rustup",
+      "manifest_version": "1.29.2",
+      "change": "unchanged",
+      "installed_version_output": "rustup 1.29.3 (edbc831ce 2026-11-02)",
+      "install_path": "C:\\Users\\aphro\\.cargo\\bin\\rustup.exe",
+      "installed_binary_sha256": "38027d51d69a5d05493627a0634dbea52d6cd793c8f072d2373d3f4163eec7db",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": null
+    },
+    {
+      "name": "gh",
+      "manifest_version": "2.102.0",
+      "change": "unchanged",
+      "installed_version_output": "gh version 2.103.3 (2026-10-26)",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\gh.cmd",
+      "installed_binary_sha256": "d8d6b3b4507cd6b31eb376e4d5672463df4e50bba7375d97131d0c4fb2278d08",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/cli/cli/releases/download/v2.102.0/gh_2.102.0_windows_amd64.zip"
+    },
+    {
+      "name": "wrangler",
+      "manifest_version": "4.161.0",
+      "change": "unchanged",
+      "installed_version_output": "4.162.0",
+      "install_path": "C:\\Users\\aphro\\.bun\\bin\\wrangler.exe",
+      "installed_binary_sha256": "1d584ca73dbd0729522abfc6cb401d3e5f60ef6afffc28ad7906c4e4673a7abc",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": null
+    },
+    {
+      "name": "gcloud",
+      "manifest_version": "588.0.0",
+      "change": "unchanged",
+      "installed_version_output": "Google Cloud SDK 593.0.0",
+      "install_path": "C:\\Program Files (x86)\\Google\\Cloud SDK\\google-cloud-sdk\\bin\\gcloud.cmd",
+      "installed_binary_sha256": "a1eccc60e26714cbff8c7f6a0aa8577a1f83073cdc33d80b671d0686f4ff2ef1",
+      "manifest_sha256_windows_x86_64": "e7f9a2e94ea2b7254e2e458be73c5a7b49d52487b6f95e26919c9b00b248cd61",
+      "source_url_windows_x86_64": null
+    },
+    {
+      "name": "ovhcloud",
+      "manifest_version": "0.16.0",
+      "change": "unchanged",
+      "installed_version_output": "┌─────────┬──────────────────────────────────────────┬──────────────────────┐",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\ovhcloud.exe",
+      "installed_binary_sha256": "0aaae123c71d0d965941b5846a9ccf0b4148f60ceb2f95ad765870ef9de22189",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/ovh/ovhcloud-cli/releases/download/v0.16.0/ovhcloud-cli_Windows_x86_64.zip"
+    },
+    {
+      "name": "hostinger-api-mcp",
+      "manifest_version": "3.38.3",
+      "change": "unchanged",
+      "installed_version_output": "3.38.3",
+      "install_path": "C:\\Users\\aphro\\.bun\\bin\\hostinger-api-mcp.exe",
+      "installed_binary_sha256": "a88b6c93260ec1296613d3be63c9b0173a67bf31ddc44512c74322607a86a0c1",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": null
+    },
+    {
+      "name": "coreutils",
+      "manifest_version": "0.12.0",
+      "change": "unchanged",
+      "installed_version_output": "coreutils 0.12.0 (multi-call binary)",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\coreutils.exe",
+      "installed_binary_sha256": "243320637a6f33faca7d4bccb332c47b6f8be5a2dfdafcaf73dbae8d7b587a08",
+      "manifest_sha256_windows_x86_64": "45d6760c136ef42cdba1e2dbb492b0858be98099d6c7fb3e300a3adcfbc54cfe",
+      "source_url_windows_x86_64": "https://github.com/uutils/coreutils/releases/download/0.12.0/coreutils-0.12.0-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "ripgrep",
+      "manifest_version": "15.2.0",
+      "change": "unchanged",
+      "installed_version_output": "ripgrep 15.2.0 (rev e89fff89ac)",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Programs\\Niubash\\winuxcmd\\usr\\bin\\rg.exe",
+      "installed_binary_sha256": "14231169855ec5205cf5a1b6f1db358ff4aed4247c86b69ce8aae647c77f6680",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/BurntSushi/ripgrep/releases/download/15.2.0/ripgrep-15.2.0-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "just",
+      "manifest_version": "1.58.0",
+      "change": "unchanged",
+      "installed_version_output": "just 1.59.0",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\just.exe",
+      "installed_binary_sha256": "146c26ccfe1e40fadb59183cf8bc17d46c0cdf1bd1e43e52cca686cef0c44627",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/casey/just/releases/download/1.58.0/just-1.58.0-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "zig",
+      "manifest_version": "0.17.0",
+      "change": "unchanged",
+      "installed_version_output": "0.17.1",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\zig.exe",
+      "installed_binary_sha256": "8d6f248cdb0fc2ecd5e17c5282ef3f8a4b614beac12e6d27d12462cde59fe56b",
+      "manifest_sha256_windows_x86_64": "b5663f69581dcf391293fbf16c06cb80d81d806545ce618b4d0bab7f0eb8c428",
+      "source_url_windows_x86_64": null
+    },
+    {
+      "name": "cargo-zigbuild",
+      "manifest_version": "0.24.1",
+      "change": "unchanged",
+      "installed_version_output": "cargo-zigbuild 0.24.1",
+      "install_path": "C:\\Users\\aphro\\.cargo\\bin\\cargo-zigbuild.exe",
+      "installed_binary_sha256": "477bbb2dd664d341a865266447f98597790874e96c02471150619931bb57ac7b",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/rust-cross/cargo-zigbuild/releases/download/v0.24.1/cargo-zigbuild-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "dist",
+      "manifest_version": "0.34.0",
+      "change": "unchanged",
+      "installed_version_output": "cargo-dist 0.34.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\dist.exe",
+      "installed_binary_sha256": "e3666cb09a51f61a0a02fd856000f23e2d44ac7d3a471fbd7f00523e73c118b7",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/axodotdev/cargo-dist/releases/download/v0.34.0/cargo-dist-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "fd",
+      "manifest_version": "10.5.2",
+      "change": "bumped",
+      "installed_version_output": "fd 10.5.2",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\fd.exe",
+      "installed_binary_sha256": "2fe8ed92c57e0d1b3a84b66cf69ec8fac15330d0012147a64b4be521bbddfa83",
+      "manifest_sha256_windows_x86_64": "7edac75ef96b7e9a01ebb251a21ee86ea365a09adcfb865f1ec3346a906153b6",
+      "source_url_windows_x86_64": "https://github.com/sharkdp/fd/releases/download/v10.5.2/fd-v10.5.2-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "dust",
+      "manifest_version": "1.2.5",
+      "change": "unchanged",
+      "installed_version_output": "Dust 1.2.7",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\dust.exe",
+      "installed_binary_sha256": "d62e3960968091816c45de9f03877f97db60f289bab7c9f6d221a2c36babd38a",
+      "manifest_sha256_windows_x86_64": "b2731d92066d5787a106c0c835b96c6a4ba186d81abc0ead0a906f75d5f09aee",
+      "source_url_windows_x86_64": "https://github.com/bootandy/dust/releases/download/v1.2.5/dust-v1.2.5-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "bat",
+      "manifest_version": "0.26.1",
+      "change": "unchanged",
+      "installed_version_output": "bat 0.26.1 (979ba22)",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\bat.exe",
+      "installed_binary_sha256": "9ea9f7ab1c27aa5c9390e91543f9f47c6bd17bc53f3e30ac9db762f28f55c4fd",
+      "manifest_sha256_windows_x86_64": "0f729b4b6f5f28d395c641eacc2e9ff68d0096b85aa0eec344aa62425144b69b",
+      "source_url_windows_x86_64": "https://github.com/sharkdp/bat/releases/download/v0.26.1/bat-v0.26.1-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "delta",
+      "manifest_version": "0.20.1",
+      "change": "unchanged",
+      "installed_version_output": "delta 0.20.1",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\delta.exe",
+      "installed_binary_sha256": "5d8470121b68a9235eb594383dcc8ec5ac786e10f9325771da70a59bc8a57dba",
+      "manifest_sha256_windows_x86_64": "c9af7484b33f1dbc1312a892fc7d5753a6d3365140a4000d49e575a2de742c25",
+      "source_url_windows_x86_64": "https://github.com/dandavison/delta/releases/download/0.20.1/delta-0.20.1-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "sd",
+      "manifest_version": "1.1.0",
+      "change": "bumped",
+      "installed_version_output": "sd 1.0.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\sd.exe",
+      "installed_binary_sha256": "68a3be6e02d688ff8ecaf80ef6473cf2516442f01070a4d1a5eb69daa3db5234",
+      "manifest_sha256_windows_x86_64": "59837c2e7c911099aca1cc46b663bcdc5a949fd3e9fbbaf34fc73e5d5d71007c",
+      "source_url_windows_x86_64": "https://github.com/chmln/sd/releases/download/v1.1.0/sd-v1.1.0-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "hyperfine",
+      "manifest_version": "1.20.0",
+      "change": "unchanged",
+      "installed_version_output": "hyperfine 2.0.0",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\hyperfine.exe",
+      "installed_binary_sha256": "e42ed192500a7191296b95d7b60d3a3466423535c7ba2b7d0e97ab389cfec5ca",
+      "manifest_sha256_windows_x86_64": "2508c549b049b1d4342d08edc1cb42bfac169082b6e3069431b5bab9822dbb32",
+      "source_url_windows_x86_64": "https://github.com/sharkdp/hyperfine/releases/download/v1.20.0/hyperfine-v1.20.0-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "tokei",
+      "manifest_version": "12.1.2",
+      "change": "unchanged",
+      "installed_version_output": "tokei 12.1.2 compiled with serialization support: json, cbor, yaml",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\tokei.exe",
+      "installed_binary_sha256": "b1d6c4b18f5fa238bd2c6e47caa65a7a3e4a1bd0de6df0b7c19c8083c941f57b",
+      "manifest_sha256_windows_x86_64": "b1d6c4b18f5fa238bd2c6e47caa65a7a3e4a1bd0de6df0b7c19c8083c941f57b",
+      "source_url_windows_x86_64": "https://github.com/XAMPPRocky/tokei/releases/download/v12.1.2/tokei-x86_64-pc-windows-msvc.exe"
+    },
+    {
+      "name": "watchexec",
+      "manifest_version": "2.7.0",
+      "change": "unchanged",
+      "installed_version_output": "watchexec 2.7.0 (0bb97e42 2026-08-24) +pid1",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\watchexec.exe",
+      "installed_binary_sha256": "de48b6678058b9eca2f6e91ec4a4c58ebbaf0b7733999503147f59cfed41a466",
+      "manifest_sha256_windows_x86_64": "33519183d6ba6641dcdd12994e06a4aaaa5fd2083a41143c8484ffe793408f5f",
+      "source_url_windows_x86_64": "https://github.com/watchexec/watchexec/releases/download/v2.7.0/watchexec-2.7.0-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "zoxide",
+      "manifest_version": "0.10.0",
+      "change": "unchanged",
+      "installed_version_output": "zoxide 0.10.0",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\zoxide.exe",
+      "installed_binary_sha256": "a999a0a7bbf37db5b2ff19c9c46da3d5fe89d3ddc67c793d31e9a9e0dca1eb2b",
+      "manifest_sha256_windows_x86_64": "f465ae548f8754c8e7edbc60b45fbf58c92bfe123db83d790252d6810fa5daf1",
+      "source_url_windows_x86_64": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.10.0/zoxide-0.10.0-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "eza",
+      "manifest_version": "0.23.5",
+      "change": "unchanged",
+      "installed_version_output": "eza eza - A modern, maintained replacement for ls",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\eza.exe",
+      "installed_binary_sha256": "913881562c22e4361ff787a338bc994aac9925ba6c329283a81d1cdd1314af98",
+      "manifest_sha256_windows_x86_64": "bbef561f5cfc8e778649b65e69c9c6e4c836c0fbe83ee3d0a5128091d797ed8a",
+      "source_url_windows_x86_64": "https://github.com/eza-community/eza/releases/download/v0.23.5/eza.exe_x86_64-pc-windows-gnu.tar.gz"
+    },
+    {
+      "name": "starship",
+      "manifest_version": "1.27.0",
+      "change": "unchanged",
+      "installed_version_output": "starship 1.27.0",
+      "install_path": "C:\\Users\\aphro\\.cargo\\bin\\starship.exe",
+      "installed_binary_sha256": "73d5ce2a1ab59274d635fed9455dafa48a2f9c216932bc5a2fa35e8b1219377c",
+      "manifest_sha256_windows_x86_64": "7764f861805376af2812dd78c84fadc16b714cf3f346baed9b597bfda8484403",
+      "source_url_windows_x86_64": "https://github.com/starship/starship/releases/download/v1.27.0/starship-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "atuin",
+      "manifest_version": "18.24.8",
+      "change": "unchanged",
+      "installed_version_output": "atuin 18.24.8 (b178f009db237db378de0360f9a6ac5cc7bdf7f5)",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\atuin.exe",
+      "installed_binary_sha256": "09e30fc89d03ca1e29a6db0bde9fb920808a3053bb701f30d8b819c8840d6b28",
+      "manifest_sha256_windows_x86_64": "f6ff4e13feed0e49853618ab5f1ec849ccbb34dcab2df711c85d5f0333d8e717",
+      "source_url_windows_x86_64": "https://github.com/atuinsh/atuin/releases/download/v18.24.8/atuin-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "yazi",
+      "manifest_version": "26.9.1",
+      "change": "unchanged",
+      "installed_version_output": "Yazi",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\yazi.exe",
+      "installed_binary_sha256": "314b30de6f68a783d1e89cdfa72b808495288a9a6f67085f5fe88c02c03044c8",
+      "manifest_sha256_windows_x86_64": "7c033e5f2de6355fd03d865319053fc97db780275974ed17653c057f5d0f8d21",
+      "source_url_windows_x86_64": "https://github.com/sxyazi/yazi/releases/download/v26.9.1/yazi-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "lazygit",
+      "manifest_version": "0.66.3",
+      "change": "unchanged",
+      "installed_version_output": "commit=e0fbfd50c36e1ef88c52297ca34750e640b4f5f4, build date=2026-11-07T23:20:44Z, build source=binaryRelease, version=0.66.3, os=windows, arch=amd64, git version=2.56.0.windows.4.niugit",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\lazygit.exe",
+      "installed_binary_sha256": "c69a18131ffc28522912aa71a208aa4c02f13351ae317b8e472321ed99887a70",
+      "manifest_sha256_windows_x86_64": "a76fe17339fd387c20addc09060f07c240e4b20a9f55fee4ad7c86a251c0741e",
+      "source_url_windows_x86_64": "https://github.com/jesseduffield/lazygit/releases/download/v0.66.3/lazygit_0.66.3_windows_x86_64.zip"
+    },
+    {
+      "name": "bottom",
+      "manifest_version": "0.15.0",
+      "change": "unchanged",
+      "installed_version_output": "bottom 0.15.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\btm.exe",
+      "installed_binary_sha256": "c48b2a6e2c54cdc5b92b08bcc656a8f9d9ecb15b7859c8504e77b71c35e837b0",
+      "manifest_sha256_windows_x86_64": "aeff72e355116516d2583f34348e31f60c5899e394a08eeda79a2bdb361e27bd",
+      "source_url_windows_x86_64": "https://github.com/ClementTsang/bottom/releases/download/0.15.0/bottom_x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "fastfetch",
+      "manifest_version": "2.71.0",
+      "change": "unchanged",
+      "installed_version_output": "fastfetch 2.71.0 (x86_64)",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\fastfetch.exe",
+      "installed_binary_sha256": "0c94e80ba5f352a6d4a4d0a5b7a2c27eb22448d57cc33ab4d122b6d63e6c9fcd",
+      "manifest_sha256_windows_x86_64": "58eeee82c52120e981891826be1c5810788bc0083b13d870684bbc85b03628e9",
+      "source_url_windows_x86_64": "https://github.com/fastfetch-cli/fastfetch/releases/download/2.71.0/fastfetch-windows-amd64.zip"
+    },
+    {
+      "name": "tealdeer",
+      "manifest_version": "1.9.1",
+      "change": "unchanged",
+      "installed_version_output": "tealdeer 1.9.1",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\tldr.exe",
+      "installed_binary_sha256": "f75a3e4b43e7b03d30bac88eccf928af90b8993cd354fe207aec1c643910736f",
+      "manifest_sha256_windows_x86_64": "f75a3e4b43e7b03d30bac88eccf928af90b8993cd354fe207aec1c643910736f",
+      "source_url_windows_x86_64": "https://github.com/tealdeer-rs/tealdeer/releases/download/v1.9.1/tealdeer-windows-x86_64-msvc.exe"
+    },
+    {
+      "name": "glow",
+      "manifest_version": "3.0.0",
+      "change": "unchanged",
+      "installed_version_output": "glow version 3.0.0 (add5e7a)",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\glow.exe",
+      "installed_binary_sha256": "0bebd662eb9da86b32b6abeaef10fe448a36d2a2a6aa629098ccd17b13f6cb9c",
+      "manifest_sha256_windows_x86_64": "d8907e07436ecbb6738bc0e3bbf8aa6159e351f95082e9db3c3fc4200086f809",
+      "source_url_windows_x86_64": "https://github.com/charmbracelet/glow/releases/download/v3.0.0/glow_3.0.0_Windows_x86_64.zip"
+    },
+    {
+      "name": "xh",
+      "manifest_version": "0.26.3",
+      "change": "unchanged",
+      "installed_version_output": "xh 0.26.3",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\xh.exe",
+      "installed_binary_sha256": "ee3192b55c99bdce163ff8808335925176f40a5e5ed3fcf377096abef603c7d0",
+      "manifest_sha256_windows_x86_64": "23d92fd78ff6a93c4e1c4de3a6b614bb8a31999acb441793630bcc37f9cd6c45",
+      "source_url_windows_x86_64": "https://github.com/ducaale/xh/releases/download/v0.26.3/xh-v0.26.3-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "yq",
+      "manifest_version": "4.54.3",
+      "change": "unchanged",
+      "installed_version_output": "yq (https://github.com/mikefarah/yq/) version v4.54.3",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\yq.exe",
+      "installed_binary_sha256": "066ea0a09a282e47588ec1e1867280ff5ede458f7183617a2d99012e4e34f18a",
+      "manifest_sha256_windows_x86_64": "2f771df86cd8970054dcb4a2bd19412ff4da72811aa7a9a4c8cb21580b2e3fcf",
+      "source_url_windows_x86_64": "https://github.com/mikefarah/yq/releases/download/v4.54.3/yq_windows_amd64.zip"
+    },
+    {
+      "name": "jj",
+      "manifest_version": "0.46.0",
+      "change": "unchanged",
+      "installed_version_output": "jj 0.46.0-7d382314f9420b4b8d932245b49c99492c812b9f",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\jj.exe",
+      "installed_binary_sha256": "53c6ee72346f477bc464e383d4df45f8d3862ad5a17fa5f4d8f4849bcf2d96cc",
+      "manifest_sha256_windows_x86_64": "c42316b10df04611bc65029a18bcb2d92636edddb6871d511f7bb4233e999b83",
+      "source_url_windows_x86_64": "https://github.com/jj-vcs/jj/releases/download/v0.46.0/jj-v0.46.0-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "sccache",
+      "manifest_version": "0.19.0",
+      "change": "unchanged",
+      "installed_version_output": "sccache 0.19.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\sccache.exe",
+      "installed_binary_sha256": "ba5542107b245431e37011110c1929d635e3a8e52cc98d35c4b01d0aa328b5a5",
+      "manifest_sha256_windows_x86_64": "130e4f8eb672e76590e9993c2ab890c4763b88238577bb11d8062158c7698353",
+      "source_url_windows_x86_64": "https://github.com/mozilla/sccache/releases/download/v0.19.0/sccache-v0.19.0-x86_64-pc-windows-msvc.tar.gz"
+    },
+    {
+      "name": "uv",
+      "manifest_version": "0.13.7",
+      "change": "unchanged",
+      "installed_version_output": "uv 0.13.7 (316c827e0 2026-11-03 x86_64-pc-windows-msvc)",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\uv.exe",
+      "installed_binary_sha256": "1791d7a9ed5b6df13ccf80f102e025c333010d96326b4ff0262aa3b578835c5a",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "caddy",
+      "manifest_version": "2.11.9",
+      "change": "unchanged",
+      "installed_version_output": "v2.11.9 h1:bhZtcRKQOq0fuLvEgCdPYvUxXyGn9kzjG4lh2332DTE=",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\caddy.exe",
+      "installed_binary_sha256": "2622e239c79df700b0eb92cbd950d1edee365e155a7859f358f0e55f002df591",
+      "manifest_sha256_windows_x86_64": "ad93112d335ee687100c4c9f11bced16ca590377976b7fe7883882b9e797e472",
+      "source_url_windows_x86_64": "https://github.com/caddyserver/caddy/releases/download/v2.11.9/caddy_2.11.9_windows_amd64.zip"
+    },
+    {
+      "name": "cloudflared",
+      "manifest_version": "2026.10.7",
+      "change": "unchanged",
+      "installed_version_output": "cloudflared version 2026.10.7 (built 2026-10-30T09:43 UTC)",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\cloudflared.exe",
+      "installed_binary_sha256": "2493dbc168923bb3e59e5e7716f71deced92992eea9acd6e9d74f84ac7751343",
+      "manifest_sha256_windows_x86_64": "2493dbc168923bb3e59e5e7716f71deced92992eea9acd6e9d74f84ac7751343",
+      "source_url_windows_x86_64": "https://github.com/cloudflare/cloudflared/releases/download/2026.10.7/cloudflared-windows-amd64.exe"
+    },
+    {
+      "name": "rclone",
+      "manifest_version": "1.75.1",
+      "change": "unchanged",
+      "installed_version_output": "rclone v1.76.0",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\rclone.exe",
+      "installed_binary_sha256": "acd80683e23151e93bbe0d6ffa74d26e542ec510332f630beecb9944f8d1a623",
+      "manifest_sha256_windows_x86_64": "200eb602c126d82aa38b51e0f6b9ae837473ff99b51278d3f6f837574c494d6e",
+      "source_url_windows_x86_64": "https://github.com/rclone/rclone/releases/download/v1.75.1/rclone-v1.75.1-windows-amd64.zip"
+    },
+    {
+      "name": "cargo-binstall",
+      "manifest_version": "1.26.2",
+      "change": "unchanged",
+      "installed_version_output": "1.26.2",
+      "install_path": "C:\\Users\\aphro\\.cargo\\bin\\cargo-binstall.exe",
+      "installed_binary_sha256": "b3fb8abd5eaba81e708cb5c255dd18cb8fc63b041f4386a0b55e103f2737c023",
+      "manifest_sha256_windows_x86_64": "69dbc714f9f31b947fb4e731d0199d6d3c4d5250324b0b048b18af06cde288c9",
+      "source_url_windows_x86_64": "https://github.com/cargo-bins/cargo-binstall/releases/download/v1.26.2/cargo-binstall-x86_64-pc-windows-msvc.full.zip"
+    },
+    {
+      "name": "cargo-nextest",
+      "manifest_version": "0.9.151",
+      "change": "unchanged",
+      "installed_version_output": "cargo-nextest 0.9.151 (6b3f99457 2026-11-02)",
+      "install_path": "C:\\Users\\aphro\\.cargo\\bin\\cargo-nextest.exe",
+      "installed_binary_sha256": "f190b90a97bddabb39ebcc0db332444779b5f2fdd516b6484962a5c7f4da5c74",
+      "manifest_sha256_windows_x86_64": "e51bdb4b5883df48f335381b287378edb244318fac65ae0adaf6b9e69298246b",
+      "source_url_windows_x86_64": "https://github.com/nextest-rs/nextest/releases/download/cargo-nextest-0.9.151/cargo-nextest-0.9.151-x86_64-pc-windows-msvc.tar.gz"
+    },
+    {
+      "name": "gitoxide",
+      "manifest_version": "0.61.0",
+      "change": "unchanged",
+      "installed_version_output": "gix v0.61.0",
+      "install_path": "C:\\Users\\aphro\\.cargo\\bin\\gix.exe",
+      "installed_binary_sha256": "7fd7bff03959da3fde1889c084b8e92ff54731a26b79037f7f7a1d73e9abee55",
+      "manifest_sha256_windows_x86_64": "4128aedce7e12e6f4867388862b02b5b0853d8ec4f35daa2edbbc1ba50d57809",
+      "source_url_windows_x86_64": "https://github.com/GitoxideLabs/gitoxide/releases/download/v0.61.0/gitoxide-max-pure-v0.61.0-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "llama.cpp",
+      "manifest_version": "12317",
+      "change": "unchanged",
+      "installed_version_output": "version: 0.9.0-dev (build 12317, commit e0949d09b)",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\llama-server.exe",
+      "installed_binary_sha256": "33f9252025b44071ec9a5b10a3dac87c618e366eaacc48cf13ae2a599343926e",
+      "manifest_sha256_windows_x86_64": "968a487604622f4194d0451d77a92b6a7cff1c29338e88841dd38472c81013ca",
+      "source_url_windows_x86_64": "https://github.com/ggml-org/llama.cpp/releases/download/b12317/llama-b12317-bin-win-vulkan-x64.zip"
+    },
+    {
+      "name": "whisper.cpp",
+      "manifest_version": "5454",
+      "change": "unchanged",
+      "installed_version_output": "",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\whisper-cli.exe",
+      "installed_binary_sha256": "33f9252025b44071ec9a5b10a3dac87c618e366eaacc48cf13ae2a599343926e",
+      "manifest_sha256_windows_x86_64": "6ba69e3482d7826214f90a6a9c84ca07782aec1e1d0c6a7c30c994fd5d816ccb",
+      "source_url_windows_x86_64": "https://github.com/ggml-org/whisper.cpp/releases/download/b5454/whisper-bin-x64.zip"
+    },
+    {
+      "name": "ollama",
+      "manifest_version": "0.40.16",
+      "change": "unchanged",
+      "installed_version_output": "ollama version is 0.40.16",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\ollama.exe",
+      "installed_binary_sha256": "4ccefcbfecc50fb6526471adabbc20869dd614e29e351120b15083cb174b0b8a",
+      "manifest_sha256_windows_x86_64": "50fcf5ad54277f2fa5d173ebfc93bcb017adbc0c9ef2314daabc96ca9e6aa64e",
+      "source_url_windows_x86_64": "https://github.com/ollama/ollama/releases/download/v0.40.16/ollama-windows-amd64.zip"
+    },
+    {
+      "name": "mistral.rs",
+      "manifest_version": "0.9.5",
+      "change": "unchanged",
+      "installed_version_output": null,
+      "install_path": null,
+      "installed_binary_sha256": null,
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": null
+    },
+    {
+      "name": "obscura",
+      "manifest_version": "0.2.7",
+      "change": "bumped",
+      "installed_version_output": "obscura 0.2.7",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\obscura.exe",
+      "installed_binary_sha256": "9fd128cc41b6032fe476897570bf3bd8ec781e99853c98f3dbc182ed475ee7a6",
+      "manifest_sha256_windows_x86_64": "be983b663552e11faf8c1e07696578bad622dbeb48afb9f59036032ca8e97fb3",
+      "source_url_windows_x86_64": "https://github.com/h4ckf0r0day/obscura/releases/download/v0.2.7/obscura-x86_64-windows.zip"
+    },
+    {
+      "name": "servo",
+      "manifest_version": "0.8.0",
+      "change": "unchanged",
+      "installed_version_output": null,
+      "install_path": null,
+      "installed_binary_sha256": null,
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/servo/servo/releases/download/v0.8.0/servo-x86_64-windows-msvc.zip"
+    },
+    {
+      "name": "agent-browser",
+      "manifest_version": "0.43.0",
+      "change": "unchanged",
+      "installed_version_output": "agent-browser 0.43.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\agent-browser.exe",
+      "installed_binary_sha256": "ebcef5ebea93c7ccf0fe3f8c18eee908ae9174dfef8e52a3dda6f24a59f630dc",
+      "manifest_sha256_windows_x86_64": "ebcef5ebea93c7ccf0fe3f8c18eee908ae9174dfef8e52a3dda6f24a59f630dc",
+      "source_url_windows_x86_64": "https://github.com/vercel-labs/agent-browser/releases/download/v0.43.0/agent-browser-win32-x64.exe"
+    },
+    {
+      "name": "chrome-devtools-mcp",
+      "manifest_version": "1.13.0",
+      "change": "unchanged",
+      "installed_version_output": null,
+      "install_path": null,
+      "installed_binary_sha256": null,
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": null
+    },
+    {
+      "name": "playwright-mcp",
+      "manifest_version": "0.0.85",
+      "change": "unchanged",
+      "installed_version_output": null,
+      "install_path": null,
+      "installed_binary_sha256": null,
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": null
+    },
+    {
+      "name": "apify-cli",
+      "manifest_version": "1.12.0",
+      "change": "unchanged",
+      "installed_version_output": null,
+      "install_path": null,
+      "installed_binary_sha256": null,
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": null
+    },
+    {
+      "name": "niubash",
+      "manifest_version": "1.5.0",
+      "change": "unchanged",
+      "installed_version_output": "Niubash 1.5.0 — bash-compatible shell for Windows, Linux, macOS, and Android",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Programs\\Niubash\\niu.exe",
+      "installed_binary_sha256": "3965062775cfdd88daa4a17dc7c2bbce4db68545b98b1b784682226f2688c9c8",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/unixwin/niubash/releases/download/v1.5.0/niubash-v1.5.0-win-x64.zip"
+    },
+    {
+      "name": "ms-coreutils",
+      "manifest_version": "2026.9.3",
+      "change": "unchanged",
+      "installed_version_output": "coreutils 0.12.0 (multi-call binary)",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\coreutils.exe",
+      "installed_binary_sha256": "243320637a6f33faca7d4bccb332c47b6f8be5a2dfdafcaf73dbae8d7b587a08",
+      "manifest_sha256_windows_x86_64": "e01a35c1856991e313564f02b540c6079274f0ecb3be22de764edd5341eabfaa",
+      "source_url_windows_x86_64": "https://github.com/microsoft/coreutils/releases/download/v2026.9.3/coreutils-2026.9.3-x64.zip"
+    },
+    {
+      "name": "jaq",
+      "manifest_version": "3.1.2",
+      "change": "unchanged",
+      "installed_version_output": "jaq 3.1.2",
+      "install_path": "C:\\Users\\aphro\\.cargo\\bin\\jaq.exe",
+      "installed_binary_sha256": "8159fcd68008e0dbaeca5c48afcf89acbbf15ccec36d1de9b1bd8658d07143ed",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/01mf02/jaq/releases/download/v3.1.2/jaq-x86_64-pc-windows-msvc.exe"
+    },
+    {
+      "name": "b3sum",
+      "manifest_version": "1.8.7",
+      "change": "unchanged",
+      "installed_version_output": "b3sum 1.8.7",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\b3sum.exe",
+      "installed_binary_sha256": "fce0c2406a1e92b49fedd02a48a67dc5ba71c3a85eb80a2f950ed985f90e76e2",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/BLAKE3-team/BLAKE3/releases/download/1.8.7/b3sum_windows_x64_bin.exe"
+    },
+    {
+      "name": "oha",
+      "manifest_version": "1.17.0",
+      "change": "unchanged",
+      "installed_version_output": "oha 1.17.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\oha.exe",
+      "installed_binary_sha256": "3971644690672523c5d998874bef397cbc5d800cb1ba7164882eb7fe8f6027ac",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/hatoo/oha/releases/download/v1.17.0/oha-windows-amd64.exe"
+    },
+    {
+      "name": "fzf",
+      "manifest_version": "0.75.0",
+      "change": "unchanged",
+      "installed_version_output": "0.75.0 (c7bf2b8e)",
+      "install_path": "C:\\Users\\aphro\\AppData\\Local\\Microsoft\\WinGet\\Links\\fzf.exe",
+      "installed_binary_sha256": "5708f0b7fa6e8b3e736c8f37596a43ed2514e45dd56737f9663c5cde4f4933c6",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/junegunn/fzf/releases/download/v0.75.0/fzf-0.75.0-windows_amd64.zip"
+    },
+    {
+      "name": "dua",
+      "manifest_version": "3.0.3",
+      "change": "unchanged",
+      "installed_version_output": "dua 3.0.3",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\dua.exe",
+      "installed_binary_sha256": "fcb7e7eb8d89ebf47325d5e48cfb3522c7781ff0d6683032b8b81f68363968a6",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/Byron/dua-cli/releases/download/v3.0.3/dua-v3.0.3-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "ouch",
+      "manifest_version": "0.8.3",
+      "change": "unchanged",
+      "installed_version_output": "ouch 0.8.3",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\ouch.exe",
+      "installed_binary_sha256": "23893103c2fb470bad85cea4c82c75adde2b74c5f58a7dad36ffe42c64e61ae3",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/ouch-org/ouch/releases/download/0.8.3/ouch-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "ruff",
+      "manifest_version": "0.17.5",
+      "change": "unchanged",
+      "installed_version_output": "ruff 0.17.5",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\ruff.exe",
+      "installed_binary_sha256": "42d112b27bbbe243d1666058ba361adc3c388a2b6810481f01f910e8bf29ea39",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/astral-sh/ruff/releases/download/0.17.5/ruff-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "ty",
+      "manifest_version": "0.0.104",
+      "change": "unchanged",
+      "installed_version_output": "ty 0.0.104 (b4bb5b2c8 2026-11-13)",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\ty.exe",
+      "installed_binary_sha256": "d6675bafaaa886f2162862e301e3563b2ffb59b73b89b3371dedd77eddeaeb92",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/astral-sh/ty/releases/download/0.0.104/ty-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "cargo-llvm-cov",
+      "manifest_version": "0.9.1",
+      "change": "unchanged",
+      "installed_version_output": "error: expected subcommand 'llvm-cov', found argument '--version'",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\cargo-llvm-cov.exe",
+      "installed_binary_sha256": "a854b3d24f49535dc8b3d070035e0f9042b5cac25324e66cb06c639e4e04baeb",
+      "manifest_sha256_windows_x86_64": null,
+      "source_url_windows_x86_64": "https://github.com/taiki-e/cargo-llvm-cov/releases/download/v0.9.1/cargo-llvm-cov-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "ast-grep",
+      "manifest_version": "0.51.2",
+      "change": "added",
+      "installed_version_output": "ast-grep 0.51.2",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\ast-grep.exe",
+      "installed_binary_sha256": "a91f4c20403771be1332f8c9f3f107d0c72e586fb631232e4424f56752b5d250",
+      "manifest_sha256_windows_x86_64": "7d5a83bf2f9a4020dc529df371537c860e7a665e52789ac67ef231123a6b4a7e",
+      "source_url_windows_x86_64": "https://github.com/ast-grep/ast-grep/releases/download/0.51.2/app-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "bazelisk",
+      "manifest_version": "1.30.0",
+      "change": "added",
+      "installed_version_output": "bazel 9.3.2",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\bazelisk.exe",
+      "installed_binary_sha256": "5d14a31e9d8a363c48ba1900dbd56764d730835232eb0d113cce255856ffe3ef",
+      "manifest_sha256_windows_x86_64": "5d14a31e9d8a363c48ba1900dbd56764d730835232eb0d113cce255856ffe3ef",
+      "source_url_windows_x86_64": "https://github.com/bazelbuild/bazelisk/releases/download/v1.30.0/bazelisk-windows-amd64.exe"
+    },
+    {
+      "name": "cargo-deny",
+      "manifest_version": "0.20.2",
+      "change": "added",
+      "installed_version_output": "cargo-deny 0.20.2",
+      "install_path": "C:\\Users\\aphro\\.cargo\\bin\\cargo-deny.exe",
+      "installed_binary_sha256": "7a41f14b6629641d87c013d3d16134f7d044df2f53e5202e2bdc8f2f75c8ff0b",
+      "manifest_sha256_windows_x86_64": "975a22143262fd27476d19ee00c7af67978426e40e1dee94eed6bbade1cf87dc",
+      "source_url_windows_x86_64": "https://github.com/EmbarkStudios/cargo-deny/releases/download/0.20.2/cargo-deny-0.20.2-x86_64-pc-windows-msvc.tar.gz"
+    },
+    {
+      "name": "cargo-audit",
+      "manifest_version": "0.23.0",
+      "change": "added",
+      "installed_version_output": "cargo-audit 0.23.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\cargo-audit.exe",
+      "installed_binary_sha256": "da6176c4ff085a66c3c56053d373b9599f72dabad90fc8e318f0f054929cbb5a",
+      "manifest_sha256_windows_x86_64": "aafeb61206730029601a72e669a12231f8674427e6248d02f6cb382cb36d56b4",
+      "source_url_windows_x86_64": "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.23.0/cargo-audit-x86_64-pc-windows-msvc-v0.23.0.zip"
+    },
+    {
+      "name": "cargo-machete",
+      "manifest_version": "0.10.0",
+      "change": "added",
+      "installed_version_output": "0.10.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\cargo-machete.exe",
+      "installed_binary_sha256": "31ca014a120c4fd2af79b146907ef82d2181b4f04c4ddb265dde4752a04f3d3b",
+      "manifest_sha256_windows_x86_64": "09fd19991fd91e472326d3e6ca6e180414c12044eb08061950ba4d6671fcd16f",
+      "source_url_windows_x86_64": "https://github.com/bnjbvr/cargo-machete/releases/download/v0.10.0/cargo-machete-v0.10.0-x86_64-pc-windows-msvc.tar.gz"
+    },
+    {
+      "name": "cargo-shear",
+      "manifest_version": "1.14.1",
+      "change": "added",
+      "installed_version_output": "Version: 1.14.1",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\cargo-shear.exe",
+      "installed_binary_sha256": "50dce5eec8391b461af17f160a31bb358eba14d081b0c6dd520131a43bee66f8",
+      "manifest_sha256_windows_x86_64": "439a3c203c177b06c538e13cfb7260972738b9e9e8dc6433d4ace416cf40eb36",
+      "source_url_windows_x86_64": "https://github.com/Boshen/cargo-shear/releases/download/v1.14.1/cargo-shear-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "cargo-hack",
+      "manifest_version": "0.6.46",
+      "change": "added",
+      "installed_version_output": "cargo-hack 0.6.46",
+      "install_path": "C:\\Users\\aphro\\.cargo\\bin\\cargo-hack.exe",
+      "installed_binary_sha256": "0abe609f074372a066fd068fddb84401f97b8f72059f7e855f50d2436da53862",
+      "manifest_sha256_windows_x86_64": "c647159f27352aa1a28c3383a937802c71dbda048a15a628e086c7bad4b57fa0",
+      "source_url_windows_x86_64": "https://github.com/taiki-e/cargo-hack/releases/download/v0.6.46/cargo-hack-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "typos",
+      "manifest_version": "1.52.2",
+      "change": "added",
+      "installed_version_output": "typos-cli 1.52.2",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\typos.exe",
+      "installed_binary_sha256": "727e6d86f8eb8d54aecafe72ed653b9317e518730b3236186eb608ade148737d",
+      "manifest_sha256_windows_x86_64": "ab79036832cea0f2a21aa947731d39512250cc0f7a6a2f6add26262738a8cc11",
+      "source_url_windows_x86_64": "https://github.com/crate-ci/typos/releases/download/v1.52.2/typos-v1.52.2-x86_64-pc-windows-msvc.zip"
+    },
+    {
+      "name": "difftastic",
+      "manifest_version": "0.72.0",
+      "change": "added",
+      "installed_version_output": "Difftastic 0.72.0",
+      "install_path": "C:\\Users\\aphro\\.local\\bin\\difft.exe",
+      "installed_binary_sha256": "cf61797a609f14b338788f64804302b1775842ed63c34f83233413acf4e18a99",
+      "manifest_sha256_windows_x86_64": "7b6295a9a433ba79978b02ad4b4b27f955423b8eb379927409b9ff4e5156379e",
+      "source_url_windows_x86_64": "https://github.com/Wilfred/difftastic/releases/download/0.72.0/difft-0.72.0-x86_64-pc-windows-msvc.zip"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+---
+name: cli-tealdeer
+description: Use `tldr` (tealdeer 1.9.1): Fast tldr client: community cheat sheets for command-line tools.
+---
+
+# tealdeer 1.9.1
+
+Binary: `tldr`. Declared in `tools.toml`; install or update with `ay up tealdeer`.
+Generated from the tool manual; do not edit. Regenerate with `just cli-skills`.
+
+## `tldr --help`
+
+```text
+tealdeer 1.9.1: A fast TLDR client
+
+Usage: tldr.exe [OPTIONS] [COMMAND]...
+
+Arguments:
+  [COMMAND]...  The command to show (e.g. `tar` or `git log`)
+
+Options:
+  -l, --list                        List all commands in the cache
+      --edit-page                   Edit custom page with `EDITOR`
+      --edit-patch                  Edit custom patch with `EDITOR`
+  -f, --render <FILE>               Render a specific markdown file
+  -p, --platform <PLATFORM>         Override the operating system, can be specified multiple times
+                                    in order of preference [possible values: linux, macos, sunos,
+                                    windows, android, freebsd, netbsd, openbsd, common]
+  -L, --language <LANGUAGE>         Override the language
+  -u, --update                      Update the local cache
+      --no-auto-update              If auto update is configured, disable it for this run
+  -c, --clear-cache                 Clear the local cache
+      --config-path <FILE>          Override config file location
+      --override-config <OVERRIDE>  Override config values after reading config file (example:
+                                    `updates.auto_update = true`)
+      --pager                       Use a pager to page output
+  -r, --raw                         Display the raw markdown instead of rendering it
+  -q, --quiet                       Suppress informational messages
+      --show-paths                  Show file and directory paths used by tealdeer
+      --seed-config                 Create a basic config
+      --color <WHEN>                Control whether to use color [possible values: always, auto,
+                                    never]
+      --short-options               Display the short variants of placeholders
+      --long-options                Display the long variants of placeholders
+  -v, --version                     Print the version
+  -h, --help                        Print help
+
+To view the user documentation, please visit https://docs.tealdeer.org.
+
+To view usage examples, run tldr tldr or tldr tealdeer.
+```

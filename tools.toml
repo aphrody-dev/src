@@ -228,7 +228,7 @@ assets.macos-aarch64 = "cargo-dist-aarch64-apple-darwin.tar.xz"
 
 [[tool]]
 name = "fd"
-version = "10.5.0"
+version = "10.5.2"
 bin = ["fd"]
 source = "github"
 repo = "sharkdp/fd"
@@ -237,11 +237,11 @@ assets.linux-x86_64 = "fd-v{version}-x86_64-unknown-linux-musl.tar.gz"
 assets.linux-aarch64 = "fd-v{version}-aarch64-unknown-linux-musl.tar.gz"
 assets.macos-x86_64 = "fd-v{version}-x86_64-apple-darwin.tar.gz"
 assets.macos-aarch64 = "fd-v{version}-aarch64-apple-darwin.tar.gz"
-sha256.windows-x86_64 = "a227701b8551c35a9931d9f6da75503cf86d88e182d71fb849a70864c5d57cd7"
-sha256.linux-x86_64 = "761c72dc8e120d85b22292063be8a796e2eeb20eb3e4f38b8fa2343ccf3514a7"
-sha256.linux-aarch64 = "d76c4317f7d5dba69f8a2a15856c90c777e7f0dd4e85f0de8c76de6992c374d4"
-sha256.macos-x86_64 = "7e31028c62c6955877735d0406807aa484c2a5e6f86235a59e26c29c301da590"
-sha256.macos-aarch64 = "b67e1836c468e42e411984b56e52fa7abec08c2bd22c867398e7cc134aac5e12"
+sha256.windows-x86_64 = "7edac75ef96b7e9a01ebb251a21ee86ea365a09adcfb865f1ec3346a906153b6"
+sha256.linux-x86_64 = "7e2d07fa2b8807642aaec67b7e2972a9fbe4db26fcb340a7372392db42b26694"
+sha256.linux-aarch64 = "63ea52cb31586e6d98efa2f06d73d542f16c7d0c4af0f07b579aaf9714cf907a"
+sha256.macos-x86_64 = "0f02e6000a8c896cd254cf4dccc7da1e604e77a32c6783609eed5e4cb07785e3"
+sha256.macos-aarch64 = "81bf98a16d3d7230e4a9123fcede243d71ea31a577113476ed43f1cdf4773162"
 
 [[tool]]
 name = "dust"
@@ -296,7 +296,7 @@ unsupported = ["macos-x86_64"]
 
 [[tool]]
 name = "sd"
-version = "1.0.0"
+version = "1.1.0"
 bin = ["sd"]
 source = "github"
 repo = "chmln/sd"
@@ -305,11 +305,11 @@ assets.linux-x86_64 = "sd-v{version}-x86_64-unknown-linux-musl.tar.gz"
 assets.linux-aarch64 = "sd-v{version}-aarch64-unknown-linux-musl.tar.gz"
 assets.macos-x86_64 = "sd-v{version}-x86_64-apple-darwin.tar.gz"
 assets.macos-aarch64 = "sd-v{version}-aarch64-apple-darwin.tar.gz"
-sha256.windows-x86_64 = "b7cc9937ebc1f736c87d5929b9ea2280053af10f8e320d9c20ca90c3af46a5d5"
-sha256.linux-x86_64 = "9f42e4fec7848fa8d6eeab7b1090f5c9c9e374c94a9974db6ff33df052c9e132"
-sha256.linux-aarch64 = "9e99f8e9dd70c7015b8c20e49270bdd99e9caf966a41a11982f4d785f6a58c9e"
-sha256.macos-x86_64 = "8408eb83c7988cdc72afc4d171795201999ba4d321c7728921ff85565915e75d"
-sha256.macos-aarch64 = "a764ac9b966c6f0cfeaa66f2ad2d4945b08f8d93d973ed1a62bcbfbe1c27e981"
+sha256.windows-x86_64 = "59837c2e7c911099aca1cc46b663bcdc5a949fd3e9fbbaf34fc73e5d5d71007c"
+sha256.linux-x86_64 = "02f00f4777d43e8e95b7b8d49e1a0d6e502fed4b8e79c1c8b8063857a30caa2e"
+sha256.linux-aarch64 = "ec8c93c0533ff21f4851d11566808d4082544baf063d9b96ea77c27e98b7cd99"
+sha256.macos-x86_64 = "1fca1e9c91813a8aac6821063c923107ba0f66a83309e095edcd3b202f67f97e"
+sha256.macos-aarch64 = "4bd3c09226376ca0a1d69589c91e86276fae36c5fbaaee669afce583f6682030"
 
 [[tool]]
 name = "hyperfine"
@@ -811,16 +811,10 @@ unsupported = [
 # Python (uv tool) passent par `chromium-bun engines install`. Rien n'est compilé sur le poste.
 # ---------------------------------------------------------------------------------------------
 
-# Obscura (Rust) : CDP sur `obscura serve`. Pas de fichier de sommes publié.
-sha256.linux-x86_64 = "53eb34da09159dcf8f04865dbfe3e63e9a652062684495aa7ced5ddd7c82e8b0"
-sha256.linux-aarch64 = "20a5348bf3b6f71e41088223b188552ab550c1b9c9a9cbd8f099e6f7f3d78549"
-sha256.macos-x86_64 = "ec8155d37bc4a5dca770edacd17ceeda7a07a5ef8cf4bde22f0f8fa8b220f5fb"
-sha256.macos-aarch64 = "7afaf67e72aee0243e1aec56ceba5d2f200c7f018b065f72e84d44afd75af1d1"
-unsupported = ["windows-x86_64"]
-
+# Obscura (Rust) : CDP sur `obscura serve`. Empreintes : digests des assets GitHub v0.2.7, relevés le 2026-11-14.
 [[tool]]
 name = "obscura"
-version = "0.2.6"
+version = "0.2.7"
 bin = ["obscura"]
 source = "github"
 repo = "h4ckf0r0day/obscura"
@@ -829,14 +823,13 @@ assets.linux-x86_64 = "obscura-x86_64-linux.tar.gz"
 assets.linux-aarch64 = "obscura-aarch64-linux.tar.gz"
 assets.macos-x86_64 = "obscura-x86_64-macos.tar.gz"
 assets.macos-aarch64 = "obscura-aarch64-macos.tar.gz"
+sha256.windows-x86_64 = "be983b663552e11faf8c1e07696578bad622dbeb48afb9f59036032ca8e97fb3"
+sha256.linux-x86_64 = "11b53d27cd743e00e196e216920e7f3f794cf378e3f1792b8d25d3beabaf9cad"
+sha256.linux-aarch64 = "4ee0aeeb38fa8bb2cb004ba104abe1c79f1bdfd02f51672c694e8234a5ae0e5c"
+sha256.macos-x86_64 = "c47383e5b5551e09d2055ee7bdcce788af409fb4394e39bdaf179734df18e829"
+sha256.macos-aarch64 = "fc7e73f23058f18d6d5be983d83b24ba374d12167677657a307a9476c0f5a7c1"
 
 # Servo (Rust) : WebDriver sur `servo --headless --webdriver=<port>` ; arbre servo/ + resources/.
-sha256.windows-x86_64 = "0a110d0693753a252ed7ffd61e682363e8622caf79697f564c529099a31a6242"
-sha256.linux-x86_64 = "eed986e478c5ec5439f531f2d7fb6b0e36a356f1df7a6c44a8e8fd4f2486bd76"
-sha256.linux-aarch64 = "e12aff8bbe40326386a471060083e9cec5255b67048996b84f649efef10cac39"
-sha256.macos-x86_64 = "897f03df4e3d704f946c5e14c6a90a34e0d4e4ef898c4b3201771712962cd7fb"
-sha256.macos-aarch64 = "19faa248ac762f466ddb822dbb03ed4f097312d10d1a4d5b2143e6040a9bebd0"
-
 [[tool]]
 name = "servo"
 version = "0.8.0"
@@ -1514,3 +1507,165 @@ assets.linux-x86_64 = "cargo-llvm-cov-x86_64-unknown-linux-musl.tar.gz"
 assets.linux-aarch64 = "cargo-llvm-cov-aarch64-unknown-linux-musl.tar.gz"
 assets.macos-x86_64 = "cargo-llvm-cov-x86_64-apple-darwin.tar.gz"
 assets.macos-aarch64 = "cargo-llvm-cov-aarch64-apple-darwin.tar.gz"
+
+# ---------------------------------------------------------------------------------------------
+# Audit, refactor, build (relevé 2026-11-14 : API GitHub releases, empreintes = digest des assets).
+# Gagnant par catégorie ; cargo-deny/audit/machete/shear/hack : hygiène des dépendances Rust.
+# ---------------------------------------------------------------------------------------------
+
+[[tool]]
+name = "ast-grep"
+version = "0.51.2"
+bin = ["ast-grep", "sg"]
+source = "github"
+repo = "ast-grep/ast-grep"
+tag = "{version}"
+assets.windows-x86_64 = "app-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "app-x86_64-unknown-linux-musl.zip"
+assets.linux-aarch64 = "app-aarch64-unknown-linux-musl.zip"
+assets.macos-x86_64 = "app-x86_64-apple-darwin.zip"
+assets.macos-aarch64 = "app-aarch64-apple-darwin.zip"
+sha256.windows-x86_64 = "7d5a83bf2f9a4020dc529df371537c860e7a665e52789ac67ef231123a6b4a7e"
+sha256.linux-x86_64 = "7263b2f3dbfa4a4ae4512932ffa75ccd86451db17646bd1640a4b21e4b3558d8"
+sha256.linux-aarch64 = "526e2286d77533cfd8b231c0877befb412dafcf4fa0479974e8dc2c24ef781d0"
+sha256.macos-x86_64 = "ef347c331d97cb6a043809091bd96bdd64de6a8354f01da66764496885230591"
+sha256.macos-aarch64 = "ea4f4082d25e5f8e0450add6fd488dd008a373c90483cc2031759c8431f1dcfb"
+
+# Bazelisk (Google) : lanceur Bazel épinglé par .bazelversion ; binaire nu.
+[[tool]]
+name = "bazelisk"
+version = "1.30.0"
+bin = ["bazelisk"]
+# `--version` affiche la version de Bazel résolue (.bazelversion), pas celle de bazelisk : état "ahead" attendu.
+source = "github"
+repo = "bazelbuild/bazelisk"
+assets.windows-x86_64 = "bazelisk-windows-amd64.exe"
+assets.linux-x86_64 = "bazelisk-linux-amd64"
+assets.linux-aarch64 = "bazelisk-linux-arm64"
+assets.macos-x86_64 = "bazelisk-darwin-amd64"
+assets.macos-aarch64 = "bazelisk-darwin-arm64"
+sha256.windows-x86_64 = "5d14a31e9d8a363c48ba1900dbd56764d730835232eb0d113cce255856ffe3ef"
+sha256.linux-x86_64 = "a248ae2b2b62b5baebb748f6fba7203bff1a27e5d01b55399a8406744cb539e8"
+sha256.linux-aarch64 = "b2bcc040c213b44586b121bda6d983c35df121b917c3a7a66fb16f2fa0df1a4f"
+sha256.macos-x86_64 = "a0e6468b0c6b812f782d8cbfb05824121f6980c0bd70aaa1774fb8272bb7b2ad"
+sha256.macos-aarch64 = "555d2ff912ccd336d0060bdb5251ef2f62629c6f8fbadb59005a45d5625793ec"
+
+[[tool]]
+name = "cargo-deny"
+version = "0.20.2"
+bin = ["cargo-deny"]
+source = "github"
+repo = "EmbarkStudios/cargo-deny"
+tag = "{version}"
+assets.windows-x86_64 = "cargo-deny-{version}-x86_64-pc-windows-msvc.tar.gz"
+assets.linux-x86_64 = "cargo-deny-{version}-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "cargo-deny-{version}-aarch64-unknown-linux-musl.tar.gz"
+assets.macos-x86_64 = "cargo-deny-{version}-x86_64-apple-darwin.tar.gz"
+assets.macos-aarch64 = "cargo-deny-{version}-aarch64-apple-darwin.tar.gz"
+sha256.windows-x86_64 = "975a22143262fd27476d19ee00c7af67978426e40e1dee94eed6bbade1cf87dc"
+sha256.linux-x86_64 = "9f12ed4c49936e09b48bf862b595cde2fe64fcbd9d74dfacac6131ca824c8d5f"
+sha256.linux-aarch64 = "995c82be0defc7a025cae49a2aa2644ce8245c9a3318fc4103907c6a285e8c7d"
+sha256.macos-x86_64 = "248da7f581724e470071990c088ffc55c811981715f4cbdb258621fb79f8b7a6"
+sha256.macos-aarch64 = "fe67d82a10d8597a3549364cb733a3f9cc1bfff9031b7ae46384a9f2a72090c3"
+
+[[tool]]
+name = "cargo-audit"
+version = "0.23.0"
+bin = ["cargo-audit"]
+source = "github"
+repo = "rustsec/rustsec"
+tag = "cargo-audit/v{version}"
+assets.windows-x86_64 = "cargo-audit-x86_64-pc-windows-msvc-v{version}.zip"
+assets.linux-x86_64 = "cargo-audit-x86_64-unknown-linux-musl-v{version}.tgz"
+assets.linux-aarch64 = "cargo-audit-aarch64-unknown-linux-gnu-v{version}.tgz"
+assets.macos-x86_64 = "cargo-audit-x86_64-apple-darwin-v{version}.tgz"
+assets.macos-aarch64 = "cargo-audit-aarch64-apple-darwin-v{version}.tgz"
+sha256.windows-x86_64 = "aafeb61206730029601a72e669a12231f8674427e6248d02f6cb382cb36d56b4"
+sha256.linux-x86_64 = "4f01c74ed84b2dffd0b1d37012a62cdf2a92c96e25bdf8eec7fcc0d4d3eb7811"
+sha256.linux-aarch64 = "00eff3158429b9629abe8748e971f29f99ee53d4cff54a25072cbb15167bdda8"
+sha256.macos-x86_64 = "845ec02452dd233c292be887700ac99a38a697299423081ee0d8ea1a0c961464"
+sha256.macos-aarch64 = "84101204e5b8013c9a8d7251766aebdef3e7fa1a3ef040cde44d65b48b8c4056"
+
+[[tool]]
+name = "cargo-machete"
+version = "0.10.0"
+bin = ["cargo-machete"]
+source = "github"
+repo = "bnjbvr/cargo-machete"
+assets.windows-x86_64 = "cargo-machete-v{version}-x86_64-pc-windows-msvc.tar.gz"
+assets.linux-x86_64 = "cargo-machete-v{version}-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "cargo-machete-v{version}-aarch64-unknown-linux-musl.tar.gz"
+sha256.windows-x86_64 = "09fd19991fd91e472326d3e6ca6e180414c12044eb08061950ba4d6671fcd16f"
+sha256.linux-x86_64 = "a29820e830f3cbfadb176c5e5653803ca04a4afd6964fc7ebca2d08a485f10eb"
+sha256.linux-aarch64 = "af6c0781ad936c418377d3c825ecc8d22e388f20e98a03c31af600c130421060"
+unsupported = ["macos-x86_64", "macos-aarch64"]
+
+[[tool]]
+name = "cargo-shear"
+version = "1.14.1"
+bin = ["cargo-shear"]
+source = "github"
+repo = "Boshen/cargo-shear"
+assets.windows-x86_64 = "cargo-shear-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "cargo-shear-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "cargo-shear-aarch64-unknown-linux-musl.tar.gz"
+assets.macos-x86_64 = "cargo-shear-x86_64-apple-darwin.tar.gz"
+assets.macos-aarch64 = "cargo-shear-aarch64-apple-darwin.tar.gz"
+sha256.windows-x86_64 = "439a3c203c177b06c538e13cfb7260972738b9e9e8dc6433d4ace416cf40eb36"
+sha256.linux-x86_64 = "7b4cec5ec12e22717670721ace1edbd97a65cb9e08864466d292a3009bb85d1a"
+sha256.linux-aarch64 = "7b8c61cca4f2628cbc847ba4dfda37924b8dd2dba8ba19fe4107797f87e6b3ea"
+sha256.macos-x86_64 = "c414e63bdc08205c19b276456fc8ac5af6e33c3f2b40086a782fedb7c13e5567"
+sha256.macos-aarch64 = "925a8e005a4966ce1e3f63d70743dbc68dd16e3369eea9aa91cfcb3ba61727cf"
+
+[[tool]]
+name = "cargo-hack"
+version = "0.6.46"
+bin = ["cargo-hack"]
+verify = ["cargo-hack", "hack", "--version"]
+source = "github"
+repo = "taiki-e/cargo-hack"
+assets.windows-x86_64 = "cargo-hack-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "cargo-hack-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "cargo-hack-aarch64-unknown-linux-musl.tar.gz"
+assets.macos-x86_64 = "cargo-hack-x86_64-apple-darwin.tar.gz"
+assets.macos-aarch64 = "cargo-hack-aarch64-apple-darwin.tar.gz"
+sha256.windows-x86_64 = "c647159f27352aa1a28c3383a937802c71dbda048a15a628e086c7bad4b57fa0"
+sha256.linux-x86_64 = "82875b396319288894d4c213389a107039756e37f0f7eb299ed15f5d4ad269cf"
+sha256.linux-aarch64 = "2d6f3b8f73c53214195255a89a3dfd91520ad35254c7621fd5e9254e5751625d"
+sha256.macos-x86_64 = "d59a46947429dfa58e1c2f9b644e878580f85c3001b0f26854eeaa9da5b00fc4"
+sha256.macos-aarch64 = "9ad9fae78158671df8161b1803bb6b9f6a8b0081adc70a5c2bb91dff5ec4044d"
+
+[[tool]]
+name = "typos"
+version = "1.52.2"
+bin = ["typos"]
+source = "github"
+repo = "crate-ci/typos"
+assets.windows-x86_64 = "typos-v{version}-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "typos-v{version}-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "typos-v{version}-aarch64-unknown-linux-musl.tar.gz"
+assets.macos-x86_64 = "typos-v{version}-x86_64-apple-darwin.tar.gz"
+assets.macos-aarch64 = "typos-v{version}-aarch64-apple-darwin.tar.gz"
+sha256.windows-x86_64 = "ab79036832cea0f2a21aa947731d39512250cc0f7a6a2f6add26262738a8cc11"
+sha256.linux-x86_64 = "3b13d1291281d39d01822e54035636487a7a0f228e70097899b1e33aeb0e7e93"
+sha256.linux-aarch64 = "f2f54b567f5f4688f000f1bf85c585ee22cce3b55befc9418bcdd4c5adc16595"
+sha256.macos-x86_64 = "2c1e5cd3be644005d27543d7d83a32dbba36eb285bc12678818709938a63a988"
+sha256.macos-aarch64 = "b8e7b8b81f28cc808fd763b6d935536e15ba1ef72613bbb6d628b58a891da7ef"
+
+[[tool]]
+name = "difftastic"
+version = "0.72.0"
+bin = ["difft"]
+source = "github"
+repo = "Wilfred/difftastic"
+tag = "{version}"
+assets.windows-x86_64 = "difft-{version}-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "difft-{version}-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "difft-{version}-aarch64-unknown-linux-gnu.tar.gz"
+assets.macos-x86_64 = "difft-{version}-x86_64-apple-darwin.tar.gz"
+assets.macos-aarch64 = "difft-{version}-aarch64-apple-darwin.tar.gz"
+sha256.windows-x86_64 = "7b6295a9a433ba79978b02ad4b4b27f955423b8eb379927409b9ff4e5156379e"
+sha256.linux-x86_64 = "27b9c1fe038a95682eed241265a3cacb781227730f106104b617e10067d38ff4"
+sha256.linux-aarch64 = "0993a82a6708a24adc6c6b8de366924728ed08f537a5b488940082c8edc79353"
+sha256.macos-x86_64 = "31472d5cc1d40444beb697b58e6cf83febb3c7741df4007c3039952ffc1c36c6"
+sha256.macos-aarch64 = "959ce3e4b661663a6bb0b79de5e03051897e521e99c1b85f3c810b54f025ec93"

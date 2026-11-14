@@ -1,0 +1,69 @@
+---
+name: cli-sd
+description: Use `sd` (sd 1.0.0): The regexp or string (if using `-F`) to search for
+---
+
+# sd 1.0.0
+
+Binary: `sd`. Declared in `tools.toml`; install or update with `ay up sd`.
+Generated from the tool manual; do not edit. Regenerate with `just cli-skills`.
+
+## `sd --help`
+
+```text
+sd v1.0.0
+
+Usage: sd.exe [OPTIONS] <FIND> <REPLACE_WITH> [FILES]...
+
+Arguments:
+  <FIND>
+          The regexp or string (if using `-F`) to search for
+
+  <REPLACE_WITH>
+          What to replace each match with. Unless in string mode, you may use captured values like
+          $1, $2, etc
+
+  [FILES]...
+          The path to file(s). This is optional - sd can also read from STDIN.
+
+          Note: sd modifies files in-place by default. See documentation for examples.
+
+Options:
+  -p, --preview
+          Display changes in a human reviewable format (the specifics of the format are likely to
+          change in the future)
+
+  -F, --fixed-strings
+          Treat FIND and REPLACE_WITH args as literal strings
+
+  -n, --max-replacements <LIMIT>
+          Limit the number of replacements that can occur per file. 0 indicates unlimited
+          replacements
+
+          [default: 0]
+
+  -f, --flags <FLAGS>
+          Regex flags. May be combined (like `-f mc`).
+
+          c - case-sensitive
+
+          e - disable multi-line matching
+
+          i - case-insensitive
+
+          m - multi-line matching
+
+          s - make `.` match newlines
+
+          w - match full words only
+
+  -A, --across
+          Process each input as a whole rather than line by line. This allows patterns to match
+          across line boundaries but uses more memory and prevents streaming
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
+```

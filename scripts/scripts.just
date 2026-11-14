@@ -10,6 +10,11 @@ vcs *args:
 identity cmd="check" *args:
     bun "{{root}}/scripts/identity.ts" {{cmd}} {{args}} --root "{{root}}"
 
+# Skills cli-<tool> generated from each tools.toml binary manual (--check = drift only; tool names = subset)
+[group('gates')]
+cli-skills *args:
+    bun "{{root}}/scripts/cli-skills.ts" {{args}}
+
 # Layered dependency gate (Chromium checkdeps analogue): DEPS.rules per directory, see docs/ARCHITECTURE.md
 [group('gates')]
 checkdeps *flags:
