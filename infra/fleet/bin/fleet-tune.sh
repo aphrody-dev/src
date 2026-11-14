@@ -12,7 +12,7 @@ CONF=${FLEET_TUNE_CONF:-/etc/fleet/tune.conf}
 [ -r "$CONF" ] || { echo "fleet-tune: $CONF missing" >&2; exit 2; }
 SYSCTL="" ZRAM_SIZE="" ZRAM_ALGO=zstd SWAPFILE="" SWAP_SIZE="" SWAP_PRIO=10 NOATIME="" CLEAN_USERS="root"
 TARGET_ROOTS="" TARGET_MAX_DAYS=14 BUN_CACHE_MAX_MB=2048 SCCACHE_MAX_MB=20480 DOCKER_KEEP_HOURS=336 BUILDER_KEEP=10GB
-JOURNAL_MAX=1G TMP_MAX_HOURS=24 HEAVY_LOCK=/var/lock/aphrody-heavy.lock
+JOURNAL_MAX=1G TMP_MAX_HOURS=24 LOG_MAX_MB=200 HEAVY_LOCK=/var/lock/aphrody-heavy.lock
 # shellcheck source=/dev/null
 . "$CONF"
 mode=${1:-check}; rc=0
@@ -142,6 +142,26 @@ clean() {
   if command -v docker >/dev/null && systemctl is-active -q docker; then
     docker builder prune -f --keep-storage "$BUILDER_KEEP" >/dev/null 2>&1
     docker image prune -af --filter "until=${DOCKER_KEEP_HOURS}h" >/dev/null 2>&1
+  fi
+  if command -v docker >/dev/null && systemctl is-active -q docker; then
+    # container json logs over LOG_MAX_MB truncated in place (the daemon keeps its fd); networks without containers.
+    find /var/lib/docker/containers -name "*-json.log" -size "+${LOG_MAX_MB}M" -exec truncate -s 0 {} + 2>/dev/null
+    docker network prune -f >/dev/null 2>&1
+    # build hosts only: stopped containers and dangling anonymous volumes (prd never: rollbacks and data).
+    if [ "$(cat /etc/aphrody/role 2>/dev/null)" != prd ]; then
+      docker container prune -f --filter "until=${DOCKER_KEEP_HOURS}h" >/dev/null 2>&1
+      docker volume prune -f >/dev/null 2>&1
+    fi
+  fi
+  # systemd: coredumps, failed unit state, journal of rotated files.
+  rm -rf /var/lib/systemd/coredump/* 2>/dev/null
+  systemctl reset-failed >/dev/null 2>&1
+  journalctl -q --rotate --vacuum-time=7d >/dev/null 2>&1
+  # nginx: rotated logs older than 3 d, live logs over LOG_MAX_MB truncated, then reopen.
+  if [ -d /var/log/nginx ]; then
+    find /var/log/nginx -type f \( -name "*.gz" -o -name "*.[0-9]" \) -mtime +3 -delete 2>/dev/null
+    find /var/log/nginx -type f -name "*.log" -size "+${LOG_MAX_MB}M" -exec truncate -s 0 {} + 2>/dev/null
+    command -v nginx >/dev/null && nginx -s reopen >/dev/null 2>&1
   fi
   command -v podman >/dev/null && podman image prune -af --filter "until=${DOCKER_KEEP_HOURS}h" >/dev/null 2>&1
   journalctl -q --vacuum-size="$JOURNAL_MAX" >/dev/null 2>&1
