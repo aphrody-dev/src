@@ -1,8 +1,0 @@
-[Unit]
-Description=Fork pipeline every 15 min (fr1)
-[Timer]
-OnBootSec=3min
-OnUnitInactiveSec=15min
-RandomizedDelaySec=1min
-[Install]
-WantedBy=timers.target

@@ -1,0 +1,20 @@
+# Upstream status of the better-auth stack (aphrody-labs/better-auth), written by `ay upstream mark`.
+# Keys: patch slug (Electron's munge of the subject). Doc: docs/upstream/STRATEGY.md.
+
+[patch."aphrody_bun_from_end_to_end_bun_lock_bunfig_workspaces_scripts_via_bun_r"]
+subject = "aphrody: Bun from end to end (bun.lock, bunfig, workspaces, scripts via bun run --filter, fullbun rewrites)"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"
+
+[patch."aphrody_bun_test_bun_lint_and_bun_fmt_replace_vitest_biome_and_prettier"]
+subject = "aphrody: bun test, bun lint and bun fmt replace vitest, biome and prettier (bun-test preload plugin, happy-dom registrator, restricted-syntax rules)"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"
+
+[patch."aphrody_validate_docs_reuses_validate_sidebar-icons_upstream_sync"]
+subject = "aphrody: validate:docs reuses validate:sidebar-icons (upstream sync)"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"

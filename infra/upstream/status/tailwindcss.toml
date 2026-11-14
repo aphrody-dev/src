@@ -1,0 +1,14 @@
+# Upstream status of the tailwindcss stack (aphrody-labs/tailwindcss), written by `ay upstream mark`.
+# Keys: patch slug (Electron's munge of the subject). Doc: docs/upstream/STRATEGY.md.
+
+[patch."aphrody_bun_from_end_to_end_bun_lock_bunfig_workspaces_scripts_via_bun_r"]
+subject = "aphrody: Bun from end to end (bun.lock, bunfig, workspaces, scripts via bun run --filter, fullbun rewrites)"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"
+
+[patch."aphrody_bun_test_replaces_vitest_unit_bun_fmt_replaces_prettier_bun-nati"]
+subject = "aphrody: bun test replaces vitest (unit), bun fmt replaces prettier, bun-native snapshot serializer preload"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"

@@ -1,0 +1,38 @@
+# Upstream status of the nextjs stack (aphrody-labs/next.js), written by `ay upstream mark`.
+# Keys: patch slug (Electron's munge of the subject). Doc: docs/upstream/STRATEGY.md.
+
+[patch."aphrody-bun_ci_remove_every_node_npm_binary_from_the_runner"]
+subject = "aphrody-bun CI: remove every node/npm binary from the runner"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"
+
+[patch."aphrody_bun_from_end_to_end_bun_lock_bunfig_workspaces_scripts_tooling_t"]
+subject = "aphrody: Bun from end to end (bun.lock, bunfig, workspaces, scripts, tooling, taskr/esnext patches, turbopack JS runtime = bun, sccache off)"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"
+
+[patch."aphrody_e2e_without_node_turbopack_pool_runs_postcss_under_bun_aphrody-b"]
+subject = "aphrody: e2e without node (Turbopack pool runs PostCSS under Bun), aphrody-bun CI, Bun 1.4.4 pin"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"
+
+[patch."aphrody_mwg_legacy_nomodule_polyfills_opt-in_experimental_legacypolyfill"]
+subject = "aphrody(mwg): legacy nomodule polyfills opt-in (experimental.legacyPolyfills), priority images get fetchPriority=high"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"
+
+[patch."aphrody_purge_eslint_prettier_jest_and_playwright_for_bun_built-ins_wasm"]
+subject = "aphrody: purge ESLint, Prettier, jest and Playwright for Bun built-ins; wasm-bindgen and native LTO profiles (WIP)"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"
+
+[patch."aphrody_tooling_shebangs_to_bun_bench-db_uses_bun_sqlite"]
+subject = "aphrody: tooling shebangs to bun, bench-db uses bun:sqlite"
+status = "inappropriate"
+note = "Aphrody Bun-only toolchain (bun test/fmt/lint replace node tooling)"
+updated = "2026-11-14"

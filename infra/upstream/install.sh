@@ -17,7 +17,7 @@ command -v gh >/dev/null || { echo "upstream install: gh missing" >&2; exit 1; }
 if [ -d /srv/chromium/src/.git ]; then
   STACKS=chromium GC=chromium ENV="Environment=AY_UPSTREAM_CHECKOUT_CHROMIUM=/srv/chromium/src"
 else
-  STACKS=bun,linux-cachyos,cachyos-pkgbuilds,kernel-patches,liquorix,scx,gaming GC=bun ENV=""
+  STACKS=bun,linux-cachyos,cachyos-pkgbuilds,kernel-patches,liquorix,scx,gaming,web GC=bun ENV=""
 fi
 STACKS=${UPSTREAM_STACKS:-$STACKS}
 

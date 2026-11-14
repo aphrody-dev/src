@@ -1,0 +1,64 @@
+# Web stack forks run on Bun end to end (docs/nextjs/FORK.md, docs/<fork>/FORK.md): branch model like bun,
+# the fork's default branch = upstream default branch + a linear series of `aphrody:` commits.
+# `ay upstream status web` shows the series, `ay upstream sync <stack> --push` replays it on upstream (stops at
+# the first conflict, code 3). Replaces scripts/fork-pipeline.ts (removed 2026-11-14).
+
+[stack.nextjs]
+model = "branch"
+upstream = "vercel/next.js"
+upstream_url = "https://github.com/vercel/next.js.git"
+ref = "canary"
+fork = "aphrody-labs/next.js"
+branch = "canary"
+checkout = "third_party/next.js"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.shadcn-ui]
+model = "branch"
+upstream = "shadcn-ui/ui"
+upstream_url = "https://github.com/shadcn-ui/ui.git"
+ref = "main"
+fork = "aphrody-labs/ui"
+branch = "main"
+checkout = "third_party/shadcn-ui"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.base-ui]
+model = "branch"
+upstream = "mui/base-ui"
+upstream_url = "https://github.com/mui/base-ui.git"
+ref = "master"
+fork = "aphrody-labs/base-ui"
+branch = "master"
+checkout = "third_party/base-ui"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.tailwindcss]
+model = "branch"
+upstream = "tailwindlabs/tailwindcss"
+upstream_url = "https://github.com/tailwindlabs/tailwindcss.git"
+ref = "main"
+fork = "aphrody-labs/tailwindcss"
+branch = "main"
+checkout = "third_party/tailwindcss"
+forge = "github"
+rules = "common"
+runner = "prd"
+
+[stack.better-auth]
+model = "branch"
+upstream = "better-auth/better-auth"
+upstream_url = "https://github.com/better-auth/better-auth.git"
+ref = "main"
+fork = "aphrody-labs/better-auth"
+branch = "main"
+checkout = "third_party/better-auth"
+forge = "github"
+rules = "common"
+runner = "prd"

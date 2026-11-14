@@ -116,3 +116,9 @@ Rejected (no PR): the minifier docs patch (no visible effect, removed from the f
 ## 10. Communication
 
 Drafts in `var/agents/outbox/upstream-2026-11-13/` (blog post, X post, wiki page, site page). `.agents/owner-rules.json` does not exist: nothing is published on X, the blog or the site. PR and issue messages accompany the contribution and go out with it.
+
+## 11. Web stacks (`stacks.d/web.toml`, 2026-11-14)
+
+nextjs, shadcn-ui, base-ui, tailwindcss and better-auth follow the bun "branch" model: default branch = upstream + `aphrody:` commits, all marked `Inappropriate` (Bun-only toolchain). Synced daily on prd with the other stacks (`infra/upstream/install.sh`, group `web`). Per-fork test results: `docs/<fork>/FORK.md`. Plain mirrors of `third_party/forks.txt` stay on `bun scripts/vcs.ts fork sync --all`.
+
+Removed the same day as duplicates of this tool: `scripts/fork-pipeline.ts`, its fr2/usa timers, `docs/forks/` and the `[sync.*]` tables of `third_party/ECOSYSTEM.toml`. Not ported from it: automatic consumer pin-bump PRs (`deps/<fork>-<sha7>`) and per-failure issues; consumers are bumped by hand after a green `sync`.
