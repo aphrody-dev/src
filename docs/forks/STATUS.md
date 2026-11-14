@@ -128,7 +128,7 @@ Non utilisees : `packages/deploy` (deploie des sites, pas des forks), `vercel-la
 | aphrody-labs/ui | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/base-ui | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/tailwindcss | mirror | b08bf83a3272 | 8ed754c0e837 | 0/2 | noop | - | 0 |
-| aphrody-labs/better-auth | mirror | 3fa26c979160 | 9e858d07f7cc | 10/2 | diverged: fork has 2 own commit(s); declare kind = "patched" to rebase | - | 0 |
+| aphrody-labs/better-auth | mirror | 3fa26c979160 | 1e6077ea0cad | 0/3 | noop | - | 0 |
 | aphrody-labs/Pulsar-Native | mirror | bf673839c57b | bf673839c57b | 0/0 | noop | - | 0 |
 | aphrody-labs/gpui-ce | mirror | - | - | ?/? | - | - | 0 |
 | aphrody-labs/gpui-fast | mirror | - | - | ?/? | - | - | 0 |
