@@ -1,0 +1,16 @@
+Name: SPIRV-Tools
+URL: https://github.com/KhronosGroup/SPIRV-Tools
+Version: N/A
+Date: 2026-11-12
+Revision: a567f833434dbd7456ddf3d320c330d7a0272d41
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/SPIRV-Tools/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/KhronosGroup/SPIRV-Tools, pinned in src.lock.json.
+
+Local Modifications:
+None

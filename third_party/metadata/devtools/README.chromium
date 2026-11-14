@@ -1,0 +1,16 @@
+Name: devtools
+URL: https://gitlab.archlinux.org/archlinux/devtools
+Version: N/A
+Date: 2026-11-08
+Revision: c677b681beb02427762e49deef31f635edc2834f
+Update Mechanism: Manual
+License: GPL-3.0
+License File: /third_party/devtools/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.archlinux.org/archlinux/devtools, pinned in src.lock.json.
+
+Local Modifications:
+None

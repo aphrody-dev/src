@@ -1,0 +1,15 @@
+Name: WebKit
+URL: https://github.com/oven-sh/WebKit
+Version: N/A
+Date: 2026-11-12
+Revision: b553971ea817212ee787c005f8a1003c68307963
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/oven-sh/WebKit, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/WebKit) carries the patch stack.

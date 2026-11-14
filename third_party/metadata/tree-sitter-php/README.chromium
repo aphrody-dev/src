@@ -1,0 +1,16 @@
+Name: tree-sitter-php
+URL: https://github.com/tree-sitter/tree-sitter-php
+Version: N/A
+Date: 2026-10-06
+Revision: 58d5643086ae60e93a3746cca648363ee97c8761
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-php/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-php, pinned in src.lock.json.
+
+Local Modifications:
+None

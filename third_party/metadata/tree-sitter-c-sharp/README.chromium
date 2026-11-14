@@ -1,0 +1,16 @@
+Name: tree-sitter-c-sharp
+URL: https://github.com/tree-sitter/tree-sitter-c-sharp
+Version: N/A
+Date: 2026-09-29
+Revision: 8c0abe0b84a3681d3e6852ce2e2a1eecb4f731c5
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-c-sharp/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-c-sharp, pinned in src.lock.json.
+
+Local Modifications:
+None

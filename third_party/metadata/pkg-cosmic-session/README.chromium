@@ -1,0 +1,16 @@
+Name: pkg-cosmic-session
+URL: https://gitlab.archlinux.org/archlinux/packaging/packages/cosmic-session
+Version: N/A
+Date: 2026-10-31
+Revision: a838e8eb106183e0c93c1fcc3ce8613dc603a384
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/pkg-cosmic-session/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.archlinux.org/archlinux/packaging/packages/cosmic-session, pinned in src.lock.json.
+
+Local Modifications:
+None

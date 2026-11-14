@@ -1,0 +1,16 @@
+Name: tree-sitter-properties
+URL: https://github.com/tree-sitter-grammars/tree-sitter-properties
+Version: N/A
+Date: 2025-07-14
+Revision: 6310671b24d4e04b803577b1c675d765cbd5773b
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-properties/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-properties, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: tree-sitter-thrift
+URL: https://github.com/tree-sitter-grammars/tree-sitter-thrift
+Version: N/A
+Date: 2024-04-20
+Revision: 68fd0d80943a828d9e6f49c58a74be1e9ca142cf
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-thrift/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-thrift, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: playwright
+URL: https://github.com/microsoft/playwright
+Version: N/A
+Date: 2026-11-11
+Revision: bac1f9f67e9cff2a8e7ecbac25d56ec3bb1d15c6
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/playwright/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/microsoft/playwright, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/playwright) carries the patch stack.

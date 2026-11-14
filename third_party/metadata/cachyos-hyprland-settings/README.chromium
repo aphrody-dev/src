@@ -1,0 +1,15 @@
+Name: cachyos-hyprland-settings
+URL: https://github.com/CachyOS/cachyos-hyprland-settings
+Version: N/A
+Date: 2025-10-04
+Revision: 4aa4a28450f4f5dd6d2af84e80bc402817396606
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/CachyOS/cachyos-hyprland-settings, pinned in src.lock.json.
+
+Local Modifications:
+None

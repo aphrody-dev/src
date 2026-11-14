@@ -1,0 +1,16 @@
+Name: puppeteer
+URL: https://github.com/puppeteer/puppeteer
+Version: N/A
+Date: 2026-11-12
+Revision: 0d76771ce9454a88e84464b1eb03728dc952076f
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/puppeteer/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/puppeteer/puppeteer, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/puppeteer) carries the patch stack.

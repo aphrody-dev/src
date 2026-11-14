@@ -1,0 +1,15 @@
+Name: lfs
+URL: https://git.linuxfromscratch.org/lfs
+Version: N/A
+Date: 2026-11-13
+Revision: 2308185160033f10ca1a3ac56362d3538e0cf07b
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://git.linuxfromscratch.org/lfs, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/lfs) carries the patch stack.

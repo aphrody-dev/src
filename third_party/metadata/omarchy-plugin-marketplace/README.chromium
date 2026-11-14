@@ -1,0 +1,16 @@
+Name: omarchy-plugin-marketplace
+URL: https://github.com/omacom/omarchy-plugin-marketplace
+Version: N/A
+Date: 2026-11-11
+Revision: 4100bf8a0a0e296460c153f85c776d1aa7839ee7
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/omarchy-plugin-marketplace/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/omacom/omarchy-plugin-marketplace, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: tree-sitter-swift
+URL: https://github.com/alex-pinkus/tree-sitter-swift
+Version: N/A
+Date: 2026-11-12
+Revision: 3697c2b910e86b6886a15cc64affb90a89e5711c
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-swift/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/alex-pinkus/tree-sitter-swift, pinned in src.lock.json.
+
+Local Modifications:
+None

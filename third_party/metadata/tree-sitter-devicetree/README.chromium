@@ -1,0 +1,16 @@
+Name: tree-sitter-devicetree
+URL: https://github.com/joelspadin/tree-sitter-devicetree
+Version: N/A
+Date: 2026-05-02
+Revision: e78bf56f206cb47bee28a217423acb651e076848
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-devicetree/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/joelspadin/tree-sitter-devicetree, pinned in src.lock.json.
+
+Local Modifications:
+None

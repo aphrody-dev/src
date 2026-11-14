@@ -1,0 +1,16 @@
+Name: tree-sitter-udev
+URL: https://github.com/tree-sitter-grammars/tree-sitter-udev
+Version: N/A
+Date: 2025-07-18
+Revision: 2fcb563a4d56a6b8e8c129252325fc6335e4acbf
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-udev/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-udev, pinned in src.lock.json.
+
+Local Modifications:
+None

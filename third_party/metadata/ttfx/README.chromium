@@ -1,0 +1,16 @@
+Name: ttfx
+URL: https://github.com/omacom/ttfx
+Version: N/A
+Date: 2026-10-25
+Revision: 14ed2742596f0056b13e25d14a83ea851adc2294
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/ttfx/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/omacom/ttfx, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: vello
+URL: https://github.com/linebender/vello
+Version: N/A
+Date: 2026-11-10
+Revision: 6293f3b74498582752c3734888608030dfd8cc0e
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/vello/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/linebender/vello, pinned in src.lock.json.
+
+Local Modifications:
+None

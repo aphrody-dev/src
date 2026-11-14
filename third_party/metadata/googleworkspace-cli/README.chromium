@@ -1,0 +1,16 @@
+Name: googleworkspace-cli
+URL: https://github.com/googleworkspace/cli
+Version: N/A
+Date: 2026-10-30
+Revision: cd3697e07eb520056dcf142d0c7439bbb9ba32e9
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/googleworkspace-cli/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/googleworkspace/cli, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: tree-sitter-asm
+URL: https://github.com/RubixDev/tree-sitter-asm
+Version: N/A
+Date: 2025-11-08
+Revision: 839741fef4dab5128952334624905c82b40c7133
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-asm/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/RubixDev/tree-sitter-asm, pinned in src.lock.json.
+
+Local Modifications:
+None

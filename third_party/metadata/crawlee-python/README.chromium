@@ -1,0 +1,16 @@
+Name: crawlee-python
+URL: https://github.com/apify/crawlee-python
+Version: N/A
+Date: 2026-11-12
+Revision: ea841e621650a26aa5cba34a1b687bec443a660e
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/crawlee-python/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/apify/crawlee-python, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/crawlee-python) carries the patch stack.

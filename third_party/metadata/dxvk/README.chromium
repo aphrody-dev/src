@@ -1,0 +1,16 @@
+Name: dxvk
+URL: https://github.com/doitsujin/dxvk
+Version: N/A
+Date: 2026-11-12
+Revision: 13f2afc3458871cf752b75a07132688ad1e81ee1
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/dxvk/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/doitsujin/dxvk, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/dxvk) carries the patch stack.

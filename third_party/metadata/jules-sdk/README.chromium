@@ -1,0 +1,16 @@
+Name: jules-sdk
+URL: https://github.com/google-labs-code/jules-sdk
+Version: N/A
+Date: 2026-03-18
+Revision: 19fc117ac5cb961f393257b99d0b939848e75b52
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/jules-sdk/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/google-labs-code/jules-sdk, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/jules-sdk) carries the patch stack.

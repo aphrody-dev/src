@@ -1,0 +1,16 @@
+Name: DirectXShaderCompiler
+URL: https://github.com/microsoft/DirectXShaderCompiler
+Version: N/A
+Date: 2026-11-11
+Revision: c8611f6ff76ef0c8bcd1420c4d6defe304d2658c
+Update Mechanism: Manual
+License: GPL-2.0
+License File: /third_party/DirectXShaderCompiler/LICENSE.TXT
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/microsoft/DirectXShaderCompiler, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/DirectXShaderCompiler) carries the patch stack.

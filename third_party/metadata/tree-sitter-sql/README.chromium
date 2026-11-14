@@ -1,0 +1,16 @@
+Name: tree-sitter-sql
+URL: https://github.com/DerekStride/tree-sitter-sql
+Version: N/A
+Date: 2026-11-10
+Revision: 4cd7224bfcf1fee23227c4d626760341c9b26772
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-sql/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/DerekStride/tree-sitter-sql, pinned in src.lock.json.
+
+Local Modifications:
+None

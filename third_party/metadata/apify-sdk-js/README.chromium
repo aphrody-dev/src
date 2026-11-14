@@ -1,0 +1,16 @@
+Name: apify-sdk-js
+URL: https://github.com/apify/apify-sdk-js
+Version: N/A
+Date: 2026-11-12
+Revision: 307ea5d91dce7aa08ee1172524031004f6a3f6c3
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/apify-sdk-js/LICENSE.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/apify/apify-sdk-js, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/apify-sdk-js) carries the patch stack.

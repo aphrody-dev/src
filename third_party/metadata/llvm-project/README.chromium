@@ -1,0 +1,16 @@
+Name: llvm-project
+URL: https://github.com/llvm/llvm-project
+Version: N/A
+Date: 2026-11-02
+Revision: 392dfff97d29b59d77e5cac6d4b6ef2585fe7117
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/llvm-project/LICENSE.TXT
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/llvm/llvm-project, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/llvm-project) carries the patch stack.

@@ -1,0 +1,15 @@
+Name: kernel-patches
+URL: https://github.com/CachyOS/kernel-patches
+Version: N/A
+Date: 2026-11-07
+Revision: 706b5652a82404eb2a75c79da3b726eec07a5642
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/CachyOS/kernel-patches, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/kernel-patches) carries the patch stack.

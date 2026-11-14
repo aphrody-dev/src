@@ -1,0 +1,16 @@
+Name: tree-sitter-verilog
+URL: https://github.com/tree-sitter/tree-sitter-verilog
+Version: N/A
+Date: 2024-11-11
+Revision: 227d277b6a1a5e2bf818d6206935722a7503de08
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-verilog/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-verilog, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,17 @@
+Name: Obscura
+Short Name: obscura
+URL: https://github.com/h4ckf0r0day/obscura
+Version: N/A
+Date: 2026-11-14
+Revision: 0d9a2f764ffdb097269da048002c593865e83a9e
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/obscura/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Obscura. Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/obscura) carries the patch stack.

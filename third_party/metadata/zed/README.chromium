@@ -1,0 +1,16 @@
+Name: zed
+URL: https://github.com/zed-industries/zed
+Version: N/A
+Date: 2026-11-10
+Revision: 3def8bad0b62dbda02d5b67b00df96fe8d3957bd
+Update Mechanism: Manual
+License: Apache-2.0, GPL-3.0
+License File: /third_party/zed/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/zed-industries/zed, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/zed) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: rio
+URL: https://github.com/aphrody-labs/rio
+Version: N/A
+Date: 2026-11-14
+Revision: 93983b78bbc9da340a92b657a063830a3ac6bf8e
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/rio/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/aphrody-labs/rio, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/rio) carries the patch stack.

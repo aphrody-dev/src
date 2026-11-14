@@ -1,0 +1,16 @@
+Name: linux-cachyos
+URL: https://github.com/CachyOS/linux-cachyos
+Version: N/A
+Date: 2026-11-11
+Revision: 8e308d0a3895dbc741381fb61b9a9a8603be793d
+Update Mechanism: Manual
+License: GPL-3.0
+License File: /third_party/linux-cachyos/LICENSE.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/CachyOS/linux-cachyos, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/linux-cachyos) carries the patch stack.

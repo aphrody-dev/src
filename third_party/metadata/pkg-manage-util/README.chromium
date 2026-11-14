@@ -1,0 +1,16 @@
+Name: pkg-manage-util
+URL: https://github.com/CachyOS/pkg-manage-util
+Version: N/A
+Date: 2026-09-22
+Revision: 8b49ff7e5490eacba3a7830263c1f7b4fc7114ba
+Update Mechanism: Manual
+License: GPL-3.0
+License File: /third_party/pkg-manage-util/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/CachyOS/pkg-manage-util, pinned in src.lock.json.
+
+Local Modifications:
+None

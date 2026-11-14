@@ -1,0 +1,16 @@
+Name: GameNetworkingSockets
+URL: https://github.com/ValveSoftware/GameNetworkingSockets
+Version: N/A
+Date: 2026-10-02
+Revision: d534c19aa760df3fb75fd20db13ba1932b8a5463
+Update Mechanism: Manual
+License: BSD-3-Clause
+License File: /third_party/GameNetworkingSockets/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/ValveSoftware/GameNetworkingSockets, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/GameNetworkingSockets) carries the patch stack.

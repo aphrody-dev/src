@@ -1,0 +1,16 @@
+Name: tree-sitter-xml
+URL: https://github.com/tree-sitter-grammars/tree-sitter-xml
+Version: N/A
+Date: 2026-01-21
+Revision: 5000ae8f22d11fbe93939b05c1e37cf21117162d
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-xml/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-xml, pinned in src.lock.json.
+
+Local Modifications:
+None

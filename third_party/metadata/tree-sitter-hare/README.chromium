@@ -1,0 +1,16 @@
+Name: tree-sitter-hare
+URL: https://github.com/tree-sitter-grammars/tree-sitter-hare
+Version: N/A
+Date: 2025-10-07
+Revision: eed7ddf6a66b596906aa8ca3d40521b8278adc6f
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-hare/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-hare, pinned in src.lock.json.
+
+Local Modifications:
+None

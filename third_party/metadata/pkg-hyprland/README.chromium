@@ -1,0 +1,16 @@
+Name: pkg-hyprland
+URL: https://gitlab.archlinux.org/archlinux/packaging/packages/hyprland
+Version: N/A
+Date: 2026-11-09
+Revision: 77a60031eb27d3ef6723e8b9854ba875db0dbd4e
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/pkg-hyprland/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.archlinux.org/archlinux/packaging/packages/hyprland, pinned in src.lock.json.
+
+Local Modifications:
+None

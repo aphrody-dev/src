@@ -1,0 +1,16 @@
+Name: wpm-gui
+URL: https://github.com/unixwin/wpm-gui
+Version: N/A
+Date: 2026-08-21
+Revision: c1178078c2441568a61e1017e7d3a7b673d03a7a
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/wpm-gui/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/unixwin/wpm-gui, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/wpm-gui) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: tree-sitter-gitattributes
+URL: https://github.com/tree-sitter-grammars/tree-sitter-gitattributes
+Version: N/A
+Date: 2025-08-17
+Revision: 1b7af09d45b579f9f288453b95ad555f1f431645
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-gitattributes/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-gitattributes, pinned in src.lock.json.
+
+Local Modifications:
+None

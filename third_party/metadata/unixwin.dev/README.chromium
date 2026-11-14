@@ -1,0 +1,16 @@
+Name: unixwin.dev
+URL: https://github.com/unixwin/unixwin.dev
+Version: N/A
+Date: 2026-11-04
+Revision: bfacdea5dec87fbaf7ce2f7f323051472519ac30
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/unixwin.dev/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/unixwin/unixwin.dev, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/unixwin.dev) carries the patch stack.

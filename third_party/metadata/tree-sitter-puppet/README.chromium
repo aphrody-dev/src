@@ -1,0 +1,16 @@
+Name: tree-sitter-puppet
+URL: https://github.com/tree-sitter-grammars/tree-sitter-puppet
+Version: N/A
+Date: 2024-12-21
+Revision: 15f192929b7d317f5914de2b4accd37b349182a6
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-puppet/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-puppet, pinned in src.lock.json.
+
+Local Modifications:
+None

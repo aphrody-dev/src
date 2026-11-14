@@ -1,0 +1,16 @@
+Name: kubernetes-website
+URL: https://github.com/kubernetes/website
+Version: N/A
+Date: 2026-11-12
+Revision: 4706565788493db5750bda0d57f651823378189a
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/kubernetes-website/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/kubernetes/website, pinned in src.lock.json.
+
+Local Modifications:
+None

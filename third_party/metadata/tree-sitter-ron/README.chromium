@@ -1,0 +1,16 @@
+Name: tree-sitter-ron
+URL: https://github.com/tree-sitter-grammars/tree-sitter-ron
+Version: N/A
+Date: 2024-05-05
+Revision: 78938553b93075e638035f624973083451b29055
+Update Mechanism: Manual
+License: Apache-2.0, MIT
+License File: /third_party/tree-sitter-ron/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-ron, pinned in src.lock.json.
+
+Local Modifications:
+None

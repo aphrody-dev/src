@@ -1,0 +1,15 @@
+Name: scx
+URL: https://github.com/aphrody-labs/scx
+Version: N/A
+Date: 2026-11-12
+Revision: 2da8ddc6996620d09caae6bdd51f29bb87d81382
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/aphrody-labs/scx, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/scx) carries the patch stack.

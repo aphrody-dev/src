@@ -1,0 +1,16 @@
+Name: tree-sitter-qmldir
+URL: https://github.com/tree-sitter-grammars/tree-sitter-qmldir
+Version: N/A
+Date: 2026-07-16
+Revision: c57e00865a1a6f1cca83340d6dad91f13df55479
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-qmldir/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-qmldir, pinned in src.lock.json.
+
+Local Modifications:
+None

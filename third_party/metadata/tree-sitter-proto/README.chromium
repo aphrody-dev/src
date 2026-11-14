@@ -1,0 +1,16 @@
+Name: tree-sitter-proto
+URL: https://github.com/coder3101/tree-sitter-proto
+Version: N/A
+Date: 2026-10-15
+Revision: 18366491f37d43d6d5d02cbb1e79b650b5728145
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-proto/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/coder3101/tree-sitter-proto, pinned in src.lock.json.
+
+Local Modifications:
+None

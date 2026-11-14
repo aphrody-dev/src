@@ -1,0 +1,16 @@
+Name: terminal-control
+URL: https://github.com/anomalyco/terminal-control
+Version: N/A
+Date: 2026-11-11
+Revision: 6c255aa4816d48fad78b45c9700235f3b7b71bc5
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/terminal-control/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/anomalyco/terminal-control, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/terminal-control) carries the patch stack.

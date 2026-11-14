@@ -1,0 +1,16 @@
+Name: tree-sitter-scala
+URL: https://github.com/tree-sitter/tree-sitter-scala
+Version: N/A
+Date: 2026-11-12
+Revision: 98dea7544f25f2f5e90354687f3fb9489b784183
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-scala/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-scala, pinned in src.lock.json.
+
+Local Modifications:
+None

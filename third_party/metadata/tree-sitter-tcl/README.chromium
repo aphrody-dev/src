@@ -1,0 +1,16 @@
+Name: tree-sitter-tcl
+URL: https://github.com/tree-sitter-grammars/tree-sitter-tcl
+Version: N/A
+Date: 2026-11-09
+Revision: 90e87ed495a04fd0bf18db4be12b7033cd7402f6
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-tcl/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-tcl, pinned in src.lock.json.
+
+Local Modifications:
+None

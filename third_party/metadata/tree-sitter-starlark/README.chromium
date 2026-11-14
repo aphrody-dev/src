@@ -1,0 +1,16 @@
+Name: tree-sitter-starlark
+URL: https://github.com/tree-sitter-grammars/tree-sitter-starlark
+Version: N/A
+Date: 2024-12-04
+Revision: a453dbf3ba433db0e5ec621a38a7e59d72e4dc69
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-starlark/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-starlark, pinned in src.lock.json.
+
+Local Modifications:
+None

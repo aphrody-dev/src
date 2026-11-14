@@ -1,0 +1,16 @@
+Name: pkg-linux
+URL: https://gitlab.archlinux.org/archlinux/packaging/packages/linux
+Version: N/A
+Date: 2026-11-03
+Revision: a6ef53be1f83078a3311939f9b7df866853d2a04
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/pkg-linux/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.archlinux.org/archlinux/packaging/packages/linux, pinned in src.lock.json.
+
+Local Modifications:
+None

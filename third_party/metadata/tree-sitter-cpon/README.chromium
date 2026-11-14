@@ -1,0 +1,16 @@
+Name: tree-sitter-cpon
+URL: https://github.com/tree-sitter-grammars/tree-sitter-cpon
+Version: N/A
+Date: 2024-04-20
+Revision: 594289eadfec719198e560f9d7fd243c4db678d5
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-cpon/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-cpon, pinned in src.lock.json.
+
+Local Modifications:
+None

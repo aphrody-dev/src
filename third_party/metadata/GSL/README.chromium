@@ -1,0 +1,16 @@
+Name: GSL
+URL: https://github.com/microsoft/GSL
+Version: N/A
+Date: 2026-11-02
+Revision: a4651c0f995d3309432f78e977058d9d4760f9fa
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/GSL/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/microsoft/GSL, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/GSL) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: tree-sitter-toml
+URL: https://github.com/tree-sitter-grammars/tree-sitter-toml
+Version: N/A
+Date: 2024-12-02
+Revision: 64b56832c2cffe41758f28e05c756a3a98d16f41
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-toml/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-toml, pinned in src.lock.json.
+
+Local Modifications:
+None

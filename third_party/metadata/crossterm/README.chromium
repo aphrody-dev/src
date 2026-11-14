@@ -1,0 +1,16 @@
+Name: crossterm
+URL: https://github.com/crossterm-rs/crossterm
+Version: N/A
+Date: 2026-11-01
+Revision: de052f5c30c47f26b81f14f8e4372c5fda4e3549
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/crossterm/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/crossterm-rs/crossterm, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/crossterm) carries the patch stack.

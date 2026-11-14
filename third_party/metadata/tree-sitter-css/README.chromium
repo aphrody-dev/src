@@ -1,0 +1,16 @@
+Name: tree-sitter-css
+URL: https://github.com/tree-sitter/tree-sitter-css
+Version: N/A
+Date: 2025-09-28
+Revision: dda5cfc5722c429eaba1c910ca32c2c0c5bb1a3f
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-css/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-css, pinned in src.lock.json.
+
+Local Modifications:
+None

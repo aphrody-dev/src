@@ -1,0 +1,15 @@
+Name: tree-sitter-move
+URL: https://github.com/tree-sitter-grammars/tree-sitter-move
+Version: N/A
+Date: 2023-03-04
+Revision: b8ca25518749be10562455fd081a3dab30b93b8b
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-move, pinned in src.lock.json.
+
+Local Modifications:
+None

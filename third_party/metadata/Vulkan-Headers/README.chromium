@@ -1,0 +1,16 @@
+Name: Vulkan-Headers
+URL: https://github.com/KhronosGroup/Vulkan-Headers
+Version: N/A
+Date: 2026-11-06
+Revision: 88487f687f3100ebe1d3559a8a34d971ee85b977
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/Vulkan-Headers/LICENSE.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/KhronosGroup/Vulkan-Headers, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/Vulkan-Headers) carries the patch stack.

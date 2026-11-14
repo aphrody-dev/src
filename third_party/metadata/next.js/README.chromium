@@ -1,0 +1,16 @@
+Name: next.js
+URL: https://github.com/vercel/next.js
+Version: N/A
+Date: 2026-11-14
+Revision: 4905a63ff68da4ce47b7d9cb64dece7d244d7eb3
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/next.js/license.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/vercel/next.js, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/next.js) carries the patch stack.

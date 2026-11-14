@@ -1,0 +1,15 @@
+Name: dioxus-components
+URL: https://github.com/DioxusLabs/components
+Version: N/A
+Date: 2026-09-07
+Revision: 9a758255ea26e2b20c8cecf4c1c946feb9e71da7
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/DioxusLabs/components, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/dioxus-components) carries the patch stack.

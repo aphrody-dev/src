@@ -1,0 +1,16 @@
+Name: SPIRV-Headers
+URL: https://github.com/KhronosGroup/SPIRV-Headers
+Version: N/A
+Date: 2026-11-04
+Revision: 6efe5ae6b7c6ad29da3f2cc3f164b9c3d72b78b1
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/SPIRV-Headers/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/KhronosGroup/SPIRV-Headers, pinned in src.lock.json.
+
+Local Modifications:
+None

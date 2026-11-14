@@ -1,0 +1,16 @@
+Name: tree-sitter-cairo
+URL: https://github.com/tree-sitter-grammars/tree-sitter-cairo
+Version: N/A
+Date: 2024-04-27
+Revision: 6238f609bea233040fe927858156dee5515a0745
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-cairo/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-cairo, pinned in src.lock.json.
+
+Local Modifications:
+None

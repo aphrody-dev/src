@@ -1,0 +1,16 @@
+Name: tree-sitter-markdown
+URL: https://github.com/tree-sitter-grammars/tree-sitter-markdown
+Version: N/A
+Date: 2026-10-24
+Revision: 41ff24a6c775492c543b09228aeb98d1cd2b3a0f
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-markdown/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-markdown, pinned in src.lock.json.
+
+Local Modifications:
+None

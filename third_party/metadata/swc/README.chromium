@@ -1,0 +1,16 @@
+Name: swc
+URL: https://github.com/swc-project/swc
+Version: N/A
+Date: 2026-11-14
+Revision: df1c01862bbe6d4e11f7f367c093d412a66ea740
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/swc/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/swc-project/swc, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/swc) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: kleaf
+URL: https://android.googlesource.com/kernel/build
+Version: N/A
+Date: 2026-11-05
+Revision: 1b5e08e214a85267a83df17c09436e7e8952f7d3
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/kleaf/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://android.googlesource.com/kernel/build, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: android-skills
+URL: https://github.com/android/skills
+Version: N/A
+Date: 2026-11-09
+Revision: 5815d27fda564aa9f07ebdcb5e57ed3e8d904e0d
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/android-skills/LICENSE.txt
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/android/skills, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/android-skills) carries the patch stack.

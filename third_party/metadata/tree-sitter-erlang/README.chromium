@@ -1,0 +1,16 @@
+Name: tree-sitter-erlang
+URL: https://github.com/WhatsApp/tree-sitter-erlang
+Version: N/A
+Date: 2026-10-15
+Revision: 62c82e67b73e13f3ef06e4c8c07ff035a8235d30
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/tree-sitter-erlang/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/WhatsApp/tree-sitter-erlang, pinned in src.lock.json.
+
+Local Modifications:
+None

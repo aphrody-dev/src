@@ -1,0 +1,16 @@
+Name: Proton
+URL: https://github.com/ValveSoftware/Proton
+Version: N/A
+Date: 2026-11-10
+Revision: 1f089f5610a882c8bfcb4b58a3c86ee88bb4b9f1
+Update Mechanism: Manual
+License: BSD-3-Clause
+License File: /third_party/Proton/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/ValveSoftware/Proton, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/Proton) carries the patch stack.

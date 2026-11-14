@@ -1,0 +1,16 @@
+Name: gemini-skills
+URL: https://github.com/google-gemini/gemini-skills
+Version: N/A
+Date: 2026-11-10
+Revision: 0f596dbdcbde186e3d418d1279f7f499fe9afbf5
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/gemini-skills/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/google-gemini/gemini-skills, pinned in src.lock.json.
+
+Local Modifications:
+None

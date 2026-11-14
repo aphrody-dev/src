@@ -1,0 +1,16 @@
+Name: tree-sitter-test
+URL: https://github.com/tree-sitter-grammars/tree-sitter-test
+Version: N/A
+Date: 2025-08-29
+Revision: 76b419f178da018c29d3004fcbf14f755649eb58
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-test/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-test, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: tree-sitter-agda
+URL: https://github.com/tree-sitter/tree-sitter-agda
+Version: N/A
+Date: 2025-08-29
+Revision: e8d47a6987effe34d5595baf321d82d3519a8527
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-agda/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-agda, pinned in src.lock.json.
+
+Local Modifications:
+None

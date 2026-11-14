@@ -1,0 +1,16 @@
+Name: tree-sitter-yuck
+URL: https://github.com/tree-sitter-grammars/tree-sitter-yuck
+Version: N/A
+Date: 2026-04-03
+Revision: 6c60112b3b3e739fb1ca4a8ea4bea2b6ffe11318
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-yuck/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-yuck, pinned in src.lock.json.
+
+Local Modifications:
+None

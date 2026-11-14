@@ -1,0 +1,15 @@
+Name: jules-awesome-list
+URL: https://github.com/google-labs-code/jules-awesome-list
+Version: N/A
+Date: 2025-05-20
+Revision: 0118486377fdb4cf20432b2c3e85a18aa01f984d
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/google-labs-code/jules-awesome-list, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/jules-awesome-list) carries the patch stack.

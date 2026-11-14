@@ -1,0 +1,16 @@
+Name: tree-sitter-jsdoc
+URL: https://github.com/tree-sitter/tree-sitter-jsdoc
+Version: N/A
+Date: 2025-09-13
+Revision: 658d18dcdddb75c760363faa4963427a7c6b52db
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-jsdoc/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-jsdoc, pinned in src.lock.json.
+
+Local Modifications:
+None

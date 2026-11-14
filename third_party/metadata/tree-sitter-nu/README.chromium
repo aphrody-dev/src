@@ -1,0 +1,16 @@
+Name: tree-sitter-nu
+URL: https://github.com/nushell/tree-sitter-nu
+Version: N/A
+Date: 2026-11-11
+Revision: 0c3f6dfbc30d7713dcbb15b10954f2dee86ef63c
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-nu/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/nushell/tree-sitter-nu, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,17 @@
+Name: Skia
+Short Name: skia
+URL: https://skia.googlesource.com/skia
+Version: N/A
+Date: 2026-11-10
+Revision: fef60e46c522b87e5802ddf0a215a763dd5e0483
+Update Mechanism: Manual
+License: BSD-3-Clause
+License File: /third_party/skia/LICENSE
+Shipped: no
+Security Critical: yes
+
+Description:
+Skia. Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: stitch-sdk
+URL: https://github.com/google-labs-code/stitch-sdk
+Version: N/A
+Date: 2026-11-04
+Revision: f6aa86cde10c3f490acf09a63cc044582a50821d
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/stitch-sdk/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/google-labs-code/stitch-sdk, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/stitch-sdk) carries the patch stack.

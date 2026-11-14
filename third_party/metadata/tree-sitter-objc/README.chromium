@@ -1,0 +1,16 @@
+Name: tree-sitter-objc
+URL: https://github.com/tree-sitter-grammars/tree-sitter-objc
+Version: N/A
+Date: 2025-01-31
+Revision: 181a81b8f23a2d593e7ab4259981f50122909fda
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-objc/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-objc, pinned in src.lock.json.
+
+Local Modifications:
+None

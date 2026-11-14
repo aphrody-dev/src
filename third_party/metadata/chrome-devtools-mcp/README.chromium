@@ -1,0 +1,16 @@
+Name: chrome-devtools-mcp
+URL: https://github.com/ChromeDevTools/chrome-devtools-mcp
+Version: N/A
+Date: 2026-11-12
+Revision: 1417f93ee3f83b87270c910b0c0337de475f6f17
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/chrome-devtools-mcp/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/ChromeDevTools/chrome-devtools-mcp, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/chrome-devtools-mcp) carries the patch stack.

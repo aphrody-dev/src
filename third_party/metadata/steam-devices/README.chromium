@@ -1,0 +1,16 @@
+Name: steam-devices
+URL: https://github.com/ValveSoftware/steam-devices
+Version: N/A
+Date: 2026-06-25
+Revision: 22ec85e5ff5ea2e15c56d71a41bcbef46356cd60
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/steam-devices/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/ValveSoftware/steam-devices, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/steam-devices) carries the patch stack.

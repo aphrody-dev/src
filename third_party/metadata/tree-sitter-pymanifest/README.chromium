@@ -1,0 +1,16 @@
+Name: tree-sitter-pymanifest
+URL: https://github.com/tree-sitter-grammars/tree-sitter-pymanifest
+Version: N/A
+Date: 2025-07-19
+Revision: debbdb83fe6356adc7261c41c69b45ba49c97294
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-pymanifest/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-pymanifest, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: tree-sitter-luap
+URL: https://github.com/tree-sitter-grammars/tree-sitter-luap
+Version: N/A
+Date: 2024-06-08
+Revision: c134aaec6acf4fa95fe4aa0dc9aba3eacdbbe55a
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-luap/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-luap, pinned in src.lock.json.
+
+Local Modifications:
+None

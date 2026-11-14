@@ -1,0 +1,16 @@
+Name: tree-sitter-astro
+URL: https://github.com/virchau13/tree-sitter-astro
+Version: N/A
+Date: 2025-04-24
+Revision: 213f6e6973d9b456c6e50e86f19f66877e7ef0ee
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-astro/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/virchau13/tree-sitter-astro, pinned in src.lock.json.
+
+Local Modifications:
+None

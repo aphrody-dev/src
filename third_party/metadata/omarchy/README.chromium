@@ -1,0 +1,16 @@
+Name: omarchy
+URL: https://github.com/omacom/omarchy
+Version: N/A
+Date: 2026-11-11
+Revision: 7a9a1e930921f8d18db98e189a6280e6b1c0cc32
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/omarchy/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/omacom/omarchy, pinned in src.lock.json.
+
+Local Modifications:
+None

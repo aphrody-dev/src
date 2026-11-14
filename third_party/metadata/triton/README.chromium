@@ -1,0 +1,16 @@
+Name: triton
+URL: https://github.com/triton-lang/triton
+Version: N/A
+Date: 2026-11-12
+Revision: 8a439de83a8a691b59df4a962e6c5e4962abc9c8
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/triton/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/triton-lang/triton, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: tree-sitter-r
+URL: https://github.com/r-lib/tree-sitter-r
+Version: N/A
+Date: 2026-06-22
+Revision: 58a22794466c0fc15b0d3b40531db751593721e8
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-r/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/r-lib/tree-sitter-r, pinned in src.lock.json.
+
+Local Modifications:
+None

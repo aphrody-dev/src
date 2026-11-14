@@ -1,0 +1,16 @@
+Name: SPIRV-LLVM-Translator
+URL: https://github.com/KhronosGroup/SPIRV-LLVM-Translator
+Version: N/A
+Date: 2026-11-12
+Revision: dcdce7a823c89208045e1a710499b44e4721a0d9
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/SPIRV-LLVM-Translator/LICENSE.TXT
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/KhronosGroup/SPIRV-LLVM-Translator, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: CLI11
+URL: https://github.com/CLIUtils/CLI11
+Version: N/A
+Date: 2026-10-22
+Revision: 1764a057b760e8873eab03f4635b4aaed5303a04
+Update Mechanism: Manual
+License: BSD-3-Clause
+License File: /third_party/CLI11/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/CLIUtils/CLI11, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/CLI11) carries the patch stack.

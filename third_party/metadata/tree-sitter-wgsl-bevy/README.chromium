@@ -1,0 +1,16 @@
+Name: tree-sitter-wgsl-bevy
+URL: https://github.com/tree-sitter-grammars/tree-sitter-wgsl-bevy
+Version: N/A
+Date: 2025-09-18
+Revision: d9306a798ede627001a8e5752f775858c8edd7e4
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-wgsl-bevy/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-wgsl-bevy, pinned in src.lock.json.
+
+Local Modifications:
+None

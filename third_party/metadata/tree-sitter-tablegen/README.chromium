@@ -1,0 +1,16 @@
+Name: tree-sitter-tablegen
+URL: https://github.com/tree-sitter-grammars/tree-sitter-tablegen
+Version: N/A
+Date: 2024-05-05
+Revision: b1170880c61355aaf38fc06f4af7d3c55abdabc4
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-tablegen/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-tablegen, pinned in src.lock.json.
+
+Local Modifications:
+None

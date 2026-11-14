@@ -1,0 +1,16 @@
+Name: tree-sitter-odin
+URL: https://github.com/tree-sitter-grammars/tree-sitter-odin
+Version: N/A
+Date: 2025-01-12
+Revision: d2ca8efb4487e156a60d5bd6db2598b872629403
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-odin/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-odin, pinned in src.lock.json.
+
+Local Modifications:
+None

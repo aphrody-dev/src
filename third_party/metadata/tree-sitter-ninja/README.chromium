@@ -1,0 +1,16 @@
+Name: tree-sitter-ninja
+URL: https://github.com/alemuller/tree-sitter-ninja
+Version: N/A
+Date: 2022-01-07
+Revision: 0a95cfdc0745b6ae82f60d3a339b37f19b7b9267
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-ninja/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/alemuller/tree-sitter-ninja, pinned in src.lock.json.
+
+Local Modifications:
+None

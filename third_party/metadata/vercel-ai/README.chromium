@@ -1,0 +1,16 @@
+Name: vercel-ai
+URL: https://github.com/vercel/ai
+Version: N/A
+Date: 2026-11-11
+Revision: 2ebc78b65435926718879f85a1a85687b053c542
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/vercel-ai/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/vercel/ai, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/ai) carries the patch stack.

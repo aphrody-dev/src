@@ -1,0 +1,16 @@
+Name: tree-sitter-bicep
+URL: https://github.com/tree-sitter-grammars/tree-sitter-bicep
+Version: N/A
+Date: 2024-12-21
+Revision: bff59884307c0ab009bd5e81afd9324b46a6c0f9
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-bicep/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-bicep, pinned in src.lock.json.
+
+Local Modifications:
+None

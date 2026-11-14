@@ -1,0 +1,16 @@
+Name: tree-sitter-hcl
+URL: https://github.com/tree-sitter-grammars/tree-sitter-hcl
+Version: N/A
+Date: 2026-01-17
+Revision: 64ad62785d442eb4d45df3a1764962dafd5bc98b
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/tree-sitter-hcl/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-hcl, pinned in src.lock.json.
+
+Local Modifications:
+None

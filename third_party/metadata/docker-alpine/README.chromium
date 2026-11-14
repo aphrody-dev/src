@@ -1,0 +1,16 @@
+Name: docker-alpine
+URL: https://github.com/alpinelinux/docker-alpine
+Version: N/A
+Date: 2026-08-06
+Revision: 2c36a79aaaec3582d3b1961c9245b1a8a5a144dc
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/docker-alpine/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/alpinelinux/docker-alpine, pinned in src.lock.json.
+
+Local Modifications:
+None

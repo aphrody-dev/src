@@ -1,0 +1,16 @@
+Name: tree-sitter-graphql
+URL: https://github.com/bkegley/tree-sitter-graphql
+Version: N/A
+Date: 2021-05-10
+Revision: 5e66e961eee421786bdda8495ed1db045e06b5fe
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-graphql/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/bkegley/tree-sitter-graphql, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: design-md
+URL: https://github.com/google-labs-code/design.md
+Version: N/A
+Date: 2026-11-06
+Revision: 1ed38aa9dd4451b9039f9aeb9ed1d2579edafddf
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/design-md/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/google-labs-code/design.md, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/design.md) carries the patch stack.

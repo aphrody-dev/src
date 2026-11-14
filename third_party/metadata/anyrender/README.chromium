@@ -1,0 +1,16 @@
+Name: anyrender
+URL: https://github.com/DioxusLabs/anyrender
+Version: N/A
+Date: 2026-11-12
+Revision: efe45afb4b63130eea41552db2c6fee5b3aef90b
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/anyrender/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/DioxusLabs/anyrender, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/anyrender) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: wterm
+URL: https://github.com/aphrody-labs/wterm
+Version: N/A
+Date: 2026-11-13
+Revision: 1a42b3c652e526a8493a31f37233e40dbb7f6cba
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/wterm/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/aphrody-labs/wterm, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/wterm) carries the patch stack.

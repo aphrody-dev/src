@@ -1,0 +1,16 @@
+Name: agent-browser
+URL: https://github.com/vercel-labs/agent-browser
+Version: N/A
+Date: 2026-11-10
+Revision: d129226078e0fc8ee5dec48fbc96a46df5d0aafd
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/agent-browser/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+agent-browser. Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/agent-browser) carries the patch stack.

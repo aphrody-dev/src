@@ -1,0 +1,16 @@
+Name: modern-web-guidance-src
+URL: https://github.com/GoogleChrome/modern-web-guidance-src
+Version: N/A
+Date: 2026-11-13
+Revision: 5e5cd33a7738f21281e3027732bcbd58cfa82bf1
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/modern-web-guidance-src/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/GoogleChrome/modern-web-guidance-src, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/modern-web-guidance-src) carries the patch stack.

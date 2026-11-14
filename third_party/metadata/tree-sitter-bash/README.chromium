@@ -1,0 +1,16 @@
+Name: tree-sitter-bash
+URL: https://github.com/tree-sitter/tree-sitter-bash
+Version: N/A
+Date: 2025-12-02
+Revision: a06c2e4415e9bc0346c6b86d401879ffb44058f7
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-bash/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-bash, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,17 @@
+Name: Dawn
+Short Name: dawn
+URL: https://github.com/google/dawn
+Version: N/A
+Date: 2026-11-12
+Revision: 022096b337f6e37e6f24947514b6e995d35d471d
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/dawn/LICENSE
+Shipped: no
+Security Critical: yes
+
+Description:
+Dawn. Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/dawn) carries the patch stack.

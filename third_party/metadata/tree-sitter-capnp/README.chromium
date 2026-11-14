@@ -1,0 +1,16 @@
+Name: tree-sitter-capnp
+URL: https://github.com/tree-sitter-grammars/tree-sitter-capnp
+Version: N/A
+Date: 2024-04-20
+Revision: 7b0883c03e5edd34ef7bcf703194204299d7099f
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-capnp/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-capnp, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: gpui-kit
+URL: https://github.com/longbridge/gpui-kit
+Version: N/A
+Date: 2026-11-10
+Revision: 6808964c3a5e0ef970e47b696e8a800575cb21a7
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/gpui-kit/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/longbridge/gpui-kit, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/gpui-kit) carries the patch stack.

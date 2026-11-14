@@ -1,0 +1,16 @@
+Name: blitz
+URL: https://github.com/DioxusLabs/blitz
+Version: N/A
+Date: 2026-11-14
+Revision: beaa796f4ea698a738d7861aba81553563bfbc0b
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/blitz/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/DioxusLabs/blitz, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/blitz) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: tree-sitter-vim
+URL: https://github.com/tree-sitter-grammars/tree-sitter-vim
+Version: N/A
+Date: 2026-07-12
+Revision: 039c8d0aa1deae00ddeb0374dd70bcc0ec56938d
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-vim/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-vim, pinned in src.lock.json.
+
+Local Modifications:
+None

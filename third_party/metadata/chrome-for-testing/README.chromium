@@ -1,0 +1,17 @@
+Name: Chrome for Testing
+Short Name: chrome-for-testing
+URL: https://github.com/GoogleChromeLabs/chrome-for-testing
+Version: N/A
+Date: 2026-11-12
+Revision: d56d98583d9634cc9ed35eda0743f4ce5671338e
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/chrome-for-testing/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Chrome for Testing. Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/chrome-for-testing) carries the patch stack.

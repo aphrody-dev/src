@@ -1,0 +1,16 @@
+Name: tree-sitter-java
+URL: https://github.com/tree-sitter/tree-sitter-java
+Version: N/A
+Date: 2025-09-14
+Revision: e10607b45ff745f5f876bfa3e94fbcc6b44bdc11
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-java/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-java, pinned in src.lock.json.
+
+Local Modifications:
+None

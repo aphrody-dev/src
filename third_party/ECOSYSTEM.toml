@@ -1246,3 +1246,354 @@ sha = "2039e7303c3d92fcd0b1bf2d8e2378407e057259"
 kind = "web"
 used_by = ["apps/shenron (authentification, 1.7.24)"]
 status = "fork"
+
+# ---------------------------------------------------------------------------------------------------------------
+# Chromium ecosystem trackers (static description; no version is written here).
+# Consumed by packages/chromium-bun/src/trackers: `bun run --cwd packages/chromium-bun src/cli.ts trackers all`
+# writes third_party/chromium-trackers.json (live versions, each with source and fetch date),
+# third_party/chromium-graph.{json,mmd} (DEPS + gn component + consumer graph) and
+# third_party/metadata/<name>/README.chromium (Chromium README.chromium format, one per checkout).
+# Pins stay in src.lock.json / DEPS (pin-001). Not kind = "grammar": build.rs ignores these tables.
+# role: engine | component | consumer | fork | tooling; fork = true marks a known Chromium fork or embedder.
+# For `repo = "o/r"` the defaults are issues=<gh>/issues prs=<gh>/pulls news=<gh>/releases.atom changelog=<gh>/releases.
+# version/v8/chrome/pins resolvers: see packages/chromium-bun/src/trackers/resolvers.ts.
+# ---------------------------------------------------------------------------------------------------------------
+
+[tracker.chromium]
+name = "Chromium"
+role = "engine"
+local = "third_party/chromium/src"
+upstream = "https://chromium.googlesource.com/chromium/src.git"
+mirror = "chromium/chromium"
+issues = "https://issues.chromium.org/issues?q=status:open"
+gerrit = "https://chromium-review.googlesource.com"
+gerrit_project = "chromium/src"
+news = "https://chromereleases.googleblog.com/feeds/posts/default?alt=rss"
+changelog = "https://chromium.googlesource.com/chromium/src/+log/refs/heads/main"
+release_notes = "https://developer.chrome.com/release-notes"
+skills = ["chromium", "browser-engines"]
+version = { from = "chromium-channels" }
+v8 = { from = "chromium-channels", key = "v8" }
+
+[tracker.blink]
+name = "Blink"
+role = "component"
+local = "third_party/chromium/src/third_party/blink"
+upstream = "https://chromium.googlesource.com/chromium/src.git"
+issues = "https://issues.chromium.org/components/1456407"
+issues_component = "1456407"
+issues_component_source = "third_party/blink/DIR_METADATA"
+gerrit = "https://chromium-review.googlesource.com"
+gerrit_project = "chromium/src"
+prs = "https://chromium-review.googlesource.com/q/project:chromium/src+status:open+dir:third_party/blink"
+news = "https://developer.chrome.com/static/blog/feed.xml"
+changelog = "https://chromium.googlesource.com/chromium/src/+log/refs/heads/main"
+mailing_list = "https://groups.google.com/a/chromium.org/g/blink-dev"
+skills = ["chromium", "browser-engines"]
+version = { from = "in-chromium" }
+consumes = ["v8", "skia"]
+
+[tracker.v8]
+name = "V8"
+role = "component"
+local = "third_party/chromium/src/v8"
+upstream = "https://chromium.googlesource.com/v8/v8.git"
+mirror = "v8/v8"
+issues = "https://issues.chromium.org/components/1456824"
+issues_component = "1456824"
+issues_component_source = "v8/DIR_METADATA"
+gerrit = "https://chromium-review.googlesource.com"
+gerrit_project = "v8/v8"
+news = "https://v8.dev/blog.atom"
+changelog = "https://chromium.googlesource.com/v8/v8/+log/refs/heads/main"
+skills = ["browser-engines"]
+version = { from = "chromium-channels", key = "v8" }
+
+[tracker.skia]
+name = "Skia"
+role = "component"
+local = "third_party/chromium/src/third_party/skia"
+upstream = "https://skia.googlesource.com/skia.git"
+mirror = "google/skia"
+issues = "https://issues.skia.org"
+issues_component = "1457031"
+issues_component_source = "third_party/skia/DIR_METADATA"
+gerrit = "https://skia-review.googlesource.com"
+gerrit_project = "skia"
+news = "https://github.com/google/skia/commits/main.atom"
+changelog = "https://skia.googlesource.com/skia/+/refs/heads/main/RELEASE_NOTES.md"
+skills = ["browser-engines", "ui-system"]
+version = { from = "chromium-channels", key = "skia" }
+
+[tracker.dawn]
+name = "Dawn"
+role = "component"
+local = "third_party/chromium/src/third_party/dawn"
+upstream = "https://dawn.googlesource.com/dawn.git"
+mirror = "google/dawn"
+issues = "https://issues.chromium.org/components/1570784"
+issues_component = "1570784"
+issues_component_source = "third_party/dawn/DIR_METADATA"
+gerrit = "https://dawn-review.googlesource.com"
+gerrit_project = "dawn"
+news = "https://developer.chrome.com/static/blog/feed.xml"
+changelog = "https://dawn.googlesource.com/dawn/+log/refs/heads/main"
+skills = ["webgpu-wasm-ui", "browser-engines"]
+version = { from = "chromium-channels", key = "dawn" }
+
+[tracker.angle]
+name = "ANGLE"
+role = "component"
+local = "third_party/chromium/src/third_party/angle"
+upstream = "https://chromium.googlesource.com/angle/angle.git"
+issues = "https://issues.chromium.org/components/1456215"
+issues_component = "1456215"
+issues_component_source = "third_party/angle/DIR_METADATA"
+gerrit = "https://chromium-review.googlesource.com"
+gerrit_project = "angle/angle"
+news = "https://developer.chrome.com/static/blog/feed.xml"
+changelog = "https://chromium.googlesource.com/angle/angle/+log/refs/heads/main"
+skills = ["browser-engines"]
+version = { from = "chromium-channels", key = "angle" }
+
+[tracker.depot-tools]
+name = "depot_tools"
+role = "tooling"
+local = "third_party/depot_tools"
+upstream = "https://chromium.googlesource.com/chromium/tools/depot_tools.git"
+issues = "https://issues.chromium.org/issues?q=componentid:1456164"
+gerrit = "https://chromium-review.googlesource.com"
+gerrit_project = "chromium/tools/depot_tools"
+news = "https://chromium.googlesource.com/chromium/tools/depot_tools/+log/refs/heads/main"
+changelog = "https://chromium.googlesource.com/chromium/tools/depot_tools/+log/refs/heads/main"
+skills = ["chromium"]
+version = { from = "git-head", url = "https://chromium.googlesource.com/chromium/tools/depot_tools.git" }
+
+[tracker.chrome-for-testing]
+name = "Chrome for Testing"
+role = "tooling"
+local = "third_party/chrome-for-testing"
+repo = "GoogleChromeLabs/chrome-for-testing"
+news = "https://github.com/GoogleChromeLabs/chrome-for-testing/commits/main.atom"
+skills = ["browser-engines", "agent-browser"]
+version = { from = "cft", channel = "Stable" }
+consumes = ["chromium"]
+
+[tracker.cef]
+name = "CEF"
+role = "consumer"
+fork = true
+repo = "chromiumembedded/cef"
+local = ""
+news = "https://github.com/chromiumembedded/cef/commits/master.atom"
+changelog = "https://github.com/chromiumembedded/cef/commits/master"
+builds = "https://cef-builds.spotifycdn.com/index.html"
+skills = ["browser-engines"]
+version = { from = "cef-builds", channel = "stable" }
+v8 = { from = "chromium-tag" }
+consumes = ["chromium"]
+
+[tracker.cef-rs]
+name = "cef-rs"
+role = "consumer"
+repo = "tauri-apps/cef-rs"
+local = "third_party/cef-rs"
+skills = ["browser-engines", "rust-cargo"]
+version = { from = "crates", name = "cef" }
+consumes = ["cef"]
+
+[tracker.rusty-v8]
+name = "rusty_v8 (v8 crate)"
+role = "consumer"
+repo = "denoland/rusty_v8"
+local = "third_party/rusty_v8"
+skills = ["browser-engines", "rust-cargo"]
+version = { from = "github-release" }
+v8 = { from = "rusty-v8-tag", tag = "@release" }
+consumes = ["v8"]
+
+[tracker.deno-core]
+name = "deno_core"
+role = "consumer"
+repo = "denoland/deno"
+moved_from = "denoland/deno_core"
+note = "denoland/deno_core is archived (merged into denoland/deno, libs/core); the v8 binding became deno_v8 (libs/deno_v8) over the v8 crate."
+local = ""
+changelog = "https://github.com/denoland/deno/releases"
+skills = ["browser-engines", "rust-cargo"]
+version = { from = "crates", name = "deno_core" }
+v8 = { from = "crate-chain", start = "deno_core", follow = ["deno_v8", "v8"] }
+consumes = ["rusty-v8"]
+
+[tracker.node]
+name = "Node.js (V8)"
+role = "consumer"
+repo = "nodejs/node"
+local = "third_party/node"
+news = "https://nodejs.org/en/feed/releases.xml"
+skills = ["browser-engines", "bun"]
+version = { from = "github-release" }
+consumes = ["v8"]
+v8 = [
+  { label = "main", from = "gh-header", repo = "nodejs/node", ref = "main", path = "deps/v8/include/v8-version.h" },
+  { label = "latest release", from = "gh-header", repo = "nodejs/node", ref = "@release", path = "deps/v8/include/v8-version.h" },
+  { label = "LTS", from = "gh-header", repo = "nodejs/node", ref = "@node-lts", path = "deps/v8/include/v8-version.h" },
+]
+
+[tracker.electron]
+name = "Electron"
+role = "consumer"
+fork = true
+repo = "electron/electron"
+local = ""
+news = "https://www.electronjs.org/blog/rss.xml"
+changelog = "https://releases.electronjs.org/releases/stable"
+skills = ["browser-engines"]
+version = { from = "electron-index" }
+v8 = { from = "electron-index" }
+consumes = ["chromium", "node"]
+pins = [
+  { label = "main chromium_version (DEPS)", from = "gh-regex", repo = "electron/electron", ref = "main", path = "DEPS", regex = "'chromium_version':\\s*'([^']+)'" },
+  { label = "main node_version (DEPS)", from = "gh-regex", repo = "electron/electron", ref = "main", path = "DEPS", regex = "'node_version':\\s*'([^']+)'" },
+]
+
+[tracker.obscura]
+name = "Obscura"
+role = "consumer"
+repo = "h4ckf0r0day/obscura"
+local = "third_party/obscura"
+skills = ["browser-engines", "rust-cargo"]
+version = { from = "github-release" }
+v8 = { from = "crate-chain", start = "deno_core", start_req = { repo = "h4ckf0r0day/obscura", path = "crates/obscura-js/Cargo.toml", regex = "deno_core\\s*=\\s*\"([^\"]+)\"" }, follow = ["deno_v8", "v8"] }
+consumes = ["deno-core"]
+pins = [
+  { label = "local clone deno_core requirement", from = "local-regex", path = "third_party/obscura/crates/obscura-js/Cargo.toml", regex = "deno_core\\s*=\\s*\"([^\"]+)\"" },
+  { label = "upstream main deno_core requirement", from = "gh-regex", repo = "h4ckf0r0day/obscura", ref = "main", path = "crates/obscura-js/Cargo.toml", regex = "deno_core\\s*=\\s*\"([^\"]+)\"" },
+]
+
+[tracker.agent-browser]
+name = "agent-browser"
+role = "consumer"
+repo = "vercel-labs/agent-browser"
+local = "third_party/agent-browser"
+skills = ["agent-browser", "browser-engines"]
+version = { from = "github-release" }
+chrome = { from = "cft", channel = "Stable" }
+v8 = { from = "chromium-tag", chromium_from = "chrome" }
+consumes = ["chrome-for-testing"]
+pins = [
+  { label = "Chrome download source (install.rs)", from = "gh-regex", repo = "vercel-labs/agent-browser", ref = "main", path = "cli/src/install.rs", regex = "\"(https://googlechromelabs[^\"]+)\"" },
+]
+
+[tracker.lightpanda-zig-v8]
+name = "Lightpanda zig-v8"
+role = "consumer"
+repo = "lightpanda-io/zig-v8-fork"
+local = ""
+note = "Tracked as a V8 consumer only; Lightpanda is no longer an engine of the stack (768dd797), no clone."
+skills = ["browser-engines"]
+version = { from = "github-release" }
+v8 = { from = "gh-regex", repo = "lightpanda-io/zig-v8-fork", ref = "fork", path = "build.zig", regex = "V8_VERSION: \\[\\]const u8 = \"([^\"]+)\"" }
+consumes = ["v8"]
+pins = [
+  { label = "pinned by lightpanda-io/browser (build.zig.zon)", from = "gh-regex", repo = "lightpanda-io/browser", ref = "main", path = "build.zig.zon", regex = "zig-v8-fork/archive/([0-9a-f]{40})" },
+]
+
+[tracker.brave]
+name = "Brave"
+role = "fork"
+fork = true
+repo = "brave/brave-browser"
+prs = "https://github.com/brave/brave-core/pulls"
+news = "https://brave.com/latest/"
+changelog = "https://brave.com/latest/"
+skills = ["browser-engines"]
+version = { from = "github-release", chromium_regex = "Chromium ([0-9.]+)" }
+v8 = { from = "chromium-tag" }
+consumes = ["chromium"]
+
+[tracker.edge]
+name = "Microsoft Edge"
+role = "fork"
+fork = true
+note = "Closed source; issues and PRs are the MSEdgeExplainers repository."
+issues = "https://github.com/MicrosoftEdge/MSEdgeExplainers/issues"
+prs = "https://github.com/MicrosoftEdge/MSEdgeExplainers/pulls"
+news = "https://blogs.windows.com/msedgedev/feed/"
+changelog = "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-relnote-stable-channel"
+skills = ["browser-engines"]
+version = { from = "edge-api" }
+consumes = ["chromium"]
+
+[tracker.vivaldi]
+name = "Vivaldi"
+role = "fork"
+fork = true
+note = "Closed source UI over Chromium; no public code repository."
+issues = "https://vivaldi.com/bugreport/"
+news = "https://vivaldi.com/blog/desktop/feed/"
+changelog = "https://vivaldi.com/blog/desktop/"
+source = "https://vivaldi.com/source/"
+skills = ["browser-engines"]
+version = { from = "feed" }
+consumes = ["chromium"]
+
+[tracker.opera]
+name = "Opera"
+role = "fork"
+fork = true
+note = "Closed source UI over Chromium; no public code repository or public issue tracker."
+news = "https://blogs.opera.com/desktop/feed/"
+changelog = "https://blogs.opera.com/desktop/"
+skills = ["browser-engines"]
+version = { from = "feed" }
+consumes = ["chromium"]
+
+[tracker.ungoogled-chromium]
+name = "ungoogled-chromium"
+role = "fork"
+fork = true
+repo = "ungoogled-software/ungoogled-chromium"
+skills = ["browser-engines"]
+version = { from = "gh-regex", repo = "ungoogled-software/ungoogled-chromium", ref = "master", path = "chromium_version.txt", regex = "^([0-9.]+)", chromium = true }
+v8 = { from = "chromium-tag" }
+consumes = ["chromium"]
+
+[tracker.thorium]
+name = "Thorium"
+role = "fork"
+fork = true
+repo = "Alex313031/thorium"
+skills = ["browser-engines"]
+version = { from = "github-release", chromium_regex = "^M([0-9.]+)", chromium_from = "tag" }
+v8 = { from = "chromium-tag" }
+consumes = ["chromium"]
+
+[tracker.helium]
+name = "Helium"
+role = "fork"
+fork = true
+repo = "imputnet/helium"
+skills = ["browser-engines"]
+version = { from = "github-release" }
+v8 = { from = "chromium-tag", chromium_from = "file", repo = "imputnet/helium", ref = "main", path = "chromium_version.txt", regex = "^([0-9.]+)" }
+consumes = ["chromium"]
+
+[tracker.cromite]
+name = "Cromite"
+role = "fork"
+fork = true
+repo = "uazo/cromite"
+skills = ["browser-engines"]
+version = { from = "github-release", chromium_regex = "^v([0-9.]+)-", chromium_from = "tag" }
+v8 = { from = "chromium-tag" }
+consumes = ["chromium"]
+
+[tracker.supermium]
+name = "Supermium"
+role = "fork"
+fork = true
+repo = "win32ss/supermium"
+skills = ["browser-engines"]
+version = { from = "github-release" }
+consumes = ["chromium"]

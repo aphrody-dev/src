@@ -1,0 +1,4828 @@
+{
+  "schema": 1,
+  "generated_at": "2026-11-14T21:46:59.715Z",
+  "sources": [
+    "ay gclient revinfo --root third_party/chromium (checkout DEPS, recursedeps)",
+    "third_party/ECOSYSTEM.toml [tracker.*].consumes",
+    "third_party/chromium/src BUILD.gn and *.gni string labels (files referencing a component)"
+  ],
+  "nodes": [
+    {
+      "id": "chromium",
+      "label": "Chromium",
+      "kind": "product",
+      "version": "158.0.8127.37 | V8 15.8.62.31",
+      "url": "https://chromium.googlesource.com/chromium/src.git"
+    },
+    {
+      "id": "blink",
+      "label": "Blink",
+      "kind": "product",
+      "version": "158.0.8127.37",
+      "url": "https://chromium.googlesource.com/chromium/src.git",
+      "gn_files": 258
+    },
+    {
+      "id": "v8",
+      "label": "V8",
+      "kind": "product",
+      "version": "15.8.62.31",
+      "url": "https://chromium.googlesource.com/v8/v8.git",
+      "rev": "e4e354fb9e409c178a647af015b5fa330461081e",
+      "gn_files": 62
+    },
+    {
+      "id": "skia",
+      "label": "Skia",
+      "kind": "product",
+      "version": "skia 3279352fdf1f",
+      "url": "https://skia.googlesource.com/skia.git",
+      "rev": "d67d0f22e3ecbb8794223e2ebd008d1650246cb9",
+      "gn_files": 108
+    },
+    {
+      "id": "dawn",
+      "label": "Dawn",
+      "kind": "product",
+      "version": "dawn 6e24542436a3",
+      "url": "https://dawn.googlesource.com/dawn.git",
+      "rev": "e327e2a60b08179ee8a04056f58dad8ca4b69b5f",
+      "gn_files": 206
+    },
+    {
+      "id": "angle",
+      "label": "ANGLE",
+      "kind": "product",
+      "version": "angle 1f6526a566c2",
+      "url": "https://chromium.googlesource.com/angle/angle.git",
+      "rev": "c2cfebd8f340d74749b3511e487bac3f10834976",
+      "gn_files": 159
+    },
+    {
+      "id": "depot-tools",
+      "label": "depot_tools",
+      "kind": "product",
+      "version": "ec77017fb3e0",
+      "url": "https://chromium.googlesource.com/chromium/tools/depot_tools.git"
+    },
+    {
+      "id": "chrome-for-testing",
+      "label": "Chrome for Testing",
+      "kind": "product",
+      "version": "157.0.8103.78",
+      "url": "https://github.com/GoogleChromeLabs/chrome-for-testing"
+    },
+    {
+      "id": "cef",
+      "label": "CEF",
+      "kind": "product",
+      "version": "156.0.30+g6028375+chromium-156.0.8078.96 | V8 15.6.75.50",
+      "url": "https://github.com/chromiumembedded/cef"
+    },
+    {
+      "id": "cef-rs",
+      "label": "cef-rs",
+      "kind": "product",
+      "version": "156.4.0+156.0.26",
+      "url": "https://github.com/tauri-apps/cef-rs"
+    },
+    {
+      "id": "rusty-v8",
+      "label": "rusty_v8 (v8 crate)",
+      "kind": "product",
+      "version": "152.2.0 | V8 15.2.124.1",
+      "url": "https://github.com/denoland/rusty_v8"
+    },
+    {
+      "id": "deno-core",
+      "label": "deno_core",
+      "kind": "product",
+      "version": "0.413.0 | V8 15.0.245.2",
+      "url": "https://github.com/denoland/deno"
+    },
+    {
+      "id": "node",
+      "label": "Node.js (V8)",
+      "kind": "product",
+      "version": "27.0.0-alpha.0.1.0 | V8 15.6.75.50",
+      "url": "https://github.com/nodejs/node"
+    },
+    {
+      "id": "electron",
+      "label": "Electron",
+      "kind": "product",
+      "version": "45.3.3 | V8 15.6.75.57-electron.0",
+      "url": "https://github.com/electron/electron"
+    },
+    {
+      "id": "obscura",
+      "label": "Obscura",
+      "kind": "product",
+      "version": "0.2.7 | V8 15.0.245.2",
+      "url": "https://github.com/h4ckf0r0day/obscura"
+    },
+    {
+      "id": "agent-browser",
+      "label": "agent-browser",
+      "kind": "product",
+      "version": "0.43.0 | V8 15.7.112.43",
+      "url": "https://github.com/vercel-labs/agent-browser"
+    },
+    {
+      "id": "lightpanda-zig-v8",
+      "label": "Lightpanda zig-v8",
+      "kind": "product",
+      "version": "0.6.2 | V8 15.5.35.13",
+      "url": "https://github.com/lightpanda-io/zig-v8-fork"
+    },
+    {
+      "id": "brave",
+      "label": "Brave",
+      "kind": "product",
+      "version": "1.99.57 | V8 15.7.112.43",
+      "url": "https://github.com/brave/brave-browser"
+    },
+    {
+      "id": "edge",
+      "label": "Microsoft Edge",
+      "kind": "product",
+      "version": "157.0.4341.60"
+    },
+    {
+      "id": "vivaldi",
+      "label": "Vivaldi",
+      "kind": "product",
+      "version": "Minor update (3) for Desktop 8.3"
+    },
+    {
+      "id": "opera",
+      "label": "Opera",
+      "kind": "product",
+      "version": "Opera 140 Stable"
+    },
+    {
+      "id": "ungoogled-chromium",
+      "label": "ungoogled-chromium",
+      "kind": "product",
+      "version": "157.0.8103.78 | V8 15.7.112.43",
+      "url": "https://github.com/ungoogled-software/ungoogled-chromium"
+    },
+    {
+      "id": "thorium",
+      "label": "Thorium",
+      "kind": "product",
+      "version": "M156.0.8078.80 | V8 15.6.75.27",
+      "url": "https://github.com/Alex313031/thorium"
+    },
+    {
+      "id": "helium",
+      "label": "Helium",
+      "kind": "product",
+      "version": "0.21.3 | V8 15.7.112.43",
+      "url": "https://github.com/imputnet/helium"
+    },
+    {
+      "id": "cromite",
+      "label": "Cromite",
+      "kind": "product",
+      "version": "153.0.8010.37-11507ac1061b5ea227806f5e84db5a57df6ccf6a | V8 15.3.76.10",
+      "url": "https://github.com/uazo/cromite"
+    },
+    {
+      "id": "supermium",
+      "label": "Supermium",
+      "kind": "product",
+      "version": "150-r2.02",
+      "url": "https://github.com/win32ss/supermium"
+    },
+    {
+      "id": "dep:agents/shared",
+      "label": "agents/shared",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/agents.git",
+      "rev": "cb9a677477902a5d11da4de9bfcb32be70e7d8ac"
+    },
+    {
+      "id": "dep:chrome/test/data/perf/canvas_bench",
+      "label": "chrome/test/data/perf/canvas_bench",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/canvas_bench.git",
+      "rev": "a7b40ea5ae0239517d78845a5fc9b12976bfc732"
+    },
+    {
+      "id": "dep:chrome/test/data/perf/frame_rate/content",
+      "label": "chrome/test/data/perf/frame_rate/content",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/frame_rate/content.git",
+      "rev": "c10272c88463efeef6bb19c9ec07c42bc8fe22b9"
+    },
+    {
+      "id": "dep:chrome/test/data/xr/webvr_info",
+      "label": "chrome/test/data/xr/webvr_info",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/toji/webvr.info.git",
+      "rev": "c58ae99b9ff9e2aa4c524633519570bf33536248"
+    },
+    {
+      "id": "dep:docs/website",
+      "label": "docs/website",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/website.git",
+      "rev": "8dc34bc900a80ee817d5e967ef22fb8f30175c5b"
+    },
+    {
+      "id": "dep:media/cdm/api",
+      "label": "media/cdm/api",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/cdm.git",
+      "rev": "d6c4e1ea4c8fc3dcd98ac3ab5a981f63067223a4"
+    },
+    {
+      "id": "dep:net/third_party/quiche/src",
+      "label": "net/third_party/quiche/src",
+      "kind": "dep",
+      "url": "https://quiche.googlesource.com/quiche.git",
+      "rev": "ac027f3065b8dcdf268386040785a5dc759f79a9"
+    },
+    {
+      "id": "dep:testing/libfuzzer/fuzzers/wasm_corpus",
+      "label": "testing/libfuzzer/fuzzers/wasm_corpus",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/v8/fuzzer_wasm_corpus.git",
+      "rev": "1df5e50a45db9518a56ebb42cb020a94a090258b"
+    },
+    {
+      "id": "dep:third_party/angle/third_party/VK-GL-CTS/src",
+      "label": "third_party/angle/third_party/VK-GL-CTS/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/VK-GL-CTS",
+      "rev": "a17b2ea469b1192fefc82ac856e8296cb409f68f"
+    },
+    {
+      "id": "dep:third_party/angle/third_party/rapidjson/src",
+      "label": "third_party/angle/third_party/rapidjson/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/Tencent/rapidjson",
+      "rev": "297637bc0a0f00dc504dbc1a47ebdaa577f8ae19"
+    },
+    {
+      "id": "dep:third_party/anonymous_tokens/src",
+      "label": "third_party/anonymous_tokens/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/anonymous-tokens.git",
+      "rev": "1ae8df5e40bab28959cc182c2c0d88923059e278"
+    },
+    {
+      "id": "dep:third_party/boringssl/src",
+      "label": "third_party/boringssl/src",
+      "kind": "dep",
+      "url": "https://boringssl.googlesource.com/boringssl.git",
+      "rev": "583980e24fddd61ebf6c82a7ce33caceb4e353ea"
+    },
+    {
+      "id": "dep:third_party/breakpad/breakpad",
+      "label": "third_party/breakpad/breakpad",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/breakpad/breakpad.git",
+      "rev": "94c818ea27482d8a8d32b0c8de50cbca0270db9a"
+    },
+    {
+      "id": "dep:third_party/cast_core/public/src",
+      "label": "third_party/cast_core/public/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/cast_core/public",
+      "rev": "1629985cfc0b065310738512a000b6e68716aa03"
+    },
+    {
+      "id": "dep:third_party/catapult",
+      "label": "third_party/catapult",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/catapult.git",
+      "rev": "8480c1b861182c18ebae6af35c007aa56d5dbd4a"
+    },
+    {
+      "id": "dep:third_party/ced/src",
+      "label": "third_party/ced/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/compact_enc_det.git",
+      "rev": "d127078cedef9c6642cbe592dacdd2292b50bb19"
+    },
+    {
+      "id": "dep:third_party/clang-format/script",
+      "label": "third_party/clang-format/script",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git",
+      "rev": "a5bc718d465e842f6e637749a718748284b5ef80"
+    },
+    {
+      "id": "dep:third_party/cld_3/src",
+      "label": "third_party/cld_3/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/cld_3.git",
+      "rev": "b48dc46512566f5a2d41118c8c1116c4f96dc661"
+    },
+    {
+      "id": "dep:third_party/colorama/src",
+      "label": "third_party/colorama/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/colorama.git",
+      "rev": "3de9f013df4b470069d03d250224062e8cf15c49"
+    },
+    {
+      "id": "dep:third_party/compiler-rt/src",
+      "label": "third_party/compiler-rt/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/compiler-rt.git",
+      "rev": "573e9eeb879ea8a607a9a5e536cfad2edef17297"
+    },
+    {
+      "id": "dep:third_party/content_analysis_sdk/src",
+      "label": "third_party/content_analysis_sdk/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/chromium/content_analysis_sdk.git",
+      "rev": "0a0e7ea516249e786d5a8884552bbd6e163d89cb"
+    },
+    {
+      "id": "dep:third_party/cpu_features/src",
+      "label": "third_party/cpu_features/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/cpu_features.git",
+      "rev": "81d13c49649f0714dd41fb56bb246398b6584085"
+    },
+    {
+      "id": "dep:third_party/cpuinfo/src",
+      "label": "third_party/cpuinfo/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/pytorch/cpuinfo.git",
+      "rev": "3ce3d87adef69f04e196e25b7f754028d12750c4"
+    },
+    {
+      "id": "dep:third_party/crabbyavif/src",
+      "label": "third_party/crabbyavif/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/webmproject/CrabbyAvif.git",
+      "rev": "4dd6b68e2f619c5b039a7815ee5c6cdd91680fdf"
+    },
+    {
+      "id": "dep:third_party/crc32c/src",
+      "label": "third_party/crc32c/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/crc32c.git",
+      "rev": "2bbb3be42e20a0e6c0f7b39dc07dc863d9ffbc07"
+    },
+    {
+      "id": "dep:third_party/cros-components/src",
+      "label": "third_party/cros-components/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/google3/cros_components.git",
+      "rev": "8d175bbffcaed7d388701535cc8c95457c179cff"
+    },
+    {
+      "id": "dep:third_party/crossbench",
+      "label": "third_party/crossbench",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/crossbench.git",
+      "rev": "9c8fdc904db8dac9c5d91ba3e7758a44bf07add7"
+    },
+    {
+      "id": "dep:third_party/crossbench-web-tests",
+      "label": "third_party/crossbench-web-tests",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/web-tests.git",
+      "rev": "ad2ed0343ad66ffa0155c06c86c4c79af262af86"
+    },
+    {
+      "id": "dep:third_party/dav1d/libdav1d",
+      "label": "third_party/dav1d/libdav1d",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/videolan/dav1d.git",
+      "rev": "4e3ab21fbbf84a4bd283ea27f96287fcd7c228c1"
+    },
+    {
+      "id": "dep:third_party/dawn/third_party/EGL-Registry/src",
+      "label": "third_party/dawn/third_party/EGL-Registry/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/EGL-Registry",
+      "rev": "8e56e86e65687697ef54114cdb1afabdfac756bf"
+    },
+    {
+      "id": "dep:third_party/dawn/third_party/OpenGL-Registry/src",
+      "label": "third_party/dawn/third_party/OpenGL-Registry/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/OpenGL-Registry",
+      "rev": "6af574a14089ccfee87efe230ebcdd8742859813"
+    },
+    {
+      "id": "dep:third_party/dawn/third_party/directx-shader-compiler/src",
+      "label": "third_party/dawn/third_party/directx-shader-compiler/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/microsoft/DirectXShaderCompiler",
+      "rev": "823a3dadf981b70cec3285faa979dcbd4be94aa4"
+    },
+    {
+      "id": "dep:third_party/dawn/third_party/glfw3/src",
+      "label": "third_party/dawn/third_party/glfw3/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/glfw/glfw",
+      "rev": "92dcf4ce74f2e2554a98fea09be7c705c17daa5a"
+    },
+    {
+      "id": "dep:third_party/dawn/third_party/webgpu-cts",
+      "label": "third_party/dawn/third_party/webgpu-cts",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/gpuweb/cts",
+      "rev": "3cc5b73f1c3f1c568bcebd3cbf069cc1aa90a931"
+    },
+    {
+      "id": "dep:third_party/dawn/third_party/webgpu-headers/src",
+      "label": "third_party/dawn/third_party/webgpu-headers/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/webgpu-native/webgpu-headers",
+      "rev": "a1dc77409bb2b8bd80540cbf4b8db219e123e909"
+    },
+    {
+      "id": "dep:third_party/depot_tools",
+      "label": "third_party/depot_tools",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/tools/depot_tools.git",
+      "rev": "1afcf0756e47f3a6ee82d7736b9fcda2d57b268e"
+    },
+    {
+      "id": "dep:third_party/devtools-frontend/src",
+      "label": "third_party/devtools-frontend/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/devtools/devtools-frontend",
+      "rev": "4dd8928a1786006a2d8c345141c497476074ba4b"
+    },
+    {
+      "id": "dep:third_party/disarm/src",
+      "label": "third_party/disarm/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/aengelke/disarm.git",
+      "rev": "8770f6d6f0c62e7e008f4bf0e04d22197ecb98e3"
+    },
+    {
+      "id": "dep:third_party/domato/src",
+      "label": "third_party/domato/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/googleprojectzero/domato.git",
+      "rev": "fadff396cc45d521cc594d3e2396e27e887b1963"
+    },
+    {
+      "id": "dep:third_party/dragonbox/src",
+      "label": "third_party/dragonbox/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/jk-jeon/dragonbox.git",
+      "rev": "beeeef91cf6fef89a4d4ba5e95d47ca64ccb3a44"
+    },
+    {
+      "id": "dep:third_party/ds_store/src",
+      "label": "third_party/ds_store/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/dmgbuild/ds_store.git",
+      "rev": "d1749706bde0b1b7a3a0f3528df79322b5c69e8e"
+    },
+    {
+      "id": "dep:third_party/eigen3/src",
+      "label": "third_party/eigen3/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/gitlab.com/libeigen/eigen.git",
+      "rev": "0b8af38a538d49422fd1c4f6c6e2adb11f68bc7c"
+    },
+    {
+      "id": "dep:third_party/emoji-segmenter/src",
+      "label": "third_party/emoji-segmenter/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/emoji-segmenter.git",
+      "rev": "955936be8b391e00835257059607d7c5b72ce744"
+    },
+    {
+      "id": "dep:third_party/expat/src",
+      "label": "third_party/expat/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/libexpat/libexpat.git",
+      "rev": "a851869e111c06fbcdc89edf639abf5fc2b6deba"
+    },
+    {
+      "id": "dep:third_party/fadec/src",
+      "label": "third_party/fadec/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/aengelke/fadec.git",
+      "rev": "c9f78f532b9004de278489019ab2c6c28ae9746e"
+    },
+    {
+      "id": "dep:third_party/farmhash/src",
+      "label": "third_party/farmhash/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/farmhash.git",
+      "rev": "9d99331eb762e9ee22fd97d15a594525ad98310a"
+    },
+    {
+      "id": "dep:third_party/fast_float/src",
+      "label": "third_party/fast_float/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/fastfloat/fast_float.git",
+      "rev": "dbeabeeb3e6791cb96994c2a7a084c36e62ccfb2"
+    },
+    {
+      "id": "dep:third_party/federated_compute/src",
+      "label": "third_party/federated_compute/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google-parfait/federated-compute.git",
+      "rev": "84ee1e5e8102b9dbcc700a738428342b85e05df0"
+    },
+    {
+      "id": "dep:third_party/ffmpeg",
+      "label": "third_party/ffmpeg",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/third_party/ffmpeg.git",
+      "rev": "53a707254426e7e01f2873eb8175def1b9e681ab"
+    },
+    {
+      "id": "dep:third_party/flac",
+      "label": "third_party/flac",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/deps/flac.git",
+      "rev": "e7108e2ed031547c3759217819a032065c820d73"
+    },
+    {
+      "id": "dep:third_party/flatbuffers/src",
+      "label": "third_party/flatbuffers/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/flatbuffers.git",
+      "rev": "a86afae9399bbe631d1ea0783f8816e780e236cc"
+    },
+    {
+      "id": "dep:third_party/fp16/src",
+      "label": "third_party/fp16/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/Maratyszcza/FP16.git",
+      "rev": "782eea126dc5c755827be751a099eb01826175cf"
+    },
+    {
+      "id": "dep:third_party/freetype/src",
+      "label": "third_party/freetype/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/freetype2.git",
+      "rev": "a5877f48fff8dd6cf8d53c505ce055499376aee2"
+    },
+    {
+      "id": "dep:third_party/fuzztest/src",
+      "label": "third_party/fuzztest/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/fuzztest.git",
+      "rev": "0cc187c1c6e9a857991b1b3e1214e18a1ea7ca13"
+    },
+    {
+      "id": "dep:third_party/fxdiv/src",
+      "label": "third_party/fxdiv/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/Maratyszcza/FXdiv.git",
+      "rev": "63058eff77e11aa15bf531df5dd34395ec3017c8"
+    },
+    {
+      "id": "dep:third_party/gemmlowp/src",
+      "label": "third_party/gemmlowp/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/gemmlowp.git",
+      "rev": "16e8662c34917be0065110bfcd9cc27d30f52fdf"
+    },
+    {
+      "id": "dep:third_party/glslang/src",
+      "label": "third_party/glslang/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/glslang",
+      "rev": "ff6ad3c77a2cc2fdea329b4a1d5425c82bc56a1f"
+    },
+    {
+      "id": "dep:third_party/google_benchmark/src",
+      "label": "third_party/google_benchmark/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/benchmark.git",
+      "rev": "a6b4a9f00b36c19af9997d68a1cf6e0b5b3d032c"
+    },
+    {
+      "id": "dep:third_party/googletest/src",
+      "label": "third_party/googletest/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/googletest.git",
+      "rev": "24990589481d2ed05602a304bee5ca716273762a"
+    },
+    {
+      "id": "dep:third_party/gperf",
+      "label": "third_party/gperf",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/deps/gperf.git",
+      "rev": "e9eeea862a18e77b945d98eff7e1bf065d3daf8e"
+    },
+    {
+      "id": "dep:third_party/harfbuzz/src",
+      "label": "third_party/harfbuzz/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/harfbuzz/harfbuzz.git",
+      "rev": "9baef4fc09866ad3ec65ccead2091bc9787c6a1d"
+    },
+    {
+      "id": "dep:third_party/highway/src",
+      "label": "third_party/highway/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/highway.git",
+      "rev": "2607d3b5b0113992fe84d3848859eae13b3b52c1"
+    },
+    {
+      "id": "dep:third_party/hunspell_dictionaries",
+      "label": "third_party/hunspell_dictionaries",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/deps/hunspell_dictionaries.git",
+      "rev": "00f6e69c905b30fdf701cdcef6a517582d7e0028"
+    },
+    {
+      "id": "dep:third_party/icu",
+      "label": "third_party/icu",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/deps/icu.git",
+      "rev": "d3c612f4414600bd06a68db89944df130b5bc248"
+    },
+    {
+      "id": "dep:third_party/ink/src",
+      "label": "third_party/ink/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/ink.git",
+      "rev": "bbbdbe3be2cf7717e88c6384689bfd698c3a9b46"
+    },
+    {
+      "id": "dep:third_party/jetstream/main",
+      "label": "third_party/jetstream/main",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/WebKit/JetStream.git",
+      "rev": "5fb9b4915f47792e6368d54d79ba3ba85e5600cc"
+    },
+    {
+      "id": "dep:third_party/jetstream/v2.2",
+      "label": "third_party/jetstream/v2.2",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/WebKit/JetStream.git",
+      "rev": "2145cedef4ca2777b792cb0059d3400ee2a6153c"
+    },
+    {
+      "id": "dep:third_party/jetstream/v3.0",
+      "label": "third_party/jetstream/v3.0",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/WebKit/JetStream.git",
+      "rev": "06785cf861ac44855f168cbbe829278c2802e6de"
+    },
+    {
+      "id": "dep:third_party/jsoncpp/src",
+      "label": "third_party/jsoncpp/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/open-source-parsers/jsoncpp.git",
+      "rev": "93acc7b155048f1a66c43235cc205519f1e7a6ea"
+    },
+    {
+      "id": "dep:third_party/leveldatabase/src",
+      "label": "third_party/leveldatabase/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/leveldb.git",
+      "rev": "bb74ef739973a70ca9f0d90788a1da89b788c0ad"
+    },
+    {
+      "id": "dep:third_party/libFuzzer/src",
+      "label": "third_party/libFuzzer/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/compiler-rt/lib/fuzzer.git",
+      "rev": "c7ea90fb61105752fa78e257e77a7c5d62fff7d3"
+    },
+    {
+      "id": "dep:third_party/libaddressinput/src",
+      "label": "third_party/libaddressinput/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/libaddressinput.git",
+      "rev": "81eb9628382b07d371d8ea0b11badf7de3857fd5"
+    },
+    {
+      "id": "dep:third_party/libaom/source/libaom",
+      "label": "third_party/libaom/source/libaom",
+      "kind": "dep",
+      "url": "https://aomedia.googlesource.com/aom.git",
+      "rev": "2187a67588dff3fff499bed8068de15229b5327e"
+    },
+    {
+      "id": "dep:third_party/libc++/src",
+      "label": "third_party/libc++/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxx.git",
+      "rev": "d816ed0274edb2f8ae2a514584476dfa7acfbca1"
+    },
+    {
+      "id": "dep:third_party/libc++abi/src",
+      "label": "third_party/libc++abi/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxxabi.git",
+      "rev": "de3f73284c8614bb9408e45d70649f8e7933172e"
+    },
+    {
+      "id": "dep:third_party/libgav1/src",
+      "label": "third_party/libgav1/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/codecs/libgav1.git",
+      "rev": "4ad433700e5d7c45df3d6146b7c92c8945c19e64"
+    },
+    {
+      "id": "dep:third_party/libjpeg_turbo",
+      "label": "third_party/libjpeg_turbo",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git",
+      "rev": "640f254ad0fa03f6b1f29f89b7dd9366f2f6e533"
+    },
+    {
+      "id": "dep:third_party/libpfm4/src",
+      "label": "third_party/libpfm4/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/git.code.sf.net/p/perfmon2/libpfm4.git",
+      "rev": "186a658c3e1e49b0ee3da414a7db8ba971a00cb5"
+    },
+    {
+      "id": "dep:third_party/libphonenumber/src",
+      "label": "third_party/libphonenumber/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/libphonenumber.git",
+      "rev": "981600cc587fb87483ad294a61daa187afc64b2c"
+    },
+    {
+      "id": "dep:third_party/libprotobuf-mutator/src",
+      "label": "third_party/libprotobuf-mutator/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/libprotobuf-mutator.git",
+      "rev": "a0448e5055e4740774e00d496f016d9fcd572200"
+    },
+    {
+      "id": "dep:third_party/libsrtp",
+      "label": "third_party/libsrtp",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/deps/libsrtp.git",
+      "rev": "cd5d177bf1fde755ddb4c7f0d9ff7693f8b49e5e"
+    },
+    {
+      "id": "dep:third_party/libunwind/src",
+      "label": "third_party/libunwind/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libunwind.git",
+      "rev": "9e44ea2ff4f53a60c2a3d2b6f511d7bab9ab12f0"
+    },
+    {
+      "id": "dep:third_party/libva-fake-driver/src",
+      "label": "third_party/libva-fake-driver/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromiumos/platform/libva-fake-driver.git",
+      "rev": "04f902b9ba9f8083b19d22e7b55591bbcaae31c0"
+    },
+    {
+      "id": "dep:third_party/libvpx/source/libvpx",
+      "label": "third_party/libvpx/source/libvpx",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/webm/libvpx.git",
+      "rev": "d3335af9e8ec27395f66206be08e786e3de05e60"
+    },
+    {
+      "id": "dep:third_party/libwebm/source",
+      "label": "third_party/libwebm/source",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/webm/libwebm.git",
+      "rev": "a7c6662c68a90af18dd53dbb1f4262a346e9a547"
+    },
+    {
+      "id": "dep:third_party/libwebp/src",
+      "label": "third_party/libwebp/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/webm/libwebp.git",
+      "rev": "68dd1c3040d500f56fe7ffb754b1813fb64b5887"
+    },
+    {
+      "id": "dep:third_party/libyuv",
+      "label": "third_party/libyuv",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/libyuv/libyuv.git",
+      "rev": "1e2e3a35993609da1d89ac170b907719d555f4b3"
+    },
+    {
+      "id": "dep:third_party/litert/src",
+      "label": "third_party/litert/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google-ai-edge/LiteRT.git",
+      "rev": "38461529489d6cfb20b152694f05c41d9a566d3e"
+    },
+    {
+      "id": "dep:third_party/llvm-libc/src",
+      "label": "third_party/llvm-libc/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libc.git",
+      "rev": "8002d0374e1bbee4a64bd7cc54d65b4557eb6064"
+    },
+    {
+      "id": "dep:third_party/mac_alias/src",
+      "label": "third_party/mac_alias/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/dmgbuild/mac_alias.git",
+      "rev": "9b5bdf511f82cace8411dd1f3f75bf9731024765"
+    },
+    {
+      "id": "dep:third_party/material_color_utilities/src",
+      "label": "third_party/material_color_utilities/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/material-foundation/material-color-utilities.git",
+      "rev": "bd811e4ca2ab94c4ce3cadc89c19b1820b9704b3"
+    },
+    {
+      "id": "dep:third_party/microsoft_dxheaders/src",
+      "label": "third_party/microsoft_dxheaders/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/microsoft/DirectX-Headers.git",
+      "rev": "07b94cba474be6cdfd934febdbd0b21ca0524187"
+    },
+    {
+      "id": "dep:third_party/microsoft_multimedia_redirection/src",
+      "label": "third_party/microsoft_multimedia_redirection/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/microsoft/multimedia-redirection.git",
+      "rev": "8b1d8893d126547309f1bab8d8232418aa7c7109"
+    },
+    {
+      "id": "dep:third_party/microsoft_webauthn/src",
+      "label": "third_party/microsoft_webauthn/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/microsoft/webauthn.git",
+      "rev": "ef82c157125a0490e05f6ea82a7adb1b8e1bad08"
+    },
+    {
+      "id": "dep:third_party/ml_drift/src",
+      "label": "third_party/ml_drift/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google-ai-edge/ml-drift.git",
+      "rev": "7483ad8a5181b220a19bcc20ec02dbe9c040c100"
+    },
+    {
+      "id": "dep:third_party/nasm",
+      "label": "third_party/nasm",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/deps/nasm.git",
+      "rev": "525a09a813be0f75b646ee93fc2a31c27b87d722"
+    },
+    {
+      "id": "dep:third_party/nearby/src",
+      "label": "third_party/nearby/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/nearby-connections.git",
+      "rev": "0bad8b0c9877f92eeeb550654f1ea51a71a085e4"
+    },
+    {
+      "id": "dep:third_party/neon_2_sse/src",
+      "label": "third_party/neon_2_sse/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/intel/ARM_NEON_2_x86_SSE.git",
+      "rev": "78784fefa872994ea9acbb7371d3003884815116"
+    },
+    {
+      "id": "dep:third_party/nlohmann_json/src",
+      "label": "third_party/nlohmann_json/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/nlohmann/json.git",
+      "rev": "55f93686c01528224f448c19128836e7df245f72"
+    },
+    {
+      "id": "dep:third_party/oak/src",
+      "label": "third_party/oak/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/project-oak/oak.git",
+      "rev": "5e3b64f6ac085e32e9c06b4ca2085a0f5dfa9896"
+    },
+    {
+      "id": "dep:third_party/openh264/src",
+      "label": "third_party/openh264/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/cisco/openh264",
+      "rev": "1bca62311e447fd9c39fc93de2c4b96cd5ce971c"
+    },
+    {
+      "id": "dep:third_party/openh264rs/src",
+      "label": "third_party/openh264rs/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/third_party/openh264rs.git",
+      "rev": "2449f95940a399df7dc6369b71341b7588dfda8c"
+    },
+    {
+      "id": "dep:third_party/openscreen/src",
+      "label": "third_party/openscreen/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/openscreen",
+      "rev": "67ce62a0ab1859ca77a4b687b021aa8c995940f8"
+    },
+    {
+      "id": "dep:third_party/openscreen/src/buildtools",
+      "label": "third_party/openscreen/src/buildtools",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/src/buildtools",
+      "rev": "4277578aa9c45906e51ad33cac1a5a7ad5288010"
+    },
+    {
+      "id": "dep:third_party/openscreen/src/third_party/simple_dns/src",
+      "label": "third_party/openscreen/src/third_party/simple_dns/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/balliegojr/simple-dns.git",
+      "rev": "5c7ec98798d7c9f7d76df7aa3bbe754913ff5159"
+    },
+    {
+      "id": "dep:third_party/openscreen/src/third_party/tinycbor/src",
+      "label": "third_party/openscreen/src/third_party/tinycbor/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/intel/tinycbor.git",
+      "rev": "0cb8ba93637a18e4497e85a3f5c681ee7dba38f4"
+    },
+    {
+      "id": "dep:third_party/openxr/src",
+      "label": "third_party/openxr/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/OpenXR-SDK",
+      "rev": "75c53b6e853dc12c7b3c771edc9c9c841b15faaa"
+    },
+    {
+      "id": "dep:third_party/ots/src",
+      "label": "third_party/ots/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/khaledhosny/ots.git",
+      "rev": "46bea9879127d0ff1c6601b078e2ce98e83fcd33"
+    },
+    {
+      "id": "dep:third_party/pdfium",
+      "label": "third_party/pdfium",
+      "kind": "dep",
+      "url": "https://pdfium.googlesource.com/pdfium.git",
+      "rev": "99da130a26ad610843d041a509efd8ea68cc05b7"
+    },
+    {
+      "id": "dep:third_party/perfetto",
+      "label": "third_party/perfetto",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/perfetto.git",
+      "rev": "3c53ccda1eb2aa97c036554bd4d5a0fcbb7c2040"
+    },
+    {
+      "id": "dep:third_party/perl",
+      "label": "third_party/perl",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/deps/perl.git",
+      "rev": "a2bd4470d3485e6eda532eee416a71d16db2d7ba"
+    },
+    {
+      "id": "dep:third_party/protobuf-javascript/src",
+      "label": "third_party/protobuf-javascript/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/protocolbuffers/protobuf-javascript",
+      "rev": "eb59fef711c3d090d54b988b99b7c067d6b7e3a8"
+    },
+    {
+      "id": "dep:third_party/pthreadpool/src",
+      "label": "third_party/pthreadpool/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/pthreadpool.git",
+      "rev": "15a6644ba1c45f1acc16ac1e883efc3e56c6bed2"
+    },
+    {
+      "id": "dep:third_party/pywebsocket3/src",
+      "label": "third_party/pywebsocket3/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/GoogleChromeLabs/pywebsocket3.git",
+      "rev": "139224e0d71db84fe1922601cb92ec8c8f3885ba"
+    },
+    {
+      "id": "dep:third_party/quic_trace/src",
+      "label": "third_party/quic_trace/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/quic-trace.git",
+      "rev": "6ecf6aa8e604655f1dfa72c4a1ae733c4c7fc883"
+    },
+    {
+      "id": "dep:third_party/re2/src",
+      "label": "third_party/re2/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/re2.git",
+      "rev": "2da0056814cf180480a19f5cf811e7e1c054bf6d"
+    },
+    {
+      "id": "dep:third_party/readability/src",
+      "label": "third_party/readability/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/mozilla/readability.git",
+      "rev": "d7949dc47dd9ed9ee1d3b34ffdcf3bce28cde435"
+    },
+    {
+      "id": "dep:third_party/ruy/src",
+      "label": "third_party/ruy/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/ruy.git",
+      "rev": "37e43f2054e1a9372994498d7fb4783ac48a5717"
+    },
+    {
+      "id": "dep:third_party/safeint/src",
+      "label": "third_party/safeint/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/dcleblanc/safeint.git",
+      "rev": "72f0745e26091af6d1186fd91426377f16688ba7"
+    },
+    {
+      "id": "dep:third_party/search_engines_data/resources",
+      "label": "third_party/search_engines_data/resources",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/search_engines_data.git",
+      "rev": "5dc9f1afd38a8ac2b26b1972eb4fc1bbd5754e8c"
+    },
+    {
+      "id": "dep:third_party/securemessage/src",
+      "label": "third_party/securemessage/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/securemessage.git",
+      "rev": "69a02984d4563c6c21132ee882d1d3df1981f5a1"
+    },
+    {
+      "id": "dep:third_party/sframe/src",
+      "label": "third_party/sframe/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/cisco/sframe",
+      "rev": "6a37f061f4eda0c6594c91ecf99b5ff498c8c124"
+    },
+    {
+      "id": "dep:third_party/smhasher/src",
+      "label": "third_party/smhasher/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/smhasher.git",
+      "rev": "07bb4de10a63e8cc2e1724865454eba635742383"
+    },
+    {
+      "id": "dep:third_party/snappy/src",
+      "label": "third_party/snappy/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/snappy.git",
+      "rev": "9c28114a38866f6deeaa826db918293bc28ae410"
+    },
+    {
+      "id": "dep:third_party/speedometer/main",
+      "label": "third_party/speedometer/main",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/WebKit/Speedometer.git",
+      "rev": "f866d2b077038bc85bea5edb7bff8e05cadef0b2"
+    },
+    {
+      "id": "dep:third_party/speedometer/v2.0",
+      "label": "third_party/speedometer/v2.0",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/WebKit/Speedometer.git",
+      "rev": "732af0dfe867f8815e662ac637357e55f285dbbb"
+    },
+    {
+      "id": "dep:third_party/speedometer/v2.1",
+      "label": "third_party/speedometer/v2.1",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/WebKit/Speedometer.git",
+      "rev": "8bf7946e39e47c875c00767177197aea5727e84a"
+    },
+    {
+      "id": "dep:third_party/speedometer/v3.0",
+      "label": "third_party/speedometer/v3.0",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/WebKit/Speedometer.git",
+      "rev": "8d67f28d0281ac4330f283495b7f48286654ad7d"
+    },
+    {
+      "id": "dep:third_party/speedometer/v3.1",
+      "label": "third_party/speedometer/v3.1",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/WebKit/Speedometer.git",
+      "rev": "1386415be8fef2f6b6bbdbe1828872471c5d802a"
+    },
+    {
+      "id": "dep:third_party/spirv-cross/src",
+      "label": "third_party/spirv-cross/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/SPIRV-Cross",
+      "rev": "b8fcf307f1f347089e3c46eb4451d27f32ebc8d3"
+    },
+    {
+      "id": "dep:third_party/spirv-headers/src",
+      "label": "third_party/spirv-headers/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/SPIRV-Headers",
+      "rev": "6efe5ae6b7c6ad29da3f2cc3f164b9c3d72b78b1"
+    },
+    {
+      "id": "dep:third_party/spirv-tools/src",
+      "label": "third_party/spirv-tools/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/SPIRV-Tools",
+      "rev": "251c437ef506157c139f77f5525c02223bc78868"
+    },
+    {
+      "id": "dep:third_party/sqlite/src",
+      "label": "third_party/sqlite/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/chromium/deps/sqlite.git",
+      "rev": "c1172ac3c91edb02a86ea9ce479ef5b5fe5c6f34"
+    },
+    {
+      "id": "dep:third_party/swiftshader",
+      "label": "third_party/swiftshader",
+      "kind": "dep",
+      "url": "https://swiftshader.googlesource.com/SwiftShader.git",
+      "rev": "708e9e77773860bbb2ad9bb2d61b451de4b84e31"
+    },
+    {
+      "id": "dep:third_party/text-fragments-polyfill/src",
+      "label": "third_party/text-fragments-polyfill/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/GoogleChromeLabs/text-fragments-polyfill.git",
+      "rev": "abc6ed408b3f20e91d9cbda9977748459f5e3877"
+    },
+    {
+      "id": "dep:third_party/tflite/src",
+      "label": "third_party/tflite/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/tensorflow/tensorflow.git",
+      "rev": "961c96e7a721bed97b432b220c91ee567532dd58"
+    },
+    {
+      "id": "dep:third_party/ukey2/src",
+      "label": "third_party/ukey2/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/ukey2.git",
+      "rev": "0275885d8e6038c39b8a8ca55e75d1d4d1727f47"
+    },
+    {
+      "id": "dep:third_party/vulkan-deps",
+      "label": "third_party/vulkan-deps",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/vulkan-deps",
+      "rev": "660bf91094b915981a3748b26ba096db48c6459c"
+    },
+    {
+      "id": "dep:third_party/vulkan-headers/src",
+      "label": "third_party/vulkan-headers/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-Headers",
+      "rev": "88487f687f3100ebe1d3559a8a34d971ee85b977"
+    },
+    {
+      "id": "dep:third_party/vulkan-loader/src",
+      "label": "third_party/vulkan-loader/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-Loader",
+      "rev": "0a55950deb11bb5e9dd86c7260403bfd29ac678e"
+    },
+    {
+      "id": "dep:third_party/vulkan-tools/src",
+      "label": "third_party/vulkan-tools/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-Tools",
+      "rev": "1d3fbab1ff5abce9f3eb9f3e7fcf66f455ae4475"
+    },
+    {
+      "id": "dep:third_party/vulkan-utility-libraries/src",
+      "label": "third_party/vulkan-utility-libraries/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-Utility-Libraries",
+      "rev": "5a873d3b75d38ef6a0833589ce3603d63f3f6a9c"
+    },
+    {
+      "id": "dep:third_party/vulkan-validation-layers/src",
+      "label": "third_party/vulkan-validation-layers/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-ValidationLayers",
+      "rev": "13e1d19f50d0c645408a128fec1718ce85cc9a3e"
+    },
+    {
+      "id": "dep:third_party/vulkan_memory_allocator",
+      "label": "third_party/vulkan_memory_allocator",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git",
+      "rev": "82a9d47e4f9d91f0e32d2b6acd9714fcee1933a0"
+    },
+    {
+      "id": "dep:third_party/webdriver/pylib",
+      "label": "third_party/webdriver/pylib",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/SeleniumHQ/selenium/py.git",
+      "rev": "07c3d0845c26f6ebb13e7dbd15f80519f1f383d7"
+    },
+    {
+      "id": "dep:third_party/webgl/src",
+      "label": "third_party/webgl/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/khronosgroup/webgl.git",
+      "rev": "714857a28445e8f5d8d6ae1c78498578009534d8"
+    },
+    {
+      "id": "dep:third_party/webgpu-cts/src",
+      "label": "third_party/webgpu-cts/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/gpuweb/cts.git",
+      "rev": "3cc5b73f1c3f1c568bcebd3cbf069cc1aa90a931"
+    },
+    {
+      "id": "dep:third_party/webpagereplay",
+      "label": "third_party/webpagereplay",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/webpagereplay.git",
+      "rev": "c97b499f01fe51a4f702f8bf09abdab4a020cf5f"
+    },
+    {
+      "id": "dep:third_party/webrtc",
+      "label": "third_party/webrtc",
+      "kind": "dep",
+      "url": "https://webrtc.googlesource.com/src.git",
+      "rev": "7cfcf6dc8e6573d09d967d1641fc7bbcf65bd499"
+    },
+    {
+      "id": "dep:third_party/wuffs/src",
+      "label": "third_party/wuffs/src",
+      "kind": "dep",
+      "url": "https://skia.googlesource.com/external/github.com/google/wuffs-mirror-release-c.git",
+      "rev": "3bbda65fd6e7266f6cd80bc48f0c7ebce4e8f24b"
+    },
+    {
+      "id": "dep:third_party/xnnpack/src",
+      "label": "third_party/xnnpack/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/google/XNNPACK.git",
+      "rev": "82be86388c131862c3673c177d9dbcd5d3e3844d"
+    },
+    {
+      "id": "dep:third_party/zstd/src",
+      "label": "third_party/zstd/src",
+      "kind": "dep",
+      "url": "https://chromium.googlesource.com/external/github.com/facebook/zstd.git",
+      "rev": "10da6ba6de05e29169261fa4b68eb99239f770dd"
+    },
+    {
+      "id": "chrome",
+      "label": "//chrome",
+      "kind": "component",
+      "dirs": [
+        "chrome"
+      ],
+      "gn_files": 2467
+    },
+    {
+      "id": "content",
+      "label": "//content",
+      "kind": "component",
+      "dirs": [
+        "content"
+      ],
+      "gn_files": 77
+    },
+    {
+      "id": "components",
+      "label": "//components",
+      "kind": "component",
+      "dirs": [
+        "components"
+      ],
+      "gn_files": 1303
+    },
+    {
+      "id": "services",
+      "label": "//services",
+      "kind": "component",
+      "dirs": [
+        "services"
+      ],
+      "gn_files": 146
+    },
+    {
+      "id": "net",
+      "label": "//net",
+      "kind": "component",
+      "dirs": [
+        "net"
+      ],
+      "gn_files": 22
+    },
+    {
+      "id": "base",
+      "label": "//base",
+      "kind": "component",
+      "dirs": [
+        "base"
+      ],
+      "gn_files": 43
+    },
+    {
+      "id": "ui",
+      "label": "//ui",
+      "kind": "component",
+      "dirs": [
+        "ui"
+      ],
+      "gn_files": 206
+    },
+    {
+      "id": "gpu",
+      "label": "//gpu",
+      "kind": "component",
+      "dirs": [
+        "gpu"
+      ],
+      "gn_files": 19
+    },
+    {
+      "id": "media",
+      "label": "//media",
+      "kind": "component",
+      "dirs": [
+        "media"
+      ],
+      "gn_files": 68
+    },
+    {
+      "id": "cc",
+      "label": "//cc",
+      "kind": "component",
+      "dirs": [
+        "cc"
+      ],
+      "gn_files": 9
+    },
+    {
+      "id": "mojo",
+      "label": "//mojo",
+      "kind": "component",
+      "dirs": [
+        "mojo"
+      ],
+      "gn_files": 49
+    },
+    {
+      "id": "ipc",
+      "label": "//ipc",
+      "kind": "component",
+      "dirs": [
+        "ipc"
+      ],
+      "gn_files": 2
+    },
+    {
+      "id": "headless",
+      "label": "//headless",
+      "kind": "component",
+      "dirs": [
+        "headless"
+      ],
+      "gn_files": 2
+    },
+    {
+      "id": "extensions",
+      "label": "//extensions",
+      "kind": "component",
+      "dirs": [
+        "extensions"
+      ],
+      "gn_files": 79
+    },
+    {
+      "id": "device",
+      "label": "//device",
+      "kind": "component",
+      "dirs": [
+        "device"
+      ],
+      "gn_files": 29
+    },
+    {
+      "id": "storage",
+      "label": "//storage",
+      "kind": "component",
+      "dirs": [
+        "storage"
+      ],
+      "gn_files": 5
+    },
+    {
+      "id": "sandbox",
+      "label": "//sandbox",
+      "kind": "component",
+      "dirs": [
+        "sandbox"
+      ],
+      "gn_files": 10
+    },
+    {
+      "id": "printing",
+      "label": "//printing",
+      "kind": "component",
+      "dirs": [
+        "printing"
+      ],
+      "gn_files": 8
+    },
+    {
+      "id": "url",
+      "label": "//url",
+      "kind": "component",
+      "dirs": [
+        "url"
+      ],
+      "gn_files": 4
+    },
+    {
+      "id": "pdfium",
+      "label": "//third_party/pdfium",
+      "kind": "component",
+      "dirs": [
+        "third_party/pdfium"
+      ]
+    },
+    {
+      "id": "boringssl",
+      "label": "//third_party/boringssl",
+      "kind": "component",
+      "dirs": [
+        "third_party/boringssl"
+      ]
+    },
+    {
+      "id": "webrtc",
+      "label": "//third_party/webrtc",
+      "kind": "component",
+      "dirs": [
+        "third_party/webrtc"
+      ]
+    },
+    {
+      "id": "icu",
+      "label": "//third_party/icu",
+      "kind": "component",
+      "dirs": [
+        "third_party/icu"
+      ]
+    },
+    {
+      "id": "perfetto",
+      "label": "//third_party/perfetto",
+      "kind": "component",
+      "dirs": [
+        "third_party/perfetto"
+      ]
+    },
+    {
+      "id": "devtools-frontend",
+      "label": "//third_party/devtools-frontend",
+      "kind": "component",
+      "dirs": [
+        "third_party/devtools-frontend"
+      ]
+    },
+    {
+      "id": "ffmpeg",
+      "label": "//third_party/ffmpeg",
+      "kind": "component",
+      "dirs": [
+        "third_party/ffmpeg"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "blink",
+      "to": "v8",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.blink.consumes"
+    },
+    {
+      "from": "blink",
+      "to": "skia",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.blink.consumes"
+    },
+    {
+      "from": "chrome-for-testing",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.chrome-for-testing.consumes"
+    },
+    {
+      "from": "cef",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.cef.consumes"
+    },
+    {
+      "from": "cef-rs",
+      "to": "cef",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.cef-rs.consumes"
+    },
+    {
+      "from": "rusty-v8",
+      "to": "v8",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.rusty-v8.consumes"
+    },
+    {
+      "from": "deno-core",
+      "to": "rusty-v8",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.deno-core.consumes"
+    },
+    {
+      "from": "node",
+      "to": "v8",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.node.consumes"
+    },
+    {
+      "from": "electron",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.electron.consumes"
+    },
+    {
+      "from": "electron",
+      "to": "node",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.electron.consumes"
+    },
+    {
+      "from": "obscura",
+      "to": "deno-core",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.obscura.consumes"
+    },
+    {
+      "from": "agent-browser",
+      "to": "chrome-for-testing",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.agent-browser.consumes"
+    },
+    {
+      "from": "lightpanda-zig-v8",
+      "to": "v8",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.lightpanda-zig-v8.consumes"
+    },
+    {
+      "from": "brave",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.brave.consumes"
+    },
+    {
+      "from": "edge",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.edge.consumes"
+    },
+    {
+      "from": "vivaldi",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.vivaldi.consumes"
+    },
+    {
+      "from": "opera",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.opera.consumes"
+    },
+    {
+      "from": "ungoogled-chromium",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.ungoogled-chromium.consumes"
+    },
+    {
+      "from": "thorium",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.thorium.consumes"
+    },
+    {
+      "from": "helium",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.helium.consumes"
+    },
+    {
+      "from": "cromite",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.cromite.consumes"
+    },
+    {
+      "from": "supermium",
+      "to": "chromium",
+      "kind": "consumes",
+      "evidence": "ECOSYSTEM.toml tracker.supermium.consumes"
+    },
+    {
+      "from": "chromium",
+      "to": "blink",
+      "kind": "in-tree",
+      "evidence": "third_party/blink in chromium/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:agents/shared",
+      "kind": "deps",
+      "evidence": "DEPS src/agents/shared"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:chrome/test/data/perf/canvas_bench",
+      "kind": "deps",
+      "evidence": "DEPS src/chrome/test/data/perf/canvas_bench"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:chrome/test/data/perf/frame_rate/content",
+      "kind": "deps",
+      "evidence": "DEPS src/chrome/test/data/perf/frame_rate/content"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:chrome/test/data/xr/webvr_info",
+      "kind": "deps",
+      "evidence": "DEPS src/chrome/test/data/xr/webvr_info"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:docs/website",
+      "kind": "deps",
+      "evidence": "DEPS src/docs/website"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:media/cdm/api",
+      "kind": "deps",
+      "evidence": "DEPS src/media/cdm/api"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:net/third_party/quiche/src",
+      "kind": "deps",
+      "evidence": "DEPS src/net/third_party/quiche/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:testing/libfuzzer/fuzzers/wasm_corpus",
+      "kind": "deps",
+      "evidence": "DEPS src/testing/libfuzzer/fuzzers/wasm_corpus"
+    },
+    {
+      "from": "chromium",
+      "to": "angle",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/angle"
+    },
+    {
+      "from": "angle",
+      "to": "dep:third_party/angle/third_party/VK-GL-CTS/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/angle/third_party/VK-GL-CTS/src"
+    },
+    {
+      "from": "angle",
+      "to": "dep:third_party/angle/third_party/rapidjson/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/angle/third_party/rapidjson/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/anonymous_tokens/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/anonymous_tokens/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/boringssl/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/boringssl/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/breakpad/breakpad",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/breakpad/breakpad"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/cast_core/public/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/cast_core/public/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/catapult",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/catapult"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/ced/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/ced/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/clang-format/script",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/clang-format/script"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/cld_3/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/cld_3/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/colorama/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/colorama/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/compiler-rt/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/compiler-rt/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/content_analysis_sdk/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/content_analysis_sdk/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/cpu_features/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/cpu_features/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/cpuinfo/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/cpuinfo/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/crabbyavif/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/crabbyavif/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/crc32c/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/crc32c/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/cros-components/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/cros-components/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/crossbench",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/crossbench"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/crossbench-web-tests",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/crossbench-web-tests"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/dav1d/libdav1d",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/dav1d/libdav1d"
+    },
+    {
+      "from": "chromium",
+      "to": "dawn",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/dawn"
+    },
+    {
+      "from": "dawn",
+      "to": "dep:third_party/dawn/third_party/EGL-Registry/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/dawn/third_party/EGL-Registry/src"
+    },
+    {
+      "from": "dawn",
+      "to": "dep:third_party/dawn/third_party/OpenGL-Registry/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/dawn/third_party/OpenGL-Registry/src"
+    },
+    {
+      "from": "dawn",
+      "to": "dep:third_party/dawn/third_party/directx-shader-compiler/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/dawn/third_party/directx-shader-compiler/src"
+    },
+    {
+      "from": "dawn",
+      "to": "dep:third_party/dawn/third_party/glfw3/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/dawn/third_party/glfw3/src"
+    },
+    {
+      "from": "dawn",
+      "to": "dep:third_party/dawn/third_party/webgpu-cts",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/dawn/third_party/webgpu-cts"
+    },
+    {
+      "from": "dawn",
+      "to": "dep:third_party/dawn/third_party/webgpu-headers/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/dawn/third_party/webgpu-headers/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/depot_tools",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/depot_tools"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/devtools-frontend/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/devtools-frontend/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/disarm/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/disarm/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/domato/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/domato/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/dragonbox/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/dragonbox/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/ds_store/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/ds_store/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/eigen3/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/eigen3/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/emoji-segmenter/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/emoji-segmenter/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/expat/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/expat/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/fadec/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/fadec/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/farmhash/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/farmhash/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/fast_float/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/fast_float/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/federated_compute/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/federated_compute/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/ffmpeg",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/ffmpeg"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/flac",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/flac"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/flatbuffers/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/flatbuffers/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/fp16/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/fp16/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/freetype/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/freetype/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/fuzztest/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/fuzztest/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/fxdiv/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/fxdiv/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/gemmlowp/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/gemmlowp/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/glslang/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/glslang/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/google_benchmark/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/google_benchmark/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/googletest/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/googletest/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/gperf",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/gperf"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/harfbuzz/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/harfbuzz/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/highway/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/highway/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/hunspell_dictionaries",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/hunspell_dictionaries"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/icu",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/icu"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/ink/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/ink/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/jetstream/main",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/jetstream/main"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/jetstream/v2.2",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/jetstream/v2.2"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/jetstream/v3.0",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/jetstream/v3.0"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/jsoncpp/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/jsoncpp/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/leveldatabase/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/leveldatabase/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libFuzzer/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libFuzzer/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libaddressinput/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libaddressinput/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libaom/source/libaom",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libaom/source/libaom"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libc++/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libc++/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libc++abi/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libc++abi/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libgav1/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libgav1/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libjpeg_turbo",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libjpeg_turbo"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libpfm4/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libpfm4/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libphonenumber/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libphonenumber/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libprotobuf-mutator/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libprotobuf-mutator/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libsrtp",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libsrtp"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libunwind/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libunwind/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libva-fake-driver/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libva-fake-driver/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libvpx/source/libvpx",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libvpx/source/libvpx"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libwebm/source",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libwebm/source"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libwebp/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libwebp/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/libyuv",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/libyuv"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/litert/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/litert/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/llvm-libc/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/llvm-libc/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/mac_alias/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/mac_alias/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/material_color_utilities/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/material_color_utilities/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/microsoft_dxheaders/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/microsoft_dxheaders/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/microsoft_multimedia_redirection/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/microsoft_multimedia_redirection/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/microsoft_webauthn/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/microsoft_webauthn/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/ml_drift/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/ml_drift/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/nasm",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/nasm"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/nearby/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/nearby/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/neon_2_sse/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/neon_2_sse/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/nlohmann_json/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/nlohmann_json/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/oak/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/oak/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/openh264/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/openh264/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/openh264rs/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/openh264rs/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/openscreen/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/openscreen/src"
+    },
+    {
+      "from": "dep:third_party/openscreen/src",
+      "to": "dep:third_party/openscreen/src/buildtools",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/openscreen/src/buildtools"
+    },
+    {
+      "from": "dep:third_party/openscreen/src",
+      "to": "dep:third_party/openscreen/src/third_party/simple_dns/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/openscreen/src/third_party/simple_dns/src"
+    },
+    {
+      "from": "dep:third_party/openscreen/src",
+      "to": "dep:third_party/openscreen/src/third_party/tinycbor/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/openscreen/src/third_party/tinycbor/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/openxr/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/openxr/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/ots/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/ots/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/pdfium",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/pdfium"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/perfetto",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/perfetto"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/perl",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/perl"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/protobuf-javascript/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/protobuf-javascript/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/pthreadpool/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/pthreadpool/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/pywebsocket3/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/pywebsocket3/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/quic_trace/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/quic_trace/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/re2/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/re2/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/readability/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/readability/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/ruy/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/ruy/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/safeint/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/safeint/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/search_engines_data/resources",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/search_engines_data/resources"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/securemessage/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/securemessage/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/sframe/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/sframe/src"
+    },
+    {
+      "from": "chromium",
+      "to": "skia",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/skia"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/smhasher/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/smhasher/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/snappy/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/snappy/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/speedometer/main",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/speedometer/main"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/speedometer/v2.0",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/speedometer/v2.0"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/speedometer/v2.1",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/speedometer/v2.1"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/speedometer/v3.0",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/speedometer/v3.0"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/speedometer/v3.1",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/speedometer/v3.1"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/spirv-cross/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/spirv-cross/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/spirv-headers/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/spirv-headers/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/spirv-tools/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/spirv-tools/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/sqlite/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/sqlite/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/swiftshader",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/swiftshader"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/text-fragments-polyfill/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/text-fragments-polyfill/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/tflite/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/tflite/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/ukey2/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/ukey2/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/vulkan-deps",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/vulkan-deps"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/vulkan-headers/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/vulkan-headers/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/vulkan-loader/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/vulkan-loader/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/vulkan-tools/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/vulkan-tools/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/vulkan-utility-libraries/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/vulkan-utility-libraries/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/vulkan-validation-layers/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/vulkan-validation-layers/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/vulkan_memory_allocator",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/vulkan_memory_allocator"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/webdriver/pylib",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/webdriver/pylib"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/webgl/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/webgl/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/webgpu-cts/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/webgpu-cts/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/webpagereplay",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/webpagereplay"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/webrtc",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/webrtc"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/wuffs/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/wuffs/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/xnnpack/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/xnnpack/src"
+    },
+    {
+      "from": "chromium",
+      "to": "dep:third_party/zstd/src",
+      "kind": "deps",
+      "evidence": "DEPS src/third_party/zstd/src"
+    },
+    {
+      "from": "chromium",
+      "to": "v8",
+      "kind": "deps",
+      "evidence": "DEPS src/v8"
+    },
+    {
+      "from": "chrome",
+      "to": "base",
+      "kind": "gn",
+      "weight": 1796,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "components",
+      "kind": "gn",
+      "weight": 1671,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 1568,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "content",
+      "kind": "gn",
+      "weight": 1451,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "base",
+      "kind": "gn",
+      "weight": 967,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "url",
+      "kind": "gn",
+      "weight": 665,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "services",
+      "kind": "gn",
+      "weight": 475,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "net",
+      "kind": "gn",
+      "weight": 469,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "extensions",
+      "kind": "gn",
+      "weight": 450,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 427,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "url",
+      "kind": "gn",
+      "weight": 399,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 368,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "content",
+      "kind": "gn",
+      "weight": 301,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "net",
+      "kind": "gn",
+      "weight": 289,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "services",
+      "kind": "gn",
+      "weight": 288,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 267,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 228,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 191,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 132,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "base",
+      "kind": "gn",
+      "weight": 120,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 101,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "base",
+      "kind": "gn",
+      "weight": 100,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 99,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "media",
+      "kind": "gn",
+      "weight": 86,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "device",
+      "kind": "gn",
+      "weight": 74,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 65,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "base",
+      "kind": "gn",
+      "weight": 65,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 64,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "base",
+      "kind": "gn",
+      "weight": 60,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "printing",
+      "kind": "gn",
+      "weight": 59,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "storage",
+      "kind": "gn",
+      "weight": 57,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "components",
+      "kind": "gn",
+      "weight": 57,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "content",
+      "kind": "gn",
+      "weight": 53,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 50,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "services",
+      "kind": "gn",
+      "weight": 49,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "components",
+      "kind": "gn",
+      "weight": 46,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 46,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 44,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "media",
+      "kind": "gn",
+      "weight": 42,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 41,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 40,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "components",
+      "kind": "gn",
+      "weight": 38,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "base",
+      "kind": "gn",
+      "weight": 37,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "base",
+      "kind": "gn",
+      "weight": 34,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 32,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 31,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 29,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 28,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 28,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "extensions",
+      "kind": "gn",
+      "weight": 27,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "url",
+      "kind": "gn",
+      "weight": 27,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 26,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "mojo",
+      "to": "base",
+      "kind": "gn",
+      "weight": 25,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "components",
+      "kind": "gn",
+      "weight": 24,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "media",
+      "kind": "gn",
+      "weight": 24,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "components",
+      "kind": "gn",
+      "weight": 24,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 23,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "net",
+      "kind": "gn",
+      "weight": 23,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "services",
+      "kind": "gn",
+      "weight": 22,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "device",
+      "kind": "gn",
+      "weight": 22,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "net",
+      "kind": "gn",
+      "weight": 22,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 21,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "url",
+      "kind": "gn",
+      "weight": 21,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 21,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 21,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 21,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "device",
+      "kind": "gn",
+      "weight": 20,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "media",
+      "kind": "gn",
+      "weight": 19,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "net",
+      "kind": "gn",
+      "weight": 19,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "printing",
+      "kind": "gn",
+      "weight": 19,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 19,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "services",
+      "kind": "gn",
+      "weight": 19,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "base",
+      "kind": "gn",
+      "weight": 19,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 19,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 18,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "components",
+      "kind": "gn",
+      "weight": 18,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 18,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 18,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 18,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 18,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "services",
+      "kind": "gn",
+      "weight": 18,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "url",
+      "kind": "gn",
+      "weight": 18,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "v8",
+      "kind": "gn",
+      "weight": 18,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "url",
+      "kind": "gn",
+      "weight": 17,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 17,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 17,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 17,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 16,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 16,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "base",
+      "kind": "gn",
+      "weight": 16,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 16,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "v8",
+      "kind": "gn",
+      "weight": 15,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 15,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "url",
+      "kind": "gn",
+      "weight": 15,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 14,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "media",
+      "kind": "gn",
+      "weight": 14,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "base",
+      "kind": "gn",
+      "weight": 14,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 14,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 13,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 13,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "content",
+      "kind": "gn",
+      "weight": 13,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 13,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 13,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "net",
+      "kind": "gn",
+      "weight": 13,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 12,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "v8",
+      "kind": "gn",
+      "weight": 11,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "storage",
+      "kind": "gn",
+      "weight": 11,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 11,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "url",
+      "kind": "gn",
+      "weight": 11,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 11,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "device",
+      "kind": "gn",
+      "weight": 11,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 11,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 11,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 10,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 10,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "device",
+      "kind": "gn",
+      "weight": 10,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 10,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "services",
+      "kind": "gn",
+      "weight": 10,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 10,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 10,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "v8",
+      "kind": "gn",
+      "weight": 9,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 9,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "components",
+      "kind": "gn",
+      "weight": 9,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 8,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 8,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "ffmpeg",
+      "kind": "gn",
+      "weight": 8,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 8,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "services",
+      "kind": "gn",
+      "weight": 8,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 7,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 7,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "base",
+      "kind": "gn",
+      "weight": 7,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "components",
+      "kind": "gn",
+      "weight": 7,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "content",
+      "kind": "gn",
+      "weight": 7,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "ffmpeg",
+      "kind": "gn",
+      "weight": 6,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 6,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 6,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 6,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 6,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 6,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "device",
+      "kind": "gn",
+      "weight": 6,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 6,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "printing",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "storage",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "net",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "extensions",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "components",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "storage",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "sandbox",
+      "to": "base",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "base",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "printing",
+      "kind": "gn",
+      "weight": 5,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "url",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "base",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "base",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "media",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "url",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "services",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "net",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "services",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "mojo",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "storage",
+      "to": "components",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "angle",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 4,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "webrtc",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "webrtc",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "content",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "components",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "base",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "v8",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "printing",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "device",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "net",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "net",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "storage",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "storage",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "storage",
+      "to": "url",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "sandbox",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "url",
+      "to": "base",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "v8",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "webrtc",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "skia",
+      "to": "base",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "skia",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "dawn",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 3,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "extensions",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "content",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "v8",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "media",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "webrtc",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "device",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "mojo",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "mojo",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "storage",
+      "to": "services",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "storage",
+      "to": "base",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "storage",
+      "to": "net",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "sandbox",
+      "to": "media",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "url",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "url",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "v8",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "v8",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "storage",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "skia",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "skia",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "dawn",
+      "to": "base",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "dawn",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "angle",
+      "to": "base",
+      "kind": "gn",
+      "weight": 2,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "devtools-frontend",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "chrome",
+      "to": "headless",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "webrtc",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "pdfium",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "components",
+      "to": "ffmpeg",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "services",
+      "to": "extensions",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "content",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "services",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "net",
+      "to": "extensions",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "base",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "base",
+      "to": "components",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ui",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "gpu",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "content",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "media",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "device",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "media",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "dawn",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "cc",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "mojo",
+      "to": "services",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "mojo",
+      "to": "net",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "mojo",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "mojo",
+      "to": "content",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ipc",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ipc",
+      "to": "base",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ipc",
+      "to": "services",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "ipc",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "mojo",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "printing",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "components",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "content",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "net",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "base",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "v8",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "skia",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "services",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "url",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "device",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "headless",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "extensions",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "url",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "device",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "sandbox",
+      "to": "net",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "sandbox",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "services",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "printing",
+      "to": "cc",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "url",
+      "to": "blink",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "url",
+      "to": "ipc",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "url",
+      "to": "net",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "url",
+      "to": "icu",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "url",
+      "to": "content",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "v8",
+      "to": "base",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "blink",
+      "to": "angle",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "skia",
+      "to": "printing",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "skia",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "skia",
+      "to": "ui",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "skia",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "dawn",
+      "to": "boringssl",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "dawn",
+      "to": "gpu",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "angle",
+      "to": "chrome",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    },
+    {
+      "from": "angle",
+      "to": "perfetto",
+      "kind": "gn",
+      "weight": 1,
+      "evidence": "BUILD.gn/*.gni string labels"
+    }
+  ],
+  "notes": []
+}

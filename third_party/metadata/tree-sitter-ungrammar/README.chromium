@@ -1,0 +1,16 @@
+Name: tree-sitter-ungrammar
+URL: https://github.com/tree-sitter-grammars/tree-sitter-ungrammar
+Version: N/A
+Date: 2023-02-27
+Revision: debd26fed283d80456ebafa33a06957b0c52e451
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-ungrammar/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-ungrammar, pinned in src.lock.json.
+
+Local Modifications:
+None

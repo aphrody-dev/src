@@ -1,0 +1,16 @@
+Name: tree-sitter-llvm
+URL: https://github.com/benwilliamgraham/tree-sitter-llvm
+Version: N/A
+Date: 2025-08-23
+Revision: 2914786ae6774d4c4e25a230f4afe16aa68fe1c1
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-llvm/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/benwilliamgraham/tree-sitter-llvm, pinned in src.lock.json.
+
+Local Modifications:
+None

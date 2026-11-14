@@ -1,0 +1,17 @@
+Name: rusty_v8 (v8 crate)
+Short Name: rusty_v8
+URL: https://github.com/denoland/rusty_v8
+Version: N/A
+Date: 2026-10-21
+Revision: 55ca54ea97dbfcf80c5457924861b681bd83def2
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/rusty_v8/LICENSE
+Shipped: no
+Security Critical: yes
+
+Description:
+rusty_v8 (v8 crate). Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/rusty_v8) carries the patch stack.

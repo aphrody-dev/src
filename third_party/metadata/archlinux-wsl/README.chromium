@@ -1,0 +1,16 @@
+Name: archlinux-wsl
+URL: https://gitlab.archlinux.org/archlinux/archlinux-wsl
+Version: N/A
+Date: 2026-11-01
+Revision: ba2e8beb7c5bc2e117efa834e81292b588eaff6c
+Update Mechanism: Manual
+License: GPL-3.0
+License File: /third_party/archlinux-wsl/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.archlinux.org/archlinux/archlinux-wsl, pinned in src.lock.json.
+
+Local Modifications:
+None

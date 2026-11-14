@@ -1,0 +1,16 @@
+Name: mesa
+URL: https://gitlab.freedesktop.org/mesa/mesa
+Version: N/A
+Date: 2026-11-12
+Revision: 17d26bc65e7370c5e8a64c84239e0e435b047b0c
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/mesa/licenses
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.freedesktop.org/mesa/mesa, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: wayland
+URL: https://gitlab.freedesktop.org/wayland/wayland
+Version: N/A
+Date: 2026-10-27
+Revision: f2ecaa61a3a82944ae069de5413104ab7ba2109f
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/wayland/COPYING
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.freedesktop.org/wayland/wayland, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/wayland-c) carries the patch stack.

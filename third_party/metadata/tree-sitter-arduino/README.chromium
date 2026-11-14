@@ -1,0 +1,16 @@
+Name: tree-sitter-arduino
+URL: https://github.com/tree-sitter-grammars/tree-sitter-arduino
+Version: N/A
+Date: 2026-03-20
+Revision: 11dd46c9ae25135c473c0003a133bb06a484af0c
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-arduino/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-arduino, pinned in src.lock.json.
+
+Local Modifications:
+None

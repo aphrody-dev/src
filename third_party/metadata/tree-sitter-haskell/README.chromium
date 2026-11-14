@@ -1,0 +1,16 @@
+Name: tree-sitter-haskell
+URL: https://github.com/tree-sitter/tree-sitter-haskell
+Version: N/A
+Date: 2026-09-30
+Revision: 97288e585b0bd44199720280d067fa35bacd81ff
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-haskell/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-haskell, pinned in src.lock.json.
+
+Local Modifications:
+None

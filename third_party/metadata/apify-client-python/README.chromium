@@ -1,0 +1,16 @@
+Name: apify-client-python
+URL: https://github.com/apify/apify-client-python
+Version: N/A
+Date: 2026-11-12
+Revision: 2756f896ddb22e87ccb28313bde54f44c83c5c57
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/apify-client-python/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/apify/apify-client-python, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/apify-client-python) carries the patch stack.

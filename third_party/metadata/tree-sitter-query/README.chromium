@@ -1,0 +1,16 @@
+Name: tree-sitter-query
+URL: https://github.com/tree-sitter-grammars/tree-sitter-query
+Version: N/A
+Date: 2026-07-12
+Revision: 8e9e223812ff30854fbc912adbec696ba5f0e023
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/tree-sitter-query/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-query, pinned in src.lock.json.
+
+Local Modifications:
+None

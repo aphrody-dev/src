@@ -1,0 +1,16 @@
+Name: steam-runtime-tools
+URL: https://gitlab.steamos.cloud/steamrt/steam-runtime-tools
+Version: N/A
+Date: 2026-11-12
+Revision: 6fb23e08551ea4ee4eb3efeb97854d92feb51444
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/steam-runtime-tools/COPYING
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.steamos.cloud/steamrt/steam-runtime-tools, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/steam-runtime-tools) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: tree-sitter-chatito
+URL: https://github.com/tree-sitter-grammars/tree-sitter-chatito
+Version: N/A
+Date: 2025-08-17
+Revision: c0ed82c665b732395073f635c74c300f09530a7f
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-chatito/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-chatito, pinned in src.lock.json.
+
+Local Modifications:
+None

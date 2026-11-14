@@ -1,0 +1,16 @@
+Name: tree-sitter-cmake
+URL: https://github.com/uyha/tree-sitter-cmake
+Version: N/A
+Date: 2026-10-31
+Revision: a3ec2b2144daf7132e7ee824d8cab9610523d10f
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-cmake/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/uyha/tree-sitter-cmake, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: tree-sitter-zig
+URL: https://github.com/tree-sitter-grammars/tree-sitter-zig
+Version: N/A
+Date: 2025-09-10
+Revision: 6479aa13f32f701c383083d8b28360ebd682fb7d
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-zig/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-zig, pinned in src.lock.json.
+
+Local Modifications:
+None

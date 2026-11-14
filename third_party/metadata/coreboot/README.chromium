@@ -1,0 +1,16 @@
+Name: coreboot
+URL: https://github.com/coreboot/coreboot
+Version: N/A
+Date: 2026-11-12
+Revision: ac1b1b332b3dec3916c35fbb53d79fef4c46dfc6
+Update Mechanism: Manual
+License: GPL-2.0
+License File: /third_party/coreboot/COPYING
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/coreboot/coreboot, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: tree-sitter-slang
+URL: https://github.com/tree-sitter-grammars/tree-sitter-slang
+Version: N/A
+Date: 2025-09-01
+Revision: 1dbcc4abc7b3cdd663eb03d93031167d6ed19f56
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-slang/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-slang, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: cef-rs
+URL: https://github.com/tauri-apps/cef-rs
+Version: N/A
+Date: 2026-11-07
+Revision: 9aa78c450489eddb828eb982eaee6c104a89d348
+Update Mechanism: Manual
+License: Apache-2.0, MIT
+License File: /third_party/cef-rs/LICENSE-APACHE
+Shipped: no
+Security Critical: yes
+
+Description:
+cef-rs. Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/cef-rs) carries the patch stack.

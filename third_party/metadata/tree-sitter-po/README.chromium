@@ -1,0 +1,16 @@
+Name: tree-sitter-po
+URL: https://github.com/tree-sitter-grammars/tree-sitter-po
+Version: N/A
+Date: 2024-04-20
+Revision: bd860a0f57f697162bf28e576674be9c1500db5e
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-po/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-po, pinned in src.lock.json.
+
+Local Modifications:
+None

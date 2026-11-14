@@ -1,0 +1,16 @@
+Name: apify-sdk-python
+URL: https://github.com/apify/apify-sdk-python
+Version: N/A
+Date: 2026-11-12
+Revision: d0d18d9275f686bf60cc124543e4bc2e0b8c58a3
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/apify-sdk-python/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/apify/apify-sdk-python, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/apify-sdk-python) carries the patch stack.

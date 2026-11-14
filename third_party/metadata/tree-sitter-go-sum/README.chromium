@@ -1,0 +1,16 @@
+Name: tree-sitter-go-sum
+URL: https://github.com/tree-sitter-grammars/tree-sitter-go-sum
+Version: N/A
+Date: 2025-07-10
+Revision: 27816eb6b7315746ae9fcf711e4e1396dc1cf237
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-go-sum/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-go-sum, pinned in src.lock.json.
+
+Local Modifications:
+None

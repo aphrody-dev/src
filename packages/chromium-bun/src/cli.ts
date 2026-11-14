@@ -4,6 +4,7 @@ import { inspectChromiumTree } from "./audit/chromium-inspector.ts";
 import { CHROMIUM_DEPENDENCY_AUDIT } from "./audit/purge-matrix.ts";
 import { runAllBenchmarks } from "./benchmarks/runner.ts";
 import { runEnginesCommand } from "./engines/cli.ts";
+import { runTrackersCommand } from "./trackers/cli.ts";
 import { getAllLayers } from "./layers.ts";
 import {
   auditUrlInRealChromium,
@@ -111,6 +112,10 @@ async function main(): Promise<void> {
     }
     case "engines": {
       process.exitCode = await runEnginesCommand(args.slice(1));
+      break;
+    }
+    case "trackers": {
+      await runTrackersCommand(args.slice(1));
       break;
     }
     case "bench": {

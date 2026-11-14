@@ -1,0 +1,16 @@
+Name: tree-sitter-meson
+URL: https://github.com/tree-sitter-grammars/tree-sitter-meson
+Version: N/A
+Date: 2026-06-29
+Revision: aa8d472034956f94f51f2ef2cbfec4cc07efbfde
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-meson/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-meson, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: artcraft
+URL: https://github.com/storytold/artcraft
+Version: N/A
+Date: 2026-11-10
+Revision: 83aad5eb544e7f98b924f9b3652cfdb0a1023f47
+Update Mechanism: Manual
+License: Apache-2.0, MIT
+License File: /third_party/artcraft/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/storytold/artcraft, pinned in src.lock.json.
+
+Local Modifications:
+None

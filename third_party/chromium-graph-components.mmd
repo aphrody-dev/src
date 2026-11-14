@@ -1,0 +1,82 @@
+flowchart LR
+  blink["Blink"]
+  skia["Skia"]
+  chrome["//chrome"]
+  content["//content"]
+  components["//components"]
+  services["//services"]
+  net["//net"]
+  base["//base"]
+  ui["//ui"]
+  gpu["//gpu"]
+  media["//media"]
+  cc["//cc"]
+  mojo["//mojo"]
+  extensions["//extensions"]
+  device["//device"]
+  storage["//storage"]
+  sandbox["//sandbox"]
+  printing["//printing"]
+  url["//url"]
+  boringssl["//third_party/boringssl"]
+  icu["//third_party/icu"]
+  chrome -->|1796| base
+  chrome -->|1671| components
+  chrome -->|1568| ui
+  chrome -->|1451| content
+  components -->|967| base
+  chrome -->|665| url
+  chrome -->|475| services
+  chrome -->|469| net
+  chrome -->|450| extensions
+  chrome -->|427| mojo
+  components -->|399| url
+  components -->|368| ui
+  components -->|301| content
+  components -->|289| net
+  components -->|288| services
+  components -->|267| mojo
+  chrome -->|228| blink
+  chrome -->|191| skia
+  components -->|132| blink
+  ui -->|120| base
+  components -->|101| skia
+  services -->|100| base
+  services -->|99| mojo
+  chrome -->|86| media
+  chrome -->|74| device
+  ui -->|65| mojo
+  extensions -->|65| base
+  ui -->|64| skia
+  media -->|60| base
+  chrome -->|59| printing
+  chrome -->|57| storage
+  ui -->|57| components
+  extensions -->|53| content
+  components -->|50| chrome
+  blink -->|49| services
+  services -->|46| components
+  media -->|46| ui
+  chrome -->|44| icu
+  components -->|42| media
+  chrome -->|41| cc
+  services -->|40| ui
+  extensions -->|38| components
+  blink -->|37| base
+  content -->|34| base
+  content -->|32| ui
+  chrome -->|31| sandbox
+  components -->|29| icu
+  content -->|28| mojo
+  blink -->|28| mojo
+  components -->|27| extensions
+  services -->|27| url
+  media -->|26| gpu
+  mojo -->|25| base
+  media -->|24| components
+  blink -->|24| media
+  blink -->|24| components
+  components -->|23| boringssl
+  extensions -->|23| net
+  content -->|22| services
+  components -->|22| device

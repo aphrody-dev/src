@@ -1,0 +1,16 @@
+Name: cachyos-wsl
+URL: https://github.com/CachyOS/cachyos-wsl
+Version: N/A
+Date: 2026-11-05
+Revision: 2cedd88a388677bdb1dc0adb080d5ac7bc4805b5
+Update Mechanism: Manual
+License: GPL-3.0
+License File: /third_party/cachyos-wsl/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/CachyOS/cachyos-wsl, pinned in src.lock.json.
+
+Local Modifications:
+None

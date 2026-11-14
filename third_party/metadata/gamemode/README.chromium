@@ -1,0 +1,16 @@
+Name: gamemode
+URL: https://github.com/FeralInteractive/gamemode
+Version: N/A
+Date: 2026-06-15
+Revision: a74b8106a2236d1f2696aa44c93bc4c8ef13b42e
+Update Mechanism: Manual
+License: BSD-3-Clause
+License File: /third_party/gamemode/LICENSE.txt
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/FeralInteractive/gamemode, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/gamemode) carries the patch stack.

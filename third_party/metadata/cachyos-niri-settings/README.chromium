@@ -1,0 +1,16 @@
+Name: cachyos-niri-settings
+URL: https://github.com/CachyOS/cachyos-niri-settings
+Version: N/A
+Date: 2025-12-10
+Revision: 114bce2cc341eeeb8e88e51d6e4437647d6fb047
+Update Mechanism: Manual
+License: GPL-3.0
+License File: /third_party/cachyos-niri-settings/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/CachyOS/cachyos-niri-settings, pinned in src.lock.json.
+
+Local Modifications:
+None

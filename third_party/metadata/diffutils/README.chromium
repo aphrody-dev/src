@@ -1,0 +1,16 @@
+Name: diffutils
+URL: https://github.com/uutils/diffutils
+Version: N/A
+Date: 2026-11-12
+Revision: 91616e9d021c86454f305c6ef80bbd6b898b96bb
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/diffutils/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/uutils/diffutils, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/diffutils) carries the patch stack.

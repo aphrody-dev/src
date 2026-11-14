@@ -1,0 +1,16 @@
+Name: ananicy-rules
+URL: https://github.com/CachyOS/ananicy-rules
+Version: N/A
+Date: 2026-09-08
+Revision: 03ef03fbf7e834385377432ccecaedd32e3414bb
+Update Mechanism: Manual
+License: GPL-3.0
+License File: /third_party/ananicy-rules/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/CachyOS/ananicy-rules, pinned in src.lock.json.
+
+Local Modifications:
+None

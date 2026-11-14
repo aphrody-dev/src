@@ -1,0 +1,16 @@
+Name: tree-sitter-elixir
+URL: https://github.com/elixir-lang/tree-sitter-elixir
+Version: N/A
+Date: 2026-10-20
+Revision: cb32ccbe17c67037b09e31bf9beb22cdae6ed8e9
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/tree-sitter-elixir/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/elixir-lang/tree-sitter-elixir, pinned in src.lock.json.
+
+Local Modifications:
+None

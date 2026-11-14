@@ -1,0 +1,16 @@
+Name: A2A
+URL: https://github.com/a2aproject/A2A
+Version: N/A
+Date: 2026-11-13
+Revision: 2ae117a6a74efac964ce5ed5e0b8212326acd38e
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/A2A/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/a2aproject/A2A, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/A2A) carries the patch stack.

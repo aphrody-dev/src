@@ -1,0 +1,16 @@
+Name: tree-sitter-bitbake
+URL: https://github.com/tree-sitter-grammars/tree-sitter-bitbake
+Version: N/A
+Date: 2024-04-27
+Revision: a5d04fdb5a69a02b8fa8eb5525a60dfb5309b73b
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-bitbake/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-bitbake, pinned in src.lock.json.
+
+Local Modifications:
+None

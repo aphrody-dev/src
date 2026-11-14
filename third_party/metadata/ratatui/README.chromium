@@ -1,0 +1,16 @@
+Name: ratatui
+URL: https://github.com/ratatui/ratatui
+Version: N/A
+Date: 2026-11-12
+Revision: 41c26a74b3bcfa365e8c0f7e2b827f266bad8755
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/ratatui/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/ratatui/ratatui, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/ratatui) carries the patch stack.

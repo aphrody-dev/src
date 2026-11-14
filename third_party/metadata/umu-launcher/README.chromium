@@ -1,0 +1,16 @@
+Name: umu-launcher
+URL: https://github.com/Open-Wine-Components/umu-launcher
+Version: N/A
+Date: 2026-08-05
+Revision: e2b203a1fdd2af9f35166f5713cb3f85d72587e2
+Update Mechanism: Manual
+License: GPL-3.0
+License File: /third_party/umu-launcher/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/Open-Wine-Components/umu-launcher, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/umu-launcher) carries the patch stack.

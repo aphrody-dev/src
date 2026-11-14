@@ -1,0 +1,16 @@
+Name: webpack
+URL: https://github.com/webpack/webpack
+Version: N/A
+Date: 2026-11-14
+Revision: e11fa7b9ca5938269adefbf1c54516e53417eff0
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/webpack/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/webpack/webpack, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/webpack) carries the patch stack.

@@ -13,6 +13,19 @@ Verified 2026-11-12 against: local checkout `C:\src\third_party\chromium\src` (H
 - Snapshot 2026-11-12: stable `157.0.8103.78` (V8 15.7.112.43), beta `158.0.8127.18`, dev `159.0.8144.0`; ToT checkout = 160.
 - Factory builds the Stable tag by default (`refs/tags/<ver>`). ChromiumOS follows Stable milestone: branch `release-R<m>-*.B` (fallback `stable`).
 - Toml also pins clang, rust, v8/skia/angle/dawn/pdfium/boringssl/devtools/harfbuzz/freetype/catapult revisions per channel.
+- The toml is only as fresh as its last factory run: compare it with `third_party/chromium-trackers.json` (`channels.conflicts`) before building a channel.
+
+## Trackers, ecosystem graph, per-dependency metadata
+
+`just trackers [refresh|graph|metadata|all|show|check] [--only=id,id] [--no-links] [--no-gn]` (`packages/chromium-bun/src/trackers`, bun; extends the in-memory `src/browser/chromium-tracker.ts` with persistence and more targets).
+
+- Static targets: `[tracker.<id>]` tables of `third_party/ECOSYSTEM.toml` (Chromium, Blink, V8, Skia, Dawn, ANGLE, CEF, cef-rs, rusty_v8, deno_core, Node, Electron, Obscura, agent-browser, Lightpanda zig-v8, Brave, Edge, Vivaldi, Opera, ungoogled-chromium, Thorium, Helium, Cromite, Supermium). Each declares issue tracker, CL/PR source, news feed, changelog, skills, `consumes` edges and the resolver of its version and V8 pin. No version is written there.
+- `third_party/chromium-trackers.json`: live data of the last run. Every version has `source` and `fetched_at`; channels from chromiumdash (Windows and Linux), Chrome for Testing, versionhistory; V8 of each consumer (header at the Chromium tag, `deps/v8` of Node, rusty_v8 submodule through the crates.io chain deno_core -> deno_v8 -> v8, `V8_VERSION` of zig-v8, Electron's index); link checks read the body (feed item, Gerrit JSON, page title), not only the status.
+- `third_party/chromium-graph.json` (+ `chromium-graph.mmd` ecosystem, `chromium-graph-components.mmd` gn components): DEPS from `ay gclient revinfo`, gn component edges counted in BUILD.gn/*.gni of the checkout, consumer edges (CEF -> cef-rs, rusty_v8 -> deno_core -> Obscura, Node/Electron/agent-browser/Lightpanda -> V8, forks -> Chromium).
+- `third_party/metadata/<dir>/README.chromium`: one per `third_party/<dir>` checkout, Chromium `README.chromium.template` format, validated with `depot_tools/metadata/validate.py`. The clones are untracked, so the files live in this mirror.
+- Pins stay in `src.lock.json` (pin-001); `DEPS` is derived from it by `ay manifests`. Never edit them by hand for a tracker.
+- CEF and Electron lag Chrome Stable by 2 milestones and Chrome for Testing lags the release: choose the oracle from `chromium-trackers.json`, not from memory.
+
 
 ## Checkout / sync (docs/linux/build_instructions.md)
 

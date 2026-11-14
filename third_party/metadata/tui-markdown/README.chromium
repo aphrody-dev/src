@@ -1,0 +1,16 @@
+Name: tui-markdown
+URL: https://github.com/joshka/tui-markdown
+Version: N/A
+Date: 2026-11-02
+Revision: 95a2ac2e20bfdd444e811fdbb05fc403ce474924
+Update Mechanism: Manual
+License: Apache-2.0, MIT
+License File: /third_party/tui-markdown/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/joshka/tui-markdown, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/tui-markdown) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: tree-sitter-vhdl
+URL: https://github.com/jpt13653903/tree-sitter-vhdl
+Version: N/A
+Date: 2026-10-24
+Revision: 0d5d60b269c7f9861c2bada7cef58fe62e6e7879
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-vhdl/License.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/jpt13653903/tree-sitter-vhdl, pinned in src.lock.json.
+
+Local Modifications:
+None

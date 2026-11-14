@@ -1,0 +1,16 @@
+Name: jules-action
+URL: https://github.com/google-labs-code/jules-action
+Version: N/A
+Date: 2026-11-13
+Revision: 8be62dd5901b324059a02c6cc45d3ac054bcf155
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/jules-action/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/google-labs-code/jules-action, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/jules-action) carries the patch stack.

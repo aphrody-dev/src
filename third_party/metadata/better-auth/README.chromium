@@ -1,0 +1,16 @@
+Name: better-auth
+URL: https://github.com/better-auth/better-auth
+Version: N/A
+Date: 2026-11-14
+Revision: 1e6077ea0cad0803caa8fc90dea0802842ac8630
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/better-auth/LICENSE.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/better-auth/better-auth, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/better-auth) carries the patch stack.

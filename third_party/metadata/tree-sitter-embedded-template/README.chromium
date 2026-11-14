@@ -1,0 +1,16 @@
+Name: tree-sitter-embedded-template
+URL: https://github.com/tree-sitter/tree-sitter-embedded-template
+Version: N/A
+Date: 2025-08-31
+Revision: 3499d85f0a0d937c507a4a65368f2f63772786e1
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-embedded-template/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-embedded-template, pinned in src.lock.json.
+
+Local Modifications:
+None

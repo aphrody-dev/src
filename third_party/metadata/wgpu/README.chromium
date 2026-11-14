@@ -1,0 +1,16 @@
+Name: wgpu
+URL: https://github.com/gfx-rs/wgpu
+Version: N/A
+Date: 2026-11-10
+Revision: 101edc8f3afa5bf41bc3ab4ca801f3e67c22d499
+Update Mechanism: Manual
+License: Apache-2.0, MIT
+License File: /third_party/wgpu/LICENSE.APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/gfx-rs/wgpu, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/wgpu) carries the patch stack.

@@ -1,0 +1,15 @@
+Name: aosp-manifest
+URL: https://android.googlesource.com/platform/manifest
+Version: N/A
+Date: 2025-04-14
+Revision: 1ed30a827f1156dc831083e6cf999d6bd9deae18
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://android.googlesource.com/platform/manifest, pinned in src.lock.json.
+
+Local Modifications:
+None

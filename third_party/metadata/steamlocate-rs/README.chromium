@@ -1,0 +1,16 @@
+Name: steamlocate-rs
+URL: https://github.com/WilliamVenner/steamlocate-rs
+Version: N/A
+Date: 2026-10-07
+Revision: d740b423aee82e8e742595d0cdb4edcc91c24216
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/steamlocate-rs/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/WilliamVenner/steamlocate-rs, pinned in src.lock.json.
+
+Local Modifications:
+None

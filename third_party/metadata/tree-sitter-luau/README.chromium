@@ -1,0 +1,16 @@
+Name: tree-sitter-luau
+URL: https://github.com/tree-sitter-grammars/tree-sitter-luau
+Version: N/A
+Date: 2024-12-22
+Revision: a8914d6c1fc5131f8e1c13f769fa704c9f5eb02f
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-luau/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-luau, pinned in src.lock.json.
+
+Local Modifications:
+None

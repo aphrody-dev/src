@@ -1,0 +1,16 @@
+Name: bazzite
+URL: https://github.com/ublue-os/bazzite
+Version: N/A
+Date: 2026-11-11
+Revision: c846ca1cd492ad2850210df3406dad16678ec0f6
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/bazzite/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/ublue-os/bazzite, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/bazzite) carries the patch stack.

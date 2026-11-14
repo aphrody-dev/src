@@ -1,0 +1,16 @@
+Name: tree-sitter-commonlisp
+URL: https://github.com/tree-sitter-grammars/tree-sitter-commonlisp
+Version: N/A
+Date: 2025-03-16
+Revision: 32323509b3d9fe96607d151c2da2c9009eb13a2f
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-commonlisp/LICENSE.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-commonlisp, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: apify-client-js
+URL: https://github.com/apify/apify-client-js
+Version: N/A
+Date: 2026-11-12
+Revision: 4be190a71059f4a6e018df4195e956a186952381
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/apify-client-js/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/apify/apify-client-js, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/apify-client-js) carries the patch stack.

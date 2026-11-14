@@ -1,0 +1,16 @@
+Name: docker-docs
+URL: https://github.com/docker/docs
+Version: N/A
+Date: 2026-11-11
+Revision: 61cbfdc1e72d0ac62dbac59ceaf7b94dcbe69c80
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/docker-docs/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/docker/docs, pinned in src.lock.json.
+
+Local Modifications:
+None

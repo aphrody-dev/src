@@ -1,0 +1,16 @@
+Name: bun
+URL: https://github.com/oven-sh/bun
+Version: N/A
+Date: 2026-11-14
+Revision: b6c3f857f7b7d5d3a6f2760e812d7abb0f1c4a7a
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/bun/LICENSE.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/oven-sh/bun, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/bun) carries the patch stack.

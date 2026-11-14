@@ -1,0 +1,16 @@
+Name: depot_tools
+URL: https://chromium.googlesource.com/chromium/tools/depot_tools
+Version: N/A
+Date: 2026-11-14
+Revision: ec77017fb3e090ff02bffb9c6980ebcdd3006ddc
+Update Mechanism: Manual
+License: BSD-3-Clause
+License File: /third_party/depot_tools/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+depot_tools. Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/depot_tools) carries the patch stack.

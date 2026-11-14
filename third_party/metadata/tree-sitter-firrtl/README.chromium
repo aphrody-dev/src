@@ -1,0 +1,16 @@
+Name: tree-sitter-firrtl
+URL: https://github.com/tree-sitter-grammars/tree-sitter-firrtl
+Version: N/A
+Date: 2024-04-20
+Revision: 8503d3a0fe0f9e427863cb0055699ff2d29ae5f5
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/tree-sitter-firrtl/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-firrtl, pinned in src.lock.json.
+
+Local Modifications:
+None

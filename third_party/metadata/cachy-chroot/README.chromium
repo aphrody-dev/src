@@ -1,0 +1,16 @@
+Name: cachy-chroot
+URL: https://github.com/CachyOS/cachy-chroot
+Version: N/A
+Date: 2026-01-03
+Revision: c87f36a4650fc3a592f2e4ea6e85042e2b492429
+Update Mechanism: Manual
+License: BSD-3-Clause
+License File: /third_party/cachy-chroot/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/CachyOS/cachy-chroot, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: ffmpeg
+URL: https://git.ffmpeg.org/ffmpeg
+Version: N/A
+Date: 2026-11-12
+Revision: 46d13a83853b71739300cdce1d514f9be7d05a59
+Update Mechanism: Manual
+License: GPL-2.0, GPL-3.0, LGPL-2.1, LGPL-3.0
+License File: /third_party/ffmpeg/COPYING.GPLv2
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://git.ffmpeg.org/ffmpeg, pinned in src.lock.json.
+
+Local Modifications:
+None

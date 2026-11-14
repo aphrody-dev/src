@@ -1,0 +1,2599 @@
+{
+  "schema": 1,
+  "generated_at": "2026-11-14T21:46:55.655Z",
+  "generator": "packages/chromium-bun/src/trackers",
+  "config": "third_party/ECOSYSTEM.toml [tracker.*]",
+  "channels": {
+    "fetched_at": "2026-11-14T21:46:31.720Z",
+    "chromiumdash": {
+      "Windows": {
+        "beta": {
+          "version": "159.0.8154.6",
+          "milestone": 159,
+          "released": "2026-11-12T19:53:20.349Z",
+          "hashes": {
+            "angle": "29d18232e8031430f1257b7509ceca20d195114d",
+            "chromium": "98a2592026af8d673b9fa83b626ac68bdf4ae78a",
+            "dawn": "1c759c31098b0bd7e33ff03819eb6d984375bcec",
+            "devtools": "bc93449ab1871f94e60dca359a46b85fc0735659",
+            "pdfium": "8ebce9f265a884d64320228ce83b383d7d5b6c06",
+            "skia": "8a40104d31d4fdd09754c5b591c3c1d73f92d90f",
+            "v8": "85ca4dbd08ce54a22edf2b6a64ef2236a5623fba",
+            "webrtc": "a9a462f4232b49f63ed3b22b0ff57725c82625ec"
+          },
+          "v8_version": "15.9.128.1"
+        },
+        "dev": {
+          "version": "160.0.8157.0",
+          "milestone": 160,
+          "released": "2026-11-13T17:18:24.447Z",
+          "hashes": {
+            "angle": "3fb9dbcf77f2855365c13b5ed66412c273213567",
+            "chromium": "6fb2adde89c3108136e3dcc92db99cb34364ddd1",
+            "dawn": "37f80f91a029d37019995d4bfa9141fa73fe1cc6",
+            "devtools": "9f91feec3d4b675fd6f313d6497fe6372931805c",
+            "pdfium": "99da130a26ad610843d041a509efd8ea68cc05b7",
+            "skia": "267037d7a235b6613961f59078d7ff82855d98d5",
+            "v8": "f71a80ee70886372be140fe90b21be758555d9b6",
+            "webrtc": "7cfcf6dc8e6573d09d967d1641fc7bbcf65bd499"
+          },
+          "v8_version": "16.0.16.0"
+        },
+        "stable": {
+          "version": "158.0.8127.37",
+          "milestone": 158,
+          "released": "2026-11-12T21:05:37.028Z",
+          "hashes": {
+            "angle": "1f6526a566c27c7c33aa73a78517450a4a2a1714",
+            "chromium": "b8c2be851f62f6a394ec57955d7f31335d7cb6d4",
+            "dawn": "6e24542436a3ef58d4a1110f01712da9afbff3e3",
+            "devtools": "047c90eca37c7170d826d72245d5df9281989cf3",
+            "pdfium": "b23fee3ac22360878efaa8aa533dac892fe777ab",
+            "skia": "3279352fdf1fbbd01a6dd024a52d3f178a6d5f07",
+            "v8": "b601a2347f005e8bfadd32f285df97ffba5cf1bd",
+            "webrtc": "fb1c41a93d92d4188f068f437d80ef2c4b50c3a9"
+          },
+          "v8_version": "15.8.62.31"
+        },
+        "canary": {
+          "version": "160.0.8162.0",
+          "milestone": 160,
+          "released": "2026-11-14T19:25:16.543Z",
+          "hashes": {
+            "angle": "99a746a6e378fcb2e57d89cf47a0310800d7411a",
+            "chromium": "761de35f42a7a467267702d88aa9cd7125449a2d",
+            "dawn": "ff94b00bea78c79425c64d8c78ae173641d602eb",
+            "devtools": "b5fac4892661b4cc4ba01530df682b30ac6beff2",
+            "pdfium": "916d6f589a016ff49333ed40b42c279da1629256",
+            "skia": "741278733ac19dee96fe06ce9b1fa95bf4e88f6b",
+            "v8": "e41fe162d3cef9eb7d988adae1ae0bbef4f0b8aa",
+            "webrtc": "075063e021711eeef8a8ae43a0e9664f0b9ab7dc"
+          },
+          "v8_version": "16.0.41.0"
+        }
+      },
+      "Linux": {
+        "beta": {
+          "version": "159.0.8154.6",
+          "milestone": 159,
+          "released": "2026-11-12T19:53:40.597Z",
+          "hashes": {
+            "angle": "29d18232e8031430f1257b7509ceca20d195114d",
+            "chromium": "98a2592026af8d673b9fa83b626ac68bdf4ae78a",
+            "dawn": "1c759c31098b0bd7e33ff03819eb6d984375bcec",
+            "devtools": "bc93449ab1871f94e60dca359a46b85fc0735659",
+            "pdfium": "8ebce9f265a884d64320228ce83b383d7d5b6c06",
+            "skia": "8a40104d31d4fdd09754c5b591c3c1d73f92d90f",
+            "v8": "85ca4dbd08ce54a22edf2b6a64ef2236a5623fba",
+            "webrtc": "a9a462f4232b49f63ed3b22b0ff57725c82625ec"
+          }
+        },
+        "canary": {
+          "version": "160.0.8162.0",
+          "milestone": 160,
+          "released": "2026-11-14T19:50:40.321Z",
+          "hashes": {
+            "angle": "99a746a6e378fcb2e57d89cf47a0310800d7411a",
+            "chromium": "761de35f42a7a467267702d88aa9cd7125449a2d",
+            "dawn": "ff94b00bea78c79425c64d8c78ae173641d602eb",
+            "devtools": "b5fac4892661b4cc4ba01530df682b30ac6beff2",
+            "pdfium": "916d6f589a016ff49333ed40b42c279da1629256",
+            "skia": "741278733ac19dee96fe06ce9b1fa95bf4e88f6b",
+            "v8": "e41fe162d3cef9eb7d988adae1ae0bbef4f0b8aa",
+            "webrtc": "075063e021711eeef8a8ae43a0e9664f0b9ab7dc"
+          }
+        },
+        "stable": {
+          "version": "157.0.8103.78",
+          "milestone": 157,
+          "released": "2026-11-11T21:45:02.774Z",
+          "hashes": {
+            "angle": "c56e2a4a9b8cb0040920c995a268be559ba53f1c",
+            "chromium": "4b3d0dabb8250b6f152d2d85d79e7706e309d087",
+            "dawn": "106245fa2b9e1cf8b59b1bb8e010af3c7ca8b600",
+            "devtools": "6f9a57d502c857e2412a57fe03c96286d7877479",
+            "pdfium": "a4d199fba716a1edcc5d032a1d875f9a8ef2c283",
+            "skia": "fef60e46c522b87e5802ddf0a215a763dd5e0483",
+            "v8": "307108153d1e35e6e74528ee55f97b0cd59bf182",
+            "webrtc": "95554e4a0c5c343fdc989387d9d0ce18e2a2294b"
+          }
+        },
+        "dev": {
+          "version": "160.0.8157.0",
+          "milestone": 160,
+          "released": "2026-11-13T17:18:24.709Z",
+          "hashes": {
+            "angle": "3fb9dbcf77f2855365c13b5ed66412c273213567",
+            "chromium": "6fb2adde89c3108136e3dcc92db99cb34364ddd1",
+            "dawn": "37f80f91a029d37019995d4bfa9141fa73fe1cc6",
+            "devtools": "9f91feec3d4b675fd6f313d6497fe6372931805c",
+            "pdfium": "99da130a26ad610843d041a509efd8ea68cc05b7",
+            "skia": "267037d7a235b6613961f59078d7ff82855d98d5",
+            "v8": "f71a80ee70886372be140fe90b21be758555d9b6",
+            "webrtc": "7cfcf6dc8e6573d09d967d1641fc7bbcf65bd499"
+          }
+        }
+      }
+    },
+    "chrome_for_testing": {
+      "stable": "157.0.8103.78",
+      "beta": "159.0.8154.6",
+      "dev": "160.0.8157.0",
+      "canary": "160.0.8162.0"
+    },
+    "versionhistory_win64": {
+      "beta": "159.0.8154.6",
+      "dev": "160.0.8157.0",
+      "stable": "158.0.8127.37",
+      "canary": "160.0.8162.0"
+    },
+    "chrome_channels_toml": {
+      "stable": "157.0.8103.78",
+      "beta": "158.0.8127.18",
+      "dev": "159.0.8144.0",
+      "canary": "160.0.8157.0"
+    },
+    "checkout_version": "160.0.8158.0",
+    "sources": [
+      "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1",
+      "https://chromiumdash.appspot.com/fetch_releases?channel=Beta&platform=Windows&num=1",
+      "https://chromiumdash.appspot.com/fetch_releases?channel=Dev&platform=Windows&num=1",
+      "https://chromiumdash.appspot.com/fetch_releases?channel=Canary&platform=Windows&num=1",
+      "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Linux&num=1",
+      "https://chromiumdash.appspot.com/fetch_releases?channel=Beta&platform=Linux&num=1",
+      "https://chromiumdash.appspot.com/fetch_releases?channel=Dev&platform=Linux&num=1",
+      "https://chromiumdash.appspot.com/fetch_releases?channel=Canary&platform=Linux&num=1",
+      "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json",
+      "https://versionhistory.googleapis.com/v1/chrome/platforms/win64/channels/stable/versions?pageSize=1",
+      "https://versionhistory.googleapis.com/v1/chrome/platforms/win64/channels/beta/versions?pageSize=1",
+      "https://versionhistory.googleapis.com/v1/chrome/platforms/win64/channels/dev/versions?pageSize=1",
+      "https://versionhistory.googleapis.com/v1/chrome/platforms/win64/channels/canary/versions?pageSize=1"
+    ],
+    "conflicts": [
+      "chromiumdash stable: Windows 158.0.8127.37 but Linux 157.0.8103.78 (staged rollout: Linux factory builds follow Linux)",
+      "Chrome for Testing stable=157.0.8103.78 differs from chromiumdash Windows stable=158.0.8127.37 (CfT lags the release)",
+      "third_party/chrome-channels.toml beta=158.0.8127.18 but chromiumdash Linux beta=159.0.8154.6",
+      "third_party/chrome-channels.toml dev=159.0.8144.0 but chromiumdash Linux dev=160.0.8157.0",
+      "third_party/chrome-channels.toml canary=160.0.8157.0 but chromiumdash Linux canary=160.0.8162.0"
+    ]
+  },
+  "targets": [
+    {
+      "id": "chromium",
+      "name": "Chromium",
+      "role": "engine",
+      "fork": false,
+      "upstream": "https://chromium.googlesource.com/chromium/src.git",
+      "mirror": "chromium/chromium",
+      "local": {
+        "path": "third_party/chromium/src",
+        "exists": true,
+        "head": "ef68a767a544b5544e46944e4b3be15e9ce0b6d4",
+        "date": "2026-11-11",
+        "origin": "https://chromium.googlesource.com/chromium/src.git",
+        "repo_root": "C:/src/third_party/chromium/src"
+      },
+      "links": {
+        "issues": {
+          "url": "https://issues.chromium.org/issues?q=status:open",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.599Z",
+          "kind": "html",
+          "proof": "Chromium"
+        },
+        "prs": {
+          "url": "https://chromium-review.googlesource.com/q/project:chromium/src+status:open",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.011Z",
+          "kind": "html"
+        },
+        "news": {
+          "url": "https://chromereleases.googleblog.com/feeds/posts/default?alt=rss",
+          "status": 200,
+          "final_url": "http://feeds.feedburner.com/GoogleChromeReleases",
+          "fetched_at": "2026-11-14T21:46:34.416Z",
+          "kind": "feed",
+          "proof": "Stable Channel Update for ChromeOS / ChromeOS Flex (2026-11-13T21:00:54.817-08:00)"
+        },
+        "changelog": {
+          "url": "https://chromium.googlesource.com/chromium/src/+log/refs/heads/main",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.106Z",
+          "kind": "html",
+          "proof": "Log - refs/heads/main - chromium/src - Git at Google"
+        },
+        "release_notes": {
+          "url": "https://developer.chrome.com/release-notes",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.166Z",
+          "kind": "html",
+          "proof": "Release notes &nbsp;|&nbsp; Chrome for Developers"
+        },
+        "gerrit": {
+          "url": "https://chromium-review.googlesource.com",
+          "status": 200,
+          "final_url": "https://chromium-review.googlesource.com/",
+          "fetched_at": "2026-11-14T21:46:34.015Z",
+          "kind": "html"
+        }
+      },
+      "gerrit_latest": {
+        "number": 8820945,
+        "subject": "Roll Chrome Mac Arm PGO Profile",
+        "updated": "2026-11-14 21:46:06.000000000",
+        "url": "https://chromium-review.googlesource.com/c/chromium/src/+/8820945"
+      },
+      "skills": [
+        {
+          "name": "chromium",
+          "exists": true
+        },
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "158.0.8127.37",
+        "channels": {
+          "beta": {
+            "value": "159.0.8154.6",
+            "revision": "98a2592026af8d673b9fa83b626ac68bdf4ae78a"
+          },
+          "dev": {
+            "value": "160.0.8157.0",
+            "revision": "6fb2adde89c3108136e3dcc92db99cb34364ddd1"
+          },
+          "stable": {
+            "value": "158.0.8127.37",
+            "revision": "b8c2be851f62f6a394ec57955d7f31335d7cb6d4"
+          },
+          "canary": {
+            "value": "160.0.8162.0",
+            "revision": "761de35f42a7a467267702d88aa9cd7125449a2d"
+          }
+        },
+        "source": [
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Beta&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Dev&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Canary&platform=Windows&num=1"
+        ],
+        "fetched_at": "2026-11-14T21:46:31.721Z"
+      },
+      "v8": [
+        {
+          "value": "15.8.62.31",
+          "channels": {
+            "beta": {
+              "value": "15.9.128.1",
+              "revision": "85ca4dbd08ce54a22edf2b6a64ef2236a5623fba"
+            },
+            "dev": {
+              "value": "16.0.16.0",
+              "revision": "f71a80ee70886372be140fe90b21be758555d9b6"
+            },
+            "stable": {
+              "value": "15.8.62.31",
+              "revision": "b601a2347f005e8bfadd32f285df97ffba5cf1bd"
+            },
+            "canary": {
+              "value": "16.0.41.0",
+              "revision": "e41fe162d3cef9eb7d988adae1ae0bbef4f0b8aa"
+            }
+          },
+          "source": [
+            "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1",
+            "https://chromiumdash.appspot.com/fetch_releases?channel=Beta&platform=Windows&num=1",
+            "https://chromiumdash.appspot.com/fetch_releases?channel=Dev&platform=Windows&num=1",
+            "https://chromiumdash.appspot.com/fetch_releases?channel=Canary&platform=Windows&num=1"
+          ],
+          "fetched_at": "2026-11-14T21:46:33.792Z"
+        }
+      ],
+      "pins": [],
+      "consumes": [],
+      "consumed_by": [
+        "chrome-for-testing",
+        "cef",
+        "electron",
+        "brave",
+        "edge",
+        "vivaldi",
+        "opera",
+        "ungoogled-chromium",
+        "thorium",
+        "helium",
+        "cromite",
+        "supermium"
+      ]
+    },
+    {
+      "id": "blink",
+      "name": "Blink",
+      "role": "component",
+      "fork": false,
+      "upstream": "https://chromium.googlesource.com/chromium/src.git",
+      "local": {
+        "path": "third_party/chromium/src/third_party/blink",
+        "exists": true,
+        "head": "ef68a767a544b5544e46944e4b3be15e9ce0b6d4",
+        "date": "2026-11-11",
+        "origin": "https://chromium.googlesource.com/chromium/src.git",
+        "repo_root": "C:/src/third_party/chromium/src"
+      },
+      "links": {
+        "issues": {
+          "url": "https://issues.chromium.org/components/1456407",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.599Z",
+          "kind": "html",
+          "proof": "Chromium"
+        },
+        "prs": {
+          "url": "https://chromium-review.googlesource.com/q/project:chromium/src+status:open+dir:third_party/blink",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.024Z",
+          "kind": "html"
+        },
+        "news": {
+          "url": "https://developer.chrome.com/static/blog/feed.xml",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.065Z",
+          "kind": "feed",
+          "proof": "What's New in WebGPU (Chrome 155-156) (Wed, 07 Oct 2026 07:00:00 GMT)"
+        },
+        "changelog": {
+          "url": "https://chromium.googlesource.com/chromium/src/+log/refs/heads/main",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:55.654Z",
+          "kind": "html",
+          "proof": "Log - refs/heads/main - chromium/src - Git at Google"
+        },
+        "mailing_list": {
+          "url": "https://groups.google.com/a/chromium.org/g/blink-dev",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.331Z",
+          "kind": "html"
+        },
+        "gerrit": {
+          "url": "https://chromium-review.googlesource.com",
+          "status": 200,
+          "final_url": "https://chromium-review.googlesource.com/",
+          "fetched_at": "2026-11-14T21:46:33.985Z",
+          "kind": "html"
+        }
+      },
+      "gerrit_latest": {
+        "number": 8820945,
+        "subject": "Roll Chrome Mac Arm PGO Profile",
+        "updated": "2026-11-14 21:46:06.000000000",
+        "url": "https://chromium-review.googlesource.com/c/chromium/src/+/8820945"
+      },
+      "issues_component": {
+        "id": "1456407",
+        "source": "third_party/chromium/src/third_party/blink/DIR_METADATA",
+        "verified": true
+      },
+      "skills": [
+        {
+          "name": "chromium",
+          "exists": true
+        },
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "158.0.8127.37",
+        "chromium": "158.0.8127.37",
+        "source": [
+          "third_party/chromium/src (in-tree)"
+        ],
+        "extra": {
+          "note": "Blink is built from the Chromium tree: it carries the Chromium version"
+        },
+        "fetched_at": "2026-11-14T21:46:31.721Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [
+        "v8",
+        "skia"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "v8",
+      "name": "V8",
+      "role": "component",
+      "fork": false,
+      "upstream": "https://chromium.googlesource.com/v8/v8.git",
+      "mirror": "v8/v8",
+      "local": {
+        "path": "third_party/chromium/src/v8",
+        "exists": true,
+        "head": "e4e354fb9e409c178a647af015b5fa330461081e",
+        "date": "2026-11-11",
+        "origin": "https://chromium.googlesource.com/v8/v8.git",
+        "repo_root": "C:/src/third_party/chromium/src/v8"
+      },
+      "links": {
+        "issues": {
+          "url": "https://issues.chromium.org/components/1456824",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.572Z",
+          "kind": "html",
+          "proof": "Chromium"
+        },
+        "prs": {
+          "url": "https://chromium-review.googlesource.com/q/project:v8/v8+status:open",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.020Z",
+          "kind": "html"
+        },
+        "news": {
+          "url": "https://v8.dev/blog.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:33.904Z",
+          "kind": "feed",
+          "proof": "How we made JSON.stringify more than twice as fast (2025-08-04T00:00:00Z)"
+        },
+        "changelog": {
+          "url": "https://chromium.googlesource.com/v8/v8/+log/refs/heads/main",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.098Z",
+          "kind": "html",
+          "proof": "Log - refs/heads/main - v8/v8 - Git at Google"
+        },
+        "gerrit": {
+          "url": "https://chromium-review.googlesource.com",
+          "status": 200,
+          "final_url": "https://chromium-review.googlesource.com/",
+          "fetched_at": "2026-11-14T21:46:33.989Z",
+          "kind": "html"
+        }
+      },
+      "gerrit_latest": {
+        "number": 8818535,
+        "subject": "Version 16.0.42",
+        "updated": "2026-11-14 18:42:47.000000000",
+        "url": "https://chromium-review.googlesource.com/c/v8/v8/+/8818535"
+      },
+      "issues_component": {
+        "id": "1456824",
+        "source": "third_party/chromium/src/v8/DIR_METADATA",
+        "verified": true
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "15.8.62.31",
+        "channels": {
+          "beta": {
+            "value": "15.9.128.1",
+            "revision": "85ca4dbd08ce54a22edf2b6a64ef2236a5623fba"
+          },
+          "dev": {
+            "value": "16.0.16.0",
+            "revision": "f71a80ee70886372be140fe90b21be758555d9b6"
+          },
+          "stable": {
+            "value": "15.8.62.31",
+            "revision": "b601a2347f005e8bfadd32f285df97ffba5cf1bd"
+          },
+          "canary": {
+            "value": "16.0.41.0",
+            "revision": "e41fe162d3cef9eb7d988adae1ae0bbef4f0b8aa"
+          }
+        },
+        "source": [
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Beta&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Dev&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Canary&platform=Windows&num=1"
+        ],
+        "fetched_at": "2026-11-14T21:46:31.721Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [],
+      "consumed_by": [
+        "blink",
+        "rusty-v8",
+        "node",
+        "lightpanda-zig-v8"
+      ]
+    },
+    {
+      "id": "skia",
+      "name": "Skia",
+      "role": "component",
+      "fork": false,
+      "upstream": "https://skia.googlesource.com/skia.git",
+      "mirror": "google/skia",
+      "local": {
+        "path": "third_party/chromium/src/third_party/skia",
+        "exists": true,
+        "head": "d67d0f22e3ecbb8794223e2ebd008d1650246cb9",
+        "date": "2026-11-11",
+        "origin": "https://skia.googlesource.com/skia.git",
+        "repo_root": "C:/src/third_party/chromium/src/third_party/skia"
+      },
+      "links": {
+        "issues": {
+          "url": "https://issues.skia.org",
+          "status": 200,
+          "final_url": "https://issues.skia.org/issues",
+          "fetched_at": "2026-11-14T21:46:34.896Z",
+          "kind": "html",
+          "proof": "Skia"
+        },
+        "prs": {
+          "url": "https://skia-review.googlesource.com/q/project:skia+status:open",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.003Z",
+          "kind": "html"
+        },
+        "news": {
+          "url": "https://github.com/google/skia/commits/main.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.145Z",
+          "kind": "feed",
+          "proof": "Roll recipe dependencies (trivial). (2026-11-14T13:38:06Z)"
+        },
+        "changelog": {
+          "url": "https://skia.googlesource.com/skia/+/refs/heads/main/RELEASE_NOTES.md",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.079Z",
+          "kind": "html",
+          "proof": "RELEASE_NOTES.md"
+        },
+        "gerrit": {
+          "url": "https://skia-review.googlesource.com",
+          "status": 200,
+          "final_url": "https://skia-review.googlesource.com/",
+          "fetched_at": "2026-11-14T21:46:34.006Z",
+          "kind": "html"
+        }
+      },
+      "gerrit_latest": {
+        "number": 1428996,
+        "subject": "Roll recipe dependencies (trivial).",
+        "updated": "2026-11-14 13:38:06.000000000",
+        "url": "https://skia-review.googlesource.com/c/skia/+/1428996"
+      },
+      "issues_component": {
+        "id": "1457031",
+        "source": "third_party/chromium/src/third_party/skia/DIR_METADATA",
+        "verified": true
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        },
+        {
+          "name": "ui-system",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "skia 3279352fdf1f",
+        "channels": {
+          "beta": {
+            "value": "skia 8a40104d31d4",
+            "revision": "8a40104d31d4fdd09754c5b591c3c1d73f92d90f"
+          },
+          "dev": {
+            "value": "skia 267037d7a235",
+            "revision": "267037d7a235b6613961f59078d7ff82855d98d5"
+          },
+          "stable": {
+            "value": "skia 3279352fdf1f",
+            "revision": "3279352fdf1fbbd01a6dd024a52d3f178a6d5f07"
+          },
+          "canary": {
+            "value": "skia 741278733ac1",
+            "revision": "741278733ac19dee96fe06ce9b1fa95bf4e88f6b"
+          }
+        },
+        "source": [
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Beta&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Dev&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Canary&platform=Windows&num=1"
+        ],
+        "fetched_at": "2026-11-14T21:46:31.721Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [],
+      "consumed_by": [
+        "blink"
+      ]
+    },
+    {
+      "id": "dawn",
+      "name": "Dawn",
+      "role": "component",
+      "fork": false,
+      "upstream": "https://dawn.googlesource.com/dawn.git",
+      "mirror": "google/dawn",
+      "local": {
+        "path": "third_party/chromium/src/third_party/dawn",
+        "exists": true,
+        "head": "e327e2a60b08179ee8a04056f58dad8ca4b69b5f",
+        "date": "2026-11-11",
+        "origin": "https://dawn.googlesource.com/dawn.git",
+        "repo_root": "C:/src/third_party/chromium/src/third_party/dawn"
+      },
+      "links": {
+        "issues": {
+          "url": "https://issues.chromium.org/components/1570784",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.565Z",
+          "kind": "html",
+          "proof": "Chromium"
+        },
+        "prs": {
+          "url": "https://dawn-review.googlesource.com/q/project:dawn+status:open",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:33.981Z",
+          "kind": "html"
+        },
+        "news": {
+          "url": "https://developer.chrome.com/static/blog/feed.xml",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.087Z",
+          "kind": "feed",
+          "proof": "What's New in WebGPU (Chrome 155-156) (Wed, 07 Oct 2026 07:00:00 GMT)"
+        },
+        "changelog": {
+          "url": "https://dawn.googlesource.com/dawn/+log/refs/heads/main",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.325Z",
+          "kind": "html",
+          "proof": "Log - refs/heads/main - dawn - Git at Google"
+        },
+        "gerrit": {
+          "url": "https://dawn-review.googlesource.com",
+          "status": 200,
+          "final_url": "https://dawn-review.googlesource.com/",
+          "fetched_at": "2026-11-14T21:46:33.984Z",
+          "kind": "html"
+        }
+      },
+      "gerrit_latest": {
+        "number": 359456,
+        "subject": "[M157] [glsl][opengl] Add snorm pack/unpack workaround",
+        "updated": "2026-11-14 14:23:25.000000000",
+        "url": "https://dawn-review.googlesource.com/c/dawn/+/359456"
+      },
+      "issues_component": {
+        "id": "1570784",
+        "source": "third_party/chromium/src/third_party/dawn/DIR_METADATA",
+        "verified": true
+      },
+      "skills": [
+        {
+          "name": "webgpu-wasm-ui",
+          "exists": true
+        },
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "dawn 6e24542436a3",
+        "channels": {
+          "beta": {
+            "value": "dawn 1c759c31098b",
+            "revision": "1c759c31098b0bd7e33ff03819eb6d984375bcec"
+          },
+          "dev": {
+            "value": "dawn 37f80f91a029",
+            "revision": "37f80f91a029d37019995d4bfa9141fa73fe1cc6"
+          },
+          "stable": {
+            "value": "dawn 6e24542436a3",
+            "revision": "6e24542436a3ef58d4a1110f01712da9afbff3e3"
+          },
+          "canary": {
+            "value": "dawn ff94b00bea78",
+            "revision": "ff94b00bea78c79425c64d8c78ae173641d602eb"
+          }
+        },
+        "source": [
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Beta&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Dev&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Canary&platform=Windows&num=1"
+        ],
+        "fetched_at": "2026-11-14T21:46:31.721Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [],
+      "consumed_by": []
+    },
+    {
+      "id": "angle",
+      "name": "ANGLE",
+      "role": "component",
+      "fork": false,
+      "upstream": "https://chromium.googlesource.com/angle/angle.git",
+      "local": {
+        "path": "third_party/chromium/src/third_party/angle",
+        "exists": true,
+        "head": "c2cfebd8f340d74749b3511e487bac3f10834976",
+        "date": "2026-11-11",
+        "origin": "https://chromium.googlesource.com/angle/angle.git",
+        "repo_root": "C:/src/third_party/chromium/src/third_party/angle"
+      },
+      "links": {
+        "issues": {
+          "url": "https://issues.chromium.org/components/1456215",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.291Z",
+          "kind": "html",
+          "proof": "Chromium"
+        },
+        "prs": {
+          "url": "https://chromium-review.googlesource.com/q/project:angle/angle+status:open",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.751Z",
+          "kind": "html"
+        },
+        "news": {
+          "url": "https://developer.chrome.com/static/blog/feed.xml",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.807Z",
+          "kind": "feed",
+          "proof": "What's New in WebGPU (Chrome 155-156) (Wed, 07 Oct 2026 07:00:00 GMT)"
+        },
+        "changelog": {
+          "url": "https://chromium.googlesource.com/angle/angle/+log/refs/heads/main",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.663Z",
+          "kind": "html",
+          "proof": "Log - refs/heads/main - angle/angle - Git at Google"
+        },
+        "gerrit": {
+          "url": "https://chromium-review.googlesource.com",
+          "status": 200,
+          "final_url": "https://chromium-review.googlesource.com/",
+          "fetched_at": "2026-11-14T21:46:34.731Z",
+          "kind": "html"
+        }
+      },
+      "gerrit_latest": {
+        "number": 8662460,
+        "subject": "GL: Recreate texture ID before glTexStorage",
+        "updated": "2026-11-14 09:33:34.000000000",
+        "url": "https://chromium-review.googlesource.com/c/angle/angle/+/8662460"
+      },
+      "issues_component": {
+        "id": "1456215",
+        "source": "third_party/chromium/src/third_party/angle/DIR_METADATA",
+        "verified": true
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "angle 1f6526a566c2",
+        "channels": {
+          "beta": {
+            "value": "angle 29d18232e803",
+            "revision": "29d18232e8031430f1257b7509ceca20d195114d"
+          },
+          "dev": {
+            "value": "angle 3fb9dbcf77f2",
+            "revision": "3fb9dbcf77f2855365c13b5ed66412c273213567"
+          },
+          "stable": {
+            "value": "angle 1f6526a566c2",
+            "revision": "1f6526a566c27c7c33aa73a78517450a4a2a1714"
+          },
+          "canary": {
+            "value": "angle 99a746a6e378",
+            "revision": "99a746a6e378fcb2e57d89cf47a0310800d7411a"
+          }
+        },
+        "source": [
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Beta&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Dev&platform=Windows&num=1",
+          "https://chromiumdash.appspot.com/fetch_releases?channel=Canary&platform=Windows&num=1"
+        ],
+        "fetched_at": "2026-11-14T21:46:31.721Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [],
+      "consumed_by": []
+    },
+    {
+      "id": "depot-tools",
+      "name": "depot_tools",
+      "role": "tooling",
+      "fork": false,
+      "upstream": "https://chromium.googlesource.com/chromium/tools/depot_tools.git",
+      "local": {
+        "path": "third_party/depot_tools",
+        "exists": true,
+        "head": "ec77017fb3e090ff02bffb9c6980ebcdd3006ddc",
+        "date": "2026-11-14",
+        "origin": "https://chromium.googlesource.com/chromium/tools/depot_tools.git",
+        "repo_root": "C:/src/third_party/depot_tools"
+      },
+      "links": {
+        "issues": {
+          "url": "https://issues.chromium.org/issues?q=componentid:1456164",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.383Z",
+          "kind": "html",
+          "proof": "Chromium"
+        },
+        "prs": {
+          "url": "https://chromium-review.googlesource.com/q/project:chromium/tools/depot_tools+status:open",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.757Z",
+          "kind": "html"
+        },
+        "news": {
+          "url": "https://chromium.googlesource.com/chromium/tools/depot_tools/+log/refs/heads/main",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.630Z",
+          "kind": "html",
+          "proof": "Log - refs/heads/main - chromium/tools/depot_tools - Git at Google"
+        },
+        "changelog": {
+          "url": "https://chromium.googlesource.com/chromium/tools/depot_tools/+log/refs/heads/main",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:34.714Z",
+          "kind": "html",
+          "proof": "Log - refs/heads/main - chromium/tools/depot_tools - Git at Google"
+        },
+        "gerrit": {
+          "url": "https://chromium-review.googlesource.com",
+          "status": 200,
+          "final_url": "https://chromium-review.googlesource.com/",
+          "fetched_at": "2026-11-14T21:46:34.747Z",
+          "kind": "html"
+        }
+      },
+      "gerrit_latest": {
+        "number": 8816267,
+        "subject": "Roll recipe dependencies (trivial).",
+        "updated": "2026-11-14 13:10:17.000000000",
+        "url": "https://chromium-review.googlesource.com/c/chromium/tools/depot_tools/+/8816267"
+      },
+      "skills": [
+        {
+          "name": "chromium",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "ec77017fb3e0",
+        "source": [
+          "git ls-remote https://chromium.googlesource.com/chromium/tools/depot_tools.git HEAD"
+        ],
+        "extra": {
+          "sha": "ec77017fb3e090ff02bffb9c6980ebcdd3006ddc"
+        },
+        "fetched_at": "2026-11-14T21:46:32.526Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [],
+      "consumed_by": []
+    },
+    {
+      "id": "chrome-for-testing",
+      "name": "Chrome for Testing",
+      "role": "tooling",
+      "fork": false,
+      "repo": "https://github.com/GoogleChromeLabs/chrome-for-testing",
+      "local": {
+        "path": "third_party/chrome-for-testing",
+        "exists": true,
+        "head": "d56d98583d9634cc9ed35eda0743f4ce5671338e",
+        "date": "2026-11-12",
+        "origin": "https://github.com/aphrody-labs/chrome-for-testing.git",
+        "repo_root": "C:/src/third_party/chrome-for-testing"
+      },
+      "github": {
+        "full_name": "GoogleChromeLabs/chrome-for-testing",
+        "archived": false,
+        "pushed_at": "2026-11-14T21:10:31Z",
+        "default_branch": "main",
+        "stars": 1311,
+        "license": "Apache-2.0",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:35.485Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/GoogleChromeLabs/chrome-for-testing/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.383Z",
+          "kind": "html",
+          "proof": "Issues · GoogleChromeLabs/chrome-for-testing · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/GoogleChromeLabs/chrome-for-testing/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.342Z",
+          "kind": "html",
+          "proof": "Pull requests · GoogleChromeLabs/chrome-for-testing · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/GoogleChromeLabs/chrome-for-testing/commits/main.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.171Z",
+          "kind": "feed",
+          "proof": "Update latest available version numbers (2026-11-14T21:10:10Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/GoogleChromeLabs/chrome-for-testing/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.279Z",
+          "kind": "html",
+          "proof": "Releases · GoogleChromeLabs/chrome-for-testing · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        },
+        {
+          "name": "agent-browser",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "157.0.8103.78",
+        "chromium": "157.0.8103.78",
+        "source": [
+          "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"
+        ],
+        "fetched_at": "2026-11-14T21:46:31.723Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": [
+        "agent-browser"
+      ]
+    },
+    {
+      "id": "cef",
+      "name": "CEF",
+      "role": "consumer",
+      "fork": true,
+      "repo": "https://github.com/chromiumembedded/cef",
+      "github": {
+        "full_name": "chromiumembedded/cef",
+        "archived": false,
+        "pushed_at": "2026-11-12T18:09:22Z",
+        "default_branch": "master",
+        "stars": 4884,
+        "license": "NOASSERTION",
+        "description": "Chromium Embedded Framework (CEF). A simple framework for embedding Chromium-based browsers in other applications.",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:35.851Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/chromiumembedded/cef/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.771Z",
+          "kind": "html",
+          "proof": "Issues · chromiumembedded/cef · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/chromiumembedded/cef/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.819Z",
+          "kind": "html",
+          "proof": "Pull requests · chromiumembedded/cef · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/chromiumembedded/cef/commits/master.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.536Z",
+          "kind": "feed",
+          "proof": "win: Fix helper process clock selection (fixes #4360) (2026-11-12T17:43:12Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/chromiumembedded/cef/commits/master",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.871Z",
+          "kind": "html",
+          "proof": "Commits · chromiumembedded/cef · GitHub"
+        },
+        "builds": {
+          "url": "https://cef-builds.spotifycdn.com/index.html",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.312Z",
+          "kind": "html",
+          "proof": "CEF Automated Builds"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "156.0.30+g6028375+chromium-156.0.8078.96",
+        "chromium": "156.0.8078.96",
+        "source": [
+          "https://cef-builds.spotifycdn.com/index.json"
+        ],
+        "fetched_at": "2026-11-14T21:46:32.259Z"
+      },
+      "v8": [
+        {
+          "value": "15.6.75.50",
+          "chromium": "156.0.8078.96",
+          "source": [
+            "https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.96/DEPS",
+            "https://chromium.googlesource.com/v8/v8/+/6500240d220d9eaba51ea0012f60e926fe4b6472/include/v8-version.h"
+          ],
+          "extra": {
+            "v8_revision": "6500240d220d9eaba51ea0012f60e926fe4b6472"
+          },
+          "fetched_at": "2026-11-14T21:46:38.258Z"
+        }
+      ],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": [
+        "cef-rs"
+      ]
+    },
+    {
+      "id": "cef-rs",
+      "name": "cef-rs",
+      "role": "consumer",
+      "fork": false,
+      "repo": "https://github.com/tauri-apps/cef-rs",
+      "local": {
+        "path": "third_party/cef-rs",
+        "exists": true,
+        "head": "9aa78c450489eddb828eb982eaee6c104a89d348",
+        "date": "2026-11-07",
+        "origin": "https://github.com/aphrody-labs/cef-rs.git",
+        "repo_root": "C:/src/third_party/cef-rs"
+      },
+      "github": {
+        "full_name": "tauri-apps/cef-rs",
+        "archived": false,
+        "pushed_at": "2026-11-12T13:41:03Z",
+        "default_branch": "dev",
+        "stars": 492,
+        "license": "Apache-2.0",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:35.944Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/tauri-apps/cef-rs/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.997Z",
+          "kind": "html",
+          "proof": "Issues · tauri-apps/cef-rs · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/tauri-apps/cef-rs/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.917Z",
+          "kind": "html",
+          "proof": "Pull requests · tauri-apps/cef-rs · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/tauri-apps/cef-rs/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.840Z",
+          "kind": "feed",
+          "proof": "export-cef-dir-v156.5.0+156.0.28 (2026-11-12T13:41:04Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/tauri-apps/cef-rs/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:36.229Z",
+          "kind": "html",
+          "proof": "Releases · tauri-apps/cef-rs · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        },
+        {
+          "name": "rust-cargo",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "156.4.0+156.0.26",
+        "published": "2026-11-08T04:58:20.101118Z",
+        "source": [
+          "https://crates.io/api/v1/crates/cef"
+        ],
+        "extra": {
+          "build_metadata": "156.0.26"
+        },
+        "fetched_at": "2026-11-14T21:46:32.266Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [
+        "cef"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "rusty-v8",
+      "name": "rusty_v8 (v8 crate)",
+      "role": "consumer",
+      "fork": false,
+      "repo": "https://github.com/denoland/rusty_v8",
+      "local": {
+        "path": "third_party/rusty_v8",
+        "exists": true,
+        "head": "55ca54ea97dbfcf80c5457924861b681bd83def2",
+        "date": "2026-10-21",
+        "origin": "https://github.com/aphrody-labs/rusty_v8.git",
+        "repo_root": "C:/src/third_party/rusty_v8"
+      },
+      "github": {
+        "full_name": "denoland/rusty_v8",
+        "archived": false,
+        "pushed_at": "2026-11-07T07:57:48Z",
+        "default_branch": "main",
+        "stars": 4041,
+        "license": "MIT",
+        "description": "Rust bindings for the V8 JavaScript engine",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:36.056Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/denoland/rusty_v8/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.944Z",
+          "kind": "html",
+          "proof": "Issues · denoland/rusty_v8 · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/denoland/rusty_v8/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:36.118Z",
+          "kind": "html",
+          "proof": "Pull requests · denoland/rusty_v8 · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/denoland/rusty_v8/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:35.790Z",
+          "kind": "feed",
+          "proof": "v152.2.0 (2026-08-20T20:41:26Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/denoland/rusty_v8/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:36.290Z",
+          "kind": "html",
+          "proof": "Releases · denoland/rusty_v8 · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        },
+        {
+          "name": "rust-cargo",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "152.2.0",
+        "published": "2026-08-20T18:33:32Z",
+        "source": [
+          "gh api repos/denoland/rusty_v8/releases/latest"
+        ],
+        "extra": {
+          "tag": "v152.2.0",
+          "name": "v152.2.0"
+        },
+        "fetched_at": "2026-11-14T21:46:32.242Z"
+      },
+      "v8": [
+        {
+          "value": "15.2.124.1",
+          "source": [
+            "gh api repos/denoland/rusty_v8/contents/v8?ref=v152.2.0",
+            "denoland/v8@c4ca1eccb90c5464d826b7713dc27178a53b0cfe:include/v8-version.h"
+          ],
+          "extra": {
+            "rusty_v8_tag": "v152.2.0",
+            "submodule": "c4ca1eccb90c5464d826b7713dc27178a53b0cfe"
+          },
+          "fetched_at": "2026-11-14T21:46:37.130Z"
+        }
+      ],
+      "pins": [],
+      "consumes": [
+        "v8"
+      ],
+      "consumed_by": [
+        "deno-core"
+      ]
+    },
+    {
+      "id": "deno-core",
+      "name": "deno_core",
+      "role": "consumer",
+      "fork": false,
+      "note": "denoland/deno_core is archived (merged into denoland/deno, libs/core); the v8 binding became deno_v8 (libs/deno_v8) over the v8 crate.",
+      "moved_from": "denoland/deno_core",
+      "repo": "https://github.com/denoland/deno",
+      "github": {
+        "full_name": "denoland/deno",
+        "archived": false,
+        "pushed_at": "2026-10-29T08:03:10Z",
+        "default_branch": "main",
+        "stars": 108882,
+        "license": "MIT",
+        "description": "A modern runtime for JavaScript and TypeScript.",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:37.187Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/denoland/deno/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:36.845Z",
+          "kind": "html",
+          "proof": "Issues · denoland/deno · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/denoland/deno/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:36.877Z",
+          "kind": "html",
+          "proof": "Pull requests · denoland/deno · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/denoland/deno/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:37.556Z",
+          "kind": "feed",
+          "proof": "v2.9.8 (2026-10-21T15:28:53Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/denoland/deno/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:37.811Z",
+          "kind": "html",
+          "proof": "Releases · denoland/deno · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        },
+        {
+          "name": "rust-cargo",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "0.413.0",
+        "published": "2026-10-21T11:50:43.129181Z",
+        "source": [
+          "https://crates.io/api/v1/crates/deno_core"
+        ],
+        "fetched_at": "2026-11-14T21:46:32.236Z"
+      },
+      "v8": [
+        {
+          "value": "15.0.245.2",
+          "source": [
+            "https://crates.io/api/v1/crates/deno_core/0.413.0/dependencies",
+            "https://crates.io/api/v1/crates/deno_v8/0.5.0/dependencies",
+            "gh api repos/denoland/rusty_v8/contents/v8?ref=v150.4.0",
+            "denoland/v8@ac1e23989121713ca642f6650b34deff7b686896:include/v8-version.h"
+          ],
+          "extra": {
+            "chain": [
+              "deno_core 0.413.0 (latest on crates.io)",
+              "deno_v8 ^0.5.0 -> 0.5.0",
+              "v8 ^150.4.0 -> 150.4.0"
+            ],
+            "v8_crate": "150.4.0"
+          },
+          "fetched_at": "2026-11-14T21:46:38.871Z"
+        }
+      ],
+      "pins": [],
+      "consumes": [
+        "rusty-v8"
+      ],
+      "consumed_by": [
+        "obscura"
+      ]
+    },
+    {
+      "id": "node",
+      "name": "Node.js (V8)",
+      "role": "consumer",
+      "fork": false,
+      "repo": "https://github.com/nodejs/node",
+      "local": {
+        "path": "third_party/node",
+        "exists": true,
+        "head": "6728a1cfe024be07f560f09ffa73f394704b5442",
+        "date": "2026-11-12",
+        "origin": "https://github.com/aphrody-labs/node.git",
+        "repo_root": "C:/src/third_party/node"
+      },
+      "github": {
+        "full_name": "nodejs/node",
+        "archived": false,
+        "pushed_at": "2026-11-14T21:25:02Z",
+        "default_branch": "main",
+        "stars": 123717,
+        "license": "NOASSERTION",
+        "description": "Node.js JavaScript runtime ✨🐢🚀✨",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:37.688Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/nodejs/node/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:37.635Z",
+          "kind": "html",
+          "proof": "Issues · nodejs/node · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/nodejs/node/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:37.763Z",
+          "kind": "html",
+          "proof": "Pull requests · nodejs/node · GitHub"
+        },
+        "news": {
+          "url": "https://nodejs.org/en/feed/releases.xml",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:37.247Z",
+          "kind": "feed",
+          "proof": "Node.js 27.0.0-alpha.0.1.0 (Alpha) (Thu, 12 Nov 2026 13:36:10 GMT)"
+        },
+        "changelog": {
+          "url": "https://github.com/nodejs/node/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.167Z",
+          "kind": "html",
+          "proof": "Releases · nodejs/node · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        },
+        {
+          "name": "bun",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "27.0.0-alpha.0.1.0",
+        "published": "2026-11-12T13:35:13Z",
+        "source": [
+          "gh api repos/nodejs/node/releases/latest"
+        ],
+        "extra": {
+          "tag": "v27.0.0-alpha.0.1.0",
+          "name": "2026-11-12, Version 27.0.0-alpha.0.1.0 (Alpha), @aduh95"
+        },
+        "fetched_at": "2026-11-14T21:46:32.262Z"
+      },
+      "v8": [
+        {
+          "value": "15.6.75.50",
+          "source": [
+            "gh api repos/nodejs/node/contents/deps/v8/include/v8-version.h?ref=main"
+          ],
+          "extra": {
+            "ref": "main"
+          },
+          "fetched_at": "2026-11-14T21:46:37.531Z",
+          "label": "main"
+        },
+        {
+          "value": "15.6.75.50",
+          "source": [
+            "gh api repos/nodejs/node/contents/deps/v8/include/v8-version.h?ref=v27.0.0-alpha.0.1.0"
+          ],
+          "extra": {
+            "ref": "v27.0.0-alpha.0.1.0"
+          },
+          "fetched_at": "2026-11-14T21:46:37.982Z",
+          "label": "latest release"
+        },
+        {
+          "value": "14.6.202.34",
+          "source": [
+            "gh api repos/nodejs/node/contents/deps/v8/include/v8-version.h?ref=v26.13.1"
+          ],
+          "extra": {
+            "ref": "v26.13.1"
+          },
+          "fetched_at": "2026-11-14T21:46:37.787Z",
+          "label": "LTS"
+        }
+      ],
+      "pins": [],
+      "consumes": [
+        "v8"
+      ],
+      "consumed_by": [
+        "electron"
+      ]
+    },
+    {
+      "id": "electron",
+      "name": "Electron",
+      "role": "consumer",
+      "fork": true,
+      "repo": "https://github.com/electron/electron",
+      "github": {
+        "full_name": "electron/electron",
+        "archived": false,
+        "pushed_at": "2026-11-14T20:27:39Z",
+        "default_branch": "main",
+        "stars": 123901,
+        "license": "MIT",
+        "description": ":electron: Build cross-platform desktop apps with JavaScript, HTML, and CSS",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:38.644Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/electron/electron/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.682Z",
+          "kind": "html",
+          "proof": "Issues · electron/electron · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/electron/electron/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.735Z",
+          "kind": "html",
+          "proof": "Pull requests · electron/electron · GitHub"
+        },
+        "news": {
+          "url": "https://www.electronjs.org/blog/rss.xml",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.074Z",
+          "kind": "feed",
+          "proof": "Electron 45 (Wed, 21 Oct 2026 00:00:00 GMT)"
+        },
+        "changelog": {
+          "url": "https://releases.electronjs.org/releases/stable",
+          "status": 200,
+          "final_url": "https://releases.electronjs.org/release?channel=stable",
+          "fetched_at": "2026-11-14T21:46:38.640Z",
+          "kind": "html",
+          "proof": "All | Electron Releases"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "45.3.3",
+        "chromium": "156.0.8078.100",
+        "published": "2026-11-14T19:14:30.000Z",
+        "source": [
+          "https://electronjs.org/headers/index.json"
+        ],
+        "extra": {
+          "v8": "15.6.75.57-electron.0",
+          "node": "24.22.3"
+        },
+        "fetched_at": "2026-11-14T21:46:33.678Z"
+      },
+      "v8": [
+        {
+          "value": "15.6.75.57-electron.0",
+          "chromium": "156.0.8078.100",
+          "published": "2026-11-14T19:14:30.000Z",
+          "source": [
+            "https://electronjs.org/headers/index.json"
+          ],
+          "extra": {
+            "v8": "15.6.75.57-electron.0",
+            "node": "24.22.3"
+          },
+          "fetched_at": "2026-11-14T21:46:38.387Z"
+        }
+      ],
+      "pins": [
+        {
+          "value": "160.0.8158.0",
+          "source": [
+            "gh api repos/electron/electron/contents/DEPS?ref=main"
+          ],
+          "fetched_at": "2026-11-14T21:46:38.578Z",
+          "label": "main chromium_version (DEPS)"
+        },
+        {
+          "value": "v26.13.1",
+          "source": [
+            "gh api repos/electron/electron/contents/DEPS?ref=main"
+          ],
+          "fetched_at": "2026-11-14T21:46:38.532Z",
+          "label": "main node_version (DEPS)"
+        }
+      ],
+      "consumes": [
+        "chromium",
+        "node"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "obscura",
+      "name": "Obscura",
+      "role": "consumer",
+      "fork": false,
+      "repo": "https://github.com/h4ckf0r0day/obscura",
+      "local": {
+        "path": "third_party/obscura",
+        "exists": true,
+        "head": "0d9a2f764ffdb097269da048002c593865e83a9e",
+        "date": "2026-11-14",
+        "origin": "https://github.com/aphrody-labs/obscura.git",
+        "repo_root": "C:/src/third_party/obscura"
+      },
+      "github": {
+        "full_name": "h4ckf0r0day/obscura",
+        "archived": false,
+        "pushed_at": "2026-11-14T10:15:25Z",
+        "default_branch": "main",
+        "stars": 35396,
+        "license": "Apache-2.0",
+        "description": "The headless browser for AI agents and web scraping",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:38.706Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/h4ckf0r0day/obscura/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.623Z",
+          "kind": "html",
+          "proof": "Issues · h4ckf0r0day/obscura · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/h4ckf0r0day/obscura/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.851Z",
+          "kind": "html",
+          "proof": "Pull requests · h4ckf0r0day/obscura · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/h4ckf0r0day/obscura/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.846Z",
+          "kind": "feed",
+          "proof": "v0.2.7 (2026-11-13T22:42:47Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/h4ckf0r0day/obscura/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.581Z",
+          "kind": "html",
+          "proof": "Releases · h4ckf0r0day/obscura · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        },
+        {
+          "name": "rust-cargo",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "0.2.7",
+        "published": "2026-11-13T22:01:14Z",
+        "source": [
+          "gh api repos/h4ckf0r0day/obscura/releases/latest"
+        ],
+        "extra": {
+          "tag": "v0.2.7",
+          "name": "v0.2.7"
+        },
+        "fetched_at": "2026-11-14T21:46:32.846Z"
+      },
+      "v8": [
+        {
+          "value": "15.0.245.2",
+          "source": [
+            "gh api repos/h4ckf0r0day/obscura/contents/crates/obscura-js/Cargo.toml",
+            "https://crates.io/api/v1/crates/deno_core/0.412.0/dependencies",
+            "https://crates.io/api/v1/crates/deno_v8/0.4.0/dependencies",
+            "gh api repos/denoland/rusty_v8/contents/v8?ref=v150.4.0",
+            "denoland/v8@ac1e23989121713ca642f6650b34deff7b686896:include/v8-version.h"
+          ],
+          "extra": {
+            "chain": [
+              "deno_core 0.412 -> 0.412.0",
+              "deno_v8 ^0.4.0 -> 0.4.0",
+              "v8 ^150.4.0 -> 150.4.0"
+            ],
+            "v8_crate": "150.4.0"
+          },
+          "fetched_at": "2026-11-14T21:46:39.904Z"
+        }
+      ],
+      "pins": [
+        {
+          "value": "0.412",
+          "source": [
+            "local:third_party/obscura/crates/obscura-js/Cargo.toml"
+          ],
+          "fetched_at": "2026-11-14T21:46:38.177Z",
+          "label": "local clone deno_core requirement"
+        },
+        {
+          "value": "0.412",
+          "source": [
+            "gh api repos/h4ckf0r0day/obscura/contents/crates/obscura-js/Cargo.toml?ref=main"
+          ],
+          "fetched_at": "2026-11-14T21:46:38.601Z",
+          "label": "upstream main deno_core requirement"
+        }
+      ],
+      "consumes": [
+        "deno-core"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "agent-browser",
+      "name": "agent-browser",
+      "role": "consumer",
+      "fork": false,
+      "repo": "https://github.com/vercel-labs/agent-browser",
+      "local": {
+        "path": "third_party/agent-browser",
+        "exists": true,
+        "head": "d129226078e0fc8ee5dec48fbc96a46df5d0aafd",
+        "date": "2026-11-10",
+        "origin": "https://github.com/aphrody-labs/agent-browser.git",
+        "repo_root": "C:/src/third_party/agent-browser"
+      },
+      "github": {
+        "full_name": "vercel-labs/agent-browser",
+        "archived": false,
+        "pushed_at": "2026-11-14T21:20:47Z",
+        "default_branch": "main",
+        "stars": 51158,
+        "license": "Apache-2.0",
+        "description": "Browser automation CLI for AI agents",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:38.801Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/vercel-labs/agent-browser/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.755Z",
+          "kind": "html",
+          "proof": "Issues · vercel-labs/agent-browser · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/vercel-labs/agent-browser/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.877Z",
+          "kind": "html",
+          "proof": "Pull requests · vercel-labs/agent-browser · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/vercel-labs/agent-browser/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:38.965Z",
+          "kind": "feed",
+          "proof": "v0.43.0 (2026-11-12T23:09:31Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/vercel-labs/agent-browser/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.070Z",
+          "kind": "html",
+          "proof": "Releases · vercel-labs/agent-browser · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "agent-browser",
+          "exists": true
+        },
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "0.43.0",
+        "published": "2026-11-12T23:09:31Z",
+        "source": [
+          "gh api repos/vercel-labs/agent-browser/releases/latest"
+        ],
+        "extra": {
+          "tag": "v0.43.0",
+          "name": "v0.43.0"
+        },
+        "fetched_at": "2026-11-14T21:46:32.758Z"
+      },
+      "chrome": {
+        "value": "157.0.8103.78",
+        "chromium": "157.0.8103.78",
+        "source": [
+          "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"
+        ],
+        "fetched_at": "2026-11-14T21:46:32.758Z"
+      },
+      "v8": [
+        {
+          "value": "15.7.112.43",
+          "chromium": "157.0.8103.78",
+          "source": [
+            "https://chromium.googlesource.com/chromium/src/+/refs/tags/157.0.8103.78/DEPS",
+            "https://chromium.googlesource.com/v8/v8/+/307108153d1e35e6e74528ee55f97b0cd59bf182/include/v8-version.h"
+          ],
+          "extra": {
+            "v8_revision": "307108153d1e35e6e74528ee55f97b0cd59bf182"
+          },
+          "fetched_at": "2026-11-14T21:46:38.537Z"
+        }
+      ],
+      "pins": [
+        {
+          "value": "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json",
+          "source": [
+            "gh api repos/vercel-labs/agent-browser/contents/cli/src/install.rs?ref=main"
+          ],
+          "fetched_at": "2026-11-14T21:46:38.799Z",
+          "label": "Chrome download source (install.rs)"
+        }
+      ],
+      "consumes": [
+        "chrome-for-testing"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "lightpanda-zig-v8",
+      "name": "Lightpanda zig-v8",
+      "role": "consumer",
+      "fork": false,
+      "note": "Tracked as a V8 consumer only; Lightpanda is no longer an engine of the stack (768dd797), no clone.",
+      "repo": "https://github.com/lightpanda-io/zig-v8-fork",
+      "github": {
+        "full_name": "lightpanda-io/zig-v8-fork",
+        "archived": false,
+        "pushed_at": "2026-11-10T13:53:43Z",
+        "default_branch": "fork",
+        "stars": 42,
+        "license": "MIT",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:39.419Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/lightpanda-io/zig-v8-fork/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.285Z",
+          "kind": "html",
+          "proof": "Issues · lightpanda-io/zig-v8-fork · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/lightpanda-io/zig-v8-fork/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.399Z",
+          "kind": "html",
+          "proof": "Pull requests · lightpanda-io/zig-v8-fork · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/lightpanda-io/zig-v8-fork/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.351Z",
+          "kind": "feed",
+          "proof": "v0.6.2 (2026-11-03T10:14:43Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/lightpanda-io/zig-v8-fork/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.509Z",
+          "kind": "html",
+          "proof": "Releases · lightpanda-io/zig-v8-fork · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "0.6.2",
+        "published": "2026-11-03T07:53:40Z",
+        "source": [
+          "gh api repos/lightpanda-io/zig-v8-fork/releases/latest"
+        ],
+        "extra": {
+          "tag": "v0.6.2",
+          "name": "v0.6.2"
+        },
+        "fetched_at": "2026-11-14T21:46:32.792Z"
+      },
+      "v8": [
+        {
+          "value": "15.5.35.13",
+          "source": [
+            "gh api repos/lightpanda-io/zig-v8-fork/contents/build.zig?ref=fork"
+          ],
+          "fetched_at": "2026-11-14T21:46:39.355Z"
+        }
+      ],
+      "pins": [
+        {
+          "value": "0c73cd1732df59b34f4fe4105edba74c42604f3a",
+          "source": [
+            "gh api repos/lightpanda-io/browser/contents/build.zig.zon?ref=main"
+          ],
+          "fetched_at": "2026-11-14T21:46:39.338Z",
+          "label": "pinned by lightpanda-io/browser (build.zig.zon)"
+        }
+      ],
+      "consumes": [
+        "v8"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "brave",
+      "name": "Brave",
+      "role": "fork",
+      "fork": true,
+      "repo": "https://github.com/brave/brave-browser",
+      "github": {
+        "full_name": "brave/brave-browser",
+        "archived": false,
+        "pushed_at": "2026-11-14T00:35:44Z",
+        "default_branch": "master",
+        "stars": 24217,
+        "license": "MPL-2.0",
+        "description": "Brave browser for Android, iOS, Linux, macOS, Windows.",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:39.632Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/brave/brave-browser/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.598Z",
+          "kind": "html",
+          "proof": "Issues · brave/brave-browser · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/brave/brave-core/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.673Z",
+          "kind": "html",
+          "proof": "Pull requests · brave/brave-core · GitHub"
+        },
+        "news": {
+          "url": "https://brave.com/latest/",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.151Z",
+          "kind": "html",
+          "proof": "Brave Release Notes | Brave"
+        },
+        "changelog": {
+          "url": "https://brave.com/latest/",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.161Z",
+          "kind": "html",
+          "proof": "Brave Release Notes | Brave"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "1.99.57",
+        "chromium": "157.0.8103.79",
+        "published": "2026-11-12T04:08:44Z",
+        "source": [
+          "gh api repos/brave/brave-browser/releases/latest"
+        ],
+        "extra": {
+          "tag": "v1.99.57",
+          "name": "Release v1.99.57 (Chromium 157.0.8103.79) "
+        },
+        "fetched_at": "2026-11-14T21:46:32.766Z"
+      },
+      "v8": [
+        {
+          "value": "15.7.112.43",
+          "chromium": "157.0.8103.79",
+          "source": [
+            "https://chromium.googlesource.com/chromium/src/+/refs/tags/157.0.8103.79/DEPS",
+            "https://chromium.googlesource.com/v8/v8/+/307108153d1e35e6e74528ee55f97b0cd59bf182/include/v8-version.h"
+          ],
+          "extra": {
+            "v8_revision": "307108153d1e35e6e74528ee55f97b0cd59bf182"
+          },
+          "fetched_at": "2026-11-14T21:46:39.454Z"
+        }
+      ],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "edge",
+      "name": "Microsoft Edge",
+      "role": "fork",
+      "fork": true,
+      "note": "Closed source; issues and PRs are the MSEdgeExplainers repository.",
+      "links": {
+        "issues": {
+          "url": "https://github.com/MicrosoftEdge/MSEdgeExplainers/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.624Z",
+          "kind": "html",
+          "proof": "Issues · MicrosoftEdge/MSEdgeExplainers · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/MicrosoftEdge/MSEdgeExplainers/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.654Z",
+          "kind": "html",
+          "proof": "Pull requests · MicrosoftEdge/MSEdgeExplainers · GitHub"
+        },
+        "news": {
+          "url": "https://blogs.windows.com/msedgedev/feed/",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.813Z",
+          "kind": "feed",
+          "proof": "Shop faster and save money with built-in tools in Microsoft Edge (Mon, 09 Nov 2026 16:55:05 +0000)"
+        },
+        "changelog": {
+          "url": "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-relnote-stable-channel",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.191Z",
+          "kind": "html",
+          "proof": "Microsoft Edge release notes for Stable Channel | Microsoft Learn"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "157.0.4341.60",
+        "published": "2026-11-13T22:33:00",
+        "source": [
+          "https://edgeupdates.microsoft.com/api/products"
+        ],
+        "extra": {
+          "chromium_major": "157",
+          "beta": "158.0.4370.21",
+          "note": "Edge version = Chromium major + Edge build; the Chromium build number is not published"
+        },
+        "fetched_at": "2026-11-14T21:46:32.612Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "vivaldi",
+      "name": "Vivaldi",
+      "role": "fork",
+      "fork": true,
+      "note": "Closed source UI over Chromium; no public code repository.",
+      "links": {
+        "issues": {
+          "url": "https://vivaldi.com/bugreport/",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.638Z",
+          "kind": "html",
+          "proof": "Report a Bug | Vivaldi Browser"
+        },
+        "news": {
+          "url": "https://vivaldi.com/blog/desktop/feed/",
+          "status": 200,
+          "final_url": "https://vivaldi.com/category/desktop/feed/",
+          "fetched_at": "2026-11-14T21:46:40.278Z",
+          "kind": "feed",
+          "proof": "Minor update (3) for Desktop 8.3 (Fri, 13 Nov 2026 11:04:54 +0000)"
+        },
+        "changelog": {
+          "url": "https://vivaldi.com/blog/desktop/",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.643Z",
+          "kind": "html",
+          "proof": "Desktop Browser | Vivaldi Blog"
+        },
+        "source": {
+          "url": "https://vivaldi.com/source/",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.696Z",
+          "kind": "html",
+          "proof": "Source | Vivaldi Browser"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "Minor update (3) for Desktop 8.3",
+        "published": "Fri, 13 Nov 2026 11:04:54 +0000",
+        "source": [
+          "https://vivaldi.com/blog/desktop/feed/"
+        ],
+        "extra": {
+          "link": "https://vivaldi.com/blog/desktop/minor-update-three-8-3/"
+        },
+        "fetched_at": "2026-11-14T21:46:33.791Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "opera",
+      "name": "Opera",
+      "role": "fork",
+      "fork": true,
+      "note": "Closed source UI over Chromium; no public code repository or public issue tracker.",
+      "links": {
+        "news": {
+          "url": "https://blogs.opera.com/desktop/feed/",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.706Z",
+          "kind": "feed",
+          "proof": "Opera 140 Stable (Tue, 10 Nov 2026 12:00:15 +0000)"
+        },
+        "changelog": {
+          "url": "https://blogs.opera.com/desktop/",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:39.732Z",
+          "kind": "html",
+          "proof": "Opera Desktop Team&#039;s Blog | Opera"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "Opera 140 Stable",
+        "published": "Tue, 10 Nov 2026 12:00:15 +0000",
+        "source": [
+          "https://blogs.opera.com/desktop/feed/"
+        ],
+        "extra": {
+          "link": "https://blogs.opera.com/desktop/2026/11/opera-140-stable/"
+        },
+        "fetched_at": "2026-11-14T21:46:32.912Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "ungoogled-chromium",
+      "name": "ungoogled-chromium",
+      "role": "fork",
+      "fork": true,
+      "repo": "https://github.com/ungoogled-software/ungoogled-chromium",
+      "github": {
+        "full_name": "ungoogled-software/ungoogled-chromium",
+        "archived": false,
+        "pushed_at": "2026-11-13T12:05:44Z",
+        "default_branch": "master",
+        "stars": 28249,
+        "license": "BSD-3-Clause",
+        "description": "Google Chromium, sans integration with Google",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:40.254Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/ungoogled-software/ungoogled-chromium/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.225Z",
+          "kind": "html",
+          "proof": "Issues · ungoogled-software/ungoogled-chromium · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/ungoogled-software/ungoogled-chromium/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.206Z",
+          "kind": "html",
+          "proof": "Pull requests · ungoogled-software/ungoogled-chromium · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/ungoogled-software/ungoogled-chromium/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.069Z",
+          "kind": "feed",
+          "proof": "157.0.8103.78-1 (2026-11-13T12:05:51Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/ungoogled-software/ungoogled-chromium/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.506Z",
+          "kind": "html",
+          "proof": "Releases · ungoogled-software/ungoogled-chromium · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "157.0.8103.78",
+        "chromium": "157.0.8103.78",
+        "source": [
+          "gh api repos/ungoogled-software/ungoogled-chromium/contents/chromium_version.txt?ref=master"
+        ],
+        "fetched_at": "2026-11-14T21:46:33.179Z"
+      },
+      "v8": [
+        {
+          "value": "15.7.112.43",
+          "chromium": "157.0.8103.78",
+          "source": [
+            "https://chromium.googlesource.com/chromium/src/+/refs/tags/157.0.8103.78/DEPS",
+            "https://chromium.googlesource.com/v8/v8/+/307108153d1e35e6e74528ee55f97b0cd59bf182/include/v8-version.h"
+          ],
+          "extra": {
+            "v8_revision": "307108153d1e35e6e74528ee55f97b0cd59bf182"
+          },
+          "fetched_at": "2026-11-14T21:46:39.734Z"
+        }
+      ],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "thorium",
+      "name": "Thorium",
+      "role": "fork",
+      "fork": true,
+      "repo": "https://github.com/Alex313031/thorium",
+      "github": {
+        "full_name": "Alex313031/thorium",
+        "archived": false,
+        "pushed_at": "2026-11-14T02:38:19Z",
+        "default_branch": "main",
+        "stars": 7644,
+        "license": "BSD-3-Clause",
+        "description": "Chromium fork named after radioactive element No. 90. Source code and Linux releases. Windows/MacOS/ARM builds served in different repos, links are towards the top of the README.md.",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:40.373Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/Alex313031/thorium/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.332Z",
+          "kind": "html",
+          "proof": "Issues · Alex313031/thorium · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/Alex313031/thorium/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.268Z",
+          "kind": "html",
+          "proof": "Pull requests · Alex313031/thorium · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/Alex313031/thorium/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.106Z",
+          "kind": "feed",
+          "proof": "M156 Beta V1 Release! (2026-11-09T02:59:07Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/Alex313031/thorium/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.479Z",
+          "kind": "html",
+          "proof": "Releases · Alex313031/thorium · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "M156.0.8078.80",
+        "chromium": "156.0.8078.80",
+        "published": "2026-11-09T02:59:07Z",
+        "source": [
+          "gh api repos/Alex313031/thorium/releases/latest"
+        ],
+        "extra": {
+          "tag": "M156.0.8078.80",
+          "name": "M156 Beta V1 Release!"
+        },
+        "fetched_at": "2026-11-14T21:46:33.289Z"
+      },
+      "v8": [
+        {
+          "value": "15.6.75.27",
+          "chromium": "156.0.8078.80",
+          "source": [
+            "https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.80/DEPS",
+            "https://chromium.googlesource.com/v8/v8/+/c9b3cfcab30ace06c21f9b48a0f0a34805e81e9d/include/v8-version.h"
+          ],
+          "extra": {
+            "v8_revision": "c9b3cfcab30ace06c21f9b48a0f0a34805e81e9d"
+          },
+          "fetched_at": "2026-11-14T21:46:40.165Z"
+        }
+      ],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "helium",
+      "name": "Helium",
+      "role": "fork",
+      "fork": true,
+      "repo": "https://github.com/imputnet/helium",
+      "github": {
+        "full_name": "imputnet/helium",
+        "archived": false,
+        "pushed_at": "2026-11-13T16:27:14Z",
+        "default_branch": "main",
+        "stars": 22706,
+        "license": "GPL-3.0",
+        "description": "Private, fast, and honest web browser",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:40.489Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/imputnet/helium/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.482Z",
+          "kind": "html",
+          "proof": "Issues · imputnet/helium · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/imputnet/helium/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.582Z",
+          "kind": "html",
+          "proof": "Pull requests · imputnet/helium · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/imputnet/helium/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.227Z",
+          "kind": "feed",
+          "proof": "0.21.3 (2026-11-12T17:05:40Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/imputnet/helium/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.587Z",
+          "kind": "html",
+          "proof": "Releases · imputnet/helium · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "0.21.3",
+        "published": "2026-11-12T17:05:40Z",
+        "source": [
+          "gh api repos/imputnet/helium/releases/latest"
+        ],
+        "extra": {
+          "tag": "0.21.3",
+          "name": "0.21.3"
+        },
+        "fetched_at": "2026-11-14T21:46:33.245Z"
+      },
+      "v8": [
+        {
+          "value": "15.7.112.43",
+          "chromium": "157.0.8103.78",
+          "source": [
+            "https://chromium.googlesource.com/chromium/src/+/refs/tags/157.0.8103.78/DEPS",
+            "https://chromium.googlesource.com/v8/v8/+/307108153d1e35e6e74528ee55f97b0cd59bf182/include/v8-version.h"
+          ],
+          "extra": {
+            "v8_revision": "307108153d1e35e6e74528ee55f97b0cd59bf182"
+          },
+          "fetched_at": "2026-11-14T21:46:40.362Z"
+        }
+      ],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "cromite",
+      "name": "Cromite",
+      "role": "fork",
+      "fork": true,
+      "repo": "https://github.com/uazo/cromite",
+      "github": {
+        "full_name": "uazo/cromite",
+        "archived": false,
+        "pushed_at": "2026-11-14T07:43:02Z",
+        "default_branch": "master",
+        "stars": 8502,
+        "license": "GPL-3.0",
+        "description": "Cromite a Bromite fork with ad blocking and privacy enhancements; take back your browser!",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:41.057Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/uazo/cromite/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.948Z",
+          "kind": "html",
+          "proof": "Issues · uazo/cromite · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/uazo/cromite/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.879Z",
+          "kind": "html",
+          "proof": "Pull requests · uazo/cromite · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/uazo/cromite/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.644Z",
+          "kind": "feed",
+          "proof": "v153.0.8010.37-11507ac1061b5ea227806f5e84db5a57df6ccf6a (2026-09-15T11:51:14Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/uazo/cromite/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:41.077Z",
+          "kind": "html",
+          "proof": "Releases · uazo/cromite · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "153.0.8010.37-11507ac1061b5ea227806f5e84db5a57df6ccf6a",
+        "chromium": "153.0.8010.37",
+        "published": "2026-09-15T11:51:14Z",
+        "source": [
+          "gh api repos/uazo/cromite/releases/latest"
+        ],
+        "extra": {
+          "tag": "v153.0.8010.37-11507ac1061b5ea227806f5e84db5a57df6ccf6a",
+          "name": "v153.0.8010.37-11507ac1061b5ea227806f5e84db5a57df6ccf6a"
+        },
+        "fetched_at": "2026-11-14T21:46:33.323Z"
+      },
+      "v8": [
+        {
+          "value": "15.3.76.10",
+          "chromium": "153.0.8010.37",
+          "source": [
+            "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.37/DEPS",
+            "https://chromium.googlesource.com/v8/v8/+/f343157cebb388bfa416baccb5d35507e6fe8cc7/include/v8-version.h"
+          ],
+          "extra": {
+            "v8_revision": "f343157cebb388bfa416baccb5d35507e6fe8cc7"
+          },
+          "fetched_at": "2026-11-14T21:46:40.660Z"
+        }
+      ],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": []
+    },
+    {
+      "id": "supermium",
+      "name": "Supermium",
+      "role": "fork",
+      "fork": true,
+      "repo": "https://github.com/win32ss/supermium",
+      "github": {
+        "full_name": "win32ss/supermium",
+        "archived": false,
+        "pushed_at": "2026-11-05T07:56:35Z",
+        "default_branch": "main",
+        "stars": 4890,
+        "description": "Chromium fork for Windows XP/2003 and up",
+        "has_issues": true,
+        "fetched_at": "2026-11-14T21:46:41.040Z"
+      },
+      "links": {
+        "issues": {
+          "url": "https://github.com/win32ss/supermium/issues",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.944Z",
+          "kind": "html",
+          "proof": "Issues · win32ss/supermium · GitHub"
+        },
+        "prs": {
+          "url": "https://github.com/win32ss/supermium/pulls",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.886Z",
+          "kind": "html",
+          "proof": "Pull requests · win32ss/supermium · GitHub"
+        },
+        "news": {
+          "url": "https://github.com/win32ss/supermium/releases.atom",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:40.765Z",
+          "kind": "feed",
+          "proof": "Release 150.0.7871.255 R2.02 (2026-11-05T07:56:35Z)"
+        },
+        "changelog": {
+          "url": "https://github.com/win32ss/supermium/releases",
+          "status": 200,
+          "fetched_at": "2026-11-14T21:46:41.195Z",
+          "kind": "html",
+          "proof": "Releases · win32ss/supermium · GitHub"
+        }
+      },
+      "skills": [
+        {
+          "name": "browser-engines",
+          "exists": true
+        }
+      ],
+      "version": {
+        "value": "150-r2.02",
+        "published": "2026-11-05T07:56:35Z",
+        "source": [
+          "gh api repos/win32ss/supermium/releases/latest"
+        ],
+        "extra": {
+          "tag": "v150-r2.02",
+          "name": "Release 150.0.7871.255 R2.02"
+        },
+        "fetched_at": "2026-11-14T21:46:33.561Z"
+      },
+      "v8": [],
+      "pins": [],
+      "consumes": [
+        "chromium"
+      ],
+      "consumed_by": []
+    }
+  ],
+  "conflicts": [
+    "chromiumdash stable: Windows 158.0.8127.37 but Linux 157.0.8103.78 (staged rollout: Linux factory builds follow Linux)",
+    "Chrome for Testing stable=157.0.8103.78 differs from chromiumdash Windows stable=158.0.8127.37 (CfT lags the release)",
+    "third_party/chrome-channels.toml beta=158.0.8127.18 but chromiumdash Linux beta=159.0.8154.6",
+    "third_party/chrome-channels.toml dev=159.0.8144.0 but chromiumdash Linux dev=160.0.8157.0",
+    "third_party/chrome-channels.toml canary=160.0.8157.0 but chromiumdash Linux canary=160.0.8162.0",
+    "checkout third_party/chromium/src = 160.0.8158.0; canary = 160.0.8162.0",
+    "cef: Chromium 156.0.8078.96 is 2 milestone(s) behind Windows Stable 158.0.8127.37",
+    "electron: Chromium 156.0.8078.100 is 2 milestone(s) behind Windows Stable 158.0.8127.37",
+    "brave: Chromium 157.0.8103.79 is 1 milestone(s) behind Windows Stable 158.0.8127.37",
+    "ungoogled-chromium: Chromium 157.0.8103.78 is 1 milestone(s) behind Windows Stable 158.0.8127.37",
+    "thorium: Chromium 156.0.8078.80 is 2 milestone(s) behind Windows Stable 158.0.8127.37",
+    "cromite: Chromium 153.0.8010.37 is 5 milestone(s) behind Windows Stable 158.0.8127.37"
+  ]
+}

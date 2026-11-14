@@ -1,0 +1,16 @@
+Name: DirectX-Headers
+URL: https://github.com/microsoft/DirectX-Headers
+Version: N/A
+Date: 2026-11-09
+Revision: 61c7718954ec73dbdd43c723240fe1a0452a3724
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/DirectX-Headers/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/microsoft/DirectX-Headers, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/DirectX-Headers) carries the patch stack.

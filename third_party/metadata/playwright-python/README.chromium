@@ -1,0 +1,16 @@
+Name: playwright-python
+URL: https://github.com/microsoft/playwright-python
+Version: N/A
+Date: 2026-11-12
+Revision: b36f716b50808af0ef031fda06546f97b407ddcc
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/playwright-python/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/microsoft/playwright-python, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/playwright-python) carries the patch stack.

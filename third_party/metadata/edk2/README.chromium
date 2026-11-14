@@ -1,0 +1,16 @@
+Name: edk2
+URL: https://github.com/tianocore/edk2
+Version: N/A
+Date: 2026-11-11
+Revision: d560b504564d0089c5c97af30799b89b3babc1c6
+Update Mechanism: Manual
+License: BSD-3-Clause, BSD-2-Clause
+License File: /third_party/edk2/License-History.txt
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tianocore/edk2, pinned in src.lock.json.
+
+Local Modifications:
+None

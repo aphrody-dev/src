@@ -1,0 +1,16 @@
+Name: tailwindcss
+URL: https://github.com/tailwindlabs/tailwindcss
+Version: N/A
+Date: 2026-11-14
+Revision: 8ed754c0e83787215529a6d100eb7e5bdf9f5607
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tailwindcss/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tailwindlabs/tailwindcss, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/tailwindcss) carries the patch stack.

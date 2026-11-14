@@ -1,0 +1,16 @@
+Name: fmt
+URL: https://github.com/fmtlib/fmt
+Version: N/A
+Date: 2026-11-11
+Revision: 4229eb5820af49bf797641168624c8a754a1a4eb
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/fmt/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/fmtlib/fmt, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/fmt) carries the patch stack.

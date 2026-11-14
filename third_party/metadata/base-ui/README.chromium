@@ -1,0 +1,16 @@
+Name: base-ui
+URL: https://github.com/mui/base-ui
+Version: N/A
+Date: 2026-11-14
+Revision: 6b3b5642d74d0004b5dbe122658262386c429dc5
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/base-ui/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/mui/base-ui, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/base-ui) carries the patch stack.

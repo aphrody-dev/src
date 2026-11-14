@@ -1,0 +1,16 @@
+Name: tree-sitter-cyberchef
+URL: https://github.com/tree-sitter-grammars/tree-sitter-cyberchef
+Version: N/A
+Date: 2026-03-18
+Revision: 8bad395b98253324085b4b5227b14d4988f374b7
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-cyberchef/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-cyberchef, pinned in src.lock.json.
+
+Local Modifications:
+None

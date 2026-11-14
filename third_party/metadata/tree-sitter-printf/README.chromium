@@ -1,0 +1,16 @@
+Name: tree-sitter-printf
+URL: https://github.com/tree-sitter-grammars/tree-sitter-printf
+Version: N/A
+Date: 2025-07-16
+Revision: ec4e5674573d5554fccb87a887c97d4aec489da7
+Update Mechanism: Manual
+License: ISC
+License File: /third_party/tree-sitter-printf/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-printf, pinned in src.lock.json.
+
+Local Modifications:
+None

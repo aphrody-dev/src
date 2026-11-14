@@ -1,0 +1,16 @@
+Name: acp-rust-sdk
+URL: https://github.com/agentclientprotocol/rust-sdk
+Version: N/A
+Date: 2026-11-10
+Revision: 91d368ad8b6761f314da9095c4a030d365c079a9
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/acp-rust-sdk/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/agentclientprotocol/rust-sdk, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/acp-rust-sdk) carries the patch stack.

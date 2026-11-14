@@ -1,0 +1,16 @@
+Name: tree-sitter-wgsl
+URL: https://github.com/szebniok/tree-sitter-wgsl
+Version: N/A
+Date: 2023-01-09
+Revision: 40259f3c77ea856841a4e0c4c807705f3e4a2b65
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-wgsl/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/szebniok/tree-sitter-wgsl, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: Vulkan-Loader
+URL: https://github.com/KhronosGroup/Vulkan-Loader
+Version: N/A
+Date: 2026-11-12
+Revision: 850cfffb7333a5b8440f2f37ac5cd08d1fc80613
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/Vulkan-Loader/LICENSE.txt
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/KhronosGroup/Vulkan-Loader, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/Vulkan-Loader) carries the patch stack.

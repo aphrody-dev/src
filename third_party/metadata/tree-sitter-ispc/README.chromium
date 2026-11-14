@@ -1,0 +1,16 @@
+Name: tree-sitter-ispc
+URL: https://github.com/tree-sitter-grammars/tree-sitter-ispc
+Version: N/A
+Date: 2026-05-17
+Revision: ba1bb38ac8ddfa6aa7571cbfe9b4d029f7f77447
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/tree-sitter-ispc/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-ispc, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: Vulkan-Tools
+URL: https://github.com/KhronosGroup/Vulkan-Tools
+Version: N/A
+Date: 2026-11-05
+Revision: 1d3fbab1ff5abce9f3eb9f3e7fcf66f455ae4475
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/Vulkan-Tools/LICENSE.txt
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/KhronosGroup/Vulkan-Tools, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/Vulkan-Tools) carries the patch stack.

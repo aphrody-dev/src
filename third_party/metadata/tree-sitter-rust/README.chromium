@@ -1,0 +1,16 @@
+Name: tree-sitter-rust
+URL: https://github.com/tree-sitter/tree-sitter-rust
+Version: N/A
+Date: 2026-03-27
+Revision: 77a3747266f4d621d0757825e6b11edcbf991ca5
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-rust/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-rust, pinned in src.lock.json.
+
+Local Modifications:
+None

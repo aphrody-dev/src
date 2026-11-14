@@ -1,0 +1,16 @@
+Name: tree-sitter-scss
+URL: https://github.com/tree-sitter-grammars/tree-sitter-scss
+Version: N/A
+Date: 2026-10-05
+Revision: 5da5ba71a558b007b352c505bfcd9095ae337022
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-scss/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-scss, pinned in src.lock.json.
+
+Local Modifications:
+None

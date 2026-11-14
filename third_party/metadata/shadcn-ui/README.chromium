@@ -1,0 +1,16 @@
+Name: shadcn-ui
+URL: https://github.com/shadcn-ui/ui
+Version: N/A
+Date: 2026-11-14
+Revision: 88cefe036dea1334cd0561c8643149995596ad64
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/shadcn-ui/LICENSE.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/shadcn-ui/ui, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/ui) carries the patch stack.

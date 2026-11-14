@@ -1,0 +1,16 @@
+Name: tree-sitter-uxntal
+URL: https://github.com/tree-sitter-grammars/tree-sitter-uxntal
+Version: N/A
+Date: 2024-05-05
+Revision: ad9b638b914095320de85d59c49ab271603af048
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-uxntal/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-uxntal, pinned in src.lock.json.
+
+Local Modifications:
+None

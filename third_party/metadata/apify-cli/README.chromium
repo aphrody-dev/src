@@ -1,0 +1,16 @@
+Name: apify-cli
+URL: https://github.com/apify/apify-cli
+Version: N/A
+Date: 2026-11-12
+Revision: d4da6ec9841e0a379cc3e8e522ae15ece397c2a5
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/apify-cli/LICENSE.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/apify/apify-cli, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/apify-cli) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: nix-dev
+URL: https://github.com/NixOS/nix.dev
+Version: N/A
+Date: 2026-11-11
+Revision: edeead537a0b7b356aaf6dc2767a74acfe6c3805
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/nix-dev/LICENSE.md
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/NixOS/nix.dev, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: dioxus
+URL: https://github.com/DioxusLabs/dioxus
+Version: N/A
+Date: 2026-11-09
+Revision: 17d9a5924e845e4f37deca3fada6c35d1d836af0
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/dioxus/LICENSE-APACHE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/DioxusLabs/dioxus, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/dioxus) carries the patch stack.

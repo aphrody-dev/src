@@ -1,0 +1,16 @@
+Name: tree-sitter-smali
+URL: https://github.com/tree-sitter-grammars/tree-sitter-smali
+Version: N/A
+Date: 2024-05-05
+Revision: fdfa6a1febc43c7467aa7e937b87b607956f2346
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-smali/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-smali, pinned in src.lock.json.
+
+Local Modifications:
+None

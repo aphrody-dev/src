@@ -1,0 +1,16 @@
+Name: servo
+URL: https://github.com/servo/servo
+Version: N/A
+Date: 2026-11-14
+Revision: e4c692639fe7debe8f98e2c70e2c2b51f20b9c18
+Update Mechanism: Manual
+License: GPL-3.0, BSD-3-Clause
+License File: /third_party/servo/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/servo/servo, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/servo) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: linux
+URL: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux
+Version: N/A
+Date: 2026-11-08
+Revision: 7475ea8b58616b33c04afb976cf0fbaad9dd63fb
+Update Mechanism: Manual
+License: GPL-2.0
+License File: /third_party/linux/COPYING
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/linux) carries the patch stack.

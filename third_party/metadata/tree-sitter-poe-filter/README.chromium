@@ -1,0 +1,16 @@
+Name: tree-sitter-poe-filter
+URL: https://github.com/tree-sitter-grammars/tree-sitter-poe-filter
+Version: N/A
+Date: 2025-08-17
+Revision: 205a7d576984feb38a9fc2d8cfe729617f9e0548
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-poe-filter/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-poe-filter, pinned in src.lock.json.
+
+Local Modifications:
+None

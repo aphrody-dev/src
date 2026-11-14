@@ -1,0 +1,16 @@
+Name: jsoncpp
+URL: https://github.com/open-source-parsers/jsoncpp
+Version: N/A
+Date: 2026-10-26
+Revision: 93acc7b155048f1a66c43235cc205519f1e7a6ea
+Update Mechanism: Manual
+License: UNKNOWN
+License File: /third_party/jsoncpp/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/open-source-parsers/jsoncpp, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/jsoncpp) carries the patch stack.

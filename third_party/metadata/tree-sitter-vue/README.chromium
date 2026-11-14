@@ -1,0 +1,16 @@
+Name: tree-sitter-vue
+URL: https://github.com/tree-sitter-grammars/tree-sitter-vue
+Version: N/A
+Date: 2026-01-24
+Revision: ce8011a414fdf8091f4e4071752efc376f4afb08
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-vue/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-vue, pinned in src.lock.json.
+
+Local Modifications:
+None

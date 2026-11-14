@@ -1,0 +1,17 @@
+Name: Chromium
+Short Name: chromium
+URL: https://chromium.googlesource.com/chromium/src
+Version: 160.0.8158.0
+Date: 2026-11-11
+Revision: ef68a767a544b5544e46944e4b3be15e9ce0b6d4
+Update Mechanism: Manual
+License: BSD-3-Clause
+License File: /third_party/chromium/src/LICENSE
+Shipped: no
+Security Critical: yes
+
+Description:
+Chromium. Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None

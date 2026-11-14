@@ -1,0 +1,16 @@
+Name: stitch-skills
+URL: https://github.com/google-labs-code/stitch-skills
+Version: N/A
+Date: 2026-08-17
+Revision: 0337446dadde6f8c94210444e2aa9d546126480f
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/stitch-skills/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/google-labs-code/stitch-skills, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/stitch-skills) carries the patch stack.

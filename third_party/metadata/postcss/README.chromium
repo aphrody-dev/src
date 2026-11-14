@@ -1,0 +1,16 @@
+Name: postcss
+URL: https://github.com/postcss/postcss
+Version: N/A
+Date: 2026-11-13
+Revision: b6316e5d61e5cc26c32d050eeb8d856cb410d8be
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/postcss/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/postcss/postcss, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/postcss) carries the patch stack.

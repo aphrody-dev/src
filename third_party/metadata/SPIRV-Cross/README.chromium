@@ -1,0 +1,16 @@
+Name: SPIRV-Cross
+URL: https://github.com/KhronosGroup/SPIRV-Cross
+Version: N/A
+Date: 2026-10-28
+Revision: 57e4efcc84112abcd426dc5ec248b5339bee04f2
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/SPIRV-Cross/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/KhronosGroup/SPIRV-Cross, pinned in src.lock.json.
+
+Local Modifications:
+None

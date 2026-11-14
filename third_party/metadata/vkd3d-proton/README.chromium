@@ -1,0 +1,16 @@
+Name: vkd3d-proton
+URL: https://github.com/HansKristian-Work/vkd3d-proton
+Version: N/A
+Date: 2026-11-12
+Revision: 2576c0b4adfae4a76d4c89d8cf5ec4f5ca795cff
+Update Mechanism: Manual
+License: LGPL-2.1
+License File: /third_party/vkd3d-proton/COPYING
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/HansKristian-Work/vkd3d-proton, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/vkd3d-proton) carries the patch stack.

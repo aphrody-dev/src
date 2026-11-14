@@ -1,0 +1,16 @@
+Name: tree-sitter-ssh-config
+URL: https://github.com/tree-sitter-grammars/tree-sitter-ssh-config
+Version: N/A
+Date: 2026-07-24
+Revision: 0c35b243392268f48fd096607da192d76c843398
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-ssh-config/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-ssh-config, pinned in src.lock.json.
+
+Local Modifications:
+None

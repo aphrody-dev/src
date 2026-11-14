@@ -1,0 +1,17 @@
+Name: Node.js (V8)
+Short Name: node
+URL: https://github.com/nodejs/node
+Version: N/A
+Date: 2026-11-12
+Revision: 6728a1cfe024be07f560f09ffa73f394704b5442
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/node/LICENSE
+Shipped: no
+Security Critical: yes
+
+Description:
+Node.js (V8). Pinned in src.lock.json; live versions in third_party/chromium-trackers.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/node) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: google-skills
+URL: https://github.com/google/skills
+Version: N/A
+Date: 2026-11-10
+Revision: 64d010629e61e4a7d59fc21e042362f370b5888b
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/google-skills/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/google/skills, pinned in src.lock.json.
+
+Local Modifications:
+None

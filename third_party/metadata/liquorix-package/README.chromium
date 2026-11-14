@@ -1,0 +1,15 @@
+Name: liquorix-package
+URL: https://github.com/aphrody-labs/liquorix-package
+Version: N/A
+Date: 2026-11-12
+Revision: 7bc11a3ceff92cc0cfbf60a34065461dbe32d552
+Update Mechanism: Manual
+License: UNKNOWN
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/aphrody-labs/liquorix-package, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/liquorix-package) carries the patch stack.

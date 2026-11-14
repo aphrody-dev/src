@@ -1,0 +1,16 @@
+Name: taskr
+URL: https://github.com/lukeed/taskr
+Version: N/A
+Date: 2020-10-29
+Revision: 7a50e6e8c1fb8c01c0020d9f0e4d8897ccc4cc28
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/taskr/license
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/lukeed/taskr, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/taskr) carries the patch stack.

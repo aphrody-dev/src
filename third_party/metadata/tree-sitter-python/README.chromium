@@ -1,0 +1,16 @@
+Name: tree-sitter-python
+URL: https://github.com/tree-sitter/tree-sitter-python
+Version: N/A
+Date: 2025-09-15
+Revision: 26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-python/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-python, pinned in src.lock.json.
+
+Local Modifications:
+None

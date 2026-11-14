@@ -1,0 +1,16 @@
+Name: tree-sitter-pony
+URL: https://github.com/tree-sitter-grammars/tree-sitter-pony
+Version: N/A
+Date: 2024-04-20
+Revision: 73ff874ae4c9e9b45462673cbc0a1e350e2522a7
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-pony/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-pony, pinned in src.lock.json.
+
+Local Modifications:
+None

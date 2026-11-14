@@ -1,0 +1,16 @@
+Name: tree-sitter-requirements
+URL: https://github.com/tree-sitter-grammars/tree-sitter-requirements
+Version: N/A
+Date: 2026-04-30
+Revision: 2c3bb291f497258ba417d052faa14a2dfee6d401
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-requirements/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-requirements, pinned in src.lock.json.
+
+Local Modifications:
+None

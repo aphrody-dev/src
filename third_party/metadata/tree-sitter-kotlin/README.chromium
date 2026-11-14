@@ -1,0 +1,16 @@
+Name: tree-sitter-kotlin
+URL: https://github.com/tree-sitter-grammars/tree-sitter-kotlin
+Version: N/A
+Date: 2025-01-16
+Revision: 3dea6dfa9c0129deb7c4315afbda806c85c41667
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-kotlin/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-kotlin, pinned in src.lock.json.
+
+Local Modifications:
+None

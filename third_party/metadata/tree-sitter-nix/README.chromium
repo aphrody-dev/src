@@ -1,0 +1,16 @@
+Name: tree-sitter-nix
+URL: https://github.com/nix-community/tree-sitter-nix
+Version: N/A
+Date: 2026-11-07
+Revision: 21daff7ec37b01539eddd1e0ac468d2070c2ed5c
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-nix/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/nix-community/tree-sitter-nix, pinned in src.lock.json.
+
+Local Modifications:
+None

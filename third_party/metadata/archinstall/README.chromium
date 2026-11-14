@@ -1,0 +1,16 @@
+Name: archinstall
+URL: https://gitlab.archlinux.org/archlinux/archinstall
+Version: N/A
+Date: 2026-10-03
+Revision: 2c25540ad56b23922b9bbf44320b3154c0ecfd15
+Update Mechanism: Manual
+License: GPL-3.0
+License File: /third_party/archinstall/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.archlinux.org/archlinux/archinstall, pinned in src.lock.json.
+
+Local Modifications:
+None

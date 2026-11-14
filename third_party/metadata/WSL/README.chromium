@@ -1,0 +1,16 @@
+Name: WSL
+URL: https://github.com/microsoft/WSL
+Version: N/A
+Date: 2026-11-12
+Revision: c5361b4c626bbaad7ace71a9687d4f541b4e282a
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/WSL/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/microsoft/WSL, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/WSL) carries the patch stack.

@@ -1,0 +1,16 @@
+Name: tree-sitter-make
+URL: https://github.com/tree-sitter-grammars/tree-sitter-make
+Version: N/A
+Date: 2026-02-26
+Revision: 70613f3d812cbabbd7f38d104d60a409c4008b43
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-make/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-make, pinned in src.lock.json.
+
+Local Modifications:
+None

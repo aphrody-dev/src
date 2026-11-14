@@ -1,0 +1,16 @@
+Name: tree-sitter-kconfig
+URL: https://github.com/tree-sitter-grammars/tree-sitter-kconfig
+Version: N/A
+Date: 2024-12-22
+Revision: 9ac99fe4c0c27a35dc6f757cef534c646e944881
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-kconfig/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-kconfig, pinned in src.lock.json.
+
+Local Modifications:
+None

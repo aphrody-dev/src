@@ -1,0 +1,16 @@
+Name: modelcontextprotocol
+URL: https://github.com/modelcontextprotocol/modelcontextprotocol
+Version: N/A
+Date: 2026-11-12
+Revision: 06e923405df3df242f1471b9300d9db90ebd10fd
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/modelcontextprotocol/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/modelcontextprotocol/modelcontextprotocol, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/modelcontextprotocol) carries the patch stack.

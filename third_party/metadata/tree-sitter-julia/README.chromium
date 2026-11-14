@@ -1,0 +1,16 @@
+Name: tree-sitter-julia
+URL: https://github.com/tree-sitter/tree-sitter-julia
+Version: N/A
+Date: 2025-11-08
+Revision: e0f9dcd180fdcfcfa8d79a3531e11d99e79321d3
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-julia/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter/tree-sitter-julia, pinned in src.lock.json.
+
+Local Modifications:
+None

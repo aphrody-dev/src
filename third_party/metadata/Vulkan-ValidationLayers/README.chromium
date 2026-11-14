@@ -1,0 +1,16 @@
+Name: Vulkan-ValidationLayers
+URL: https://github.com/KhronosGroup/Vulkan-ValidationLayers
+Version: N/A
+Date: 2026-11-12
+Revision: 37ec2baf9aac8c0f55fe2b9beec1d818b70d7841
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/Vulkan-ValidationLayers/LICENSE.txt
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/KhronosGroup/Vulkan-ValidationLayers, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/Vulkan-ValidationLayers) carries the patch stack.

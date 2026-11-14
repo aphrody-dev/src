@@ -1,0 +1,16 @@
+Name: tree-sitter-diff
+URL: https://github.com/tree-sitter-grammars/tree-sitter-diff
+Version: N/A
+Date: 2026-08-14
+Revision: ada384ac7bfc1307f32de474620120add29998fb
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-diff/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-diff, pinned in src.lock.json.
+
+Local Modifications:
+None

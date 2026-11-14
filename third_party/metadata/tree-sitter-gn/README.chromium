@@ -1,0 +1,16 @@
+Name: tree-sitter-gn
+URL: https://github.com/tree-sitter-grammars/tree-sitter-gn
+Version: N/A
+Date: 2023-10-22
+Revision: bc06955bc1e3c9ff8e9b2b2a55b38b94da923c05
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-gn/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-gn, pinned in src.lock.json.
+
+Local Modifications:
+None

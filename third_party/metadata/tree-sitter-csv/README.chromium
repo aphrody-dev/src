@@ -1,0 +1,16 @@
+Name: tree-sitter-csv
+URL: https://github.com/tree-sitter-grammars/tree-sitter-csv
+Version: N/A
+Date: 2025-11-13
+Revision: f6bf6e35eb0b95fbadea4bb39cb9709507fcb181
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-csv/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-csv, pinned in src.lock.json.
+
+Local Modifications:
+None

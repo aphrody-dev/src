@@ -1,0 +1,16 @@
+Name: tree-sitter-cuda
+URL: https://github.com/tree-sitter-grammars/tree-sitter-cuda
+Version: N/A
+Date: 2026-09-15
+Revision: d58080a327756e4d1d16ec329ba7cb2048f6c6cd
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-cuda/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-cuda, pinned in src.lock.json.
+
+Local Modifications:
+None

@@ -1,0 +1,16 @@
+Name: winit
+URL: https://github.com/rust-windowing/winit
+Version: N/A
+Date: 2026-11-09
+Revision: b31115a6eeb882ac2aaa886ac6371aa2cf642933
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/winit/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/rust-windowing/winit, pinned in src.lock.json.
+
+Local Modifications:
+None

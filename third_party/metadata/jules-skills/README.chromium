@@ -1,0 +1,16 @@
+Name: jules-skills
+URL: https://github.com/google-labs-code/jules-skills
+Version: N/A
+Date: 2026-02-12
+Revision: 7a76d3bfcf4258ee437d65b5d12e54b51c395de5
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/jules-skills/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/google-labs-code/jules-skills, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/jules-skills) carries the patch stack.

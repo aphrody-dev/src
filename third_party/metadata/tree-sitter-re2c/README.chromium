@@ -1,0 +1,16 @@
+Name: tree-sitter-re2c
+URL: https://github.com/tree-sitter-grammars/tree-sitter-re2c
+Version: N/A
+Date: 2024-09-25
+Revision: c18a3c2f4b6665e35b7e50d6048ea3cff770c572
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-re2c/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-re2c, pinned in src.lock.json.
+
+Local Modifications:
+None

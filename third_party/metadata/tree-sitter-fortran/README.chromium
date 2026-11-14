@@ -1,0 +1,16 @@
+Name: tree-sitter-fortran
+URL: https://github.com/stadelmanma/tree-sitter-fortran
+Version: N/A
+Date: 2026-11-12
+Revision: d05165a6f0bd044ba1f89865927a752dd5168e66
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-fortran/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/stadelmanma/tree-sitter-fortran, pinned in src.lock.json.
+
+Local Modifications:
+None

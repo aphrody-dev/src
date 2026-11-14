@@ -1,0 +1,66 @@
+flowchart LR
+  chromium["Chromium<br/>158.0.8127.37 | V8 15.8.62.31"]
+  blink["Blink<br/>158.0.8127.37"]
+  v8["V8<br/>15.8.62.31"]
+  skia["Skia<br/>skia 3279352fdf1f"]
+  dawn["Dawn<br/>dawn 6e24542436a3"]
+  angle["ANGLE<br/>angle 1f6526a566c2"]
+  depot_tools["depot_tools<br/>ec77017fb3e0"]
+  chrome_for_testing["Chrome for Testing<br/>157.0.8103.78"]
+  cef["CEF<br/>156.0.30+g6028375+chromium-156.0.8078.96 | V8..."]
+  cef_rs["cef-rs<br/>156.4.0+156.0.26"]
+  rusty_v8["rusty_v8 (v8 crate)<br/>152.2.0 | V8 15.2.124.1"]
+  deno_core["deno_core<br/>0.413.0 | V8 15.0.245.2"]
+  node["Node.js (V8)<br/>27.0.0-alpha.0.1.0 | V8 15.6.75.50"]
+  electron["Electron<br/>45.3.3 | V8 15.6.75.57-electron.0"]
+  obscura["Obscura<br/>0.2.7 | V8 15.0.245.2"]
+  agent_browser["agent-browser<br/>0.43.0 | V8 15.7.112.43"]
+  lightpanda_zig_v8["Lightpanda zig-v8<br/>0.6.2 | V8 15.5.35.13"]
+  brave["Brave<br/>1.99.57 | V8 15.7.112.43"]
+  edge["Microsoft Edge<br/>157.0.4341.60"]
+  vivaldi["Vivaldi<br/>Minor update (3) for Desktop 8.3"]
+  opera["Opera<br/>Opera 140 Stable"]
+  ungoogled_chromium["ungoogled-chromium<br/>157.0.8103.78 | V8 15.7.112.43"]
+  thorium["Thorium<br/>M156.0.8078.80 | V8 15.6.75.27"]
+  helium["Helium<br/>0.21.3 | V8 15.7.112.43"]
+  cromite["Cromite<br/>153.0.8010.37-11507ac1061b5ea227806f5e84db5a5..."]
+  supermium["Supermium<br/>150-r2.02"]
+  dep_third_party_boringssl_src["third_party/boringssl/src"]
+  dep_third_party_catapult["third_party/catapult"]
+  dep_third_party_devtools_frontend_src["third_party/devtools-frontend/src"]
+  dep_third_party_pdfium["third_party/pdfium"]
+  dep_third_party_perfetto["third_party/perfetto"]
+  dep_third_party_webrtc["third_party/webrtc"]
+  blink --> v8
+  blink --> skia
+  chrome_for_testing --> chromium
+  cef --> chromium
+  cef_rs --> cef
+  rusty_v8 --> v8
+  deno_core --> rusty_v8
+  node --> v8
+  electron --> chromium
+  electron --> node
+  obscura --> deno_core
+  agent_browser --> chrome_for_testing
+  lightpanda_zig_v8 --> v8
+  brave --> chromium
+  edge --> chromium
+  vivaldi --> chromium
+  opera --> chromium
+  ungoogled_chromium --> chromium
+  thorium --> chromium
+  helium --> chromium
+  cromite --> chromium
+  supermium --> chromium
+  chromium ==> blink
+  chromium -.-> angle
+  chromium -.-> dep_third_party_boringssl_src
+  chromium -.-> dep_third_party_catapult
+  chromium -.-> dawn
+  chromium -.-> dep_third_party_devtools_frontend_src
+  chromium -.-> dep_third_party_pdfium
+  chromium -.-> dep_third_party_perfetto
+  chromium -.-> skia
+  chromium -.-> dep_third_party_webrtc
+  chromium -.-> v8

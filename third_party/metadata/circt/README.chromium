@@ -1,0 +1,16 @@
+Name: circt
+URL: https://github.com/llvm/circt
+Version: N/A
+Date: 2026-11-12
+Revision: 94f1f0e80284e179ac91ff736421976e74097840
+Update Mechanism: Manual
+License: Apache-2.0
+License File: /third_party/circt/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/llvm/circt, pinned in src.lock.json.
+
+Local Modifications:
+None

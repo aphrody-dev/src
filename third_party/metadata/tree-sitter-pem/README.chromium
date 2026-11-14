@@ -1,0 +1,16 @@
+Name: tree-sitter-pem
+URL: https://github.com/tree-sitter-grammars/tree-sitter-pem
+Version: N/A
+Date: 2025-08-17
+Revision: e525b177a229b1154fd81bc0691f943028d9e685
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-pem/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-pem, pinned in src.lock.json.
+
+Local Modifications:
+None

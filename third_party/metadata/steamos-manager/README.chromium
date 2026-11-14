@@ -1,0 +1,16 @@
+Name: steamos-manager
+URL: https://gitlab.steamos.cloud/holo/steamos-manager
+Version: N/A
+Date: 2026-11-10
+Revision: 2c51fc82eabc95f9a61235ca98d4a5249c14239f
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/steamos-manager/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://gitlab.steamos.cloud/holo/steamos-manager, pinned in src.lock.json.
+
+Local Modifications:
+None in the checkout; the aphrody-labs fork (https://github.com/aphrody-labs/steamos-manager) carries the patch stack.

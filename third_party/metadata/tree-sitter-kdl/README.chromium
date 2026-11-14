@@ -1,0 +1,16 @@
+Name: tree-sitter-kdl
+URL: https://github.com/tree-sitter-grammars/tree-sitter-kdl
+Version: N/A
+Date: 2026-09-09
+Revision: e8ff98a113e175b84b92ec2096820517c1e10a66
+Update Mechanism: Manual
+License: MIT
+License File: /third_party/tree-sitter-kdl/LICENSE
+Shipped: no
+Security Critical: no
+
+Description:
+Checkout of https://github.com/tree-sitter-grammars/tree-sitter-kdl, pinned in src.lock.json.
+
+Local Modifications:
+None
