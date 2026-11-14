@@ -1148,3 +1148,16 @@ used_by = [
   "ay rt matrix (dawn_revision par canal Chrome)",
 ]
 status = "reference"
+
+[entry.nextjs]
+path = "third_party/next.js"
+url = "https://github.com/aphrody-labs/next.js.git"
+upstream = "https://github.com/vercel/next.js.git"
+branch = "canary"
+sha = "8d1f4ed9c010edc763ee763942aac39b7d4ecfbd"
+kind = "web"
+used_by = [
+  "apps/shenron/apps/site (Next 16.5 standalone : optimiseur d'images, Modern Web Guidance, Lighthouse)",
+  "apps/shenron/apps/server (Next standalone sous Bun AOT)",
+]
+status = "fork"
