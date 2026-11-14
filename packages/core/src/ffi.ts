@@ -92,7 +92,8 @@ function need(): CoreLib {
 
 const cstr = (s: string) => Buffer.from(`${s}\0`, "utf8");
 
-function take(lib: CoreLib, p: Pointer | null): string {
+function take(lib: CoreLib, raw: unknown): string {
+  const p = raw as Pointer | null;
   if (p === null) throw new Error("core_* returned null");
   try {
     return new CString(p).toString();
@@ -101,7 +102,7 @@ function take(lib: CoreLib, p: Pointer | null): string {
   }
 }
 
-function json<T>(lib: CoreLib, p: Pointer | null): T {
+function json<T>(lib: CoreLib, p: unknown): T {
   const v = JSON.parse(take(lib, p));
   if (v && typeof v === "object" && "error" in v && Object.keys(v).length === 1)
     throw new Error(v.error);

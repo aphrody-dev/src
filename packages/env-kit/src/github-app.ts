@@ -376,9 +376,7 @@ async function create(a: string[]): Promise<number> {
   // GitHub n'envoie le premier événement. Pousser ensuite le Worker : cf deploy --secrets-file (docs/infra/GITHUB-APP.md).
   if (!cred("APHRODY_APP_WEBHOOK_SECRET"))
     secretSet("APHRODY_APP_WEBHOOK_SECRET", randomBytes(32).toString("hex"));
-  const esc = (x: string) =>
-    x.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-  const page = `<!doctype html><meta charset=utf-8><title>GitHub App ${esc(name)}</title><form id=f method=post action="https://github.com/organizations/${encodeURIComponent(org)}/settings/apps/new?state=${state}"><input type=hidden name=manifest value="${esc(JSON.stringify(manifest(name)))}"><button>Créer l'App GitHub ${esc(name)}</button></form><script>document.getElementById("f").submit()</script>`;
+  const page = `<!doctype html><meta charset=utf-8><title>GitHub App ${Bun.escapeHTML(name)}</title><form id=f method=post action="https://github.com/organizations/${encodeURIComponent(org)}/settings/apps/new?state=${state}"><input type=hidden name=manifest value="${Bun.escapeHTML(JSON.stringify(manifest(name)))}"><button>Créer l'App GitHub ${Bun.escapeHTML(name)}</button></form><script>document.getElementById("f").submit()</script>`;
   let finish: (code: number) => void = () => {};
   const done = new Promise<number>((r) => (finish = r));
   const server = Bun.serve({

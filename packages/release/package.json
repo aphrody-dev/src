@@ -4,9 +4,6 @@
   "private": true,
   "description": "ay release: tags, GitHub releases, crates.io, npm, PyPI and vcpkg/CMake from fr1, dry-run first",
   "type": "module",
-  "bin": {
-    "release": "./src/cli.ts"
-  },
   "scripts": {
     "test": "bun test"
   },

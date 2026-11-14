@@ -1,8 +1,10 @@
 // Native shell resolution, ported from the windows-native patches of our forks
 // (OpenClaw OPENCLAW_EXEC_SHELL/OPENCLAW_BASH, Hermes HERMES_BASH + niubash candidate; see
 // C:\src\docs\agents\WINDOWS-NATIVE-PORT.md @16eea3d). Never picks the System32 WSL bash stub.
+// Sandboxed bash execution uses the extracted Vercel core (`../vercel/sandbox`).
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { execSandboxed } from "./sandbox";
 
 export function resolveBash(env = Bun.env): string | undefined {
   const candidates = [
@@ -28,4 +30,12 @@ export function resolveBash(env = Bun.env): string | undefined {
   )
     return found;
   return undefined;
+}
+
+/** Run a bash script in an in-memory OverlaySandbox over `cwd` (extracted from vercel-labs/just-bash & tool-bash). */
+export async function runJustBash(
+  script: string,
+  cwd: string,
+): Promise<{ exitCode: number; stdout: string; stderr: string }> {
+  return execSandboxed(script, cwd);
 }

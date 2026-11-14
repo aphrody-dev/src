@@ -8,8 +8,8 @@ resolver = "3"
 members = [
   "crates/*",
   # Explicit members outside crates/ (they win over `exclude`): one Cargo.lock, one target dir (docs/infra/CACHE.md).
-  "packages/env-kit/loaders/rust",
-  "packages/vault/native",
+  "crates/aphrody-env",
+  "crates/aphrody-vault",
   "tools/build-model",
 ]
 exclude = ["third_party", "apps", "packages", "infra"]
@@ -26,7 +26,6 @@ homepage = "https://labs.aphrody.com"
 [workspace.dependencies]
 # First-party crates
 archguard = { version = "0.1.0", path = "crates/archguard" }
-aphrody-design-shared = { version = "0.3.0", path = "crates/aphrody-design-shared" }
 corelib = { version = "0.4.0", package = "aphrody-corelib", path = "crates/corelib", default-features = false }
 depot-cli = { version = "0.4.0", path = "crates/depot-cli" }
 depot-core = { version = "0.4.0", path = "crates/depot-core" }
@@ -35,6 +34,7 @@ depot-cipd = { version = "0.4.0", path = "crates/depot-cipd" }
 agent-context = { version = "0.1.0", path = "crates/agent-context" }
 aphrody-core = { version = "0.4.0", path = "crates/core" }
 aphrody-core-capi = { version = "0.4.0", path = "crates/core-capi" }
+aphrody-v8 = { version = "0.4.0", path = "crates/aphrody-v8" }
 depot-re = { version = "0.4.0", path = "crates/depot-re" }
 # WSLg stack: Windows host crates and the portable Wayland wire (docs/ARCHITECTURE.md §6).
 dx12-hal = { version = "0.4.0", path = "crates/dx12-hal" }
@@ -45,6 +45,7 @@ depot-ingest = { version = "0.4.0", path = "crates/depot-ingest" }
 depot-graph = { version = "0.4.0", path = "crates/depot-graph" }
 gamescope-core = { version = "0.1.0", path = "crates/gamescope-core" }
 gamescope-wgsl = { version = "0.1.0", path = "crates/gamescope-wgsl" }
+taffy = { version = "0.15.1", path = "crates/taffy" }
 stack-bench = { version = "0.1.0", path = "crates/bench" }
 xtk = { version = "0.1.0", path = "crates/xtask" }
 # Labs (merged from C:\labs): Lore VCS, APM, conformance harness, aphrody CLI
@@ -109,7 +110,6 @@ windows-sys = { version = "0.61.2", features = [
 zerocopy = { version = "0.8.63", features = ["derive", "alloc", "simd"] }
 # crates.io
 byteorder = "1.5"
-raw-cpuid = "11.6"
 windows = { version = "0.62.2", features = [
   "Win32_Foundation",
   "Win32_Graphics_Direct3D",
@@ -145,11 +145,16 @@ image = { version = "0.25.10", default-features = false }
 js-sys = "0.3.107"
 lightningcss = { version = "=1.0.0-alpha.72", default-features = false }
 pollster = "1.0"
-quick-xml = "0.42"
 rayon = "1.12"
 ropey = { version = "2.0.0-beta.1", features = ["metric_chars"] }
 streaming-iterator = "0.1.9"
-taffy = "0.15.1"
+accesskit = "0.25.2"
+cssparser = { version = "0.37.0", default-features = false }
+kurbo = "0.13.1"
+parley = { version = "0.11.1", default-features = false, features = ["std"] }
+peniko = "0.6.1"
+rustc-hash = "2.1.3"
+slotmap = "1.1.1"
 tree-sitter = "0.27"
 tree-sitter-language = "0.1.9"
 tree-sitter-rust = "0.24"
@@ -174,6 +179,23 @@ wgpu = "30.0.1"
 winit = "0.30.13"
 
 # Labs-only crates.io dependencies
+# UI fusion ecosystem: AnyRender, Vello, Dioxus 0.8 (core/signals/ssr/subsecond-types), Ratatui + Crossterm
+anyrender = "0.14.0"
+vello = { version = "0.12.0", default-features = false, features = ["wgpu"] }
+dioxus-core = { git = "https://github.com/aphrody-labs/dioxus", rev = "17d9a5924e845e4f37deca3fada6c35d1d836af0", default-features = false }
+dioxus-signals = { git = "https://github.com/aphrody-labs/dioxus", rev = "17d9a5924e845e4f37deca3fada6c35d1d836af0" }
+dioxus-ssr = { git = "https://github.com/aphrody-labs/dioxus", rev = "17d9a5924e845e4f37deca3fada6c35d1d836af0", default-features = false }
+subsecond-types = { git = "https://github.com/aphrody-labs/dioxus", rev = "17d9a5924e845e4f37deca3fada6c35d1d836af0" }
+ratatui-core = { version = "0.1.2", features = [
+  "std",
+  "layout-cache",
+  "underline-color",
+] }
+ratatui-widgets = { version = "0.3.2", default-features = false, features = [
+  "std",
+] }
+ratatui-crossterm = "0.1.2"
+crossterm = "0.29.0"
 anstyle = "1.0.14"
 anstream = "1.0.0"
 async-channel = "2.5.0"
@@ -349,7 +371,7 @@ dotenvy = "0.15.7"
 ed25519-dalek = "3.0.0"
 flate2 = "1.1.11"
 getrandom = "0.4.3"
-# packages/vault/native (aphrody-vault).
+# crates/aphrody-vault (aphrody-vault).
 age = { version = "0.12.1", default-features = false }
 aes-gcm = "0.11.1"
 zeroize = "1.9.1"
@@ -360,7 +382,6 @@ h3-quinn = "0.0.10"
 hickory-resolver = { version = "0.26.3", default-features = false }
 hmac = "0.13.0"
 http-body-util = "0.1.5"
-ico = "0.6.0"
 if-addrs = "0.15.0"
 junction = "2.1.0"
 log = "0.4.35"
@@ -373,11 +394,9 @@ oxc_ast = "0.158.0"
 oxc_parser = "0.158.0"
 oxc_span = "0.158.0"
 pbkdf2 = "0.13.0"
-png = "0.18.1"
 pyo3 = "0.30.1"
 qrcode = { version = "0.14.1", default-features = false }
 resvg = { version = "0.50.0", default-features = false }
-ron = "0.12.3"
 rs-consul = "0.15.0"
 ruff_python_ast = { version = "0.16.10", package = "rustpython-ruff_python_ast" }
 ruff_python_parser = { version = "0.16.10", package = "rustpython-ruff_python_parser" }
@@ -529,10 +548,12 @@ inherits = "release"
 opt-level = "z"
 panic = "immediate-abort"
 
-# Per-package overrides carried over from the members manifests.
-[profile.dev.package.ring3-agent]
-opt-level = 1
+# Bun-style AOT release profile (fat LTO, single codegen unit, immediate-abort, stripped).
+[profile.aot]
+inherits = "release"
+panic = "immediate-abort"
 
+# [profile.dev.package.ring3-agent] removed (crate purged).
 [profile.dev.package.rust-stack]
 opt-level = 1
 
@@ -546,3 +567,5 @@ sntrup761 = { git = "https://github.com/aphrody-labs/sntrup761", rev = "54e3a994
 quinn-proto = { git = "https://github.com/aphrody-labs/quinn", rev = "6e76339be91de7b5784cca640307329d1cf372a2" } # aphrody/lore
 # glob-match 0.2.1 (upstream idle since 2024-08) + `**` backtracking fix, gitignore component semantics.
 glob-match = { git = "https://github.com/aphrody-labs/glob-match", rev = "2307a20a449d9419947be65b5d904fc0a880feb0" } # aphrody/lore
+# First-party absorbed Taffy 0.15.1 Layer-0 kernel.
+taffy = { path = "crates/taffy" }

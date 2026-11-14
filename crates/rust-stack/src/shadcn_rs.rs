@@ -293,11 +293,16 @@ pub fn theme_css_tokens(mode: ThemeMode) -> &'static str {
     }
 }
 
+/// Canonical M3 + Aphrody brand CSS tokens emitted directly by [`aphrody_ui`].
+pub fn aphrody_m3_brand_css() -> String {
+    aphrody_ui::color::gemini_brand::export_aphrody_brand_css()
+}
+
 pub fn default_primitive_for_slug(slug: &str) -> Result<UiPrimitive, String> {
     match slug.trim().to_ascii_lowercase().as_str() {
         "button" => Ok(UiPrimitive::Button {
             id: "btn-launch".to_string(),
-            label: "Deploy Sovereign Node".to_string(),
+            label: "Deploy Aphrody Node".to_string(),
             variant: Variant::Primary,
             disabled: false,
         }),
@@ -585,7 +590,7 @@ impl UiPrimitive {
                 r#"use dioxus::prelude::*;
 
 #[component]
-pub fn SovereignButton(on_click: EventHandler<MouseEvent>) -> Element {{
+pub fn AphrodyButton(on_click: EventHandler<MouseEvent>) -> Element {{
     rsx! {{
         button {{
             id: "{id}",
@@ -611,7 +616,7 @@ pub fn SovereignButton(on_click: EventHandler<MouseEvent>) -> Element {{
                     r#"use dioxus::prelude::*;
 
 #[component]
-pub fn SovereignCard() -> Element {{
+pub fn AphrodyCard() -> Element {{
     rsx! {{
         section {{ class: "rs-card",
             h3 {{ class: "rs-card-title", "{title}" }}
@@ -630,7 +635,7 @@ pub fn SovereignCard() -> Element {{
                     r#"use dioxus::prelude::*;
 
 #[component]
-pub fn SovereignPrimitive() -> Element {{
+pub fn AphrodyPrimitive() -> Element {{
     rsx! {{
         div {{ dangerous_inner_html: "{ssr}" }}
     }}
@@ -653,9 +658,9 @@ pub fn SovereignPrimitive() -> Element {{
 use gpui_component::{{Disableable as _, button::{{Button, ButtonVariants as _}}}};
 
 #[derive(IntoElement)]
-pub struct SovereignButtonView;
+pub struct AphrodyButtonView;
 
-impl RenderOnce for SovereignButtonView {{
+impl RenderOnce for AphrodyButtonView {{
     fn render(self, _window: &mut Window, _cx: &mut App) -> impl IntoElement {{
         Button::new("{id}")
             .{method}()
@@ -679,9 +684,9 @@ impl RenderOnce for SovereignButtonView {{
 use gpui_component::{{ActiveTheme as _, v_flex}};
 
 #[derive(IntoElement)]
-pub struct SovereignCardView;
+pub struct AphrodyCardView;
 
-impl RenderOnce for SovereignCardView {{
+impl RenderOnce for AphrodyCardView {{
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {{
         let theme = cx.theme();
         v_flex()
@@ -708,9 +713,9 @@ use gpui_component::{{ActiveTheme as _, v_flex}};
 
 // AST Spec: {slug_comment}
 #[derive(IntoElement)]
-pub struct SovereignComponentView;
+pub struct AphrodyComponentView;
 
-impl RenderOnce for SovereignComponentView {{
+impl RenderOnce for AphrodyComponentView {{
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {{
         let theme = cx.theme();
         v_flex()
@@ -800,4 +805,78 @@ mod tests {
         assert!(html.contains("a &amp; b"));
         assert!(!html.contains("<script>"));
     }
+
+    #[test]
+    fn primitive_taffy_box_computes_children() {
+        let boxes = compute_primitive_taffy_box(400.0, 200.0, 16.0, 8.0, 3);
+        assert_eq!(boxes.len(), 3);
+        assert_eq!(boxes[0].x, 16.0);
+        assert_eq!(boxes[1].y, boxes[0].y + boxes[0].height + 8.0);
+    }
+}
+
+/// Solves a vertical primitive stack box layout directly via first-party `taffy::TaffyTree`.
+#[must_use]
+pub fn compute_primitive_taffy_box(
+    width: f32,
+    height: f32,
+    padding: f32,
+    gap: f32,
+    children: usize,
+) -> Vec<taffy::LayoutRect> {
+    if children == 0 {
+        return Vec::new();
+    }
+    let mut tree: taffy::TaffyTree<()> = taffy::TaffyTree::new();
+    let mut leaves = Vec::with_capacity(children);
+    for _ in 0..children {
+        let node = tree
+            .new_leaf(taffy::Style {
+                flex_grow: 1.0,
+                size: taffy::Size {
+                    width: taffy::percent(1.0),
+                    height: taffy::auto(),
+                },
+                ..taffy::Style::DEFAULT
+            })
+            .expect("primitive child");
+        leaves.push(node);
+    }
+    let root = tree
+        .new_with_children(
+            taffy::Style {
+                display: taffy::Display::Flex,
+                flex_direction: taffy::FlexDirection::Column,
+                padding: taffy::Rect {
+                    left: taffy::length(padding.max(0.0)),
+                    right: taffy::length(padding.max(0.0)),
+                    top: taffy::length(padding.max(0.0)),
+                    bottom: taffy::length(padding.max(0.0)),
+                },
+                gap: taffy::Size {
+                    width: taffy::length(0.0),
+                    height: taffy::length(gap.max(0.0)),
+                },
+                size: taffy::Size {
+                    width: taffy::length(width.max(0.0)),
+                    height: taffy::length(height.max(0.0)),
+                },
+                ..taffy::Style::DEFAULT
+            },
+            &leaves,
+        )
+        .expect("primitive root");
+    tree.compute_layout(
+        root,
+        taffy::Size {
+            width: taffy::AvailableSpace::Definite(width.max(0.0)),
+            height: taffy::AvailableSpace::Definite(height.max(0.0)),
+        },
+    )
+    .expect("primitive layout");
+
+    leaves
+        .into_iter()
+        .map(|id| taffy::LayoutRect::from_taffy_layout(tree.layout(id).expect("child rect"), taffy::Point::ZERO))
+        .collect()
 }

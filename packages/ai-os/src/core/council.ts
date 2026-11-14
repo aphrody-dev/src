@@ -1,5 +1,6 @@
 // Council + fallback routing. Replaces the two legacy copies (ai-triad/src/runners/triad-runner.ts,
 // ai-os/src/triad/index.ts). Members are discovered models (../llm) or external agent CLIs (claude, codex, gemini, agy).
+import { resolveExe } from "../llm/agents";
 import { generateText } from "../llm/generate";
 import type { LanguageModel } from "../llm/types";
 import { redactText } from "./secrets";
@@ -26,6 +27,7 @@ export const CLI: Record<string, (p: string) => string[]> = {
   codex: (p) => ["codex", "exec", p, "--skip-git-repo-check"],
   gemini: (p) => ["gemini", "-p", p],
   agy: (p) => ["agy", "-p", p, "--output-format", "text"],
+  fx: (p) => ["fx", "ask", p],
 };
 
 export async function ask(
@@ -51,7 +53,9 @@ export async function ask(
       });
       return done(true, r.text);
     }
-    const p = Bun.spawn(m.argv(prompt), {
+    const rawArgv = m.argv(prompt);
+    const argv = [resolveExe(rawArgv[0]!), ...rawArgv.slice(1)];
+    const p = Bun.spawn(argv, {
       stdout: "pipe",
       stderr: "pipe",
       timeout: timeoutMs,

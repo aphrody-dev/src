@@ -9,9 +9,6 @@
     "./ffi": "./src/ffi.ts",
     "./store": "./src/store.ts"
   },
-  "bin": {
-    "ay-index": "./src/cli.ts"
-  },
   "scripts": {
     "test": "bun test",
     "check": "bun check"

@@ -142,6 +142,8 @@ const STITCH_USAGE = `ai-os stitch <cmd>   (Stitch MCP, stitch.googleapis.com/mc
   download <projectId> <dir>           écrans + assets (HTML réécrit en local)
   upload <projectId> <file>            image (png/jpg/webp) ou HTML -> nouvel écran (BatchCreateScreens)
   design-md <projectId> <DESIGN.md>    téléverse un DESIGN.md (format google-labs-code/design.md)
+  design-layout <DESIGN.md> [w] [h]    résout le layout Taffy depuis DESIGN.md (via ay design layout)
+  skills-sync [--write]                synchronise stitch-skills + design.md vers .agents/skills
   call <tool> [json-args]              appel brut d'un outil`;
 
 export async function stitchCli(argv: string[]): Promise<number> {
@@ -150,13 +152,32 @@ export async function stitchCli(argv: string[]): Promise<number> {
     allowPositionals: true,
     options: {
       device: { type: "string" },
+      write: { type: "boolean" },
       help: { type: "boolean", short: "h" },
     },
   });
-  const [cmd, a, b] = p;
+  const [cmd, a, b, cArg] = p;
   if (o.help || !cmd) {
     console.log(STITCH_USAGE);
     return cmd || o.help ? 0 : 2;
+  }
+  if (cmd === "skills-sync") {
+    const { mirror } = await import("./absorb.ts");
+    const write = Boolean(o.write);
+    const d = mirror(write);
+    for (const x of d) console.log(`${x.kind}\t${x.skill}/${x.file}`);
+    console.log(`${d.length} écart(s)${write ? " corrigé(s)" : ""}`);
+    return !write && d.length ? 1 : 0;
+  }
+  if (cmd === "design-layout") {
+    const file = a ?? "apps/aphrody/DESIGN.md";
+    const width = b ?? "1440";
+    const height = cArg ?? "900";
+    const r = Bun.spawnSync(["ay", "design", "layout", file, width, height], {
+      stdout: "inherit",
+      stderr: "inherit",
+    });
+    return r.exitCode;
   }
   const { Stitch } = await import("./stitch/src/index.ts");
   const c = await stitchClient();

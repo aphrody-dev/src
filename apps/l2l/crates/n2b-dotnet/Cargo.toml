@@ -1,0 +1,21 @@
+[package]
+name = "n2b-dotnet"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Full Pure-Rust + Bun v1.4.4 rewrite of microsoft/node-api-dotnet (in-process CoreCLR hostfxr hosting, [JSExport] Tree-Sitter bindgen, zero-V8 C-ABI marshaling)"
+
+[lints]
+workspace = true
+
+[dependencies]
+n2b-core.workspace = true
+n2b-polyglot.workspace = true
+parking_lot.workspace = true
+rustc-hash.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tree-sitter.workspace = true
+windows-sys.workspace = true
+zerocopy.workspace = true

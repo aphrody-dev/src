@@ -14,6 +14,9 @@ extern "C" {
 
 typedef struct AphrodyAdblockEngine AphrodyAdblockEngine;
 
+uint32_t aphrody_abi_version(void);
+void aphrody_free(char *ptr);
+
 /* Compile ABP/uBO rules and hosts lines (newline-delimited). NULL when rules is not UTF-8. */
 AphrodyAdblockEngine *aphrody_adblock_new(const uint8_t *rules, size_t rules_len);
 void aphrody_adblock_free(AphrodyAdblockEngine *engine);

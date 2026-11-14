@@ -1,63 +1,30 @@
-# wck: Sovereign Compile-Time Web & Lighthouse Gate
+# `@aphrody/wck`
 
-Deterministic, zero-compromise Compile-Time Web Validator implementing all 7 mandatory specifications for modern web platforms.
+Compile-Time Web Validator and Modern Web Guidance (MWG) RAG engine for the `src` monorepo.
+100% pure Bun (`zero` external npm dependencies) paired with a Pure C23 LLVM native core (`crates/core-capi/c/mwg_core.c` -> `native/mwg_capi.dll`) via `bun:ffi`.
 
-Built in 100% pure oven-sh/bun (Full Rust) with zero external npm dependencies. Compiled to a standalone native Windows executable (`wck.exe`).
+## Capabilities
 
-## 7 Mandatory Specifications
+1. **7 Compile-Time Web Specs** (`wck [<path>] [--spec=<name>] [--json] [--quiet]`):
+   - `seo`: Google Search SEO (title, description, canonical, OpenGraph, landmarks, `robots.txt`, `sitemap.xml`)
+   - `aiseo`: Google AI Mode SEO / GEO (JSON-LD `WebSite` + `SearchAction`, `/llms.txt`)
+   - `mwg`: Modern Web Guidelines (responsive viewport, `color-scheme`, `:focus-visible`, `prefers-reduced-motion`, zero deprecated tags)
+   - `cwv`: Core Web Vitals static gate (CLS = 0.000, compositor keyframes, LCP < 14KB, INP < 30KB)
+   - `lh`: Lighthouse 100/100/100/100 static gate
+   - `wasm`: WebAssembly binary validation
+   - `webgpu`: WebGPU & Chromium Dawn WGSL validation
+2. **RAG Hybrid Search** (`wck search <query>`, `wck retrieve <id>`, `wck list [category]`):
+   - Okapi BM25 + Lucene S-Stemmer (`src/rag/bm25.ts`)
+   - Int8 quantized 256d static embeddings (`src/rag/static-embedder.ts`, `data/gen/query-words.*`)
+   - Reciprocal Rank Fusion (RRF) over `data/gen/guide-chunks.*` and 252 compressed guides (`data/gen/guides.json.gz`)
+3. **Baseline & Feature Gates** (`.mwgrc`, `wck baselinestatus <query>`, `wck set-allow-origin-trials`, `wck set-allow-volatile-features`, `wck set-baseline <target>`)
+4. **Legacy Pattern Scanner** (`wck legacy-scan [<path>] [--json] [--guide=<id>]`)
+5. **MDX & Native C23 FFI** (`wck mdx <file>`, `src/mwg-ffi.ts` -> `mwg_capi.dll` with deterministic Bun fallback)
 
-1. **Spec 1 — Google Search SEO (`seo`)**:
-   - `<html lang="...">` ISO language declaration
-   - `<meta charset="utf-8">`
-   - `<title>` length between 10 and 60 characters
-   - `<meta name="description">` length between 50 and 160 characters
-   - `<link rel="canonical" href="https://...">`
-   - OpenGraph metadata (`og:title`, `og:description`, `og:url`, `og:type`)
-   - Semantic landmarks: `<header role="banner">`, `<main role="main">`, `<footer role="contentinfo">`
-   - Accessible names on `<button>`, `<input>`, `<a>`, `<svg role="img">`
-   - `robots.txt` and `sitemap.xml` validation
+## Verification
 
-2. **Spec 2 — Google AI Mode SEO & Generative Engine Optimization (`aiseo`)**:
-   - Schema.org JSON-LD Structured Data (`WebSite` or `SoftwareApplication` with `potentialAction: SearchAction`)
-   - Meta robots AI crawler directives: `index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1`
-   - Concise AI Crawler Index (`/llms.txt`) with H1 title, summary, and canonical endpoints
-
-3. **Spec 3 — Modern Web Guidelines & WCAG 2.2 AA (`mwg`)**:
-   - `<meta name="viewport" content="width=device-width, initial-scale=1">` (rejects `maximum-scale=1` or `user-scalable=no`)
-   - Explicit `color-scheme: light dark` support
-   - Keyboard `:focus-visible` CSS rules
-   - `@media (prefers-reduced-motion: reduce)` support
-   - Zero deprecated HTML tags and zero inline `javascript:` URLs
-
-4. **Spec 4 — Core Web Vitals Static Gate (`cwv`)**:
-   - **CLS = 0.000**: Explicit `width` & `height` on all `<img>`, `<svg>`, `<canvas>`, `<video>` tags; compositor-only `@keyframes`
-   - **LCP Budget**: Initial HTML + gzipped CSS `< 14 KB` (fits inside TCP IW10 congestion window)
-   - **INP Budget**: Initial JS bundle gzipped size `< 30 KB` (< 15 ms parse/compile, < 50 ms INP)
-
-5. **Spec 5 — Lighthouse 100/100/100/100 Gate (`lh`)**:
-   - Deterministic 100/100/100/100 scores across Performance, Accessibility, Best Practices, and SEO
-
-6. **Spec 6 — WebAssembly Spec Gate (`wasm`)**:
-   - Magic header `\0asm\x01\x00\x00\x00` validation
-   - Native `WebAssembly.validate()` bytecode verification
-   - Native `WebAssembly.Module()` instantiation and export/import contract checks
-
-7. **Spec 7 — WebGPU & Chromium Dawn Spec Gate (`webgpu`)**:
-   - WGSL entry points `@compute`, `@vertex`, `@fragment`
-   - Universal Dawn/Chromium workgroup limit: `X * Y * Z <= 256` invocations
-   - Group/binding uniqueness (`@group(g) @binding(b)`)
-   - 16-byte struct uniform std140 layout alignment rules
-   - Browser `navigator.gpu` capability guard
-
-## CLI Usage
-
-```bash
-# Validate directory
-wck C:\src\apps\aphrody\dist
-
-# Validate single HTML document
-wck C:\src\crates\gamescope-rs\web\index.html
-
-# Output JSON
-wck C:\src\apps\aphrody\dist --json
+```sh
+bun fmt
+bun check
+bun test packages/wck
 ```

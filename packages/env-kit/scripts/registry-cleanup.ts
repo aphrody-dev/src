@@ -18,21 +18,23 @@ const NPM_REPORT = "C:/src/var/reports/npm-inventory.json";
 const CRATES_REPORT = "C:/src/var/reports/crates-inventory.json";
 
 const CANONICAL_NPM_KEEP = new Set([
-  "@aphrody/web",
   "@aphrody/ai-os",
   "@aphrody/ai-triad",
   "@aphrody/brain",
-  "@aphrody/bun-parity",
-  "@aphrody/bun-plugins",
   "@aphrody/chromium-bun",
+  "@aphrody/core",
+  "@aphrody/deploy",
+  "@aphrody/design",
   "@aphrody/env-kit",
-  "@aphrody/forge",
-  "@aphrody/google-design",
-  "@aphrody/knowledge-engine",
-  "@aphrody/pi-opencode",
+  "@aphrody/ffi-bridge",
+  "@aphrody/gaming",
+  "@aphrody/machine",
+  "@aphrody/net",
+  "@aphrody/release",
+  "@aphrody/shell-matrix",
+  "@aphrody/upstream",
+  "@aphrody/vault",
   "@aphrody/wck",
-  "@aphrody/mesh-vn",
-  "@aphrody/infra-ffi-bridge",
 ]);
 
 const CANONICAL_CRATES_KEEP = new Set([

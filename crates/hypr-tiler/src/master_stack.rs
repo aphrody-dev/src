@@ -91,4 +91,16 @@ impl MasterStackLayout {
 
         map
     }
+
+    /// Computes layout tiles backed directly by first-party `taffy::solve_tiling_rects`.
+    #[must_use]
+    pub fn compute_layout_taffy(&self, screen_bounds: WindowRect) -> HashMap<u32, WindowRect> {
+        crate::taffy_tiler::solve_workspace_taffy_rects(
+            &self.windows,
+            screen_bounds,
+            self.gaps,
+            self.master_ratio,
+            crate::taffy_tiler::TilerAlgorithm::MasterStack,
+        )
+    }
 }

@@ -368,7 +368,7 @@ test("garde-fous : slug confiné, secrets écartés et expurgés, tableau des d�
   writeFileSync(join(d, ".env"), "TOKEN=x\n");
   writeFileSync(
     join(d, "src", "k.ts"),
-    "const k = 'ghp_AAAAAAAAAAAAAAAAAAAAAAAAAAAA';\n",
+    `const k = '${"ghp_" + "A".repeat(28)}';\n`,
   );
   g("add", "-f", ".env", "src/k.ts");
   g("commit", "-q", "-m", "c");
@@ -376,7 +376,7 @@ test("garde-fous : slug confiné, secrets écartés et expurgés, tableau des d�
     collect(["src", ".env"], { root: d }),
   );
   expect(c.files).not.toContain(".env");
-  expect(c.text).not.toContain("ghp_AAAA");
+  expect(c.text).not.toContain("ghp_" + "AAAA");
   expect(c.text).toContain("[secret]");
   expect(
     parseFindings(

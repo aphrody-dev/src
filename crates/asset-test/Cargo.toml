@@ -32,7 +32,24 @@ gltf = "1.4.1"
 ttf-parser = "0.25.1"
 toml = { workspace = true }
 bevy = { workspace = true, optional = true, features = [
-  "std", "async_executor", "bevy_asset", "bevy_log", "bevy_render", "bevy_core_pipeline", "bevy_camera",
-  "bevy_light", "bevy_mesh", "bevy_pbr", "bevy_color", "bevy_image", "bevy_shader", "bevy_world_serialization",
-  "bevy_scene", "bevy_gltf", "png", "hdr", "zstd_rust", "multi_threaded",
+  "std",
+  "async_executor",
+  "bevy_asset",
+  "bevy_log",
+  "bevy_render",
+  "bevy_core_pipeline",
+  "bevy_camera",
+  "bevy_light",
+  "bevy_mesh",
+  "bevy_pbr",
+  "bevy_color",
+  "bevy_image",
+  "bevy_shader",
+  "bevy_world_serialization",
+  "bevy_scene",
+  "bevy_gltf",
+  "png",
+  "hdr",
+  "zstd_rust",
+  "multi_threaded",
 ] }

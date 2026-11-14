@@ -18,6 +18,10 @@
 pub mod brand;
 pub mod color;
 pub mod components;
+#[cfg(feature = "std")]
+pub mod design_md;
+#[cfg(feature = "fusion")]
+pub mod fusion;
 #[cfg(feature = "layout")]
 pub mod layout;
 #[cfg(feature = "next")]

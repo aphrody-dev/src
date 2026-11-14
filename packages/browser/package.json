@@ -1,0 +1,20 @@
+{
+  "name": "@aphrody/browser",
+  "version": "0.1.0",
+  "description": "Lightpanda Zig headless browser core fused with Aphrody monorepo V8 and bun:ffi C ABI",
+  "type": "module",
+  "private": true,
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build:native": "zig build-lib -dynamic -O ReleaseFast -lc native/src/capi_main.zig -femit-bin=native/zig-out/bin/browser_capi.dll",
+    "test": "bun test src",
+    "check": "bun check src/index.ts",
+    "fmt": "bun fmt src"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "license": "AGPL-3.0-or-later"
+}

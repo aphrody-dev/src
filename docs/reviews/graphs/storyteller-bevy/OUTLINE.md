@@ -399,17 +399,21 @@ storyteller-bevy/
 ================================================
 FILE: README.md
 ================================================
+
 # Storyteller Studio
 
 ## Installing dependencies
-* [Install Rust](https://www.rust-lang.org/tools/install)
-* [Install Node.js LTS](https://nodejs.org/en)
-* Run `npm ci`
+
+- [Install Rust](https://www.rust-lang.org/tools/install)
+- [Install Node.js LTS](https://nodejs.org/en)
+- Run `npm ci`
 
 ## Building / Running / Testing stuff
+
 This repo is managed by [Nx](https://nx.dev), a polyglot build system and
 monorepo framework written in TypeScript. After installing dependencies, dev
 tasks can be run through the Nx CLI:
+
 ```sh
 npx nx <command> <project> [options]
 # OR
@@ -418,11 +422,13 @@ npx nx run <project>:<command> [options]
 
 For example, to compile the Bevy app to WebAssembly and serve it via the web
 frontend project, run:
+
 ```
 npx nx serve studio-frontend
 ```
 
-You'll need to install the wasm compiler for Rust: 
+You'll need to install the wasm compiler for Rust:
+
 ```
 rustup target add wasm32-unknown-unknown
 ```
@@ -433,14 +439,15 @@ supported by a given project can be found under the `target` property of its
 
 The full list of options for a given command can be discovered by passing the
 `--help` flag:
+
 ```
 npx nx <command> <project> --help
 ```
 
-
 ================================================
 FILE: studio-frontend/README.md
 ================================================
+
 # studio-frontend
 
 This is the primary microfrontend to be embedded in the [Storyteller.ai
@@ -449,6 +456,7 @@ website](https://fakeyou.com/studio).
 ### Running
 
 The project can be served locally using the `serve` target:
+
 ```sh
 npx nx serve studio-frontend
 ```
@@ -462,10 +470,10 @@ parameters which are documented [here](../studio-web/src/lib/url-params.ts).
 For example, to load the bundled `sample-room.gltf` scene in `StudioMode.Editor`,
 visit: http://localhost:4200/?mode=studio&objectId=sample-room.gltf
 
-
 ================================================
 FILE: studio-ui/README.md
 ================================================
+
 # studio-ui
 
 This is a UI/component library that can be easily shared between multiple
@@ -479,10 +487,10 @@ Run `nx build studio-ui` to build the library.
 
 Run `nx test studio-ui` to execute the unit tests via [Jest](https://jestjs.io).
 
-
 ================================================
 FILE: studio-web/README.md
 ================================================
+
 # studio-web
 
 This library was generated with [Nx](https://nx.dev).
@@ -495,10 +503,10 @@ Run `nx build studio-web` to build the library.
 
 Run `nx test studio-web` to execute the unit tests via [Jest](https://jestjs.io).
 
-
 ================================================
 FILE: utility/README.md
 ================================================
+
 # utility
 
 This library was generated with [Nx](https://nx.dev).
@@ -511,25 +519,25 @@ Run `nx build utility` to build the library.
 
 Run `nx test utility` to execute the unit tests via [Jest](https://jestjs.io).
 
-
 ================================================
 FILE: vite-multiple-assets/README.md
 ================================================
+
 # vite-multiple-assets
 
 This is a simple Vite plugin forked from [`vite-multiple-assets`](https://github.com/nguyenbatranvan/vite-multiple-assets)
 and extended to provide MIME types for additional filetypes not commonly used on
 the web, but needed for a Bevy 3D application.
 
-
 ================================================
 FILE: Cargo.toml
 ================================================
+
 [workspace]
 resolver = "2"
 members = [
-    "./studio",
-    "./studio-bvh",
+"./studio",
+"./studio-bvh",
 ]
 
 [workspace.dependencies]
@@ -549,10 +557,10 @@ opt-level = 3
 [profile.release]
 opt-level = 3
 
-
 ================================================
 FILE: package.json
 ================================================
+
 // [OUTLINE - 49 symbols, 54 lines]
 // L2: "name": "@storyteller/source"
 // L3: "version": "0.0.0"
@@ -604,10 +612,10 @@ FILE: package.json
 // L51: "react-dom": "18.2.0"
 // L52: "tslib": "^2.3.0"
 
-
 ================================================
 FILE: studio/Cargo.toml
 ================================================
+
 [package]
 name = "studio"
 version = "0.1.0"
@@ -644,13 +652,13 @@ serde_json = "1.0.108"
 studio-bvh = { path = "../studio-bvh" }
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", optional = true, features = [
-	"CustomEvent",
-	"CustomEventInit",
-	"Document",
-	"HtmlElement",
-	"Window",
-	"Location",
-	"WorkerGlobalScope"
+"CustomEvent",
+"CustomEventInit",
+"Document",
+"HtmlElement",
+"Window",
+"Location",
+"WorkerGlobalScope"
 ] }
 clap = { version = "4.4.18", features = ["derive"] }
 futures-intrusive = "0.5.0"
@@ -675,20 +683,20 @@ bevy_tweening = "0.10.0"
 [dependencies.reqwest]
 version = "0.12.2"
 features = [
-	"default",
-	"json",
-	"stream",
+"default",
+"json",
+"stream",
 ]
 
 [features]
 wasm = [
-	"dep:console_error_panic_hook",
-	"dep:js-sys",
-	"dep:serde-wasm-bindgen",
-	"dep:web-sys",
-	"dep:indexed_db_futures",
-	"dep:wasm-bindgen-futures",
-	"bevy_rapier3d/wasm-bindgen",
+"dep:console_error_panic_hook",
+"dep:js-sys",
+"dep:serde-wasm-bindgen",
+"dep:web-sys",
+"dep:indexed_db_futures",
+"dep:wasm-bindgen-futures",
+"bevy_rapier3d/wasm-bindgen",
 ]
 desktop = []
 headless = []
@@ -700,18 +708,18 @@ workspace = true
 version = "0.18.0"
 default-features = false
 features = [
-	"backend_bevy_ui",
-	"backend_rapier",
-	"backend_raycast",
-	"backend_sprite",
-	"debug",
-	"selection",
+"backend_bevy_ui",
+"backend_rapier",
+"backend_raycast",
+"backend_sprite",
+"debug",
+"selection",
 ]
-
 
 ================================================
 FILE: studio/package.json
 ================================================
+
 // [OUTLINE - 6 symbols, 16 lines]
 // L2: "name": "@storyteller/studio"
 // L3: "version": "0.0.1"
@@ -720,17 +728,17 @@ FILE: studio/package.json
 // L11: "types": "studio.d.ts"
 // L12-L15: "sideEffects": [
 
-
 ================================================
 FILE: studio-bvh/Cargo.toml
 ================================================
+
 [package]
 name = "studio-bvh"
 version = "0.1.0"
 edition = "2021"
 authors = [
-	"George Burton <burtonageo@gmail.com>",
-	"Storyteller.ai",
+"George Burton <burtonageo@gmail.com>",
+"Storyteller.ai",
 ]
 
 [dependencies] # TODO: Update dependencies
@@ -739,10 +747,10 @@ lexical = "5.2"
 nom = "6"
 smallvec = "1.5"
 
-
 ================================================
 FILE: studio-ui/package.json
 ================================================
+
 // [OUTLINE - 9 symbols, 12 lines]
 // L2: "name": "@storyteller/studio-ui"
 // L3: "version": "0.0.1"
@@ -754,10 +762,10 @@ FILE: studio-ui/package.json
 // L10: "module": "./index.mjs"
 // L11: "typings": "./index.d.ts"
 
-
 ================================================
 FILE: studio-web/package.json
 ================================================
+
 // [OUTLINE - 10 symbols, 13 lines]
 // L2: "name": "@storyteller/studio-web"
 // L3: "version": "0.0.1"
@@ -770,10 +778,10 @@ FILE: studio-web/package.json
 // L11: "module": "./index.mjs"
 // L12: "typings": "./index.d.ts"
 
-
 ================================================
 FILE: utility/package.json
 ================================================
+
 // [OUTLINE - 6 symbols, 8 lines]
 // L2: "name": "@storyteller/utility"
 // L3: "version": "0.0.1"
@@ -782,20 +790,20 @@ FILE: utility/package.json
 // L6: "module": "./index.mjs"
 // L7: "typings": "./index.d.ts"
 
-
 ================================================
 FILE: vite-multiple-assets/package.json
 ================================================
+
 // [OUTLINE - 4 symbols, 6 lines]
 // L2: "name": "@storyteller/vite-multiple-assets"
 // L3: "version": "0.0.1"
 // L4: "dependencies":
 // L5: "main": "./src/index.js"
 
-
 ================================================
 FILE: studio/src/lib.rs
 ================================================
+
 // [OUTLINE - 35 symbols, 248 lines]
 // import bevy
 // import bevy_mod_picking
@@ -842,10 +850,10 @@ FILE: studio/src/lib.rs
 // L146-L196: pub fn start(init: InitParams, mode: StudioMode, window_config: Option<Window>) -> App
 // L198-L248: fn init_from_asset(app: &mut App, asset: InitAsset, skybox_id: String)
 
-
 ================================================
 FILE: studio/src/main.rs
 ================================================
+
 // [OUTLINE - 2 symbols, 43 lines]
 // import bevy
 // import clap
@@ -853,10 +861,10 @@ FILE: studio/src/main.rs
 // L14-L17: struct StudioArgs
 // L19-L43: fn main()
 
-
 ================================================
 FILE: studio-bvh/src/lib.rs
 ================================================
+
 // [OUTLINE - 58 symbols, 956 lines]
 // import crate
 // import bstr
@@ -924,60 +932,60 @@ FILE: studio-bvh/src/lib.rs
 // L937-L943: pub fn vector(&self) -> Offset
 // L948-L955: fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
 
-
 ================================================
 FILE: studio-ui/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 8 lines]
 
+// [OUTLINE - 0 symbols, 8 lines]
 
 ================================================
 FILE: studio-ui/src/lib/dialog/index.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 9 lines]
 // import ./dialog-base.element
 // import ./dialog-footer.element
 // import ./dialog-header.element
 // import ./dialog.element
 
-
 ================================================
 FILE: studio-ui/src/lib/forms/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 4 lines]
 
+// [OUTLINE - 0 symbols, 4 lines]
 
 ================================================
 FILE: studio-ui/src/lib/forms/radio/index.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 5 lines]
 // import ./radio-group.element
 // import ./radio.element
 
-
 ================================================
 FILE: studio-ui/src/lib/forms/select/index.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 5 lines]
 // import ./select.element
 // import ./option.element
 
-
 ================================================
 FILE: studio-web/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 15 lines]
 
+// [OUTLINE - 0 symbols, 15 lines]
 
 ================================================
 FILE: utility/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 5 lines]
 
+// [OUTLINE - 0 symbols, 5 lines]
 
 ================================================
 FILE: vite-multiple-assets/src/index.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 16 lines]
 // import vite
 // import ./lib/server
@@ -986,55 +994,54 @@ FILE: vite-multiple-assets/src/index.ts
 // L8-L10: configureServer(server: ViteDevServer)
 // L11-L13: async writeBundle(options)
 
-
 ================================================
 FILE: Dockerfile
 ================================================
-// [OUTLINE - 0 symbols, 57 lines]
 
+// [OUTLINE - 0 symbols, 57 lines]
 
 ================================================
 FILE: ci-image-gen.sh
 ================================================
-// [OUTLINE - 0 symbols, 16 lines]
 
+// [OUTLINE - 0 symbols, 16 lines]
 
 ================================================
 FILE: ci.sh
 ================================================
-// [OUTLINE - 0 symbols, 16 lines]
 
+// [OUTLINE - 0 symbols, 16 lines]
 
 ================================================
 FILE: editor.ron
 ================================================
+
 {
-    "space_editor_core::hotkeys::HotkeySet<space_editor_ui::tools::gizmo::GizmoHotkey>": "{\"space_editor_core::hotkeys::HotkeySet<space_editor_ui::tools::gizmo::GizmoHotkey>\":(bindings:{Clone:[AltLeft],Rotate:[KeyR],Multiple:[ShiftLeft],Delete:[KeyX],Translate:[KeyG],Scale:[KeyS]},name:\"GizmoHotkey\")}",
-    "space_persistence::PersistenceSettings": "{\"space_persistence::PersistenceSettings\":(load_on_startup:true,save_on_close:true)}",
-    "space_undo::ChangeChainSettings": "{\"space_undo::ChangeChainSettings\":(max_change_chain_size:200)}",
-    "space_editor_ui::settings::GameModeSettings": "{\"space_editor_ui::settings::GameModeSettings\":(mode:Game3D)}",
-    "space_editor_ui::sizing::Sizing": "{\"space_editor_ui::sizing::Sizing\":(icon:Regular,gizmos:Gizmos,text:14.0)}",
-    "space_editor_ui::settings::NewWindowSettings": "{\"space_editor_ui::settings::NewWindowSettings\":(new_tab:SameNode)}",
+"space_editor_core::hotkeys::HotkeySet<space_editor_ui::tools::gizmo::GizmoHotkey>": "{\"space_editor_core::hotkeys::HotkeySet<space_editor_ui::tools::gizmo::GizmoHotkey>\":(bindings:{Clone:[AltLeft],Rotate:[KeyR],Multiple:[ShiftLeft],Delete:[KeyX],Translate:[KeyG],Scale:[KeyS]},name:\"GizmoHotkey\")}",
+"space_persistence::PersistenceSettings": "{\"space_persistence::PersistenceSettings\":(load_on_startup:true,save_on_close:true)}",
+"space_undo::ChangeChainSettings": "{\"space_undo::ChangeChainSettings\":(max_change_chain_size:200)}",
+"space_editor_ui::settings::GameModeSettings": "{\"space_editor_ui::settings::GameModeSettings\":(mode:Game3D)}",
+"space_editor_ui::sizing::Sizing": "{\"space_editor_ui::sizing::Sizing\":(icon:Regular,gizmos:Gizmos,text:14.0)}",
+"space_editor_ui::settings::NewWindowSettings": "{\"space_editor_ui::settings::NewWindowSettings\":(new_tab:SameNode)}",
 }
 
 ================================================
 FILE: netlify.toml
 ================================================
+
 [[headers]]
-  for = "/*"
-  [headers.values]
-    # NB: This is potentially dangerous, but I don't think we have much other choice:
-    Access-Control-Allow-Origin = "*"
+for = "/_"
+[headers.values] # NB: This is potentially dangerous, but I don't think we have much other choice:
+Access-Control-Allow-Origin = "_"
 
     # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors
     # NB: The *.netlify.app is dangerous.
     Content-Security-Policy = "frame-ancestors 'self' https://fakeyou.com https://*.fakeyou.com https://storyteller.ai https://*.storyteller.ai https://*.netlify.app http://*.fakeyou.com:7000 http://*.fakeyou.com:7001 http://*.fakeyou.com:7002 http://*.storyteller.ai:7000 http://*.storyteller.ai:7001 http://*.storyteller.ai:7002;"
 
-
-
 ================================================
 FILE: nx.json
 ================================================
+
 // [OUTLINE - 34 symbols, 71 lines]
 // L2-L4: "plugins": [
 // L5-L16: "namedInputs":
@@ -1071,2353 +1078,2446 @@ FILE: nx.json
 // L66: "style": "scss"
 // L67: "linter": "none"
 
-
 ================================================
 FILE: rust-toolchain.toml
 ================================================
+
 [toolchain]
 channel = "stable"
-
 
 ================================================
 FILE: rustfmt.toml
 ================================================
 
-
 ================================================
 FILE: studio/assets/desync.scn.ron
 ================================================
+
 (
-  resources: {},
-  entities: {
-    9: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-          ),
-          rotation: (
-            x: -0.27984813,
-            y: 0.36470518,
-            z: 0.11591689,
-            w: 0.88047624,
-          ),
-          scale: (
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-          ),
-        ),
-        "bevy_core::name::Name": (
-          hash: 4042927597982576294,
-          name: "Directional Light",
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "bevy_pbr::light::DirectionalLight": (
-          color: Rgba(
-            red: 1.0,
-            green: 1.0,
-            blue: 1.0,
-            alpha: 1.0,
-          ),
-          illuminance: 20000.0,
-          shadows_enabled: false,
-          shadow_depth_bias: 0.02,
-          shadow_normal_bias: 1.8,
-        ),
-        "studio::anim::timeline_animation::AnimationTarget": Uuid("57217c56-d86b-441f-a0b6-a471dfe1d463"),
-      },
-    ),
-    10: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 0.0,
-            y: 23.715185,
-            z: 0.0000007320094,
-          ),
-          rotation: (
-            x: 0.70710677,
-            y: 0.0,
-            z: 0.0,
-            w: 0.7071067,
-          ),
-          scale: (
-            x: 0.01,
-            y: 0.010000001,
-            z: 0.010000001,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("2c3faa37-9320-4bc7-825f-75b745477901"),
-          time: 1.1854,
-        ),
-      },
-    ),
-    11: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 0.0,
-            y: 27.426285,
-            z: 0.00000051081065,
-          ),
-          rotation: (
-            x: 0.7071068,
-            y: 0.0,
-            z: 0.0,
-            w: 0.70710677,
-          ),
-          scale: (
-            x: 0.01,
-            y: 0.010000001,
-            z: 0.010000001,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("2c3faa37-9320-4bc7-825f-75b745477901"),
-          time: 3.0443585,
-        ),
-      },
-    ),
-    12: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -5.861992,
-            y: 16.39393,
-            z: -44.6979,
-          ),
-          rotation: (
-            x: 0.70710677,
-            y: 0.0,
-            z: 0.0,
-            w: 0.7071067,
-          ),
-          scale: (
-            x: 0.01,
-            y: 0.010000001,
-            z: 0.010000001,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("34f59412-5a7b-44e9-aaa3-3e74840121c9"),
-          time: 0.0,
-        ),
-      },
-    ),
-    13: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -1.6321859,
-            y: 16.393932,
-            z: -46.45551,
-          ),
-          rotation: (
-            x: 0.70710677,
-            y: 0.0,
-            z: 0.0,
-            w: 0.7071067,
-          ),
-          scale: (
-            x: 0.01,
-            y: 0.010000001,
-            z: 0.010000001,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("34f59412-5a7b-44e9-aaa3-3e74840121c9"),
-          time: 1.6179003,
-        ),
-      },
-    ),
-    14: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 0.90487814,
-            y: 19.255144,
-            z: -44.125862,
-          ),
-          rotation: (
-            x: 0.7071068,
-            y: 0.0,
-            z: 0.0,
-            w: 0.70710677,
-          ),
-          scale: (
-            x: 0.01,
-            y: 0.010000001,
-            z: 0.010000001,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("34f59412-5a7b-44e9-aaa3-3e74840121c9"),
-          time: 3.0603817,
-        ),
-      },
-    ),
-    15: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -9.611355,
-            y: 20.93744,
-            z: -28.69173,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("2b76e191-e079-417a-9369-2443f21f3ce5"),
-          time: 0.0,
-        ),
-      },
-    ),
-    16: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -9.611355,
-            y: 20.93744,
-            z: 19.342052,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("2b76e191-e079-417a-9369-2443f21f3ce5"),
-          time: 0.967,
-        ),
-      },
-    ),
-    17: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -9.611355,
-            y: 11.742281,
-            z: -28.69173,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("408b5d7e-9456-4d81-a08e-feebba2ce1c4"),
-          time: 0.0,
-        ),
-      },
-    ),
-    18: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -9.611355,
-            y: 11.742281,
-            z: 13.85043,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("408b5d7e-9456-4d81-a08e-feebba2ce1c4"),
-          time: 0.97205836,
-        ),
-      },
-    ),
-    19: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -2.1474366,
-            y: 20.93744,
-            z: -28.69173,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("38601448-b10c-43ec-91de-367e51c06daf"),
-          time: 0.0,
-        ),
-      },
-    ),
-    20: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -2.1474366,
-            y: 20.93744,
-            z: 18.621094,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("38601448-b10c-43ec-91de-367e51c06daf"),
-          time: 1.0002003,
-        ),
-      },
-    ),
-    21: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -2.1474366,
-            y: 11.742281,
-            z: -28.69173,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("8c5f79d4-6093-4372-9d2c-722353c76013"),
-          time: 0.0,
-        ),
-      },
-    ),
-    22: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -2.1474366,
-            y: 11.742281,
-            z: 22.233124,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("8c5f79d4-6093-4372-9d2c-722353c76013"),
-          time: 0.98274034,
-        ),
-      },
-    ),
-    23: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -6.1651826,
-            y: 28.684336,
-            z: 21.026539,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("b1db578c-b426-414c-bc95-f701f1b9ca41"),
-          time: 0.0,
-        ),
-      },
-    ),
-    24: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -6.1651826,
-            y: 28.684336,
-            z: 34.293587,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("b1db578c-b426-414c-bc95-f701f1b9ca41"),
-          time: 0.7156913,
-        ),
-      },
-    ),
-    25: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -6.1651826,
-            y: 26.61894,
-            z: 22.791157,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("f7567e27-bb0b-4ac7-a840-3c043b8d2ec2"),
-          time: 0.0,
-        ),
-      },
-    ),
-    26: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -6.1651826,
-            y: 26.61894,
-            z: 38.36416,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("f7567e27-bb0b-4ac7-a840-3c043b8d2ec2"),
-          time: 0.70500934,
-        ),
-      },
-    ),
-    27: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 6.205474,
-            y: 28.684336,
-            z: 21.026539,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("48006f09-9f10-477f-8308-02343f34a8c9"),
-          time: 0.0,
-        ),
-      },
-    ),
-    28: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 6.205474,
-            y: 26.61894,
-            z: 22.791157,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("5e2e70d9-5b6d-495b-998d-6a1f6dc2f964"),
-          time: 0.0,
-        ),
-      },
-    ),
-    29: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 6.205474,
-            y: 26.61894,
-            z: 37.461624,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("5e2e70d9-5b6d-495b-998d-6a1f6dc2f964"),
-          time: 0.71035033,
-        ),
-      },
-    ),
-    30: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 6.205474,
-            y: 28.684336,
-            z: 34.863163,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 0.122251,
-            y: 0.122251,
-            z: 8.75498,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("48006f09-9f10-477f-8308-02343f34a8c9"),
-          time: 0.71035033,
-        ),
-      },
-    ),
-    31: (
-      components: {
-        "space_prefab::sub_scene::CollapsedSubScene": ("(\n  resources: {},\n  entities: {\n    31: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 6313511421271274664,\n          name: \"Scene\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::component::GltfPrefab\": (\n          path: \"desync.glb\",\n          scene: \"Scene0\",\n        ),\n      },\n    ),\n    36: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          37,\n          38,\n          39,\n          40,\n          41,\n          42,\n          43,\n          44,\n          45,\n          46,\n          47,\n          48,\n          49,\n          50,\n          51,\n          52,\n          53,\n          54,\n        ]),\n      },\n    ),\n    37: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: -0.25713548,\n            z: -4.3361616,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 17930118900081507113,\n          name: \"empty.026\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n      },\n    ),\n    38: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          1,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: -0.45699087,\n            z: -4.3361616,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 2932322132067973075,\n          name: \"empty.027\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n      },\n    ),\n    39: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          2,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 13395407226770374147,\n          name: \"empty.028\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n      },\n    ),\n    40: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          3,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 15213343571318681368,\n          name: \"empty.029\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n      },\n    ),\n    41: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          4,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: -0.55585074,\n            z: -4.3361616,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 6637236937475434455,\n          name: \"empty.030\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n      },\n    ),\n    42: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          5,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 2359233632329934770,\n          name: \"empty.031\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n      },\n    ),\n    43: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          6,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 37.414967,\n            y: 61.1213,\n            z: 112.0113,\n          ),\n          rotation: (\n            x: -0.30626115,\n            y: 0.43745646,\n            z: -0.16405046,\n            w: 0.8294115,\n          ),\n          scale: (\n            x: 2.0169291,\n            y: 2.016929,\n            z: 2.016929,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 1734594374362272207,\n          name: \"Sun\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          55,\n        ]),\n      },\n    ),\n    44: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          7,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 27.426285,\n            z: 0.00000051081065,\n          ),\n          rotation: (\n            x: 0.7071068,\n            y: 0.0,\n            z: 0.0,\n            w: 0.70710677,\n          ),\n          scale: (\n            x: 0.01,\n            y: 0.010000001,\n            z: 0.010000001,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 5100648900209823736,\n          name: \"StarFighterA.001\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          56,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"2c3faa37-9320-4bc7-825f-75b745477901\"),\n      },\n    ),\n    45: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          8,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: -6.1651826,\n            y: 28.684336,\n            z: 21.026539,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 0.122251,\n            y: 0.122251,\n            z: 8.75498,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 2356508911138325861,\n          name: \"LaserA\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          57,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"b1db578c-b426-414c-bc95-f701f1b9ca41\"),\n      },\n    ),\n    46: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          9,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: -9.611355,\n            y: 20.93744,\n            z: -28.69173,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 0.122251,\n            y: 0.122251,\n            z: 8.75498,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 3771605970233175782,\n          name: \"LaserA.001\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          58,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"2b76e191-e079-417a-9369-2443f21f3ce5\"),\n      },\n    ),\n    47: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          10,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: -9.611355,\n            y: 11.742281,\n            z: -28.69173,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 0.122251,\n            y: 0.122251,\n            z: 8.75498,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 9811213967899955357,\n          name: \"LaserA.002\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          59,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"408b5d7e-9456-4d81-a08e-feebba2ce1c4\"),\n      },\n    ),\n    48: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          11,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: -2.1474366,\n            y: 20.93744,\n            z: -28.69173,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 0.122251,\n            y: 0.122251,\n            z: 8.75498,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 4239528607526478068,\n          name: \"LaserA.003\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          60,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"38601448-b10c-43ec-91de-367e51c06daf\"),\n      },\n    ),\n    49: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          12,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: -2.1474366,\n            y: 11.742281,\n            z: -28.69173,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 0.122251,\n            y: 0.122251,\n            z: 8.75498,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 17360688022630626399,\n          name: \"LaserA.004\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          61,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"8c5f79d4-6093-4372-9d2c-722353c76013\"),\n      },\n    ),\n    50: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          13,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 6.205474,\n            y: 28.684336,\n            z: 34.863163,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 0.122251,\n            y: 0.122251,\n            z: 8.75498,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 2771954425045718751,\n          name: \"LaserA.005\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          62,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"48006f09-9f10-477f-8308-02343f34a8c9\"),\n      },\n    ),\n    51: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          14,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: -6.1651826,\n            y: 26.61894,\n            z: 22.791157,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 0.122251,\n            y: 0.122251,\n            z: 8.75498,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 17690120629478967177,\n          name: \"LaserA.006\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          63,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"f7567e27-bb0b-4ac7-a840-3c043b8d2ec2\"),\n      },\n    ),\n    52: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          15,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 6.205474,\n            y: 26.61894,\n            z: 22.791157,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 0.122251,\n            y: 0.122251,\n            z: 8.75498,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 16845800620004850392,\n          name: \"LaserA.007\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          64,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"5e2e70d9-5b6d-495b-998d-6a1f6dc2f964\"),\n      },\n    ),\n    53: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          16,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 7.8028564,\n            z: -77.33632,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 4339032300311916617,\n          name: \"Trench_merged\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          65,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"4499fa6b-3ebd-410c-bee7-72d373e1aabb\"),\n      },\n    ),\n    54: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          17,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.90368176,\n            y: 19.253796,\n            z: -44.12696,\n          ),\n          rotation: (\n            x: 0.7071068,\n            y: 0.0,\n            z: 0.0,\n            w: 0.70710677,\n          ),\n          scale: (\n            x: 0.01,\n            y: 0.010000001,\n            z: 0.010000001,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 14408680411555793288,\n          name: \"StarFighterB\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"space_prefab::save::ChildrenPrefab\": ([\n          66,\n        ]),\n        \"studio::scene::SceneElement\": Mesh,\n        \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"34f59412-5a7b-44e9-aaa3-3e74840121c9\"),\n      },\n    ),\n    55: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          6,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 1734594374362272207,\n          name: \"Sun\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"bevy_pbr::light::DirectionalLight\": (\n          color: Rgba(\n            red: 1.0,\n            green: 1.0,\n            blue: 1.0,\n            alpha: 1.0,\n          ),\n          illuminance: 34150.0,\n          shadows_enabled: false,\n          shadow_depth_bias: 0.02,\n          shadow_normal_bias: 1.8,\n        ),\n      },\n    ),\n    56: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          7,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 9518542504113058593,\n          name: \"StarFighterA\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 1.0,\n            green: 1.0,\n            blue: 1.0,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.09210527,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    57: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          8,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 516045924745151091,\n          name: \"Cube.305\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 0.0,\n            green: 0.0,\n            blue: 0.0,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.5,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    58: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          9,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 11455141375658386197,\n          name: \"Cube.306\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 1.0,\n            green: 0.24252349,\n            blue: 0.26523626,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.5,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    59: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          10,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 7710930313815418106,\n          name: \"Cube.307\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 1.0,\n            green: 0.24252349,\n            blue: 0.26523626,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.5,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    60: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          11,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 2006570935111361085,\n          name: \"Cube.308\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 1.0,\n            green: 0.24252349,\n            blue: 0.26523626,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.5,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    61: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          12,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 18402460489604278594,\n          name: \"Cube.309\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 1.0,\n            green: 0.24252349,\n            blue: 0.26523626,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.5,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    62: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          13,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 11261500935898758914,\n          name: \"Cube.310\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 0.0,\n            green: 0.0,\n            blue: 0.0,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.5,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    63: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          14,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 12965872175589560571,\n          name: \"Cube.311\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 0.0,\n            green: 0.0,\n            blue: 0.0,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.5,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    64: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          15,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 12943195592201606100,\n          name: \"Cube.312\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 0.0,\n            green: 0.0,\n            blue: 0.0,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.5,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    65: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          16,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 14833676912841048273,\n          name: \"Cube.215\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 1.0,\n            green: 1.0,\n            blue: 1.0,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 0.46721607,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n    66: (\n      components: {\n        \"space_prefab::sub_scene::ChildPath\": ([\n          0,\n          17,\n          0,\n        ]),\n        \"bevy_transform::components::transform::Transform\": (\n          translation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n          ),\n          rotation: (\n            x: 0.0,\n            y: 0.0,\n            z: 0.0,\n            w: 1.0,\n          ),\n          scale: (\n            x: 1.0,\n            y: 1.0,\n            z: 1.0,\n          ),\n        ),\n        \"bevy_core::name::Name\": (\n          hash: 14408680411555793288,\n          name: \"StarFighterB\",\n        ),\n        \"bevy_render::view::visibility::Visibility\": Inherited,\n        \"studio::ui::inspector::ShortMaterial\": (\n          base_color: RgbaLinear(\n            red: 1.0,\n            green: 1.0,\n            blue: 1.0,\n            alpha: 1.0,\n          ),\n          perceptual_roughness: 1.0,\n          metallic: 0.0,\n          reflectance: 0.5,\n        ),\n      },\n    ),\n  },\n)"),
-        "space_prefab::sub_scene::ChildPath": ([]),
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-          ),
-        ),
-        "bevy_core::name::Name": (
-          hash: 6313511421271274664,
-          name: "Scene",
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "space_prefab::component::GltfPrefab": (
-          path: "desync.glb",
-          scene: "Scene0",
-        ),
-      },
-    ),
-    32: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 0.0,
-            y: 27.808878,
-            z: 0.0,
-          ),
-          rotation: (
-            x: 0.70710677,
-            y: 0.0,
-            z: 0.0,
-            w: 0.7071067,
-          ),
-          scale: (
-            x: 0.01,
-            y: 0.010000001,
-            z: 0.010000001,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("2c3faa37-9320-4bc7-825f-75b745477901"),
-          time: 0.0,
-        ),
-      },
-    ),
-    33: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -26.600437,
-            y: 57.639946,
-            z: 45.259254,
-          ),
-          rotation: (
-            x: -0.323544,
-            y: -0.2166858,
-            z: -0.07637838,
-            w: 0.91789585,
-          ),
-          scale: (
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: MainCamera,
-          time: 0.0,
-        ),
-      },
-    ),
-    34: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 0.0,
-            y: 7.8028564,
-            z: -77.33632,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("4499fa6b-3ebd-410c-bee7-72d373e1aabb"),
-          time: 0.0,
-        ),
-      },
-    ),
-    35: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: 0.0,
-            y: 7.8028564,
-            z: -297.5813,
-          ),
-          rotation: (
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0,
-          ),
-          scale: (
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: Uuid("4499fa6b-3ebd-410c-bee7-72d373e1aabb"),
-          time: 3.037852,
-        ),
-      },
-    ),
-    4294967303: (
-      components: {
-        "bevy_transform::components::transform::Transform": (
-          translation: (
-            x: -7.1710815,
-            y: 43.12783,
-            z: 30.99612,
-          ),
-          rotation: (
-            x: -0.29587442,
-            y: -0.08895508,
-            z: -0.02768518,
-            w: 0.9506726,
-          ),
-          scale: (
-            x: 1.0,
-            y: 1.0,
-            z: 1.0,
-          ),
-        ),
-        "bevy_render::view::visibility::Visibility": Inherited,
-        "studio::anim::timeline_animation::TransformKeyframe": (
-          incoming_easing: Linear,
-          affect_translation: true,
-          affect_rotation: true,
-          affect_scale: true,
-        ),
-        "studio::anim::timeline_animation::Keyframe": (
-          target: MainCamera,
-          time: 3.0597014,
-        ),
-      },
-    ),
-  },
+resources: {},
+entities: {
+9: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+),
+rotation: (
+x: -0.27984813,
+y: 0.36470518,
+z: 0.11591689,
+w: 0.88047624,
+),
+scale: (
+x: 1.0,
+y: 1.0,
+z: 1.0,
+),
+),
+"bevy_core::name::Name": (
+hash: 4042927597982576294,
+name: "Directional Light",
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"bevy_pbr::light::DirectionalLight": (
+color: Rgba(
+red: 1.0,
+green: 1.0,
+blue: 1.0,
+alpha: 1.0,
+),
+illuminance: 20000.0,
+shadows_enabled: false,
+shadow_depth_bias: 0.02,
+shadow_normal_bias: 1.8,
+),
+"studio::anim::timeline_animation::AnimationTarget": Uuid("57217c56-d86b-441f-a0b6-a471dfe1d463"),
+},
+),
+10: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 0.0,
+y: 23.715185,
+z: 0.0000007320094,
+),
+rotation: (
+x: 0.70710677,
+y: 0.0,
+z: 0.0,
+w: 0.7071067,
+),
+scale: (
+x: 0.01,
+y: 0.010000001,
+z: 0.010000001,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("2c3faa37-9320-4bc7-825f-75b745477901"),
+time: 1.1854,
+),
+},
+),
+11: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 0.0,
+y: 27.426285,
+z: 0.00000051081065,
+),
+rotation: (
+x: 0.7071068,
+y: 0.0,
+z: 0.0,
+w: 0.70710677,
+),
+scale: (
+x: 0.01,
+y: 0.010000001,
+z: 0.010000001,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("2c3faa37-9320-4bc7-825f-75b745477901"),
+time: 3.0443585,
+),
+},
+),
+12: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -5.861992,
+y: 16.39393,
+z: -44.6979,
+),
+rotation: (
+x: 0.70710677,
+y: 0.0,
+z: 0.0,
+w: 0.7071067,
+),
+scale: (
+x: 0.01,
+y: 0.010000001,
+z: 0.010000001,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("34f59412-5a7b-44e9-aaa3-3e74840121c9"),
+time: 0.0,
+),
+},
+),
+13: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -1.6321859,
+y: 16.393932,
+z: -46.45551,
+),
+rotation: (
+x: 0.70710677,
+y: 0.0,
+z: 0.0,
+w: 0.7071067,
+),
+scale: (
+x: 0.01,
+y: 0.010000001,
+z: 0.010000001,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("34f59412-5a7b-44e9-aaa3-3e74840121c9"),
+time: 1.6179003,
+),
+},
+),
+14: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 0.90487814,
+y: 19.255144,
+z: -44.125862,
+),
+rotation: (
+x: 0.7071068,
+y: 0.0,
+z: 0.0,
+w: 0.70710677,
+),
+scale: (
+x: 0.01,
+y: 0.010000001,
+z: 0.010000001,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("34f59412-5a7b-44e9-aaa3-3e74840121c9"),
+time: 3.0603817,
+),
+},
+),
+15: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -9.611355,
+y: 20.93744,
+z: -28.69173,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("2b76e191-e079-417a-9369-2443f21f3ce5"),
+time: 0.0,
+),
+},
+),
+16: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -9.611355,
+y: 20.93744,
+z: 19.342052,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("2b76e191-e079-417a-9369-2443f21f3ce5"),
+time: 0.967,
+),
+},
+),
+17: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -9.611355,
+y: 11.742281,
+z: -28.69173,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("408b5d7e-9456-4d81-a08e-feebba2ce1c4"),
+time: 0.0,
+),
+},
+),
+18: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -9.611355,
+y: 11.742281,
+z: 13.85043,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("408b5d7e-9456-4d81-a08e-feebba2ce1c4"),
+time: 0.97205836,
+),
+},
+),
+19: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -2.1474366,
+y: 20.93744,
+z: -28.69173,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("38601448-b10c-43ec-91de-367e51c06daf"),
+time: 0.0,
+),
+},
+),
+20: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -2.1474366,
+y: 20.93744,
+z: 18.621094,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("38601448-b10c-43ec-91de-367e51c06daf"),
+time: 1.0002003,
+),
+},
+),
+21: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -2.1474366,
+y: 11.742281,
+z: -28.69173,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("8c5f79d4-6093-4372-9d2c-722353c76013"),
+time: 0.0,
+),
+},
+),
+22: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -2.1474366,
+y: 11.742281,
+z: 22.233124,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("8c5f79d4-6093-4372-9d2c-722353c76013"),
+time: 0.98274034,
+),
+},
+),
+23: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -6.1651826,
+y: 28.684336,
+z: 21.026539,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("b1db578c-b426-414c-bc95-f701f1b9ca41"),
+time: 0.0,
+),
+},
+),
+24: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -6.1651826,
+y: 28.684336,
+z: 34.293587,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("b1db578c-b426-414c-bc95-f701f1b9ca41"),
+time: 0.7156913,
+),
+},
+),
+25: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -6.1651826,
+y: 26.61894,
+z: 22.791157,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("f7567e27-bb0b-4ac7-a840-3c043b8d2ec2"),
+time: 0.0,
+),
+},
+),
+26: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -6.1651826,
+y: 26.61894,
+z: 38.36416,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("f7567e27-bb0b-4ac7-a840-3c043b8d2ec2"),
+time: 0.70500934,
+),
+},
+),
+27: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 6.205474,
+y: 28.684336,
+z: 21.026539,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("48006f09-9f10-477f-8308-02343f34a8c9"),
+time: 0.0,
+),
+},
+),
+28: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 6.205474,
+y: 26.61894,
+z: 22.791157,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("5e2e70d9-5b6d-495b-998d-6a1f6dc2f964"),
+time: 0.0,
+),
+},
+),
+29: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 6.205474,
+y: 26.61894,
+z: 37.461624,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("5e2e70d9-5b6d-495b-998d-6a1f6dc2f964"),
+time: 0.71035033,
+),
+},
+),
+30: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 6.205474,
+y: 28.684336,
+z: 34.863163,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 0.122251,
+y: 0.122251,
+z: 8.75498,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("48006f09-9f10-477f-8308-02343f34a8c9"),
+time: 0.71035033,
+),
+},
+),
+31: (
+components: {
+"space_prefab::sub_scene::CollapsedSubScene": ("(\n resources: {},\n entities: {\n 31: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 6313511421271274664,\n name: \"Scene\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::component::GltfPrefab\": (\n path: \"desync.glb\",\n scene: \"Scene0\",\n ),\n },\n ),\n 36: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 37,\n 38,\n 39,\n 40,\n 41,\n 42,\n 43,\n 44,\n 45,\n 46,\n 47,\n 48,\n 49,\n 50,\n 51,\n 52,\n 53,\n 54,\n ]),\n },\n ),\n 37: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: -0.25713548,\n z: -4.3361616,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 17930118900081507113,\n name: \"empty.026\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n },\n ),\n 38: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 1,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: -0.45699087,\n z: -4.3361616,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 2932322132067973075,\n name: \"empty.027\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n },\n ),\n 39: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 2,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 13395407226770374147,\n name: \"empty.028\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n },\n ),\n 40: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 3,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 15213343571318681368,\n name: \"empty.029\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n },\n ),\n 41: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 4,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: -0.55585074,\n z: -4.3361616,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 6637236937475434455,\n name: \"empty.030\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n },\n ),\n 42: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 5,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 2359233632329934770,\n name: \"empty.031\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n },\n ),\n 43: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 6,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 37.414967,\n y: 61.1213,\n z: 112.0113,\n ),\n rotation: (\n x: -0.30626115,\n y: 0.43745646,\n z: -0.16405046,\n w: 0.8294115,\n ),\n scale: (\n x: 2.0169291,\n y: 2.016929,\n z: 2.016929,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 1734594374362272207,\n name: \"Sun\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 55,\n ]),\n },\n ),\n 44: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 7,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 27.426285,\n z: 0.00000051081065,\n ),\n rotation: (\n x: 0.7071068,\n y: 0.0,\n z: 0.0,\n w: 0.70710677,\n ),\n scale: (\n x: 0.01,\n y: 0.010000001,\n z: 0.010000001,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 5100648900209823736,\n name: \"StarFighterA.001\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 56,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"2c3faa37-9320-4bc7-825f-75b745477901\"),\n },\n ),\n 45: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 8,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: -6.1651826,\n y: 28.684336,\n z: 21.026539,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 0.122251,\n y: 0.122251,\n z: 8.75498,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 2356508911138325861,\n name: \"LaserA\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 57,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"b1db578c-b426-414c-bc95-f701f1b9ca41\"),\n },\n ),\n 46: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 9,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: -9.611355,\n y: 20.93744,\n z: -28.69173,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 0.122251,\n y: 0.122251,\n z: 8.75498,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 3771605970233175782,\n name: \"LaserA.001\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 58,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"2b76e191-e079-417a-9369-2443f21f3ce5\"),\n },\n ),\n 47: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 10,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: -9.611355,\n y: 11.742281,\n z: -28.69173,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 0.122251,\n y: 0.122251,\n z: 8.75498,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 9811213967899955357,\n name: \"LaserA.002\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 59,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"408b5d7e-9456-4d81-a08e-feebba2ce1c4\"),\n },\n ),\n 48: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 11,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: -2.1474366,\n y: 20.93744,\n z: -28.69173,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 0.122251,\n y: 0.122251,\n z: 8.75498,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 4239528607526478068,\n name: \"LaserA.003\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 60,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"38601448-b10c-43ec-91de-367e51c06daf\"),\n },\n ),\n 49: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 12,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: -2.1474366,\n y: 11.742281,\n z: -28.69173,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 0.122251,\n y: 0.122251,\n z: 8.75498,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 17360688022630626399,\n name: \"LaserA.004\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 61,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"8c5f79d4-6093-4372-9d2c-722353c76013\"),\n },\n ),\n 50: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 13,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 6.205474,\n y: 28.684336,\n z: 34.863163,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 0.122251,\n y: 0.122251,\n z: 8.75498,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 2771954425045718751,\n name: \"LaserA.005\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 62,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"48006f09-9f10-477f-8308-02343f34a8c9\"),\n },\n ),\n 51: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 14,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: -6.1651826,\n y: 26.61894,\n z: 22.791157,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 0.122251,\n y: 0.122251,\n z: 8.75498,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 17690120629478967177,\n name: \"LaserA.006\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 63,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"f7567e27-bb0b-4ac7-a840-3c043b8d2ec2\"),\n },\n ),\n 52: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 15,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 6.205474,\n y: 26.61894,\n z: 22.791157,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 0.122251,\n y: 0.122251,\n z: 8.75498,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 16845800620004850392,\n name: \"LaserA.007\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 64,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"5e2e70d9-5b6d-495b-998d-6a1f6dc2f964\"),\n },\n ),\n 53: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 16,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 7.8028564,\n z: -77.33632,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 4339032300311916617,\n name: \"Trench_merged\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 65,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"4499fa6b-3ebd-410c-bee7-72d373e1aabb\"),\n },\n ),\n 54: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 17,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.90368176,\n y: 19.253796,\n z: -44.12696,\n ),\n rotation: (\n x: 0.7071068,\n y: 0.0,\n z: 0.0,\n w: 0.70710677,\n ),\n scale: (\n x: 0.01,\n y: 0.010000001,\n z: 0.010000001,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 14408680411555793288,\n name: \"StarFighterB\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"space_prefab::save::ChildrenPrefab\": ([\n 66,\n ]),\n \"studio::scene::SceneElement\": Mesh,\n \"studio::anim::timeline_animation::AnimationTarget\": Uuid(\"34f59412-5a7b-44e9-aaa3-3e74840121c9\"),\n },\n ),\n 55: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 6,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 1734594374362272207,\n name: \"Sun\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"bevy_pbr::light::DirectionalLight\": (\n color: Rgba(\n red: 1.0,\n green: 1.0,\n blue: 1.0,\n alpha: 1.0,\n ),\n illuminance: 34150.0,\n shadows_enabled: false,\n shadow_depth_bias: 0.02,\n shadow_normal_bias: 1.8,\n ),\n },\n ),\n 56: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 7,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 9518542504113058593,\n name: \"StarFighterA\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 1.0,\n green: 1.0,\n blue: 1.0,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.09210527,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 57: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 8,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 516045924745151091,\n name: \"Cube.305\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 0.0,\n green: 0.0,\n blue: 0.0,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.5,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 58: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 9,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 11455141375658386197,\n name: \"Cube.306\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 1.0,\n green: 0.24252349,\n blue: 0.26523626,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.5,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 59: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 10,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 7710930313815418106,\n name: \"Cube.307\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 1.0,\n green: 0.24252349,\n blue: 0.26523626,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.5,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 60: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 11,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 2006570935111361085,\n name: \"Cube.308\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 1.0,\n green: 0.24252349,\n blue: 0.26523626,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.5,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 61: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 12,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 18402460489604278594,\n name: \"Cube.309\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 1.0,\n green: 0.24252349,\n blue: 0.26523626,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.5,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 62: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 13,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 11261500935898758914,\n name: \"Cube.310\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 0.0,\n green: 0.0,\n blue: 0.0,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.5,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 63: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 14,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 12965872175589560571,\n name: \"Cube.311\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 0.0,\n green: 0.0,\n blue: 0.0,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.5,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 64: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 15,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 12943195592201606100,\n name: \"Cube.312\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 0.0,\n green: 0.0,\n blue: 0.0,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.5,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 65: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 16,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 14833676912841048273,\n name: \"Cube.215\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 1.0,\n green: 1.0,\n blue: 1.0,\n alpha: 1.0,\n ),\n perceptual_roughness: 0.46721607,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n 66: (\n components: {\n \"space_prefab::sub_scene::ChildPath\": ([\n 0,\n 17,\n 0,\n ]),\n \"bevy_transform::components::transform::Transform\": (\n translation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n ),\n rotation: (\n x: 0.0,\n y: 0.0,\n z: 0.0,\n w: 1.0,\n ),\n scale: (\n x: 1.0,\n y: 1.0,\n z: 1.0,\n ),\n ),\n \"bevy_core::name::Name\": (\n hash: 14408680411555793288,\n name: \"StarFighterB\",\n ),\n \"bevy_render::view::visibility::Visibility\": Inherited,\n \"studio::ui::inspector::ShortMaterial\": (\n base_color: RgbaLinear(\n red: 1.0,\n green: 1.0,\n blue: 1.0,\n alpha: 1.0,\n ),\n perceptual_roughness: 1.0,\n metallic: 0.0,\n reflectance: 0.5,\n ),\n },\n ),\n },\n)"),
+"space_prefab::sub_scene::ChildPath": ([]),
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 1.0,
+y: 1.0,
+z: 1.0,
+),
+),
+"bevy_core::name::Name": (
+hash: 6313511421271274664,
+name: "Scene",
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"space_prefab::component::GltfPrefab": (
+path: "desync.glb",
+scene: "Scene0",
+),
+},
+),
+32: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 0.0,
+y: 27.808878,
+z: 0.0,
+),
+rotation: (
+x: 0.70710677,
+y: 0.0,
+z: 0.0,
+w: 0.7071067,
+),
+scale: (
+x: 0.01,
+y: 0.010000001,
+z: 0.010000001,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("2c3faa37-9320-4bc7-825f-75b745477901"),
+time: 0.0,
+),
+},
+),
+33: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -26.600437,
+y: 57.639946,
+z: 45.259254,
+),
+rotation: (
+x: -0.323544,
+y: -0.2166858,
+z: -0.07637838,
+w: 0.91789585,
+),
+scale: (
+x: 1.0,
+y: 1.0,
+z: 1.0,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: MainCamera,
+time: 0.0,
+),
+},
+),
+34: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 0.0,
+y: 7.8028564,
+z: -77.33632,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 1.0,
+y: 1.0,
+z: 1.0,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("4499fa6b-3ebd-410c-bee7-72d373e1aabb"),
+time: 0.0,
+),
+},
+),
+35: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: 0.0,
+y: 7.8028564,
+z: -297.5813,
+),
+rotation: (
+x: 0.0,
+y: 0.0,
+z: 0.0,
+w: 1.0,
+),
+scale: (
+x: 1.0,
+y: 1.0,
+z: 1.0,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: Uuid("4499fa6b-3ebd-410c-bee7-72d373e1aabb"),
+time: 3.037852,
+),
+},
+),
+4294967303: (
+components: {
+"bevy_transform::components::transform::Transform": (
+translation: (
+x: -7.1710815,
+y: 43.12783,
+z: 30.99612,
+),
+rotation: (
+x: -0.29587442,
+y: -0.08895508,
+z: -0.02768518,
+w: 0.9506726,
+),
+scale: (
+x: 1.0,
+y: 1.0,
+z: 1.0,
+),
+),
+"bevy_render::view::visibility::Visibility": Inherited,
+"studio::anim::timeline_animation::TransformKeyframe": (
+incoming_easing: Linear,
+affect_translation: true,
+affect_rotation: true,
+affect_scale: true,
+),
+"studio::anim::timeline_animation::Keyframe": (
+target: MainCamera,
+time: 3.0597014,
+),
+},
+),
+},
 )
 
 ================================================
 FILE: studio/assets/textures/21-renewal-wire-wall-clockmini_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/21-renewal-wire-wall-clockmini_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/21-renewal-wire-wall-clockmini_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/230510_b_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/230510_b_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/230510_b_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/3d66_su_1587004247754_0012.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_108285_frame_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_108285_frame_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_108285_frame_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_122724_frame_yellow_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_122724_frame_yellow_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_122724_frame_yellow_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_13135_frame_silver_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_13135_frame_silver_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_13135_frame_silver_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_15261_frame_cocoa_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_15261_frame_cocoa_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_15261_frame_cocoa_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_205878_frame_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_205878_frame_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_205878_frame_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_277887_frame_navy_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_277887_frame_navy_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_277887_frame_navy_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_280038_frame_black_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_280038_frame_black_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_280038_frame_black_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_285734_frame_black_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_285734_frame_black_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_285734_frame_black_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_302398_frame-_brown__basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_302398_frame-_brown__normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_302398_frame-_brown__occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_349037_frame_red_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_349037_frame_red_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_349037_frame_red_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_349875_frame_132x230_butterfly-fold_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_349875_frame_132x230_butterfly-fold_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_349875_frame_132x230_butterfly-fold_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_391610_frame_wall-mountedtype_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_391610_frame_wall-mountedtype_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_391610_frame_wall-mountedtype_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_46250_frame_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_46250_frame_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_46250_frame_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_465810_frame_b1_extra-large__basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_465810_frame_b1_extra-large__normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_465810_frame_b1_extra-large__occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_56099_frame_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_56099_frame_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_56099_frame_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_71718_frame_red_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_71718_frame_red_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/archisketch_71718_frame_red_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/basehumanfemaleskin.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/black-vase-_black__basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/black-vase-_black__normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/black-vase-_black__occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/color_0a0a0a.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/color_1b1b1b.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/diffusetexture_w181_0.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/diffusetexture_w184_0.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/documents_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/documents_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/documents_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/flower-color1_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/flower-color1_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/flower-color1_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/flower-color2_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/flower-color2_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/flower-color2_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/hektar-_black__basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/hektar-_black__emissive.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/hektar-_black__normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/hektar-_black__occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/map__2138274789_falloff.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/map__3_gradient_ramp_0.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/map__4727_mix.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/mask.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/mokin_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/mokin_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/mokin_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/none_basecolor.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/none_normal.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/none_occlusionroughnessmetallic.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/sh__014e_0.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/sh__049.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/standard-us-power-outlet.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/tcom_parquet_m.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/texture-1.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/assets/textures/texture.png.meta
 ================================================
+
 (
-    meta_format_version: "1.0",
-    asset: Load(
-        loader: "bevy_render::texture::image_loader::ImageLoader",
-        settings: (
-            format: FromExtension,
-            is_srgb: true,
-            sampler: Default,
-        ),
-    ),
+meta_format_version: "1.0",
+asset: Load(
+loader: "bevy_render::texture::image_loader::ImageLoader",
+settings: (
+format: FromExtension,
+is_srgb: true,
+sampler: Default,
+),
+),
 )
 
 ================================================
 FILE: studio/editor.ron
 ================================================
+
 {
-    "space_undo::ChangeChainSettings": "{\"space_undo::ChangeChainSettings\":(max_change_chain_size:200)}",
-    "space_editor_ui::settings::NewWindowSettings": "{\"space_editor_ui::settings::NewWindowSettings\":(new_tab:SameNode)}",
-    "space_editor_ui::settings::GameModeSettings": "{\"space_editor_ui::settings::GameModeSettings\":(mode:Game3D)}",
-    "space_persistence::PersistenceSettings": "{\"space_persistence::PersistenceSettings\":(load_on_startup:true,save_on_close:true)}",
-    "space_editor_ui::sizing::Sizing": "{\"space_editor_ui::sizing::Sizing\":(icon:Regular,gizmos:Gizmos,text:14.0)}",
+"space_undo::ChangeChainSettings": "{\"space_undo::ChangeChainSettings\":(max_change_chain_size:200)}",
+"space_editor_ui::settings::NewWindowSettings": "{\"space_editor_ui::settings::NewWindowSettings\":(new_tab:SameNode)}",
+"space_editor_ui::settings::GameModeSettings": "{\"space_editor_ui::settings::GameModeSettings\":(mode:Game3D)}",
+"space_persistence::PersistenceSettings": "{\"space_persistence::PersistenceSettings\":(load_on_startup:true,save_on_close:true)}",
+"space_editor_ui::sizing::Sizing": "{\"space_editor_ui::sizing::Sizing\":(icon:Regular,gizmos:Gizmos,text:14.0)}",
 }
 
 ================================================
 FILE: studio/project.json
 ================================================
+
 // [OUTLINE - 43 symbols, 61 lines]
 // L2: "name": "studio"
 // L3: "$schema": "../node_modules/nx/schemas/project-schema.json"
@@ -3463,10 +3563,10 @@ FILE: studio/project.json
 // L56: "noDeps": true
 // L60: "tags": []
 
-
 ================================================
 FILE: studio/scripts/build-web.mjs
 ================================================
+
 // [OUTLINE - 1 symbols, 77 lines]
 // import node:fs
 // import node:url
@@ -3477,10 +3577,10 @@ FILE: studio/scripts/build-web.mjs
 // import ./run.mjs
 // L12-L75: async function main()
 
-
 ================================================
 FILE: studio/scripts/copy-assets.mjs
 ================================================
+
 // [OUTLINE - 2 symbols, 95 lines]
 // import chalk
 // import glob
@@ -3490,18 +3590,18 @@ FILE: studio/scripts/copy-assets.mjs
 // L7-L68: async function main()
 // L74-L95: function handleError(err)
 
-
 ================================================
 FILE: studio/scripts/handle-error.mjs
 ================================================
+
 // [OUTLINE - 0 symbols, 33 lines]
 // import chalk
 // import node:util
 
-
 ================================================
 FILE: studio/scripts/run.mjs
 ================================================
+
 // [OUTLINE - 2 symbols, 60 lines]
 // import chalk
 // import node:child_process
@@ -3509,10 +3609,10 @@ FILE: studio/scripts/run.mjs
 // L12-L28: function run(command, args, options)
 // L33-L60: async function wasmBindgenCliVersion()
 
-
 ================================================
 FILE: studio/src/anim/mod.rs
 ================================================
+
 // [OUTLINE - 11 symbols, 146 lines]
 // import bevy
 // import space_editor
@@ -3530,10 +3630,10 @@ FILE: studio/src/anim/mod.rs
 // L62: pub struct InvBindPose(pub Affine3A);
 // L64-L146: fn process_skinned_meshes(
 
-
 ================================================
 FILE: studio/src/anim/retargeting.rs
 ================================================
+
 // [OUTLINE - 8 symbols, 427 lines]
 // import bevy
 // import space_editor
@@ -3548,10 +3648,10 @@ FILE: studio/src/anim/retargeting.rs
 // L230-L232: pub struct RetargetMap
 // L418-L426: fn default() -> Self
 
-
 ================================================
 FILE: studio/src/anim/timeline_animation.rs
 ================================================
+
 // [OUTLINE - 61 symbols, 1482 lines]
 // import std
 // import bevy
@@ -3628,10 +3728,10 @@ FILE: studio/src/anim/timeline_animation.rs
 // L1440-L1457: pub(super) fn notify_seek_time_changes(
 // L1459-L1481: pub(super) fn notify_keying_mode_changed(
 
-
 ================================================
 FILE: studio/src/bvh/error.rs
 ================================================
+
 // [OUTLINE - 6 symbols, 38 lines]
 // import core
 // import anyhow
@@ -3643,10 +3743,10 @@ FILE: studio/src/bvh/error.rs
 // L29-L31: fn source(&self) -> Option<&(dyn std::error::Error + 'static)>
 // L35-L37: fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
 
-
 ================================================
 FILE: studio/src/bvh/loader.rs
 ================================================
+
 // [OUTLINE - 3 symbols, 37 lines]
 // import bevy
 // import super
@@ -3654,10 +3754,10 @@ FILE: studio/src/bvh/loader.rs
 // L19-L32: fn load<'a>(
 // L34-L36: fn extensions(&self) -> &[&str]
 
-
 ================================================
 FILE: studio/src/bvh/mod.rs
 ================================================
+
 // [OUTLINE - 20 symbols, 340 lines]
 // import bevy
 // import space_editor
@@ -3685,10 +3785,10 @@ FILE: studio/src/bvh/mod.rs
 // L281-L314: fn apply(self, world: &mut World)
 // L321-L340: fn spawn_bvh_recursive(world: &mut World, entity: &Entity, joint: studio_bvh::Joint)
 
-
 ================================================
 FILE: studio/src/camera_controller.rs
 ================================================
+
 // [OUTLINE - 19 symbols, 375 lines]
 // import std
 // import bevy
@@ -3715,10 +3815,10 @@ FILE: studio/src/camera_controller.rs
 // L352-L356: fn do_zoom(win: &Window, delta: f32, xform: &mut Transform, controller: &mut CameraController)
 // L359-L375: fn do_rotate(win: &Window, delta: Vec2, xform: &mut Transform, controller: &mut CameraController)
 
-
 ================================================
 FILE: studio/src/change_tracking.rs
 ================================================
+
 // [OUTLINE - 8 symbols, 92 lines]
 // import bevy
 // import crate
@@ -3735,10 +3835,10 @@ FILE: studio/src/change_tracking.rs
 // L51-L92: mod wasm
 // L73-L91: pub(super) fn send_change_events<T: Component>(
 
-
 ================================================
 FILE: studio/src/debug.rs
 ================================================
+
 // [OUTLINE - 17 symbols, 280 lines]
 // import std
 // import bevy
@@ -3770,18 +3870,18 @@ FILE: studio/src/debug.rs
 // L241-L280: mod wasm
 // L263-L279: pub fn notify_debug_mode_toggle(
 
-
 ================================================
 FILE: studio/src/design_system.rs
 ================================================
+
 // [OUTLINE - 1 symbols, 15 lines]
 // import bevy
 // L3: pub struct Color;
 
-
 ================================================
 FILE: studio/src/headless.rs
 ================================================
+
 // [OUTLINE - 8 symbols, 252 lines]
 // import std
 // import bevy
@@ -3798,20 +3898,20 @@ FILE: studio/src/headless.rs
 // L191-L211: fn check_for_mixamo_capture_complete(
 // L214-L252: fn start_timeline_animation(
 
-
 ================================================
 FILE: studio/src/hierarchy.rs
 ================================================
+
 // [OUTLINE - 3 symbols, 96 lines]
 // import bevy
 // L11-L16: pub(crate) fn find_parent(target: Entity, q_parents: &Query<Option<&Parent>>) -> Option<Entity>
 // L27-L84: pub(crate) fn nearest_common_ancestor(
 // L86-L96: fn find_depth(target: Entity, q_parents: &Query<Option<&Parent>>) -> usize
 
-
 ================================================
 FILE: studio/src/input.rs
 ================================================
+
 // [OUTLINE - 19 symbols, 437 lines]
 // import bevy
 // import space_editor
@@ -3837,20 +3937,20 @@ FILE: studio/src/input.rs
 // L410-L418: fn read_mouse_delta(
 // L421-L437: fn send_undo_event(mut events: EventWriter<UndoRedo>, keyboard: Res<ButtonInput<KeyCode>>)
 
-
 ================================================
 FILE: studio/src/inspector/mod.rs
 ================================================
+
 // [OUTLINE - 3 symbols, 20 lines]
 // import bevy
 // L4: mod wasm;
 // L6: pub struct InspectorPlugin;
 // L9-L19: fn build(
 
-
 ================================================
 FILE: studio/src/inspector/wasm.rs
 ================================================
+
 // [OUTLINE - 11 symbols, 241 lines]
 // import std
 // import bevy
@@ -3869,10 +3969,10 @@ FILE: studio/src/inspector/wasm.rs
 // L125-L202: pub(super) fn notify_entity_spawn_changes(
 // L204-L241: fn build_scene_object(
 
-
 ================================================
 FILE: studio/src/interaction/gizmos/camera.rs
 ================================================
+
 // [OUTLINE - 3 symbols, 51 lines]
 // import bevy
 // import space_editor
@@ -3882,10 +3982,10 @@ FILE: studio/src/interaction/gizmos/camera.rs
 // L11-L36: pub(super) fn spawn_gizmo_camera(
 // L38-L51: pub(super) fn sync_gizmo_and_main_cameras(
 
-
 ================================================
 FILE: studio/src/interaction/gizmos/combo.rs
 ================================================
+
 // [OUTLINE - 1 symbols, 167 lines]
 // import bevy
 // import bevy_mod_picking
@@ -3894,10 +3994,10 @@ FILE: studio/src/interaction/gizmos/combo.rs
 // import super
 // L14-L167: pub(super) fn spawn_combo_translation_rotation_gizmo(
 
-
 ================================================
 FILE: studio/src/interaction/gizmos/common.rs
 ================================================
+
 // [OUTLINE - 7 symbols, 89 lines]
 // import bevy
 // import bevy_mod_picking
@@ -3911,10 +4011,10 @@ FILE: studio/src/interaction/gizmos/common.rs
 // L79-L86: pub(super) fn on_gizmo_element_unhover(
 // L89: pub(super) struct InitialHitPoint(pub Vec3);
 
-
 ================================================
 FILE: studio/src/interaction/gizmos/material.rs
 ================================================
+
 // [OUTLINE - 4 symbols, 31 lines]
 // import bevy
 // L7-L12: pub struct GizmoMaterial
@@ -3922,10 +4022,10 @@ FILE: studio/src/interaction/gizmos/material.rs
 // L24-L26: fn fragment_shader() -> ShaderRef
 // L28-L30: fn alpha_mode(&self) -> AlphaMode
 
-
 ================================================
 FILE: studio/src/interaction/gizmos/mod.rs
 ================================================
+
 // [OUTLINE - 15 symbols, 213 lines]
 // import bevy
 // import crate
@@ -3948,10 +4048,10 @@ FILE: studio/src/interaction/gizmos/mod.rs
 // L183-L195: fn update_target_global_trasform(
 // L197-L213: fn normalize_gizmo_scale(
 
-
 ================================================
 FILE: studio/src/interaction/gizmos/resources.rs
 ================================================
+
 // [OUTLINE - 3 symbols, 144 lines]
 // import bevy
 // import crate
@@ -3960,10 +4060,10 @@ FILE: studio/src/interaction/gizmos/resources.rs
 // L23-L39: pub(super) struct GizmoMats
 // L42-L144: pub(super) fn init_resources(
 
-
 ================================================
 FILE: studio/src/interaction/gizmos/rotation.rs
 ================================================
+
 // [OUTLINE - 10 symbols, 413 lines]
 // import bevy
 // import bevy_mod_picking
@@ -3984,10 +4084,10 @@ FILE: studio/src/interaction/gizmos/rotation.rs
 // L206-L220: pub(super) fn on_rotation_end(
 // L222-L413: pub(super) fn on_rotate(
 
-
 ================================================
 FILE: studio/src/interaction/gizmos/scale.rs
 ================================================
+
 // [OUTLINE - 5 symbols, 342 lines]
 // import bevy
 // import bevy_mod_picking
@@ -4001,10 +4101,10 @@ FILE: studio/src/interaction/gizmos/scale.rs
 // L215-L223: pub(super) fn on_scale_end(
 // L225-L342: pub(super) fn on_scale(
 
-
 ================================================
 FILE: studio/src/interaction/gizmos/translation.rs
 ================================================
+
 // [OUTLINE - 5 symbols, 313 lines]
 // import bevy
 // import bevy_mod_picking
@@ -4018,10 +4118,10 @@ FILE: studio/src/interaction/gizmos/translation.rs
 // L212-L220: pub(super) fn on_translation_end(
 // L222-L313: pub(super) fn on_translate(
 
-
 ================================================
 FILE: studio/src/interaction/mod.rs
 ================================================
+
 // [OUTLINE - 5 symbols, 15 lines]
 // import bevy
 // import selection
@@ -4032,10 +4132,10 @@ FILE: studio/src/interaction/mod.rs
 // L10: pub struct InteractionPlugin;
 // L12-L14: fn build(&self, app: &mut App)
 
-
 ================================================
 FILE: studio/src/interaction/selection.rs
 ================================================
+
 // [OUTLINE - 16 symbols, 297 lines]
 // import std
 // import bevy
@@ -4064,10 +4164,10 @@ FILE: studio/src/interaction/selection.rs
 // L287-L290: pub fn select(entity: &str)
 // L292-L296: pub(super) fn update_selection_from_frontend(mut cmd: Commands)
 
-
 ================================================
 FILE: studio/src/interaction/transformation.rs
 ================================================
+
 // [OUTLINE - 12 symbols, 132 lines]
 // import core
 // import bevy
@@ -4091,10 +4191,10 @@ FILE: studio/src/interaction/transformation.rs
 // L118-L120: pub fn set_transform_space(space: TransformSpace)
 // L122-L131: pub(super) fn update_transform_mode(mut xform_mode: ResMut<TransformMode>)
 
-
 ================================================
 FILE: studio/src/main-headless.rs
 ================================================
+
 // [OUTLINE - 9 symbols, 272 lines]
 // import bevy
 // import clap
@@ -4109,10 +4209,10 @@ FILE: studio/src/main-headless.rs
 // L233-L243: fn orbit_camera(main_cam_transform: &mut Mut<'_, Transform>, time: &Res<'_, Time>, speed: f32)
 // L249-L272: fn extent3d_parser(input: &str) -> Result<Extent3d, String>
 
-
 ================================================
 FILE: studio/src/material/mod.rs
 ================================================
+
 // [OUTLINE - 4 symbols, 37 lines]
 // import crate
 // import bevy
@@ -4125,10 +4225,10 @@ FILE: studio/src/material/mod.rs
 // L12-L17: fn build(&self, app: &mut App)
 // L20-L37: fn apply_short_materials(
 
-
 ================================================
 FILE: studio/src/material/short_material.rs
 ================================================
+
 // [OUTLINE - 2 symbols, 25 lines]
 // import bevy
 // import bevy
@@ -4137,10 +4237,10 @@ FILE: studio/src/material/short_material.rs
 // L9-L14: pub struct ShortMaterial
 // L17-L24: pub fn new(material: &StandardMaterial) -> Self
 
-
 ================================================
 FILE: studio/src/math/float_comparison.rs
 ================================================
+
 // [OUTLINE - 11 symbols, 98 lines]
 // import bevy
 // import super
@@ -4156,10 +4256,10 @@ FILE: studio/src/math/float_comparison.rs
 // L77-L82: fn nearly_zero(self) -> bool
 // L95-L97: fn nearly_zero_within(self, tolerance: Tolerance) -> bool
 
-
 ================================================
 FILE: studio/src/math/geo.rs
 ================================================
+
 // [OUTLINE - 9 symbols, 165 lines]
 // import bevy
 // import std
@@ -4173,10 +4273,10 @@ FILE: studio/src/math/geo.rs
 // L144-L149: pub trait Combinable
 // L155-L164: fn combine<'a>(elements: impl Iterator<Item = Self::IterItem<'a>>) -> Self::Output
 
-
 ================================================
 FILE: studio/src/math/internal.rs
 ================================================
+
 // [OUTLINE - 8 symbols, 34 lines]
 // L4: pub(super) trait Zero
 // L5: fn zero() -> Self
@@ -4187,10 +4287,10 @@ FILE: studio/src/math/internal.rs
 // L12-L14: pub(super) trait Clamp
 // L21-L33: fn clamp(mut self, min: Self, max: Self) -> Self
 
-
 ================================================
 FILE: studio/src/math/interp/ecs.rs
 ================================================
+
 // [OUTLINE - 14 symbols, 132 lines]
 // import bevy
 // import space_editor
@@ -4211,10 +4311,10 @@ FILE: studio/src/math/interp/ecs.rs
 // L107-L114: fn interp_position(time: Res<Time>, mut q_interp: Query<&mut InterpPosition>)
 // L116-L132: fn cleanup_finished_interps(
 
-
 ================================================
 FILE: studio/src/math/interp/mod.rs
 ================================================
+
 // [OUTLINE - 4 symbols, 22 lines]
 // import ecs
 // import traits
@@ -4223,10 +4323,10 @@ FILE: studio/src/math/interp/mod.rs
 // L10-L16: pub enum Easing
 // L19-L21: fn default() -> Self
 
-
 ================================================
 FILE: studio/src/math/interp/traits.rs
 ================================================
+
 // [OUTLINE - 14 symbols, 188 lines]
 // import std
 // import bevy
@@ -4252,10 +4352,10 @@ FILE: studio/src/math/interp/traits.rs
 // L177-L181: fn curve_sin_in(self) -> Self
 // L183-L187: fn curve_sin_out(self) -> Self
 
-
 ================================================
 FILE: studio/src/math/matrix.rs
 ================================================
+
 // [OUTLINE - 10 symbols, 102 lines]
 // import bevy
 // L6-L13: pub trait MatrixExtras
@@ -4269,10 +4369,10 @@ FILE: studio/src/math/matrix.rs
 // L92-L94: fn from_scale_mat(matrix: Mat3A) -> Self
 // L99-L101: fn from_scale_mat(matrix: Mat3A) -> Self
 
-
 ================================================
 FILE: studio/src/math/mod.rs
 ================================================
+
 // [OUTLINE - 7 symbols, 22 lines]
 // import bevy
 // import float_comparison
@@ -4287,10 +4387,10 @@ FILE: studio/src/math/mod.rs
 // L14-L16: pub trait IsNonUniform
 // L19-L21: fn is_non_uniform(&self) -> bool
 
-
 ================================================
 FILE: studio/src/mixamo.rs
 ================================================
+
 // [OUTLINE - 11 symbols, 137 lines]
 // import bevy
 // import crate
@@ -4306,20 +4406,20 @@ FILE: studio/src/mixamo.rs
 // L96-L104: fn tick_scene_spawning(
 // L106-L137: fn start_mixamo_anim(
 
-
 ================================================
 FILE: studio/src/path.rs
 ================================================
+
 // [OUTLINE - 3 symbols, 40 lines]
 // import std
 // L3-L7: pub trait PathExtras
 // L10-L14: fn ext_file_prefix(&self) -> Option<&OsStr>
 // L18-L40: fn split_file_at_dot(file: &OsStr) -> (&OsStr, Option<&OsStr>)
 
-
 ================================================
 FILE: studio/src/persistance/mod.rs
 ================================================
+
 // [OUTLINE - 9 symbols, 122 lines]
 // import bevy
 // import space_editor
@@ -4338,10 +4438,10 @@ FILE: studio/src/persistance/mod.rs
 // L78-L82: pub(super) fn forward_save_scene_events(mut ew_editor_events: EventWriter<EditorEvent>)
 // L98-L121: pub(super) fn on_scene_saved(
 
-
 ================================================
 FILE: studio/src/remote/mod.rs
 ================================================
+
 // [OUTLINE - 4 symbols, 22 lines]
 // import bevy
 // import self
@@ -4350,10 +4450,10 @@ FILE: studio/src/remote/mod.rs
 // L11: pub struct RemoteAssetPlugin;
 // L14-L21: fn build(&self, app: &mut App)
 
-
 ================================================
 FILE: studio/src/remote/reader.rs
 ================================================
+
 // [OUTLINE - 15 symbols, 297 lines]
 // import std
 // import bevy
@@ -4384,10 +4484,10 @@ FILE: studio/src/remote/reader.rs
 // L230-L234: pub fn new(file: impl ToString) -> Self
 // L243-L295: fn poll(
 
-
 ================================================
 FILE: studio/src/remote/response.rs
 ================================================
+
 // [OUTLINE - 6 symbols, 107 lines]
 // import serde
 // L6-L9: pub struct GetMediaFileSuccessResponse
@@ -4397,10 +4497,10 @@ FILE: studio/src/remote/response.rs
 // L96-L99: pub struct DefaultAvatarInfo
 // L102-L107: pub struct SimpleEntityStats
 
-
 ================================================
 FILE: studio/src/scene/mod.rs
 ================================================
+
 // [OUTLINE - 27 symbols, 647 lines]
 // import bevy
 // import serde_repr
@@ -4440,10 +4540,10 @@ FILE: studio/src/scene/mod.rs
 // L539-L640: fn frame_scene_in_view(
 // L643-L647: fn start_capture(mut captures: Query<&mut ScreenCapture, Added<ScreenCapture>>)
 
-
 ================================================
 FILE: studio/src/scene/wasm.rs
 ================================================
+
 // [OUTLINE - 6 symbols, 111 lines]
 // import bevy
 // import serde
@@ -4457,10 +4557,10 @@ FILE: studio/src/scene/wasm.rs
 // L67-L75: pub(super) fn notify_state_changes(
 // L91-L111: pub(super) fn notify_loading_queue_changes(
 
-
 ================================================
 FILE: studio/src/screenshot.rs
 ================================================
+
 // [OUTLINE - 20 symbols, 338 lines]
 // import bevy
 // import bytemuck
@@ -4489,10 +4589,10 @@ FILE: studio/src/screenshot.rs
 // L265-L316: fn save_buffer_to_file(
 // L318-L338: fn save_buffer<P: Pixel + PixelWithColorType>(
 
-
 ================================================
 FILE: studio/src/skybox.rs
 ================================================
+
 // [OUTLINE - 10 symbols, 153 lines]
 // import bevy
 // import crate
@@ -4511,10 +4611,10 @@ FILE: studio/src/skybox.rs
 // L144-L146: pub fn set_skybox(id: &str)
 // L148-L152: pub(super) fn set_skybox_from_frontend(mut cmd: Commands)
 
-
 ================================================
 FILE: studio/src/ui/blocking.rs
 ================================================
+
 // [OUTLINE - 5 symbols, 76 lines]
 // import std
 // import bevy
@@ -4527,10 +4627,10 @@ FILE: studio/src/ui/blocking.rs
 // L63-L68: pub enum BlockingCommand
 // L73-L76: pub fn dispatch_command(command: BlockingCommand)
 
-
 ================================================
 FILE: studio/src/ui/fps.rs
 ================================================
+
 // [OUTLINE - 6 symbols, 78 lines]
 // import bevy
 // import crate
@@ -4541,10 +4641,10 @@ FILE: studio/src/ui/fps.rs
 // L52-L66: fn update(
 // L68-L78: fn update_visibility(
 
-
 ================================================
 FILE: studio/src/ui/inspector.rs
 ================================================
+
 // [OUTLINE - 33 symbols, 804 lines]
 // import std
 // import bevy
@@ -4588,10 +4688,10 @@ FILE: studio/src/ui/inspector.rs
 // L762-L764: pub fn rotate_local_transform(axis: RotationAxis, theta: f32)
 // L766-L804: fn update_local_rotation_by_ui(
 
-
 ================================================
 FILE: studio/src/ui/mod.rs
 ================================================
+
 // [OUTLINE - 5 symbols, 25 lines]
 // import bevy
 // import self
@@ -4601,10 +4701,10 @@ FILE: studio/src/ui/mod.rs
 // L13: pub struct UiLayerPlugin;
 // L16-L24: fn build(&self, app: &mut App)
 
-
 ================================================
 FILE: studio/src/viewport.rs
 ================================================
+
 // [OUTLINE - 13 symbols, 114 lines]
 // import core
 // import bevy
@@ -4628,10 +4728,10 @@ FILE: studio/src/viewport.rs
 // L82-L103: fn sync_window_to_viewport(
 // L105-L113: fn dispatch_resize_events(mut events: EventWriter<ViewportResizeEvent>)
 
-
 ================================================
 FILE: studio/src/wasm/conv.rs
 ================================================
+
 // [OUTLINE - 17 symbols, 189 lines]
 // import bevy
 // import serde
@@ -4655,10 +4755,10 @@ FILE: studio/src/wasm/conv.rs
 // L158-L162: pub trait FromStr: Sized
 // L167-L188: fn from_str(s: &str) -> Result<Self, Self::Err>
 
-
 ================================================
 FILE: studio/src/wasm/init.rs
 ================================================
+
 // [OUTLINE - 6 symbols, 155 lines]
 // import bevy
 // import serde
@@ -4671,10 +4771,10 @@ FILE: studio/src/wasm/init.rs
 // L114-L136: pub fn init_from_scene_import(scene_path: String, options: JsValue) -> Result<(), JsValue>
 // L139-L155: pub fn init_from_storyteller_scene(scene_path: String, options: JsValue) -> Result<(), JsValue>
 
-
 ================================================
 FILE: studio/src/wasm/mod.rs
 ================================================
+
 // [OUTLINE - 6 symbols, 34 lines]
 // import std
 // import parking_lot
@@ -4689,10 +4789,10 @@ FILE: studio/src/wasm/mod.rs
 // L22-L28: pub fn is_initialized() -> bool
 // L30-L34: pub(crate) fn initialize()
 
-
 ================================================
 FILE: studio/src/wasm/screenshot.rs
 ================================================
+
 // [OUTLINE - 12 symbols, 211 lines]
 // import bevy
 // import image
@@ -4712,10 +4812,10 @@ FILE: studio/src/wasm/screenshot.rs
 // L112-L169: fn take_screenshots(
 // L185-L211: fn send_screenshots(
 
-
 ================================================
 FILE: studio/src/wasm/util.rs
 ================================================
+
 // [OUTLINE - 6 symbols, 85 lines]
 // import std
 // import bevy
@@ -4729,10 +4829,10 @@ FILE: studio/src/wasm/util.rs
 // L42-L65: pub(crate) fn dispatch_to_js(
 // L67-L85: fn try_get_canvas(window: &Window) -> Result<Element, String>
 
-
 ================================================
 FILE: studio/src/world_grid.rs
 ================================================
+
 // [OUTLINE - 8 symbols, 80 lines]
 // import bevy
 // import crate
@@ -4745,10 +4845,10 @@ FILE: studio/src/world_grid.rs
 // L35-L68: fn spawn_world_grid(
 // L70-L80: fn move_plane_with_camera(
 
-
 ================================================
 FILE: studio-bvh/LICENSE
 ================================================
+
 Copyright 2019-2020 George Burton
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -4768,10 +4868,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
 ================================================
 FILE: studio-bvh/project.json
 ================================================
+
 // [OUTLINE - 21 symbols, 31 lines]
 // L2: "name": "studio-bvh"
 // L3: "$schema": "../node_modules/nx/schemas/project-schema.json"
@@ -4795,9 +4895,9 @@ FILE: studio-bvh/project.json
 // L26: "noDeps": true
 // L30: "tags": []
 
-
 ================================================
 FILE: studio-bvh/src/errors.rs
 ================================================
+
 // [AST-Smart Truncation: Full content exceeds budget, outline shown below]
 // [OUTLINE - 0 symbols, 38 lines]

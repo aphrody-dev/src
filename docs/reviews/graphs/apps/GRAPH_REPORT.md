@@ -1,10 +1,12 @@
 # Graph Report - apps
 
 ## Corpus Check
+
 - **Nodes:** 6472 · **Edges:** 8691 · **Communities:** 323
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `bun-graph.ts` [file] - 382 connections (nt/sdk/tools/bun-graph.ts:L1)
 2. `main.ts` [file] - 241 connections (nt/sdk/tools/msindex/main.ts:L1)
 3. `seo.test.ts` [file] - 165 connections (aphrody/tests/seo.test.ts:L1)
@@ -19,6 +21,7 @@
 12. `build.ts` [file] - 75 connections (aphrody/build.ts:L1)
 
 ## Key Structural Connections
+
 - `package.json` --[defines]--> `name` (Extracted)
 - `package.json` --[defines]--> `version` (Extracted)
 - `package.json` --[defines]--> `private` (Extracted)

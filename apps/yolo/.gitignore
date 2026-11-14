@@ -1,5 +1,0 @@
-dist/
-.yolo/
-*.sqlite
-*.sqlite-wal
-*.sqlite-shm

@@ -9,9 +9,6 @@
     ".": "./src/index.ts",
     "./locales/*": "./locales/*"
   },
-  "bin": {
-    "aphrody-i18n": "./src/cli.ts"
-  },
   "scripts": {
     "check": "bun check",
     "fmt": "bun fmt",

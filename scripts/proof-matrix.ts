@@ -14,7 +14,11 @@ const base = arg("base", "https://aphrody.com");
 const out = arg("out", "docs/reviews/proof");
 const chrome = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const LOCS = ["en", "fr", "zh-CN", "ja", "es"];
-const WIDTHS: Array<[string, number, number]> = [["desktop", 1440, 900], ["tablet", 820, 1180], ["mobile", 390, 844]];
+const WIDTHS: Array<[string, number, number]> = [
+  ["desktop", 1440, 900],
+  ["tablet", 820, 1180],
+  ["mobile", 390, 844],
+];
 const pathOf = (b: string, l: string) =>
   b === "/" ? (l === "fr" ? "/" : `/${l}`) : l === "en" ? b : `${b}/${l}`;
 
@@ -22,15 +26,27 @@ mkdirSync(out, { recursive: true });
 const dir = mkdtempSync(join(tmpdir(), "proof-"));
 const port = 9400 + Math.floor(Math.random() * 300);
 const proc = Bun.spawn(
-  [chrome, "--headless=new", `--remote-debugging-port=${port}`, `--user-data-dir=${dir}`, "--no-first-run", "--hide-scrollbars", "about:blank"],
+  [
+    chrome,
+    "--headless=new",
+    `--remote-debugging-port=${port}`,
+    `--user-data-dir=${dir}`,
+    "--no-first-run",
+    "--hide-scrollbars",
+    "about:blank",
+  ],
   { stdout: "ignore", stderr: "ignore" },
 );
 let list: any[] = [];
 for (let i = 0; i < 50 && !list.length; i++) {
   await Bun.sleep(200);
-  try { list = await (await fetch(`http://127.0.0.1:${port}/json`)).json(); } catch {}
+  try {
+    list = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
+  } catch {}
 }
-const ws = new WebSocket(list.find((t) => t.type === "page").webSocketDebuggerUrl);
+const ws = new WebSocket(
+  list.find((t) => t.type === "page").webSocketDebuggerUrl,
+);
 await new Promise((r) => (ws.onopen = r));
 let id = 0;
 const pending = new Map<number, (v: any) => void>();
@@ -49,10 +65,19 @@ await send("DOM.enable");
 await send("CSS.enable");
 
 const rows: any[] = [];
-for (const [bp, label] of [["/", "home"], ["/play", "play"], ["/os", "os"]] as const)
+for (const [bp, label] of [
+  ["/", "home"],
+  ["/play", "play"],
+  ["/os", "os"],
+] as const)
   for (const l of LOCS)
     for (const [dev, w, h] of WIDTHS) {
-      await send("Emulation.setDeviceMetricsOverride", { width: w, height: h, deviceScaleFactor: 1, mobile: dev === "mobile" });
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: w,
+        height: h,
+        deviceScaleFactor: 1,
+        mobile: dev === "mobile",
+      });
       await send("Page.navigate", { url: base + pathOf(bp, l) });
       await Bun.sleep(3500);
       const ev = await send("Runtime.evaluate", {
@@ -68,19 +93,40 @@ for (const [bp, label] of [["/", "home"], ["/play", "play"], ["/os", "os"]] as c
       let font = "";
       try {
         const doc = await send("DOM.getDocument", { depth: 0 });
-        const q = await send("DOM.querySelector", { nodeId: doc.result.root.nodeId, selector: "h1" });
+        const q = await send("DOM.querySelector", {
+          nodeId: doc.result.root.nodeId,
+          selector: "h1",
+        });
         if (q.result.nodeId) {
-          const f = await send("CSS.getPlatformFontsForNode", { nodeId: q.result.nodeId });
+          const f = await send("CSS.getPlatformFontsForNode", {
+            nodeId: q.result.nodeId,
+          });
           font = (f.result.fonts || []).map((x: any) => x.familyName).join("+");
         }
       } catch {}
       const file = `${label}-${l}-${w}.webp`;
-      const shot = await send("Page.captureScreenshot", { format: "webp", quality: 30 });
+      const shot = await send("Page.captureScreenshot", {
+        format: "webp",
+        quality: 30,
+      });
       writeFileSync(join(out, file), Buffer.from(shot.result.data, "base64"));
       rows.push({ page: label, locale: l, width: w, file, font, ...v });
-      console.log(JSON.stringify({ page: label, l, w, lang: v.lang, over: v.over, raw: v.raw.length, hl: v.hl.length, font }));
+      console.log(
+        JSON.stringify({
+          page: label,
+          l,
+          w,
+          lang: v.lang,
+          over: v.over,
+          raw: v.raw.length,
+          hl: v.hl.length,
+          font,
+        }),
+      );
     }
 writeFileSync(join(out, "matrix.json"), JSON.stringify(rows, null, 1));
 ws.close();
 proc.kill();
-try { rmSync(dir, { recursive: true, force: true }); } catch {}
+try {
+  rmSync(dir, { recursive: true, force: true });
+} catch {}

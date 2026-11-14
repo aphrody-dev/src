@@ -1,15 +1,15 @@
-use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::path::Path;
 use serde_json::json;
 
+use aphrody_core::apply_helix_rope_edits;
+use aphrody_core_capi::cabi::{c_str, free_c_string, into_c_string, json_err, json_ok, raw_slice};
 use depot_core::{GixEngine, JustEngine, detect_content};
 use depot_forge::GitHubClient;
-use depot_graph::{build_graph_for_dir, GraphQuery, QueryOptions};
-use depot_ingest::{ingest_codebase, DigestFormat, IngestConfig};
+use depot_graph::{GraphQuery, QueryOptions, build_graph_for_dir};
+use depot_ingest::{DigestFormat, IngestConfig, ingest_codebase};
 use depot_migrate::MigrateEngine;
 use depot_re::{ReEngine, transcode_lua52_bytecode};
-use aphrody_core::apply_helix_rope_edits;
 
 pub const DEPOT_ABI_VERSION: u32 = 20261111;
 
@@ -20,43 +20,31 @@ pub extern "C" fn depot_abi_version() -> u32 {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn depot_free_string(ptr: *mut c_char) {
-    if !ptr.is_null() {
-        unsafe {
-            let _ = CString::from_raw(ptr);
-        }
-    }
-}
-
-fn c_str_to_str<'a>(ptr: *const c_char) -> &'a str {
-    if ptr.is_null() {
-        return "";
-    }
-    unsafe { CStr::from_ptr(ptr).to_str().unwrap_or("") }
-}
-
-fn to_c_string(s: String) -> *mut c_char {
-    CString::new(s).unwrap_or_default().into_raw()
+    // SAFETY: `ptr` is null or was produced by `into_c_string` in this library.
+    unsafe { free_c_string(ptr) };
 }
 
 #[unsafe(no_mangle)]
 pub extern "C" fn depot_gix_status_json(path_ptr: *const c_char) -> *mut c_char {
-    let p_str = c_str_to_str(path_ptr);
+    // SAFETY: caller passes a NUL-terminated string valid for the call.
+    let p_str = unsafe { c_str(path_ptr) };
     let path = if p_str.is_empty() { Path::new(".") } else { Path::new(p_str) };
 
     match GixEngine::inspect(path, 10) {
-        Ok(telemetry) => to_c_string(serde_json::to_string(&telemetry).unwrap_or_default()),
-        Err(e) => to_c_string(json!({ "error": e }).to_string()),
+        Ok(telemetry) => json_ok(&telemetry),
+        Err(e) => json_err(e),
     }
 }
 
 #[unsafe(no_mangle)]
 pub extern "C" fn depot_just_recipes_json(justfile_path_ptr: *const c_char) -> *mut c_char {
-    let p_str = c_str_to_str(justfile_path_ptr);
+    // SAFETY: caller passes a NUL-terminated string valid for the call.
+    let p_str = unsafe { c_str(justfile_path_ptr) };
     let path = if p_str.is_empty() { Path::new("justfile") } else { Path::new(p_str) };
 
     match JustEngine::parse_file(path) {
-        Ok(spec) => to_c_string(serde_json::to_string(&spec).unwrap_or_default()),
-        Err(e) => to_c_string(json!({ "error": e }).to_string()),
+        Ok(spec) => json_ok(&spec),
+        Err(e) => json_err(e),
     }
 }
 
@@ -66,7 +54,8 @@ pub extern "C" fn depot_ingest_json(
     max_tokens: u32,
     outline_only: bool,
 ) -> *mut c_char {
-    let r_str = c_str_to_str(root_dir_ptr);
+    // SAFETY: caller passes a NUL-terminated string valid for the call.
+    let r_str = unsafe { c_str(root_dir_ptr) };
     let path = if r_str.is_empty() { Path::new(".") } else { Path::new(r_str) };
 
     let mut config = IngestConfig::default();
@@ -77,12 +66,13 @@ pub extern "C" fn depot_ingest_json(
     config.format = DigestFormat::Json;
 
     let (digest, stats) = ingest_codebase(path, &config);
-    let res = json!({
-        "stats": stats,
-        "digest": digest
-    });
-
-    to_c_string(res.to_string())
+    into_c_string(
+        json!({
+            "stats": stats,
+            "digest": digest
+        })
+        .to_string(),
+    )
 }
 
 #[unsafe(no_mangle)]
@@ -92,9 +82,10 @@ pub extern "C" fn depot_graph_query_json(
     dfs: bool,
     max_tokens: u32,
 ) -> *mut c_char {
-    let g_str = c_str_to_str(graph_dir_ptr);
+    // SAFETY: caller passes NUL-terminated strings valid for the call.
+    let g_str = unsafe { c_str(graph_dir_ptr) };
     let path = if g_str.is_empty() { Path::new(".") } else { Path::new(g_str) };
-    let term = c_str_to_str(term_ptr);
+    let term = unsafe { c_str(term_ptr) };
 
     let graph = build_graph_for_dir(path, &[]);
     let opts = QueryOptions {
@@ -104,13 +95,14 @@ pub extern "C" fn depot_graph_query_json(
     };
 
     let context = GraphQuery::query(&graph, term, &opts);
-    let res = json!({
-        "term": term,
-        "mode": if dfs { "dfs" } else { "bfs" },
-        "context": context
-    });
-
-    to_c_string(res.to_string())
+    into_c_string(
+        json!({
+            "term": term,
+            "mode": if dfs { "dfs" } else { "bfs" },
+            "context": context
+        })
+        .to_string(),
+    )
 }
 
 #[unsafe(no_mangle)]
@@ -118,13 +110,14 @@ pub extern "C" fn depot_forge_repo_json(
     owner_ptr: *const c_char,
     repo_ptr: *const c_char,
 ) -> *mut c_char {
-    let owner = c_str_to_str(owner_ptr);
-    let repo = c_str_to_str(repo_ptr);
+    // SAFETY: caller passes NUL-terminated strings valid for the call.
+    let owner = unsafe { c_str(owner_ptr) };
+    let repo = unsafe { c_str(repo_ptr) };
 
     let client = GitHubClient::from_vault();
     match client.get_repo(owner, repo) {
-        Ok(r) => to_c_string(serde_json::to_string(&r).unwrap_or_default()),
-        Err(e) => to_c_string(json!({ "error": e.to_string() }).to_string()),
+        Ok(r) => json_ok(&r),
+        Err(e) => json_err(e),
     }
 }
 
@@ -134,16 +127,13 @@ pub extern "C" fn depot_magika_detect_json(
     bytes_ptr: *const u8,
     bytes_len: usize,
 ) -> *mut c_char {
-    let p_str = c_str_to_str(path_ptr);
+    // SAFETY: caller passes a NUL-terminated string and `bytes_len` readable bytes.
+    let p_str = unsafe { c_str(path_ptr) };
     let path = Path::new(p_str);
-    let slice = if bytes_ptr.is_null() || bytes_len == 0 {
-        &[][..]
-    } else {
-        unsafe { std::slice::from_raw_parts(bytes_ptr, bytes_len) }
-    };
+    let slice = unsafe { raw_slice(bytes_ptr, bytes_len) };
 
     let sig = detect_content(path, slice);
-    to_c_string(serde_json::to_string(&sig).unwrap_or_default())
+    json_ok(&sig)
 }
 
 #[unsafe(no_mangle)]
@@ -151,40 +141,39 @@ pub extern "C" fn depot_helix_rope_edit(
     source_ptr: *const c_char,
     edits_json_ptr: *const c_char,
 ) -> *mut c_char {
-    let source = c_str_to_str(source_ptr);
-    let edits_str = c_str_to_str(edits_json_ptr);
+    // SAFETY: caller passes NUL-terminated strings valid for the call.
+    let source = unsafe { c_str(source_ptr) };
+    let edits_str = unsafe { c_str(edits_json_ptr) };
 
     // Parse array of [start_byte, end_byte, replacement]
     let parsed: Result<Vec<(usize, usize, String)>, _> = serde_json::from_str(edits_str);
     match parsed {
-        Ok(edits) => {
-            let result = apply_helix_rope_edits(source, edits);
-            to_c_string(result)
-        }
-        Err(e) => to_c_string(format!("Error: {e}")),
+        Ok(edits) => into_c_string(apply_helix_rope_edits(source, edits)),
+        Err(e) => into_c_string(format!("Error: {e}")),
     }
 }
 
-
 #[unsafe(no_mangle)]
 pub extern "C" fn depot_migrate_run_json(root_dir_ptr: *const c_char, dry_run: bool) -> *mut c_char {
-    let r_str = c_str_to_str(root_dir_ptr);
+    // SAFETY: caller passes a NUL-terminated string valid for the call.
+    let r_str = unsafe { c_str(root_dir_ptr) };
     let path = if r_str.is_empty() { Path::new(".") } else { Path::new(r_str) };
 
     match MigrateEngine::run(path, dry_run) {
-        Ok(rep) => to_c_string(serde_json::to_string(&rep).unwrap_or_default()),
-        Err(e) => to_c_string(json!({ "error": e }).to_string()),
+        Ok(rep) => json_ok(&rep),
+        Err(e) => json_err(e),
     }
 }
 
 #[unsafe(no_mangle)]
 pub extern "C" fn depot_re_audit_json(path_ptr: *const c_char) -> *mut c_char {
-    let p_str = c_str_to_str(path_ptr);
+    // SAFETY: caller passes a NUL-terminated string valid for the call.
+    let p_str = unsafe { c_str(path_ptr) };
     let path = Path::new(p_str);
 
     match ReEngine::audit_file(path) {
-        Ok(audit) => to_c_string(serde_json::to_string(&audit).unwrap_or_default()),
-        Err(e) => to_c_string(json!({ "error": e, "path": p_str }).to_string()),
+        Ok(audit) => json_ok(&audit),
+        Err(e) => into_c_string(json!({ "error": e, "path": p_str }).to_string()),
     }
 }
 
@@ -194,15 +183,16 @@ pub extern "C" fn depot_re_audit_bytes_json(
     bytes_ptr: *const u8,
     bytes_len: usize,
 ) -> *mut c_char {
-    let label = c_str_to_str(label_ptr);
-    if bytes_ptr.is_null() || bytes_len == 0 {
-        return to_c_string(json!({ "error": "empty bytecode buffer", "path": label }).to_string());
+    // SAFETY: caller passes a NUL-terminated string and `bytes_len` readable bytes.
+    let label = unsafe { c_str(label_ptr) };
+    let slice = unsafe { raw_slice(bytes_ptr, bytes_len) };
+    if slice.is_empty() {
+        return into_c_string(json!({ "error": "empty bytecode buffer", "path": label }).to_string());
     }
-    let slice = unsafe { std::slice::from_raw_parts(bytes_ptr, bytes_len) };
 
     match ReEngine::audit_bytes(slice, label) {
-        Ok(audit) => to_c_string(serde_json::to_string(&audit).unwrap_or_default()),
-        Err(e) => to_c_string(json!({ "error": e, "path": label }).to_string()),
+        Ok(audit) => json_ok(&audit),
+        Err(e) => into_c_string(json!({ "error": e, "path": label }).to_string()),
     }
 }
 
@@ -213,10 +203,11 @@ pub extern "C" fn depot_lua52_transcode_hex(
     target_int: u8,
     target_sizet: u8,
 ) -> *mut c_char {
-    if bytes_ptr.is_null() || bytes_len == 0 {
-        return to_c_string(json!({ "error": "empty Lua 5.2 bytecode buffer" }).to_string());
+    // SAFETY: caller guarantees `bytes_ptr` points to `bytes_len` readable bytes.
+    let slice = unsafe { raw_slice(bytes_ptr, bytes_len) };
+    if slice.is_empty() {
+        return json_err("empty Lua 5.2 bytecode buffer");
     }
-    let slice = unsafe { std::slice::from_raw_parts(bytes_ptr, bytes_len) };
 
     match transcode_lua52_bytecode(slice, target_int, target_sizet) {
         Ok(out) => {
@@ -225,7 +216,7 @@ pub extern "C" fn depot_lua52_transcode_hex(
                 use std::fmt::Write;
                 let _ = write!(&mut hex, "{b:02x}");
             }
-            to_c_string(
+            into_c_string(
                 json!({
                     "ok": true,
                     "byte_length": out.len(),
@@ -236,13 +227,14 @@ pub extern "C" fn depot_lua52_transcode_hex(
                 .to_string(),
             )
         }
-        Err(e) => to_c_string(json!({ "ok": false, "error": e }).to_string()),
+        Err(e) => into_c_string(json!({ "ok": false, "error": e }).to_string()),
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::ffi::{CStr, CString};
 
     #[test]
     fn test_abi_version() {
@@ -312,6 +304,5 @@ mod tests {
         let trans_str = unsafe { CStr::from_ptr(trans_ptr).to_str().unwrap() };
         assert!(trans_str.contains("\"ok\":true"));
         depot_free_string(trans_ptr);
-
     }
 }

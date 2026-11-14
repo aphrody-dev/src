@@ -11,6 +11,7 @@
 //! - egui (`egui` feature): [`LayoutTree::put`] places widgets at the computed rects.
 
 mod calc;
+pub mod ecosystem;
 mod parse;
 mod snap;
 mod style;
@@ -23,6 +24,11 @@ mod tree;
 mod to_bevy;
 #[cfg(feature = "egui")]
 mod to_egui;
+
+pub use ecosystem::{
+    LayoutVitalsAudit, ParleyMeasurer, SceneQuad, audit_layout_tree_vitals,
+    node_layout_to_accesskit, node_layout_to_scene_quads,
+};
 
 pub use parse::{
     Diagnostic, Diagnostics, Rule, SUPPORTED, StyleSheet, parse_style, parse_style_in,

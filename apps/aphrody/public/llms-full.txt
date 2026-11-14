@@ -1,0 +1,10 @@
+# Aphrody
+
+Open-source Rust game engine (Bevy + ArtCraft), creative suite, WebGPU/WGSL Wayland shell, Omarchy + CachyOS orchestration, and zero-MSYS Unix/Windows portability layer.
+
+## Domains
+- https://aphrody.com/
+- https://aphrody.app/
+
+## Contact
+- contact@aphrody.com

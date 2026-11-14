@@ -72,6 +72,8 @@ function argvFor(
       };
     case "opencode":
       return { argv: ["opencode", "run", "--agent", "plan", ...m("-m"), p] };
+    case "fx":
+      return { argv: ["fx", "ask", p] };
     default:
       // pi n'a pas de mode lecture seule : il ne passe que par la file du runner.
       return `${cli} : pas de mode lecture seule pour l'exécution directe`;

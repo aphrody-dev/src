@@ -9,7 +9,8 @@
     "apply": "bun src/apply-user.ts",
     "flatten": "bun src/flatten-third-party.ts",
     "shells": "bun src/shells.ts",
-    "shells:check": "bun src/shells.ts --check"
+    "shells:check": "bun src/shells.ts --check",
+    "binpath": "bun src/binpath.ts"
   },
   "license": "MIT OR Apache-2.0",
   "repository": {

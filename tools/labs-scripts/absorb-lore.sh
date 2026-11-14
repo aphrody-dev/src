@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Absorb Lore into the monorepo: vendor the synced fork, then move its crates to
-# crates/, its patched crates to vendor/, its docs/tools under lore-named dirs.
-# The root Cargo.toml merge ([workspace.dependencies], lints, patches) is manual.
+# crates/, its docs/tools under lore-named dirs.
+# The root Cargo.toml merge ([workspace.dependencies], lints, [patch.crates-io]) is manual.
 # Usage: scripts/absorb-lore.sh
 set -eu
 root="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -12,8 +12,7 @@ for d in "$src"/lore "$src"/lore-*; do
   rm -rf "$root/crates/$n"; mv "$d" "$root/crates/$n"
 done
 cp "$src/build-helper.rs" "$root/crates/build-helper.rs"
-mkdir -p "$root/vendor" "$root/docs/lore" "$root/tools/lore" "$root/licenses/lore" "$root/.cargo"
-for v in "$src"/vendor/*; do rm -rf "$root/vendor/$(basename "$v")"; mv "$v" "$root/vendor/"; done
+mkdir -p "$root/docs/lore" "$root/tools/lore" "$root/licenses/lore" "$root/.cargo"
 rm -rf "$root/docs/lore" "$root/tools/lore" "$root/licenses/lore"; mkdir -p "$root/licenses/lore"
 mv "$src/docs" "$root/docs/lore"
 mkdir -p "$root/tools/lore"

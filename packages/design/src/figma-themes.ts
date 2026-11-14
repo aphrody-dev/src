@@ -3,10 +3,29 @@
 // Usage : bun run src/figma-themes.ts > tokens/figma-themes-sync.js
 import { join } from "node:path";
 
-const data = await Bun.file(join(import.meta.dir, "../tokens/themes.json")).json();
-const ROLES = ["primary", "on-primary", "secondary", "on-secondary", "tertiary", "error", "background", "on-background", "surface", "on-surface", "surface-container", "outline", "outline-variant"];
+const data = await Bun.file(
+  join(import.meta.dir, "../tokens/themes.json"),
+).json();
+const ROLES = [
+  "primary",
+  "on-primary",
+  "secondary",
+  "on-secondary",
+  "tertiary",
+  "error",
+  "background",
+  "on-background",
+  "surface",
+  "on-surface",
+  "surface-container",
+  "outline",
+  "outline-variant",
+];
 const cols = Object.entries<any>(data.themes).flatMap(([n, t]) =>
-  (["light", "dark"] as const).map((m) => [`Theme ${n} ${m}`, ROLES.map((r) => [r, t[m][r].slice(1)])]),
+  (["light", "dark"] as const).map((m) => [
+    `Theme ${n} ${m}`,
+    ROLES.map((r) => [r, t[m][r].slice(1)]),
+  ]),
 );
 console.log(`const DATA = ${JSON.stringify(cols)};
 const rgb = (h) => ({ r: parseInt(h.slice(0, 2), 16) / 255, g: parseInt(h.slice(2, 4), 16) / 255, b: parseInt(h.slice(4, 6), 16) / 255 });

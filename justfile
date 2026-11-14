@@ -23,13 +23,9 @@ default:
 doctor:
     ay doctor
 
-# bun stable, canary and fork side by side into docs/bun/COMPARISON.md (binaries of `ay rt install`, or name=<path>)
-bun-compare *args:
-    bun run "{{root}}/packages/bun-parity/bin/bpt.ts" compare {{args}}
-
-# Check the documented results of bun.com/llms-full.txt with bun binaries (name=<path> ...)
+# bun docs index via ay docs (`ay docs <args>`)
 bun-docs *args:
-    bun run "{{root}}/packages/bun-parity/bin/bpt.ts" llms run {{args}}
+    ay docs {{args}}
 
 # Run deterministic monorepo architecture, domain-purity, boundary & hygiene gate
 archguard:
@@ -170,9 +166,9 @@ forge cmd="status":
 serve-forge port="4000":
     frg serve --port {{port}}
 
-# Run Vercel & Vercel-Labs submodule sync and benchmark arena
+# Run Vercel & Vercel-Labs benchmark arena
 labs cmd="bench":
-    bun run --cwd "{{root}}/third_party/labs" src/cli.ts {{cmd}}
+    bun run "{{root}}/packages/upstream/src/labs-arena/cli.ts" {{cmd}}
 
 # @aphrody/ai-os CLI: agent (init, run, tui, gateway, research, ...) or relay (`just ai-os relay serve`)
 ai-os *args:

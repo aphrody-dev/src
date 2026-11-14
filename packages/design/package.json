@@ -23,7 +23,7 @@
     "figma": "bun run src/figma.ts --modes 4",
     "themes": "bun run src/cli.ts themes",
     "screenshots": "bun run src/cli.ts screenshots",
-    "lint": "bun run ../google-design/src/design-md/cli.ts lint DESIGN.md"
+    "lint": "bun run src/cli.ts lint DESIGN.md"
   },
   "dependencies": {
     "@material/material-color-utilities": "catalog:",

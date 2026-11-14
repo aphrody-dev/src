@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Pure-Rust Sovereign Game Backend & Bevy Fullstack Bridge.
+//! Pure-Rust Aphrody Game Backend & Bevy Fullstack Bridge.
 //!
 //! Exposes Axum 0.8 REST / Frame-Sync endpoints connecting UE5-migrated
 //! asset bundles (`corelib::epic`) and deterministic 60 FPS clock simulation.
@@ -18,7 +18,7 @@ use corelib::{
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 
-/// Shared state for the sovereign game backend
+/// Shared state for the Aphrody game backend
 #[derive(Clone)]
 pub struct GameServerState {
     pub clock: Arc<Mutex<SimulationClock>>,
@@ -80,7 +80,7 @@ pub async fn get_scene_handler(
     let mut scene = BevySceneBundle {
         scene_name: format!("{}_BevyScene", character_name),
         source_uasset: format!("/Game/Characters/{}/Meshes/SK_{}.uasset", character_name, character_name),
-        engine_source: "Unreal Engine 5.4 -> Bevy 0.15 Sovereign Migrator".into(),
+        engine_source: "Unreal Engine 5.4 -> Bevy 0.15 Aphrody Migrator".into(),
         entities: Vec::new(),
     };
 
@@ -166,7 +166,7 @@ pub async fn get_health_handler() -> impl IntoResponse {
     Json(GameHealthResponse {
         status: "healthy",
         target_fps: 60,
-        engine: "Bevy 0.15 + Axum 0.8 Sovereign Stack",
+        engine: "Bevy 0.15 + Axum 0.8 Aphrody Stack",
         renderer: "WebGPU (WGPU 30) + ArcSys Cel-Shading WGSL",
         coordinate_system: "Right-Handed Y-Up (UE5 Left-Handed Z-Up converted)",
     })

@@ -140,7 +140,7 @@
     },
     "apps": {
       "path": "apps",
-      "pure_rust_apps": ["aphrody-app"],
+      "pure_rust_apps": [],
       "zero_npm_apps": ["aphrody"]
     },
     "infra": {

@@ -1,8 +1,18 @@
+pub mod cachyos;
+pub mod cli;
 pub mod packages;
 pub mod plugins;
+pub mod registry;
 pub mod themes;
 pub mod wsl;
 
+pub use cachyos::{
+    AwesomeListCategory, AwesomeListEntry, CACHYOS_PROTON_OPTIONS, CachyOsConfigGenerator,
+    CachyOsError, CachyOsPackagePatch, CpuHardwareInfo, GpuHardwareInfo, KernelVariant2026,
+    NonCKernel, PosixDiscoveryCatalog, ProtonWineOrchestrator, SystemHardwareProfile,
+    build_posix_discovery_catalog, count_local_patch_files, probe_git_head_sha,
+    write_posix_discovery_catalog,
+};
 pub use packages::{
     ArchGitLabPackageMapping, KernelPatchDescriptor, PacmanRepoSpec, SovereignPackageEngine,
     UnifiedRepoManifest,
@@ -10,12 +20,12 @@ pub use packages::{
 pub use plugins::{
     BuiltinOmarchyPlugin, MarketplacePluginEntry, OmarchyPluginEngine, PluginSearchReport,
 };
+pub use registry::{CommandSpec, ManualChapter, OmarchyCommandRegistry, OmarchyManualIndex};
 pub use themes::{AetherThemeRegistry, ColorsToml, CompiledAetherBundle, ThemeError};
 pub use wsl::{SovereignWslBuilder, WslBundleManifest, WslDistroError, WslInstallPlan};
 
 use serde::{Deserialize, Serialize};
 use std::path::Path;
-use unix_cachyos::SystemHardwareProfile;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OmarchyDoctorReport {
@@ -59,7 +69,7 @@ impl OmarchyDoctorReport {
         let arch_present = pkg_engine.archlinux_root.is_dir();
         let linux_present = pkg_engine.linux_tree_root.join("Makefile").is_file();
 
-        let healthy = theme_reg.len() >= 25 && search_summary.builtin_count == 16;
+        let healthy = theme_reg.len() >= 27 && search_summary.builtin_count == 16;
 
         Self {
             hardware_tier: profile.cpu.architecture_level,
@@ -86,12 +96,12 @@ mod tests {
     use std::fs;
 
     #[test]
-    fn test_all_25_themes_registered_and_compile_aether_outputs() {
+    fn test_all_builtin_themes_registered_and_compile_aether_outputs() {
         let standalone = AetherThemeRegistry::standalone_only();
-        assert_eq!(standalone.len(), 25);
+        assert_eq!(standalone.len(), 27);
 
         let full = AetherThemeRegistry::new();
-        assert!(full.len() >= 25);
+        assert!(full.len() >= 27);
 
         let expected_names = [
             "catppuccin",
@@ -119,6 +129,8 @@ mod tests {
             "white",
             "aphrody-m3-dark",
             "cachyos-emerald",
+            "hyprland-kawase",
+            "fluent-2-dark",
         ];
 
         for name in expected_names {
@@ -221,23 +233,19 @@ mod tests {
 
         let manifest = pkg_engine.generate_arch_gitlab_manifest();
         assert_eq!(manifest.repositories.len(), 8);
-        assert!(manifest
-            .repositories
-            .iter()
-            .any(|r| r.name == "cachyos-v3"));
+        assert!(manifest.repositories.iter().any(|r| r.name == "cachyos-v3"));
         assert!(manifest.repositories.iter().any(|r| r.name == "omarchy"));
-        assert!(manifest
-            .core_packages
-            .iter()
-            .any(|p| p.pkgbase == "hyprland"));
+        assert!(manifest.core_packages.iter().any(|p| p.pkgbase == "hyprland"));
     }
 
     #[test]
     fn test_wsl_bundle_generation_and_system32_guard() {
         let builder = SovereignWslBuilder::new();
-        assert!(builder
-            .emit_bundle(Path::new(r"C:\Windows\System32\wsl-test"))
-            .is_err());
+        assert!(
+            builder
+                .emit_bundle(Path::new(r"C:\Windows\System32\wsl-test"))
+                .is_err()
+        );
 
         let out_dir = std::env::temp_dir().join("aphrody_omarchy_wsl_bundle_test");
         let _ = fs::remove_dir_all(&out_dir);
@@ -273,5 +281,97 @@ mod tests {
         assert!(dry_plan.wsl_exe_command.contains("--from-file"));
 
         let _ = fs::remove_dir_all(&out_dir);
+    }
+
+    #[test]
+    fn test_official_omarchy_command_registry_check_passes() {
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|p| p.parent())
+            .expect("repo root")
+            .to_path_buf();
+        let reg = OmarchyCommandRegistry::scan_default(&root);
+        assert!(
+            reg.commands.len() > 200,
+            "expected >200 official omarchy scripts, found {} in {}",
+            reg.commands.len(),
+            reg.bin_dir.display()
+        );
+        let check = reg.show_commands_check();
+        assert!(check.is_ok(), "command registry check failed: {check:?}");
+        let json = reg.show_commands_json(true);
+        assert_eq!(json["ok"], true);
+        assert!(json["commands"].as_array().is_some_and(|a| a.len() > 200));
+    }
+
+    #[test]
+    fn test_theme_template_engine_and_sanitization() {
+        let mut colors = ColorsToml::default();
+        colors.accent = "#7aa2f7".into();
+        colors.background = "#000000".into();
+        colors.foreground = "#ffffff".into();
+        colors.color0 = Some("#101010".into());
+
+        let tpl = "strip={{ accent_strip }};rgb={{ accent_rgb }};type={{ theme_type }};mix={{ mix background foreground 50% }}";
+        let rendered = colors.render_template(tpl);
+        assert!(rendered.contains("strip=7aa2f7;"));
+        assert!(rendered.contains("rgb=122,162,247;"));
+        assert!(rendered.contains("type=dark;"));
+        assert!(rendered.contains("mix=#808080"));
+
+        assert!(themes::validate_theme_name("tokyo-night_2").is_ok());
+        assert!(themes::validate_theme_name("BadName").is_err());
+        assert!(themes::validate_theme_name("-bad").is_err());
+
+        let dir = std::env::temp_dir().join("aphrody_omarchy_sanitize_test");
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(dir.join(".git")).unwrap();
+        fs::write(dir.join("colors.toml"), "accent = \"#7aa2f7\"\n").unwrap();
+        fs::write(dir.join("hook.lua"), "print('evil')").unwrap();
+        fs::write(dir.join("alacritty.toml"), "shell = 'sh'").unwrap();
+
+        let removed = themes::sanitize_third_party_theme(&dir).unwrap();
+        assert_eq!(removed.len(), 2);
+        assert!(dir.join("colors.toml").exists());
+        assert!(!dir.join("hook.lua").exists());
+        assert!(!dir.join("alacritty.toml").exists());
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn test_plugin_validator_rejects_omarchy_namespace_and_symlinks() {
+        let root = std::env::temp_dir().join("aphrody_omarchy_plugin_val_test");
+        let _ = fs::remove_dir_all(&root);
+        let engine = OmarchyPluginEngine::new(root.clone());
+        let valid_dir = root.join("custom-bar");
+        engine
+            .scaffold_plugin(&valid_dir, "custom.status-bar", "Custom Status", "bar-widget")
+            .unwrap();
+        assert!(OmarchyPluginEngine::validate_plugin_dir(&valid_dir).is_ok());
+
+        let reserved_dir = root.join("reserved-bar");
+        engine
+            .scaffold_plugin(&reserved_dir, "omarchy.reserved", "Reserved", "bar-widget")
+            .unwrap();
+        let err = OmarchyPluginEngine::validate_plugin_dir(&reserved_dir).unwrap_err();
+        assert!(err.contains("omarchy."));
+
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn test_manual_index_scans_chapters() {
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|p| p.parent())
+            .expect("repo root")
+            .to_path_buf();
+        let idx = OmarchyManualIndex::scan(&root);
+        assert!(
+            !idx.chapters.is_empty(),
+            "expected manual chapters in {}",
+            idx.manual_dir.display()
+        );
+        assert!(idx.find("omarchy-cli").is_some());
     }
 }

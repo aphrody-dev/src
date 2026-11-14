@@ -1,4 +1,4 @@
-// unix-distro status: kernel config fragment, unix-distro probe (crates/unix-distro) and the GPU seen by
+// omarchy status: kernel config fragment, omarchy probe (crates/unix-omarchy) and the GPU seen by
 // the shared D3D12 layer (crates/dx12-hal via ./dx12-hal.ts). The former native_nt_gpu.dll and .NET WinUI
 // host of infra/winnt-sdk are gone (ticket nt-001): the WinUI 3 shell is apps/nt.
 import { spawnSync } from "node:child_process";
@@ -81,13 +81,13 @@ export function verifyLinuxKernelConfig(): {
 }
 
 export function probeDistroHardware(): DistroHardwareProbe {
-  const exe = process.platform === "win32" ? "unix-distro.exe" : "unix-distro";
+  const exe = process.platform === "win32" ? "omarchy.exe" : "omarchy";
   const res = spawnSync(join(TARGET_DIR, "release", exe), ["probe", "--json"], {
     encoding: "utf-8",
   });
   if (res.status !== 0) {
     throw new Error(
-      `Failed to execute unix-distro probe: ${res.stderr ?? res.error}`,
+      `Failed to execute omarchy probe: ${res.stderr ?? res.error}`,
     );
   }
   return JSON.parse(res.stdout);

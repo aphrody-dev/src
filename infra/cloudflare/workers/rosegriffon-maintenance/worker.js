@@ -15,12 +15,10 @@ var worker_default = {
         "Content-Type": "text/html; charset=utf-8",
         "Retry-After": "3600",
         "Cache-Control": "no-store",
-        "X-Robots-Tag": "noindex"
-      }
+        "X-Robots-Tag": "noindex",
+      },
     });
-  }
+  },
 };
-export {
-  worker_default as default
-};
+export { worker_default as default };
 //# sourceMappingURL=worker.js.map

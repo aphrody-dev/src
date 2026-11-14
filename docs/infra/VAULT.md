@@ -3,7 +3,7 @@
 Ce coffre unique sert tout `src`. Il range les jetons et clés d'API, les mots de passe Chromium au format CSV, les documents chiffrés (json, toml, csv, xml, binaire), un SQLite chiffré ligne par ligne, et les sauvegardes des profils Chromium des agents et des données utilisateur. Il est synchronisé vers la flotte sans humain ni agent.
 
 - API TS asynchrone : `packages/vault` (`@aphrody/vault`).
-- API Rust : `packages/vault/native` (crate `aphrody-vault`, C ABI pour bun:ffi).
+- API Rust : `crates/aphrody-vault` (crate `aphrody-vault`, C ABI pour bun:ffi).
 - Commandes : `env-kit vault …`, ou `ay vault …`, qui passe par env-kit. `env-kit secret …` et `ay secret …` sont inchangées et utilisent les mêmes fichiers.
 - Côté hôte : `infra/vault/vault-host.sh`, plus `aphrody-vault-apply.timer`.
 - Données publiques versionnées : `infra/vault/hosts.toml` (destinataires age), `policy.toml` (portées), `profiles.toml` (chemins à sauvegarder).
@@ -47,7 +47,7 @@ registry.json   type et portée par nom (aucune valeur)
    - Structure : `"AYV1" | flags | wrapLen | wrap | nonce[12] | AES-256-GCM`, avec l'AAD `doc|<format>|<nom>`.
    - Clé maîtresse : 32 octets aléatoires `VAULT_MASTER_KEY` dans la couche locale.
    - Avec Hello : clé = HMAC-SHA256(maître, "ayv1|" ‖ DEK), la DEK étant enveloppée par la clé Hello. Il faut alors le compte Windows **et** le geste.
-   - Le vecteur `packages/vault/native/tests/vectors/ayv1-master07.hex`, scellé en TS, s'ouvre en Rust.
+   - Le vecteur `crates/aphrody-vault/tests/vectors/ayv1-master07.hex`, scellé en TS, s'ouvre en Rust.
 
 ## Types, schémas et portées
 

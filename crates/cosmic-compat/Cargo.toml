@@ -8,9 +8,11 @@ authors.workspace = true
 license.workspace = true
 
 [dependencies]
+aphrody-omarchy = { version = "0.4.0", path = "../unix-omarchy" }
 smithay-wayland-wire.workspace = true
 hypr-tiler = { version = "0.4.0", path = "../hypr-tiler" }
 tracing.workspace = true
 thiserror.workspace = true
 serde.workspace = true
+taffy.workspace = true
 bitflags.workspace = true

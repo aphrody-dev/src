@@ -1,195 +1,120 @@
 # Manifeste versionné de l'outillage agent (Claude Code, Codex, agy, Gemini CLI ; PC et flotte). Toute installation passe ici ;
-# applier : packages/machine/src/toolchain.ts (via apply-user.ts sur le PC, aphrody-agents-sync.timer sur Linux). Aucun secret : seulement le nom de la variable d'env
-# (valeur dans le coffre env-kit, `env-kit secret set NOM` sur stdin, et l'env utilisateur Windows).
-
-# --- Audit Google / DeepMind / Chrome / Gemini / catalogues de skills (2026-11-13, docs/tooling/AI-TOOLING-AUDIT.md)
-
-[[claude.marketplace]]
-name = "anthropic-agent-skills"
-repo = "anthropics/skills"
-commit = "2c5958ecac7c"
-
-[[claude.marketplace]]
-name = "google-plugins"
-repo = "google/skills"
-commit = "85f227ea6a8f"
-
-[[claude.marketplace]]
-name = "googlechrome"
-repo = "GoogleChrome/modern-web-guidance"
-commit = "4dd968349e54"
-
-[[claude.marketplace]]
-name = "gemini-skills"
-repo = "google-gemini/gemini-skills"
-commit = "87fb0173d36f"
-
-[[claude.marketplace]]
-name = "android-skills"
-repo = "android/skills"
-commit = "5815d27fda56"
-
-[[claude.plugin]]
-id = "document-skills@anthropic-agent-skills"
-scope = "user"
-
-[[claude.plugin]]
-id = "google-cloud-developer@google-plugins" # skills gcloud + MCP HTTP developer-knowledge
-scope = "user"
-env = ["DEVELOPERKNOWLEDGE_API_KEY"]
-
-[[claude.plugin]]
-id = "modern-web-guidance@googlechrome"
-scope = "user"
-
-[[claude.plugin]]
-id = "gemini-skills@gemini-skills"
-scope = "user"
-
-[[claude.plugin]]
-id = "android-skills@android-skills"
-scope = "user"
-
-# Serveurs MCP stdio lancés par bun x (les plugins upstream utilisent npx : non installés).
-[[claude.mcp]]
-name = "chrome-devtools"
-hosts = ["pc"] # navigateur local / connexion Firebase du PC
-scope = "user"
-command = ["bun", "x", "chrome-devtools-mcp@1.13.0", "--headless", "--isolated"] # aucune fenêtre (demande du propriétaire 2026-11-13)
-source = "ChromeDevTools/chrome-devtools-mcp@1417f93ee3f8"
-
-[[claude.mcp]]
-name = "firebase"
-hosts = ["pc"] # navigateur local / connexion Firebase du PC
-scope = "user"
-command = ["bun", "x", "firebase-tools@15.36.0", "mcp"]
-env = { IS_FIREBASE_MCP = "true" }
-source = "firebase/firebase-tools@450bcf337418"
-
-# Clé API GCP projet aphrody, restreinte à developerknowledge.googleapis.com (uid 334a6698-4c5b-41b9-b896-7f8f1494fa5b).
-[[secret]]
-name = "DEVELOPERKNOWLEDGE_API_KEY"
-store = "env-kit"
-user_env = false # coffre seul : retirée de HKCU\\Environment, lue par mcp-headers.ts
-mint = "gcloud services api-keys get-key-string 334a6698-4c5b-41b9-b896-7f8f1494fa5b --project aphrody --account yolo-automation@aphrody.iam.gserviceaccount.com"
-
-# --- Audit design / UI (2026-11-13, docs/ui/ECOSYSTEM-AUDIT.md) ---
-
-# Figma officiel (MCP https://mcp.figma.com/mcp + skills figma-use, design-to-code, code-connect, generate-library).
-[[claude.plugin]]
-id = "figma@claude-plugins-official"
-scope = "user"
-
-# Doublon tiers du précédent (skill figma-to-code + second serveur MCP "figma") : retiré.
-[[claude.plugin]]
-id = "figma-to-code-design-to-react-vue-and-html@anthropic-plugin-directory"
-scope = "user"
-state = "absent"
-
-# Skills upstream copiées depuis un commit épinglé (~/.claude/skills/<name>, témoin .source).
-[[claude.skill]]
-name = "gpui-kit"
-repo = "longbridge/gpui-kit" # ex-longbridge/gpui-component, crate gpui-kit 0.9.1
-commit = "6f7f4d96982c476fc0cb3491c6c4d775371554f1"
-path = "skills/gpui-kit"
-license = "Apache-2.0"
-
-[[claude.skill]]
-name = "gpui-kit-design-guides"
-repo = "longbridge/gpui-kit"
-commit = "6f7f4d96982c476fc0cb3491c6c4d775371554f1"
-path = "skills/gpui-kit-design-guides"
-license = "Apache-2.0"
-
-[[claude.skill]]
-name = "webui-reference"
-repo = "microsoft/webui" # v3.1.1
-commit = "30ca60aa4bdc1beab040dae32e1c10e195ec9113"
-path = "ai"
-license = "MIT"
-
-
-# --- Socle cross-agent (2026-11-13, docs/infra/AGENT-TOOLCHAIN.md) ---
-# Hôtes : pc, prd, fr1, fr2 (`hosts` absent = tous). Racine src : C:/src (pc), /srv/src (Linux).
-# Placeholders : {src} racine du checkout, {home} HOME, {bin} ~/.local/bin.
-# Marketplace racine de src (.claude-plugin/marketplace.json, lue aussi par Codex et agy) :
-# aphrody-skills = .agents/skills (source unique), plus les forks aphrody-labs épinglés par sha.
+# applier : packages/machine/src/toolchain.ts (`ay agents install|sync|check|list`).
+# Nettoyé le 2026-11-14 : ne conserve que les skills Aphrody (`aphrody-skills`, `aphrody-nhitl`) et les outils AI (`relay`, `ai-os`, `agent-desktop`, `agent-browser`).
 
 [[claude.marketplace]]
 name = "aphrody"
 path = "."
 
 [[claude.marketplace]]
-name = "claude-plugins-official"
-repo = "anthropics/claude-plugins-official"
-
-[[claude.marketplace]]
 name = "rosegriffon-plugins"
 path = "apps/rosegriffon"
 hosts = ["pc"]
 
+# --- Plugins Aphrody (conservés) ---
 [[claude.plugin]]
 id = "aphrody-skills@aphrody"
-refresh = true # copie du cache Claude rafraîchie quand le HEAD de src change
+refresh = true
 
 [[claude.plugin]]
 id = "aphrody-nhitl@aphrody"
 refresh = true
 
+# --- Plugins externes / tiers (désinstallés) ---
 [[claude.plugin]]
-id = "vercel-agent-skills@aphrody" # fork aphrody-labs/agent-skills@1a2c79d4e6c4
+id = "document-skills@anthropic-agent-skills"
+scope = "user"
+state = "absent"
 
 [[claude.plugin]]
-id = "web-quality-skills@aphrody" # fork aphrody-labs/web-quality-skills@afa8da942115 (Lighthouse, Web Vitals)
+id = "google-cloud-developer@google-plugins"
+scope = "user"
+state = "absent"
+
+[[claude.plugin]]
+id = "modern-web-guidance@googlechrome"
+scope = "user"
+state = "absent"
+
+[[claude.plugin]]
+id = "gemini-skills@gemini-skills"
+scope = "user"
+state = "absent"
+
+[[claude.plugin]]
+id = "android-skills@android-skills"
+scope = "user"
+state = "absent"
+
+[[claude.plugin]]
+id = "figma@claude-plugins-official"
+scope = "user"
+state = "absent"
+
+[[claude.plugin]]
+id = "figma-to-code-design-to-react-vue-and-html@anthropic-plugin-directory"
+scope = "user"
+state = "absent"
+
+[[claude.plugin]]
+id = "vercel-agent-skills@aphrody"
+state = "absent"
+
+[[claude.plugin]]
+id = "web-quality-skills@aphrody"
+state = "absent"
 
 [[claude.plugin]]
 id = "unreal-engine-skills-for-claude-code@aphrody"
 hosts = ["pc"]
+state = "absent"
 
 [[claude.plugin]]
 id = "github@claude-plugins-official"
+state = "absent"
 
 [[claude.plugin]]
 id = "clangd-lsp@claude-plugins-official"
+state = "absent"
 
 [[claude.plugin]]
 id = "rust-analyzer-lsp@claude-plugins-official"
+state = "absent"
 
 [[claude.plugin]]
 id = "typescript-lsp@claude-plugins-official"
+state = "absent"
 
 [[claude.plugin]]
 id = "math-proof@claude-plugins-official"
-state = "disabled"
+state = "absent"
 
 [[claude.plugin]]
 id = "cloudflare@anthropic-plugin-directory"
+state = "absent"
 
 [[claude.plugin]]
 id = "microsoft-docs@anthropic-plugin-directory"
+state = "absent"
 
 [[claude.plugin]]
 id = "context7@anthropic-plugin-directory"
+state = "absent"
 
 [[claude.plugin]]
 id = "resend@anthropic-plugin-directory"
 hosts = ["pc"]
+state = "absent"
 
-# MCP utilisateur. `secrets` : noms du coffre env-kit injectés au lancement par
-# `env-kit secret exec` (jamais dans settings ni argv) ; sans coffre sur l'hôte, l'entrée est ignorée.
+# --- MCP Aphrody / AI Tools (conservés) ---
 [[claude.mcp]]
 name = "relay"
 url = "http://127.0.0.1:8790/mcp"
 hosts = ["pc"]
 
 [[claude.mcp]]
-name = "figma"
-url = "https://mcp.figma.com/mcp"
-hosts = ["pc"]
-
-[[claude.mcp]]
 name = "agent-desktop"
-command = ["{bin}/agent-desktop.exe", "mcp"] # headless sémantique par défaut : pas de focus ni curseur physique
+command = ["{bin}/agent-desktop.exe", "mcp"]
 hosts = ["pc"]
 
 [[claude.mcp]]
@@ -197,19 +122,31 @@ name = "agent-browser"
 command = ["{bin}/agent-browser.exe", "mcp"]
 hosts = ["pc"]
 
-# Serveur Developer Knowledge du plugin google-cloud-developer, clé lue dans le coffre par headersHelper
-# (le serveur du plugin, qui attend la variable d'env, reste en échec sans elle).
+# --- MCP externes / tiers (retirés) ---
+[[claude.mcp]]
+name = "chrome-devtools"
+hosts = ["pc"]
+state = "absent"
+
+[[claude.mcp]]
+name = "firebase"
+hosts = ["pc"]
+state = "absent"
+
+[[claude.mcp]]
+name = "figma"
+hosts = ["pc"]
+state = "absent"
+
 [[claude.mcp]]
 name = "developer-knowledge"
-url = "https://developerknowledge.googleapis.com/mcp"
-headers = { "X-Goog-Api-Key" = "DEVELOPERKNOWLEDGE_API_KEY" }
 hosts = ["pc"]
+state = "absent"
 
 [[claude.mcp]]
 name = "hostinger-api"
-command = ["bun", "x", "--bun", "@hostinger/mcp@3.38.3"]
-secrets = ["HOSTINGER_API_TOKEN"]
 hosts = ["pc"]
+state = "absent"
 
 # Skills propres à une machine (hors dépôt public) : contrôle de présence seul.
 [[skill.private]]
@@ -228,14 +165,14 @@ hosts = ["pc"]
 [codex]
 marketplace = "aphrody"
 plugins = ["aphrody-skills@aphrody"]
-mcp = ["relay", "figma"] # serveurs HTTP de [[claude.mcp]] (relay sert stitch__* et gemini_*)
+mcp = ["relay"]
 
 [agy]
-plugins = ["aphrody-skills@aphrody", "web-quality-skills@aphrody"] # vercel-agent-skills : sans manifeste, refusé par agy
-mcp = ["relay", "figma"]
+plugins = ["aphrody-skills@aphrody"]
+mcp = ["relay"]
 
 [gemini]
-extensions = [".agents"] # gemini extensions link {src}/.agents (CLI absent à ce jour)
+extensions = [".agents"]
 
 # Liens interdits : tout lien (symlink, jonction) vers une skill de src dans ces dossiers est retiré,
 # le plugin aphrody-skills la fournit déjà.
@@ -246,5 +183,9 @@ link_dirs = [
   "{home}/.agents/skills",
   "{home}/.codex/skills",
 ]
-# Copies posées par [[claude.skill]] devenues doublons d'un plugin (web-design-guidelines : vercel-agent-skills).
-drop_skills = ["web-design-guidelines"]
+drop_skills = [
+  "web-design-guidelines",
+  "gpui-kit",
+  "gpui-kit-design-guides",
+  "webui-reference",
+]

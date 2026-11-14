@@ -1706,14 +1706,14 @@ fn test_all_config_files_load_successfully() {
 
         match load_merged_config(config_path) {
             Ok(settings) => {
-                println!("✓ {config_name} - loaded successfully");
+                println!(" {config_name} - loaded successfully");
                 println!(
                     "    immutable_store.mode = {}, mutable_store.mode = {}",
                     settings.immutable_store.mode, settings.mutable_store.mode
                 );
             }
             Err(e) => {
-                let msg = format!("✗ {config_name} - FAILED: {e}");
+                let msg = format!(" {config_name} - FAILED: {e}");
                 println!("{msg}");
                 failures.push(msg);
             }
@@ -1799,10 +1799,10 @@ fn test_all_config_files_have_valid_plugin_configs() {
         }
 
         if config_errors.is_empty() {
-            println!("✓ {config_name} - plugin configs valid");
+            println!(" {config_name} - plugin configs valid");
         } else {
             let error_msg = format!(
-                "✗ {} - INVALID:\n    {}",
+                " {} - INVALID:\n    {}",
                 config_name,
                 config_errors.join("\n    ")
             );
@@ -1912,7 +1912,7 @@ fn test_plugin_configs_can_be_parsed() {
                 ) {
                     match registry.validate_immutable_store_config(immutable_mode, &plugin_config) {
                         Ok(()) => {
-                            parse_results.push(format!("immutable_store[{immutable_mode}]: ✓"));
+                            parse_results.push(format!("immutable_store[{immutable_mode}]: "));
                         }
                         Err(e) => {
                             parse_errors.push(format!("immutable_store[{immutable_mode}]: {e}"));
@@ -1921,11 +1921,11 @@ fn test_plugin_configs_can_be_parsed() {
                 }
             } else {
                 parse_results.push(format!(
-                    "immutable_store[{immutable_mode}]: ✓ (external plugin)"
+                    "immutable_store[{immutable_mode}]:  (external plugin)"
                 ));
             }
         } else {
-            parse_results.push(format!("immutable_store[{immutable_mode}]: ✓ (core mode)"));
+            parse_results.push(format!("immutable_store[{immutable_mode}]:  (core mode)"));
         }
 
         // Test composite durable tier
@@ -1947,7 +1947,7 @@ fn test_plugin_configs_can_be_parsed() {
                         match registry.validate_immutable_store_config(durable_mode, &plugin_config)
                         {
                             Ok(()) => {
-                                parse_results.push(format!("composite.durable[{durable_mode}]: ✓"));
+                                parse_results.push(format!("composite.durable[{durable_mode}]: "));
                             }
                             Err(e) => {
                                 parse_errors
@@ -1957,7 +1957,7 @@ fn test_plugin_configs_can_be_parsed() {
                     }
                 } else {
                     parse_results.push(format!(
-                        "composite.durable[{durable_mode}]: ✓ (external plugin)"
+                        "composite.durable[{durable_mode}]:  (external plugin)"
                     ));
                 }
             }
@@ -1977,7 +1977,7 @@ fn test_plugin_configs_can_be_parsed() {
                 ) {
                     match registry.validate_mutable_store_config(mutable_mode, &plugin_config) {
                         Ok(()) => {
-                            parse_results.push(format!("mutable_store[{mutable_mode}]: ✓"));
+                            parse_results.push(format!("mutable_store[{mutable_mode}]: "));
                         }
                         Err(e) => {
                             parse_errors.push(format!("mutable_store[{mutable_mode}]: {e}"));
@@ -1986,11 +1986,11 @@ fn test_plugin_configs_can_be_parsed() {
                 }
             } else {
                 parse_results.push(format!(
-                    "mutable_store[{mutable_mode}]: ✓ (external plugin)"
+                    "mutable_store[{mutable_mode}]:  (external plugin)"
                 ));
             }
         } else {
-            parse_results.push(format!("mutable_store[{mutable_mode}]: ✓ (core mode)"));
+            parse_results.push(format!("mutable_store[{mutable_mode}]:  (core mode)"));
         }
 
         // Test topology plugin config parsing
@@ -2004,7 +2004,7 @@ fn test_plugin_configs_can_be_parsed() {
             {
                 match registry.validate_topology_config(plugin_name, plugin_config) {
                     Ok(()) => {
-                        parse_results.push(format!("topology[{plugin_name}]: ✓"));
+                        parse_results.push(format!("topology[{plugin_name}]: "));
                     }
                     Err(e) => {
                         let error_msg = e.to_string();
@@ -2015,7 +2015,7 @@ fn test_plugin_configs_can_be_parsed() {
 
                             if is_expected_env_injected_field {
                                 parse_results.push(format!(
-                                    "topology[{plugin_name}]: ✓ (address provided via env)"
+                                    "topology[{plugin_name}]:  (address provided via env)"
                                 ));
                             } else {
                                 parse_errors.push(format!("topology[{plugin_name}]: {e}"));
@@ -2026,17 +2026,17 @@ fn test_plugin_configs_can_be_parsed() {
                     }
                 }
             } else {
-                parse_results.push(format!("topology[{plugin_name}]: ✓ (external plugin)"));
+                parse_results.push(format!("topology[{plugin_name}]:  (external plugin)"));
             }
         }
 
         if parse_errors.is_empty() {
-            let result = format!("✓ {}\n    {}", config_name, parse_results.join("\n    "));
+            let result = format!(" {}\n    {}", config_name, parse_results.join("\n    "));
             println!("{} ({:.2}s)", result, start.elapsed().as_secs_f32());
             results.push(result);
         } else {
             let error_msg = format!(
-                "✗ {}\n    Passed: {}\n    Failed: {}",
+                " {}\n    Passed: {}\n    Failed: {}",
                 config_name,
                 parse_results.join(", "),
                 parse_errors.join("\n    ")
@@ -2143,7 +2143,7 @@ fn test_production_configs() {
                 "{config_name} should have [plugins.aws] configuration"
             );
 
-            println!("✓ {config_name} correctly uses AWS stores");
+            println!(" {config_name} correctly uses AWS stores");
         }
     }
 }
@@ -2186,20 +2186,20 @@ fn test_composite_store_durable_modes_are_valid() {
                     || registered_plugins.contains(&durable_mode.clone());
 
                 let local_label = if local_valid {
-                    "✓".to_string()
+                    "".to_string()
                 } else {
                     "external".to_string()
                 };
                 let durable_label = if durable_valid {
-                    "✓".to_string()
+                    "".to_string()
                 } else {
                     "external".to_string()
                 };
                 println!(
-                    "✓ {config_name} - composite store: local={local_mode} ({local_label}), durable={durable_mode} ({durable_label})"
+                    " {config_name} - composite store: local={local_mode} ({local_label}), durable={durable_mode} ({durable_label})"
                 );
             } else {
-                println!("✓ {config_name} - composite store: local={local_mode}, durable=none");
+                println!(" {config_name} - composite store: local={local_mode}, durable=none");
             }
         }
     }
@@ -2249,11 +2249,11 @@ fn test_config_validation_summary() {
         let status = match load_merged_config(config_path) {
             Ok(settings) => {
                 format!(
-                    "✓ {} | imm: {}, mut: {}",
+                    " {} | imm: {}, mut: {}",
                     config_name, settings.immutable_store.mode, settings.mutable_store.mode
                 )
             }
-            Err(e) => format!("✗ {config_name} | ERROR: {e}"),
+            Err(e) => format!(" {config_name} | ERROR: {e}"),
         };
         println!("║  {status}  ");
     }

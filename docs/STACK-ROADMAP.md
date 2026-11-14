@@ -75,7 +75,7 @@ Vérifié moi-même dans `C:\labs` (lecture seule) : `Cargo.toml:3` `members = [
 
 **Élevé** 4. **Deux workspaces revendiquent le même produit.** `C:\src\Cargo.toml:6-8` contient `next`, `react`, `ui`, `rt`, `rust-stack`, `aphrody-design-*` ; `labs/crates/cli/Cargo.toml:3` décrit aussi aphrody.
 
-- Correctif : `src` = outillage souverain uniquement ; tout le code produit va dans labs.
+- Correctif : `src` = outillage principal et monorepo unifie (crates/taffy 0.15.1, crates/aphrody-ui::fusion, forks aphrody-labs/*).
 
 5. **Lore surdimensionne la build.** `Cargo.toml:3` compile tous les crates : aws, hashicorp, fuse, capi, chaos, otlp/tonic, quinn (583 paquets dans le lock).
    - Correctif : sortir Lore dans `vcs/lore/` en workspace séparé, ou au minimum ajouter `default-members`.

@@ -9,5 +9,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src", "*.test.ts", "../bun-plugins/bun-native.d.ts"]
+  "include": ["src", "*.test.ts", "../core/bun-native.d.ts"]
 }

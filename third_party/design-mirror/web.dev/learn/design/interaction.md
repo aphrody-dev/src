@@ -161,23 +161,19 @@ Unlike a physical keyboard, virtual keyboards can be tailored to match the expec
 [HTML5 input types](https://developer.mozilla.org/docs/Learn/Forms/HTML5_input_types) are a great way of describing your `input` elements. The `type` attribute accepts values such as `email`, `number`, `tel`, `url`, and more.
 
 ```html
-<label for="email">Email</label>
-<input type="email" id="email" />
+<label for="email">Email</label> <input type="email" id="email" />
 ```
 
 ```html
-<label for="number">Number</label>
-<input type="number" id="number" />
+<label for="number">Number</label> <input type="number" id="number" />
 ```
 
 ```html
-<label for="tel">Tel</label>
-<input type="tel" id="tel" />
+<label for="tel">Tel</label> <input type="tel" id="tel" />
 ```
 
 ```html
-<label for="url">URL</label>
-<input type="url" id="url" />
+<label for="url">URL</label> <input type="url" id="url" />
 ```
 
 <iframe allow="camera; clipboard-read; clipboard-write; encrypted-media; geolocation; microphone; midi;" loading="lazy" src="https://codepen.io/web-dot-dev/embed/zYEPxBX?height=400&amp;theme-id=dark&amp;default-tab=html%2C%20result&amp;editable=true" style="height: 100%; width: 100%; border: 0;" title="Pen zYEPxBX by web-dot-dev on Codepen"></iframe>

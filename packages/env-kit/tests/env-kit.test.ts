@@ -172,12 +172,35 @@ describe("env-kit Bun/TypeScript core", () => {
       const res = syncAllEditorConfigs({
         homeDir: dir,
         appDataDir: join(dir, "Roaming"),
+        env: {
+          CLOUDFLARE_API_TOKEN: "cf-test-tok",
+          VERCEL_TOKEN: "vc-test-tok",
+        },
       });
 
       expect(existsSync(res.opencodePath)).toBe(true);
       expect(existsSync(res.zedPath)).toBe(true);
       expect(existsSync(res.piSettingsPath)).toBe(true);
       expect(existsSync(res.piModelsPath)).toBe(true);
+      expect(existsSync(res.antigravityCliMcpPath)).toBe(true);
+      expect(existsSync(res.antigravityGlobalMcpPath)).toBe(true);
+      expect(existsSync(res.geminiSettingsPath)).toBe(true);
+
+      const agyMcp = JSON.parse(
+        readFileSync(res.antigravityCliMcpPath, "utf8"),
+      );
+      expect(agyMcp.mcpServers["ai-os"].command).toBe(
+        "C:/Users/aphro/.local/bin/ai-os.exe",
+      );
+      expect(agyMcp.mcpServers["cloudflare-docs"].url).toBe(
+        "https://docs.mcp.cloudflare.com/mcp",
+      );
+      expect(agyMcp.mcpServers.cloudflare.headers.Authorization).toBe(
+        "Bearer cf-test-tok",
+      );
+      expect(agyMcp.mcpServers.vercel.headers.Authorization).toBe(
+        "Bearer vc-test-tok",
+      );
 
       const ocJson = JSON.parse(readFileSync(res.opencodePath, "utf8"));
       expect(ocJson.providers.anthropic.apiKey).toBe("{env:ANTHROPIC_API_KEY}");

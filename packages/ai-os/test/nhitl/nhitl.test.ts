@@ -35,7 +35,7 @@ test("fins de tour qui rendent la main", () => {
 
 test("aucun secret dans les extraits", () => {
   const s = redact(
-    "clé sk-ant-oat01-AAAAAAAAAAAAAAAAAAAAAAAA et ghp_BBBBBBBBBBBBBBBBBBBBBBBB fin",
+    `clé ${"sk-ant-oat01-" + "A".repeat(24)} et ${"ghp_" + "B".repeat(24)} fin`,
   );
   expect(s).not.toContain("sk-ant");
   expect(s).not.toContain("ghp_");

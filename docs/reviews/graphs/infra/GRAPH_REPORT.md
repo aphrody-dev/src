@@ -1,10 +1,12 @@
 # Graph Report - infra
 
 ## Corpus Check
+
 - **Nodes:** 2009 · **Edges:** 3812 · **Communities:** 311
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `proof.ts` [file] - 179 connections (cloudflare/proof.ts:L1)
 2. `echo()` [function] - 112 connections (chromium-factory/chromium-factory.sh:L11)
 3. `runner.ts` [file] - 75 connections (agents/runner.ts:L1)
@@ -19,6 +21,7 @@
 12. `grep()` [function] - 45 connections (chromium-factory/chromium-factory.sh:L22)
 
 ## Key Structural Connections
+
 - `chromium-factory.sh` --[defines]--> `log` (Extracted)
 - `chromium-factory.sh` --[defines]--> `sync` (Extracted)
 - `chromium-factory.sh` --[defines]--> `build` (Extracted)

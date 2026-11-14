@@ -28,7 +28,6 @@ pub fn scan_first_party_contents(
         root.join("infra"),
         root.join("tools"),
         root.join("apps").join("aphrody"),
-        root.join("apps").join("aphrody-app"),
     ];
     if check_docs_emojis {
         scan_roots.push(root.join("docs"));

@@ -5,13 +5,12 @@ set -eu
 D=${DOCKER:-docker}
 REG=${SRC_REGISTRY:-ghcr.io/aphrody-labs}
 TAG=${SRC_TAG:-latest}
-[ $# -gt 0 ] || set -- ai-os ai-os-gateway aphrody r2-site api-gateway loreserver r3d rust-stack
+[ $# -gt 0 ] || set -- ai-os ai-os-gateway api-gateway loreserver r3d rust-stack
 fail=0
 for img in "$@"; do
   name=smoke-$img-$$; extra=""; ref=$REG/$img:$TAG
   case $img in
     ai-os-gateway) ref=$REG/ai-os:$TAG; extra="-e PORT=4000 -e AGENT_MODEL=echo/echo"; cmd="bun src/cli.ts gateway" ;;
-    r2-site) extra="-e STORAGE=fs:/tmp -e HOST=0.0.0.0"; cmd="" ;;
     api-gateway) extra="-e S3_ENDPOINT=http://127.0.0.1:9 -e S3_ACCESS_KEY_ID=x -e S3_SECRET_ACCESS_KEY=x"; cmd="" ;;
     *) cmd="" ;;
   esac

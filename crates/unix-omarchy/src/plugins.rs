@@ -397,9 +397,9 @@ impl OmarchyPluginEngine {
             "id": plugin_id,
             "name": display_name,
             "version": "0.1.0",
-            "author": "Aphrody Sovereign OS",
+            "author": "Aphrody OS",
             "license": "MIT",
-            "description": format!("Sovereign Omarchy shell plugin: {}", display_name),
+            "description": format!("Omarchy shell plugin: {}", display_name),
             "kinds": [kind],
             "entryPoints": entry_points,
         });
@@ -410,7 +410,7 @@ impl OmarchyPluginEngine {
         let qml_path = plugin_dir.join(qml_file);
         let qml_content = format!(
             "import QtQuick\n\
-             // Sovereign Omarchy Plugin: {id}\n\
+             // Omarchy Plugin: {id}\n\
              Item {{\n\
              \x20   id: root\n\
              \x20   property string pluginId: \"{id}\"\n\
@@ -423,6 +423,107 @@ impl OmarchyPluginEngine {
 
         Ok(vec![manifest_path, qml_path])
     }
+
+    /// Validate a shell plugin folder according to Omarchy `manual/32-shell-plugins.md`:
+    /// `schemaVersion == 1`, non-empty `id` not in reserved `omarchy.` namespace,
+    /// `name`, `version`, non-empty `kinds`, safe relative `entryPoints` present for every kind,
+    /// and zero symlinks inside the plugin folder.
+    pub fn validate_plugin_dir(dir: &Path) -> Result<(), String> {
+        if !dir.is_dir() {
+            return Err(format!("plugin directory does not exist: {}", dir.display()));
+        }
+        check_no_symlinks_in_tree(dir)?;
+
+        let manifest_path = dir.join("manifest.json");
+        let raw = fs::read_to_string(&manifest_path)
+            .map_err(|e| format!("failed to read {}: {e}", manifest_path.display()))?;
+        let val: serde_json::Value = serde_json::from_str(&raw)
+            .map_err(|e| format!("invalid JSON in manifest.json: {e}"))?;
+
+        let schema_version = val.get("schemaVersion").and_then(|v| v.as_u64());
+        if schema_version != Some(1) {
+            return Err("manifest.schemaVersion must be 1".to_string());
+        }
+        let id = val
+            .get("id")
+            .and_then(|v| v.as_str())
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .ok_or_else(|| "manifest.id must be a non-empty string".to_string())?;
+        if id.starts_with("omarchy.") {
+            return Err(format!(
+                "manifest.id '{id}' uses reserved 'omarchy.' namespace"
+            ));
+        }
+        for required in ["name", "version"] {
+            if val
+                .get(required)
+                .and_then(|v| v.as_str())
+                .map(str::trim)
+                .filter(|s| !s.is_empty())
+                .is_none()
+            {
+                return Err(format!("manifest.{required} must be a non-empty string"));
+            }
+        }
+        let kinds = val
+            .get("kinds")
+            .and_then(|v| v.as_array())
+            .filter(|a| !a.is_empty())
+            .ok_or_else(|| "manifest.kinds must be a non-empty array".to_string())?;
+        let entry_points = val
+            .get("entryPoints")
+            .and_then(|v| v.as_object())
+            .ok_or_else(|| "manifest.entryPoints must be an object".to_string())?;
+
+        for kind_val in kinds {
+            let kind = kind_val
+                .as_str()
+                .ok_or_else(|| "manifest.kinds entries must be strings".to_string())?;
+            let ep_key = match kind {
+                "bar-widget" => "barWidget",
+                other => other,
+            };
+            let rel = entry_points
+                .get(ep_key)
+                .and_then(|v| v.as_str())
+                .ok_or_else(|| format!("missing entryPoints['{ep_key}'] for kind '{kind}'"))?;
+            let rel_path = Path::new(rel);
+            if rel_path.is_absolute()
+                || rel_path
+                    .components()
+                    .any(|c| matches!(c, std::path::Component::ParentDir | std::path::Component::Prefix(_)))
+            {
+                return Err(format!(
+                    "unsafe relative entryPoint '{rel}' for kind '{kind}'"
+                ));
+            }
+            let resolved = dir.join(rel_path);
+            if !resolved.is_file() {
+                return Err(format!(
+                    "entryPoint '{rel}' for kind '{kind}' does not exist"
+                ));
+            }
+        }
+        Ok(())
+    }
+}
+
+fn check_no_symlinks_in_tree(dir: &Path) -> Result<(), String> {
+    let entries = fs::read_dir(dir).map_err(|e| format!("read_dir failed: {e}"))?;
+    for entry in entries {
+        let entry = entry.map_err(|e| format!("dir entry error: {e}"))?;
+        let path = entry.path();
+        let meta = fs::symlink_metadata(&path)
+            .map_err(|e| format!("metadata error for {}: {e}", path.display()))?;
+        if meta.file_type().is_symlink() {
+            return Err(format!("symlink forbidden in plugin folder: {}", path.display()));
+        }
+        if meta.is_dir() {
+            check_no_symlinks_in_tree(&path)?;
+        }
+    }
+    Ok(())
 }
 
 fn count_json_structural_char(line: &str, target: char) -> usize {

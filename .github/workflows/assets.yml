@@ -50,7 +50,7 @@ jobs:
       - name: Build asset-test (FFmpeg, resvg, craft-libs, gltf, Bevy headless)
         run: cargo build -q -j8 -p asset-test --profile iteration
       - name: Rust validators
-        run: "xvfb-run -a -s \"-screen 0 1280x720x24\" \"$CARGO_TARGET_DIR/iteration/asset-test\" . > asset-test.jsonl"
+        run: 'xvfb-run -a -s "-screen 0 1280x720x24" "$CARGO_TARGET_DIR/iteration/asset-test" . > asset-test.jsonl'
       - name: Recursive test, merged report
         run: |
           export PATH="$HOME/.bun/bin:$PATH"

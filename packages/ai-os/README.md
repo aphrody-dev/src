@@ -1,38 +1,50 @@
 # @aphrody/ai-os
 
-The single AI unit of `src`: agent core, model bridge, relay, gateway, research and TUI in one Bun package, with no
-npm dependency (Bun built-ins only: `bun:sqlite`, `Bun.serve`, `Bun.listen`, `Bun.spawn`, `node:readline`, `fetch`).
-Merged flat from `aphrody-labs/agent@83c2c8b` with `git subtree` (history kept: `git log -- packages/ai-os`).
+Cross-platform sandboxed Unix/GNU-like operating system distribution for autonomous agents, unifying POSIX/FHS VFS, LLM runtime discovery, hybrid RAG, causal World Model, and sub-millisecond System 1 decision routing behind **one single C ABI** (`ai_os_*` in [crates/core-capi](../../crates/core-capi), header [aphrody_core.h](../../crates/core-capi/include/aphrody_core.h)).
 
-| Path                   | Export       | Role                                                                                         |
-| ---------------------- | ------------ | -------------------------------------------------------------------------------------------- |
-| `src/core`             | `./core`     | agent loop, tools, memory, Context selection, skills, hub, scheduler, council, secrets       |
-| `src/llm`              | `./llm`      | single model bridge: providers and models discovered at run time, tool loop, JSON Schema     |
-| `src/relay`            | `./relay`    | the only MCP server (HTTP 2025-11-25 and 2026-07-28, stdio) and A2A 1.0.1 `SendMessage`      |
-| `src/gateway`          | `./gateway`  | WebSocket sessions, OpenAI-compatible chat, channel webhooks                                 |
-| `src/research`         | `./research` | outline-driven research, fact-check, Context7 docs                                           |
-| `src/tui`              | `./tui`      | terminal UI                                                                                  |
-| `bench`, `fixtures`    |              | retrieval bench and research reference pack                                                  |
-| `python`               |              | uv workspace: pyo3 `agent_core` (`crates/agent-py`), Hermes memory provider, reference check |
-| `native/relay-windows` |              | Windows service `AphrodyRelay` (.NET 11 NativeAOT) and `install.ps1`                         |
+`@aphrody/ai-os` is an agent kernel and runtime distribution, not a TUI, package manager, or cron wrapper (those belong to host agent harnesses such as `agy`, Claude Code, and OpenCode). Zero third-party npm dependencies (`bun:ffi`, `bun:sqlite`, `Bun.serve`, `Bun.listen`, `Bun.spawn`, `fetch`).
 
-Rust crates: `crates/agent-context`, `crates/agent-py` (root workspace). Linux unit of the relay:
-`infra/fleet/prd/systemd/aphrody-relay.service`.
+## FHS Virtual Layout & Unified C ABI (`ai_os_*`)
 
-No provider or model is hardcoded. `AGENT_MODEL=provider/model` takes any id listed by `llm_models`
-(`ai-os relay` tool, `listModels()`); without it the first model of the first active provider is used (Ollama,
-`RELAY_OPENAI_ENDPOINTS`, OpenRouter, Hugging Face, Vercel AI Gateway, Cloudflare Workers AI, Antigravity CLI, Claude
-Code CLI). `AGENT_EMBEDDER=hash|provider/model`.
+| VFS / Device  | C ABI Entrypoint (`aphrody_core.h`)               | Role                                                                                                                                                                                                                            |
+| :------------ | :------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `uname` / FHS | `ai_os_uname_json`, `ai_os_vfs_resolve_json`      | OS identity, standards (`openapi-3.2.1`, `mcp-2026-07-28`, `a2a-1.0.1`, `acp-1.31.0`, `vercel-ai-sdk-7.0`, `cloudflare-agents-0.33`), confined FHS paths (`/etc/ai-os`, `/var/lib/ai-os`, `/home/agent`, `/proc/agent`, `/tmp`) |
+| `/dev/llm`    | `ai_os_llm_spec_json`                             | Runtime-discovered multi-provider LLM wire contract (zero hardcoded models)                                                                                                                                                     |
+| `/dev/rag`    | `ai_os_rag_upsert_json`, `ai_os_rag_query_json`   | Shared SQLite WAL + FTS5 BM25 + recency RRF store (`crates/agent-context`)                                                                                                                                                      |
+| `/dev/world`  | `ai_os_world_step_json`, `ai_os_world_state_json` | Persistent causal state transitions (`world_entities`, `world_transitions`) + prediction error (`surprise`)                                                                                                                     |
+| `/dev/sys1`   | `ai_os_sys1_decide_json`                          | Sub-millisecond (`< 1 ms`) System 1 router (`exec` / `escalate_sys2` / `deny`) with SQLite audit trail (`sys1_decisions`)                                                                                                       |
+
+## Subsystems
+
+| Path                   | Export                | Role                                                                                                                                                                                                           |
+| :--------------------- | :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/core`             | `./core`              | Unified C ABI bridge (`cabi.ts`), agent loop, confined tools, `OverlaySandbox` / `runSandboxedJs`, `runJustBash`, `Context` multi-head selection, `Memory`, `Skills`, `council`, secret redaction              |
+| `src/llm`              | `./llm`               | Runtime provider & model discovery (`openai`, `anthropic`, `google`, `openrouter`, `huggingface`, `vercel`, `cloudflare`, `ollama`, `fabric`, `RELAY_OPENAI_ENDPOINTS`, plus CLIs `agy`, `claude`, `opencode`) |
+| `src/relay`            | `./relay`             | Unified protocol daemon over HTTP/WS/TCP/TLS/stdio: MCP (`2026-07-28` stateless `server/discover` + `2025-11-25`), A2A `1.0.1`, ACP `schema-v1.31.0`, OAuth 2.1 PKCE/DCR/Device                                |
+| `src/gateway`          | `./gateway`           | OpenAI-compatible `/v1/chat/completions`, Vercel AI SDK v7 `UIMessageStream` SSE, WebSocket sessions, channel webhooks                                                                                         |
+| `src/orch`             | -                     | Fleet orchestrator (`fr1` build/training, `prd` production, `fr2` edge), health, task classification & lifecycle                                                                                               |
+| `src/fabric`           | -                     | Distributed `llama-server` + WireGuard RPC tensor-split inference fabric (`infra/ai/fabric.toml`)                                                                                                              |
+| `src/brain`            | -                     | Cross-agent memory absorption, zstd cold-transcript packing, and `CLAUDE.md` / `GEMINI.md` brain sync                                                                                                          |
+| `src/research`         | `./research`          | Parallel outline research, deterministic fact-checking, Context7 v2 client                                                                                                                                     |
+| `src/review`           | -                     | Multi-engine tribunal review & NHITL scoring                                                                                                                                                                   |
+| `src/nhitl`            | -                     | No-Human-In-The-Loop ledger & violation scanner                                                                                                                                                                |
+| `src/google`           | `./jules`, `./stitch` | Absorbed Google Jules (`jules.googleapis.com/v1alpha`) and Stitch MCP clients                                                                                                                                  |
+| `python`               | -                     | `uv` workspace: `pyo3` bridge `agent_core` (`crates/agent-py`) + Hermes memory provider                                                                                                                        |
+| `native/relay-windows` | -                     | Windows service `AphrodyRelay` (.NET 11 NativeAOT)                                                                                                                                                             |
+
+## Verification & Usage
 
 ```sh
-bun test test                                   # from packages/ai-os (never from the src root)
-bun src/cli.ts run "summarize README.md into notes.md"
-bun src/cli.ts relay serve                      # relay: /rpc /mcp /a2a /ws, TCP, TLS
+bun test test                                   # run from packages/ai-os (124 pass, 0 fail)
+bun src/cli.ts run "summarize README.md"        # headless agent run on discovered model
+bun src/cli.ts relay serve                      # serve /rpc /mcp /a2a /ws + TCP/TLS
+bun src/cli.ts orch health                      # fleet & engine health
 ```
 
-Former npm dependencies, all replaced: `ai`, `@ai-sdk/anthropic`, `@ai-sdk/openai-compatible`, `workers-ai-provider`
-(-> `src/llm`, OpenAI-compatible chat/completions and embeddings over `fetch`), `zod` (-> `src/llm/schema.ts`),
-`@modelcontextprotocol/sdk` (-> relay MCP server, `relay mcp-stdio`), `@earendil-works/pi-tui` (-> `node:readline`).
-None remains.
+## Architecture & Research References
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Layered Agent OS architecture, C ABI contract, and `Context` retrieval metrics.
+- [../../docs/research/ai-os-stack-factcheck-2026-11.md](../../docs/research/ai-os-stack-factcheck-2026-11.md) — November 2026 Context7 + GitHub/npm/crates.io deterministic fact-check (`100/100`).
+- [../../docs/research/fx-vs-rust-c-agent-os-2026-11.md](../../docs/research/fx-vs-rust-c-agent-os-2026-11.md) — Architectural & security comparison: purged Zig `fx` and incomplete `brush-core` vs real cross-platform Rust/C Unix Agent OS stack (`rubash`/`niubash`, `yash-rs`, `uutils/coreutils`, `WinuxCmd`, `litebox`, `hyperlight`, `wasmtime`/`cap-std`, `aphrody_core_capi`).
 
 License: MIT OR Apache-2.0. Third-party notices in `NOTICE` and `licenses/`.

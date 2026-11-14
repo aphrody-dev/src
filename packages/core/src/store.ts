@@ -117,3 +117,49 @@ export function usersOf(db: Database, needle: string): string[] {
       .all(like) as { path: string }[]
   ).map((r) => r.path);
 }
+
+export interface IndexCounts {
+  files: number;
+  symbols: number;
+  refs: number;
+  imports: number;
+}
+
+/** Total row counts across the index tables. */
+export function indexCounts(db: Database): IndexCounts {
+  const count = (table: string) =>
+    (db.query(`SELECT COUNT(*) AS n FROM ${table}`).get() as { n: number }).n;
+  return {
+    files: count("files"),
+    symbols: count("symbols"),
+    refs: count("refs"),
+    imports: count("imports"),
+  };
+}
+
+export interface SymbolMatch {
+  path: string;
+  name: string;
+  kind: string;
+  line: number;
+  scope: string | null;
+  signature: string | null;
+}
+
+/** Case-insensitive substring search over indexed symbols. */
+export function searchSymbols(
+  db: Database,
+  query: string,
+  limit = 50,
+): SymbolMatch[] {
+  const like = `%${query}%`;
+  return db
+    .query(
+      `SELECT path, name, kind, line, scope, signature
+       FROM symbols
+       WHERE name LIKE ?1 OR path LIKE ?1
+       ORDER BY CASE WHEN name = ?2 THEN 0 WHEN name LIKE ?3 THEN 1 ELSE 2 END, path, line
+       LIMIT ?4`,
+    )
+    .all(like, query, `${query}%`, limit) as SymbolMatch[];
+}

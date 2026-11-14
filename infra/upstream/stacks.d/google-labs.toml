@@ -19,7 +19,7 @@ runner = "prd"
 [stack.design-md.absorbed]
 commit = "1ed38aa9dd4451b9039f9aeb9ed1d2579edafddf"
 paths = ["packages/cli/src/linter", "docs/spec.md"]
-into = "packages/google-design/src/design-md"
+into = "crates/aphrody-ui/src"
 
 [stack.stitch-sdk]
 model = "mirror"

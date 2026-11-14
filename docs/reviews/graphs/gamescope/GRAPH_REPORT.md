@@ -1,10 +1,12 @@
 # Graph Report - gamescope
 
 ## Corpus Check
+
 - **Nodes:** 12091 · **Edges:** 21959 · **Communities:** 377
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `sol.hpp` [file] - 1814 connections (thirdparty/sol/sol.hpp:L1)
 2. `ffx_a.h` [file] - 640 connections (src/shaders/ffx_a.h:L1)
 3. `steamcompmgr.cpp` [file] - 360 connections (src/steamcompmgr.cpp:L1)
@@ -19,6 +21,7 @@
 12. `OpenVRBackend.cpp` [file] - 160 connections (src/Backends/OpenVRBackend.cpp:L1)
 
 ## Key Structural Connections
+
 - `sol.hpp` --[defines]--> `lua_State` (Extracted)
 - `sol.hpp` --[defines]--> `stateless_reference` (Extracted)
 - `sol.hpp` --[defines]--> `basic_reference` (Extracted)

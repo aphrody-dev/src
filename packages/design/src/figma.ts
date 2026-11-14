@@ -81,12 +81,189 @@ const compact = collections
       ]),
     ];
   });
+const mockup = {
+  $schema: "https://www.figma.com/plugin-api/",
+  fileKey: "2xsZi5wLPAYLGNCLZ2ZJUv",
+  generatedFrom: "packages/design/src/figma.ts",
+  themePresets: [
+    "aphrody",
+    "m3",
+    "fluent",
+    "hyprland",
+    "omarchy",
+    "catppuccin",
+    "cachyos",
+    "nord",
+    "gruvbox",
+  ],
+  pages: [
+    {
+      name: "01 Foundations & 9 Themes",
+      description:
+        "Material 3 HCT DynamicScheme 49 roles, M3 Shape radii, spacing scale, and 9 synced monorepo themes.",
+      frames: [
+        {
+          name: "Theme Swatches Matrix (9 Presets x Light/Dark)",
+          layoutMode: "VERTICAL",
+          itemSpacing: 16,
+          fillVariable: "Schemes/Surface",
+          strokeVariable: "Schemes/Outline Variant",
+          radiusVariable: "Corner/Large",
+        },
+        {
+          name: "Typography & Core Web Vitals Scale",
+          layoutMode: "VERTICAL",
+          itemSpacing: 12,
+          fillVariable: "Schemes/Surface Container Low",
+          strokeVariable: "Schemes/Outline Variant",
+          radiusVariable: "Corner/Medium",
+        },
+      ],
+    },
+    {
+      name: "02 Shared Rust Components",
+      description:
+        "23 aphrody-ui::fusion primitives across 6 variable-bound AutoLayout ComponentSets (Taffy, Dioxus 0.8, GPUI-Kit, NSH, Ratatui, WinUI 3).",
+      frames: [
+        {
+          name: "Shared Component Library",
+          layoutMode: "HORIZONTAL",
+          itemSpacing: 24,
+          fillVariable: "Schemes/Surface",
+          strokeVariable: "Schemes/Outline Variant",
+          radiusVariable: "Corner/Large",
+        },
+      ],
+    },
+    {
+      name: "03 Wayland-in-Browser & Intelligent Terminal",
+      description:
+        "4 Canonical Pages (StudioWorkspace, IntelligentTerminal, WaylandBrowserCompositor, DesignSystemGallery) across 11 RenderTargets without VM.",
+      frames: [
+        {
+          name: "Intelligent Terminal (nsh + niubash + CachyOS)",
+          layoutMode: "VERTICAL",
+          itemSpacing: 12,
+          fillVariable: "Schemes/Surface Container Lowest",
+          strokeVariable: "Schemes/Outline",
+          radiusVariable: "Corner/Large",
+        },
+        {
+          name: "Wayland-in-Browser Compositor (Smithay + WebGPU + Dwindle)",
+          layoutMode: "HORIZONTAL",
+          itemSpacing: 12,
+          fillVariable: "Schemes/Surface",
+          strokeVariable: "Schemes/Primary",
+          radiusVariable: "Corner/Medium",
+        },
+      ],
+    },
+  ],
+  componentSets: [
+    {
+      name: "Button",
+      page: "02 Shared Rust Components",
+      layoutMode: "HORIZONTAL",
+      itemSpacing: 8,
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      fillVariable: "Schemes/Primary",
+      textVariable: "Schemes/On Primary",
+      strokeVariable: "Schemes/Outline Variant",
+      radiusVariable: "Corner/Full",
+      variants: [
+        "Variant=Filled, State=Enabled",
+        "Variant=Filled, State=Hover",
+        "Variant=Tonal, State=Enabled",
+        "Variant=Outlined, State=Enabled",
+      ],
+    },
+    {
+      name: "CommandPalette",
+      page: "02 Shared Rust Components",
+      layoutMode: "VERTICAL",
+      itemSpacing: 8,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      fillVariable: "Schemes/Surface Container High",
+      textVariable: "Schemes/On Surface",
+      strokeVariable: "Schemes/Primary",
+      radiusVariable: "Corner/Large",
+      variants: [
+        "Platform=DesktopPopup, State=Open",
+        "Platform=MobileBottomSheet, State=Open",
+      ],
+    },
+    {
+      name: "NavigationRail",
+      page: "02 Shared Rust Components",
+      layoutMode: "VERTICAL",
+      itemSpacing: 12,
+      paddingHorizontal: 12,
+      paddingVertical: 16,
+      fillVariable: "Schemes/Surface Container Low",
+      textVariable: "Schemes/On Surface Variant",
+      strokeVariable: "Schemes/Outline Variant",
+      radiusVariable: "Corner/None",
+      variants: [
+        "Density=Compact, Mode=Expanded",
+        "Density=Compact, Mode=Collapsed",
+      ],
+    },
+    {
+      name: "StatusBar",
+      page: "02 Shared Rust Components",
+      layoutMode: "HORIZONTAL",
+      itemSpacing: 16,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      fillVariable: "Schemes/Surface Container High",
+      textVariable: "Schemes/On Surface",
+      strokeVariable: "Schemes/Outline Variant",
+      radiusVariable: "Corner/None",
+      variants: ["Mode=Workspace", "Mode=Compositor"],
+    },
+    {
+      name: "TerminalPane",
+      page: "02 Shared Rust Components",
+      layoutMode: "VERTICAL",
+      itemSpacing: 4,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      fillVariable: "Schemes/Surface Container Lowest",
+      textVariable: "Schemes/On Surface",
+      strokeVariable: "Schemes/Outline",
+      radiusVariable: "Corner/Medium",
+      variants: ["Focus=Active", "Focus=Inactive"],
+    },
+    {
+      name: "WaylandSurfaceSlot",
+      page: "02 Shared Rust Components",
+      layoutMode: "VERTICAL",
+      itemSpacing: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 12,
+      fillVariable: "Schemes/Surface Container",
+      textVariable: "Schemes/On Primary Container",
+      strokeVariable: "Schemes/Primary",
+      radiusVariable: "Corner/Medium",
+      variants: [
+        "Tiling=DwindleMaster",
+        "Tiling=DwindleStack",
+        "Tiling=Monocle",
+      ],
+    },
+  ],
+};
+
 const script = `const SCOPES = ${JSON.stringify(scopeTable)};
 const DATA = ${JSON.stringify(compact)};
+const MOCKUP = ${JSON.stringify(mockup)};
 const rgb = (h) => ({ r: parseInt(h.slice(0, 2), 16) / 255, g: parseInt(h.slice(2, 4), 16) / 255, b: parseInt(h.slice(4, 6), 16) / 255, a: 1 });
 const existing = await figma.variables.getLocalVariableCollectionsAsync();
 const all = await figma.variables.getLocalVariablesAsync();
 const report = [];
+const varByName = new Map();
 for (const [cname, modes, type, prefix, vars] of DATA) {
   let col = existing.find((x) => x.name === cname);
   if (!col) { col = figma.variables.createVariableCollection(cname); col.renameMode(col.modes[0].modeId, modes[0]); }
@@ -98,14 +275,67 @@ for (const [cname, modes, type, prefix, vars] of DATA) {
     v.scopes = SCOPES[scope];
     if (web) v.setVariableCodeSyntax("WEB", "var(--md-sys-" + web + ")");
     values.forEach((val, i) => v.setValueForMode(ids[i], type === "COLOR" ? rgb(val) : val));
+    varByName.set(full, v);
   }
   const wanted = new Set(vars.map(([n]) => prefix + n));
   const stale = all.filter((x) => x.variableCollectionId === col.id && !wanted.has(x.name)).map((x) => x.name);
   report.push({ collection: col.name, id: col.id, modes: col.modes.map((x) => x.name), variables: vars.length, stale });
 }
-return { report };
+const bindFill = (node, vname) => {
+  const v = varByName.get(vname);
+  if (!v) return;
+  const paint = figma.variables.setBoundVariableForPaint({ type: "SOLID", color: { r: 0, g: 0, b: 0 } }, "color", v);
+  node.fills = [paint];
+};
+const bindStroke = (node, vname) => {
+  const v = varByName.get(vname);
+  if (!v) return;
+  const paint = figma.variables.setBoundVariableForPaint({ type: "SOLID", color: { r: 0, g: 0, b: 0 } }, "color", v);
+  node.strokes = [paint];
+  node.strokeWeight = 1;
+};
+const bindRadius = (node, vname) => {
+  const v = varByName.get(vname);
+  if (v) node.setBoundVariable("cornerRadius", v);
+};
+const pageMap = new Map();
+for (const p of MOCKUP.pages) {
+  let page = figma.root.children.find((n) => n.type === "PAGE" && n.name === p.name);
+  if (!page) { page = figma.createPage(); page.name = p.name; }
+  pageMap.set(p.name, page);
+}
+const syncedSets = [];
+for (const cs of MOCKUP.componentSets) {
+  const page = pageMap.get(cs.page) ?? figma.currentPage;
+  let setNode = page.children.find((n) => n.type === "COMPONENT_SET" && n.name === cs.name);
+  if (!setNode) {
+    const comps = cs.variants.map((vname) => {
+      const c = figma.createComponent();
+      c.name = vname;
+      c.layoutMode = cs.layoutMode;
+      c.itemSpacing = cs.itemSpacing;
+      c.paddingLeft = cs.paddingHorizontal;
+      c.paddingRight = cs.paddingHorizontal;
+      c.paddingTop = cs.paddingVertical;
+      c.paddingBottom = cs.paddingVertical;
+      bindFill(c, cs.fillVariable);
+      bindStroke(c, cs.strokeVariable);
+      bindRadius(c, cs.radiusVariable);
+      page.appendChild(c);
+      return c;
+    });
+    setNode = figma.combineAsVariants(comps, page);
+    setNode.name = cs.name;
+  }
+  syncedSets.push({ name: setNode.name, variants: cs.variants.length });
+}
+return { fileKey: MOCKUP.fileKey, report, pages: Array.from(pageMap.keys()), componentSets: syncedSets };
 `;
+await Bun.write(
+  join(pkg, "tokens/figma-mockup.json"),
+  JSON.stringify(mockup, null, 2) + "\n",
+);
 await Bun.write(join(pkg, "tokens/figma-sync.js"), script);
 console.log(
-  `tokens/figma-sync.js : ${collections.length} collections, limite ${limit} modes`,
+  `tokens/figma-sync.js + figma-mockup.json : ${collections.length} collections, ${mockup.pages.length} pages, ${mockup.componentSets.length} componentSets, limite ${limit} modes`,
 );

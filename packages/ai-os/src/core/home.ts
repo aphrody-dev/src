@@ -17,7 +17,6 @@ export type Layout = {
   home: string;
   skills: string;
   memoryDb: string;
-  schedulerDb: string;
   config: string;
 };
 
@@ -26,19 +25,16 @@ export function layout(home: string): Layout {
     home,
     skills: join(home, "skills"),
     memoryDb: join(home, "memory.sqlite"),
-    schedulerDb: join(home, "scheduler.sqlite"),
     config: join(home, "config.json"),
   };
 }
 
 export const DEFAULT_CONFIG = {
-  model: "anthropic:claude-opus-5-5",
   context: {
     k: 8,
     budgetTokens: 4000,
     weights: { lexical: 0.2, semantic: 0.7, structural: 0.05, recency: 0.05 },
   },
-  heartbeat: { interval: "30m" },
   skills: { staleDays: 30, archiveDays: 90 },
 };
 

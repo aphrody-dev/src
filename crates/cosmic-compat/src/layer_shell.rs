@@ -52,30 +52,48 @@ impl LayerShellManager {
         self.surfaces.remove(&id);
     }
 
-    /// Calculates usable workspace area for tiling windows after reserving exclusive zones (e.g. cosmic-panel)
-    pub fn calculate_usable_area(&self, screen_bounds: WindowRect) -> WindowRect {
-        let mut x = screen_bounds.x;
-        let mut y = screen_bounds.y;
-        let mut width = screen_bounds.width;
-        let mut height = screen_bounds.height;
-
+    /// Calculates exclusive margins aggregated across anchored surfaces for `taffy::WaylandShellZones`.
+    #[must_use]
+    pub fn taffy_margins(&self) -> taffy::WaylandShellMargins {
+        let mut margins = taffy::WaylandShellMargins::ZERO;
         for surf in self.surfaces.values() {
             if surf.exclusive_zone > 0 {
-                let ez = surf.exclusive_zone as f64;
+                let ez = surf.exclusive_zone as f32;
                 if surf.anchor.contains(LayerAnchor::TOP) {
-                    y += ez;
-                    height -= ez;
+                    margins.top += ez;
                 } else if surf.anchor.contains(LayerAnchor::BOTTOM) {
-                    height -= ez;
+                    margins.bottom += ez;
                 } else if surf.anchor.contains(LayerAnchor::LEFT) {
-                    x += ez;
-                    width -= ez;
+                    margins.left += ez;
                 } else if surf.anchor.contains(LayerAnchor::RIGHT) {
-                    width -= ez;
+                    margins.right += ez;
                 }
             }
         }
+        margins
+    }
 
-        WindowRect::new(x, y, width.max(100.0), height.max(100.0))
+    /// Solves full Wayland output zones (`top_bar`, `bottom_bar`, `left_panel`, `right_panel`, `usable_content`, `overlay`)
+    /// directly via first-party `taffy::WaylandShellZones`.
+    #[must_use]
+    pub fn solve_taffy_zones(&self, screen_bounds: WindowRect) -> taffy::WaylandShellZones {
+        taffy::WaylandShellZones::solve(
+            taffy::Size {
+                width: screen_bounds.width.max(0.0) as f32,
+                height: screen_bounds.height.max(0.0) as f32,
+            },
+            self.taffy_margins(),
+        )
+    }
+
+    /// Calculates usable workspace area for tiling windows after reserving exclusive zones (e.g. cosmic-panel)
+    pub fn calculate_usable_area(&self, screen_bounds: WindowRect) -> WindowRect {
+        let zones = self.solve_taffy_zones(screen_bounds);
+        WindowRect::new(
+            screen_bounds.x + f64::from(zones.usable_content.x),
+            screen_bounds.y + f64::from(zones.usable_content.y),
+            f64::from(zones.usable_content.width).max(100.0),
+            f64::from(zones.usable_content.height).max(100.0),
+        )
     }
 }

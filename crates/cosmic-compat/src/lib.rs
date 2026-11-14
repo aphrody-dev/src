@@ -66,11 +66,11 @@ mod tests {
     #[test]
     fn test_cosmic_theme_material3_ron() {
         let theme = CosmicTheme::google_material_3_dark();
-        assert_eq!(theme.name, "Google Material 3 Sovereign Dark");
+        assert_eq!(theme.name, "Google Material 3 Dark");
         assert!(theme.is_dark);
 
         let ron = theme.to_ron_string();
-        assert!(ron.contains("Google Material 3 Sovereign Dark"));
+        assert!(ron.contains("Google Material 3 Dark"));
         assert!(ron.contains("primary: (red:"));
         assert!(ron.contains("corner_radius: 12.0"));
     }
@@ -119,5 +119,42 @@ mod tests {
             .protocols
             .iter()
             .any(|p| p.interface == "wp_viewporter"));
+    }
+
+    #[test]
+    fn test_taffy_multi_panel_shell_zones() {
+        let mut shell = LayerShellManager::new();
+        shell.add_surface(LayerSurface {
+            id: 1,
+            layer: LayerType::Top,
+            anchor: LayerAnchor::TOP | LayerAnchor::LEFT | LayerAnchor::RIGHT,
+            exclusive_zone: 40,
+            width: 1920,
+            height: 40,
+            margin_top: 0,
+            margin_bottom: 0,
+            margin_left: 0,
+            margin_right: 0,
+        });
+        shell.add_surface(LayerSurface {
+            id: 2,
+            layer: LayerType::Top,
+            anchor: LayerAnchor::LEFT,
+            exclusive_zone: 72,
+            width: 72,
+            height: 1000,
+            margin_top: 0,
+            margin_bottom: 0,
+            margin_left: 0,
+            margin_right: 0,
+        });
+
+        let zones = shell.solve_taffy_zones(WindowRect::new(0.0, 0.0, 1920.0, 1080.0));
+        assert_eq!(zones.top_bar.height, 40.0);
+        assert_eq!(zones.left_panel.width, 72.0);
+        assert_eq!(zones.usable_content.x, 72.0);
+        assert_eq!(zones.usable_content.y, 40.0);
+        assert_eq!(zones.usable_content.width, 1848.0);
+        assert_eq!(zones.usable_content.height, 1040.0);
     }
 }

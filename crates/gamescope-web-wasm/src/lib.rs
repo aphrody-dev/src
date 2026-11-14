@@ -195,3 +195,46 @@ impl WebGamescopeSession {
         }
     }
 }
+
+/// Computes Wayland-in-browser shell zones and tiled surface rectangles directly via Layer-0 Taffy.
+pub fn compute_wayland_browser_viewport(
+    width: f32,
+    height: f32,
+    topbar_px: f32,
+    dock_px: f32,
+    surface_count: usize,
+) -> Vec<taffy::LayoutRect> {
+    let zones = taffy::WaylandShellZones::solve(
+        taffy::Size { width, height },
+        taffy::WaylandShellMargins {
+            top: topbar_px.max(0.0),
+            bottom: dock_px.max(0.0),
+            left: 0.0,
+            right: 0.0,
+        },
+    );
+    taffy::solve_tiling_rects(
+        zones.usable_content,
+        8.0,
+        0.55,
+        surface_count,
+        taffy::TilingStrategy::Dwindle,
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::compute_wayland_browser_viewport;
+
+    #[test]
+    fn wayland_browser_viewport_solves_non_overlapping_tiles() {
+        let rects = compute_wayland_browser_viewport(1280.0, 800.0, 40.0, 56.0, 3);
+        assert_eq!(rects.len(), 3);
+        for rect in rects {
+            assert!(rect.width > 0.0);
+            assert!(rect.height > 0.0);
+            assert!(rect.y >= 40.0);
+            assert!(rect.y + rect.height <= 800.0 - 56.0 + 0.5);
+        }
+    }
+}

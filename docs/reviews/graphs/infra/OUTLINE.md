@@ -538,6 +538,7 @@ infra/
 ================================================
 FILE: README.md
 ================================================
+
 # infra/
 
 Infrastructure de src, assemblée à partir d'outils upstream (aucun moteur de déploiement maison). Correspondance
@@ -562,10 +563,10 @@ just deploy core prd         # compose pull + up --wait ; retour : SRC_TAG=<sha>
 just fleet-bootstrap fr1     # toolchains épinglées (tools.toml)
 ```
 
-
 ================================================
 FILE: gcloud/README.md
 ================================================
+
 # Aphrody Multi-Google Cloud (`gcloud`) 3-Principal Sharing & IAM Architecture
 
 Canonical multi-account Google Cloud identity and IAM sharing reference for GCP project `aphrody` (`#468000409790`).
@@ -656,10 +657,10 @@ gcloud auth application-default login --project=aphrody
 
 Supprimé le 2026-11-13 (doublon Debian de `.github/workflows/images.yml` vers Artifact Registry ; registre unique `ghcr.io/aphrody-labs`, docs/infra/UPSTREAM-STACK.md). Retour arrière : `git checkout <sha>~ -- infra/gcloud/cloudbuild.yaml`.
 
-
 ================================================
 FILE: gitlab/README.md
 ================================================
+
 # Sovereign GitLab & Tri-Forge Infrastructure (`infra/gitlab`)
 
 Production deployment manifests, Omnibus configuration, Arch Linux / CachyOS / Omarchy CI builder image, and Tri-Forge bootstrap scripts uniting **GitHub**, **GitLab**, and **Google Cloud Git** across all 26 `C:\src` repositories.
@@ -726,10 +727,10 @@ glab api -X PUT projects/aphrody-dev%2Fsrc -f ci_config_path=infra/gitlab/gitlab
 # rollback: glab api -X PUT projects/aphrody-dev%2Fsrc -f ci_config_path=
 ```
 
-
 ================================================
 FILE: mail/README.md
 ================================================
+
 # Sovereign `contact@aphrody.com` Mailing Infrastructure (`C:\src\infra\mail`)
 
 Production-ready sovereign mail infrastructure for `aphrody.com` powered by **Stalwart Mail Server** (`stalwartlabs/mail-server:latest`) — a 100% pure-Rust all-in-one JMAP, IMAP4rev2, SMTP, ManageSieve, and built-in SPF/DKIM/DMARC/ARC/MTA-STS/TLS-RPT/ACME engine with zero Java, PHP, or Python runtime bloat.
@@ -817,10 +818,10 @@ Use these exact coordinates across external org platforms:
 - **GitLab (`git.aphrody.com` `gitlab.rb`)**: `gitlab_rails['smtp_address'] = "mail.aphrody.com"`, `gitlab_rails['smtp_port'] = 465`, `gitlab_rails['smtp_tls'] = true`, `gitlab_rails['gitlab_email_from'] = 'noreply@aphrody.com'`, `gitlab_rails['gitlab_email_reply_to'] = 'contact@aphrody.com'`.
 - **Vercel / GitHub / Cloudflare / OVH / Hostinger**: Primary organization owner email set to `contact@aphrody.com` with hardware Passkey / TOTP 2FA enabled.
 
-
 ================================================
 FILE: cloudflare/workers/github-app/package.json
 ================================================
+
 // [OUTLINE - 11 symbols, 15 lines]
 // L2: "name": "@aphrody/github-app"
 // L3: "private": true
@@ -834,10 +835,10 @@ FILE: cloudflare/workers/github-app/package.json
 // L12: "@cloudflare/workers-types": "catalog:"
 // L13: "vite": "catalog:"
 
-
 ================================================
 FILE: gcp/billing-agent/cap-function/package.json
 ================================================
+
 // [OUTLINE - 5 symbols, 8 lines]
 // L2: "name": "billing-cap"
 // L3: "private": true
@@ -845,10 +846,10 @@ FILE: gcp/billing-agent/cap-function/package.json
 // L5-L7: "engines":
 // L6: "node": ">=24"
 
-
 ================================================
 FILE: cloudflare/workers/github-app/src/index.ts
 ================================================
+
 // [OUTLINE - 5 symbols, 202 lines]
 // L8-L23: type GithubEvent =
 // L25-L28: interface Env
@@ -856,28 +857,34 @@ FILE: cloudflare/workers/github-app/src/index.ts
 // L77-L167: function classify(
 // L170-L201: async fetch(req: Request, env: Env): Promise<Response>
 
-
 ================================================
 FILE: DEPS.rules
 ================================================
-# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
-layer = 2
 
+# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
+
+layer = 2
 
 ================================================
 FILE: agents/bootstrap-user.sh
 ================================================
-// [OUTLINE - 0 symbols, 28 lines]
 
+// [OUTLINE - 0 symbols, 28 lines]
 
 ================================================
 FILE: agents/fleet.toml
 ================================================
+
 # Agent fleet: which roles run on which host, with per-role timeout and budget.
+
 # No provider list here: ai-os (packages/ai-os) names the CLI/model in each task (`providers`),
+
 # otherwise the runner asks the relay (llm_models). growth tasks are drafts only (approval = owner).
+
 # heavy = true: builds/tests/training, fr1 only (enforced by runner.ts at enqueue and claim; prd and fr2
+
 # never run them, tasks landing there are forwarded to fr1 by health). prd keeps light prod roles only.
+
 # Read by infra/agents/runner.ts. Doc: docs/agents/AGENT-FIRST.md.
 
 [roles.coder]
@@ -912,13 +919,17 @@ timeout_s = 1200
 budget_usd = 2
 
 [roles.chromium]
+
 # Chromium/LLVM factory tasks (docs/CHROMIUM-FACTORY.md).
+
 heavy = true
 timeout_s = 21600
 budget_usd = 5
 
 [roles.build]
+
 # Images, release artefacts, toolchains (aphrody-heavy).
+
 heavy = true
 timeout_s = 21600
 budget_usd = 5
@@ -933,73 +944,91 @@ timeout_s = 1800
 budget_usd = 2
 
 # Hosts. `src` = git checkout (main) the runner works in; `ssh` = targets tried in order
+
 # (<host>-mesh = sshd through the cluster mTLS mesh, TCP 7444, fleet IPs only (infra/cluster, docs/infra/CLUSTER.md);
+
 # then PC aliases, WireGuard 10.200.77.0/24, public IP). `ship` = where every host sends log.jsonl.
+
 [hosts.prd]
+
 # Production backends only: light prod roles (deploy, health, text-only growth drafts).
+
 roles = ["deployer", "sre", "growth"]
+
 # Every host: user `agent` (systemd --user + linger, sudo NOPASSWD, docker), never uid 0.
+
 src = "/home/agent/agents/src"
 ssh = ["agent@prd-mesh", "agent@prd", "agent@10.200.77.5", "agent@72.60.186.43"]
 
 [hosts.fr1]
+
 # Factory (12 cores / 45 GB): every heavy role, plus review/design/sre.
+
 roles = [
-  "coder",
-  "reviewer",
-  "tester",
-  "linter",
-  "designer",
-  "build",
-  "chromium",
-  "training",
-  "sre",
+"coder",
+"reviewer",
+"tester",
+"linter",
+"designer",
+"build",
+"chromium",
+"training",
+"sre",
 ]
 src = "/home/agent/agents/src"
 ssh = [
-  "agent@fr1-mesh",
-  "agent@fr1",
-  "agent@10.200.77.1",
-  "agent@51.77.147.152",
+"agent@fr1-mesh",
+"agent@fr1",
+"agent@10.200.77.1",
+"agent@51.77.147.152",
 ]
 
 [hosts.fr2]
+
 # Edge/proxy/CDN host, 11 GB RAM: minimal, sre only.
+
 roles = ["sre"]
 src = "/home/agent/agents/src"
 ssh = ["agent@fr2-mesh", "agent@fr2", "agent@10.200.77.3", "agent@51.255.162.6"]
 
 [hosts.pc]
+
 # No heavy builds on the PC.
+
 roles = ["reviewer", "designer", "growth"]
 src = "C:/src"
 
 [schedule]
+
 # template (infra/agents/tasks/<name>.json) = period in hours; enqueued by the ship host (prd).
+
 # growth templates end as drafts in var/agents/publish/<id>/ (approval = owner): nothing is published.
+
 deps-update = 168
 release-notes = 168
 seo-check = 168
 
 [ship]
+
 # Every host appends its log.jsonl lines to prd over ssh (WireGuard or public ssh).
+
 host = "prd"
 dir = "/var/lib/aphrody-agents/logs"
-
 
 ================================================
 FILE: agents/gh-token.test.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 59 lines]
 // import bun:test
 // import node:fs
 // import node:os
 // import node:path
 
-
 ================================================
 FILE: agents/gh-token.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 127 lines]
 // import node:child_process
 // import node:fs
@@ -1009,18 +1038,18 @@ FILE: agents/gh-token.ts
 // L58-L83: async function token(now = Date.now()): Promise<string | undefined>
 // L86-L101: function installWrapper(dir: string): string | undefined
 
-
 ================================================
 FILE: agents/github-events.test.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 136 lines]
 // import bun:test
 // import ./github-events.ts
 
-
 ================================================
 FILE: agents/github-events.ts
 ================================================
+
 // [OUTLINE - 9 symbols, 327 lines]
 // import node:fs
 // import node:path
@@ -1034,37 +1063,39 @@ FILE: agents/github-events.ts
 // L201-L210: function accountId(src: string): string
 // L212-L307: async function pull(o:
 
-
 ================================================
 FILE: agents/install-pc.sh
 ================================================
-// [OUTLINE - 0 symbols, 22 lines]
 
+// [OUTLINE - 0 symbols, 22 lines]
 
 ================================================
 FILE: agents/install.sh
 ================================================
+
 // [OUTLINE - 1 symbols, 79 lines]
 // L13: need()
-
 
 ================================================
 FILE: agents/pre-push
 ================================================
+
 #!/bin/sh
+
 # Runner checkouts: refuse history rewrites (force push, branch deletion). Installed by install.sh.
+
 z=0000000000000000000000000000000000000000
 while read -r lref lsha rref rsha; do
-  [ "$lsha" = "$z" ] && { echo "pre-push: deleting $rref is not allowed" >&2; exit 1; }
-  [ "$rsha" = "$z" ] && continue
-  git merge-base --is-ancestor "$rsha" "$lsha" || { echo "pre-push: non fast-forward push to $rref refused" >&2; exit 1; }
+[ "$lsha" = "$z" ] && { echo "pre-push: deleting $rref is not allowed" >&2; exit 1; }
+[ "$rsha" = "$z" ] && continue
+git merge-base --is-ancestor "$rsha" "$lsha" || { echo "pre-push: non fast-forward push to $rref refused" >&2; exit 1; }
 done
 exit 0
-
 
 ================================================
 FILE: agents/runner.test.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 172 lines]
 // import bun:test
 // import node:fs
@@ -1073,10 +1104,10 @@ FILE: agents/runner.test.ts
 // import ./runner.ts
 // L26-L41: function inChild(dir: string, code: string)
 
-
 ================================================
 FILE: agents/runner.ts
 ================================================
+
 // [OUTLINE - 55 symbols, 1281 lines]
 // import node:fs
 // import node:os
@@ -1138,11 +1169,12 @@ FILE: agents/runner.ts
 // L1222-L1240: function schedule()
 // L1241-L1257: function status()
 
-
 ================================================
 FILE: agents/systemd/aphrody-agents-health.service
 ================================================
+
 # Repairs the tmux session/windows, requeues orphan tasks, probes CLIs, ships logs to prd.
+
 [Unit]
 Description=Aphrody agent runner health check
 
@@ -1153,10 +1185,10 @@ Environment=PATH=%h/.bun/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=SRC_ROOT=@SRC@
 ExecStart=@BUN@ --no-env-file @SRC@/infra/agents/runner.ts health
 
-
 ================================================
 FILE: agents/systemd/aphrody-agents-health.timer
 ================================================
+
 [Unit]
 Description=Aphrody agent runner health check every 2 min
 
@@ -1167,24 +1199,27 @@ OnUnitActiveSec=2min
 [Install]
 WantedBy=timers.target
 
-
 ================================================
 FILE: agents/systemd/aphrody-agents-pull.service
 ================================================
+
 # Keeps the runner checkout on origin/main (fast-forward only; never touches local changes).
+
 [Unit]
 Description=Aphrody agent checkout fast-forward
 
 [Service]
 Type=oneshot
+
 # Stale index.lock (> 10 min, left by a killed git) blocks every later pull.
+
 ExecStartPre=-/usr/bin/env find @SRC@/.git -maxdepth 1 -name index.lock -mmin +10 -delete
 ExecStart=/usr/bin/env git -C @SRC@ pull --ff-only --quiet origin main
-
 
 ================================================
 FILE: agents/systemd/aphrody-agents-pull.timer
 ================================================
+
 [Unit]
 Description=Aphrody agent checkout fast-forward every 10 min
 
@@ -1195,12 +1230,14 @@ OnUnitActiveSec=10min
 [Install]
 WantedBy=timers.target
 
-
 ================================================
 FILE: agents/systemd/aphrody-agents.service
 ================================================
+
 # User unit: tmux session "agents", one window per role of this host (infra/agents/fleet.toml).
+
 # Installed by infra/agents/install.sh (@SRC@ / @BUN@ substituted). Doc: docs/agents/AGENT-FIRST.md.
+
 [Unit]
 Description=Aphrody agent runner (tmux session "agents")
 After=network-online.target
@@ -1210,13 +1247,19 @@ StartLimitBurst=10
 [Service]
 Type=oneshot
 RemainAfterExit=yes
+
 # tmux server must outlive ExecStart.
+
 KillMode=process
+
 # A worker killed by the OOM killer must not fail the unit (tmux session stays; health timer repairs windows).
+
 OOMPolicy=continue
 Restart=on-failure
 RestartSec=30s
+
 # Workers (tmux server children) stay in this cgroup: bounded so builds cannot OOM the host.
+
 MemoryHigh=45%
 MemoryMax=60%
 CPUWeight=50
@@ -1229,10 +1272,10 @@ ExecStop=/usr/bin/env tmux kill-session -t agents
 [Install]
 WantedBy=default.target
 
-
 ================================================
 FILE: agents/tasks/deps-update.json
 ================================================
+
 // [OUTLINE - 7 symbols, 21 lines]
 // L2: "role": "coder"
 // L3: "host": "fr1"
@@ -1242,52 +1285,54 @@ FILE: agents/tasks/deps-update.json
 // L7-L18: "paths": [
 // L19: "message": "deps : mise à jour hebdomadaire dans les bornes déclarées (tâche agent coder, fr1)"
 
-
 ================================================
 FILE: agents/tasks/product-page-rosegriffon.json
 ================================================
+
 // [OUTLINE - 4 symbols, 6 lines]
 // L2: "role": "growth"
 // L3: "host": "prd"
 // L4: "approval": "owner"
 // L5: "prompt": "Draft the rosegriffon product page. Inputs: apps/rosegriffon (run `git submodule update --init --depth 1 apps/rosegriffon` if empty), its plugins/steam docs, identity.toml. Output: drafts/growth/rosegriffon/page.md (hero, feature blocks backed by facts found in the code, pricing placeholder marked TODO-OWNER, FAQ) and drafts/growth/rosegriffon/meta.json (
 
-
 ================================================
 FILE: agents/tasks/product-page-shenron.json
 ================================================
+
 // [OUTLINE - 4 symbols, 6 lines]
 // L2: "role": "growth"
 // L3: "host": "prd"
 // L4: "approval": "owner"
 // L5: "prompt": "Draft the shenron product page. Inputs: apps/shenron (run `git submodule update --init --depth 1 apps/shenron` if empty), its README/docs, identity.toml, docs/infra/HOSTING-POLICY.md. Output: write drafts/growth/shenron/page.md (hero, 3 to 5 feature blocks backed by facts found in the code, pricing placeholder marked TODO-OWNER, FAQ) and drafts/growth/shenron/meta.json (
 
-
 ================================================
 FILE: agents/tasks/release-notes.json
 ================================================
+
 // [OUTLINE - 4 symbols, 6 lines]
 // L2: "role": "growth"
 // L3: "host": "prd"
 // L4: "approval": "owner"
-// L5: "prompt": "Draft release notes for main since the last tag (`git describe --tags --abbrev=0`, or the last 7 days if there is no tag). Inputs: `git log --no-merges`, commit trailers Agent-Task/Agent-Role, CHANGELOG files if any. Output: drafts/growth/release-notes.md grouped by unit (apps/*, packages/*, crates/*, infra/*), one line per user-visible change, breaking changes first, reverted commits omitted. Also drafts/growth/changelog-entry.md in Keep a Changelog format. Do not tag, release, publish or send anything."
-
+// L5: "prompt": "Draft release notes for main since the last tag (`git describe --tags --abbrev=0`, or the last 7 days if there is no tag). Inputs: `git log --no-merges`, commit trailers Agent-Task/Agent-Role, CHANGELOG files if any. Output: drafts/growth/release-notes.md grouped by unit (apps/_, packages/_, crates/_, infra/_), one line per user-visible change, breaking changes first, reverted commits omitted. Also drafts/growth/changelog-entry.md in Keep a Changelog format. Do not tag, release, publish or send anything."
 
 ================================================
 FILE: agents/tasks/seo-check.json
 ================================================
+
 // [OUTLINE - 4 symbols, 6 lines]
 // L2: "role": "growth"
 // L3: "host": "prd"
 // L4: "approval": "owner"
 // L5: "prompt": "SEO and web-quality check of the public sites listed in identity.toml (aphrody.com, aphrody.app, shenron and rosegriffon domains). For each origin: fetch / and the sitemap with curl (status, redirects, <title>, meta description, canonical, hreflang, robots.txt, sitemap.xml validity, structured data, Cache-Control, compression), and run `bunx lighthouse <url> --output=json --quiet --chrome-flags=--headless` when Chromium is available. Output: drafts/growth/seo-report.md (table per origin, findings ordered by impact, each with the exact file in src to change) and drafts/growth/seo-fixes.patch when a fix is a pure content/meta change. Read-only on the sites; do not deploy."
 
-
 ================================================
 FILE: agents/toolchain.toml
 ================================================
+
 # Manifeste versionné de l'outillage agent (Claude Code, Codex, agy, Gemini CLI ; PC et flotte). Toute installation passe ici ;
+
 # applier : packages/machine/src/toolchain.ts (via apply-user.ts sur le PC, aphrody-agents-sync.timer sur Linux). Aucun secret : seulement le nom de la variable d'env
+
 # (valeur dans le coffre env-kit, `env-kit secret set NOM` sur stdin, et l'env utilisateur Windows).
 
 # --- Audit Google / DeepMind / Chrome / Gemini / catalogues de skills (2026-11-13, docs/tooling/AI-TOOLING-AUDIT.md)
@@ -1339,6 +1384,7 @@ id = "android-skills@android-skills"
 scope = "user"
 
 # Serveurs MCP stdio lancés par bun x (les plugins upstream utilisent npx : non installés).
+
 [[claude.mcp]]
 name = "chrome-devtools"
 hosts = ["pc"] # navigateur local / connexion Firebase du PC
@@ -1355,6 +1401,7 @@ env = { IS_FIREBASE_MCP = "true" }
 source = "firebase/firebase-tools@450bcf337418"
 
 # Clé API GCP projet aphrody, restreinte à developerknowledge.googleapis.com (uid 334a6698-4c5b-41b9-b896-7f8f1494fa5b).
+
 [[secret]]
 name = "DEVELOPERKNOWLEDGE_API_KEY"
 store = "env-kit"
@@ -1364,17 +1411,20 @@ mint = "gcloud services api-keys get-key-string 334a6698-4c5b-41b9-b896-7f8f1494
 # --- Audit design / UI (2026-11-13, docs/ui/ECOSYSTEM-AUDIT.md) ---
 
 # Figma officiel (MCP https://mcp.figma.com/mcp + skills figma-use, design-to-code, code-connect, generate-library).
+
 [[claude.plugin]]
 id = "figma@claude-plugins-official"
 scope = "user"
 
 # Doublon tiers du précédent (skill figma-to-code + second serveur MCP "figma") : retiré.
+
 [[claude.plugin]]
 id = "figma-to-code-design-to-react-vue-and-html@anthropic-plugin-directory"
 scope = "user"
 state = "absent"
 
 # Skills upstream copiées depuis un commit épinglé (~/.claude/skills/<name>, témoin .source).
+
 [[claude.skill]]
 name = "gpui-kit"
 repo = "longbridge/gpui-kit" # ex-longbridge/gpui-component, crate gpui-kit 0.9.1
@@ -1396,11 +1446,14 @@ commit = "30ca60aa4bdc1beab040dae32e1c10e195ec9113"
 path = "ai"
 license = "MIT"
 
-
 # --- Socle cross-agent (2026-11-13, docs/infra/AGENT-TOOLCHAIN.md) ---
+
 # Hôtes : pc, prd, fr1, fr2 (`hosts` absent = tous). Racine src : C:/src (pc), /srv/src (Linux).
+
 # Placeholders : {src} racine du checkout, {home} HOME, {bin} ~/.local/bin.
+
 # Marketplace racine de src (.claude-plugin/marketplace.json, lue aussi par Codex et agy) :
+
 # aphrody-skills = .agents/skills (source unique), plus les forks aphrody-labs épinglés par sha.
 
 [[claude.marketplace]]
@@ -1464,7 +1517,9 @@ id = "resend@anthropic-plugin-directory"
 hosts = ["pc"]
 
 # MCP utilisateur. `secrets` : noms du coffre env-kit injectés au lancement par
+
 # `env-kit secret exec` (jamais dans settings ni argv) ; sans coffre sur l'hôte, l'entrée est ignorée.
+
 [[claude.mcp]]
 name = "relay"
 url = "http://127.0.0.1:8790/mcp"
@@ -1486,7 +1541,9 @@ command = ["{bin}/agent-browser.exe", "mcp"]
 hosts = ["pc"]
 
 # Serveur Developer Knowledge du plugin google-cloud-developer, clé lue dans le coffre par headersHelper
+
 # (le serveur du plugin, qui attend la variable d'env, reste en échec sans elle).
+
 [[claude.mcp]]
 name = "developer-knowledge"
 url = "https://developerknowledge.googleapis.com/mcp"
@@ -1500,6 +1557,7 @@ secrets = ["HOSTINGER_API_TOKEN"]
 hosts = ["pc"]
 
 # Skills propres à une machine (hors dépôt public) : contrôle de présence seul.
+
 [[skill.private]]
 name = "windows-machine"
 hosts = ["pc"]
@@ -1513,6 +1571,7 @@ name = "shell"
 hosts = ["pc"]
 
 # Autres agents : mêmes plugins depuis la marketplace racine (copie dans leur propre cache, aucun lien).
+
 [codex]
 marketplace = "aphrody"
 plugins = ["aphrody-skills@aphrody"]
@@ -1526,37 +1585,56 @@ mcp = ["relay", "figma"]
 extensions = [".agents"] # gemini extensions link {src}/.agents (CLI absent à ce jour)
 
 # Liens interdits : tout lien (symlink, jonction) vers une skill de src dans ces dossiers est retiré,
+
 # le plugin aphrody-skills la fournit déjà.
+
 [cleanup]
 link_dirs = [
-  "{home}/.claude/skills",
-  "{home}/.gemini/skills",
-  "{home}/.agents/skills",
-  "{home}/.codex/skills",
+"{home}/.claude/skills",
+"{home}/.gemini/skills",
+"{home}/.agents/skills",
+"{home}/.codex/skills",
 ]
-# Copies posées par [[claude.skill]] devenues doublons d'un plugin (web-design-guidelines : vercel-agent-skills).
-drop_skills = ["web-design-guidelines"]
 
+# Copies posées par [[claude.skill]] devenues doublons d'un plugin (web-design-guidelines : vercel-agent-skills).
+
+drop_skills = ["web-design-guidelines"]
 
 ================================================
 FILE: ai/ai.toml
 ================================================
+
 # Fournisseurs d'inférence pour `ay ai` (crates/ay/src/ai.rs), passerelle unique LiteLLM.
+
 # Rien n'est figé dans le code : un fournisseur est actif si sa clé est dans le coffre (`--env-file`,
+
 # `$AY_ENV_FILE` ou `<repo>/.env`, puis l'environnement) ou si son serveur local répond ; ses modèles
+
 # viennent de l'API du fournisseur, via les routes joker de LiteLLM (`<id>/*`, check_provider_endpoint).
+
 #
-# [settings]   proxy LiteLLM (host, port), config générée (`config`), prompt de vérification,
-#              master_key (variable de la clé maîtresse du proxy, créée et rangée si absente)
-# [[runtime]]  serveur : os (défaut : tous), bin (présent = installé), install.<windows|linux> (argv),
-#              serve (argv au premier plan), env, health (URL), pull (argv avec {model}), models
-#              path (dossiers ajoutés au PATH). Gabarits : {config} {host} {port} {prompt} {model}
-#              {env:X} {ollama_gguf:<modèle>} (GGUF téléchargé par Ollama, lien dur en .gguf)
+
+# [settings] proxy LiteLLM (host, port), config générée (`config`), prompt de vérification,
+
+# master_key (variable de la clé maîtresse du proxy, créée et rangée si absente)
+
+# [[runtime]] serveur : os (défaut : tous), bin (présent = installé), install.<windows|linux> (argv),
+
+# serve (argv au premier plan), env, health (URL), pull (argv avec {model}), models
+
+# path (dossiers ajoutés au PATH). Gabarits : {config} {host} {port} {prompt} {model}
+
+# {env:X} {ollama_gguf:<modèle>} (GGUF téléchargé par Ollama, lien dur en .gguf)
+
 # [[provider]] (complète ou ajoute au registre) `route` (fournisseur LiteLLM), `key`, `requires`,
-#              `api_base`, `health` (chemin sous api_base, fournisseur local), `params` (litellm_params ;
-#              "env:X" -> os.environ/X), `credentials` (Vertex : "env:VAR" JSON ou "file:~/..."), `probe`
-#              (regex facultative du modèle d'essai), `auth_url` + `key_pattern` + `validate` (`ay ai auth`),
-#              `cli` (hors LiteLLM : argv `models` et `ask` avec {model} {prompt}).
+
+# `api_base`, `health` (chemin sous api_base, fournisseur local), `params` (litellm_params ;
+
+# "env:X" -> os.environ/X), `credentials` (Vertex : "env:VAR" JSON ou "file:~/..."), `probe`
+
+# (regex facultative du modèle d'essai), `auth_url` + `key_pattern` + `validate` (`ay ai auth`),
+
+# `cli` (hors LiteLLM : argv `models` et `ask` avec {model} {prompt}).
 
 [settings]
 host = "127.0.0.1"
@@ -1569,53 +1647,56 @@ registry = "https://models.dev/api.json"
 # --- Serveurs ---------------------------------------------------------------------------------
 
 # Passerelle : roue construite depuis le fork aphrody-labs/litellm (extension Rust, maturin) et
+
 # publiée en release du fork avec litellm-proxy-extras et litellm-enterprise du même commit (absents de
+
 # PyPI à ces versions) ; aucune compilation sur le poste.
+
 [[runtime]]
 id = "litellm"
 bin = "litellm"
 install.windows = [
-  [
-    "uv",
-    "tool",
-    "install",
-    "--no-build",
-    "--force",
-    "--python",
-    "3.13",
-    "--with",
-    "litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl",
-    "--with",
-    "litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl",
-    "litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-win_amd64.whl",
-  ],
+[
+"uv",
+"tool",
+"install",
+"--no-build",
+"--force",
+"--python",
+"3.13",
+"--with",
+"litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl",
+"--with",
+"litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl",
+"litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-win_amd64.whl",
+],
 ]
 install.linux = [
-  [
-    "uv",
-    "tool",
-    "install",
-    "--no-build",
-    "--force",
-    "--python",
-    "3.13",
-    "--with",
-    "litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl",
-    "--with",
-    "litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl",
-    "litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-manylinux_2_39_x86_64.whl",
-  ],
+[
+"uv",
+"tool",
+"install",
+"--no-build",
+"--force",
+"--python",
+"3.13",
+"--with",
+"litellm-proxy-extras @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_proxy_extras-0.4.115-py3-none-any.whl",
+"--with",
+"litellm-enterprise @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm_enterprise-0.1.84-py3-none-any.whl",
+"litellm[proxy,google] @ https://github.com/aphrody-labs/litellm/releases/download/ay-a7052ea8a802/litellm-1.111.0-cp310-abi3-manylinux_2_39_x86_64.whl",
+],
 ]
 serve = [
-  "litellm",
-  "--config",
-  "{config}",
-  "--host",
-  "{host}",
-  "--port",
-  "{port}",
-  "--num_workers",
-  "1",
+"litellm",
+"--config",
+"{config}",
+"--host",
+"{host}",
+"--port",
+"{port}",
+"--num_workers",
+"1",
 ]
 env = { LITELLM_LOG = "ERROR", PYTHONUTF8 = "1" }
 health = "http://{host}:{port}/health/liveliness"
@@ -1629,108 +1710,121 @@ serve = ["ollama", "serve"]
 env = { OLLAMA_HOST = "127.0.0.1:11434", OLLAMA_MAX_LOADED_MODELS = "1", OLLAMA_NUM_PARALLEL = "1" }
 health = "http://127.0.0.1:11434/api/version"
 pull = ["ollama", "pull", "{model}"]
+
 # Bibliothèque Ollama relevée le 2026-11-13 : gemma4:e2b = 4,6 Go (tient dans 12 Go de VRAM).
+
 models = ["gemma4:e2b"]
 
 # llama.cpp sert le GGUF déjà téléchargé par Ollama (pas de second téléchargement).
+
 [[runtime]]
 id = "llamacpp"
 os = ["windows"]
 bin = "llama-server"
 install.windows = [["ay", "up", "llama.cpp"]]
 serve = [
-  "llama-server",
-  "--host",
-  "127.0.0.1",
-  "--port",
-  "8080",
-  "-m",
-  "{ollama_gguf:gemma4:e2b}",
-  "--alias",
-  "gemma4-e2b",
-  "-ngl",
-  "99",
-  "-c",
-  "8192",
-  "-t",
-  "4",
-  "--jinja",
+"llama-server",
+"--host",
+"127.0.0.1",
+"--port",
+"8080",
+"-m",
+"{ollama_gguf:gemma4:e2b}",
+"--alias",
+"gemma4-e2b",
+"-ngl",
+"99",
+"-c",
+"8192",
+"-t",
+"4",
+"--jinja",
 ]
 health = "http://127.0.0.1:8080/health"
 
 # LM Studio sans interface : démon llmster + CLI lms (installateur officiel lmstudio.ai).
+
 [[runtime]]
 id = "lmstudio"
 os = ["windows"]
 bin = "lms"
 path = ["~/.lmstudio/bin"]
 install.windows = [
-  [
-    "pwsh",
-    "-NoProfile",
-    "-Command",
-    "irm https://lmstudio.ai/install.ps1 | iex",
-  ],
+[
+"pwsh",
+"-NoProfile",
+"-Command",
+"irm https://lmstudio.ai/install.ps1 | iex",
+],
 ]
 install.linux = [
-  ["sh", "-c", "curl -fsSL https://lmstudio.ai/install.sh | bash"],
+["sh", "-c", "curl -fsSL https://lmstudio.ai/install.sh | bash"],
 ]
 serve = ["lms", "server", "start", "--port", "1234", "--bind", "127.0.0.1"]
 oneshot = true
 health = "http://127.0.0.1:1234/v1/models"
+
 # Lien dur du GGUF d'Ollama (aucun second téléchargement) ; un ré-import est signalé « déjà présent ».
+
 pull = [
-  "lms",
-  "import",
-  "-y",
-  "--hard-link",
-  "--user-repo",
-  "ollama/gemma4-e2b",
-  "{ollama_gguf:gemma4:e2b}",
+"lms",
+"import",
+"-y",
+"--hard-link",
+"--user-repo",
+"ollama/gemma4-e2b",
+"{ollama_gguf:gemma4:e2b}",
 ]
 
 [[runtime]]
 id = "jan"
 os = ["windows"]
+
 # Application de bureau : son serveur API (port 1337) ne tourne que dans l'application ouverte.
+
 bin = "~/AppData/Local/Programs/Jan/Jan-Desktop.exe"
 install.windows = [
-  [
-    "winget",
-    "install",
-    "--id",
-    "Jan.Jan",
-    "--exact",
-    "--source",
-    "winget",
-    "--silent",
-    "--accept-package-agreements",
-    "--accept-source-agreements",
-    "--disable-interactivity",
-  ],
+[
+"winget",
+"install",
+"--id",
+"Jan.Jan",
+"--exact",
+"--source",
+"winget",
+"--silent",
+"--accept-package-agreements",
+"--accept-source-agreements",
+"--disable-interactivity",
+],
 ]
 health = "http://127.0.0.1:1337/v1/models"
 
 # prd (sans GPU) : roue CPU officielle de vLLM et binaire CPU de mistral.rs, installables, jamais servis :
+
 # pas de serveur d'inférence CPU sur l'hôte de production (consigne du 2026-11-13, charge à 306).
+
 # Ligne `serve` en commentaire : sans elle, `ay ai service` et `ay ai up` les ignorent.
+
 [[runtime]]
 id = "vllm"
 os = ["linux"]
 bin = "vllm"
 install.linux = [
-  [
-    "uv",
-    "tool",
-    "install",
-    "--python",
-    "3.12",
-    "--torch-backend",
-    "cpu",
-    "vllm @ https://github.com/vllm-project/vllm/releases/download/v0.32.0/vllm-0.32.0+cpu-cp38-abi3-manylinux_2_39_x86_64.whl",
-  ],
+[
+"uv",
+"tool",
+"install",
+"--python",
+"3.12",
+"--torch-backend",
+"cpu",
+"vllm @ https://github.com/vllm-project/vllm/releases/download/v0.32.0/vllm-0.32.0+cpu-cp38-abi3-manylinux_2_39_x86_64.whl",
+],
 ]
+
 # serve = ["vllm", "serve", "Qwen/Qwen3-0.6B", "--host", "127.0.0.1", "--port", "8000", "--max-model-len", "4096", "--served-model-name", "qwen3-0.6b"]
+
 env = { VLLM_CPU_KVCACHE_SPACE = "2", VLLM_CPU_OMP_THREADS_BIND = "0-3", OMP_NUM_THREADS = "4" }
 health = "http://127.0.0.1:8000/health"
 
@@ -1739,18 +1833,26 @@ id = "mistralrs"
 os = ["linux"]
 bin = "mistralrs"
 install.linux = [["ay", "up", "mistral.rs"]]
+
 # serve = ["mistralrs", "serve", "--cpu", "--host", "127.0.0.1", "-p", "8001", "-m", "Qwen/Qwen3-0.6B"]
+
 env = { RAYON_NUM_THREADS = "4", OMP_NUM_THREADS = "4" }
 health = "http://127.0.0.1:8001/v1/models"
 
 # --- Fournisseurs -------------------------------------------------------------------------------
+
 # Découverts dans le registre models.dev (format d'opencode : `env`, `api`, `npm`, `models` avec prix) :
+
 # un fournisseur du registre est actif dès que sa clé est présente ; ses modèles viennent de son API
+
 # via LiteLLM, sinon du catalogue du registre ; le modèle d'essai est le moins cher (prix du registre).
+
 # Les entrées [[provider]] ci-dessous n'ajoutent que ce que le registre ignore : serveurs locaux,
+
 # comptes de service Vertex, Mammouth (absent du registre), pages de clés pour `ay ai auth`.
 
 # Vocabulaire du registre -> LiteLLM : paquet AI SDK d'un point d'accès, puis identifiant.
+
 [litellm.npm]
 "@ai-sdk/openai-compatible" = "openai"
 [litellm.providers]
@@ -1759,10 +1861,12 @@ google-vertex = "vertex_ai"
 vercel = "vercel_ai_gateway"
 
 # Noms du registre -> noms du coffre de src.
+
 [env]
 CLOUDFLARE_API_KEY = "CLOUDFLARE_API_TOKEN"
 
 # Serveurs locaux (sans clé, actifs s'ils répondent).
+
 [[provider]]
 id = "ollama"
 route = "ollama_chat"
@@ -1800,6 +1904,7 @@ api_base = "http://127.0.0.1:8001/v1"
 health = "/models"
 
 # Pages de clés (`ay ai auth`) : ouvertes dans le navigateur, clé lue au presse-papiers.
+
 [[provider]]
 id = "openai"
 auth_url = "https://platform.openai.com/api-keys"
@@ -1825,6 +1930,7 @@ key_pattern = "^[A-Za-z0-9_-]{24,}$"
 validate = "https://ai-gateway.vercel.sh/v1/credits"
 
 # Absent du registre models.dev au 2026-11-13 ; API OpenAI-compatible (info.mammouth.ai/docs).
+
 [[provider]]
 id = "mammouth"
 route = "openai"
@@ -1835,41 +1941,46 @@ key_pattern = "^sk-[A-Za-z0-9_-]{16,}$"
 validate = "https://api.mammouth.ai/v1/models"
 
 # Une route par compte de service lisible (projet lu dans le JSON) au lieu des variables
+
 # GOOGLE_VERTEX_* du registre.
+
 [[provider]]
 id = "google-vertex"
 route = "vertex_ai"
 credentials = [
-  "env:VERTEX_APHRODY_SA_KEY",
-  "env:GCP_ADMIN_SA_KEY",
-  "file:~/.aphrody/secrets/yolo-automation.json",
+"env:VERTEX_APHRODY_SA_KEY",
+"env:GCP_ADMIN_SA_KEY",
+"file:~/.aphrody/secrets/yolo-automation.json",
 ]
 params = { vertex_location = "env:GOOGLE_CLOUD_LOCATION" }
 
 # Anthropic (clé payante, rattachée à un espace de travail) : en-tête anthropic-workspace-id et plafond de
+
 # dépense ajoutés par infra/ai/litellm-overlay.toml (ay ne sait pas encore écrire extra_headers ni max_budget).
+
 [[provider]]
 id = "anthropic"
 route = "anthropic"
 key = "ANTHROPIC_API_KEY"
 
 # Hors LiteLLM : CLI Antigravity authentifiée (modèles listés par la CLI).
+
 [[provider]]
 id = "antigravity"
 cli = { models = ["agy", "models"], ask = [
-  "agy",
-  "-p",
-  "{prompt}",
-  "--mode",
-  "plan",
-  "--model",
-  "{model}",
+"agy",
+"-p",
+"{prompt}",
+"--mode",
+"plan",
+"--model",
+"{model}",
 ] }
-
 
 ================================================
 FILE: ai/fabric/node.sh
 ================================================
+
 // [OUTLINE - 15 symbols, 162 lines]
 // L20: load1()
 // L22-L25: load_ok()
@@ -1887,21 +1998,31 @@ FILE: ai/fabric/node.sh
 // L142: down()
 // L144-L152: status()
 
-
 ================================================
 FILE: ai/fabric.toml
 ================================================
+
 # Tissu d'inférence distribué (llama.cpp RPC) : un llama-server coordinateur sur le GPU du PC, des
+
 # ggml-rpc-server sur les autres hôtes, joints uniquement par WireGuard. Lu par packages/ai-os/src/fabric
+
 # (`ai-os fabric up|status|down`, `ay ai fabric ...`). Doc : docs/ai/DISTRIBUTED-INFERENCE.md.
+
 #
-# [release]  binaires officiels ggml-org/llama.cpp, empreintes = `digest` de l'API GitHub des assets
-#            (gh api repos/ggml-org/llama.cpp/releases/tags/b<tag>), relevées le 2026-11-13. Jamais de
-#            compilation sur le PC ; sur prd seulement via infra/fleet/bin/heavy.sh.
-# [model.*]  GGUF servis par le coordinateur ; `path` relatif au cache de modèles (dédupliqué, liens durs).
-# [[node]]   hôte de calcul : `bind` = adresse WireGuard d'écoute (jamais 0.0.0.0), `reach` = adresse vue
-#            du coordinateur, `gate` = condition d'admission (vérifiée au démarrage puis toutes les
-#            `watch_s` secondes par le chien de garde : le nœud se retire seul), plafonds systemd.
+
+# [release] binaires officiels ggml-org/llama.cpp, empreintes = `digest` de l'API GitHub des assets
+
+# (gh api repos/ggml-org/llama.cpp/releases/tags/b<tag>), relevées le 2026-11-13. Jamais de
+
+# compilation sur le PC ; sur prd seulement via infra/fleet/bin/heavy.sh.
+
+# [model.*] GGUF servis par le coordinateur ; `path` relatif au cache de modèles (dédupliqué, liens durs).
+
+# [[node]] hôte de calcul : `bind` = adresse WireGuard d'écoute (jamais 0.0.0.0), `reach` = adresse vue
+
+# du coordinateur, `gate` = condition d'admission (vérifiée au démarrage puis toutes les
+
+# `watch_s` secondes par le chien de garde : le nœud se retire seul), plafonds systemd.
 
 [coordinator]
 node = "pc"
@@ -1910,12 +2031,17 @@ port = 8090
 model = "gemma4-e2b"
 ctx = 8192
 cache = "~/.local/share/ay/ai"
+
 # Adresses WireGuard du coordinateur : seules sources admises sur le port RPC des nœuds (nft).
+
 mesh = ["10.200.77.2", "10.200.78.2"]
 
 # Admission opportuniste (`ai-os fabric ensure`, tâche planifiée `ai-os fabric timer`) : dès qu'un nœud listé passe sa
+
 # condition, essai court réparti (une couche distante, `tokens` jetons) puis retour à l'état précédent ; résultat dans
+
 # ~/.local/share/ay/ai/fabric-trials.jsonl (`ai-os fabric trials`). Un nœud déjà essayé avec succès n'est plus sondé.
+
 [trial]
 nodes = ["prd"]
 model = "qwen3-0.6b"
@@ -1930,16 +2056,22 @@ windows-x86_64-cudart = { asset = "cudart-llama-bin-win-cuda-13.5-x64.zip", sha2
 linux-x86_64 = { asset = "llama-b12340-bin-ubuntu-x64.tar.gz", sha256 = "5bc0276548147e56aa03f97b201b1cb3b43cbda6e388f1f2f4c8d82b56313856" }
 
 [model.gemma4-e2b]
+
 # unsloth/gemma-4-E2B-it-GGUF, Q4_K_M : sha256 = oid LFS de l'API Hugging Face (relevé 2026-11-13), identique
+
 # sur le PC et sur chaque nœud (`warm`) pour que le cache de tenseurs de rpc-server serve les mêmes empreintes.
+
 path = "gemma-4-E2B-it-Q4_K_M.gguf"
 bytes = 3106738272
 sha256 = "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8"
 url = "https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/main/gemma-4-E2B-it-Q4_K_M.gguf"
 
 [model."qwen3-0.6b"]
+
 # unsloth/Qwen3-0.6B-GGUF, Q4_K_M (oid LFS, 2026-11-13). Architecture sans partage de KV entre couches : modèle de
+
 # mesure du tissu (9,5 Mio par couche, une couche distante se charge en quelques minutes sur le lien montant du PC).
+
 path = "Qwen3-0.6B-Q4_K_M.gguf"
 bytes = 396705472
 sha256 = "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a"
@@ -1951,9 +2083,13 @@ url = "https://huggingface.co/unsloth/Qwen3-0.6B-GGUF/resolve/main/Qwen3-0.6B-Q4
 id = "pc"
 os = "windows"
 role = "coordinator"
+
 # Parts relatives des couches (-ts, ordre llama.cpp : nœuds RPC puis CUDA0). Sans part sur chaque nœud admis,
+
 # llama.cpp répartit selon la mémoire libre et donnerait l'essentiel au CPU d'un VPS (47 Gio libres sur fr1).
+
 share = 7
+
 # Moteur principal : RTX 4070 12 Go (CUDA 13.5, pilote 621.14, relevé nvidia-smi 2026-11-13).
 
 [[node]]
@@ -1967,7 +2103,9 @@ threads = 8
 share = 1
 cpu_quota = "800%"
 memory_max = "24G"
+
 # Hôte Chromium/LLVM : admis seulement sans build en cours (ni ninja/siso/clang/rustc, ni build.slice chargé).
+
 gate = "no-build"
 watch_s = 15
 
@@ -1975,7 +2113,9 @@ watch_s = 15
 id = "prd"
 ssh = "prd"
 os = "linux"
+
 # Lien direct PC <-> prd (interface `prod`, 10.200.78.0/30) : seul le PC peut joindre ce port.
+
 bind = "10.200.78.1"
 reach = "10.200.78.1"
 port = 50052
@@ -1983,7 +2123,9 @@ threads = 2
 share = 1
 cpu_quota = "200%"
 memory_max = "6G"
+
 # Production : charge < nproc/2, verrou lourd libre (flock -n), shenron-chat-v2 sain, mémoire disponible.
+
 gate = "prd"
 heavy_lock = "/var/lock/aphrody-heavy.lock"
 priority_url = "http://127.0.0.1:8799/health"
@@ -1999,74 +2141,90 @@ port = 50052
 threads = 2
 cpu_quota = "100%"
 memory_max = "2G"
+
 # Proxy prioritaire : nginx actif et charge < nproc/2 ; 11 Go de RAM, contribution marginale.
+
 gate = "proxy"
 watch_s = 10
 enabled = false
 
 [[node]]
+
 # Second hôte Windows à GPU NVIDIA : absent de l'inventaire au 2026-11-13 (deploy.toml, fleet.toml,
+
 # docs/infra, ~/.ssh/config, pairs WireGuard). Il rejoint le tissu dès que `reach` répond sur `port`
+
 # (voir « Intégrer le second hôte GPU » dans docs/ai/DISTRIBUTED-INFERENCE.md).
+
 id = "gpu2"
 os = "windows"
 reach = ""
 port = 50052
 gate = "reachable"
 
-
 ================================================
 FILE: ai/litellm-overlay.toml
 ================================================
+
 # Retouches de la config LiteLLM écrite par `ay ai config`, appliquées par infra/ai/litellm-serve.ts avant le
+
 # démarrage du proxy (unité ay-ai-litellm, drop-in infra/ai/systemd/ay-ai-litellm.service.d/10-creds.conf).
+
 # Sert ce que ai.toml ne sait pas encore exprimer : en-têtes, plafonds de dépense, routes à retirer par hôte.
+
 # Valeurs "env:X" : lues dans l'environnement du proxy (identifiants systemd-creds), jamais écrites ici.
 
 # Routes retirées (model_name), par hôte (`hostname` ou AY_AI_HOST).
+
 [drop]
-prd = ["vllm/*", "mistralrs/*"]
+prd = ["vllm/_", "mistralrs/_"]
 
 # En-têtes ajoutés à litellm_params.extra_headers d'une route.
+
 [headers."anthropic/*"]
 anthropic-workspace-id = "env:ANTHROPIC_WORKSPACE_ID"
 
 # Plafond par route payante (USD par période) : la route est écartée par le routeur une fois le plafond atteint.
+
 [budget."anthropic/*"]
 max_budget = 2.0
 budget_duration = "1d"
 
 # Plafond global du proxy (toutes routes).
+
 [litellm_settings]
 max_budget = 5.0
 budget_duration = "1d"
 
 # Ordre de préférence publié à côté de la config (lu par le relais) : gratuits ou locaux d'abord.
+
 [prefer]
 order = [
-  "ollama/*",
-  "llamacpp/*",
-  "cloudflare-workers-ai/*",
-  "google-vertex-aphrody/*",
-  "anthropic/*",
+"ollama/_",
+"llamacpp/_",
+"cloudflare-workers-ai/_",
+"google-vertex-aphrody/_",
+"anthropic/*",
 ]
-
 
 ================================================
 FILE: ai/litellm-serve.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 161 lines]
 // import node:fs
 // import node:os
 // import node:path
 // import node:util
 
-
 ================================================
 FILE: ai/systemd/ay-ai-litellm.service.d/10-creds.conf
 ================================================
+
 # Drop-in de ay-ai-litellm (prd) : identifiants systemd-creds au lieu de /etc/aphrody/secrets.env, routes et
+
 # plafonds retouchés par infra/ai/litellm-serve.ts. Installation : infra/ai/systemd/install-prd.sh.
+
 [Service]
 LoadCredentialEncrypted=CLOUDFLARE_API_TOKEN
 LoadCredentialEncrypted=LITELLM_MASTER_KEY
@@ -2081,32 +2239,48 @@ RuntimeDirectoryMode=0700
 ExecStart=
 ExecStart=/root/.bun/bin/bun /usr/local/lib/aphrody-ai/litellm-serve.ts --manifest /usr/local/lib/aphrody-ai/ai.toml --overlay /usr/local/lib/aphrody-ai/litellm-overlay.toml --ay /root/.local/bin/ay --litellm /root/.local/bin/litellm
 
-
 ================================================
 FILE: ai/systemd/install-prd.sh
 ================================================
-// [OUTLINE - 0 symbols, 15 lines]
 
+// [OUTLINE - 0 symbols, 15 lines]
 
 ================================================
 FILE: chromium-factory/args/labs_agent.gn
 ================================================
+
 # labs_agent: optimized headless Chromium for agents (headless_shell lineage), Chrome 157.
+
 # Every arg below was checked with `gn args out/labs_agent-157.0.8103.78 --list --short` on fr1
+
 # (2026-11-12). aphrody-factory appends `use_siso` / `use_remoteexec` after its generated marker;
+
 # do not set them here.
+
 #
+
 # Kept on purpose (product, not build cost):
-#   is_official_build -> ThinLTO + CFI (is_cfi, use_cfi_icall default true) + PGO.
-#   chrome_pgo_phase = 2 -> needs custom_vars checkout_pgo_profiles (set by `sync`); profile fetch is
-#   part of sync, not of the build.
-#   thin_lto_enable_cache defaults to true: cache in $root_out_dir/thinlto-cache
-#   (build/config/compiler/BUILD.gn:784-789), hence the stable out dir `out/labs_agent`.
+
+# is_official_build -> ThinLTO + CFI (is_cfi, use_cfi_icall default true) + PGO.
+
+# chrome_pgo_phase = 2 -> needs custom_vars checkout_pgo_profiles (set by `sync`); profile fetch is
+
+# part of sync, not of the build.
+
+# thin_lto_enable_cache defaults to true: cache in $root_out_dir/thinlto-cache
+
+# (build/config/compiler/BUILD.gn:784-789), hence the stable out dir `out/labs_agent`.
+
 # Not applicable in 157 (absent from `gn args --list`): enable_nacl, use_jumbo_build.
+
 # Measured as negligible (F0 metrics, core-seconds): printing 44, pdf 10, device/vr 64,
+
 # screen_ai 14, on_device_translation 32 -> left at default (Page.printToPDF needs printing).
+
 # perfetto trace_processor (279 objects, 3790 s) comes from base -> libperfetto (JSON trace export
+
 # used by CDP Tracing), kept.
+
 is_official_build = true
 is_debug = false
 dcheck_always_on = false
@@ -2121,27 +2295,33 @@ use_cups = false
 use_pulseaudio = false
 use_vaapi = false
 headless_use_prefs = false
-# headless_enable_commands (default true) asserts !headless_use_embedded_resources
-# (headless/BUILD.gn:23): never set headless_use_embedded_resources = true.
-treat_warnings_as_errors = false
-# Vulkan validation layers are a data dep of headless_shell only (gn path: no non-data path) and a
-# debug tool: 248 objects, 1580 core-s in F0. Default true on Linux (dawn_features.gni:177).
-dawn_enable_vulkan_validation_layers = false
 
+# headless_enable_commands (default true) asserts !headless_use_embedded_resources
+
+# (headless/BUILD.gn:23): never set headless_use_embedded_resources = true.
+
+treat_warnings_as_errors = false
+
+# Vulkan validation layers are a data dep of headless_shell only (gn path: no non-data path) and a
+
+# debug tool: 248 objects, 1580 core-s in F0. Default true on Linux (dawn_features.gni:177).
+
+dawn_enable_vulkan_validation_layers = false
 
 ================================================
 FILE: chromium-factory/chromium-factory.sh
 ================================================
+
 // [OUTLINE - 4 symbols, 43 lines]
 // L13: log()
 // L14-L27: sync()
 // L28-L35: build()
 // L36-L42: publish()
 
-
 ================================================
 FILE: chromium-factory/cros-factory.sh
 ================================================
+
 // [OUTLINE - 5 symbols, 40 lines]
 // L11: log()
 // L12-L21: sync()
@@ -2149,13 +2329,16 @@ FILE: chromium-factory/cros-factory.sh
 // L28-L32: image()
 // L33-L39: publish()
 
-
 ================================================
 FILE: chromium-factory/factory.toml
 ================================================
+
 # aphrody-factory config on fr1 (deployed to /srv/chromium/factory/factory.toml). Values = built-in
+
 # defaults, written out so the sizing is visible. Sizing from F0 (2026-11-12): max cxx RSS 2.97 GB,
+
 # build peak 19.8 GiB with 12 local jobs.
+
 root = "/srv/chromium"
 factory = "/srv/chromium/factory"
 out_name = "labs_agent" # stable: keeps thinlto-cache and siso state across versions
@@ -2207,159 +2390,159 @@ min_free_gb_cas = 160
 cas_path = "/home"
 min_mem_avail_gb = 16
 conflicting = [
-  "siso",
-  "ninja",
-  "autoninja",
-  "cros_sdk",
-  "repo",
-  "emerge",
-  "gclient",
+"siso",
+"ninja",
+"autoninja",
+"cros_sdk",
+"repo",
+"emerge",
+"gclient",
 ]
-
 
 ================================================
 FILE: chromium-factory/nativelink/deploy.sh
 ================================================
-// [OUTLINE - 0 symbols, 42 lines]
 
+// [OUTLINE - 0 symbols, 42 lines]
 
 ================================================
 FILE: chromium-factory/nativelink/server.json5
 ================================================
+
 // NativeLink 1.8.5 scheduler + CAS + AC on fr1 (mesh 10.200.77.x only). Chromium siso: -reapi_instance=main.
 {
-  stores: [
-    {
-      name: "CAS",
-      compression: {
-        compression_algorithm: { lz4: {} },
-        backend: {
-          filesystem: {
-            content_path: "/home/nativelink/cas",
-            temp_path: "/home/nativelink/cas-tmp",
-            eviction_policy: { max_bytes: 150000000000 },
-          },
-        },
-      },
-    },
-    {
-      name: "AC",
-      filesystem: {
-        content_path: "/home/nativelink/ac",
-        temp_path: "/home/nativelink/ac-tmp",
-        eviction_policy: { max_bytes: 5000000000 },
-      },
-    },
-  ],
-  schedulers: [
-    {
-      name: "MAIN",
-      simple: {
-        worker_timeout_s: 60,
-        supported_platform_properties: {
-          OSFamily: "priority",
-          "container-image": "priority",
-          "label:action_default": "priority",
-          "label:action_large": "priority",
-          cpu_count: "minimum",
-          ISA: "exact",
-        },
-      },
-    },
-  ],
-  servers: [
-    {
-      listener: {
-        http: {
-          socket_address: "10.200.77.1:50051",
-          advanced_http: { http2_keep_alive_interval: 10 },
-        },
-      },
-      services: {
-        cas: [{ instance_name: "main", cas_store: "CAS" }],
-        ac: [{ instance_name: "main", ac_store: "AC" }],
-        execution: [
-          { instance_name: "main", cas_store: "CAS", scheduler: "MAIN" },
-        ],
-        capabilities: [
-          { instance_name: "main", remote_execution: { scheduler: "MAIN" } },
-        ],
-        // Array format (1.8.5 warned "deprecated map format" for `cas_stores: { main: ... }`).
-        bytestream: [{ instance_name: "main", cas_store: "CAS" }],
-      },
-    },
-    {
-      listener: { http: { socket_address: "10.200.77.1:50061" } },
-      services: { worker_api: { scheduler: "MAIN" }, health: {} },
-    },
-  ],
+stores: [
+{
+name: "CAS",
+compression: {
+compression_algorithm: { lz4: {} },
+backend: {
+filesystem: {
+content_path: "/home/nativelink/cas",
+temp_path: "/home/nativelink/cas-tmp",
+eviction_policy: { max_bytes: 150000000000 },
+},
+},
+},
+},
+{
+name: "AC",
+filesystem: {
+content_path: "/home/nativelink/ac",
+temp_path: "/home/nativelink/ac-tmp",
+eviction_policy: { max_bytes: 5000000000 },
+},
+},
+],
+schedulers: [
+{
+name: "MAIN",
+simple: {
+worker_timeout_s: 60,
+supported_platform_properties: {
+OSFamily: "priority",
+"container-image": "priority",
+"label:action_default": "priority",
+"label:action_large": "priority",
+cpu_count: "minimum",
+ISA: "exact",
+},
+},
+},
+],
+servers: [
+{
+listener: {
+http: {
+socket_address: "10.200.77.1:50051",
+advanced_http: { http2_keep_alive_interval: 10 },
+},
+},
+services: {
+cas: [{ instance_name: "main", cas_store: "CAS" }],
+ac: [{ instance_name: "main", ac_store: "AC" }],
+execution: [
+{ instance_name: "main", cas_store: "CAS", scheduler: "MAIN" },
+],
+capabilities: [
+{ instance_name: "main", remote_execution: { scheduler: "MAIN" } },
+],
+// Array format (1.8.5 warned "deprecated map format" for `cas_stores: { main: ... }`).
+bytestream: [{ instance_name: "main", cas_store: "CAS" }],
+},
+},
+{
+listener: { http: { socket_address: "10.200.77.1:50061" } },
+services: { worker_api: { scheduler: "MAIN" }, health: {} },
+},
+],
 }
-
 
 ================================================
 FILE: chromium-factory/nativelink/worker.json5
 ================================================
+
 // NativeLink worker; env: NL_SCHED (fr1 mesh IP), NL_CACHE_BYTES.
 {
-  stores: [
-    {
-      name: "GRPC_CAS",
-      grpc: {
-        instance_name: "main",
-        store_type: "cas",
-        endpoints: [{ address: "grpc://${NL_SCHED}:50051" }],
-        connections_per_endpoint: 4,
-      },
-    },
-    {
-      name: "GRPC_AC",
-      grpc: {
-        instance_name: "main",
-        store_type: "ac",
-        endpoints: [{ address: "grpc://${NL_SCHED}:50051" }],
-      },
-    },
-    {
-      name: "FAST_SLOW",
-      fast_slow: {
-        fast: {
-          filesystem: {
-            content_path: "/var/lib/nativelink/cas",
-            temp_path: "/var/lib/nativelink/cas-tmp",
-            eviction_policy: { max_bytes: "${NL_CACHE_BYTES}" },
-          },
-        },
-        slow: { ref_store: { name: "GRPC_CAS" } },
-      },
-    },
-  ],
-  workers: [
-    {
-      local: {
-        worker_api_endpoint: { uri: "grpc://${NL_SCHED}:50061" },
-        cas_fast_slow_store: "FAST_SLOW",
-        upload_action_result: { ac_store: "GRPC_AC" },
-        work_directory: "/var/lib/nativelink/work",
-        max_inflight_tasks: "${NL_JOBS}",
-        max_action_timeout_s: 1800,
-        platform_properties: {
-          cpu_count: { query_cmd: "nproc" },
-          OSFamily: { values: ["Linux"] },
-          "container-image": { values: [""] },
-          "label:action_default": { values: ["1"] },
-          "label:action_large": { values: ["1"] },
-          ISA: { values: ["x86-64"] },
-        },
-      },
-    },
-  ],
-  servers: [],
+stores: [
+{
+name: "GRPC_CAS",
+grpc: {
+instance_name: "main",
+store_type: "cas",
+endpoints: [{ address: "grpc://${NL_SCHED}:50051" }],
+connections_per_endpoint: 4,
+},
+},
+{
+name: "GRPC_AC",
+grpc: {
+instance_name: "main",
+store_type: "ac",
+endpoints: [{ address: "grpc://${NL_SCHED}:50051" }],
+},
+},
+{
+name: "FAST_SLOW",
+fast_slow: {
+fast: {
+filesystem: {
+content_path: "/var/lib/nativelink/cas",
+temp_path: "/var/lib/nativelink/cas-tmp",
+eviction_policy: { max_bytes: "${NL_CACHE_BYTES}" },
+},
+},
+slow: { ref_store: { name: "GRPC_CAS" } },
+},
+},
+],
+workers: [
+{
+local: {
+worker_api_endpoint: { uri: "grpc://${NL_SCHED}:50061" },
+cas_fast_slow_store: "FAST_SLOW",
+upload_action_result: { ac_store: "GRPC_AC" },
+work_directory: "/var/lib/nativelink/work",
+max_inflight_tasks: "${NL_JOBS}",
+max_action_timeout_s: 1800,
+platform_properties: {
+cpu_count: { query_cmd: "nproc" },
+OSFamily: { values: ["Linux"] },
+"container-image": { values: [""] },
+"label:action_default": { values: ["1"] },
+"label:action_large": { values: ["1"] },
+ISA: { values: ["x86-64"] },
+},
+},
+},
+],
+servers: [],
 }
-
 
 ================================================
 FILE: chromium-factory/systemd/chromium-factory.service
 ================================================
+
 [Unit]
 Description=Chromium factory (labs_agent headless_shell, Chrome Stable) via aphrody-factory
 Wants=network-online.target
@@ -2367,26 +2550,34 @@ After=network-online.target nativelink-server.service
 [Service]
 Type=oneshot
 User=ubuntu
+
 # systemd-run without User= left HOME unset (`HOME: unbound variable`, 2026-11-12 16:21:05).
+
 Environment=HOME=/home/ubuntu
 Environment=PATH=/home/ubuntu/bin:/home/ubuntu/depot_tools:/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
 WorkingDirectory=/srv/chromium
+
 # Never next to the ChromiumOS factory (its repo sync overlapped the F0 build for 69 min).
+
 ExecCondition=/bin/sh -c '! systemctl is-active --quiet cros-factory.service'
+
 # Resumable: `all` skips steps already recorded in /srv/chromium/factory-state.json; doctor gates build.
+
 ExecStart=/srv/chromium/factory/bin/aphrody-factory all --refresh-channels --channel stable --config /srv/chromium/factory/factory.toml
 Nice=10
 IOSchedulingClass=best-effort
 IOSchedulingPriority=7
 TimeoutStartSec=infinity
+
 # siso gets SIGTERM first and flushes siso_metrics.json / .siso_fs_state.
+
 KillMode=mixed
 TimeoutStopSec=120
-
 
 ================================================
 FILE: chromium-factory/systemd/chromium-factory.timer
 ================================================
+
 [Unit]
 Description=Rebuild labs_agent when Chrome Stable moves (weekly)
 [Timer]
@@ -2395,10 +2586,10 @@ Persistent=true
 [Install]
 WantedBy=timers.target
 
-
 ================================================
 FILE: chromium-factory/systemd/cros-factory.service
 ================================================
+
 [Unit]
 Description=ChromiumOS factory (amd64-generic, release branch of Chrome Stable)
 Wants=network-online.target
@@ -2409,42 +2600,52 @@ User=ubuntu
 Environment=HOME=/home/ubuntu
 Environment=PATH=/home/ubuntu/bin:/home/ubuntu/depot_tools:/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
 WorkingDirectory=/home/ubuntu
+
 # Serialized behind the Chromium factory (F6 queued after F0/F1).
+
 ExecCondition=/bin/sh -c '! systemctl is-active --quiet chromium-factory.service'
+
 # chromite stays Python; only orchestration moves to Rust later (`aphrody-factory cros`).
+
 ExecStart=/srv/chromium/factory/cros-factory.sh all amd64-generic
 Nice=15
 IOSchedulingClass=idle
 TimeoutStartSec=infinity
 
-
 ================================================
 FILE: cloudflare/aop.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 239 lines]
 // import node:fs
 // import node:os
 // import node:path
 
-
 ================================================
 FILE: cloudflare/cf.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 545 lines]
 // import ./lib.ts
 // L306-L328: function storeAccess(
 // L331-L346: function storedClientId(host: string): string | null
 
-
 ================================================
 FILE: cloudflare/cloudflare.toml
 ================================================
+
 # Cloudflare edge of the fleet, declarative (docs/infra/FR2-CLOUDFLARE.md).
-#   bun infra/cloudflare/cf.ts plan            diff live vs this file (read-only, default)
-#   bun infra/cloudflare/cf.ts apply <section> apply one section: dns | tunnels | rules | access
-#   bun infra/cloudflare/proof.ts              re-run every check, exit 1 on regression (just cf-proof)
+
+# bun infra/cloudflare/cf.ts plan diff live vs this file (read-only, default)
+
+# bun infra/cloudflare/cf.ts apply <section> apply one section: dns | tunnels | rules | access
+
+# bun infra/cloudflare/proof.ts re-run every check, exit 1 on regression (just cf-proof)
+
 # Only objects listed here are managed; everything else on the account is left untouched
+
 # (rosegriffon.fr, dragonballfr.com, nie.aphrody.app, cdn.rosegriffon.fr: rosegriffon-52 / shenron).
+
 # Content "tunnel:<name>" expands to <tunnel id>.cfargotunnel.com. No secrets in this file.
 
 account = "ca22c1a51a145f919b54afa18d936516"
@@ -2452,45 +2653,60 @@ account = "ca22c1a51a145f919b54afa18d936516"
 [zones]
 "aphrody.com" = "963461271f885bc3f3c2bfd586f2b7ba"
 "aphrody.app" = "f4dab237b9811435da6fee0b5b3438d4"
+
 # Product zones: only the [[rules]] refs below are managed here (content and DNS stay with shenron / rosegriffon).
+
 "dragonballfr.com" = "255ff360c8d411f03086741b50539641"
 "rosegriffon.fr" = "3eaec2aa7c611a728fe1b514af6603e3"
 
 # Remote-managed tunnels. Connector: systemd unit + token in an encrypted systemd credential on the host.
+
 [tunnels.mig-prd]
 id = "72153924-6650-4dd4-bced-f8b6731edcd8"
 host = "prd"
 ingress = [
-  # Cluster LB ports (HAProxy on fr1/fr2/prd, infra/cluster, docs/infra/CLUSTER.md): same answer on every host, so
-  # mig-prd connector replicas can run anywhere. Rollback: the old origins 127.0.0.1:8780 / :8797, 10.200.77.5:8182 / :8766.
-  { hostname = "mig-test.aphrody.com", service = "http://127.0.0.1:19780" },
-  { hostname = "mig-downloads.aphrody.com", service = "http://127.0.0.1:19797" },
-  { hostname = "mig-depot.aphrody.com", service = "http://127.0.0.1:19182" },
-  { hostname = "mig-commons.aphrody.com", service = "http://127.0.0.1:19766" },
-  { hostname = "ssh-prd.aphrody.com", service = "ssh://127.0.0.1:19022" }, # cluster LB -> prd sshd from any replica
-  # Standby of the names whose DNS still points to fr2 (infra/fleet/fr2/bin/fleet-standby-sync.sh, prd loopback):
-  # unused until fleet-dns-failover.sh turns their A/AAAA into a CNAME to this tunnel when fr2 is down.
-  { hostname = "dbfr.aphrody.com", service = "http://127.0.0.1:29401" },
-  { hostname = "nie.aphrody.app", service = "http://127.0.0.1:29402" },
-  { hostname = "fleet-failover-test.aphrody.com", service = "http://127.0.0.1:29401" }, # fleet-dns-failover-test.sh only
-  # aphrody service: cluster LB pool aphrody (prd:23000, blue/green switched in deploy.toml only).
-  { hostname = "aphrody.com", service = "http://127.0.0.1:19300" },
-  { hostname = "*.aphrody.com", service = "http://127.0.0.1:19300" },
-  # aphrody-app VPS port (deploy.toml hosting.aphrody-app.port): same target fr2 used, nothing listens yet (502 parity).
-  # *.aphrody.app is the Worker aphrody-deploy (packages/deploy); names it passes through without a backend answer 404, not 502.
-  { hostname = "*.aphrody.app", service = "http_status:404" },
-  { service = "http_status:404" },
+
+# Cluster LB ports (HAProxy on fr1/fr2/prd, infra/cluster, docs/infra/CLUSTER.md): same answer on every host, so
+
+# mig-prd connector replicas can run anywhere. Rollback: the old origins 127.0.0.1:8780 / :8797, 10.200.77.5:8182 / :8766.
+
+{ hostname = "mig-test.aphrody.com", service = "http://127.0.0.1:19780" },
+{ hostname = "mig-downloads.aphrody.com", service = "http://127.0.0.1:19797" },
+{ hostname = "mig-depot.aphrody.com", service = "http://127.0.0.1:19182" },
+{ hostname = "mig-commons.aphrody.com", service = "http://127.0.0.1:19766" },
+{ hostname = "ssh-prd.aphrody.com", service = "ssh://127.0.0.1:19022" }, # cluster LB -> prd sshd from any replica
+
+# Standby of the names whose DNS still points to fr2 (infra/fleet/fr2/bin/fleet-standby-sync.sh, prd loopback):
+
+# unused until fleet-dns-failover.sh turns their A/AAAA into a CNAME to this tunnel when fr2 is down.
+
+{ hostname = "dbfr.aphrody.com", service = "http://127.0.0.1:29401" },
+{ hostname = "nie.aphrody.app", service = "http://127.0.0.1:29402" },
+{ hostname = "fleet-failover-test.aphrody.com", service = "http://127.0.0.1:29401" }, # fleet-dns-failover-test.sh only
+
+# aphrody service: cluster LB pool aphrody (prd:23000, blue/green switched in deploy.toml only).
+
+{ hostname = "aphrody.com", service = "http://127.0.0.1:19300" },
+{ hostname = "*.aphrody.com", service = "http://127.0.0.1:19300" },
+
+# aphrody-app VPS port (deploy.toml hosting.aphrody-app.port): same target fr2 used, nothing listens yet (502 parity).
+
+# *.aphrody.app is the Worker aphrody-deploy (packages/deploy); names it passes through without a backend answer 404, not 502.
+
+{ hostname = "*.aphrody.app", service = "http_status:404" },
+{ service = "http_status:404" },
 ]
 
 [tunnels.fr2]
 id = "88aa6a53-0a9a-4a5b-a9b6-3d3394dd978d"
 host = "fr2"
 ingress = [
-  { hostname = "ssh-fr2.aphrody.com", service = "ssh://127.0.0.1:22" },
-  { service = "http_status:404" },
+{ hostname = "ssh-fr2.aphrody.com", service = "ssh://127.0.0.1:22" },
+{ service = "http_status:404" },
 ]
 
 # DNS: name -> desired single record. rollback = the record before migration (one line, also in the doc).
+
 [dns."aphrody.com"]
 "aphrody.com" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "A 51.255.162.6" }
 "ssh-prd.aphrody.com" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "delete" }
@@ -2528,12 +2744,17 @@ ingress = [
 "status.aphrody.com" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "CNAME aphrody.com" }
 "store.aphrody.com" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "CNAME aphrody.com" }
 "translate.aphrody.com" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "CNAME aphrody.com" }
+
 # shenron community gateway, still served by fr2 (static JSON) until shenron moves it to usa: proxied so fr2 can
+
 # refuse non-Cloudflare clients on 80/443 (cert *.aphrody.com, SSL Full strict).
+
 "dbfr.aphrody.com" = { type = "A", content = "51.255.162.6", rollback = "A 51.255.162.6 proxied=false" }
 
 [dns."aphrody.app"]
-# Previews <project>-<sha7>.aphrody.app and project domains: Worker aphrody-deploy on route *.aphrody.app/* (explicit records win).
+
+# Previews <project>-<sha7>.aphrody.app and project domains: Worker aphrody-deploy on route _.aphrody.app/_ (explicit records win).
+
 "*.aphrody.app" = { type = "AAAA", content = "100::", proxied = true, rollback = "delete" }
 "api.aphrody.app" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "A 51.255.162.6" }
 "auth.aphrody.app" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "A 51.255.162.6" }
@@ -2558,24 +2779,27 @@ ingress = [
 "app-video.aphrody.app" = { type = "CNAME", content = "tunnel:mig-prd", rollback = "A 51.255.162.6" }
 
 # Zone rules managed by ref (other rules in the same phase are kept as they are).
+
 [[rules]]
 zone = "aphrody.com"
 phase = "http_request_firewall_custom"
 ref = "fr2-block-probes"
-description = "Block scanner probes (replaces fr2 nginx deny rules; /.env, /.git, wp-*, php)"
-expression = '(http.request.uri.path wildcard r"/.env*" or starts_with(http.request.uri.path, "/.git/") or starts_with(http.request.uri.path, "/wp-") or http.request.uri.path.extension eq "php")'
+description = "Block scanner probes (replaces fr2 nginx deny rules; /.env, /.git, wp-_, php)"
+expression = '(http.request.uri.path wildcard r"/.env_" or starts_with(http.request.uri.path, "/.git/") or starts_with(http.request.uri.path, "/wp-") or http.request.uri.path.extension eq "php")'
 action = "block"
 
 [[rules]]
 zone = "aphrody.app"
 phase = "http_request_firewall_custom"
 ref = "fr2-block-probes"
-description = "Block scanner probes (replaces fr2 nginx deny rules; /.env, /.git, wp-*, php)"
-expression = '(http.request.uri.path wildcard r"/.env*" or starts_with(http.request.uri.path, "/.git/") or starts_with(http.request.uri.path, "/wp-") or http.request.uri.path.extension eq "php")'
+description = "Block scanner probes (replaces fr2 nginx deny rules; /.env, /.git, wp-_, php)"
+expression = '(http.request.uri.path wildcard r"/.env_" or starts_with(http.request.uri.path, "/.git/") or starts_with(http.request.uri.path, "/wp-") or http.request.uri.path.extension eq "php")'
 action = "block"
 
 # Replaces nginx limit_req (aphrody_downloads burst 40, aphrody_cdn_css burst 60) now that these hosts are Workers.
+
 # Free plan: one rule per zone, period 10 s, mitigation 10 s.
+
 [[rules]]
 zone = "aphrody.com"
 phase = "http_ratelimit"
@@ -2586,23 +2810,32 @@ action = "block"
 ratelimit = { characteristics = ["ip.src", "cf.colo.id"], period = 10, requests_per_period = 400, mitigation_timeout = 10 }
 
 # Sites whose only origin is prd (A record on prd, stateful backends): HTML eligible for the edge cache, TTL taken from
+
 # the origin Cache-Control only (bypass when absent, so private/no-store pages are never stored). Cloudflare then
+
 # serves the cached copy stale when the origin returns 5xx or is unreachable (prd reboot/crash), and serves it at once
+
 # while revalidating (origin stale-while-revalidate). Next.js RSC payloads (rsc header, _rsc query) stay uncached.
+
 # Rollback: cf.ts never deletes, so delete the rule by ref (dashboard or API DELETE .../rulesets/<id>/rules/<rule id>), then drop the block.
+
 [[rules]]
 zone = "dragonballfr.com"
 phase = "http_request_cache_settings"
 ref = "aphrody-origin-stale"
 description = "prd-only site: cache HTML per origin Cache-Control, served stale when prd is down"
-expression = '(http.host in {"dragonballfr.com" "www.dragonballfr.com"} and http.request.method in {"GET" "HEAD"} and not any(lower(http.request.headers.names[*])[*] in {"rsc" "next-router-prefetch" "next-router-state-tree" "authorization"}) and not http.request.uri.query contains "_rsc")'
+expression = '(http.host in {"dragonballfr.com" "www.dragonballfr.com"} and http.request.method in {"GET" "HEAD"} and not any(lower(http.request.headers.names[_])[_] in {"rsc" "next-router-prefetch" "next-router-state-tree" "authorization"}) and not http.request.uri.query contains "_rsc")'
 action = "set_cache_settings"
 action_parameters = { cache = true, edge_ttl = { mode = "bypass_by_default" }, browser_ttl = { mode = "respect_origin" }, serve_stale = { disable_stale_while_updating = false } }
 
 # Cloudflare never caches when the origin port is 8443 (fundamentals/reference/network-ports: "caching disabled"),
+
 # which is where the zone rule "rosegriffon prd origin port" sends every rosegriffon name. The site names go to 9443
+
 # instead (same prd host nginx server block, extra listen; prd /etc/fleet/firewall.nft opens 9443 to Cloudflare
+
 # with 8443). This rule comes after the rosegriffon one, so its port wins. Rollback: delete the rule by ref, then drop the block.
+
 [[rules]]
 zone = "rosegriffon.fr"
 phase = "http_request_origin"
@@ -2617,12 +2850,14 @@ zone = "rosegriffon.fr"
 phase = "http_request_cache_settings"
 ref = "aphrody-origin-stale"
 description = "prd-only site: cache HTML per origin Cache-Control, served stale when prd is down"
-expression = '(http.host in {"rosegriffon.fr" "www.rosegriffon.fr"} and http.request.method in {"GET" "HEAD"} and not any(lower(http.request.headers.names[*])[*] in {"rsc" "next-router-prefetch" "next-router-state-tree" "authorization"}) and not http.request.uri.query contains "_rsc")'
+expression = '(http.host in {"rosegriffon.fr" "www.rosegriffon.fr"} and http.request.method in {"GET" "HEAD"} and not any(lower(http.request.headers.names[_])[_] in {"rsc" "next-router-prefetch" "next-router-state-tree" "authorization"}) and not http.request.uri.query contains "_rsc")'
 action = "set_cache_settings"
 action_parameters = { cache = true, edge_ttl = { mode = "bypass_by_default" }, browser_ttl = { mode = "respect_origin" }, serve_stale = { disable_stale_while_updating = false } }
 
 # aphrody.app R2 CDN host, 30 days at the edge. cdn.aphrody.app and dragonballfr.aphrody.app (no DNS record) removed
+
 # from the live expression. Rollback: restore the three hosts in the expression, then apply rules.
+
 [[rules]]
 zone = "aphrody.app"
 phase = "http_request_cache_settings"
@@ -2633,7 +2868,9 @@ action = "set_cache_settings"
 action_parameters = { cache = true, edge_ttl = { default = 2592000, mode = "override_origin" }, browser_ttl = { mode = "respect_origin" }, serve_stale = { disable_stale_while_updating = false } }
 
 # Immutable CDN prefix /_static/* (docs/replica/ARCHITECTURE.md §3): eligible for the edge cache, TTL from the origin
+
 # Cache-Control (public, max-age=31536000, immutable). Rollback: delete the rule by ref, then drop the block.
+
 [[rules]]
 zone = "aphrody.com"
 phase = "http_request_cache_settings"
@@ -2653,8 +2890,11 @@ action = "set_cache_settings"
 action_parameters = { cache = true, edge_ttl = { mode = "respect_origin" }, browser_ttl = { mode = "respect_origin" } }
 
 # The 2 legacy page rules of aphrody.com imported as cache rules (same effect: cache everything, browser 1 year,
+
 # edge 30 days). They come last in the phase, so they win over aphrody-origin-cdn as the page rule does today.
+
 # The page rules themselves stay live until the owner removes them (cf.ts never deletes).
+
 [[rules]]
 zone = "aphrody.com"
 phase = "http_request_cache_settings"
@@ -2668,48 +2908,63 @@ action_parameters = { cache = true, edge_ttl = { default = 2592000, mode = "over
 zone = "aphrody.com"
 phase = "http_request_cache_settings"
 ref = "aphrody-pagerule-assets"
-description = "Imported page rule *aphrody.com/assets/*: cache everything, browser 1 year, edge 30 days"
+description = "Imported page rule _aphrody.com/assets/_: cache everything, browser 1 year, edge 30 days"
 expression = '((http.host eq "aphrody.com" or ends_with(http.host, ".aphrody.com")) and starts_with(http.request.uri.path, "/assets/"))'
 action = "set_cache_settings"
 action_parameters = { cache = true, edge_ttl = { default = 2592000, mode = "override_origin" }, browser_ttl = { default = 31536000, mode = "override_origin" } }
 
 # Access: browser-rendered SSH (type ssh) + a service token for agents (cloudflared access ssh --service-token-*).
+
 [access]
 owner_policy = "f3931268-9a0c-417c-b133-807ec2ca93e8" # mig-owner-only (contact@aphrody.com)
+
 # One token per host, secret only on that host (CF_ACCESS_CLIENT_ID/SECRET in /etc/aphrody/secrets.env); an app lists the
+
 # tokens it accepts. fr2 -> prd ssh uses fleet-agents-fr2, prd -> fr2 uses fleet-agents-prd. Admin UIs: owner only.
+
 service_tokens = [
-  { name = "fleet-agents-fr2", host = "fr2" },
-  { name = "fleet-agents-prd", host = "prd" },
+{ name = "fleet-agents-fr2", host = "fr2" },
+{ name = "fleet-agents-prd", host = "prd" },
 ]
 retire_tokens = ["fleet-agents"] # shared bidirectional token (Gemini review 2026-11-13)
 apps = [
-  { name = "fr2-ssh", type = "ssh", domain = "ssh-fr2.aphrody.com", tokens = [
-    "fleet-agents-prd",
-  ] },
-  { name = "prd-ssh", type = "ssh", domain = "ssh-prd.aphrody.com", tokens = [
-    "fleet-agents-fr2",
-  ] },
-  # 502 before the migration, now served by prd: owner-only until the app has its own auth.
-  { name = "aphrody-admin", type = "self_hosted", domain = "admin.aphrody.com" },
-  { name = "aphrody-control", type = "self_hosted", domain = "control.aphrody.com" },
-  { name = "aphrody-console", type = "self_hosted", domain = "console.aphrody.com" },
-  # aphrody.app dashboard (packages/deploy): owner only, the Worker re-verifies the JWT (ACCESS_AUD in its wrangler.toml).
-  { name = "aphrody-app-dashboard", type = "self_hosted", domain = "aphrody.app/dashboard" },
+{ name = "fr2-ssh", type = "ssh", domain = "ssh-fr2.aphrody.com", tokens = [
+"fleet-agents-prd",
+] },
+{ name = "prd-ssh", type = "ssh", domain = "ssh-prd.aphrody.com", tokens = [
+"fleet-agents-fr2",
+] },
+
+# 502 before the migration, now served by prd: owner-only until the app has its own auth.
+
+{ name = "aphrody-admin", type = "self_hosted", domain = "admin.aphrody.com" },
+{ name = "aphrody-control", type = "self_hosted", domain = "control.aphrody.com" },
+{ name = "aphrody-console", type = "self_hosted", domain = "console.aphrody.com" },
+
+# aphrody.app dashboard (packages/deploy): owner only, the Worker re-verifies the JWT (ACCESS_AUD in its wrangler.toml).
+
+{ name = "aphrody-app-dashboard", type = "self_hosted", domain = "aphrody.app/dashboard" },
 ]
 
 # Mail of aphrody.com. Inbound today: OVH MX Plan (mailbox contact@aphrody.com). Email Routing forwards the public
+
 # addresses to the owner's private mailbox, named only by an env/vault key (never written here: anonymous identity,
+
 # docs/IDENTITY.md). `enabled = false`: rules are kept in place but Cloudflare MX are not installed, OVH keeps
+
 # receiving; flipping it to true replaces the OVH MX with Cloudflare's (owner decision, destination verified first).
-#   bun infra/cloudflare/cf.ts plan email | apply email
+
+# bun infra/cloudflare/cf.ts plan email | apply email
+
 [email_routing."aphrody.com"]
 enabled = false
 destination_env = "APHRODY_OWNER_GOOGLE_ACCOUNT"
 addresses = ["contact", "security", "noreply"]
 
-# Outbound: Resend (DKIM resend._domainkey, return path send.*) and OVH (DKIM ovhmo-selector-*). Read-only check
+# Outbound: Resend (DKIM resend._domainkey, return path send._) and OVH (DKIM ovhmo-selector-_). Read-only check
+
 # (plan and apply report a missing or changed record, never write it: keys come from the provider). Content = prefix.
+
 [[mail."aphrody.com"]]
 type = "TXT"
 name = "aphrody.com"
@@ -2731,10 +2986,10 @@ type = "CNAME"
 name = "ovhmo-selector-1._domainkey.aphrody.com"
 content = "ovhmo-selector-1._domainkey.4861041.dp.dkim.mail.ovh.net"
 
-
 ================================================
 FILE: cloudflare/expected-status.json
 ================================================
+
 // [OUTLINE - 147 symbols, 188 lines]
 // L2: "admin.aphrody.com": 302
 // L3: "ai.aphrody.com": 200
@@ -2884,18 +3139,18 @@ FILE: cloudflare/expected-status.json
 // L185: "status": 301
 // L186: "why": "redirection vers l'apex aphrody.com (Worker aphrody, apps/aphrody/edge)"
 
-
 ================================================
 FILE: cloudflare/fleet-token.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 112 lines]
 // import ./lib
 // L18-L41: async function cf<T = any>(
 
-
 ================================================
 FILE: cloudflare/lib.ts
 ================================================
+
 // [OUTLINE - 10 symbols, 130 lines]
 // import node:path
 // L4: type Ingress =
@@ -2909,10 +3164,10 @@ FILE: cloudflare/lib.ts
 // L111-L119: async function tunnelId(name: string): Promise<string>
 // L121-L130: async function expand(content: string, strict = true): Promise<string>
 
-
 ================================================
 FILE: cloudflare/proof.ts
 ================================================
+
 // [OUTLINE - 6 symbols, 803 lines]
 // import node:tls
 // import node:path
@@ -2924,46 +3179,47 @@ FILE: cloudflare/proof.ts
 // L81-L95: function tcpOpen(ip: string, port: number): Promise<boolean>
 // L88: data()
 
-
 ================================================
 FILE: cloudflare/recon.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 105 lines]
 // import node:path
 // import node:fs
 // import ./lib
 
-
 ================================================
 FILE: cloudflare/ssh-ca.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 84 lines]
 // import ./lib
-
 
 ================================================
 FILE: cloudflare/tunnel-token.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 15 lines]
 // import ./lib.ts
-
 
 ================================================
 FILE: cloudflare/workers/aphrody-email-worker/index.js
 ================================================
+
 // [OUTLINE - 2 symbols, 68 lines]
 // L3-L37: async email(message, env, ctx)
 // L38-L63: async fetch(req, env, ctx)
 
-
 ================================================
 FILE: cloudflare/workers/aphrody-email-worker/index.js.map
 ================================================
-{"version":3,"file":"index.js","sources":["src\\index.ts"],"sourcesContent":["/**\n * Aphrody Cloudflare Edge Email Worker (2026 Edition)\n * Inbound Email Handler \u0026 Forwarding Relay.\n * Logs all inbound communications to Cloudflare D1 aphrody-app and forwards to verified destination.\n */\n\nexport interface Env {\n  DB?: any;\n  CACHE?: any;\n  FORWARD_DESTINATION?: string;\n}\n\nexport default {\n  async email(message: any, env: Env, ctx: any): Promise\u003cvoid\u003e {\n    const id = `in_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;\n    const from = message.from || \"unknown\";\n    const to = message.to || \"unknown\";\n    const subject = message.headers?.get(\"subject\") || \"(No Subject)\";\n    const messageId = message.headers?.get(\"message-id\") || id;\n    const spfStatus = message.headers?.get(\"received-spf\") || \"unknown\";\n    const dkimStatus = message.headers?.get(\"dkim-signature\") ? \"signed\" : \"unsigned\";\n\n    // 1. Persist inbound event to Cloudflare D1\n    if (env.DB) {\n      try {\n        await env.DB.prepare(\n          \"INSERT INTO inbound_emails (id, messageId, fromAddress, toAddress, subject, spfStatus, dkimStatus, rawHeaders, bodySnippet, receivedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\"\n        )\n          .bind(\n            id,\n            messageId,\n            from,\n            to,\n            subject,\n            spfStatus,\n            dkimStatus,\n            \"\",\n            \"\",\n            Date.now()\n          )\n          .run();\n      } catch (err) {\n        console.error(\"Failed to insert inbound email into D1:\", err);\n      }\n    }\n\n    // 2. Forward to destination (e.g. contact@aphrody.com)\n    const destination = env.FORWARD_DESTINATION || \"contact@aphrody.com\";\n    try {\n      await message.forward(destination);\n    } catch (fwdErr) {\n      console.error(`Failed to forward email to ${destination}:`, fwdErr);\n    }\n  },\n\n  async fetch(req: Request, env: Env, ctx: any): Promise\u003cResponse\u003e {\n    const url = new URL(req.url);\n\n    if (url.pathname === \"/health\") {\n      return Response.json({\n        status: \"healthy\",\n        worker: \"aphrody-email-worker\",\n        edge: \"cloudflare\",\n        d1_connected: !!env.DB,\n        time: new Date().toISOString(),\n      });\n    }\n\n    if (url.pathname === \"/api/inbound/latest\" \u0026\u0026 env.DB) {\n      try {\n        const rows = await env.DB.prepare(\n          \"SELECT * FROM inbound_emails ORDER BY receivedAt DESC LIMIT 20\"\n        ).all();\n        return Response.json({ emails: rows.results });\n      } catch (err: any) {\n        return Response.json({ error: err.message }, { status: 500 });\n      }\n    }\n\n    return new Response(\"Aphrody Cloudflare Edge Email Worker (2026)\", {\n      status: 200,\n      headers: { \"Content-Type\": \"text/plain\" },\n    });\n  },\n};\n"],"names":[],"mappings":";AAYA,IAAO,gBAAQ;AAAA,EACb,MAAM,MAAM,SAAc,KAAU,KAAyB;AAC3D,UAAM,KAAK,MAAM,KAAK,IAAI,CAAC,IAAI,KAAK,OAAO,EAAE,SAAS,EAAE,EAAE,UAAU,GAAG,CAAC,CAAC;AACzE,UAAM,OAAO,QAAQ,QAAQ;AAC7B,UAAM,KAAK,QAAQ,MAAM;AACzB,UAAM,UAAU,QAAQ,SAAS,IAAI,SAAS,KAAK;AACnD,UAAM,YAAY,QAAQ,SAAS,IAAI,YAAY,KAAK;AACxD,UAAM,YAAY,QAAQ,SAAS,IAAI,cAAc,KAAK;AAC1D,UAAM,aAAa,QAAQ,SAAS,IAAI,gBAAgB,IAAI,WAAW;AAGvE,QAAI,IAAI,IAAI;AACV,UAAI;AACF,cAAM,IAAI,GAAG;AAAA,UACX;AAAA,QACF,EACG;AAAA,UACC;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA,KAAK,IAAI;AAAA,QACX,EACC,IAAI;AAAA,MACT,SAAS,KAAK;AACZ,gBAAQ,MAAM,2CAA2C,GAAG;AAAA,MAC9D;AAAA,IACF;AAGA,UAAM,cAAc,IAAI,uBAAuB;AAC/C,QAAI;AACF,YAAM,QAAQ,QAAQ,WAAW;AAAA,IACnC,SAAS,QAAQ;AACf,cAAQ,MAAM,8BAA8B,WAAW,KAAK,MAAM;AAAA,IACpE;AAAA,EACF;AAAA,EAEA,MAAM,MAAM,KAAc,KAAU,KAA6B;AAC/D,UAAM,MAAM,IAAI,IAAI,IAAI,GAAG;AAE3B,QAAI,IAAI,aAAa,WAAW;AAC9B,aAAO,SAAS,KAAK;AAAA,QACnB,QAAQ;AAAA,QACR,QAAQ;AAAA,QACR,MAAM;AAAA,QACN,cAAc,CAAC,CAAC,IAAI;AAAA,QACpB,OAAM,oBAAI,KAAK,GAAE,YAAY;AAAA,MAC/B,CAAC;AAAA,IACH;AAEA,QAAI,IAAI,aAAa,yBAAyB,IAAI,IAAI;AACpD,UAAI;AACF,cAAM,OAAO,MAAM,IAAI,GAAG;AAAA,UACxB;AAAA,QACF,EAAE,IAAI;AACN,eAAO,SAAS,KAAK,EAAE,QAAQ,KAAK,QAAQ,CAAC;AAAA,MAC/C,SAAS,KAAU;AACjB,eAAO,SAAS,KAAK,EAAE,OAAO,IAAI,QAAQ,GAAG,EAAE,QAAQ,IAAI,CAAC;AAAA,MAC9D;AAAA,IACF;AAEA,WAAO,IAAI,SAAS,+CAA+C;AAAA,MACjE,QAAQ;AAAA,MACR,SAAS,EAAE,gBAAgB,aAAa;AAAA,IAC1C,CAAC;AAAA,EACH;AACF;"}
+
+{"version":3,"file":"index.js","sources":["src\\index.ts"],"sourcesContent":["/**\n * Aphrody Cloudflare Edge Email Worker (2026 Edition)\n * Inbound Email Handler \u0026 Forwarding Relay.\n * Logs all inbound communications to Cloudflare D1 aphrody-app and forwards to verified destination.\n */\n\nexport interface Env {\n DB?: any;\n CACHE?: any;\n FORWARD_DESTINATION?: string;\n}\n\nexport default {\n async email(message: any, env: Env, ctx: any): Promise\u003cvoid\u003e {\n const id = `in_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;\n const from = message.from || \"unknown\";\n const to = message.to || \"unknown\";\n const subject = message.headers?.get(\"subject\") || \"(No Subject)\";\n const messageId = message.headers?.get(\"message-id\") || id;\n const spfStatus = message.headers?.get(\"received-spf\") || \"unknown\";\n const dkimStatus = message.headers?.get(\"dkim-signature\") ? \"signed\" : \"unsigned\";\n\n // 1. Persist inbound event to Cloudflare D1\n if (env.DB) {\n try {\n await env.DB.prepare(\n \"INSERT INTO inbound_emails (id, messageId, fromAddress, toAddress, subject, spfStatus, dkimStatus, rawHeaders, bodySnippet, receivedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\"\n )\n .bind(\n id,\n messageId,\n from,\n to,\n subject,\n spfStatus,\n dkimStatus,\n \"\",\n \"\",\n Date.now()\n )\n .run();\n } catch (err) {\n console.error(\"Failed to insert inbound email into D1:\", err);\n }\n }\n\n // 2. Forward to destination (e.g. contact@aphrody.com)\n const destination = env.FORWARD_DESTINATION || \"contact@aphrody.com\";\n try {\n await message.forward(destination);\n } catch (fwdErr) {\n console.error(`Failed to forward email to ${destination}:`, fwdErr);\n }\n },\n\n async fetch(req: Request, env: Env, ctx: any): Promise\u003cResponse\u003e {\n const url = new URL(req.url);\n\n if (url.pathname === \"/health\") {\n return Response.json({\n status: \"healthy\",\n worker: \"aphrody-email-worker\",\n edge: \"cloudflare\",\n d1_connected: !!env.DB,\n time: new Date().toISOString(),\n });\n }\n\n if (url.pathname === \"/api/inbound/latest\" \u0026\u0026 env.DB) {\n try {\n const rows = await env.DB.prepare(\n \"SELECT * FROM inbound_emails ORDER BY receivedAt DESC LIMIT 20\"\n ).all();\n return Response.json({ emails: rows.results });\n } catch (err: any) {\n return Response.json({ error: err.message }, { status: 500 });\n }\n }\n\n return new Response(\"Aphrody Cloudflare Edge Email Worker (2026)\", {\n status: 200,\n headers: { \"Content-Type\": \"text/plain\" },\n });\n },\n};\n"],"names":[],"mappings":";AAYA,IAAO,gBAAQ;AAAA,EACb,MAAM,MAAM,SAAc,KAAU,KAAyB;AAC3D,UAAM,KAAK,MAAM,KAAK,IAAI,CAAC,IAAI,KAAK,OAAO,EAAE,SAAS,EAAE,EAAE,UAAU,GAAG,CAAC,CAAC;AACzE,UAAM,OAAO,QAAQ,QAAQ;AAC7B,UAAM,KAAK,QAAQ,MAAM;AACzB,UAAM,UAAU,QAAQ,SAAS,IAAI,SAAS,KAAK;AACnD,UAAM,YAAY,QAAQ,SAAS,IAAI,YAAY,KAAK;AACxD,UAAM,YAAY,QAAQ,SAAS,IAAI,cAAc,KAAK;AAC1D,UAAM,aAAa,QAAQ,SAAS,IAAI,gBAAgB,IAAI,WAAW;AAGvE,QAAI,IAAI,IAAI;AACV,UAAI;AACF,cAAM,IAAI,GAAG;AAAA,UACX;AAAA,QACF,EACG;AAAA,UACC;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA;AAAA,UACA,KAAK,IAAI;AAAA,QACX,EACC,IAAI;AAAA,MACT,SAAS,KAAK;AACZ,gBAAQ,MAAM,2CAA2C,GAAG;AAAA,MAC9D;AAAA,IACF;AAGA,UAAM,cAAc,IAAI,uBAAuB;AAC/C,QAAI;AACF,YAAM,QAAQ,QAAQ,WAAW;AAAA,IACnC,SAAS,QAAQ;AACf,cAAQ,MAAM,8BAA8B,WAAW,KAAK,MAAM;AAAA,IACpE;AAAA,EACF;AAAA,EAEA,MAAM,MAAM,KAAc,KAAU,KAA6B;AAC/D,UAAM,MAAM,IAAI,IAAI,IAAI,GAAG;AAE3B,QAAI,IAAI,aAAa,WAAW;AAC9B,aAAO,SAAS,KAAK;AAAA,QACnB,QAAQ;AAAA,QACR,QAAQ;AAAA,QACR,MAAM;AAAA,QACN,cAAc,CAAC,CAAC,IAAI;AAAA,QACpB,OAAM,oBAAI,KAAK,GAAE,YAAY;AAAA,MAC/B,CAAC;AAAA,IACH;AAEA,QAAI,IAAI,aAAa,yBAAyB,IAAI,IAAI;AACpD,UAAI;AACF,cAAM,OAAO,MAAM,IAAI,GAAG;AAAA,UACxB;AAAA,QACF,EAAE,IAAI;AACN,eAAO,SAAS,KAAK,EAAE,QAAQ,KAAK,QAAQ,CAAC;AAAA,MAC/C,SAAS,KAAU;AACjB,eAAO,SAAS,KAAK,EAAE,OAAO,IAAI,QAAQ,GAAG,EAAE,QAAQ,IAAI,CAAC;AAAA,MAC9D;AAAA,IACF;AAEA,WAAO,IAAI,SAAS,+CAA+C;AAAA,MACjE,QAAQ;AAAA,MACR,SAAS,EAAE,gBAAgB,aAAa;AAAA,IAC1C,CAAC;AAAA,EACH;AACF;"}
 
 ================================================
 FILE: cloudflare/workers/aphrody-email-worker/wrangler.jsonc
 ================================================
+
 // [OUTLINE - 15 symbols, 9 lines]
 // L2: "name": "aphrody-email-worker"
 // L3: "main": "index.js"
@@ -2981,19 +3237,19 @@ FILE: cloudflare/workers/aphrody-email-worker/wrangler.jsonc
 // L8: "ENVIRONMENT": "production"
 // L8: "FORWARD_DESTINATION": "contact@aphrody.com"
 
-
 ================================================
 FILE: cloudflare/workers/aphrody-webos/index.js
 ================================================
+
 // [OUTLINE - 3 symbols, 249 lines]
 // L64-L81: async function serveIso(request, env)
 // L83-L143: function handleConsole(url)
 // L146-L248: async fetch(request, env)
 
-
 ================================================
 FILE: cloudflare/workers/aphrody-webos/wrangler.jsonc
 ================================================
+
 // [OUTLINE - 10 symbols, 11 lines]
 // L3: "name": "aphrody-webos"
 // L4: "main": "index.js"
@@ -3006,11 +3262,12 @@ FILE: cloudflare/workers/aphrody-webos/wrangler.jsonc
 // L8: "binding": "VM"
 // L8: "bucket_name": "aphrody-assets"
 
-
 ================================================
 FILE: cloudflare/workers/api-gateway/api.aphrody.com.toml
 ================================================
+
 # Worker "api-aphrody-com" (script = ./worker.js). Deployed via Cloudflare API (MCP), no secrets.
+
 name = "api-aphrody-com"
 main = "worker.js"
 compatibility_date = "2026-11-01"
@@ -3022,10 +3279,10 @@ bucket_name = "aphrody-dist"
 CATALOGUE = "sites/api.aphrody.com/v1/openapi"
 DOWNLOADS = "aphrody"
 
-
 ================================================
 FILE: cloudflare/workers/api-gateway/selfhost.ts
 ================================================
+
 // [OUTLINE - 4 symbols, 78 lines]
 // import node:path
 // L9-L13: type Cfg =
@@ -3033,18 +3290,18 @@ FILE: cloudflare/workers/api-gateway/selfhost.ts
 // L28-L58: async get(key: string, o:
 // L67: passThroughOnException()
 
-
 ================================================
 FILE: cloudflare/workers/api-gateway/worker.js
 ================================================
+
 // [OUTLINE - 2 symbols, 110 lines]
 // L28-L54: async function serve(env, key, req, type)
 // L56-L109: async fetch(req, env)
 
-
 ================================================
 FILE: cloudflare/workers/bun-video-showcase/worker.js
 ================================================
+
 // [OUTLINE - 8 symbols, 198 lines]
 // L20-L22: function isBunVideoPath(path)
 // L24-L29: function unavailable()
@@ -3055,10 +3312,10 @@ FILE: cloudflare/workers/bun-video-showcase/worker.js
 // L63-L107: async function verifyAccessIdentity(request, env, fetchBackend)
 // L109-L191: async function serveShowcase(request, env, fetchBackend = fetch)
 
-
 ================================================
 FILE: cloudflare/workers/bun-video-showcase/wrangler.jsonc
 ================================================
+
 // [OUTLINE - 12 symbols, 9 lines]
 // L2: "name": "bun-video-showcase"
 // L3: "main": "worker.js"
@@ -3073,18 +3330,18 @@ FILE: cloudflare/workers/bun-video-showcase/wrangler.jsonc
 // L8: "pattern": "video.aphrody.com/*"
 // L8: "zone_name": "aphrody.com"
 
-
 ================================================
 FILE: cloudflare/workers/creator-aphrody-com/worker.js
 ================================================
+
 // [OUTLINE - 2 symbols, 25 lines]
 // L2: async function fetchKey(env, key, req)
 // L4-L24: async fetch(req, env)
 
-
 ================================================
 FILE: cloudflare/workers/creator-aphrody-com/wrangler.jsonc
 ================================================
+
 // [OUTLINE - 10 symbols, 7 lines]
 // L2: "name": "creator-aphrody-com"
 // L3: "main": "worker.js"
@@ -3097,27 +3354,27 @@ FILE: cloudflare/workers/creator-aphrody-com/wrangler.jsonc
 // L6: "SERVICE": "aphrody-creator"
 // L6: "SPA": "1"
 
-
 ================================================
 FILE: cloudflare/workers/github-app/cloudflare.config.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 20 lines]
 // import cf/config
 // import ./src/index.ts
 // import ./src/index.ts
 
-
 ================================================
 FILE: cloudflare/workers/github-app/src/index.test.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 158 lines]
 // import bun:test
 // import ./index.ts
 
-
 ================================================
 FILE: cloudflare/workers/github-app/tsconfig.json
 ================================================
+
 // [OUTLINE - 9 symbols, 12 lines]
 // L2-L10: "compilerOptions":
 // L3: "target": "ES2024"
@@ -3129,25 +3386,25 @@ FILE: cloudflare/workers/github-app/tsconfig.json
 // L9: "types": ["@cloudflare/workers-types"]
 // L11: "include": ["src", "cloudflare.config.ts", "vite.config.ts"]
 
-
 ================================================
 FILE: cloudflare/workers/github-app/vite.config.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 5 lines]
 // import @cloudflare/vite-plugin
 // import vite
 
-
 ================================================
 FILE: cloudflare/workers/rosegriffon-maintenance/worker.js
 ================================================
+
 // [OUTLINE - 1 symbols, 26 lines]
 // L3-L21: async fetch(request, env)
-
 
 ================================================
 FILE: cloudflare/workers/rosegriffon-maintenance/wrangler.jsonc
 ================================================
+
 // [OUTLINE - 5 symbols, 6 lines]
 // L2: "name": "rosegriffon-maintenance"
 // L3: "main": "worker.js"
@@ -3155,10 +3412,10 @@ FILE: cloudflare/workers/rosegriffon-maintenance/wrangler.jsonc
 // L5: "assets":
 // L5: "binding": "ASSETS"
 
-
 ================================================
 FILE: cloudflare/workers/shenron-cdn/worker.mjs
 ================================================
+
 // [OUTLINE - 12 symbols, 330 lines]
 // L6-L70: async function bootstrapManifest(key, env, fetchOrigin)
 // L71-L75: async function manifestKey(path, prefix = "_migration/manifests/")
@@ -3173,10 +3430,10 @@ FILE: cloudflare/workers/shenron-cdn/worker.mjs
 // L234-L319: async function handleCdn(request, env, fetchOrigin = fetch)
 // L321-L323: fetch(request, env)
 
-
 ================================================
 FILE: cloudflare/workers/shenron-cdn/wrangler.jsonc
 ================================================
+
 // [OUTLINE - 12 symbols, 9 lines]
 // L2: "name": "shenron-cdn"
 // L3: "main": "worker.mjs"
@@ -3191,83 +3448,93 @@ FILE: cloudflare/workers/shenron-cdn/wrangler.jsonc
 // L8: "pattern": "cdn.dragonballfr.com/*"
 // L8: "zone_name": "dragonballfr.com"
 
-
 ================================================
 FILE: cluster/cluster.just
 ================================================
+
 # Cluster layer (docs/infra/CLUSTER.md): LB + failover + dedup across fr1/fr2/prd, generated from infra/deploy.toml.
 
 # Regenerate infra/cluster/generated/* from infra/deploy.toml [cluster]
+
 cluster-gen:
-    bun "{{root}}/infra/cluster/gen.ts"
+bun "{{root}}/infra/cluster/gen.ts"
 
 # Push + validate + reload one member (rollback: just cluster-down <member>)
+
 cluster-deploy member: cluster-gen
-    bash "{{root}}/infra/cluster/deploy.sh" {{member}}
+bash "{{root}}/infra/cluster/deploy.sh" {{member}}
 
 # Stop the cluster data plane on one member (HAProxy off, nginx shard conf removed)
+
 cluster-down member:
-    bash "{{root}}/infra/cluster/deploy.sh" {{member}} down
+bash "{{root}}/infra/cluster/deploy.sh" {{member}} down
 
 # Issue/renew a member certificate (CA key stays in ~/.local/share/aphrody/cluster-ca)
+
 cluster-pki member:
-    bash "{{root}}/infra/cluster/pki.sh" {{member}}
+bash "{{root}}/infra/cluster/pki.sh" {{member}}
 
 # Health, mesh matrix vs WireGuard, kill-test, coalescing, idempotency, dedup ratio
-cluster-proof:
-    bash "{{root}}/infra/cluster/proof.sh"
 
+cluster-proof:
+bash "{{root}}/infra/cluster/proof.sh"
 
 ================================================
 FILE: cluster/compose.capped.yaml
 ================================================
-# Override for low-priority members (fr1): edge replicas inside aphrody-cluster.slice (CPUQuota/MemoryMax from
-# deploy.toml [cluster.members.fr1].slice), so Chromium/LLVM builds keep priority.
-# docker compose -f compose.yaml -f compose.capped.yaml --profile edge up -d   (rollback: ... --profile edge down)
-services:
-  downloads:
-    {
-      cgroup_parent: aphrody-cluster.slice,
-      cpu_shares: 128,
-      deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } },
-    }
-  cdn:
-    {
-      cgroup_parent: aphrody-cluster.slice,
-      cpu_shares: 128,
-      deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } },
-    }
-  api-gateway:
-    {
-      cgroup_parent: aphrody-cluster.slice,
-      cpu_shares: 128,
-      deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } },
-    }
-  # aphrody standby (deploy.toml [cluster.services.aphrody] standby): HAProxy backup, serves only while prd is down.
-  aphrody:
-    {
-      cgroup_parent: aphrody-cluster.slice,
-      cpu_shares: 128,
-      deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } },
-    }
 
+# Override for low-priority members (fr1): edge replicas inside aphrody-cluster.slice (CPUQuota/MemoryMax from
+
+# deploy.toml [cluster.members.fr1].slice), so Chromium/LLVM builds keep priority.
+
+# docker compose -f compose.yaml -f compose.capped.yaml --profile edge up -d (rollback: ... --profile edge down)
+
+services:
+downloads:
+{
+cgroup_parent: aphrody-cluster.slice,
+cpu_shares: 128,
+deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } },
+}
+cdn:
+{
+cgroup_parent: aphrody-cluster.slice,
+cpu_shares: 128,
+deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } },
+}
+api-gateway:
+{
+cgroup_parent: aphrody-cluster.slice,
+cpu_shares: 128,
+deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } },
+}
+
+# aphrody standby (deploy.toml [cluster.services.aphrody] standby): HAProxy backup, serves only while prd is down.
+
+aphrody:
+{
+cgroup_parent: aphrody-cluster.slice,
+cpu_shares: 128,
+deploy: { resources: { limits: { cpus: "1.0", memory: 1g } } },
+}
 
 ================================================
 FILE: cluster/dedup.ts
 ================================================
-// [OUTLINE - 0 symbols, 77 lines]
 
+// [OUTLINE - 0 symbols, 77 lines]
 
 ================================================
 FILE: cluster/deploy.sh
 ================================================
+
 // [OUTLINE - 1 symbols, 50 lines]
 // L7: run()
-
 
 ================================================
 FILE: cluster/gen.ts
 ================================================
+
 // [OUTLINE - 10 symbols, 336 lines]
 // import node:fs
 // import node:path
@@ -3282,317 +3549,322 @@ FILE: cluster/gen.ts
 // L281-L301: function sshConfig(): string
 // L303-L317: function sshMesh(): string
 
-
 ================================================
 FILE: cluster/generated/fr1/aphrody-cluster.slice
 ================================================
+
 # GENERATED by infra/cluster/gen.ts. Cluster workloads (HAProxy, edge containers) run here.
+
 [Slice]
 CPUQuota=200%
 MemoryMax=6G
 CPUWeight=10
 IOWeight=10
 
-
 ================================================
 FILE: cluster/generated/fr1/haproxy.cfg
 ================================================
+
 # GENERATED by infra/cluster/gen.ts from infra/deploy.toml [cluster]; member fr1. Do not edit.
+
 global
-    log stderr format short local0 notice
-    user haproxy
-    group haproxy
-    maxconn 20000
-    stats socket /run/aphrody-cluster/haproxy.sock mode 600 level admin
-    ssl-default-bind-options ssl-min-ver TLSv1.3
-    ssl-default-server-options ssl-min-ver TLSv1.3
+log stderr format short local0 notice
+user haproxy
+group haproxy
+maxconn 20000
+stats socket /run/aphrody-cluster/haproxy.sock mode 600 level admin
+ssl-default-bind-options ssl-min-ver TLSv1.3
+ssl-default-server-options ssl-min-ver TLSv1.3
 
 defaults
-    log global
-    mode http
-    option dontlognull
-    timeout connect 3s
-    timeout client 120s
-    timeout server 120s
-    timeout tunnel 1h
-    timeout http-keep-alive 10s
-    timeout check 2s
-    retries 2
-    option redispatch 1
-    default-server inter 1000ms fastinter 500ms downinter 3s fall 2 rise 3
+log global
+mode http
+option dontlognull
+timeout connect 3s
+timeout client 120s
+timeout server 120s
+timeout tunnel 1h
+timeout http-keep-alive 10s
+timeout check 2s
+retries 2
+option redispatch 1
+default-server inter 1000ms fastinter 500ms downinter 3s fall 2 rise 3
 
 frontend stats
-    bind 127.0.0.1:19900
-    http-request use-service prometheus-exporter if { path /metrics }
-    stats enable
-    stats uri /stats
-    stats refresh 5s
+bind 127.0.0.1:19900
+http-request use-service prometheus-exporter if { path /metrics }
+stats enable
+stats uri /stats
+stats refresh 5s
 
 # Inbound from other members: TLS 1.3, client cert signed by the cluster CA, routed by SNI.
+
 frontend mesh_in
-    mode tcp
-    bind 51.77.147.152:7444 ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required
-    tcp-request content reject unless { ssl_fc_sni -m end .fr1.cluster.internal }
-    use_backend in_downloads if { ssl_fc_sni -i downloads.fr1.cluster.internal }
-    use_backend in_cdn if { ssl_fc_sni -i cdn.fr1.cluster.internal }
-    use_backend in_api-gateway if { ssl_fc_sni -i api-gateway.fr1.cluster.internal }
-    use_backend in_aphrody if { ssl_fc_sni -i aphrody.fr1.cluster.internal }
-    use_backend in_nativelink if { ssl_fc_sni -i nativelink.fr1.cluster.internal }
-    use_backend in_nativelink-cas if { ssl_fc_sni -i nativelink-cas.fr1.cluster.internal }
-    use_backend in_ssh if { ssl_fc_sni -i ssh.fr1.cluster.internal }
-    use_backend in_bench if { ssl_fc_sni -i bench.fr1.cluster.internal }
+mode tcp
+bind 51.77.147.152:7444 ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required
+tcp-request content reject unless { ssl_fc_sni -m end .fr1.cluster.internal }
+use_backend in_downloads if { ssl_fc_sni -i downloads.fr1.cluster.internal }
+use_backend in_cdn if { ssl_fc_sni -i cdn.fr1.cluster.internal }
+use_backend in_api-gateway if { ssl_fc_sni -i api-gateway.fr1.cluster.internal }
+use_backend in_aphrody if { ssl_fc_sni -i aphrody.fr1.cluster.internal }
+use_backend in_nativelink if { ssl_fc_sni -i nativelink.fr1.cluster.internal }
+use_backend in_nativelink-cas if { ssl_fc_sni -i nativelink-cas.fr1.cluster.internal }
+use_backend in_ssh if { ssl_fc_sni -i ssh.fr1.cluster.internal }
+use_backend in_bench if { ssl_fc_sni -i bench.fr1.cluster.internal }
 
 backend in_downloads
-    mode tcp
-    server local 127.0.0.1:29797
+mode tcp
+server local 127.0.0.1:29797
 
 backend in_cdn
-    mode tcp
-    server local 127.0.0.1:29796
+mode tcp
+server local 127.0.0.1:29796
 
 backend in_api-gateway
-    mode tcp
-    server local 127.0.0.1:29081
+mode tcp
+server local 127.0.0.1:29081
 
 backend in_aphrody
-    mode tcp
-    server local 127.0.0.1:29300
+mode tcp
+server local 127.0.0.1:29300
 
 backend in_nativelink
-    mode tcp
-    server local 10.200.77.1:50051 check
+mode tcp
+server local 10.200.77.1:50051 check
 
 backend in_nativelink-cas
-    mode tcp
-    server local 10.200.77.1:50061 check
+mode tcp
+server local 10.200.77.1:50061 check
 
 backend in_ssh
-    mode tcp
-    server local 127.0.0.1:22 check
+mode tcp
+server local 127.0.0.1:22 check
 
 backend in_bench
-    mode tcp
-    server local 127.0.0.1:29990 check
+mode tcp
+server local 127.0.0.1:29990 check
 
 frontend lb_downloads
-    bind 127.0.0.1:19797
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_downloads
+bind 127.0.0.1:19797
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_downloads
 
 backend pool_downloads
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host downloads.aphrody.com hdr X-Cluster-Check 1
-    http-check expect ! rstatus ^5
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server fr1 127.0.0.1:29797 id 1 weight 20 check
-    server fr2 51.255.162.6:7444 id 2 weight 60 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost downloads.fr2.cluster.internal sni str(downloads.fr2.cluster.internal) check-sni downloads.fr2.cluster.internal
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost downloads.prd.cluster.internal sni str(downloads.prd.cluster.internal) check-sni downloads.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host downloads.aphrody.com hdr X-Cluster-Check 1
+http-check expect ! rstatus ^5
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server fr1 127.0.0.1:29797 id 1 weight 20 check
+server fr2 51.255.162.6:7444 id 2 weight 60 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost downloads.fr2.cluster.internal sni str(downloads.fr2.cluster.internal) check-sni downloads.fr2.cluster.internal
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost downloads.prd.cluster.internal sni str(downloads.prd.cluster.internal) check-sni downloads.prd.cluster.internal
 
 frontend lb_cdn
-    bind 127.0.0.1:19796
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_cdn
+bind 127.0.0.1:19796
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_cdn
 
 backend pool_cdn
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host cdn.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server fr1 127.0.0.1:29796 id 1 weight 20 check
-    server fr2 51.255.162.6:7444 id 2 weight 60 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost cdn.fr2.cluster.internal sni str(cdn.fr2.cluster.internal) check-sni cdn.fr2.cluster.internal
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost cdn.prd.cluster.internal sni str(cdn.prd.cluster.internal) check-sni cdn.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host cdn.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server fr1 127.0.0.1:29796 id 1 weight 20 check
+server fr2 51.255.162.6:7444 id 2 weight 60 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost cdn.fr2.cluster.internal sni str(cdn.fr2.cluster.internal) check-sni cdn.fr2.cluster.internal
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost cdn.prd.cluster.internal sni str(cdn.prd.cluster.internal) check-sni cdn.prd.cluster.internal
 
 frontend lb_api-gateway
-    bind 127.0.0.1:19081
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_api-gateway
+bind 127.0.0.1:19081
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_api-gateway
 
 backend pool_api-gateway
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host api.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server fr1 127.0.0.1:29081 id 1 weight 20 check
-    server fr2 51.255.162.6:7444 id 2 weight 60 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost api-gateway.fr2.cluster.internal sni str(api-gateway.fr2.cluster.internal) check-sni api-gateway.fr2.cluster.internal
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost api-gateway.prd.cluster.internal sni str(api-gateway.prd.cluster.internal) check-sni api-gateway.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host api.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server fr1 127.0.0.1:29081 id 1 weight 20 check
+server fr2 51.255.162.6:7444 id 2 weight 60 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost api-gateway.fr2.cluster.internal sni str(api-gateway.fr2.cluster.internal) check-sni api-gateway.fr2.cluster.internal
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost api-gateway.prd.cluster.internal sni str(api-gateway.prd.cluster.internal) check-sni api-gateway.prd.cluster.internal
 
 frontend lb_mig-test
-    bind 127.0.0.1:19780
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_mig-test
+bind 127.0.0.1:19780
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_mig-test
 
 backend pool_mig-test
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host mig-test.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost mig-test.prd.cluster.internal sni str(mig-test.prd.cluster.internal) check-sni mig-test.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host mig-test.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost mig-test.prd.cluster.internal sni str(mig-test.prd.cluster.internal) check-sni mig-test.prd.cluster.internal
 
 frontend lb_aphrody
-    bind 127.0.0.1:19300
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_aphrody
+bind 127.0.0.1:19300
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_aphrody
 
 backend pool_aphrody
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host aphrody.com hdr X-Cluster-Check 1
-    http-check expect rstatus ^[23]
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    option allbackups
-    server fr1 127.0.0.1:29300 id 1 weight 20 backup check
-    server fr2 51.255.162.6:7444 id 2 weight 60 backup check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost aphrody.fr2.cluster.internal sni str(aphrody.fr2.cluster.internal) check-sni aphrody.fr2.cluster.internal
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost aphrody.prd.cluster.internal sni str(aphrody.prd.cluster.internal) check-sni aphrody.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host aphrody.com hdr X-Cluster-Check 1
+http-check expect rstatus ^[23]
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+option allbackups
+server fr1 127.0.0.1:29300 id 1 weight 20 backup check
+server fr2 51.255.162.6:7444 id 2 weight 60 backup check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost aphrody.fr2.cluster.internal sni str(aphrody.fr2.cluster.internal) check-sni aphrody.fr2.cluster.internal
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost aphrody.prd.cluster.internal sni str(aphrody.prd.cluster.internal) check-sni aphrody.prd.cluster.internal
 
 frontend lb_ai-os
-    bind 127.0.0.1:19400
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_ai-os
+bind 127.0.0.1:19400
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_ai-os
 
 backend pool_ai-os
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /health ver HTTP/1.1 hdr Host ai.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost ai-os.prd.cluster.internal sni str(ai-os.prd.cluster.internal) check-sni ai-os.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /health ver HTTP/1.1 hdr Host ai.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost ai-os.prd.cluster.internal sni str(ai-os.prd.cluster.internal) check-sni ai-os.prd.cluster.internal
 
 frontend lb_ssh-prd
-    bind 127.0.0.1:19022
-    mode tcp
-    default_backend pool_ssh-prd
+bind 127.0.0.1:19022
+mode tcp
+default_backend pool_ssh-prd
 
 backend pool_ssh-prd
-    mode tcp
-    balance roundrobin
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost ssh-prd.prd.cluster.internal sni str(ssh-prd.prd.cluster.internal) check-sni ssh-prd.prd.cluster.internal
+mode tcp
+balance roundrobin
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost ssh-prd.prd.cluster.internal sni str(ssh-prd.prd.cluster.internal) check-sni ssh-prd.prd.cluster.internal
 
 frontend lb_depot
-    bind 127.0.0.1:19182
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_depot
+bind 127.0.0.1:19182
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_depot
 
 backend pool_depot
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /health ver HTTP/1.1 hdr Host mig-depot.aphrody.com hdr X-Cluster-Check 1
-    http-check expect rstatus ^[24]
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost depot.prd.cluster.internal sni str(depot.prd.cluster.internal) check-sni depot.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /health ver HTTP/1.1 hdr Host mig-depot.aphrody.com hdr X-Cluster-Check 1
+http-check expect rstatus ^[24]
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost depot.prd.cluster.internal sni str(depot.prd.cluster.internal) check-sni depot.prd.cluster.internal
 
 frontend lb_commons
-    bind 127.0.0.1:19766
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_commons
+bind 127.0.0.1:19766
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_commons
 
 backend pool_commons
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /health ver HTTP/1.1 hdr Host mig-commons.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost commons.prd.cluster.internal sni str(commons.prd.cluster.internal) check-sni commons.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /health ver HTTP/1.1 hdr Host mig-commons.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost commons.prd.cluster.internal sni str(commons.prd.cluster.internal) check-sni commons.prd.cluster.internal
 
 frontend lb_relay
-    bind 127.0.0.1:19889
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_relay
+bind 127.0.0.1:19889
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_relay
 
 backend pool_relay
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /health ver HTTP/1.1 hdr Host relay.cluster.internal hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost relay.prd.cluster.internal sni str(relay.prd.cluster.internal) check-sni relay.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /health ver HTTP/1.1 hdr Host relay.cluster.internal hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost relay.prd.cluster.internal sni str(relay.prd.cluster.internal) check-sni relay.prd.cluster.internal
 
 frontend lb_nativelink
-    bind 127.0.0.1:19051
-    mode tcp
-    default_backend pool_nativelink
+bind 127.0.0.1:19051
+mode tcp
+default_backend pool_nativelink
 
 backend pool_nativelink
-    mode tcp
-    balance roundrobin
-    server fr1 10.200.77.1:50051 id 1 weight 20 check
+mode tcp
+balance roundrobin
+server fr1 10.200.77.1:50051 id 1 weight 20 check
 
 frontend lb_nativelink-cas
-    bind 127.0.0.1:19061
-    mode tcp
-    default_backend pool_nativelink-cas
+bind 127.0.0.1:19061
+mode tcp
+default_backend pool_nativelink-cas
 
 backend pool_nativelink-cas
-    mode tcp
-    balance roundrobin
-    server fr1 10.200.77.1:50061 id 1 weight 20 check
+mode tcp
+balance roundrobin
+server fr1 10.200.77.1:50061 id 1 weight 20 check
 
 frontend lb_bench
-    bind 127.0.0.1:19990
-    mode http
-    http-request set-header X-Cluster-Entry fr1
-    default_backend pool_bench
+bind 127.0.0.1:19990
+mode http
+http-request set-header X-Cluster-Entry fr1
+default_backend pool_bench
 
 backend pool_bench
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /bench/health ver HTTP/1.1 hdr Host bench.cluster.internal hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server fr1 127.0.0.1:29990 id 1 weight 20 check
-    server fr2 51.255.162.6:7444 id 2 weight 60 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost bench.fr2.cluster.internal sni str(bench.fr2.cluster.internal) check-sni bench.fr2.cluster.internal
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost bench.prd.cluster.internal sni str(bench.prd.cluster.internal) check-sni bench.prd.cluster.internal
-
-
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /bench/health ver HTTP/1.1 hdr Host bench.cluster.internal hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server fr1 127.0.0.1:29990 id 1 weight 20 check
+server fr2 51.255.162.6:7444 id 2 weight 60 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost bench.fr2.cluster.internal sni str(bench.fr2.cluster.internal) check-sni bench.fr2.cluster.internal
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost bench.prd.cluster.internal sni str(bench.prd.cluster.internal) check-sni bench.prd.cluster.internal
 
 ================================================
 FILE: cluster/generated/fr1/nginx-cluster.conf
 ================================================
+
 # GENERATED by infra/cluster/gen.ts from infra/deploy.toml [cluster]; member fr1. Do not edit.
+
 # Cache shards: HAProxy hashes each URI to one member cluster-wide, so proxy_cache_lock on that member
+
 # collapses concurrent duplicates of the whole cluster into one origin fetch.
+
 proxy_cache_path /var/cache/nginx/aphrody-cluster levels=1:2 keys_zone=acl_cache:64m max_size=2g inactive=1h use_temp_path=off;
 proxy_cache_path /var/cache/nginx/aphrody-cluster-idem levels=1:2 keys_zone=acl_idem:16m max_size=256m inactive=24h use_temp_path=off;
 log_format acl_log '$time_iso8601 $server_port $request_method $host $uri $status $upstream_cache_status $request_time $http_x_cluster_entry';
@@ -3603,482 +3875,483 @@ map "$request_method:$http_idempotency_key" $acl_idem { "~^POST:.+" 1; default 0
 
 upstream acl_downloads { server 127.0.0.1:28797 max_fails=1 fail_timeout=3s; keepalive 16; }
 server {
-    listen 127.0.0.1:29797;
-    access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
-    proxy_http_version 1.1;
-    proxy_set_header Connection "";
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $http_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    location / {
-        error_page 418 = @idem;
-        if ($acl_idem) { return 418; }
-        proxy_pass http://acl_downloads;
-        proxy_next_upstream error timeout http_502 http_503 http_504;
-        proxy_cache acl_cache;
-        proxy_cache_key "downloads|$host$request_uri";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 15s;
-        proxy_cache_lock_age 15s;
-        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-        proxy_cache_background_update on;
-        proxy_cache_revalidate on;
-        proxy_cache_bypass $acl_private $acl_check;
-        proxy_no_cache $acl_private $acl_check;
-        proxy_cache_valid 200 301 302 404 1s;
-        add_header X-Cluster-Cache $upstream_cache_status always;
-        add_header X-Cluster-Shard fr1 always;
-    }
-    # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
-    location @idem {
-        proxy_pass http://acl_downloads;
-        proxy_cache acl_idem;
-        proxy_cache_methods POST;
-        proxy_cache_key "downloads|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 30s;
-        proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
-        proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
-        add_header X-Idempotent-Replay $upstream_cache_status always;
-        add_header X-Cluster-Shard fr1 always;
-    }
+listen 127.0.0.1:29797;
+access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
+proxy_http_version 1.1;
+proxy_set_header Connection "";
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto https;
+location / {
+error_page 418 = @idem;
+if ($acl_idem) { return 418; }
+proxy_pass http://acl_downloads;
+proxy_next_upstream error timeout http_502 http_503 http_504;
+proxy_cache acl_cache;
+proxy_cache_key "downloads|$host$request_uri";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 15s;
+proxy_cache_lock_age 15s;
+proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+proxy_cache_background_update on;
+proxy_cache_revalidate on;
+proxy_cache_bypass $acl_private $acl_check;
+proxy_no_cache $acl_private $acl_check;
+proxy_cache_valid 200 301 302 404 1s;
+add_header X-Cluster-Cache $upstream_cache_status always;
+add_header X-Cluster-Shard fr1 always;
+} # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
+location @idem {
+proxy_pass http://acl_downloads;
+proxy_cache acl_idem;
+proxy_cache_methods POST;
+proxy_cache_key "downloads|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 30s;
+proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
+proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
+add_header X-Idempotent-Replay $upstream_cache_status always;
+add_header X-Cluster-Shard fr1 always;
+}
 }
 
 upstream acl_cdn { server 127.0.0.1:28796 max_fails=1 fail_timeout=3s; keepalive 16; }
 server {
-    listen 127.0.0.1:29796;
-    access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
-    proxy_http_version 1.1;
-    proxy_set_header Connection "";
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $http_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    location / {
-        error_page 418 = @idem;
-        if ($acl_idem) { return 418; }
-        proxy_pass http://acl_cdn;
-        proxy_next_upstream error timeout http_502 http_503 http_504;
-        proxy_cache acl_cache;
-        proxy_cache_key "cdn|$host$request_uri";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 15s;
-        proxy_cache_lock_age 15s;
-        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-        proxy_cache_background_update on;
-        proxy_cache_revalidate on;
-        proxy_cache_bypass $acl_private $acl_check;
-        proxy_no_cache $acl_private $acl_check;
-        proxy_cache_valid 200 301 302 404 1s;
-        add_header X-Cluster-Cache $upstream_cache_status always;
-        add_header X-Cluster-Shard fr1 always;
-    }
-    # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
-    location @idem {
-        proxy_pass http://acl_cdn;
-        proxy_cache acl_idem;
-        proxy_cache_methods POST;
-        proxy_cache_key "cdn|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 30s;
-        proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
-        proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
-        add_header X-Idempotent-Replay $upstream_cache_status always;
-        add_header X-Cluster-Shard fr1 always;
-    }
+listen 127.0.0.1:29796;
+access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
+proxy_http_version 1.1;
+proxy_set_header Connection "";
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto https;
+location / {
+error_page 418 = @idem;
+if ($acl_idem) { return 418; }
+proxy_pass http://acl_cdn;
+proxy_next_upstream error timeout http_502 http_503 http_504;
+proxy_cache acl_cache;
+proxy_cache_key "cdn|$host$request_uri";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 15s;
+proxy_cache_lock_age 15s;
+proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+proxy_cache_background_update on;
+proxy_cache_revalidate on;
+proxy_cache_bypass $acl_private $acl_check;
+proxy_no_cache $acl_private $acl_check;
+proxy_cache_valid 200 301 302 404 1s;
+add_header X-Cluster-Cache $upstream_cache_status always;
+add_header X-Cluster-Shard fr1 always;
+} # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
+location @idem {
+proxy_pass http://acl_cdn;
+proxy_cache acl_idem;
+proxy_cache_methods POST;
+proxy_cache_key "cdn|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 30s;
+proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
+proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
+add_header X-Idempotent-Replay $upstream_cache_status always;
+add_header X-Cluster-Shard fr1 always;
+}
 }
 
 upstream acl_api-gateway { server 127.0.0.1:28081 max_fails=1 fail_timeout=3s; keepalive 16; }
 server {
-    listen 127.0.0.1:29081;
-    access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
-    proxy_http_version 1.1;
-    proxy_set_header Connection "";
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $http_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    location / {
-        error_page 418 = @idem;
-        if ($acl_idem) { return 418; }
-        proxy_pass http://acl_api-gateway;
-        proxy_next_upstream error timeout http_502 http_503 http_504;
-        proxy_cache acl_cache;
-        proxy_cache_key "api-gateway|$host$request_uri";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 15s;
-        proxy_cache_lock_age 15s;
-        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-        proxy_cache_background_update on;
-        proxy_cache_revalidate on;
-        proxy_cache_bypass $acl_private $acl_check;
-        proxy_no_cache $acl_private $acl_check;
-        proxy_cache_valid 200 301 302 404 1s;
-        add_header X-Cluster-Cache $upstream_cache_status always;
-        add_header X-Cluster-Shard fr1 always;
-    }
-    # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
-    location @idem {
-        proxy_pass http://acl_api-gateway;
-        proxy_cache acl_idem;
-        proxy_cache_methods POST;
-        proxy_cache_key "api-gateway|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 30s;
-        proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
-        proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
-        add_header X-Idempotent-Replay $upstream_cache_status always;
-        add_header X-Cluster-Shard fr1 always;
-    }
+listen 127.0.0.1:29081;
+access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
+proxy_http_version 1.1;
+proxy_set_header Connection "";
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto https;
+location / {
+error_page 418 = @idem;
+if ($acl_idem) { return 418; }
+proxy_pass http://acl_api-gateway;
+proxy_next_upstream error timeout http_502 http_503 http_504;
+proxy_cache acl_cache;
+proxy_cache_key "api-gateway|$host$request_uri";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 15s;
+proxy_cache_lock_age 15s;
+proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+proxy_cache_background_update on;
+proxy_cache_revalidate on;
+proxy_cache_bypass $acl_private $acl_check;
+proxy_no_cache $acl_private $acl_check;
+proxy_cache_valid 200 301 302 404 1s;
+add_header X-Cluster-Cache $upstream_cache_status always;
+add_header X-Cluster-Shard fr1 always;
+} # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
+location @idem {
+proxy_pass http://acl_api-gateway;
+proxy_cache acl_idem;
+proxy_cache_methods POST;
+proxy_cache_key "api-gateway|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 30s;
+proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
+proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
+add_header X-Idempotent-Replay $upstream_cache_status always;
+add_header X-Cluster-Shard fr1 always;
+}
 }
 
 upstream acl_aphrody { server 127.0.0.1:23000 max_fails=1 fail_timeout=3s; server 127.0.0.1:13000 backup; keepalive 16; }
 server {
-    listen 127.0.0.1:29300;
-    access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
-    proxy_http_version 1.1;
-    proxy_set_header Connection "";
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $http_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    location / {
-        error_page 418 = @idem;
-        if ($acl_idem) { return 418; }
-        proxy_pass http://acl_aphrody;
-        proxy_next_upstream error timeout http_502 http_503 http_504;
-        proxy_cache acl_cache;
-        proxy_cache_key "aphrody|$host$request_uri";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 15s;
-        proxy_cache_lock_age 15s;
-        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-        proxy_cache_background_update on;
-        proxy_cache_revalidate on;
-        proxy_cache_bypass $acl_private $acl_check;
-        proxy_no_cache $acl_private $acl_check;
-        add_header X-Cluster-Cache $upstream_cache_status always;
-        add_header X-Cluster-Shard fr1 always;
-    }
-    # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
-    location @idem {
-        proxy_pass http://acl_aphrody;
-        proxy_cache acl_idem;
-        proxy_cache_methods POST;
-        proxy_cache_key "aphrody|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 30s;
-        proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
-        proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
-        add_header X-Idempotent-Replay $upstream_cache_status always;
-        add_header X-Cluster-Shard fr1 always;
-    }
+listen 127.0.0.1:29300;
+access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
+proxy_http_version 1.1;
+proxy_set_header Connection "";
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto https;
+location / {
+error_page 418 = @idem;
+if ($acl_idem) { return 418; }
+proxy_pass http://acl_aphrody;
+proxy_next_upstream error timeout http_502 http_503 http_504;
+proxy_cache acl_cache;
+proxy_cache_key "aphrody|$host$request_uri";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 15s;
+proxy_cache_lock_age 15s;
+proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+proxy_cache_background_update on;
+proxy_cache_revalidate on;
+proxy_cache_bypass $acl_private $acl_check;
+proxy_no_cache $acl_private $acl_check;
+add_header X-Cluster-Cache $upstream_cache_status always;
+add_header X-Cluster-Shard fr1 always;
+} # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
+location @idem {
+proxy_pass http://acl_aphrody;
+proxy_cache acl_idem;
+proxy_cache_methods POST;
+proxy_cache_key "aphrody|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 30s;
+proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
+proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
+add_header X-Idempotent-Replay $upstream_cache_status always;
+add_header X-Cluster-Shard fr1 always;
+}
 }
 
 server {
-    listen 29990; # loopback + WireGuard subnet (comparison only), no bind on the wg interface
-    allow 127.0.0.1;
-    allow 10.200.77.0/24;
-    deny all;
-    access_log off;
-    root /var/lib/aphrody-cluster;
-    location /bench/ { }
+listen 29990; # loopback + WireGuard subnet (comparison only), no bind on the wg interface
+allow 127.0.0.1;
+allow 10.200.77.0/24;
+deny all;
+access_log off;
+root /var/lib/aphrody-cluster;
+location /bench/ { }
 }
-
 
 ================================================
 FILE: cluster/generated/fr2/aphrody-cluster.slice
 ================================================
-# GENERATED by infra/cluster/gen.ts. Cluster workloads (HAProxy, edge containers) run here.
-[Slice]
 
+# GENERATED by infra/cluster/gen.ts. Cluster workloads (HAProxy, edge containers) run here.
+
+[Slice]
 
 ================================================
 FILE: cluster/generated/fr2/haproxy.cfg
 ================================================
+
 # GENERATED by infra/cluster/gen.ts from infra/deploy.toml [cluster]; member fr2. Do not edit.
+
 global
-    log stderr format short local0 notice
-    user haproxy
-    group haproxy
-    maxconn 20000
-    stats socket /run/aphrody-cluster/haproxy.sock mode 600 level admin
-    ssl-default-bind-options ssl-min-ver TLSv1.3
-    ssl-default-server-options ssl-min-ver TLSv1.3
+log stderr format short local0 notice
+user haproxy
+group haproxy
+maxconn 20000
+stats socket /run/aphrody-cluster/haproxy.sock mode 600 level admin
+ssl-default-bind-options ssl-min-ver TLSv1.3
+ssl-default-server-options ssl-min-ver TLSv1.3
 
 defaults
-    log global
-    mode http
-    option dontlognull
-    timeout connect 3s
-    timeout client 120s
-    timeout server 120s
-    timeout tunnel 1h
-    timeout http-keep-alive 10s
-    timeout check 2s
-    retries 2
-    option redispatch 1
-    default-server inter 1000ms fastinter 500ms downinter 3s fall 2 rise 3
+log global
+mode http
+option dontlognull
+timeout connect 3s
+timeout client 120s
+timeout server 120s
+timeout tunnel 1h
+timeout http-keep-alive 10s
+timeout check 2s
+retries 2
+option redispatch 1
+default-server inter 1000ms fastinter 500ms downinter 3s fall 2 rise 3
 
 frontend stats
-    bind 127.0.0.1:19900
-    http-request use-service prometheus-exporter if { path /metrics }
-    stats enable
-    stats uri /stats
-    stats refresh 5s
+bind 127.0.0.1:19900
+http-request use-service prometheus-exporter if { path /metrics }
+stats enable
+stats uri /stats
+stats refresh 5s
 
 # Inbound from other members: TLS 1.3, client cert signed by the cluster CA, routed by SNI.
+
 frontend mesh_in
-    mode tcp
-    bind 51.255.162.6:7444 ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required
-    tcp-request content reject unless { ssl_fc_sni -m end .fr2.cluster.internal }
-    use_backend in_downloads if { ssl_fc_sni -i downloads.fr2.cluster.internal }
-    use_backend in_cdn if { ssl_fc_sni -i cdn.fr2.cluster.internal }
-    use_backend in_api-gateway if { ssl_fc_sni -i api-gateway.fr2.cluster.internal }
-    use_backend in_aphrody if { ssl_fc_sni -i aphrody.fr2.cluster.internal }
-    use_backend in_ssh if { ssl_fc_sni -i ssh.fr2.cluster.internal }
-    use_backend in_bench if { ssl_fc_sni -i bench.fr2.cluster.internal }
+mode tcp
+bind 51.255.162.6:7444 ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required
+tcp-request content reject unless { ssl_fc_sni -m end .fr2.cluster.internal }
+use_backend in_downloads if { ssl_fc_sni -i downloads.fr2.cluster.internal }
+use_backend in_cdn if { ssl_fc_sni -i cdn.fr2.cluster.internal }
+use_backend in_api-gateway if { ssl_fc_sni -i api-gateway.fr2.cluster.internal }
+use_backend in_aphrody if { ssl_fc_sni -i aphrody.fr2.cluster.internal }
+use_backend in_ssh if { ssl_fc_sni -i ssh.fr2.cluster.internal }
+use_backend in_bench if { ssl_fc_sni -i bench.fr2.cluster.internal }
 
 backend in_downloads
-    mode tcp
-    server local 127.0.0.1:29797
+mode tcp
+server local 127.0.0.1:29797
 
 backend in_cdn
-    mode tcp
-    server local 127.0.0.1:29796
+mode tcp
+server local 127.0.0.1:29796
 
 backend in_api-gateway
-    mode tcp
-    server local 127.0.0.1:29081
+mode tcp
+server local 127.0.0.1:29081
 
 backend in_aphrody
-    mode tcp
-    server local 127.0.0.1:29300
+mode tcp
+server local 127.0.0.1:29300
 
 backend in_ssh
-    mode tcp
-    server local 127.0.0.1:22 check
+mode tcp
+server local 127.0.0.1:22 check
 
 backend in_bench
-    mode tcp
-    server local 127.0.0.1:29990 check
+mode tcp
+server local 127.0.0.1:29990 check
 
 frontend lb_downloads
-    bind 127.0.0.1:19797
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_downloads
+bind 127.0.0.1:19797
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_downloads
 
 backend pool_downloads
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host downloads.aphrody.com hdr X-Cluster-Check 1
-    http-check expect ! rstatus ^5
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost downloads.fr1.cluster.internal sni str(downloads.fr1.cluster.internal) check-sni downloads.fr1.cluster.internal
-    server fr2 127.0.0.1:29797 id 2 weight 60 check
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost downloads.prd.cluster.internal sni str(downloads.prd.cluster.internal) check-sni downloads.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host downloads.aphrody.com hdr X-Cluster-Check 1
+http-check expect ! rstatus ^5
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost downloads.fr1.cluster.internal sni str(downloads.fr1.cluster.internal) check-sni downloads.fr1.cluster.internal
+server fr2 127.0.0.1:29797 id 2 weight 60 check
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost downloads.prd.cluster.internal sni str(downloads.prd.cluster.internal) check-sni downloads.prd.cluster.internal
 
 frontend lb_cdn
-    bind 127.0.0.1:19796
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_cdn
+bind 127.0.0.1:19796
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_cdn
 
 backend pool_cdn
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host cdn.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost cdn.fr1.cluster.internal sni str(cdn.fr1.cluster.internal) check-sni cdn.fr1.cluster.internal
-    server fr2 127.0.0.1:29796 id 2 weight 60 check
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost cdn.prd.cluster.internal sni str(cdn.prd.cluster.internal) check-sni cdn.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host cdn.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost cdn.fr1.cluster.internal sni str(cdn.fr1.cluster.internal) check-sni cdn.fr1.cluster.internal
+server fr2 127.0.0.1:29796 id 2 weight 60 check
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost cdn.prd.cluster.internal sni str(cdn.prd.cluster.internal) check-sni cdn.prd.cluster.internal
 
 frontend lb_api-gateway
-    bind 127.0.0.1:19081
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_api-gateway
+bind 127.0.0.1:19081
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_api-gateway
 
 backend pool_api-gateway
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host api.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost api-gateway.fr1.cluster.internal sni str(api-gateway.fr1.cluster.internal) check-sni api-gateway.fr1.cluster.internal
-    server fr2 127.0.0.1:29081 id 2 weight 60 check
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost api-gateway.prd.cluster.internal sni str(api-gateway.prd.cluster.internal) check-sni api-gateway.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host api.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost api-gateway.fr1.cluster.internal sni str(api-gateway.fr1.cluster.internal) check-sni api-gateway.fr1.cluster.internal
+server fr2 127.0.0.1:29081 id 2 weight 60 check
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost api-gateway.prd.cluster.internal sni str(api-gateway.prd.cluster.internal) check-sni api-gateway.prd.cluster.internal
 
 frontend lb_mig-test
-    bind 127.0.0.1:19780
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_mig-test
+bind 127.0.0.1:19780
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_mig-test
 
 backend pool_mig-test
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host mig-test.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost mig-test.prd.cluster.internal sni str(mig-test.prd.cluster.internal) check-sni mig-test.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host mig-test.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost mig-test.prd.cluster.internal sni str(mig-test.prd.cluster.internal) check-sni mig-test.prd.cluster.internal
 
 frontend lb_aphrody
-    bind 127.0.0.1:19300
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_aphrody
+bind 127.0.0.1:19300
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_aphrody
 
 backend pool_aphrody
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri / ver HTTP/1.1 hdr Host aphrody.com hdr X-Cluster-Check 1
-    http-check expect rstatus ^[23]
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    option allbackups
-    server fr1 51.77.147.152:7444 id 1 weight 20 backup check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost aphrody.fr1.cluster.internal sni str(aphrody.fr1.cluster.internal) check-sni aphrody.fr1.cluster.internal
-    server fr2 127.0.0.1:29300 id 2 weight 60 backup check
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost aphrody.prd.cluster.internal sni str(aphrody.prd.cluster.internal) check-sni aphrody.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri / ver HTTP/1.1 hdr Host aphrody.com hdr X-Cluster-Check 1
+http-check expect rstatus ^[23]
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+option allbackups
+server fr1 51.77.147.152:7444 id 1 weight 20 backup check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost aphrody.fr1.cluster.internal sni str(aphrody.fr1.cluster.internal) check-sni aphrody.fr1.cluster.internal
+server fr2 127.0.0.1:29300 id 2 weight 60 backup check
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost aphrody.prd.cluster.internal sni str(aphrody.prd.cluster.internal) check-sni aphrody.prd.cluster.internal
 
 frontend lb_ai-os
-    bind 127.0.0.1:19400
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_ai-os
+bind 127.0.0.1:19400
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_ai-os
 
 backend pool_ai-os
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /health ver HTTP/1.1 hdr Host ai.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost ai-os.prd.cluster.internal sni str(ai-os.prd.cluster.internal) check-sni ai-os.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /health ver HTTP/1.1 hdr Host ai.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost ai-os.prd.cluster.internal sni str(ai-os.prd.cluster.internal) check-sni ai-os.prd.cluster.internal
 
 frontend lb_ssh-prd
-    bind 127.0.0.1:19022
-    mode tcp
-    default_backend pool_ssh-prd
+bind 127.0.0.1:19022
+mode tcp
+default_backend pool_ssh-prd
 
 backend pool_ssh-prd
-    mode tcp
-    balance roundrobin
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost ssh-prd.prd.cluster.internal sni str(ssh-prd.prd.cluster.internal) check-sni ssh-prd.prd.cluster.internal
+mode tcp
+balance roundrobin
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost ssh-prd.prd.cluster.internal sni str(ssh-prd.prd.cluster.internal) check-sni ssh-prd.prd.cluster.internal
 
 frontend lb_depot
-    bind 127.0.0.1:19182
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_depot
+bind 127.0.0.1:19182
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_depot
 
 backend pool_depot
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /health ver HTTP/1.1 hdr Host mig-depot.aphrody.com hdr X-Cluster-Check 1
-    http-check expect rstatus ^[24]
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost depot.prd.cluster.internal sni str(depot.prd.cluster.internal) check-sni depot.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /health ver HTTP/1.1 hdr Host mig-depot.aphrody.com hdr X-Cluster-Check 1
+http-check expect rstatus ^[24]
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost depot.prd.cluster.internal sni str(depot.prd.cluster.internal) check-sni depot.prd.cluster.internal
 
 frontend lb_commons
-    bind 127.0.0.1:19766
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_commons
+bind 127.0.0.1:19766
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_commons
 
 backend pool_commons
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /health ver HTTP/1.1 hdr Host mig-commons.aphrody.com hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost commons.prd.cluster.internal sni str(commons.prd.cluster.internal) check-sni commons.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /health ver HTTP/1.1 hdr Host mig-commons.aphrody.com hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost commons.prd.cluster.internal sni str(commons.prd.cluster.internal) check-sni commons.prd.cluster.internal
 
 frontend lb_relay
-    bind 127.0.0.1:19889
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_relay
+bind 127.0.0.1:19889
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_relay
 
 backend pool_relay
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /health ver HTTP/1.1 hdr Host relay.cluster.internal hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost relay.prd.cluster.internal sni str(relay.prd.cluster.internal) check-sni relay.prd.cluster.internal
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /health ver HTTP/1.1 hdr Host relay.cluster.internal hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost relay.prd.cluster.internal sni str(relay.prd.cluster.internal) check-sni relay.prd.cluster.internal
 
 frontend lb_nativelink
-    bind 127.0.0.1:19051
-    mode tcp
-    default_backend pool_nativelink
+bind 127.0.0.1:19051
+mode tcp
+default_backend pool_nativelink
 
 backend pool_nativelink
-    mode tcp
-    balance roundrobin
-    server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost nativelink.fr1.cluster.internal sni str(nativelink.fr1.cluster.internal) check-sni nativelink.fr1.cluster.internal
+mode tcp
+balance roundrobin
+server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost nativelink.fr1.cluster.internal sni str(nativelink.fr1.cluster.internal) check-sni nativelink.fr1.cluster.internal
 
 frontend lb_nativelink-cas
-    bind 127.0.0.1:19061
-    mode tcp
-    default_backend pool_nativelink-cas
+bind 127.0.0.1:19061
+mode tcp
+default_backend pool_nativelink-cas
 
 backend pool_nativelink-cas
-    mode tcp
-    balance roundrobin
-    server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost nativelink-cas.fr1.cluster.internal sni str(nativelink-cas.fr1.cluster.internal) check-sni nativelink-cas.fr1.cluster.internal
+mode tcp
+balance roundrobin
+server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost nativelink-cas.fr1.cluster.internal sni str(nativelink-cas.fr1.cluster.internal) check-sni nativelink-cas.fr1.cluster.internal
 
 frontend lb_bench
-    bind 127.0.0.1:19990
-    mode http
-    http-request set-header X-Cluster-Entry fr2
-    default_backend pool_bench
+bind 127.0.0.1:19990
+mode http
+http-request set-header X-Cluster-Entry fr2
+default_backend pool_bench
 
 backend pool_bench
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth GET uri /bench/health ver HTTP/1.1 hdr Host bench.cluster.internal hdr X-Cluster-Check 1
-    http-check expect status 200
-    retry-on conn-failure empty-response response-timeout 500 502 503 504
-    http-request disable-l7-retry if !METH_GET !METH_HEAD
-    server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost bench.fr1.cluster.internal sni str(bench.fr1.cluster.internal) check-sni bench.fr1.cluster.internal
-    server fr2 127.0.0.1:29990 id 2 weight 60 check
-    server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost bench.prd.cluster.internal sni str(bench.prd.cluster.internal) check-sni bench.prd.cluster.internal
-
-
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth GET uri /bench/health ver HTTP/1.1 hdr Host bench.cluster.internal hdr X-Cluster-Check 1
+http-check expect status 200
+retry-on conn-failure empty-response response-timeout 500 502 503 504
+http-request disable-l7-retry if !METH_GET !METH_HEAD
+server fr1 51.77.147.152:7444 id 1 weight 20 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost bench.fr1.cluster.internal sni str(bench.fr1.cluster.internal) check-sni bench.fr1.cluster.internal
+server fr2 127.0.0.1:29990 id 2 weight 60 check
+server prd 72.60.186.43:7444 id 3 weight 100 check ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required verifyhost bench.prd.cluster.internal sni str(bench.prd.cluster.internal) check-sni bench.prd.cluster.internal
 
 ================================================
 FILE: cluster/generated/fr2/nginx-cluster.conf
 ================================================
+
 # GENERATED by infra/cluster/gen.ts from infra/deploy.toml [cluster]; member fr2. Do not edit.
+
 # Cache shards: HAProxy hashes each URI to one member cluster-wide, so proxy_cache_lock on that member
+
 # collapses concurrent duplicates of the whole cluster into one origin fetch.
+
 proxy_cache_path /var/cache/nginx/aphrody-cluster levels=1:2 keys_zone=acl_cache:64m max_size=2g inactive=1h use_temp_path=off;
 proxy_cache_path /var/cache/nginx/aphrody-cluster-idem levels=1:2 keys_zone=acl_idem:16m max_size=256m inactive=24h use_temp_path=off;
 log_format acl_log '$time_iso8601 $server_port $request_method $host $uri $status $upstream_cache_status $request_time $http_x_cluster_entry';
@@ -4089,306 +4362,304 @@ map "$request_method:$http_idempotency_key" $acl_idem { "~^POST:.+" 1; default 0
 
 upstream acl_downloads { server 127.0.0.1:28797 max_fails=1 fail_timeout=3s; keepalive 16; }
 server {
-    listen 127.0.0.1:29797;
-    access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
-    proxy_http_version 1.1;
-    proxy_set_header Connection "";
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $http_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    location / {
-        error_page 418 = @idem;
-        if ($acl_idem) { return 418; }
-        proxy_pass http://acl_downloads;
-        proxy_next_upstream error timeout http_502 http_503 http_504;
-        proxy_cache acl_cache;
-        proxy_cache_key "downloads|$host$request_uri";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 15s;
-        proxy_cache_lock_age 15s;
-        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-        proxy_cache_background_update on;
-        proxy_cache_revalidate on;
-        proxy_cache_bypass $acl_private $acl_check;
-        proxy_no_cache $acl_private $acl_check;
-        proxy_cache_valid 200 301 302 404 1s;
-        add_header X-Cluster-Cache $upstream_cache_status always;
-        add_header X-Cluster-Shard fr2 always;
-    }
-    # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
-    location @idem {
-        proxy_pass http://acl_downloads;
-        proxy_cache acl_idem;
-        proxy_cache_methods POST;
-        proxy_cache_key "downloads|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 30s;
-        proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
-        proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
-        add_header X-Idempotent-Replay $upstream_cache_status always;
-        add_header X-Cluster-Shard fr2 always;
-    }
+listen 127.0.0.1:29797;
+access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
+proxy_http_version 1.1;
+proxy_set_header Connection "";
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto https;
+location / {
+error_page 418 = @idem;
+if ($acl_idem) { return 418; }
+proxy_pass http://acl_downloads;
+proxy_next_upstream error timeout http_502 http_503 http_504;
+proxy_cache acl_cache;
+proxy_cache_key "downloads|$host$request_uri";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 15s;
+proxy_cache_lock_age 15s;
+proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+proxy_cache_background_update on;
+proxy_cache_revalidate on;
+proxy_cache_bypass $acl_private $acl_check;
+proxy_no_cache $acl_private $acl_check;
+proxy_cache_valid 200 301 302 404 1s;
+add_header X-Cluster-Cache $upstream_cache_status always;
+add_header X-Cluster-Shard fr2 always;
+} # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
+location @idem {
+proxy_pass http://acl_downloads;
+proxy_cache acl_idem;
+proxy_cache_methods POST;
+proxy_cache_key "downloads|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 30s;
+proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
+proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
+add_header X-Idempotent-Replay $upstream_cache_status always;
+add_header X-Cluster-Shard fr2 always;
+}
 }
 
 upstream acl_cdn { server 127.0.0.1:28796 max_fails=1 fail_timeout=3s; keepalive 16; }
 server {
-    listen 127.0.0.1:29796;
-    access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
-    proxy_http_version 1.1;
-    proxy_set_header Connection "";
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $http_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    location / {
-        error_page 418 = @idem;
-        if ($acl_idem) { return 418; }
-        proxy_pass http://acl_cdn;
-        proxy_next_upstream error timeout http_502 http_503 http_504;
-        proxy_cache acl_cache;
-        proxy_cache_key "cdn|$host$request_uri";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 15s;
-        proxy_cache_lock_age 15s;
-        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-        proxy_cache_background_update on;
-        proxy_cache_revalidate on;
-        proxy_cache_bypass $acl_private $acl_check;
-        proxy_no_cache $acl_private $acl_check;
-        proxy_cache_valid 200 301 302 404 1s;
-        add_header X-Cluster-Cache $upstream_cache_status always;
-        add_header X-Cluster-Shard fr2 always;
-    }
-    # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
-    location @idem {
-        proxy_pass http://acl_cdn;
-        proxy_cache acl_idem;
-        proxy_cache_methods POST;
-        proxy_cache_key "cdn|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 30s;
-        proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
-        proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
-        add_header X-Idempotent-Replay $upstream_cache_status always;
-        add_header X-Cluster-Shard fr2 always;
-    }
+listen 127.0.0.1:29796;
+access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
+proxy_http_version 1.1;
+proxy_set_header Connection "";
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto https;
+location / {
+error_page 418 = @idem;
+if ($acl_idem) { return 418; }
+proxy_pass http://acl_cdn;
+proxy_next_upstream error timeout http_502 http_503 http_504;
+proxy_cache acl_cache;
+proxy_cache_key "cdn|$host$request_uri";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 15s;
+proxy_cache_lock_age 15s;
+proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+proxy_cache_background_update on;
+proxy_cache_revalidate on;
+proxy_cache_bypass $acl_private $acl_check;
+proxy_no_cache $acl_private $acl_check;
+proxy_cache_valid 200 301 302 404 1s;
+add_header X-Cluster-Cache $upstream_cache_status always;
+add_header X-Cluster-Shard fr2 always;
+} # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
+location @idem {
+proxy_pass http://acl_cdn;
+proxy_cache acl_idem;
+proxy_cache_methods POST;
+proxy_cache_key "cdn|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 30s;
+proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
+proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
+add_header X-Idempotent-Replay $upstream_cache_status always;
+add_header X-Cluster-Shard fr2 always;
+}
 }
 
 upstream acl_api-gateway { server 127.0.0.1:28081 max_fails=1 fail_timeout=3s; keepalive 16; }
 server {
-    listen 127.0.0.1:29081;
-    access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
-    proxy_http_version 1.1;
-    proxy_set_header Connection "";
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $http_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    location / {
-        error_page 418 = @idem;
-        if ($acl_idem) { return 418; }
-        proxy_pass http://acl_api-gateway;
-        proxy_next_upstream error timeout http_502 http_503 http_504;
-        proxy_cache acl_cache;
-        proxy_cache_key "api-gateway|$host$request_uri";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 15s;
-        proxy_cache_lock_age 15s;
-        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-        proxy_cache_background_update on;
-        proxy_cache_revalidate on;
-        proxy_cache_bypass $acl_private $acl_check;
-        proxy_no_cache $acl_private $acl_check;
-        proxy_cache_valid 200 301 302 404 1s;
-        add_header X-Cluster-Cache $upstream_cache_status always;
-        add_header X-Cluster-Shard fr2 always;
-    }
-    # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
-    location @idem {
-        proxy_pass http://acl_api-gateway;
-        proxy_cache acl_idem;
-        proxy_cache_methods POST;
-        proxy_cache_key "api-gateway|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 30s;
-        proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
-        proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
-        add_header X-Idempotent-Replay $upstream_cache_status always;
-        add_header X-Cluster-Shard fr2 always;
-    }
+listen 127.0.0.1:29081;
+access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
+proxy_http_version 1.1;
+proxy_set_header Connection "";
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto https;
+location / {
+error_page 418 = @idem;
+if ($acl_idem) { return 418; }
+proxy_pass http://acl_api-gateway;
+proxy_next_upstream error timeout http_502 http_503 http_504;
+proxy_cache acl_cache;
+proxy_cache_key "api-gateway|$host$request_uri";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 15s;
+proxy_cache_lock_age 15s;
+proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+proxy_cache_background_update on;
+proxy_cache_revalidate on;
+proxy_cache_bypass $acl_private $acl_check;
+proxy_no_cache $acl_private $acl_check;
+proxy_cache_valid 200 301 302 404 1s;
+add_header X-Cluster-Cache $upstream_cache_status always;
+add_header X-Cluster-Shard fr2 always;
+} # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
+location @idem {
+proxy_pass http://acl_api-gateway;
+proxy_cache acl_idem;
+proxy_cache_methods POST;
+proxy_cache_key "api-gateway|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 30s;
+proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
+proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
+add_header X-Idempotent-Replay $upstream_cache_status always;
+add_header X-Cluster-Shard fr2 always;
+}
 }
 
 upstream acl_aphrody { server 127.0.0.1:23000 max_fails=1 fail_timeout=3s; server 127.0.0.1:13000 backup; keepalive 16; }
 server {
-    listen 127.0.0.1:29300;
-    access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
-    proxy_http_version 1.1;
-    proxy_set_header Connection "";
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $http_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    location / {
-        error_page 418 = @idem;
-        if ($acl_idem) { return 418; }
-        proxy_pass http://acl_aphrody;
-        proxy_next_upstream error timeout http_502 http_503 http_504;
-        proxy_cache acl_cache;
-        proxy_cache_key "aphrody|$host$request_uri";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 15s;
-        proxy_cache_lock_age 15s;
-        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-        proxy_cache_background_update on;
-        proxy_cache_revalidate on;
-        proxy_cache_bypass $acl_private $acl_check;
-        proxy_no_cache $acl_private $acl_check;
-        add_header X-Cluster-Cache $upstream_cache_status always;
-        add_header X-Cluster-Shard fr2 always;
-    }
-    # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
-    location @idem {
-        proxy_pass http://acl_aphrody;
-        proxy_cache acl_idem;
-        proxy_cache_methods POST;
-        proxy_cache_key "aphrody|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
-        proxy_cache_lock on;
-        proxy_cache_lock_timeout 30s;
-        proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
-        proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
-        add_header X-Idempotent-Replay $upstream_cache_status always;
-        add_header X-Cluster-Shard fr2 always;
-    }
+listen 127.0.0.1:29300;
+access_log /var/log/nginx/aphrody-cluster.log acl_log if=$acl_logit;
+proxy_http_version 1.1;
+proxy_set_header Connection "";
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto https;
+location / {
+error_page 418 = @idem;
+if ($acl_idem) { return 418; }
+proxy_pass http://acl_aphrody;
+proxy_next_upstream error timeout http_502 http_503 http_504;
+proxy_cache acl_cache;
+proxy_cache_key "aphrody|$host$request_uri";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 15s;
+proxy_cache_lock_age 15s;
+proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+proxy_cache_background_update on;
+proxy_cache_revalidate on;
+proxy_cache_bypass $acl_private $acl_check;
+proxy_no_cache $acl_private $acl_check;
+add_header X-Cluster-Cache $upstream_cache_status always;
+add_header X-Cluster-Shard fr2 always;
+} # POST + Idempotency-Key: first response replayed for 24 h, concurrent duplicates coalesced.
+location @idem {
+proxy_pass http://acl_aphrody;
+proxy_cache acl_idem;
+proxy_cache_methods POST;
+proxy_cache_key "aphrody|$request_method|$host$request_uri|$http_idempotency_key|$http_authorization|$http_cookie";
+proxy_cache_lock on;
+proxy_cache_lock_timeout 30s;
+proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
+proxy_cache_valid 200 201 202 204 400 401 403 404 405 409 422 24h;
+add_header X-Idempotent-Replay $upstream_cache_status always;
+add_header X-Cluster-Shard fr2 always;
+}
 }
 
 server {
-    listen 29990; # loopback + WireGuard subnet (comparison only), no bind on the wg interface
-    allow 127.0.0.1;
-    allow 10.200.77.0/24;
-    deny all;
-    access_log off;
-    root /var/lib/aphrody-cluster;
-    location /bench/ { }
+listen 29990; # loopback + WireGuard subnet (comparison only), no bind on the wg interface
+allow 127.0.0.1;
+allow 10.200.77.0/24;
+deny all;
+access_log off;
+root /var/lib/aphrody-cluster;
+location /bench/ { }
 }
-
 
 ================================================
 FILE: cluster/generated/prd/aphrody-cluster.slice
 ================================================
-# GENERATED by infra/cluster/gen.ts. Cluster workloads (HAProxy, edge containers) run here.
-[Slice]
 
+# GENERATED by infra/cluster/gen.ts. Cluster workloads (HAProxy, edge containers) run here.
+
+[Slice]
 
 ================================================
 FILE: cluster/generated/prd/haproxy.cfg
 ================================================
+
 # GENERATED by infra/cluster/gen.ts from infra/deploy.toml [cluster]; member prd. Do not edit.
+
 global
-    log stderr format short local0 notice
-    user haproxy
-    group haproxy
-    maxconn 20000
-    stats socket /run/aphrody-cluster/haproxy.sock mode 600 level admin
-    ssl-default-bind-options ssl-min-ver TLSv1.3
-    ssl-default-server-options ssl-min-ver TLSv1.3
+log stderr format short local0 notice
+user haproxy
+group haproxy
+maxconn 20000
+stats socket /run/aphrody-cluster/haproxy.sock mode 600 level admin
+ssl-default-bind-options ssl-min-ver TLSv1.3
+ssl-default-server-options ssl-min-ver TLSv1.3
 
 defaults
-    log global
-    mode http
-    option dontlognull
-    timeout connect 3s
-    timeout client 120s
-    timeout server 120s
-    timeout tunnel 1h
-    timeout http-keep-alive 10s
-    timeout check 2s
-    retries 2
-    option redispatch 1
-    default-server inter 1000ms fastinter 500ms downinter 3s fall 2 rise 3
+log global
+mode http
+option dontlognull
+timeout connect 3s
+timeout client 120s
+timeout server 120s
+timeout tunnel 1h
+timeout http-keep-alive 10s
+timeout check 2s
+retries 2
+option redispatch 1
+default-server inter 1000ms fastinter 500ms downinter 3s fall 2 rise 3
 
 frontend stats
-    bind 127.0.0.1:19900
-    http-request use-service prometheus-exporter if { path /metrics }
-    stats enable
-    stats uri /stats
-    stats refresh 5s
+bind 127.0.0.1:19900
+http-request use-service prometheus-exporter if { path /metrics }
+stats enable
+stats uri /stats
+stats refresh 5s
 
 # Inbound from other members: TLS 1.3, client cert signed by the cluster CA, routed by SNI.
+
 frontend mesh_in
-    mode tcp
-    bind 72.60.186.43:7444 ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required
-    tcp-request content reject unless { ssl_fc_sni -m end .prd.cluster.internal }
-    use_backend in_downloads if { ssl_fc_sni -i downloads.prd.cluster.internal }
-    use_backend in_cdn if { ssl_fc_sni -i cdn.prd.cluster.internal }
-    use_backend in_api-gateway if { ssl_fc_sni -i api-gateway.prd.cluster.internal }
-    use_backend in_mig-test if { ssl_fc_sni -i mig-test.prd.cluster.internal }
-    use_backend in_aphrody if { ssl_fc_sni -i aphrody.prd.cluster.internal }
-    use_backend in_ai-os if { ssl_fc_sni -i ai-os.prd.cluster.internal }
-    use_backend in_ssh-prd if { ssl_fc_sni -i ssh-prd.prd.cluster.internal }
-    use_backend in_depot if { ssl_fc_sni -i depot.prd.cluster.internal }
-    use_backend in_commons if { ssl_fc_sni -i commons.prd.cluster.internal }
-    use_backend in_relay if { ssl_fc_sni -i relay.prd.cluster.internal }
-    use_backend in_ssh if { ssl_fc_sni -i ssh.prd.cluster.internal }
-    use_backend in_bench if { ssl_fc_sni -i bench.prd.cluster.internal }
+mode tcp
+bind 72.60.186.43:7444 ssl crt /etc/aphrody-cluster/tls/host.pem ca-file /etc/aphrody-cluster/tls/ca.pem verify required
+tcp-request content reject unless { ssl_fc_sni -m end .prd.cluster.internal }
+use_backend in_downloads if { ssl_fc_sni -i downloads.prd.cluster.internal }
+use_backend in_cdn if { ssl_fc_sni -i cdn.prd.cluster.internal }
+use_backend in_api-gateway if { ssl_fc_sni -i api-gateway.prd.cluster.internal }
+use_backend in_mig-test if { ssl_fc_sni -i mig-test.prd.cluster.internal }
+use_backend in_aphrody if { ssl_fc_sni -i aphrody.prd.cluster.internal }
+use_backend in_ai-os if { ssl_fc_sni -i ai-os.prd.cluster.internal }
+use_backend in_ssh-prd if { ssl_fc_sni -i ssh-prd.prd.cluster.internal }
+use_backend in_depot if { ssl_fc_sni -i depot.prd.cluster.internal }
+use_backend in_commons if { ssl_fc_sni -i commons.prd.cluster.internal }
+use_backend in_relay if { ssl_fc_sni -i relay.prd.cluster.internal }
+use_backend in_ssh if { ssl_fc_sni -i ssh.prd.cluster.internal }
+use_backend in_bench if { ssl_fc_sni -i bench.prd.cluster.internal }
 
 backend in_downloads
-    mode tcp
-    server local 127.0.0.1:29797
+mode tcp
+server local 127.0.0.1:29797
 
 backend in_cdn
-    mode tcp
-    server local 127.0.0.1:29796
+mode tcp
+server local 127.0.0.1:29796
 
 backend in_api-gateway
-    mode tcp
-    server local 127.0.0.1:29081
+mode tcp
+server local 127.0.0.1:29081
 
 backend in_mig-test
-    mode tcp
-    server local 127.0.0.1:29780
+mode tcp
+server local 127.0.0.1:29780
 
 backend in_aphrody
-    mode tcp
-    server local 127.0.0.1:29300
+mode tcp
+server local 127.0.0.1:29300
 
 backend in_ai-os
-    mode tcp
-    server local 127.0.0.1:24000 check
-    server local-b1 127.0.0.1:14000 backup check
+mode tcp
+server local 127.0.0.1:24000 check
+server local-b1 127.0.0.1:14000 backup check
 
 backend in_ssh-prd
-    mode tcp
-    server local 127.0.0.1:22 check
+mode tcp
+server local 127.0.0.1:22 check
 
 backend in_depot
-    mode tcp
-    server local 10.200.77.5:8182 check
+mode tcp
+server local 10.200.77.5:8182 check
 
 backend in_commons
-    mode tcp
-    server local 10.200.77.5:8766 check
+mode tcp
+server local 10.200.77.5:8766 check
 
 backend in_relay
-    mode tcp
-    server local 127.0.0.1:3889 check
+mode tcp
+server local 127.0.0.1:3889 check
 
 backend in_ssh
-    mode tcp
-    server local 127.0.0.1:22 check
+mode tcp
+server local 127.0.0.1:22 check
 
 backend in_bench
-    mode tcp
-    server local 127.0.0.1:29990 check
+mode tcp
+server local 127.0.0.1:29990 check
 
 frontend lb_downloads
-    bind 127.0.0.1:19797
-    mode http
-    http-request set-header X-Cluster-Entry prd
-    default_backend pool_downloads
+bind 127.0.0.1:19797
+mode http
+http-request set-header X-Cluster-Entry prd
+default_backend pool_downloads
 
 backend pool_downloads
-    mode http
-    balance uri whole
-    hash-type consistent
-    option httpchk
-    http-check send meth G
+mode http
+balance uri whole
+hash-type consistent
+option httpchk
+http-check send meth G
 
 [... truncated by token budget ...]
-

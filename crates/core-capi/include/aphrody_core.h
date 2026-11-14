@@ -10,12 +10,58 @@
 #include <stdlib.h>
 
 /**
+ * Unified C ABI version shared across Aphrody C ABI crates.
+ */
+#define APHRODY_ABI_VERSION 1
+
+/**
+ * Framed-buffer status: success.
+ */
+#define ABI_STATUS_OK 0
+
+/**
+ * Framed-buffer status: error.
+ */
+#define ABI_STATUS_ERR 1
+
+/**
+ * Integer return code: invalid argument / null pointer.
+ */
+#define ABI_STATUS_INVALID_ARG -1
+
+/**
+ * Byte length of the framed buffer header: 8-byte LE length + 1-byte status.
+ */
+#define FRAMED_HEADER_LEN 9
+
+/**
  * Bumped on any signature change.
  */
-#define CORE_ABI_VERSION 1
+#define CORE_ABI_VERSION APHRODY_ABI_VERSION
 
 typedef struct Option_CoreFileCallback Option_CoreFileCallback;
 
+/**
+ * Borrowed byte slice passed across the C ABI.
+ */
+typedef struct AphrodySlice {
+  const uint8_t *ptr;
+  size_t len;
+} AphrodySlice;
+
+/**
+ * Unified Aphrody C ABI version.
+ */
+uint32_t aphrody_abi_version(void);
+
+/**
+ * Release a string returned by any C ABI function in this library. Null is a no-op.
+ */
+void aphrody_free(char *p);
+
+/**
+ * Core C ABI version (alias of [`aphrody_abi_version`]).
+ */
 uint32_t core_abi_version(void);
 
 /**
@@ -44,6 +90,11 @@ char *core_query_json(const char *path, const char *content, const char *query);
 int32_t core_blake3_hex(const uint8_t *data, size_t len, uint8_t *out65);
 
 /**
+ * BLAKE3 of `slice`, written as 64 hex chars + NUL into `out65`. 0 on success.
+ */
+int32_t core_blake3_slice_hex(struct AphrodySlice slice, uint8_t *out65);
+
+/**
  * Index `root` restricted to `includes` (`;`-separated, may be empty).
  * `follow_ignore != 0` honours .gitignore. Returns the full `Index` JSON.
  */
@@ -57,5 +108,17 @@ char *core_index_each(const char *root,
                       const char *includes,
                       int32_t follow_ignore,
                       struct Option_CoreFileCallback cb);
+
+/* --- Unified AI OS C ABI (ai_os_*: Unix/GNU Agent OS, LLM, RAG, World Model, System 1) --- */
+uint32_t ai_os_abi_version(void);
+void ai_os_free(char *p);
+char *ai_os_uname_json(void);
+char *ai_os_vfs_resolve_json(const char *home, const char *vpath);
+char *ai_os_llm_spec_json(void);
+char *ai_os_rag_upsert_json(const char *db_path, const char *entry_json);
+char *ai_os_rag_query_json(const char *db_path, const char *query_json);
+char *ai_os_world_step_json(const char *db_path, const char *step_json);
+char *ai_os_world_state_json(const char *db_path, const char *entity);
+char *ai_os_sys1_decide_json(const char *db_path, const char *req_json);
 
 #endif  /* APHRODY_CORE_H */

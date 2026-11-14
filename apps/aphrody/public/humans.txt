@@ -1,0 +1,6 @@
+/* SITE */
+Name: Aphrody
+URL: https://aphrody.com/
+AppURL: https://aphrody.app/
+Last update: 2026-11-14
+Contact: contact@aphrody.com

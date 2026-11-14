@@ -26,12 +26,19 @@ import { designEntries } from "./design";
 const { values, positionals } = parseArgs({
   args: Bun.argv.slice(2),
   options: {
+    help: { type: "boolean", short: "h", default: false },
     home: { type: "string" },
     days: { type: "string", default: "7" },
     "dry-run": { type: "boolean", default: false },
   },
   allowPositionals: true,
 });
+if (values.help) {
+  console.log(
+    "Usage: ai-os brain <absorb|sync|restore|design> [--home <dir>] [--days <n>] [--dry-run]",
+  );
+  process.exit(0);
+}
 const H = homedir();
 const CLAUDE = join(H, ".claude");
 const GEMINI = join(H, ".gemini");

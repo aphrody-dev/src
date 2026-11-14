@@ -23,7 +23,6 @@ W:	https://about.aphrody.com
 T:	git https://android.googlesource.com/platform/manifest.git
 T:	git https://android.googlesource.com/kernel/build.git
 T:	git https://github.com/aphrody-dev/aphrody-app.git
-F:	apps/aphrody-app/crates/aphrody-android/
 F:	third_party/android-skills/
 F:	third_party/aosp-manifest/
 F:	third_party/design-md/
@@ -44,8 +43,8 @@ T:	git https://github.com/aphrody-dev/aphrody-app.git
 T:	git https://github.com/aphrody-dev/google-design.git
 T:	git https://github.com/aphrody-dev/wck.git
 F:	apps/aphrody/
-F:	apps/aphrody-app/
-F:	packages/google-design/
+F:	packages/browser/
+F:	packages/native/
 F:	packages/wck/
 
 BUN V1.4.4 FULL-RUST RUNTIME & PARITY PATCH ENGINE
@@ -56,8 +55,6 @@ W:	https://about.aphrody.com
 T:	git https://github.com/aphrody-labs/bun.git
 T:	git https://github.com/oven-sh/bun.git
 T:	quilt packages/bun-parity/patches/
-F:	packages/bun-parity/
-F:	packages/bun-plugins/
 F:	third_party/bun/
 
 CHROMIUM, BLINK, V8 & DEPOT_TOOLS INTEGRATION
@@ -79,6 +76,8 @@ F:	crates/depot-ingest/
 F:	crates/depot-migrate/
 F:	crates/depot-re/
 F:	crates/core/
+F:	crates/aphrody-v8/
+F:	crates/aphrody-cef/
 F:	packages/chromium-bun/
 F:	third_party/chromium/
 F:	third_party/depot_tools/
@@ -125,14 +124,11 @@ T:	git https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 T:	git https://github.com/aphrody-dev/unix.git
 T:	quilt docs/patches/
 F:	MAINTAINERS
-F:	crates/unix-cachyos/
-F:	crates/unix-distro/
 F:	crates/unix-omarchy/
 F:	docs/linux-kernel-story/
 F:	docs/patches/
 F:	third_party/aether/
 F:	third_party/ananicy-rules/
-F:	third_party/arch-wsl/
 F:	third_party/archinstall/
 F:	third_party/archlinux-wsl/
 F:	third_party/cachy-chroot/
@@ -148,13 +144,11 @@ F:	third_party/mkinitcpio/
 F:	third_party/omarchy/
 F:	third_party/omarchy-pkgs/
 F:	third_party/omarchy-plugin-marketplace/
-F:	third_party/omarchy-site/
 F:	third_party/pacman/
 F:	third_party/pkg-cosmic-session/
 F:	third_party/pkg-hyprland/
 F:	third_party/pkg-linux/
 F:	third_party/pkg-manage-util/
-F:	third_party/try-omarchy-windows/
 F:	third_party/ttfx/
 F:	third_party/WSL/
 
@@ -174,7 +168,6 @@ F:	crates/ay/
 F:	crates/xtask/
 F:	justfile
 F:	packages/env-kit/
-F:	packages/forge/
 F:	src.lock.json
 
 RING-3 HARDWARE TELEMETRY, BENCHMARKS & PURE-RUST STACK
@@ -182,11 +175,9 @@ M:	Aphrody Engineering <contact@aphrody.com>
 L:	contact@aphrody.com
 S:	Supported
 W:	https://about.aphrody.com
-T:	git https://github.com/aphrody-dev/ring3-agent.git
 T:	git https://github.com/aphrody-dev/bench.git
 T:	git https://github.com/aphrody-dev/rust-stack.git
 F:	crates/bench/
-F:	crates/ring3-agent/
 F:	crates/rust-stack/
 
 SOVEREIGN AI CONTROL PLANE & KNOWLEDGE ENGINE
@@ -220,17 +211,14 @@ M:	skill:microsoft skill:windows-machine agent:claude <contact@aphrody.com>
 S:	Supported
 F:	crates/core-capi/
 F:	crates/dx12-hal/
-F:	crates/unix-uutils/
 F:	crates/remote/
 F:	packages/ffi-bridge/
-F:	packages/runtime-adapter/
 
 LAYER L4 AGENT
 M:	agent:claude skill:claude-api <contact@aphrody.com>
 S:	Supported
 F:	crates/agent-context/
 F:	crates/agent-py/
-F:	crates/ring3-agent/
 F:	infra/fleet/prd/systemd/aphrody-relay.service
 F:	packages/ai-os/
 

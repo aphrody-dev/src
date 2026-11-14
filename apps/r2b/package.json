@@ -1,0 +1,23 @@
+{
+  "name": "@aphrody/r2b",
+  "version": "0.1.0",
+  "private": true,
+  "description": "rea to build: REA reverse-engineering CLI/MCP server merged with the Replica app-cloning skills.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "src/rea"
+  ],
+  "engines": {
+    "bun": ">=1.4.4"
+  },
+  "scripts": {
+    "check": "bun run --cwd src/rea typecheck",
+    "build": "bun run --cwd src/rea build",
+    "build:bin": "bun run --cwd src/rea build:bin",
+    "rea": "bun src/rea/scripts/rea.mjs",
+    "test": "bun run --cwd src/rea test:run",
+    "test:py": "uv run pytest",
+    "test:all": "bun run test && uv run pytest"
+  }
+}

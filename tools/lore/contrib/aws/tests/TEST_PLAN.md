@@ -73,8 +73,8 @@ If it shows `amd64`, the build didn't cross-compile. Re-run with `--platform lin
 ```bash
 aws ecr create-repository --repository-name loreserver --region us-west-2 \
   --query 'repository.repositoryUri' --output text 2>/dev/null \
-  && echo "✓ Created" \
-  || echo "✓ Already exists"
+  && echo " Created" \
+  || echo " Already exists"
 ```
 
 ### 0.4 Push to ECR
@@ -261,7 +261,7 @@ curl -i http://edge.lore.internal:41339/health_check
 
 **Expected:** Both return `HTTP/1.1 200 OK` with empty body.
 
-✅ **What this validates:** Both servers started successfully and are reachable inside the VPC.
+**What this validates:** Both servers started successfully and are reachable inside the VPC.
 
 ---
 
@@ -439,7 +439,7 @@ Clone complete in X.XXs
 
 Both MD5 hashes must be identical (same hex string on both lines).
 
-✅ **What this validates:** The primary server stores data durably (S3 for fragment payloads, DynamoDB for associations and fragment state) and serves it back with byte-for-byte integrity.
+**What this validates:** The primary server stores data durably (S3 for fragment payloads, DynamoDB for associations and fragment state) and serves it back with byte-for-byte integrity.
 
 ---
 
@@ -508,7 +508,7 @@ lore status
 
 **Expected:** `Local branch in sync with remote` at revision 3.
 
-✅ **What this validates:** Clients can clone, branch, merge, and push through the edge server. The edge correctly fetches fragments from the primary and resolves branches in real time. Data pushed via the edge reaches durable storage (S3 + DynamoDB) and is visible from the primary.
+**What this validates:** Clients can clone, branch, merge, and push through the edge server. The edge correctly fetches fragments from the primary and resolves branches in real time. Data pushed via the edge reaches durable storage (S3 + DynamoDB) and is visible from the primary.
 
 ---
 

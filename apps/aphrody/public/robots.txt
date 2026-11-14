@@ -1,0 +1,37 @@
+User-agent: *
+Allow: /
+Disallow: /g/
+Disallow: /api/store/
+Disallow: /api/seo/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /g/
+Disallow: /api/store/
+Disallow: /api/seo/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /g/
+Disallow: /api/store/
+Disallow: /api/seo/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /g/
+Disallow: /api/store/
+Disallow: /api/seo/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /g/
+Disallow: /api/store/
+Disallow: /api/seo/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /g/
+Disallow: /api/store/
+Disallow: /api/seo/
+
+Sitemap: https://aphrody.com/sitemap.xml

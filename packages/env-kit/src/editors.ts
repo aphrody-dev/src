@@ -7,6 +7,10 @@ export interface SyncEditorsResult {
   zedPath: string;
   piSettingsPath: string;
   piModelsPath: string;
+  antigravityCliMcpPath: string;
+  antigravityGlobalMcpPath: string;
+  geminiSettingsPath: string;
+  claudeJsonPath: string;
   updatedFiles: string[];
 }
 
@@ -119,6 +123,7 @@ export function syncAllEditorConfigs(
   options: {
     homeDir?: string;
     appDataDir?: string;
+    env?: Record<string, string | undefined>;
   } = {},
 ): SyncEditorsResult {
   const home = options.homeDir ?? homedir();
@@ -126,11 +131,26 @@ export function syncAllEditorConfigs(
     options.appDataDir ??
     process.env.APPDATA ??
     join(home, "AppData", "Roaming");
+  const env = options.env ?? process.env;
 
   const opencodePath = join(home, ".config", "opencode", "opencode.jsonc");
   const zedPath = join(appData, "Zed", "settings.json");
   const piSettingsPath = join(home, ".pi", "agent", "settings.json");
   const piModelsPath = join(home, ".pi", "agent", "models.json");
+  const antigravityCliMcpPath = join(
+    home,
+    ".gemini",
+    "antigravity-cli",
+    "mcp_config.json",
+  );
+  const antigravityGlobalMcpPath = join(
+    home,
+    ".gemini",
+    "config",
+    "mcp_config.json",
+  );
+  const geminiSettingsPath = join(home, ".gemini", "settings.json");
+  const claudeJsonPath = join(home, ".claude.json");
 
   const updatedFiles: string[] = [];
 
@@ -145,10 +165,26 @@ export function syncAllEditorConfigs(
     command: ["C:/Users/aphro/.local/bin/ai-os.exe", "mcp-stdio"],
     enabled: true,
   };
-  ocMcp.cloudflare = ocMcp.cloudflare ?? {
+  ocMcp.cloudflare = {
     type: "remote",
     url: "https://mcp.cloudflare.com/mcp",
     enabled: true,
+    headers: {
+      Authorization: "Bearer {env:CLOUDFLARE_API_TOKEN}",
+    },
+  };
+  ocMcp["cloudflare-docs"] = {
+    type: "remote",
+    url: "https://docs.mcp.cloudflare.com/mcp",
+    enabled: true,
+  };
+  ocMcp.vercel = {
+    type: "remote",
+    url: "https://mcp.vercel.com",
+    enabled: true,
+    headers: {
+      Authorization: "Bearer {env:VERCEL_TOKEN}",
+    },
   };
   ocMcp.context7 = {
     type: "remote",
@@ -500,11 +536,75 @@ export function syncAllEditorConfigs(
   );
   updatedFiles.push(piModelsPath);
 
+  // 4. Antigravity (`agy`), Gemini CLI & Claude Code MCP servers (preserving existing entries)
+  const cfToken = env.CLOUDFLARE_API_TOKEN?.trim();
+  const vercelToken = env.VERCEL_TOKEN?.trim();
+  const remoteServers = (withHttpType: boolean): Record<string, unknown> => {
+    const typeField = withHttpType ? { type: "http" } : {};
+    return {
+      "cloudflare-docs": {
+        ...typeField,
+        url: "https://docs.mcp.cloudflare.com/mcp",
+      },
+      ...(cfToken
+        ? {
+            cloudflare: {
+              ...typeField,
+              url: "https://mcp.cloudflare.com/mcp",
+              headers: { Authorization: `Bearer ${cfToken}` },
+            },
+          }
+        : {}),
+      ...(vercelToken
+        ? {
+            vercel: {
+              ...typeField,
+              url: "https://mcp.vercel.com",
+              headers: { Authorization: `Bearer ${vercelToken}` },
+            },
+          }
+        : {}),
+    };
+  };
+
+  const syncMcpFile = (
+    filePath: string,
+    includeAiOs: boolean,
+    withHttpType: boolean,
+  ): void => {
+    const doc = readJsoncObject(filePath);
+    const servers = asRecord(doc.mcpServers);
+    if (includeAiOs && !servers["ai-os"]) {
+      servers["ai-os"] = {
+        command: "C:/Users/aphro/.local/bin/ai-os.exe",
+        args: ["mcp-stdio"],
+      };
+    }
+    doc.mcpServers = {
+      ...servers,
+      ...remoteServers(withHttpType),
+    };
+    mkdirSync(dirname(filePath), { recursive: true });
+    writeFileSync(filePath, `${JSON.stringify(doc, null, 2)}\n`, "utf8");
+    updatedFiles.push(filePath);
+  };
+
+  syncMcpFile(antigravityCliMcpPath, true, false);
+  syncMcpFile(antigravityGlobalMcpPath, true, false);
+  syncMcpFile(geminiSettingsPath, true, false);
+  if (existsSync(claudeJsonPath)) {
+    syncMcpFile(claudeJsonPath, false, true);
+  }
+
   return {
     opencodePath,
     zedPath,
     piSettingsPath,
     piModelsPath,
+    antigravityCliMcpPath,
+    antigravityGlobalMcpPath,
+    geminiSettingsPath,
+    claudeJsonPath,
     updatedFiles,
   };
 }

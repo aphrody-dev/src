@@ -4,12 +4,27 @@ pub struct CosmicSessionEnvironment {
     pub env_vars: HashMap<String, String>,
 }
 
+impl Default for CosmicSessionEnvironment {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CosmicSessionEnvironment {
     pub fn new() -> Self {
         let mut env_vars = HashMap::new();
+        let wayland_display = std::env::var("WAYLAND_DISPLAY")
+            .ok()
+            .filter(|v| !v.trim().is_empty())
+            .unwrap_or_else(|| "wayland-0".into());
+        if let Ok(xdg_runtime) = std::env::var("XDG_RUNTIME_DIR")
+            && !xdg_runtime.trim().is_empty()
+        {
+            env_vars.insert("XDG_RUNTIME_DIR".into(), xdg_runtime);
+        }
         env_vars.insert("WGPU_BACKEND".into(), "vulkan".into());
         env_vars.insert("COSMIC_DATA_CONTROL_ENABLED".into(), "1".into());
-        env_vars.insert("WAYLAND_DISPLAY".into(), "wayland-0".into());
+        env_vars.insert("WAYLAND_DISPLAY".into(), wayland_display);
         env_vars.insert("XDG_CURRENT_DESKTOP".into(), "COSMIC".into());
         env_vars.insert("XDG_SESSION_DESKTOP".into(), "COSMIC".into());
         env_vars.insert("XDG_SESSION_TYPE".into(), "wayland".into());

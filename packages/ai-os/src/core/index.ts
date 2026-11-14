@@ -9,15 +9,17 @@ export {
   type Usage,
 } from "./skills";
 export { type LintFinding, lintContent, parseSkill } from "./skill-lint";
-export {
-  HEARTBEAT_OK,
-  heartbeat,
-  type Job,
-  parseEvery,
-  Scheduler,
-  tick,
-} from "./scheduler";
 export { makeTools } from "./tools";
+export {
+  execSandboxed,
+  type JsRunOptions,
+  type JsRunResult,
+  limitOutput,
+  OverlaySandbox,
+  runSandboxedJs,
+  type SandboxResult,
+} from "./sandbox";
+export { resolveBash, runJustBash } from "./shell";
 export {
   ask,
   CLI,
@@ -51,12 +53,21 @@ export {
   TEMPLATES,
 } from "./home";
 export {
-  clawhub,
-  defaultSources,
-  github,
-  type HubSkill,
-  type HubSource,
-  hubInstall,
-  hubSearch,
-} from "./hub";
-export { resolveBash } from "./shell";
+  AI_OS_ABI_VERSION,
+  AI_OS_LIB_FILE,
+  type AiOsUname,
+  loadAiOsCabi,
+  osLlmSpec,
+  osRagQuery,
+  osRagUpsert,
+  osResolveVfs,
+  osSys1Decide,
+  osUname,
+  osWorldState,
+  osWorldStep,
+  type Sys1DecisionInput,
+  type Sys1DecisionResult,
+  type VfsResolved,
+  type WorldStepInput,
+  type WorldStepResult,
+} from "./cabi";

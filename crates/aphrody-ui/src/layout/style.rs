@@ -211,6 +211,7 @@ pub enum FlexWrap {
     NoWrap,
     Wrap,
     WrapReverse,
+    Balance,
 }
 
 /// Item-alignment keyword (`align-items`, `align-self`, `justify-items`, `justify-self`).

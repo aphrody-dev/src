@@ -166,6 +166,10 @@ pub fn apply_tailwind_token(res: &mut TailwindResolution, token: &str) -> bool {
             s.flex_wrap = FlexWrap::NoWrap;
             decl("flex-wrap", "nowrap");
         }
+        "flex-wrap-balance" => {
+            s.flex_wrap = FlexWrap::Balance;
+            decl("flex-wrap", "balance");
+        }
         "flex-1" => {
             s.flex_grow = 1.0;
             s.flex_shrink = 1.0;

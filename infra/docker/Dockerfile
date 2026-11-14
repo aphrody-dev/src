@@ -58,9 +58,6 @@ FROM rust-base AS rust-plan
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY .cargo/config.toml .cargo/config.toml
 COPY crates/ crates/
-# Explicit workspace members outside crates/ (root Cargo.toml).
-COPY packages/env-kit/loaders/rust/ packages/env-kit/loaders/rust/
-COPY packages/vault/native/ packages/vault/native/
 COPY tools/build-model/ tools/build-model/
 RUN cargo chef prepare --recipe-path /recipe.json
 
@@ -80,9 +77,6 @@ RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry,sharing=lock
     cargo chef cook --zigbuild --profile "${CARGO_PROFILE}" --target "$t" ${RUST_PACKAGES} --recipe-path /recipe.json
 COPY Cargo.toml Cargo.lock ./
 COPY crates/ crates/
-# Explicit workspace members outside crates/ (root Cargo.toml).
-COPY packages/env-kit/loaders/rust/ packages/env-kit/loaders/rust/
-COPY packages/vault/native/ packages/vault/native/
 COPY tools/build-model/ tools/build-model/
 RUN --mount=type=cache,id=cargo-registry,target=/opt/cargo/registry,sharing=locked \
     --mount=type=cache,id=cargo-git,target=/opt/cargo/git,sharing=locked \
@@ -142,35 +136,9 @@ RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
     bun install --frozen-lockfile --production --ignore-scripts
 
 FROM bun-deps AS bun-build
-COPY packages/ packages/
-COPY apps/aphrody/ apps/aphrody/
-# apps/aphrody/build.ts (page holding) lit l'organisation et des métriques mesurées sur l'arbre.
-COPY docs/ALPHABET.md docs/ALPHABET.md
-COPY docs/reviews/ docs/reviews/
-COPY third_party/forks.txt third_party/forks.txt
-COPY assets/brand/gen/ assets/brand/gen/
-# apps/aphrody/src/os/build.ts: vendor icons and wallpaper thumbnails (committed outputs of `ay assets`); crates/game/assets feeds /play.
-COPY assets/library/icons/vendors/ assets/library/icons/vendors/
-COPY assets/generated/wallpapers/thumbs/ assets/generated/wallpapers/thumbs/
-COPY assets/library/textures/polyhaven/aerial_grass_rock/ assets/library/textures/polyhaven/aerial_grass_rock/
-COPY assets/library/textures/polyhaven/aerial_rocks_02/ assets/library/textures/polyhaven/aerial_rocks_02/
-COPY assets/library/audio/ui/ assets/library/audio/ui/
-COPY assets/brand/pet/ assets/brand/pet/
-COPY crates/game/assets/ crates/game/assets/
-# apps/aphrody/src/os/client/gamescope.ts imports the WGSL shaders of the crate as text.
-COPY crates/gamescope-wgsl/src/shaders/ crates/gamescope-wgsl/src/shaders/
-COPY --parents crates/*/Cargo.toml ./
-COPY apps/r2-site/ apps/r2-site/
 COPY infra/cloudflare/workers/api-gateway/ infra/cloudflare/workers/api-gateway/
-# Each app: its own build step (static dist/), then the server bundled into one file next to dist/.
-RUN set -eu; mkdir -p /out; \
-    for app in aphrody; do \
-      (cd "apps/$app" && bun run build.ts) && mkdir -p "/out/$app" && \
-      bun build "apps/$app/server.ts" --target=bun --minify --outfile "/out/$app/server.js" && \
-      cp -r "apps/$app/dist" "/out/$app/dist" && mkdir -p "/out/$app/var" && { [ ! -d "apps/$app/public" ] || cp -r "apps/$app/public" "/out/$app/public"; } || exit 1; \
-    done; \
-    bun build apps/r2-site/src/entry.vps.ts --target=bun --minify --outfile /out/r2-site/server.js; \
-    mkdir -p /out/api-gateway && bun build infra/cloudflare/workers/api-gateway/selfhost.ts --target=bun --outfile /out/api-gateway/selfhost.js && \
+RUN set -eu; mkdir -p /out/api-gateway && \
+    bun build infra/cloudflare/workers/api-gateway/selfhost.ts --target=bun --outfile /out/api-gateway/selfhost.js && \
     cp infra/cloudflare/workers/api-gateway/worker.js infra/cloudflare/workers/api-gateway/api.aphrody.com.toml /out/api-gateway/
 
 FROM bun-alpine AS bun-runtime
@@ -191,33 +159,6 @@ ENV RELAY_HOST=0.0.0.0 RELAY_PORT=8790 RELAY_TCP_PORT=8791 AGENT_HOST=0.0.0.0 AG
     AGENT_HOME=/home/bun/.ai-os PORT=8790 HEALTH_PATH=/health
 EXPOSE 8790 8791 4000
 CMD ["bun", "src/relay/cli.ts", "serve"]
-
-FROM bun-runtime AS aphrody
-COPY --from=bun-build --chown=bun:bun /out/aphrody/ /app/
-# var/ = SQLite search history (writable volume; the rest of the image stays read-only).
-VOLUME /app/var
-ENV PORT=3000 HEALTH_PATH=/ok APHRODY_DIST=/app/dist
-EXPOSE 3000
-CMD ["bun", "server.js"]
-
-# yolo: build context = packages/ (design tokens, fonts and Material Symbols come from packages/design).
-FROM bun-deps AS yolo-build
-COPY packages/ packages/
-COPY apps/yolo/ apps/yolo/
-RUN cd apps/yolo && bun run build.ts && mkdir -p /out/yolo && bun build server.ts --target=bun --minify --outfile /out/yolo/server.js && cp -r dist /out/yolo/dist
-
-FROM bun-runtime AS yolo
-COPY --from=yolo-build --chown=bun:bun /out/yolo/ /app/
-ENV PORT=3092 HEALTH_PATH=/ok
-EXPOSE 3092
-CMD ["bun", "server.js"]
-
-# Portable large-file site (downloads/cdn): STORAGE=s3 + S3_BUCKET (deploy.toml [hosting.downloads|cdn].vps).
-FROM bun-runtime AS r2-site
-COPY --from=bun-build --chown=bun:bun /out/r2-site/ /app/
-ENV PORT=8797 HEALTH_PATH=/health STORAGE=s3
-EXPOSE 8797
-CMD ["bun", "server.js"]
 
 # api.aphrody.com worker self-hosted (infra/cloudflare/workers/api-gateway/selfhost.ts): R2 binding over S3.
 FROM bun-runtime AS api-gateway

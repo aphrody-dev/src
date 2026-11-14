@@ -5,5 +5,7 @@
   "r2_buckets": [{ "binding": "CDN", "bucket_name": "shenron-cdn" }],
   "vars": { "IMPORT_ENABLED": "false", "VERIFY_UPLOADS": "false" },
   // MANIFEST_PREFIX and MANIFEST_SHARD_HASHES_0..3 are live json vars; read them with the settings API before redeploying.
-  "routes": [{ "pattern": "cdn.dragonballfr.com/*", "zone_name": "dragonballfr.com" }]
+  "routes": [
+    { "pattern": "cdn.dragonballfr.com/*", "zone_name": "dragonballfr.com" },
+  ],
 }

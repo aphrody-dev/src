@@ -14,10 +14,5 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true
   },
-  "include": [
-    "src/**/*",
-    "test/**/*",
-    "tests/**/*",
-    "../bun-plugins/bun-native.d.ts"
-  ]
+  "include": ["src/**/*", "test/**/*", "tests/**/*", "../core/bun-native.d.ts"]
 }

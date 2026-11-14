@@ -1,0 +1,17 @@
+{
+  "name": "@aphrody/native",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Global Zig native desktop SDK core (vercel-labs/native) and bun:ffi bindings",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test src/",
+    "check": "bun check",
+    "fmt": "bun fmt src/"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

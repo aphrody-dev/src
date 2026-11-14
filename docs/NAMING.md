@@ -1,4 +1,5 @@
 | `ay assets list/check/verify/fetch/import/scan/optimize/bundle/publish/targets/tools/run` | (new) | assets from download to deploy, run by bun from `packages/assets`: pinned remote manifests, resumable parallel fetch, content-hashed optimize (AVIF/WebP/KTX2/meshopt/Opus/woff2/SVG), immutable bundle with Brotli and `assets-manifest.json`, publish to dir, Next.js `public/`, ssh (fr1, fr2 nginx), R2 (rclone), S3, Vercel Blob; external targets are held in `var/agents/outbox/` unless `.agents/owner-rules.json` grants `assets.publish.<target>` |
+
 # Naming
 
 One identity, short tools. Decided by the owner on 2026-11-12.

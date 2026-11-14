@@ -298,6 +298,7 @@ impl LayoutStyle {
                 FlexWrap::NoWrap => taffy::FlexWrap::NoWrap,
                 FlexWrap::Wrap => taffy::FlexWrap::Wrap,
                 FlexWrap::WrapReverse => taffy::FlexWrap::WrapReverse,
+                FlexWrap::Balance => taffy::FlexWrap::Balance,
             },
             flex_grow: self.flex_grow,
             flex_shrink: self.flex_shrink,

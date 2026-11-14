@@ -1,0 +1,76 @@
+<!doctype html>
+<meta name="lp-mode" content="test" />
+<script src="../testing.js"></script>
+<div id="target" style="width: 100px; height: 60px">Target Element</div>
+
+<script id="disconnectEarlierObserver" type="module">
+  {
+    // b disconnects a while the delivery round is in progress. Each observer
+    // must still be called at most once, and a only if it ran before b.
+    const state = await testing.async();
+    const target = document.getElementById("target");
+    const calls = [];
+    const a = new IntersectionObserver(() => calls.push("a"));
+    const b = new IntersectionObserver(() => {
+      calls.push("b");
+      a.disconnect();
+    });
+    const c = new IntersectionObserver(() => calls.push("c"));
+    a.observe(target);
+    b.observe(target);
+    c.observe(target);
+    await testing.nextFrame();
+    b.disconnect();
+    c.disconnect();
+
+    state.resolve();
+    await state.done(() => {
+      // Chrome delivers in no fixed order (observers sit in an address-keyed
+      // set), so only Lightpanda's registration order is checked exactly.
+      if (testing.IS_TEST_RUNNER) {
+        testing.expectEqual("a,b,c", calls.join(","));
+      }
+      testing.expectEqual(calls.length, new Set(calls).size);
+      testing.expectEqual(true, calls.includes("b") && calls.includes("c"));
+      testing.expectEqual(
+        true,
+        !calls.includes("a") || calls.indexOf("a") < calls.indexOf("b"),
+      );
+    });
+  }
+</script>
+
+<script id="disconnectLaterObserver" type="module">
+  {
+    const state = await testing.async();
+    const target = document.getElementById("target");
+    const calls = [];
+    let c = null;
+    const a = new IntersectionObserver(() => {
+      calls.push("a");
+      c.disconnect();
+    });
+    const b = new IntersectionObserver(() => calls.push("b"));
+    c = new IntersectionObserver(() => calls.push("c"));
+    a.observe(target);
+    b.observe(target);
+    c.observe(target);
+    await testing.nextFrame();
+    a.disconnect();
+    b.disconnect();
+
+    state.resolve();
+    await state.done(() => {
+      // See disconnectEarlierObserver: exact order is Lightpanda-only.
+      if (testing.IS_TEST_RUNNER) {
+        testing.expectEqual("a,b", calls.join(","));
+      }
+      testing.expectEqual(calls.length, new Set(calls).size);
+      testing.expectEqual(true, calls.includes("a") && calls.includes("b"));
+      testing.expectEqual(
+        true,
+        !calls.includes("c") || calls.indexOf("c") < calls.indexOf("a"),
+      );
+    });
+  }
+</script>

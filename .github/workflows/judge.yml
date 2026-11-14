@@ -66,10 +66,18 @@ jobs:
         include:
           - { suite: env-kit, run: "bun --no-env-file test packages/env-kit" }
           - { suite: upstream, run: "bun --no-env-file test packages/upstream" }
-          - { suite: ai-os, run: "cd packages/ai-os && bun --no-env-file test test" }
-          - { suite: chromium-bun, run: "cd packages/chromium-bun && bun check && bun --no-env-file test test/ssrf.test.ts test/engines.test.ts test/layers.test.ts test/purge-matrix.test.ts test/winner-picker.test.ts test/chromium-inspector.test.ts" }
-          # The suites read the built site (dist/ is git-ignored): build it first, as deploy.yml does.
-          - { suite: apps-aphrody, run: "cd apps/aphrody && bun check && bun run build && bun --no-env-file test" }
+          - {
+              suite: ai-os,
+              run: "cd packages/ai-os && bun --no-env-file test test",
+            }
+          - {
+              suite: chromium-bun,
+              run: "cd packages/chromium-bun && bun check && bun --no-env-file test test/ssrf.test.ts test/engines.test.ts test/layers.test.ts test/purge-matrix.test.ts test/winner-picker.test.ts test/chromium-inspector.test.ts",
+            }
+          - {
+              suite: design,
+              run: "bun --no-env-file --cwd packages/design test && bun --no-env-file run --cwd packages/design lint",
+            }
     steps:
       - uses: actions/checkout@v7
         with: { fetch-depth: 1, submodules: false }

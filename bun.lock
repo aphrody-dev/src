@@ -8,10 +8,6 @@
         "@types/bun": "catalog:",
       },
     },
-    "apps/aphrody": {
-      "name": "@aphrody/aphrody",
-      "version": "1.0.0",
-    },
     "apps/nt": {
       "name": "@aphrody/nt",
       "version": "0.0.0",
@@ -28,20 +24,6 @@
     },
     "apps/nt/modules/web": {
       "name": "@aphrody/web",
-    },
-    "apps/r2-site": {
-      "name": "@aphrody/r2-site",
-      "version": "0.1.0",
-    },
-    "apps/yolo": {
-      "name": "@aphrody/yolo",
-      "version": "1.0.0",
-      "bin": {
-        "yolo": "./server.ts",
-      },
-      "dependencies": {
-        "@aphrody/chromium-bun": "workspace:*",
-      },
     },
     "infra/cloudflare/workers/github-app": {
       "name": "@aphrody/github-app",
@@ -74,16 +56,9 @@
         "wawoff2": "catalog:",
       },
     },
-    "packages/bun-parity": {
-      "name": "@aphrody/bun-parity",
-      "version": "1.0.0",
-      "bin": {
-        "bpt": "./bin/bpt.ts",
-      },
-    },
-    "packages/bun-plugins": {
-      "name": "@aphrody/bun-plugins",
-      "version": "1.0.0",
+    "packages/browser": {
+      "name": "@aphrody/browser",
+      "version": "0.1.0",
     },
     "packages/chromium-bun": {
       "name": "@aphrody/chromium-bun",
@@ -126,28 +101,11 @@
       "name": "@aphrody/ffi-bridge",
       "version": "1.27.0",
     },
-    "packages/forge": {
-      "name": "@aphrody/forge",
-      "version": "1.1.0",
-      "bin": {
-        "frg": "src/cli.ts",
-      },
-      "dependencies": {
-        "@aphrody/core": "workspace:*",
-      },
-    },
     "packages/gaming": {
       "name": "@aphrody/gaming",
       "version": "1.0.0",
       "bin": {
         "gaming": "./src/cli.ts",
-      },
-    },
-    "packages/google-design": {
-      "name": "@aphrody/google-design",
-      "version": "2.0.0",
-      "bin": {
-        "gds": "./cli.ts",
       },
     },
     "packages/i18n": {
@@ -157,15 +115,12 @@
         "aphrody-i18n": "./src/cli.ts",
       },
     },
-    "packages/linux": {
-      "name": "@aphrody/linux",
-      "version": "1.0.0",
-      "bin": {
-        "linux": "./src/cli.ts",
-      },
-    },
     "packages/machine": {
       "name": "@aphrody/machine",
+      "version": "0.1.0",
+    },
+    "packages/native": {
+      "name": "@aphrody/native",
       "version": "0.1.0",
     },
     "packages/net": {
@@ -179,26 +134,11 @@
         "release": "./src/cli.ts",
       },
     },
-    "packages/runtime-adapter": {
-      "name": "@aphrody/runtime-adapter",
-      "version": "0.1.0",
-    },
     "packages/shell-matrix": {
       "name": "@aphrody/shell-matrix",
       "version": "0.1.0",
       "bin": {
         "shell-matrix": "./src/cli.ts",
-      },
-    },
-    "packages/site": {
-      "name": "@aphrody/site",
-      "version": "0.1.0",
-      "bin": {
-        "aphrody-site": "./src/cli.ts",
-      },
-      "dependencies": {
-        "@aphrody/design": "workspace:*",
-        "@aphrody/wck": "workspace:*",
       },
     },
     "packages/upstream": {
@@ -228,7 +168,7 @@
   },
   "catalog": {
     "@cloudflare/vite-plugin": "2.0.0-beta.v.16",
-    "@cloudflare/workers-types": "5.20261113.1",
+    "@cloudflare/workers-types": "5.20261114.1",
     "@material/material-color-utilities": "0.4.0",
     "@material/web": "2.5.0",
     "@types/bun": "1.4.4",
@@ -245,13 +185,9 @@
   "packages": {
     "@aphrody/ai-os": ["@aphrody/ai-os@workspace:packages/ai-os"],
 
-    "@aphrody/aphrody": ["@aphrody/aphrody@workspace:apps/aphrody"],
-
     "@aphrody/assets": ["@aphrody/assets@workspace:packages/assets"],
 
-    "@aphrody/bun-parity": ["@aphrody/bun-parity@workspace:packages/bun-parity"],
-
-    "@aphrody/bun-plugins": ["@aphrody/bun-plugins@workspace:packages/bun-plugins"],
+    "@aphrody/browser": ["@aphrody/browser@workspace:packages/browser"],
 
     "@aphrody/chromium-bun": ["@aphrody/chromium-bun@workspace:packages/chromium-bun"],
 
@@ -265,33 +201,23 @@
 
     "@aphrody/ffi-bridge": ["@aphrody/ffi-bridge@workspace:packages/ffi-bridge"],
 
-    "@aphrody/forge": ["@aphrody/forge@workspace:packages/forge"],
-
     "@aphrody/gaming": ["@aphrody/gaming@workspace:packages/gaming"],
 
     "@aphrody/github-app": ["@aphrody/github-app@workspace:infra/cloudflare/workers/github-app"],
 
-    "@aphrody/google-design": ["@aphrody/google-design@workspace:packages/google-design"],
-
     "@aphrody/i18n": ["@aphrody/i18n@workspace:packages/i18n"],
 
-    "@aphrody/linux": ["@aphrody/linux@workspace:packages/linux"],
-
     "@aphrody/machine": ["@aphrody/machine@workspace:packages/machine"],
+
+    "@aphrody/native": ["@aphrody/native@workspace:packages/native"],
 
     "@aphrody/net": ["@aphrody/net@workspace:packages/net"],
 
     "@aphrody/nt": ["@aphrody/nt@workspace:apps/nt"],
 
-    "@aphrody/r2-site": ["@aphrody/r2-site@workspace:apps/r2-site"],
-
     "@aphrody/release": ["@aphrody/release@workspace:packages/release"],
 
-    "@aphrody/runtime-adapter": ["@aphrody/runtime-adapter@workspace:packages/runtime-adapter"],
-
     "@aphrody/shell-matrix": ["@aphrody/shell-matrix@workspace:packages/shell-matrix"],
-
-    "@aphrody/site": ["@aphrody/site@workspace:packages/site"],
 
     "@aphrody/upstream": ["@aphrody/upstream@workspace:packages/upstream"],
 
@@ -300,8 +226,6 @@
     "@aphrody/wck": ["@aphrody/wck@workspace:packages/wck"],
 
     "@aphrody/web": ["@aphrody/web@workspace:apps/nt/modules/web"],
-
-    "@aphrody/yolo": ["@aphrody/yolo@workspace:apps/yolo"],
 
     "@cloudflare/build-output-utils": ["@cloudflare/build-output-utils@0.9.13", "", { "dependencies": { "@cloudflare/config": "0.32.0" } }, "sha512-ct8ZYuQCZS0+yg5eFluhV5V6vBXpAoK04vFoQkPnBswAFVw51p5xH2I3Eb18Thy+75IPUT41l/1zxak1hEddVQ=="],
 
@@ -323,7 +247,7 @@
 
     "@cloudflare/workerd-windows-64": ["@cloudflare/workerd-windows-64@1.20261110.1", "", { "os": "win32", "cpu": "x64" }, "sha512-zP8IGyWvohyJhbNjHOnTA9anRQtGN7X01T/dG+R9IA4vu2egRODsD02aoYzv0a0qImjt7tTpOOA+uVotDJPcSA=="],
 
-    "@cloudflare/workers-types": ["@cloudflare/workers-types@5.20261113.1", "", {}, "sha512-FhF8hRtsQCr/BWZyUN7wm2x+jqAOkRIpLOW+2fJu5OQyIDOv+c3PxY8duEAkOYXuprLImxjW+PHTbvz9+Px5cw=="],
+    "@cloudflare/workers-types": ["@cloudflare/workers-types@5.20261114.1", "", {}, "sha512-+oSzWssC5/wfY92Ij/O4XUnxcKh6mPrE6EsWDoHrLYYTjLHEsDU520mllwCu4O63WXdZWFUteeUB55BOk7hpZw=="],
 
     "@cspotcode/source-map-support": ["@cspotcode/source-map-support@0.8.1", "", { "dependencies": { "@jridgewell/trace-mapping": "0.3.9" } }, "sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw=="],
 
@@ -445,7 +369,7 @@
 
     "@rolldown/binding-win32-x64-msvc": ["@rolldown/binding-win32-x64-msvc@1.2.19", "", { "os": "win32", "cpu": "x64" }, "sha512-y/sqRRc6d7hECzOFc5n3LSeqctmIp9mMjY1Kq4s14uLPd/LZ4z7i1zrW6fMtp2mPeuQIC4e6ULMcwQzMomqQag=="],
 
-    "@rolldown/pluginutils": ["@rolldown/pluginutils@1.1.0", "", {}, "sha512-K+NU2HDCEem4sClgHH4ZZXwdJeNFkJo+hRk479DIwdIviAPN2hFJH1KHHwg8CxHQXvi0M5XY4deTXINfIiSG6w=="],
+    "@rolldown/pluginutils": ["@rolldown/pluginutils@1.1.1", "", {}, "sha512-glFIJDvLNDtJhT9qrMFWLPbvS+skxgt4L0K8Ei2YtnhPysAJnsI7nyxSJxKj4ADeKX0OLjC4ntRkwpLOoS3rwA=="],
 
     "@sindresorhus/is": ["@sindresorhus/is@7.2.0", "", {}, "sha512-P1Cz1dWaFfR4IR+U13mqqiGsLFf1KbayybWwdd2vfctdV6hDpUkgCY0nKOLLTMSoRd/jJNjtbqzf13K8DCCXQw=="],
 
@@ -551,7 +475,7 @@
 
     "picomatch": ["picomatch@4.0.7", "", {}, "sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA=="],
 
-    "postcss": ["postcss@8.5.32", "", { "dependencies": { "nanoid": "^3.3.20", "picocolors": "^1.1.1", "source-map-js": "^1.2.2" } }, "sha512-LJlKCCAUFKOuZxipUdYw1NzIITEsPcgyOG9LkvRJvuKj/bRzbuRY0ARXvL0pWGpsZvn8jku+LMep2eU0seHp8g=="],
+    "postcss": ["postcss@8.5.33", "", { "dependencies": { "nanoid": "^3.3.20", "picocolors": "^1.1.1", "source-map-js": "^1.2.2" } }, "sha512-RVHEU9/Pp1Fnjr/MpAJsZoADukCKhfIi15OunEYiGktIkYLkPVvC1sioWolGDS7XByMTx9m/IGbro0Js13zhnQ=="],
 
     "rolldown": ["rolldown@1.2.19", "", { "dependencies": { "@oxc-project/types": "=0.156.0", "@rolldown/pluginutils": "^1.0.0" }, "optionalDependencies": { "@rolldown/binding-android-arm-eabi": "1.2.19", "@rolldown/binding-android-arm64": "1.2.19", "@rolldown/binding-darwin-arm64": "1.2.19", "@rolldown/binding-darwin-x64": "1.2.19", "@rolldown/binding-freebsd-x64": "1.2.19", "@rolldown/binding-linux-arm-gnueabihf": "1.2.19", "@rolldown/binding-linux-arm64-gnu": "1.2.19", "@rolldown/binding-linux-arm64-musl": "1.2.19", "@rolldown/binding-linux-ppc64-gnu": "1.2.19", "@rolldown/binding-linux-s390x-gnu": "1.2.19", "@rolldown/binding-linux-x64-gnu": "1.2.19", "@rolldown/binding-linux-x64-musl": "1.2.19", "@rolldown/binding-openharmony-arm64": "1.2.19", "@rolldown/binding-wasm32-wasi": "1.2.19", "@rolldown/binding-win32-arm64-msvc": "1.2.19", "@rolldown/binding-win32-x64-msvc": "1.2.19" }, "bin": { "rolldown": "./bin/cli.mjs" } }, "sha512-QIiV1J9d0pzN4jeeTH4sjPy0AZ6cAy2cG0ExeoE1+U8Rvj+hR3gYkokx0YbeUNGlZqiQJJ2utcETe0oKXwzsuA=="],
 

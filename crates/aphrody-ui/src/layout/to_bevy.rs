@@ -249,7 +249,7 @@ impl LayoutStyle {
             },
             flex_wrap: match self.flex_wrap {
                 FlexWrap::NoWrap => BFlexWrap::NoWrap,
-                FlexWrap::Wrap => BFlexWrap::Wrap,
+                FlexWrap::Wrap | FlexWrap::Balance => BFlexWrap::Wrap,
                 FlexWrap::WrapReverse => BFlexWrap::WrapReverse,
             },
             flex_grow: self.flex_grow,

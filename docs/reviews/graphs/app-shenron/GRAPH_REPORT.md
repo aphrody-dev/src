@@ -1,10 +1,12 @@
 # Graph Report - shenron
 
 ## Corpus Check
+
 - **Nodes:** 152022 · **Edges:** 245302 · **Communities:** 5442
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `image-variants.json` [file] - 2905 connections (apps/site/src/data/image-variants.json:L1)
 2. `streams.json` [file] - 2533 connections (data/streams.json:L1)
 3. `en.json` [file] - 1950 connections (apps/site/messages/en.json:L1)
@@ -19,6 +21,7 @@
 12. `String()` [function] - 951 connections (replica/crunchyroll/design/contrast.ts:L87)
 
 ## Key Structural Connections
+
 - `package.json` --[defines]--> `name` (Extracted)
 - `package.json` --[defines]--> `version` (Extracted)
 - `package.json` --[defines]--> `private` (Extracted)

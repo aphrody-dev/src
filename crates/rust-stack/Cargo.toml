@@ -4,7 +4,7 @@ name = "rust-stack"
 version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0 OR MIT"
-description = "Unified 100% Pure-Rust Sovereign Stack: Better-Auth, shadcn_rs, Open-WebUI, OpenCode, and OpenAI Gateway + C-ABI FFI"
+description = "Unified Pure-Rust Stack: Better-Auth, shadcn_rs (aphrody-ui), Open-WebUI, OpenCode, and OpenAI Gateway + C-ABI FFI"
 
 [[bin]]
 name = "rust-stack"
@@ -40,3 +40,5 @@ tokio = { workspace = true, features = [
 ] }
 ureq = { workspace = true, features = ["json"] }
 corelib = { version = "0.4.0", package = "aphrody-corelib", path = "../corelib" }
+aphrody-ui = { version = "0.4.0", path = "../aphrody-ui", default-features = false, features = ["std", "serde", "layout", "fusion", "dioxus", "anyrender", "tui", "editor"] }
+taffy = { workspace = true }

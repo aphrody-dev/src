@@ -5,9 +5,6 @@
   "type": "module",
   "main": "./src/manifest.ts",
   "types": "./src/manifest.ts",
-  "bin": {
-    "assets": "./src/cli.ts"
-  },
   "scripts": {
     "verify": "bun run src/cli.ts verify",
     "gen": "bun run src/gen/gen.ts",

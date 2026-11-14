@@ -14,14 +14,15 @@ import {
   type Registry,
 } from "./state.ts";
 
+const HTML_ENT: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
 export const esc = (s: unknown): string =>
-  String(s ?? "").replace(
-    /[&<>"']/g,
-    (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
-        c
-      ]!,
-  );
+  String(s ?? "").replace(/[&<>"']/g, (c) => HTML_ENT[c]!);
 
 export const LOCALES = ["fr", "en", "zh-CN", "ja", "es"] as const;
 export type Locale = (typeof LOCALES)[number];
@@ -158,7 +159,10 @@ export function layout(
     : "";
   const alt =
     tab === "home" || tab === "platform"
-      ? LOCALES.map((x) => `<link rel="alternate" hreflang="${x}" href="https://aphrody.app${pagePath(tab, x)}">`).join("") +
+      ? LOCALES.map(
+          (x) =>
+            `<link rel="alternate" hreflang="${x}" href="https://aphrody.app${pagePath(tab, x)}">`,
+        ).join("") +
         `<link rel="alternate" hreflang="x-default" href="https://aphrody.app/">`
       : `<link rel="alternate" hreflang="fr" href="${url}">`;
   const langs =
@@ -232,19 +236,44 @@ export function platform(
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Aphrody", item: "https://aphrody.com/" },
-          { "@type": "ListItem", position: 2, name: "aphrody.app", item: `https://aphrody.app${pagePath("platform", l)}` },
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Aphrody",
+            item: "https://aphrody.com/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "aphrody.app",
+            item: `https://aphrody.app${pagePath("platform", l)}`,
+          },
         ],
       },
     ],
   });
 }
 
-const LAUNCH_CARDS: { id: string; icon: string; state: "built" | "partial" | "planned"; url: string }[] = [
+const LAUNCH_CARDS: {
+  id: string;
+  icon: string;
+  state: "built" | "partial" | "planned";
+  url: string;
+}[] = [
   { id: "app", icon: "app.png", state: "partial", url: "" },
-  { id: "play", icon: "play.png", state: "partial", url: "https://aphrody.com/play" },
+  {
+    id: "play",
+    icon: "play.png",
+    state: "partial",
+    url: "https://aphrody.com/play",
+  },
   { id: "os", icon: "os.svg", state: "built", url: "https://aphrody.com/os" },
-  { id: "craft", icon: "craft.png", state: "planned", url: "https://aphrody.com/craft" },
+  {
+    id: "craft",
+    icon: "craft.png",
+    state: "planned",
+    url: "https://aphrody.com/craft",
+  },
 ];
 
 /** aphrody.app home: entry of the Aphrody launcher (fullscreen, controller-first shell). Only what exists is linked. */
@@ -263,8 +292,23 @@ export function landing(reg: Registry, l: Locale = "fr"): string {
     desc,
     hero,
     ld: [
-      { "@type": "WebSite", "@id": "https://aphrody.app/#site", url: "https://aphrody.app/", name: "aphrody.app", inLanguage: l, publisher: { "@id": "https://aphrody.com/#org" } },
-      { "@type": "SoftwareApplication", name: "Aphrody Launcher", url: "https://aphrody.app/", description: desc, applicationCategory: "GameApplication", operatingSystem: "Web, Windows, Linux", brand: { "@id": "https://aphrody.com/#org" } },
+      {
+        "@type": "WebSite",
+        "@id": "https://aphrody.app/#site",
+        url: "https://aphrody.app/",
+        name: "aphrody.app",
+        inLanguage: l,
+        publisher: { "@id": "https://aphrody.com/#org" },
+      },
+      {
+        "@type": "SoftwareApplication",
+        name: "Aphrody Launcher",
+        url: "https://aphrody.app/",
+        description: desc,
+        applicationCategory: "GameApplication",
+        operatingSystem: "Web, Windows, Linux",
+        brand: { "@id": "https://aphrody.com/#org" },
+      },
     ],
   });
 }
@@ -275,13 +319,9 @@ export function labs(reg: Registry): string {
   const bets = reg.labs.filter((c) => c.source === "alphabet");
   const repos = reg.labs.filter((c) => c.source === "github");
   const body = `<h1>aphrody-labs</h1><p class="lead">Les projets expérimentaux d'Aphrody. Les paris viennent de <a href="https://github.com/aphrody-labs/src/blob/main/docs/ALPHABET.md">docs/ALPHABET.md</a> ; les dépôts sont ceux de l'organisation <a href="https://github.com/aphrody-labs">github.com/aphrody-labs</a> qui ne sont ni des forks ni archivés, avec leur description GitHub.</p><h2>Paris du monorepo</h2><div class="grid">${bets.map(card).join("")}</div><h2>Dépôts</h2><div class="grid">${repos.map(card).join("")}</div><p class="support">Liste générée au commit <code>${esc(reg.commit.slice(0, 7))}</code> le ${when(reg.generatedAt)}.</p>`;
-  return layout(
-    reg,
-    "Labs, aphrody.app",
-    "labs",
-    body,
-    { desc: "Projets expérimentaux de l'organisation aphrody-labs." },
-  );
+  return layout(reg, "Labs, aphrody.app", "labs", body, {
+    desc: "Projets expérimentaux de l'organisation aphrody-labs.",
+  });
 }
 
 const fmt = (m: string, v: number) =>

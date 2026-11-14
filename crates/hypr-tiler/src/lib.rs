@@ -4,6 +4,7 @@ pub mod geometry;
 pub mod master_stack;
 pub mod omarchy;
 pub mod rules;
+pub mod taffy_tiler;
 pub mod window;
 pub mod workspace;
 
@@ -16,6 +17,9 @@ pub use omarchy::{
     OmarchyKeybindRegistry,
 };
 pub use rules::{WindowRuleAction, WindowRuleV2, WindowRulesEngine};
+pub use taffy_tiler::{
+    TilerAlgorithm, solve_workspace_taffy_rects, taffy_to_window_rect, window_rect_to_taffy,
+};
 pub use window::{HyprWindow, WindowState};
 pub use workspace::Workspace;
 

@@ -85,6 +85,45 @@ const ALIASES: Record<string, (u: URL) => string | "api"> = {
     `https://github.com/aphrody-labs/src${u.pathname === "/" ? "" : u.pathname}`,
   "source.aphrody.app": (u) =>
     `https://github.com/aphrody-labs/src${u.pathname === "/" ? "" : u.pathname}`,
+  "auth.aphrody.app": (u) =>
+    `https://auth.aphrody.com${u.pathname === "/" ? "" : u.pathname}${u.search}`,
+  "apt.aphrody.app": (u) =>
+    `https://store.aphrody.com${u.pathname === "/" ? "" : u.pathname}${u.search}`,
+  "play.aphrody.app": () => "https://aphrody.com/wayland/",
+  "craft.aphrody.app": () => "https://aphrody.com/",
+  "shell.aphrody.app": () => "https://aphrody.com/",
+  "bun.aphrody.app": () => "https://aphrody.com/",
+  "wildcard-probe.aphrody.app": () => "https://aphrody.app/",
+};
+const STUDIO_APP_HOSTS: Record<string, string> = {
+  "filmcraft.aphrody.app": "film",
+  "app-video.aphrody.app": "film",
+  "artcraft.aphrody.app": "art",
+  "app-generation.aphrody.app": "art",
+  "photocraft.aphrody.app": "photo",
+  "app-images.aphrody.app": "photo",
+  "vectorcraft.aphrody.app": "vector",
+  "app-vectors.aphrody.app": "vector",
+  "effectcraft.aphrody.app": "effect",
+  "app-compositing.aphrody.app": "effect",
+  "lightcraft.aphrody.app": "light",
+  "app-photo-processing.aphrody.app": "light",
+  "pdfcraft.aphrody.app": "pdf",
+  "app-pdf.aphrody.app": "pdf",
+  "wordcraft.aphrody.app": "word",
+  "app-documents.aphrody.app": "word",
+  "soundcraft.aphrody.app": "sound",
+  "app-audio.aphrody.app": "sound",
+  "designcraft.aphrody.app": "design",
+  "app-layout.aphrody.app": "design",
+  "cadcraft.aphrody.app": "cad",
+  "app-cad.aphrody.app": "cad",
+  "deckcraft.aphrody.app": "deck",
+  "app-slides.aphrody.app": "deck",
+  "gridcraft.aphrody.app": "grid",
+  "app-tables.aphrody.app": "grid",
+  "figcraft.aphrody.app": "fig",
+  "app-interface-layouts.aphrody.app": "fig",
 };
 const JSONH = {
   "content-type": "application/json; charset=utf-8",
@@ -505,18 +544,22 @@ export default {
       if (url.pathname === "/") return html(landing(reg));
       const loc = LOCALES.find((x) => x !== "fr" && url.pathname === `/${x}`);
       if (loc) return html(landing(reg, loc));
-      const plat = LOCALES.find((x) => pagePath("platform", x) === url.pathname);
+      const plat = LOCALES.find(
+        (x) => pagePath("platform", x) === url.pathname,
+      );
       if (plat) return html(platform(reg, await views(env, reg), plat));
       if (url.pathname === "/_/theme.js" || url.pathname === "/_/hero.js")
-        return new Response(url.pathname === "/_/theme.js" ? THEME_JS : HERO_JS, {
-          headers: {
-            "content-type": "text/javascript; charset=utf-8",
-            "cache-control": "public, max-age=300",
-            "x-content-type-options": "nosniff",
+        return new Response(
+          url.pathname === "/_/theme.js" ? THEME_JS : HERO_JS,
+          {
+            headers: {
+              "content-type": "text/javascript; charset=utf-8",
+              "cache-control": "public, max-age=300",
+              "x-content-type-options": "nosniff",
+            },
           },
-        });
-      if (url.pathname === "/labs")
-        return Response.redirect("https://aphrody.app/", 301);
+        );
+      if (url.pathname === "/labs") return html(landing(reg));
       if (url.pathname === "/llms.txt")
         return new Response(LLMS, {
           headers: {
@@ -531,7 +574,14 @@ export default {
         );
       if (url.pathname === "/sitemap.xml")
         return new Response(
-          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${LOCALES.flatMap((x) => [localePath(x), pagePath("platform", x)]).map((p) => `<url><loc>https://aphrody.app${p}</loc>${reg.generatedAt ? `<lastmod>${reg.generatedAt.slice(0, 10)}</lastmod>` : ""}</url>`).join("")}</urlset>\n`,
+          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${LOCALES.flatMap(
+            (x) => [localePath(x), pagePath("platform", x)],
+          )
+            .map(
+              (p) =>
+                `<url><loc>https://aphrody.app${p}</loc>${reg.generatedAt ? `<lastmod>${reg.generatedAt.slice(0, 10)}</lastmod>` : ""}</url>`,
+            )
+            .join("")}</urlset>\n`,
           {
             headers: {
               "content-type": "application/xml; charset=utf-8",
@@ -563,6 +613,23 @@ export default {
       );
     }
     if (alias) return Response.redirect(alias, 302);
+    const studio = STUDIO_APP_HOSTS[host];
+    if (studio) {
+      if (url.pathname === "/health" || url.pathname === "/api/health") {
+        return json({
+          ok: true,
+          status: "ok",
+          service: "craft-web",
+          studio,
+          host,
+        });
+      }
+      const res = html(
+        `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aphrody Studio - ${studio}</title><link rel="stylesheet" href="https://aphrody.com/tokens.css"></head><body style="font-family:system-ui,sans-serif;margin:0;padding:2rem;background:var(--md-sys-color-surface,#fbf8ff);color:var(--md-sys-color-on-surface,#1a1b25)"><main style="max-width:44rem;margin:0 auto"><h1>Aphrody ${studio}</h1><p>Studio WebGPU/Wayland unifie sur <code>${host}</code>.</p><p><a href="https://aphrody.com/wayland/">Ouvrir le compositeur Wayland WASM</a> · <a href="https://aphrody.app/">Lanceur aphrody.app</a></p></main></body></html>`,
+      );
+      res.headers.set("x-craft-studio", studio);
+      return res;
+    }
     const pv = parsePreviewHost(host, zone);
     if (pv) {
       let s = await readState(env.BUCKET, pv.project);

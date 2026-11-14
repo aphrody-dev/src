@@ -9,5 +9,5 @@ Type=oneshot
 Nice=19
 IOSchedulingClass=idle
 Environment=SRC_ROOT=@SRC@
-ExecStart=@BUN@ @SRC@/packages/linux/src/cli.ts status --record
+ExecStart=/home/aphrody/.local/bin/ay linux status --record
 TimeoutStartSec=10min

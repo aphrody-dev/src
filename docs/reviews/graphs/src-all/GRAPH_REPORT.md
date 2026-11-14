@@ -1,10 +1,12 @@
 # Graph Report - codebase
 
 ## Corpus Check
+
 - **Nodes:** 188787 · **Edges:** 410576 · **Communities:** 9142
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `Some()` [function] - 4712 connections (crates/depot-forge/src/lib.rs:L20)
 2. `Ok()` [function] - 4383 connections (crates/depot-forge/src/http.rs:L44)
 3. `material-symbols-index.json` [file] - 3866 connections (packages/google-design/assets/symbols/material-symbols-index.json:L1)
@@ -19,6 +21,7 @@
 12. `test_store_create()` [function] - 874 connections (crates/lore-server/tests/unit/auth/jwt_axum_middleware.rs:L113)
 
 ## Key Structural Connections
+
 - `package.json` --[defines]--> `name` (Extracted)
 - `package.json` --[defines]--> `version` (Extracted)
 - `package.json` --[defines]--> `private` (Extracted)

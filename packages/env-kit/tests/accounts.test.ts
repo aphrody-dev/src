@@ -314,29 +314,37 @@ describe("Aphrody 3-Principal Multi-Google & Org Identity Architecture", () => {
 
         expect(records.length).toBe(12);
 
+        type DnsRecord = {
+          type?: string;
+          priority?: number;
+          name?: string;
+          content?: string;
+        };
         const mxPrimary = records.find(
-          (r) => r.type === "MX" && r.priority === 10,
+          (r: DnsRecord) => r.type === "MX" && r.priority === 10,
         );
         expect(mxPrimary?.content).toBe("mail.aphrody.com");
 
         const mxWorkspace = records.find(
-          (r) => r.type === "MX" && r.priority === 20,
+          (r: DnsRecord) => r.type === "MX" && r.priority === 20,
         );
         expect(mxWorkspace?.content).toBe("smtp.google.com");
 
         const spf = records.find(
-          (r) => r.type === "TXT" && r.name === "aphrody.com",
+          (r: DnsRecord) => r.type === "TXT" && r.name === "aphrody.com",
         );
         expect(spf?.content).toContain("a:mail.aphrody.com");
         expect(spf?.content).toContain("include:_spf.google.com");
 
-        const dmarc = records.find((r) => r.name === "_dmarc.aphrody.com");
+        const dmarc = records.find(
+          (r: DnsRecord) => r.name === "_dmarc.aphrody.com",
+        );
         expect(dmarc?.content).toBe(
           "v=DMARC1; p=quarantine; rua=mailto:dmarc@aphrody.com; ruf=mailto:dmarc@aphrody.com; fo=1",
         );
 
         const bimi = records.find(
-          (r) => r.name === "default._bimi.aphrody.com",
+          (r: DnsRecord) => r.name === "default._bimi.aphrody.com",
         );
         expect(bimi?.content).toContain(
           "https://aphrody.com/assets/brand/aphrody-monogram-bimi.svg",

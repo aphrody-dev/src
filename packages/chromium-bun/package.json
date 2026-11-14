@@ -11,9 +11,6 @@
     "./cdp": "./src/browser/cdp-client.ts",
     "./engines": "./src/engines/index.ts"
   },
-  "bin": {
-    "chromium-bun": "./src/cli.ts"
-  },
   "scripts": {
     "start": "bun run src/cli.ts",
     "bench": "bun run src/benchmarks/runner.ts",

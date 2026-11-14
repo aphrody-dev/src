@@ -46,6 +46,8 @@ up = { version = "0.4.0", package = "aphrody-up", path = "../up" }
 rt = { version = "0.4.0", package = "aphrody-rt", path = "../rt" }
 # `ay docs` (Bun docs index) and `ay flat` / `ay hash` / `ay time` (bun fork crates, flattened).
 aphrody-docs = { version = "0.4.0", path = "../docs" }
+aphrody-omarchy = { version = "0.4.0", path = "../unix-omarchy" }
+aphrody-ui = { version = "0.4.0", path = "../aphrody-ui", default-features = false, features = ["std", "serde", "fusion", "dioxus", "anyrender", "tui", "editor"] }
 bun-flat = { version = "0.4.0", package = "aphrody-bun-flat", path = "../bun-flat" }
 # `ay steam`: Steam data as JSON (VDF, appinfo, manifests, compat tools, Proton env).
 bun-steam = { version = "1.4.8", package = "steam-depot", path = "../steam-depot" }

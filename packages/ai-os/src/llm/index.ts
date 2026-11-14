@@ -18,4 +18,10 @@ export {
   resolveModel,
 } from "./model";
 export { listModels, type Model, type Provider, providers } from "./models";
-export { type Answer, agy, claude, claudeWithTools } from "./agents";
+export { type Answer, agy, claude, claudeWithTools, opencode } from "./agents";
+export {
+  getRetryDelayInMs,
+  isRetryableStatus,
+  RetryableHttpError,
+  retryWithBackoff,
+} from "./retry";

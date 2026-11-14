@@ -26,12 +26,12 @@ pub struct SockAddrHv {
 
 impl SockAddrHv {
     pub fn new_wsl2_wayland_server() -> Self {
-        // Construct ServiceId with WSL2 vsock port template
+        // Construct ServiceId with WSL2 vsock port template (HV_GUID_VSOCK_TEMPLATE: 00000000-facb-11e6-bd58-64006a7986d3)
         let service_id = GUID::from_values(
             WSL2_WAYLAND_VSOCK_PORT,
             0xFACB,
             0x11E6,
-            [0xBD, 0x58, 0x64, 0x00, 0x6A, 0x79, 0x86, 0xF2],
+            [0xBD, 0x58, 0x64, 0x00, 0x6A, 0x79, 0x86, 0xD3],
         );
 
         Self {

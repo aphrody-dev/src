@@ -6,7 +6,6 @@ import { join } from "node:path";
 import { parseArgs } from "node:util";
 import { run } from "./core/agent";
 import { resolveModel } from "./core/model";
-import { heartbeat, parseEvery, Scheduler } from "./core/scheduler";
 import { lintContent } from "./core/skill-lint";
 import { Skills } from "./core/skills";
 
@@ -30,7 +29,7 @@ const home = values.home ?? Bun.env.AGENT_HOME ?? join(homedir(), ".agent");
 const [cmd, sub, ...rest] = positionals;
 const usage = () => {
   console.error(
-    "usage: ai-os init | run <task> | context <query> | schedule add <name> <task> --every 1h | schedule list | heartbeat [--once] | skills lint|curate|search <q>|install [clawhub:|github/owner/repo:]<ref> | research <outline.yaml> [--validate] | gateway | tui | relay <cmd>",
+    "usage: ai-os init | run <task> | context <query> | skills lint|curate | research <outline.yaml> [--validate] | gateway | relay <cmd>",
   );
   process.exit(2);
 };
@@ -74,36 +73,6 @@ switch (cmd) {
     );
     break;
   }
-  case "schedule": {
-    const s = new Scheduler(join(home, "scheduler.sqlite"));
-    if (sub === "add" && rest.length >= 2) {
-      const [name, ...task] = rest;
-      console.log(
-        `job #${s.add(name!, task.join(" "), { everyMs: values.every ? parseEvery(values.every) : undefined })}`,
-      );
-    } else if (sub === "list") {
-      for (const j of s.list())
-        console.log(
-          `#${j.id} ${j.name} next=${new Date(j.next_at).toISOString()} every=${j.every_ms ?? "-"} ${j.enabled ? "" : "(done)"}`,
-        );
-    } else if (sub === "rm" && rest[0]) s.remove(Number(rest[0]));
-    else usage();
-    s.close();
-    break;
-  }
-  case "heartbeat":
-    await heartbeat({
-      home,
-      cwd: process.cwd(),
-      model: await resolveModel(values.model),
-      once: values.once,
-      intervalMs: values.interval ? parseEvery(values.interval) : undefined,
-      onEvent: (e) =>
-        console.log(
-          `[${e.kind}] ${e.name} ${e.ok ? "ok" : "failed"}: ${e.text}`,
-        ),
-    });
-    break;
   case "skills": {
     const skills = new Skills(join(home, "skills"));
     if (sub === "lint") {
@@ -120,29 +89,7 @@ switch (cmd) {
       process.exit(errors ? 1 : 0);
     } else if (sub === "curate")
       console.log(JSON.stringify(await skills.curate()));
-    else if (sub === "search" && rest.length) {
-      const { hubSearch } = await import("./core/hub");
-      const r = await hubSearch(rest.join(" "));
-      for (const x of r.results)
-        console.log(`${x.source}	${x.ref}	${x.summary.slice(0, 80)}`);
-      for (const e of r.errors) console.error(`[hub] ${e}`);
-    } else if (sub === "install" && rest[0]) {
-      const { clawhub, github, hubInstall } = await import("./core/hub");
-      const { Memory } = await import("./core/memory");
-      const [src, ref] = rest[0].includes(":")
-        ? rest[0].split(/:(.*)/s)
-        : ["clawhub", rest[0]];
-      const m = new Memory(join(home, "memory.sqlite"));
-      const source =
-        src === "clawhub" ? clawhub() : github(src!.replace(/^github\//, ""));
-      const r = await hubInstall(
-        new Skills(join(home, "skills"), m.ctx),
-        source,
-        ref!,
-      );
-      console.log(`installed ${r.name} -> ${r.path}`);
-      m.close();
-    } else usage();
+    else usage();
     break;
   }
   case "research": {
@@ -184,16 +131,6 @@ switch (cmd) {
     });
     console.log(`gateway on ${g.url}`);
     await new Promise(() => {});
-    break;
-  }
-  case "tui": {
-    const { startTui } = await import("./tui/index");
-    await startTui({
-      home,
-      model: await resolveModel(values.model),
-      allowShell: values["allow-shell"],
-    });
-    process.exit(0);
     break;
   }
   default:

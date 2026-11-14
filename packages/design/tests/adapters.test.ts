@@ -162,7 +162,7 @@ test("gpui-kit : un thème par mode, états M3 lisibles", async () => {
   }
 });
 
-test("WebUI : themes = les six modes, rôles et échelles", async () => {
+test("WebUI : themes = les six modes, rôles, échelles et 9 presets", async () => {
   const w = await json("webui-tokens.json");
   expect(Object.keys(w.themes)).toEqual(modes);
   for (const m of modes) {
@@ -171,4 +171,11 @@ test("WebUI : themes = les six modes, rôles et échelles", async () => {
       tokens.shape["corner-medium"],
     );
   }
+  expect(Object.keys(w.presets)).toHaveLength(9);
+  const g = await json("gpui-kit.json");
+  expect(Object.keys(g.presets)).toHaveLength(9);
+  const taffy = await text("taffy_tokens.rs");
+  expect(taffy).toContain("pub const FUSION_PRESETS:");
+  expect(taffy).toContain('"hyprland"');
+  expect(taffy).toContain('"cachyos"');
 });

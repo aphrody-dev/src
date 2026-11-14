@@ -3164,6 +3164,7 @@ crates/
 ================================================
 FILE: apm/README.md
 ================================================
+
 # aphrody-apm
 
 Rust port of Microsoft APM (Agent Package Manager). Upstream: `C:\src\third_party\ai\microsoft_apm`, commit `1a6c1df` (Apache-2.0, apm-cli 0.35.1). It ships a library (`aphrody_apm`) and an `apm` binary.
@@ -3204,10 +3205,10 @@ Run `cargo test -p aphrody-apm`. There are 49 tests: 32 unit, 12 upstream-confor
 - Context-file (`.context.md`/`.memory.md`) link resolution is not ported. Comments in `apm.yml` are lost on re-serialization, as upstream.
 - No Bun/TypeScript part: the only JS in upstream is `packages/apm-contributor-dashboard/client`, a sample Vite app shipped as an APM package, not part of the CLI.
 
-
 ================================================
 FILE: archguard/README.md
 ================================================
+
 # `archguard` (`C:\src\tools\archguard`)
 
 Deterministic, zero-compromise Rust Edition 2024 architectural gate, domain-purity auditor, upstream hygiene enforcer, and dependency graph engine for the `C:\src` Sovereign Monorepo.
@@ -3293,14 +3294,13 @@ flowchart TD
 
 ## 3. Complete Rule Matrix (`ARCH-001` .. `ARCH-017`)
 
-| Rule ID    | Category                             | Default Severity               | Invariant Enforced                                                                                                                                                                                                                                                                                                                                                   |
-| :--------- | :----------------------------------- | :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ARCH-001` | `crate-domain-purity`                | `ERROR`                        | `C:\src\crates\*` must contain zero `.ts`, `.tsx`, `.js`, `.jsx`, `.mjs`, `.cjs`, `.py`, `.go` files and zero `package.json`, `tsconfig.json`, `bun.lock`, `node_modules`, `go.mod`, or `pyproject.toml`.                                                                                                                                                            |
-| `ARCH-002` | `crate-manifest-edition`             | `WARN` (`ERROR` in `--strict`) | Every directory in `C:\src\crates\*` must have a valid `Cargo.toml` declaring `edition = "2024"` and at least one `.rs` source file.                                                                                                                                                                                                                                 |
-| `ARCH-003` | `package-domain-purity`              | `ERROR`                        | Every directory in `C:\src\packages\*` must declare a `@aphrody/<slug>` `package.json`, zero external npm dependencies (`workspace:*` and `@types/bun` only), zero legacy lockfiles (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`), zero root `Cargo.toml`/`go.mod`, and isolate any native FFI code inside `native/`, `rust-core/`, `crates/`, or `loaders/`. |
-| `ARCH-004` | `app-contract-purity`                | `ERROR`                        | `apps/aphrody-app` must remain 100% pure Rust (zero TypeScript/npm files); `apps/aphrody` (`aphrody.com`) must maintain `dependencies: {}`, `devDependencies: {}`, zero `node_modules`, and zero `bun.lock`.                                                                                                                                                         |
-| `ARCH-005` | `root-topology-junctions`            | `ERROR`                        | `C:\src` root may contain only canonical physical directories (`apps`, `packages`, `crates`, `infra`, `tools`, `docs`, `third_party`, `var`, `graphify-out`, `node_modules`, `.repo`) and valid non-dangling NTFS junctions.                                                                                                                                         |
-| `A
+| Rule ID    | Category                  | Default Severity               | Invariant Enforced                                                                                                                                                                                                                                                                                                                                                   |
+| :--------- | :------------------------ | :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ARCH-001` | `crate-domain-purity`     | `ERROR`                        | `C:\src\crates\*` must contain zero `.ts`, `.tsx`, `.js`, `.jsx`, `.mjs`, `.cjs`, `.py`, `.go` files and zero `package.json`, `tsconfig.json`, `bun.lock`, `node_modules`, `go.mod`, or `pyproject.toml`.                                                                                                                                                            |
+| `ARCH-002` | `crate-manifest-edition`  | `WARN` (`ERROR` in `--strict`) | Every directory in `C:\src\crates\*` must have a valid `Cargo.toml` declaring `edition = "2024"` and at least one `.rs` source file.                                                                                                                                                                                                                                 |
+| `ARCH-003` | `package-domain-purity`   | `ERROR`                        | Every directory in `C:\src\packages\*` must declare a `@aphrody/<slug>` `package.json`, zero external npm dependencies (`workspace:*` and `@types/bun` only), zero legacy lockfiles (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`), zero root `Cargo.toml`/`go.mod`, and isolate any native FFI code inside `native/`, `rust-core/`, `crates/`, or `loaders/`. |
+| `ARCH-004` | `app-contract-purity`     | `ERROR`                        | `apps/aphrody-app` must remain 100% pure Rust (zero TypeScript/npm files); `apps/aphrody` (`aphrody.com`) must maintain `dependencies: {}`, `devDependencies: {}`, zero `node_modules`, and zero `bun.lock`.                                                                                                                                                         |
+| `ARCH-005` | `root-topology-junctions` | `ERROR`                        | `C:\src` root may contain only canonical physical directories (`apps`, `packages`, `crates`, `infra`, `tools`, `docs`, `third_party`, `var`, `graphify-out`, `node_modules`, `.repo`) and valid non-dangling NTFS junctions.                                                                                                                                         |
+| `A         |
 
 [... truncated by token budget ...]
-

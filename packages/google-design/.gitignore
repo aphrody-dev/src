@@ -1,7 +1,0 @@
-upstream/
-node_modules/
-dist/
-var/
-.DS_Store
-Thumbs.db
-*.log

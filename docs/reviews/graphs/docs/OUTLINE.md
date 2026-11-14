@@ -843,6 +843,7 @@ docs/
 ================================================
 FILE: ARCHITECTURE.md
 ================================================
+
 # Architecture de src
 
 Document de référence unique. Remplace `docs/ROOT-ARCHITECTURE.md` et `docs/CORE.md` (fusionnés ici, 2026-11-12). Les principes et leurs sources sont dans [PHILOSOPHY.md](PHILOSOPHY.md). L'architecture interne de l'IA reste dans `packages/ai-os/docs/ARCHITECTURE.md` (paquet `@aphrody/ai-os`, fusionné à plat depuis aphrody-labs/agent le 2026-11-13) et se range entièrement en L4/L5 ci-dessous.
@@ -1271,10 +1272,10 @@ candidates --(candidate parser)--> {variants[], utility, value, modifier, import
 - **Cache** : `<cache OS>/aphrody/<kind>/<blake3>` (`XDG_CACHE_HOME`, `%LOCALAPPDATA%`), compressé zstd et adressé par contenu, partagé par `dev`, `build` et `test`.
 - **Télémétrie** : aucune.
 
-
 ================================================
 FILE: design/README.md
 ================================================
+
 # docs/design : sources de design de référence
 
 Sources, licences et mode (`sources.toml`, vérifié en ligne le 2026-11-13) ; outil `bun scripts/design-mirror.ts index|mirror|check` (sur fr1, robots.txt respecté, débit limité).
@@ -1297,10 +1298,10 @@ Sources, licences et mode (`sources.toml`, vérifié en ligne le 2026-11-13) ; o
 
 Cible UI de src inchangée : `packages/design` et la skill ui-system ; ces specs servent de référence et de contrôle.
 
-
 ================================================
 FILE: i18n/README.md
 ================================================
+
 # Internationalization
 
 English is the source language. Supported locales: `en`, `fr`, `zh-CN`, `ja`, `es`.
@@ -1334,10 +1335,10 @@ cargo test -p aphrody-i18n                              # on fr1 or CI
 
 Short versions (about half the length) of `README.md`, `AGENTS.md` and `docs/games/PLAN.md`: `fr/`, `zh-CN/`, `ja/`, `es/`. The English files stay authoritative.
 
-
 ================================================
 FILE: i18n/es/README.md
 ================================================
+
 [Original en inglés](../../../README.md)
 
 # src
@@ -1387,10 +1388,10 @@ just verify-all      # arquitectura, doctor, suites de Bun y ci.yml para Rust
 
 Aphrody Labs: plataforma autoalojada; su antiguo binario es ahora `ay conformance`. Incluye `crates/conformance`, `crates/lore*` (Lore VCS, MIT), `crates/apm`, `infra/chromium-factory` y el plugin `plugins/labs`. Recetas: `just lab-build`, `just lab-dev`, `just lab-conformance`.
 
-
 ================================================
 FILE: i18n/fr/README.md
 ================================================
+
 [English source](../../../README.md)
 
 # src
@@ -1456,10 +1457,10 @@ Aphrody Labs : travail de plateforme auto-hébergée ; son ancien binaire est d�
 
 Recettes : `just lab-build`, `just lab-dev`, `just lab-conformance`.
 
-
 ================================================
 FILE: i18n/ja/README.md
 ================================================
+
 [English source](../../../README.md)
 
 # src
@@ -1523,10 +1524,10 @@ Aphrody Labs はセルフホスト型プラットフォームの作業です。�
 
 レシピ: `just lab-build`、`just lab-dev`、`just lab-conformance`。
 
-
 ================================================
 FILE: i18n/zh-CN/README.md
 ================================================
+
 [English source](../../../README.md)
 
 # src
@@ -1592,10 +1593,10 @@ Aphrody Labs：自托管平台相关工作，其原二进制现为 `ay conforman
 
 相关命令：`just lab-build`、`just lab-dev`、`just lab-conformance`。
 
-
 ================================================
 FILE: lore/README.md
 ================================================
+
 # Lore documentation
 
 Welcome to the Lore documentation. The pages below cover everything from your first install through the internal design, organized into a consistent structure that helps you find what you need.
@@ -1642,10 +1643,10 @@ Documentation for contributors and maintainers. These pages cover Lore's interna
   - [Documentation standards](developing/doc-standards/README.md). Documentation house style and Lore overrides.
   - [Architectural decision records](developing/decisions/README.md). Engineering decisions and the reasoning behind them.
 
-
 ================================================
 FILE: lore/assets/fonts/README.md
 ================================================
+
 # Bundled fonts
 
 The font binaries in this directory are licensed under the
@@ -1667,10 +1668,10 @@ The OFL-1.1 license name, copyright, and license URL
 woff2's `name` table — inspect with any font tool
 (e.g. `fontTools`, `otfinfo`, macOS Font Book).
 
-
 ================================================
 FILE: lore/developing/README.md
 ================================================
+
 # Developing
 
 Documentation for working _on_ Lore, not _with_ it.
@@ -1690,10 +1691,10 @@ Contributor and maintainer docs, organized by purpose. Four subfolders: `interna
 
 See [docs/README.md](../README.md) for the full docs structure.
 
-
 ================================================
 FILE: lore/developing/code-standards/README.md
 ================================================
+
 # Code standards
 
 Coding conventions governing how Lore source is written.
@@ -1719,10 +1720,10 @@ Per-language, per-area conventions for error handling, logging, task spawning, t
 
 See [docs/README.md](../README.md) for the full docs structure.
 
-
 ================================================
 FILE: lore/developing/decisions/README.md
 ================================================
+
 # Architectural decision records
 
 Documents describing the various architectural decisions that have been made during the course of Lore development and the reasoning behind them.
@@ -1736,10 +1737,10 @@ ADRs are append-only and numbered sequentially. Filename pattern: `NNNNN-<slug>.
 
 See [docs/README.md](../README.md) for the full docs structure.
 
-
 ================================================
 FILE: lore/developing/doc-standards/README.md
 ================================================
+
 # Documentation standards
 
 The house style for every Markdown doc in the Lore project. Use this folder when you're writing a new doc, reviewing one, or bringing an existing page into compliance.
@@ -1807,11 +1808,12 @@ These standards don't govern:
 
 See [`docs/README.md`](../../README.md) for the full docs structure.
 
-
 ================================================
 FILE: lore/developing/doc-standards/tools/README.md
 ================================================
+
 ---
+
 title: Doc-standards tools
 description: The three linters that maintain Lore documentation quality — Vale (prose), markdownlint (structure), lychee (links) — with usage, install, and rule details.
 ---
@@ -2082,10 +2084,10 @@ When adding a new linter:
 3. Update the table at the top of this file.
 4. If automation consumes the tool, document the integration point alongside that automation.
 
-
 ================================================
 FILE: lore/developing/internals/README.md
 ================================================
+
 # Internals
 
 Implementation-detail reference: how Lore is built under the hood.
@@ -2106,10 +2108,10 @@ Precise technical descriptions of Lore's source: byte layouts, struct formats, s
 
 See [docs/README.md](../../README.md) for the full docs structure.
 
-
 ================================================
 FILE: lore/explanation/README.md
 ================================================
+
 # Explanation
 
 Conceptual writing about why Lore works the way it does.
@@ -2129,10 +2131,10 @@ Explanation is the _why_ of Lore. These pages make connections, give context, an
 
 See [docs/README.md](../README.md) for the full docs structure.
 
-
 ================================================
 FILE: lore/how-to/README.md
 ================================================
+
 # How-To guides
 
 Goal-driven directions for getting a specific task done.
@@ -2157,10 +2159,10 @@ How-To guides are directions. Each one walks through a specific problem or towar
 
 See [docs/README.md](../README.md) for the full docs structure.
 
-
 ================================================
 FILE: lore/proposals/README.md
 ================================================
+
 # Lore Enhancement Proposals
 
 This directory holds **Lore Enhancement Proposals (LEPs)** — public-facing
@@ -2291,10 +2293,10 @@ Use two sub-headed lists.
 - Open questions to resolve during review.
 - Empty (or down to follow-up tickets) by the time the LEP is `Accepted`.
 
-
 ================================================
 FILE: lore/reference/README.md
 ================================================
+
 # Reference
 
 Authoritative, lookup-oriented descriptions of Lore's commands, file formats, and protocols.
@@ -2316,10 +2318,10 @@ Reference is the technical description of the machinery and how to operate it. A
 
 See [docs/README.md](../README.md) for the full docs structure.
 
-
 ================================================
 FILE: lore/release-notes/README.md
 ================================================
+
 # Unreleased release notes
 
 Each change adds one note here instead of editing `docs/release-notes.md`, so changes never
@@ -2377,10 +2379,10 @@ Later work on the same change edits the same note.
 Entries written into the `## Nightly` section of `docs/release-notes.md` before these notes existed
 stay where they are: the next release turns that section into its own and adds the notes to it.
 
-
 ================================================
 FILE: lore/tutorials/README.md
 ================================================
+
 # Tutorials
 
 Guided walkthroughs for your first hands-on experience with Lore.
@@ -2400,10 +2402,10 @@ Tutorials are lessons. They teach by doing. You'll work through realistic exampl
 
 See [docs/README.md](../README.md) for the full docs structure.
 
-
 ================================================
 FILE: profile/github/aphrody-dev/README.md
 ================================================
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://cdn.aphrody.com/brand/v1/logo/aphrody-dev-wordmark-dark.svg">
   <img alt="Aphrody Dev" src="https://cdn.aphrody.com/brand/v1/logo/aphrody-dev-wordmark-light.svg" height="56">
@@ -2455,4 +2457,3 @@ projects they belong to.
   <img alt="aphrody-dev upstream wo
 
 [... truncated by token budget ...]
-

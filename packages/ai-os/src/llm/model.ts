@@ -4,6 +4,11 @@
 //   providerEmbedder("provider/model")  /v1/embeddings (core/model.ts resolveEmbedder: AGENT_EMBEDDER=hash|provider/model)
 // OpenAI-compatible providers get native tool calling; CLI providers (antigravity, claude) answer in text only.
 import { outboundFetch } from "../relay/outbound.ts";
+import {
+  isRetryableStatus,
+  RetryableHttpError,
+  retryWithBackoff,
+} from "./retry.ts";
 import { type Provider, listModels, providers } from "./models";
 import type {
   ChatRequest,
@@ -65,38 +70,57 @@ export function chatModel(
     id,
     tools: true,
     async chat(req: ChatRequest): Promise<ChatResponse> {
-      const r = await outboundFetch(
-        `${chat.base()}${chat.path ?? "/v1/chat/completions"}`,
-        {
-          method: "POST",
-          headers: { "content-type": "application/json", ...chat.headers() },
-          body: JSON.stringify({
-            model,
-            messages: [
-              ...(req.system ? [{ role: "system", content: req.system }] : []),
-              ...req.messages.map(toWire),
-            ],
-            ...(req.tools?.length
-              ? {
-                  tools: req.tools.map((t) => ({
-                    type: "function",
-                    function: {
-                      name: t.name,
-                      description: t.description,
-                      parameters: t.inputSchema,
-                    },
-                  })),
-                  tool_choice: req.toolChoice ?? "auto",
-                }
-              : {}),
-            ...(req.maxOutputTokens ? { max_tokens: req.maxOutputTokens } : {}),
-            ...(req.temperature !== undefined
-              ? { temperature: req.temperature }
-              : {}),
-            ...(req.seed !== undefined ? { seed: req.seed } : {}),
-          }),
-          signal: req.signal ?? AbortSignal.timeout(600_000),
+      const r = await retryWithBackoff(
+        async () => {
+          const res = await outboundFetch(
+            `${chat.base()}${chat.path ?? "/v1/chat/completions"}`,
+            {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+                ...chat.headers(),
+              },
+              body: JSON.stringify({
+                model,
+                messages: [
+                  ...(req.system
+                    ? [{ role: "system", content: req.system }]
+                    : []),
+                  ...req.messages.map(toWire),
+                ],
+                ...(req.tools?.length
+                  ? {
+                      tools: req.tools.map((t) => ({
+                        type: "function",
+                        function: {
+                          name: t.name,
+                          description: t.description,
+                          parameters: t.inputSchema,
+                        },
+                      })),
+                      tool_choice: req.toolChoice ?? "auto",
+                    }
+                  : {}),
+                ...(req.maxOutputTokens
+                  ? { max_tokens: req.maxOutputTokens }
+                  : {}),
+                ...(req.temperature !== undefined
+                  ? { temperature: req.temperature }
+                  : {}),
+                ...(req.seed !== undefined ? { seed: req.seed } : {}),
+              }),
+              signal: req.signal ?? AbortSignal.timeout(600_000),
+            },
+          );
+          if (isRetryableStatus(res.status))
+            throw new RetryableHttpError(
+              `${id} : HTTP ${res.status}`,
+              res.status,
+              res.headers,
+            );
+          return res;
         },
+        { signal: req.signal },
       );
       const raw = await r.text();
       let j: any;

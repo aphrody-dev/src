@@ -11,11 +11,11 @@ on:
         "infra/pkg/**",
         "infra/linux/**",
         "infra/fleet/sysctl/**",
-        "packages/linux/**",
+        "crates/unix-omarchy/**",
         ".github/workflows/linux-pkg.yml",
       ]
   pull_request:
-    paths: ["infra/pkg/**", "infra/linux/**", "packages/linux/**"]
+    paths: ["infra/pkg/**", "infra/linux/**", "crates/unix-omarchy/**"]
   workflow_dispatch:
 concurrency:
   group: linux-pkg-${{ github.ref }}
@@ -29,19 +29,18 @@ jobs:
       matrix: ${{ steps.m.outputs.matrix }}
     steps:
       - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2.2.0
-        with: { bun-version-file: package.json }
-      - run: bun test packages/linux
-      - run: bun packages/linux/src/cli.ts pkg check
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test -p aphrody-omarchy
+      - run: cargo run -q -p aphrody-omarchy --bin omarchy -- pkg check
       - name: Shell syntax of the generated recipes and of the Linux scripts
         run: |
-          bun packages/linux/src/cli.ts pkg gen all --out "$RUNNER_TEMP/pkg"
+          cargo run -q -p aphrody-omarchy --bin omarchy -- pkg gen all --out "$RUNNER_TEMP/pkg"
           find "$RUNNER_TEMP/pkg" \( -name PKGBUILD -o -name APKBUILD -o -name '*.ebuild' -o -name build.sh \) -exec bash -n {} \;
           shellcheck -S warning infra/linux/gpu/*.sh infra/linux/build/kernel.sh infra/linux/android/mirror.sh
           sh infra/linux/gpu/nvidia.sh --dry-run
           sh infra/linux/gpu/amd.sh --dry-run
       - id: m
-        run: echo "matrix=$(bun packages/linux/src/cli.ts pkg matrix --json)" >> "$GITHUB_OUTPUT"
+        run: echo "matrix=$(cargo run -q -p aphrody-omarchy --bin omarchy -- pkg matrix --json)" >> "$GITHUB_OUTPUT"
   # Boot harness of linux-kernel.yml on the CachyOS repository kernel: proves the QEMU/KVM path and the
   # PID 1 of infra/linux/build/boot/init.c on every change, without the multi-hour kernel build.
   boot-harness:
@@ -67,9 +66,8 @@ jobs:
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2.2.0
-        with: { bun-version-file: package.json }
-      - run: bun packages/linux/src/cli.ts pkg build ${{ matrix.recipe }} --distro ${{ matrix.distro }} --out "$RUNNER_TEMP/pkg"
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo run -q -p aphrody-omarchy --bin omarchy -- pkg build ${{ matrix.recipe }} --distro ${{ matrix.distro }} --out "$RUNNER_TEMP/pkg"
       - uses: actions/upload-artifact@v7.0.2
         with:
           name: pkg-${{ matrix.recipe }}-${{ matrix.distro }}

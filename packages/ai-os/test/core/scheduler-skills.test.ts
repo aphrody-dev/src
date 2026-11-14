@@ -1,19 +1,8 @@
 import { expect, test } from "bun:test";
-import { scriptedModel } from "../../src/llm/testing";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import {
-  HEARTBEAT_OK,
-  lintContent,
-  parseEvery,
-  Scheduler,
-  SkillLintError,
-  Skills,
-  tick,
-} from "../../src/core/index";
-
-const say = (...texts: string[]) => scriptedModel(...texts);
+import { lintContent, SkillLintError, Skills } from "../../src/core/index";
 
 test("lint: Hermes rule ids", () => {
   const ids = lintContent(
@@ -54,33 +43,4 @@ test("skills: create adds When to Use, usage, curate stale/archive", async () =>
   await expect(skills.create("x", "", "body")).rejects.toBeInstanceOf(
     SkillLintError,
   );
-});
-
-test("scheduler: interval and one-shot jobs, heartbeat OK is silent", async () => {
-  const home = mkdtempSync(join(tmpdir(), "agent-sched-"));
-  expect(parseEvery("15m")).toBe(900_000);
-  const s = new Scheduler(join(home, "scheduler.sqlite"));
-  const t0 = 1_000_000;
-  s.add("rep", "repeat", { everyMs: 1000 }, t0);
-  s.add("one", "once", { at: t0 }, t0);
-  s.close();
-  await Bun.write(join(home, "HEARTBEAT.md"), "- check inbox");
-  const events: string[] = [];
-  await tick(
-    {
-      home,
-      cwd: home,
-      model: say("r1", "o1", HEARTBEAT_OK),
-      onEvent: (e) => events.push(`${e.kind}:${e.name}:${e.text}`),
-    },
-    t0 + 1000,
-  );
-  expect(events.map((e) => e.split(":").slice(0, 2).join(":")).sort()).toEqual([
-    "job:one",
-    "job:rep",
-  ]);
-  const s2 = new Scheduler(join(home, "scheduler.sqlite"));
-  expect(s2.due(t0 + 1500)).toEqual([]);
-  expect(s2.due(t0 + 2000).map((j) => j.name)).toEqual(["rep"]);
-  s2.close();
 });

@@ -39,7 +39,7 @@ pub fn check_apps_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
         }
     }
 
-    // 2. apps/aphrody: Zero-NPM aphrody.com Contract
+    // 2. apps/aphrody: Static SEO & Assets Contract (no package.json/deps/code)
     let aphrody_web = apps_dir.join("aphrody");
     if aphrody_web.is_dir() && !is_reparse_point(&aphrody_web) {
         let pkg_json = aphrody_web.join("package.json");
@@ -65,9 +65,33 @@ pub fn check_apps_domain(root: &Path, findings: &mut Vec<ArchFinding>) {
                             path: normalize_rel(root, &pkg_json),
                             line: None,
                             message: "apps/aphrody must have strictly empty `dependencies: {}` and `devDependencies: {}` (Zero-NPM Web Shell)".into(),
-                            remediation: "Remove all dependencies from `apps/aphrody/package.json`; aphrody.com runs entirely on native Bun APIs, WebGPU, and WASM.".into(),
+                            remediation: "Remove all dependencies from `apps/aphrody/package.json`; apps/aphrody ships static SEO and brand assets only.".into(),
                         });
                     }
+                }
+            }
+        } else {
+            let mut static_check = Vec::new();
+            collect_app_files_recursive(&aphrody_web, &mut static_check);
+            for f in static_check {
+                let ext = f
+                    .extension()
+                    .and_then(|e| e.to_str())
+                    .unwrap_or("")
+                    .to_ascii_lowercase();
+                if matches!(ext.as_str(), "ts" | "tsx" | "js" | "jsx" | "mjs" | "cjs" | "rs") {
+                    findings.push(ArchFinding {
+                        rule_id: "ARCH-004".into(),
+                        category: "app-contract-purity".into(),
+                        severity: Severity::Error,
+                        path: normalize_rel(root, &f),
+                        line: None,
+                        message: format!(
+                            "Forbidden source code file `{}` inside static SEO/assets `apps/aphrody`",
+                            f.file_name().and_then(|n| n.to_str()).unwrap_or("")
+                        ),
+                        remediation: "apps/aphrody keeps static SEO and brand assets only; place application code in crates/* or packages/*.".into(),
+                    });
                 }
             }
         }

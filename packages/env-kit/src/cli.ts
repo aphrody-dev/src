@@ -84,11 +84,13 @@ const DOCTOR_SECTIONS: ReadonlyArray<{
       "GOOGLE_CLOUD_REGION",
       "GOOGLE_APPLICATION_CREDENTIALS",
       "VERCEL_TOKEN",
+      "VERCEL_ORG_ID",
       "NEON_API_KEY",
       "NEON_ORG_ID",
       "DATABASE_URL",
       "CLOUDFLARE_ACCOUNT_ID",
       "CLOUDFLARE_API_TOKEN",
+      "CF_API_TOKEN",
     ],
   },
   {
@@ -203,7 +205,22 @@ function runDoctor(envPath: string): number {
     ["Pi Models", join(home, ".pi", "agent", "models.json")],
     ["npmrc", join(home, ".npmrc")],
     ["Claude Settings", join(home, ".claude", "settings.json")],
+    ["Claude MCP", join(home, ".claude.json")],
     ["Gemini CLI", join(home, ".gemini", "settings.json")],
+    [
+      "Antigravity CLI",
+      join(home, ".gemini", "antigravity-cli", "mcp_config.json"),
+    ],
+    ["Antigravity MCP", join(home, ".gemini", "config", "mcp_config.json")],
+    ["Vercel CLI Auth", join(appData, "com.vercel.cli", "Data", "auth.json")],
+    [
+      "Wrangler OAuth",
+      join(appData, "xdg.config", ".wrangler", "config", "default.toml"),
+    ],
+    [
+      "Cloudflare CLI",
+      join(appData, "xdg.config", "cloudflare", "config", "default.json"),
+    ],
   ];
 
   for (const [label, path] of targets) {
@@ -674,6 +691,7 @@ ${formatIdentities(ids)}`);
   }
 
   if (cmd === "sync-editors") {
+    loadMonorepoEnv({ envPath, override: false, injectProcessEnv: true });
     const res = syncAllEditorConfigs();
     for (const f of res.updatedFiles) {
       console.log(`[env-kit] Synced editor config: ${f}`);

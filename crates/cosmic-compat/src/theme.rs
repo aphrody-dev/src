@@ -14,81 +14,26 @@ pub struct OmarchyPaletteBridge {
 
 impl OmarchyPaletteBridge {
     pub fn preset(name: &str) -> Self {
-        match name.trim().to_lowercase().as_str() {
-            "catppuccin" => Self {
-                name: "catppuccin".into(),
-                is_dark: true,
-                accent_hex: "#89b4fa".into(),
-                background_hex: "#1e1e2e".into(),
-                darker_background_hex: "#101019".into(),
-                lighter_background_hex: "#313244".into(),
-                foreground_hex: "#cdd6f4".into(),
-                muted_hex: "#585b70".into(),
-            },
-            "catppuccin-latte" => Self {
-                name: "catppuccin-latte".into(),
-                is_dark: false,
-                accent_hex: "#1e66f5".into(),
-                background_hex: "#eff1f5".into(),
-                darker_background_hex: "#d7d8dc".into(),
-                lighter_background_hex: "#dce0e8".into(),
-                foreground_hex: "#4c4f69".into(),
-                muted_hex: "#acb0be".into(),
-            },
-            "nord" => Self {
-                name: "nord".into(),
-                is_dark: true,
-                accent_hex: "#81a1c1".into(),
-                background_hex: "#2e3440".into(),
-                darker_background_hex: "#191c23".into(),
-                lighter_background_hex: "#3b4252".into(),
-                foreground_hex: "#d8dee9".into(),
-                muted_hex: "#4c566a".into(),
-            },
-            "gruvbox" => Self {
-                name: "gruvbox".into(),
-                is_dark: true,
-                accent_hex: "#7daea3".into(),
-                background_hex: "#282828".into(),
-                darker_background_hex: "#161616".into(),
-                lighter_background_hex: "#3c3836".into(),
-                foreground_hex: "#d4be98".into(),
-                muted_hex: "#665c54".into(),
-            },
-            "cachyos-emerald" => Self {
-                name: "cachyos-emerald".into(),
-                is_dark: true,
-                accent_hex: "#00e8c6".into(),
-                background_hex: "#0b1416".into(),
-                darker_background_hex: "#050a0b".into(),
-                lighter_background_hex: "#132326".into(),
-                foreground_hex: "#e0f7f4".into(),
-                muted_hex: "#486b68".into(),
-            },
-            "aphrody-m3-dark" => Self {
-                name: "aphrody-m3-dark".into(),
-                is_dark: true,
-                accent_hex: "#a8c7fa".into(),
-                background_hex: "#131314".into(),
-                darker_background_hex: "#09090a".into(),
-                lighter_background_hex: "#1f1f22".into(),
-                foreground_hex: "#e3e3e3".into(),
-                muted_hex: "#8e918f".into(),
-            },
-            other => Self {
-                name: if other.is_empty() {
-                    "tokyo-night".into()
-                } else {
-                    other.into()
-                },
-                is_dark: true,
-                accent_hex: "#7aa2f7".into(),
-                background_hex: "#1a1b26".into(),
-                darker_background_hex: "#0e0e14".into(),
-                lighter_background_hex: "#24283b".into(),
-                foreground_hex: "#a9b1d6".into(),
-                muted_hex: "#414868".into(),
-            },
+        let key = name.trim().to_lowercase();
+        let registry = aphrody_omarchy::AetherThemeRegistry::standalone_only();
+        let resolved_name = if key.is_empty() {
+            "tokyo-night".to_string()
+        } else {
+            key.clone()
+        };
+        let theme = registry
+            .get(&resolved_name)
+            .unwrap_or_else(|_| registry.get("tokyo-night").expect("tokyo-night preset must exist"));
+
+        Self {
+            name: resolved_name,
+            is_dark: !theme.mode.eq_ignore_ascii_case("light"),
+            accent_hex: theme.accent.clone(),
+            background_hex: theme.background.clone(),
+            darker_background_hex: theme.darker_background.clone(),
+            lighter_background_hex: theme.lighter_background.clone(),
+            foreground_hex: theme.foreground.clone(),
+            muted_hex: theme.muted.clone(),
         }
     }
 }
@@ -138,7 +83,7 @@ pub struct CosmicTheme {
 impl CosmicTheme {
     pub fn google_material_3_dark() -> Self {
         Self {
-            name: "Google Material 3 Sovereign Dark".into(),
+            name: "Google Material 3 Dark".into(),
             is_dark: true,
             primary: CosmicColorRgba::from_hex(0xA8C7FA),           // Material 3 Primary Blue
             on_primary: CosmicColorRgba::from_hex(0x00315B),        // M3 On Primary

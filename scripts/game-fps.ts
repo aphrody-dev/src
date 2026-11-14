@@ -195,7 +195,10 @@ if (import.meta.main) {
     // --shot <file.webp>: capture the canvas after warmup (live-URL proof of lighting and shadows).
     const shot = arg("shot", "");
     if (shot) {
-      const r = await cdp.send("Page.captureScreenshot", { format: "webp", quality: 90 });
+      const r = await cdp.send("Page.captureScreenshot", {
+        format: "webp",
+        quality: 90,
+      });
       await Bun.write(shot, Buffer.from(r.result.data, "base64"));
     }
     const frames = await cdp.eval<number[]>(SAMPLER(seconds * 1000));

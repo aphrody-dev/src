@@ -1,0 +1,15 @@
+{
+  "name": "Aphrody",
+  "description": "Aphrody open-source platform and documentation discovery.",
+  "url": "https://aphrody.com/",
+  "version": "1.0.0",
+  "provider": {
+    "organization": "Aphrody",
+    "url": "https://aphrody.com/"
+  },
+  "documentationUrl": "https://aphrody.com/llms.txt",
+  "authentication": {
+    "schemes": []
+  },
+  "skills": []
+}

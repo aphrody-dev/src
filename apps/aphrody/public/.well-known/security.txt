@@ -1,0 +1,4 @@
+Contact: mailto:security@aphrody.com
+Expires: 2027-11-14T00:00:00Z
+Preferred-Languages: fr, en, es, ja, zh-CN
+Canonical: https://aphrody.com/.well-known/security.txt

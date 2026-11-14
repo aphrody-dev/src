@@ -1,6 +1,0 @@
-*.sqlite
-*.sqlite-shm
-*.sqlite-wal
-*.frg.json
-dist/
-node_modules/

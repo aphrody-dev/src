@@ -1,4 +1,7 @@
 ﻿// Differential run of the unixwin diffcorpus: niu 1.5.0 vs GNU bash (oracle), Bun.spawn with concurrency and timeout.
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import corpus from "../data/diffcorpus.json";
 const NIU =
   process.env.NIU ?? `${process.env.LOCALAPPDATA}\\Programs\\Niubash\\niu.exe`;
@@ -12,17 +15,23 @@ export interface DiffResult {
 }
 
 async function run(exe: string, script: string): Promise<string> {
-  const p = Bun.spawn([exe, "-c", script], {
-    stdout: "pipe",
-    stderr: "pipe",
-    stdin: "ignore",
-    timeout: 15000,
-  });
-  const [o, code] = await Promise.all([
-    new Response(p.stdout).text(),
-    p.exited,
-  ]);
-  return o.replace(/\r\n/g, "\n").replace(/\d{3,}/g, "N") + `\nrc=${code}`;
+  const dir = mkdtempSync(join(tmpdir(), "shell-diff-"));
+  try {
+    const p = Bun.spawn([exe, "-c", script], {
+      cwd: dir,
+      stdout: "pipe",
+      stderr: "pipe",
+      stdin: "ignore",
+      timeout: 15000,
+    });
+    const [o, code] = await Promise.all([
+      new Response(p.stdout).text(),
+      p.exited,
+    ]);
+    return o.replace(/\r\n/g, "\n").replace(/\d{3,}/g, "N") + `\nrc=${code}`;
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 export async function runDiff(

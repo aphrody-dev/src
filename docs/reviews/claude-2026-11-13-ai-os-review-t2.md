@@ -1,7 +1,7 @@
 # Revue Claude : ai-os review, tour 2 (module après corrections du tour 1, 051beebc) (2026-11-13)
 
 - Date : 2026-11-13. Outil : ai-os review (tribunal à trois voix, docs/reviews/README.md). Voix : Claude.
-- Moteur : claude (207769 ms, cache miss) ; essais : claude:claude-sonnet-5-5 échec (timeout : ⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth so) ; claude ok.
+- Moteur : claude (207769 ms, cache miss) ; essais : claude:claude-sonnet-5-5 échec (timeout : claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth so) ; claude ok.
 - Objet : `ai-os review, tour 2 (module après corrections du tour 1, 051beebc)` ; 4 fichier(s).
 - Note : 13/20.
 - Sources : eng-practices-looking-for@3e6ba5cfc8c0 (https://github.com/google/eng-practices/blob/3e6ba5cfc8c096528173f8f31b2caf15bb78340c/review/reviewer/looking-for.md), eng-practices-standard@deaff2f9ff28 (https://github.com/google/eng-practices/blob/deaff2f9ff28501df657f37a73ed72afa57cb2e0/review/reviewer/standard.md), eng-practices-small-cls@fde5fd40e259 (https://github.com/google/eng-practices/blob/fde5fd40e259bb703dec55f17729abe99c17bf73/review/developer/small-cls.md), chromium-web-style@76a9e5ddf3de (https://github.com/chromium/chromium/blob/76a9e5ddf3de5e65c610470a2e68aa23366659a8/styleguide/web/web.md), google-ts-style@52f2e7406a80 (https://github.com/google/styleguide/blob/52f2e7406a802778e44b92694d4aead252b09091/tsguide.md).

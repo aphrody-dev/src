@@ -10,5 +10,5 @@
     "noEmit": true,
     "types": ["bun"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "../bun-plugins/bun-native.d.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "./bun-native.d.ts"]
 }

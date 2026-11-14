@@ -15,29 +15,15 @@
 //! is the empty string. All filtering is done by Brave's `adblock` crate through
 //! `corelib::SovereignAdblockEngine`; this crate only marshals.
 
+pub use aphrody_core_capi::{aphrody_abi_version, aphrody_free};
+use aphrody_core_capi::cabi::{
+    ABI_STATUS_ERR, ABI_STATUS_OK, free_c_string, free_framed, pack_framed, utf8_slice,
+};
 use corelib::SovereignAdblockEngine;
-
-const HEADER_LEN: usize = 9;
+use std::ffi::c_char;
 
 /// Opaque compiled rule set.
 pub struct AphrodyAdblockEngine(SovereignAdblockEngine);
-
-fn pack(status: u8, payload: &[u8]) -> *mut u8 {
-    let mut out = Vec::with_capacity(HEADER_LEN + payload.len());
-    out.extend_from_slice(&(payload.len() as u64).to_le_bytes());
-    out.push(status);
-    out.extend_from_slice(payload);
-    Box::into_raw(out.into_boxed_slice()).cast::<u8>()
-}
-
-/// # Safety
-/// `ptr` is null or points to `len` readable bytes.
-unsafe fn text<'a>(ptr: *const u8, len: usize) -> Option<&'a str> {
-    if ptr.is_null() || len == 0 {
-        return Some("");
-    }
-    std::str::from_utf8(unsafe { std::slice::from_raw_parts(ptr, len) }).ok()
-}
 
 /// Compile newline-delimited ABP/uBO rules and hosts-format lines. Returns null when `rules`
 /// is not UTF-8. Release with [`aphrody_adblock_free`].
@@ -49,7 +35,7 @@ pub unsafe extern "C" fn aphrody_adblock_new(
     rules_ptr: *const u8,
     rules_len: usize,
 ) -> *mut AphrodyAdblockEngine {
-    match unsafe { text(rules_ptr, rules_len) } {
+    match unsafe { utf8_slice(rules_ptr, rules_len) } {
         Some(rules) => Box::into_raw(Box::new(AphrodyAdblockEngine(
             SovereignAdblockEngine::from_rules(rules),
         ))),
@@ -86,20 +72,23 @@ pub unsafe extern "C" fn aphrody_adblock_check_request(
     type_len: usize,
 ) -> *mut u8 {
     let Some(engine) = (unsafe { engine.as_ref() }) else {
-        return pack(1, b"null engine");
+        return pack_framed(ABI_STATUS_ERR, b"null engine");
     };
     let (Some(url), Some(source), Some(kind)) = (unsafe {
         (
-            text(url_ptr, url_len),
-            text(source_ptr, source_len),
-            text(type_ptr, type_len),
+            utf8_slice(url_ptr, url_len),
+            utf8_slice(source_ptr, source_len),
+            utf8_slice(type_ptr, type_len),
         )
     }) else {
-        return pack(1, b"url, source_url and request_type must be UTF-8");
+        return pack_framed(
+            ABI_STATUS_ERR,
+            b"url, source_url and request_type must be UTF-8",
+        );
     };
     let kind = if kind.is_empty() { "other" } else { kind };
     let res = engine.0.check_request(url, source, kind);
-    pack(0, &serde_json::to_vec(&res).unwrap_or_default())
+    pack_framed(ABI_STATUS_OK, &serde_json::to_vec(&res).unwrap_or_default())
 }
 
 /// Cosmetic filtering of `page_url`. `classes` and `ids` are the class names and ids present
@@ -119,21 +108,21 @@ pub unsafe extern "C" fn aphrody_adblock_cosmetic(
     ids_len: usize,
 ) -> *mut u8 {
     let Some(engine) = (unsafe { engine.as_ref() }) else {
-        return pack(1, b"null engine");
+        return pack_framed(ABI_STATUS_ERR, b"null engine");
     };
     let (Some(page), Some(classes), Some(ids)) = (unsafe {
         (
-            text(page_ptr, page_len),
-            text(classes_ptr, classes_len),
-            text(ids_ptr, ids_len),
+            utf8_slice(page_ptr, page_len),
+            utf8_slice(classes_ptr, classes_len),
+            utf8_slice(ids_ptr, ids_len),
         )
     }) else {
-        return pack(1, b"page_url, classes and ids must be UTF-8");
+        return pack_framed(ABI_STATUS_ERR, b"page_url, classes and ids must be UTF-8");
     };
     let classes: Vec<&str> = classes.split_ascii_whitespace().collect();
     let ids: Vec<&str> = ids.split_ascii_whitespace().collect();
     let res = engine.0.cosmetic(page, &classes, &ids);
-    pack(0, &serde_json::to_vec(&res).unwrap_or_default())
+    pack_framed(ABI_STATUS_OK, &serde_json::to_vec(&res).unwrap_or_default())
 }
 
 /// Release a framed buffer returned by `aphrody_adblock_check_request` / `aphrody_adblock_cosmetic`
@@ -143,22 +132,14 @@ pub unsafe extern "C" fn aphrody_adblock_cosmetic(
 /// `ptr` is null or a buffer from this library not yet freed.
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn aphrody_adblock_buf_free(ptr: *mut u8) {
-    if ptr.is_null() {
-        return;
-    }
-    unsafe {
-        let mut len = [0u8; 8];
-        std::ptr::copy_nonoverlapping(ptr, len.as_mut_ptr(), 8);
-        let total = HEADER_LEN + u64::from_le_bytes(len) as usize;
-        drop(Box::from_raw(std::ptr::slice_from_raw_parts_mut(
-            ptr, total,
-        )));
-    }
+    // SAFETY: caller guarantees `ptr` is null or an unfreed framed buffer from this library.
+    unsafe { free_framed(ptr) };
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use aphrody_core_capi::cabi::FRAMED_HEADER_LEN;
 
     fn take(ptr: *mut u8) -> (u8, serde_json::Value) {
         assert!(!ptr.is_null());
@@ -167,7 +148,7 @@ mod tests {
             std::ptr::copy_nonoverlapping(ptr, len.as_mut_ptr(), 8);
             let len = u64::from_le_bytes(len) as usize;
             let status = *ptr.add(8);
-            let body = std::slice::from_raw_parts(ptr.add(HEADER_LEN), len).to_vec();
+            let body = std::slice::from_raw_parts(ptr.add(FRAMED_HEADER_LEN), len).to_vec();
             aphrody_adblock_buf_free(ptr);
             let v = serde_json::from_slice(&body)
                 .unwrap_or_else(|_| serde_json::Value::String(String::from_utf8(body).unwrap()));

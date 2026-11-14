@@ -13,7 +13,12 @@ const subs: Record<string, string> = {
   review: "./review/cli.ts",
 };
 const sub = Bun.argv[2];
-if (sub === "jules" || sub === "stitch") {
+if (!sub || sub === "--help" || sub === "-h" || sub === "help") {
+  console.log(
+    `ai-os <command> [args]\nCommands: ${[...Object.keys(subs), "jules", "stitch", "init", "run", "context", "skills", "research", "gateway"].join(", ")}`,
+  );
+  process.exitCode = 0;
+} else if (sub === "jules" || sub === "stitch") {
   const g = await import("./google/cli.ts");
   const rest = Bun.argv.slice(3);
   process.exit(

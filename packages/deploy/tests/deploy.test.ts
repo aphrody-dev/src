@@ -236,7 +236,7 @@ describe("platform worker", () => {
       ).text(),
     ).toBe("<p>A</p>");
     const list = await (
-      await call(e, "GET", "/api/projects/site/deployments", undefined, {})
+      await call(e, "GET", "/api/projects/site/deployments")
     ).json();
     expect(list.production).toBe(SHA_A);
     expect(list.deployments.map((d: { sha: string }) => d.sha)).toEqual([
@@ -301,7 +301,14 @@ describe("platform worker", () => {
       200,
     );
     expect((await call(e, "GET", "/", undefined, {})).status).toBe(200);
-    expect((await call(e, "GET", "/labs", undefined, {})).status).toBe(301);
+    expect((await call(e, "GET", "/labs", undefined, {})).status).toBe(200);
+    expect(
+      (await worker.fetch(new Request("https://artcraft.aphrody.app/"), e))
+        .status,
+    ).toBe(200);
+    expect(
+      (await worker.fetch(new Request("https://play.aphrody.app/"), e)).status,
+    ).toBe(302);
   });
   test("deploy token comparison", () => {
     expect(bearerOk(`Bearer ${TOKEN}`, TOKEN)).toBe(true);
@@ -347,9 +354,9 @@ describe("sources", () => {
   test("projects.toml is valid and change detection matches", () => {
     const p = loadProjects(root);
     expect(p.map((x) => x.name)).toContain("aphrody");
-    expect(affected(p, ["apps/aphrody/build.ts"]).map((x) => x.name)).toEqual([
-      "aphrody",
-    ]);
+    expect(
+      affected(p, ["apps/aphrody/public/robots.txt"]).map((x) => x.name),
+    ).toEqual(["aphrody"]);
     expect(affected(p, ["docs/ALPHABET.md"]).map((x) => x.name)).toEqual([
       "aphrody",
     ]);
@@ -404,13 +411,11 @@ describe("build cache and observe", () => {
     expect(overBudget(b, { INP: { p75: 900, n: 0 } })).toEqual([]);
     expect(overBudget(proj, { LCP: { p75: 9e9, n: 1 } })).toEqual([]);
   });
-  test("projects.toml: site watched, budgets and protect parsed", () => {
+  test("projects.toml: design tokens watched, budgets and protect parsed", () => {
     const all = loadProjects(join(import.meta.dir, "..", "..", ".."));
-    for (const n of ["aphrody", "yolo"]) {
-      const x = all.find((y) => y.name === n)!;
-      expect(x.watch).toContain("packages/site/**");
-      expect(x.budgets?.LCP).toBe(2500);
-      expect(x.protect).toBe(false);
-    }
+    const x = all.find((y) => y.name === "aphrody")!;
+    expect(x.watch).toContain("packages/design/**");
+    expect(x.budgets?.LCP).toBe(2500);
+    expect(x.protect).toBe(false);
   });
 });

@@ -994,7 +994,7 @@ mod tests {
                 .into_body()
                 .read_to_string()
                 .unwrap();
-            assert!(html.contains("rust-stack | Sovereign AI Workspace"));
+            assert!(html.contains("rust-stack | Aphrody AI Workspace"));
         })
         .await
         .unwrap();

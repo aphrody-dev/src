@@ -20,24 +20,9 @@ export const SEMVER = new RegExp(
 
 /** SemVer precedence (build metadata ignored, as the spec requires). */
 export function cmp(a: string, b: string): number {
-  const pa = SEMVER.exec(a),
-    pb = SEMVER.exec(b);
-  if (!pa || !pb) throw new Error(`not SemVer: ${pa ? b : a}`);
-  for (let i = 1; i <= 3; i++)
-    if (+pa[i]! !== +pb[i]!) return +pa[i]! - +pb[i]!;
-  if (!pa[4] || !pb[4]) return pa[4] ? -1 : pb[4] ? 1 : 0;
-  const x = pa[4].split("."),
-    y = pb[4].split(".");
-  for (let i = 0; i < Math.max(x.length, y.length); i++) {
-    if (x[i] === undefined) return -1;
-    if (y[i] === undefined) return 1;
-    const nx = /^\d+$/.test(x[i]!),
-      ny = /^\d+$/.test(y[i]!);
-    if (nx && ny && +x[i]! !== +y[i]!) return +x[i]! - +y[i]!;
-    if (nx !== ny) return nx ? -1 : 1;
-    if (x[i] !== y[i]) return x[i]! < y[i]! ? -1 : 1;
-  }
-  return 0;
+  if (!SEMVER.test(a) || !SEMVER.test(b))
+    throw new Error(`not SemVer: ${SEMVER.test(a) ? b : a}`);
+  return Bun.semver.order(a, b);
 }
 
 /** Highest stable version among tag names vX.Y.Z (pre-releases and non-SemVer tags ignored). */

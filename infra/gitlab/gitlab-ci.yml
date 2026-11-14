@@ -39,22 +39,19 @@ lint-anti-slop-gate:
     - docker
   script:
     - test ! -f .env || (echo "FATAL: .env must never be committed" && exit 1)
-    - bun --cwd packages/forge check
-    - bun test --cwd packages/design
+    - bun --cwd packages/design lint
+    - bun --cwd packages/design test
 
-# 2. Build Bun v1.4.4 AOT CLIs, Rust WSLg/Unix Crates & Go 1.27 Infra Engine
+# 2. Build Rust CLI, Unix/Wayland Crates & Depot Engine
 build-bun-packages:
   stage: build-bun-rust-go
   image: oven/bun:1.4.4-alpine
   tags:
     - docker
   script:
-    - bun build --compile packages/forge/src/cli.ts --outfile dist/frg
-    - ./dist/frg remotes
-  artifacts:
-    paths:
-      - dist/frg
-    expire_in: 7 days
+    - bun --cwd packages/core check
+    - bun --cwd packages/ffi-bridge check
+    - bun --cwd packages/shell-matrix test
 
 build-rust-unix-wayland:
   stage: build-bun-rust-go
@@ -75,13 +72,14 @@ build-go-infra:
     - cd infra && go build ./cmd/...
 
 # 3. Deterministic Test Gate (Bun Workspace + Rust WSLg/Unix)
-test-bun-forge-and-workspace:
+test-bun-workspace:
   stage: test-gate
   image: oven/bun:1.4.4-alpine
   tags:
     - docker
   script:
-    - bun test --cwd packages/forge
+    - bun --cwd packages/design test
+    - bun --cwd packages/shell-matrix test
 
 test-rust-unix-wayland:
   stage: test-gate

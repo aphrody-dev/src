@@ -3,7 +3,19 @@
   "main": "index.js",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat"],
-  "kv_namespaces": [{ "binding": "CACHE", "id": "ab11db38b3ea4ea190fac14bf2ee6739" }],
-  "d1_databases": [{ "binding": "DB", "database_name": "aphrody-app", "database_id": "6875cbdc-449d-45fc-a01e-1c0c98e2c4df" }],
-  "vars": { "DOMAIN": "aphrody.app", "ENVIRONMENT": "production", "FORWARD_DESTINATION": "contact@aphrody.com" }
+  "kv_namespaces": [
+    { "binding": "CACHE", "id": "ab11db38b3ea4ea190fac14bf2ee6739" },
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "aphrody-app",
+      "database_id": "6875cbdc-449d-45fc-a01e-1c0c98e2c4df",
+    },
+  ],
+  "vars": {
+    "DOMAIN": "aphrody.app",
+    "ENVIRONMENT": "production",
+    "FORWARD_DESTINATION": "contact@aphrody.com",
+  },
 }

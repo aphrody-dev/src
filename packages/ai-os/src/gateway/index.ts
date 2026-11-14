@@ -9,6 +9,17 @@ import { run } from "../core/agent";
 import { layout } from "../core/home";
 import { Memory } from "../core/memory";
 import type { LanguageModel, Message } from "../llm/types";
+export {
+  applyPatch,
+  createUIMessageStreamResponse,
+  diffToPatches,
+  type JsonPatch,
+  JsonToSseTransformStream,
+  UI_MESSAGE_STREAM_HEADERS,
+  type UIElement,
+  type UISpec,
+  validateUISpec,
+} from "./ui-stream";
 
 export type Inbound = {
   channel: string;

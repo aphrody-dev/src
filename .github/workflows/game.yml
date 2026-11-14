@@ -11,10 +11,6 @@ on:
     branches: [main]
     paths:
       - "crates/game/**"
-      - "apps/aphrody/src/play/**"
-      - "apps/aphrody/src/client/play.ts"
-      - "apps/aphrody/build.ts"
-      - "apps/aphrody/server.ts"
       - "scripts/game-fps.ts"
       - ".github/workflows/game.yml"
   workflow_dispatch:
@@ -81,23 +77,8 @@ jobs:
           rclone copyto "$GAME_WEB_DIR/game_bg.wasm" r2:aphrody-assets/game/game_bg.wasm --header-upload "Content-Type: application/wasm" --header-upload "Cache-Control: public, max-age=300"
           rclone copyto "$GAME_WEB_DIR/game.js" r2:aphrody-assets/game/game.js --header-upload "Content-Type: text/javascript" --header-upload "Cache-Control: public, max-age=300"
           rclone lsl r2:aphrody-assets/game
-      - name: Bun workspace (apps/aphrody build and fps script)
-        run: bun install --frozen-lockfile
-      - name: Script tests
-        run: bun test ./scripts/game-fps.test.ts apps/aphrody/tests/play.test.ts
-      - name: Build the site with /play
-        run: bun run --cwd apps/aphrody build.ts
-      - name: Serve and measure frame rate (needs a WebGPU browser; exit 2 = not measured, reported, not failed)
-        run: |
-          APHRODY_DIST="$PWD/apps/aphrody/dist" PORT=3107 bun apps/aphrody/server.ts &
-          srv=$!
-          trap 'kill $srv' EXIT
-          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:3107/ok >/dev/null && break; sleep 1; done
-          rc=0
-          bun scripts/game-fps.ts --url http://127.0.0.1:3107/play --seconds 20 | tee "$RUNNER_TEMP/fps.json" || rc=$?
-          [ "$rc" -eq 2 ] && echo "fps: not measured on this runner (no WebGPU)" >> "$GITHUB_STEP_SUMMARY"
-          [ "$rc" -eq 0 ] && cat "$RUNNER_TEMP/fps.json" >> "$GITHUB_STEP_SUMMARY"
-          [ "$rc" -eq 0 ] || [ "$rc" -eq 2 ]
+      - name: Bun workspace and fps script test
+        run: bun install --frozen-lockfile && bun test ./scripts/game-fps.test.ts
       - uses: actions/upload-artifact@v7
         with:
           name: game-web

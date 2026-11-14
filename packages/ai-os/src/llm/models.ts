@@ -15,7 +15,7 @@
 //   antigravity   CLI agy authentifiée                          agy models                                 agy -p
 //   claude        CLI claude authentifiée                       (alias de la CLI)                          claude -p
 import { outboundFetch } from "../relay/outbound.ts";
-import { agy, claude } from "./agents";
+import { agy, claude, opencode } from "./agents";
 
 export type Model = {
   id: string;
@@ -130,6 +130,51 @@ export function providers(): Provider[] {
         ),
       );
   }
+  if (env("OPENAI_API_KEY"))
+    out.push(
+      compat(
+        "openai",
+        (env("OPENAI_BASE_URL") ?? "https://api.openai.com")
+          .replace(/\/+$/, "")
+          .replace(/\/v1$/, ""),
+        env("OPENAI_API_KEY"),
+      ),
+    );
+  if (env("ANTHROPIC_API_KEY")) {
+    const abase = (env("ANTHROPIC_BASE_URL") ?? "https://api.anthropic.com")
+      .replace(/\/+$/, "")
+      .replace(/\/v1$/, "");
+    const aheaders = (): Record<string, string> => ({
+      "x-api-key": env("ANTHROPIC_API_KEY")!,
+      "anthropic-version": "2023-06-01",
+      authorization: `Bearer ${env("ANTHROPIC_API_KEY")!}`,
+    });
+    out.push({
+      id: "anthropic",
+      available: async () => true,
+      list: async () =>
+        openaiList(
+          "anthropic",
+          await getJson(`${abase}/v1/models`, aheaders()),
+        ),
+      chat: { base: () => abase, headers: aheaders },
+    });
+  }
+  const gkey = env("GEMINI_API_KEY") ?? env("GOOGLE_API_KEY");
+  if (gkey) {
+    const gbase = "https://generativelanguage.googleapis.com/v1beta/openai";
+    out.push({
+      id: "google",
+      available: async () => true,
+      list: async () =>
+        openaiList("google", await getJson(`${gbase}/models`, bearer(gkey))),
+      chat: {
+        base: () => gbase,
+        headers: () => bearer(gkey),
+        path: "/chat/completions",
+      },
+    });
+  }
   if (env("OPENROUTER_API_KEY"))
     out.push({
       id: "openrouter",
@@ -212,6 +257,32 @@ export function providers(): Provider[] {
     ],
     ask: async (model, prompt) =>
       (await claude(prompt, model === "default" ? undefined : model)).text,
+  });
+  out.push({
+    id: "opencode",
+    available: async () => !!Bun.which("opencode"),
+    list: async () => {
+      const r = await run(["opencode", "models"]);
+      if (r.code !== 0)
+        return [
+          {
+            id: "opencode/default",
+            provider: "opencode",
+            name: "OpenCode default",
+          },
+        ];
+      return r.out
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter((l) => /^[\w.-]+\/[\w.:-]+$/.test(l))
+        .map((m) => ({
+          id: `opencode/${m}`,
+          provider: "opencode",
+          name: m,
+        }));
+    },
+    ask: async (model, prompt) =>
+      (await opencode(prompt, model === "default" ? undefined : model)).text,
   });
   return out;
 }

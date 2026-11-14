@@ -1,6 +1,7 @@
 // Outils du relais, partagés par toutes les surfaces (JSON-RPC HTTP/WebSocket/TCP/TLS, MCP, A2A, ACP).
 import { llmAsk } from "../llm/model.ts";
 import { listModels } from "../llm/models.ts";
+import { s } from "../llm/schema.ts";
 import { AGENT_TOOLS } from "./agent-tools.ts";
 import { ORCH_TOOLS } from "./orch-tools.ts";
 // packages/ai-os/src/google may be absent from a checkout (module not yet on main): the relay then
@@ -30,7 +31,7 @@ export type Tool = {
   run: (a: any) => Promise<unknown>;
 };
 
-const str = (description: string) => ({ type: "string", description });
+const str = s.string;
 const obj = (props: Record<string, unknown>, required: string[] = []) => ({
   type: "object",
   properties: props,
@@ -91,12 +92,8 @@ const NET_UNITS =
 
 const skillDirs = () => [
   join(homedir(), ".claude", "skills"),
-  ...(Bun.env.SRC_ROOT
-    ? [
-        join(Bun.env.SRC_ROOT, ".claude", "skills"),
-        join(Bun.env.SRC_ROOT, ".agents", "skills"),
-      ]
-    : []),
+  join(homedir(), ".gemini", "config", "plugins", "aphrody-skills", "skills"),
+  ...(Bun.env.SRC_ROOT ? [join(Bun.env.SRC_ROOT, ".agents", "skills")] : []),
 ];
 
 export const TOOLS: Tool[] = [

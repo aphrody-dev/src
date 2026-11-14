@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Aphrody
+Comment=Pure Rust WebGPU/WGSL Wayland Tiling Shell
+Exec=/usr/bin/aphrody tui
+Type=Application
+DesktopNames=Aphrody
+Keywords=wayland;wm;tiling;webgpu;rust;

@@ -1,10 +1,53 @@
 export * from "./ffi.ts";
 export {
   classification,
+  indexCounts,
   openStore,
+  searchSymbols,
   usersOf,
   writeFiles,
   writeIndex,
   type Classification,
+  type IndexCounts,
+  type SymbolMatch,
 } from "./store.ts";
-export { PILLARS, generate, type Pillar } from "./generate.ts";
+export {
+  collectMonorepoSnapshot,
+  liveScanToStore,
+  type AppInfo,
+  type BunFlatInfo,
+  type BunFlatModule,
+  type CrateInfo,
+  type GraphifySummary,
+  type HeaderInfo,
+  type MonorepoSnapshot,
+  type PackageInfo,
+  type ScanOptions,
+} from "./scanner.ts";
+export {
+  fuzzyScore,
+  searchCodebase,
+  searchDocs,
+  type CodebaseSearchResult,
+  type DocMatch,
+  type SearchDocsOptions,
+} from "./search.ts";
+export {
+  applyTemplateSections,
+  buildModernWebGuidanceMdx,
+  buildPlanMdx,
+  buildPureCLlvmMdx,
+  buildReadme,
+  renderMdx,
+  renderTemplate,
+  type MdxFrontmatter,
+} from "./templates.ts";
+export {
+  PILLARS,
+  generate,
+  generateDocs,
+  type GenDocsOptions,
+  type GenDocsResult,
+  type GenerateResult,
+  type Pillar,
+} from "./generate.ts";

@@ -831,6 +831,7 @@ auto/
 ================================================
 FILE: README.md
 ================================================
+
 # auto
 
 Plateforme d'automatisation multi-tenant pour indépendants et TPE : workflows visuels type n8n (déclencheurs sur
@@ -951,10 +952,10 @@ Runtime : [Aphrody](https://aphrody.app) (fork de Bun) pour `bun check`, `bun li
 
 Apache-2.0 (voir `LICENSE` et `NOTICE`). Paquets npm publiés sous `@aphrody/auto-*`.
 
-
 ================================================
 FILE: apps/web/public/brands/README.md
 ================================================
+
 # Assets des fournisseurs
 
 Assets officiels téléchargés le 25 octobre 2026, conservés sans recoloration :
@@ -964,10 +965,10 @@ Assets officiels téléchargés le 25 octobre 2026, conservés sans recoloration
 
 Les marques restent la propriété de leurs titulaires. Les logos identifient uniquement le fournisseur du compte. Ils sont servis localement ; aucun chargement depuis un tiers ni suivi n’est nécessaire. Les icônes de commandes utilisent Material Symbols Rounded, Apache-2.0, déjà inclus dans `@auto/ui/symboles`.
 
-
 ================================================
 FILE: box/README.md
 ================================================
+
 # Aphrody Box
 
 Une seule commande installe sur votre machine ou votre serveur un ensemble prêt à l'emploi :
@@ -1058,10 +1059,10 @@ client du moteur Docker par son socket Unix. `console/` se construit avec `cargo
 `docker build console` ; `cargo test --features ssr --lib` lance ses tests. Le préparateur des secrets est la
 sous-commande `aphrody-box preparer`.
 
-
 ================================================
 FILE: docs/ARCHITECTURE.md
 ================================================
+
 # Architecture
 
 ## Couches
@@ -1266,10 +1267,10 @@ et `auth`, et renvoie des routes au format `Bun.serve`. `publier(tx, type, data)
 `withTenant` de l'action. Le module documente ses routes par `export const openapi: Chemins` (fusionné dans
 `/v1/openapi.json`) ; un nouveau type de job s'ajoute aux `Traitements` du worker.
 
-
 ================================================
 FILE: docs/conformite/README.md
 ================================================
+
 # Conformité
 
 > **À faire valider par un juriste.** Ces documents sont des modèles rédigés à partir du fonctionnement
@@ -1318,10 +1319,10 @@ Opérateur : [raison sociale de l'éditeur], contact et exercice des droits : **
 - **Chiffrement au repos** : secrets 2FA et sauvegardes chiffrés par AES-256-GCM, clé dérivée (HKDF) de
   `AUTO_CLE_MAITRE`.
 
-
 ================================================
 FILE: docs/modeles/automatisation-factures/README.md
 ================================================
+
 # Modèle : factures fournisseurs, paiements et analytique de chantier (Excel + n8n)
 
 Modèle autonome pour une petite entreprise du bâtiment qui veut suivre ses factures fournisseurs, leurs paiements et le
@@ -1395,10 +1396,10 @@ JavaScript du workflow est testé par `outils/workflow.test.ts` (inclus dans `bu
 - Les données du classeur sont des **exemples fictifs** (colonne _Source_ = `EXEMPLE`). Ne jamais y mettre de donnée
   client réelle dans ce dépôt.
 
-
 ================================================
 FILE: docs/recon/README.md
 ================================================
+
 # Recon : référence UX facturation (Pennylane principal, Abby secondaire)
 
 Méthode clean-room : fonctionnalités et schémas d'usage uniquement, sources publiques, aucune capture ni code réutilisé. Rien du contenu, des marques ou des visuels de Pennylane/Abby n'est repris.
@@ -1419,10 +1420,10 @@ Fichiers : `recon.md` (écrans, flux, composants, modèle inféré vs `@auto/dom
 
 Limites : le centre d'aide Pennylane n'a pas été trouvé par la recherche (définitions officielles de « brouillon » et de « en retard » non confirmées) ; aucune fiche App Store/Play lue ; aucune capture. À compléter avec le compte de l'utilisateur si souhaité.
 
-
 ================================================
 FILE: Cargo.toml
 ================================================
+
 [workspace]
 resolver = "2"
 members = ["crates/*"]
@@ -1434,8 +1435,11 @@ rust-version = "1.97"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+
 # Suite Aphrody vendorisée dans vendor/suite (amont bun-distribution disparu).
+
 # Sans la fonctionnalité oxc (découpeur JS/TS) : seuls les découpeurs prose et Markdown servent.
+
 aphrody-rag-core = { path = "vendor/suite/crates/aphrody-rag-core", default-features = false }
 deckcraft-model = { path = "vendor/suite/crates/deckcraft-model" }
 deckcraft-pdf = { path = "vendor/suite/crates/deckcraft-pdf" }
@@ -1462,16 +1466,15 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 thiserror = "2"
 
-
 [profile.release]
 strip = true
 lto = "fat"
 codegen-units = 1
 
-
 ================================================
 FILE: apps/admin/package.json
 ================================================
+
 // [OUTLINE - 18 symbols, 24 lines]
 // L2: "name": "@auto/admin"
 // L3: "version": "0.0.0"
@@ -1484,18 +1487,18 @@ FILE: apps/admin/package.json
 // L11: "dev": "bun --hot src/index.ts"
 // L12: "start": "bun src/index.ts"
 // L14-L19: "dependencies":
-// L15: "@auto/client": "workspace:*"
-// L16: "@auto/ui": "workspace:*"
+// L15: "@auto/client": "workspace:_"
+// L16: "@auto/ui": "workspace:_"
 // L17: "react": "^19.3.1"
 // L18: "react-dom": "^19.3.1"
 // L20-L23: "devDependencies":
 // L21: "@types/react": "^19.3.0"
 // L22: "@types/react-dom": "^19.3.0"
 
-
 ================================================
 FILE: apps/api/package.json
 ================================================
+
 // [OUTLINE - 21 symbols, 25 lines]
 // L2: "name": "@auto/api"
 // L3: "version": "0.0.0"
@@ -1505,24 +1508,24 @@ FILE: apps/api/package.json
 // L7-L9: "exports":
 // L8: "./app": "./src/app.ts"
 // L10-L24: "dependencies":
-// L11: "@auto/agent": "workspace:*"
-// L12: "@auto/automate": "workspace:*"
-// L13: "@auto/billing": "workspace:*"
-// L14: "@auto/domain": "workspace:*"
-// L15: "@auto/ingest": "workspace:*"
-// L16: "@auto/mail": "workspace:*"
-// L17: "@auto/native": "workspace:*"
-// L18: "@auto/pa": "workspace:*"
-// L19: "@auto/services": "workspace:*"
-// L20: "@auto/store": "workspace:*"
+// L11: "@auto/agent": "workspace:_"
+// L12: "@auto/automate": "workspace:_"
+// L13: "@auto/billing": "workspace:_"
+// L14: "@auto/domain": "workspace:_"
+// L15: "@auto/ingest": "workspace:_"
+// L16: "@auto/mail": "workspace:_"
+// L17: "@auto/native": "workspace:_"
+// L18: "@auto/pa": "workspace:_"
+// L19: "@auto/services": "workspace:_"
+// L20: "@auto/store": "workspace:_"
 // L21: "@auto/tenancy": "workspace:*"
 // L22: "@better-auth/mcp": "1.7.16"
 // L23: "zod": "^4"
 
-
 ================================================
 FILE: apps/cli/package.json
 ================================================
+
 // [OUTLINE - 15 symbols, 21 lines]
 // L2: "name": "@auto/cli"
 // L3: "version": "0.1.0"
@@ -1534,16 +1537,16 @@ FILE: apps/cli/package.json
 // L10-L12: "scripts":
 // L11: "build": "bun build --compile src/cli.ts --outfile ../../dist/auto"
 // L13-L16: "dependencies":
-// L14: "@auto/agent": "workspace:*"
-// L15: "@auto/ingest": "workspace:*"
+// L14: "@auto/agent": "workspace:_"
+// L15: "@auto/ingest": "workspace:_"
 // L17-L20: "devDependencies":
-// L18: "@auto/api": "workspace:*"
-// L19: "@auto/store": "workspace:*"
-
+// L18: "@auto/api": "workspace:_"
+// L19: "@auto/store": "workspace:_"
 
 ================================================
 FILE: apps/desktop/package.json
 ================================================
+
 // [OUTLINE - 9 symbols, 12 lines]
 // L2: "name": "@auto/desktop"
 // L3: "version": "0.1.0"
@@ -1555,12 +1558,14 @@ FILE: apps/desktop/package.json
 // L9: "test": "cargo test --manifest-path src-tauri/Cargo.toml --lib"
 // L10: "icones": "cargo tauri icon icone.svg -o src-tauri/icons"
 
-
 ================================================
 FILE: apps/desktop/src-tauri/Cargo.toml
 ================================================
+
 # Coque de bureau Tauri 2 : une fenêtre WebView2 / WKWebView / WebKitGTK sur le front web d'auto.
+
 # Hors du workspace Cargo racine (dépendances Tauri lourdes) : `gates:rust` ne la compile pas.
+
 [package]
 name = "auto-desktop"
 version = "0.2.0"
@@ -1594,10 +1599,10 @@ lto = "thin"
 codegen-units = 1
 panic = "abort"
 
-
 ================================================
 FILE: apps/extension/package.json
 ================================================
+
 // [OUTLINE - 16 symbols, 21 lines]
 // L2: "name": "@auto/extension"
 // L3: "version": "0.1.0"
@@ -1609,17 +1614,17 @@ FILE: apps/extension/package.json
 // L9: "paquet": "bun scripts/construire.ts --zip"
 // L10: "captures": "bun scripts/captures.ts"
 // L12-L14: "dependencies":
-// L13: "@auto/ui": "workspace:*"
+// L13: "@auto/ui": "workspace:_"
 // L15-L20: "devDependencies":
-// L16: "@auto/api": "workspace:*"
+// L16: "@auto/api": "workspace:_"
 // L17: "@auto/store": "workspace:*"
 // L18: "@types/chrome": "^0.3.6"
 // L19: "playwright-core": "1.64.1"
 
-
 ================================================
 FILE: apps/plugin/package.json
 ================================================
+
 // [OUTLINE - 7 symbols, 10 lines]
 // L2: "name": "@auto/plugin"
 // L3: "version": "0.1.0"
@@ -1629,10 +1634,10 @@ FILE: apps/plugin/package.json
 // L7-L9: "scripts":
 // L8: "test": "bun test"
 
-
 ================================================
 FILE: apps/standalone/package.json
 ================================================
+
 // [OUTLINE - 12 symbols, 15 lines]
 // L2: "name": "@auto/standalone"
 // L3: "version": "0.1.0"
@@ -1640,17 +1645,17 @@ FILE: apps/standalone/package.json
 // L5: "license": "Apache-2.0"
 // L6: "type": "module"
 // L7-L14: "dependencies":
-// L8: "@auto/api": "workspace:*"
-// L9: "@auto/cli": "workspace:*"
-// L10: "@auto/store": "workspace:*"
-// L11: "@auto/web": "workspace:*"
+// L8: "@auto/api": "workspace:_"
+// L9: "@auto/cli": "workspace:_"
+// L10: "@auto/store": "workspace:_"
+// L11: "@auto/web": "workspace:_"
 // L12: "@auto/worker": "workspace:*"
 // L13: "reflect-metadata": "0.2.2"
-
 
 ================================================
 FILE: apps/web/package.json
 ================================================
+
 // [OUTLINE - 42 symbols, 48 lines]
 // L2: "name": "@auto/web"
 // L3: "version": "0.0.0"
@@ -1669,11 +1674,11 @@ FILE: apps/web/package.json
 // L18: "@aphrody/m3-tailwind": "1.4.7"
 // L19: "@aphrody/m3-tokens": "1.4.7"
 // L20: "@aphrody/material-web": "3.3.3"
-// L21: "@auto/automate": "workspace:*"
-// L22: "@auto/client": "workspace:*"
-// L23: "@auto/domain": "workspace:*"
-// L24: "@auto/tenancy": "workspace:*"
-// L25: "@auto/ui": "workspace:*"
+// L21: "@auto/automate": "workspace:_"
+// L22: "@auto/client": "workspace:_"
+// L23: "@auto/domain": "workspace:_"
+// L24: "@auto/tenancy": "workspace:_"
+// L25: "@auto/ui": "workspace:_"
 // L26: "@base-ui/react": "^1.9.0"
 // L27: "@better-auth/api-key": "1.7.16"
 // L28: "@better-auth/oauth-provider": "1.7.16"
@@ -1688,17 +1693,17 @@ FILE: apps/web/package.json
 // L37: "tailwindcss": "4.3.3"
 // L39-L47: "devDependencies":
 // L40: "@aphrody/bun-plugin-tailwind": "1.4.7"
-// L41: "@auto/api": "workspace:*"
-// L42: "@auto/billing": "workspace:*"
-// L43: "@auto/store": "workspace:*"
+// L41: "@auto/api": "workspace:_"
+// L42: "@auto/billing": "workspace:_"
+// L43: "@auto/store": "workspace:_"
 // L44: "@types/react": "^19.3.0"
 // L45: "@types/react-dom": "^19.3.0"
 // L46: "playwright-core": "1.64.1"
 
-
 ================================================
 FILE: apps/worker/package.json
 ================================================
+
 // [OUTLINE - 17 symbols, 22 lines]
 // L2: "name": "@auto/worker"
 // L3: "version": "0.0.0"
@@ -1708,20 +1713,20 @@ FILE: apps/worker/package.json
 // L7-L9: "scripts":
 // L8: "worker": "bun src/index.ts"
 // L10-L18: "dependencies":
-// L11: "@auto/automate": "workspace:*"
-// L12: "@auto/domain": "workspace:*"
-// L13: "@auto/mail": "workspace:*"
-// L14: "@auto/pa": "workspace:*"
-// L15: "@auto/services": "workspace:*"
-// L16: "@auto/store": "workspace:*"
-// L17: "@auto/tenancy": "workspace:*"
+// L11: "@auto/automate": "workspace:_"
+// L12: "@auto/domain": "workspace:_"
+// L13: "@auto/mail": "workspace:_"
+// L14: "@auto/pa": "workspace:_"
+// L15: "@auto/services": "workspace:_"
+// L16: "@auto/store": "workspace:_"
+// L17: "@auto/tenancy": "workspace:_"
 // L19-L21: "devDependencies":
-// L20: "@auto/api": "workspace:*"
-
+// L20: "@auto/api": "workspace:_"
 
 ================================================
 FILE: box/console/Cargo.toml
 ================================================
+
 [package]
 name = "aphrody-box"
 version = "0.1.0"
@@ -1731,6 +1736,7 @@ publish = false
 description = "Console d'administration de l'Aphrody Box (Leptos, rendu serveur et hydratation WebAssembly)"
 
 # Projet autonome, hors du workspace d'auto : son arbre (Leptos, axum) ne touche ni le Cargo.lock ni l'image native.
+
 [workspace]
 
 [lib]
@@ -1768,23 +1774,23 @@ libc = { version = "0.2", optional = true }
 [features]
 hydrate = ["leptos/hydrate", "dep:console_error_panic_hook", "dep:wasm-bindgen"]
 ssr = [
-  "leptos/ssr",
-  "leptos_meta/ssr",
-  "dep:leptos_axum",
-  "dep:axum",
-  "dep:tokio",
-  "dep:hyper",
-  "dep:hyper-util",
-  "dep:http-body-util",
-  "dep:reqwest",
-  "dep:futures-util",
-  "dep:serde_json",
-  "dep:hmac",
-  "dep:sha2",
-  "dep:base64",
-  "dep:getrandom",
-  "dep:bcrypt",
-  "dep:libc",
+"leptos/ssr",
+"leptos_meta/ssr",
+"dep:leptos_axum",
+"dep:axum",
+"dep:tokio",
+"dep:hyper",
+"dep:hyper-util",
+"dep:http-body-util",
+"dep:reqwest",
+"dep:futures-util",
+"dep:serde_json",
+"dep:hmac",
+"dep:sha2",
+"dep:base64",
+"dep:getrandom",
+"dep:bcrypt",
+"dep:libc",
 ]
 
 [profile.release]
@@ -1813,10 +1819,10 @@ lib-features = ["hydrate"]
 lib-default-features = false
 lib-profile-release = "wasm-release"
 
-
 ================================================
 FILE: crates/auto-connaissance/Cargo.toml
 ================================================
+
 [package]
 name = "auto-connaissance"
 version = "0.0.0"
@@ -1830,10 +1836,10 @@ aphrody-rag-core.workspace = true
 serde.workspace = true
 thiserror.workspace = true
 
-
 ================================================
 FILE: crates/auto-docs/Cargo.toml
 ================================================
+
 [package]
 name = "auto-docs"
 version = "0.0.0"
@@ -1856,10 +1862,10 @@ pdfcraft-model.workspace = true
 pdfcraft-cos.workspace = true
 pdfcraft-fonts.workspace = true
 
-
 ================================================
 FILE: crates/auto-facturx/Cargo.toml
 ================================================
+
 [package]
 name = "auto-facturx"
 version = "0.0.0"
@@ -1877,10 +1883,10 @@ thiserror.workspace = true
 [dev-dependencies]
 pdfcraft-create.workspace = true
 
-
 ================================================
 FILE: crates/auto-ffi/Cargo.toml
 ================================================
+
 [package]
 name = "auto-ffi"
 version = "0.0.0"
@@ -1902,10 +1908,10 @@ auto-sheets = { path = "../auto-sheets" }
 serde.workspace = true
 serde_json.workspace = true
 
-
 ================================================
 FILE: crates/auto-fichiers/Cargo.toml
 ================================================
+
 [package]
 name = "auto-fichiers"
 version = "0.0.0"
@@ -1935,10 +1941,10 @@ thiserror.workspace = true
 auto-docs = { path = "../auto-docs" }
 auto-modele = { path = "../auto-modele" }
 
-
 ================================================
 FILE: crates/auto-modele/Cargo.toml
 ================================================
+
 [package]
 name = "auto-modele"
 version = "0.0.0"
@@ -1951,10 +1957,10 @@ description = "Modèle des documents commerciaux (JSON de @auto/domain) et calcu
 serde.workspace = true
 serde_json.workspace = true
 
-
 ================================================
 FILE: crates/auto-sheets/Cargo.toml
 ================================================
+
 [package]
 name = "auto-sheets"
 version = "0.0.0"
@@ -1972,10 +1978,10 @@ serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
 
-
 ================================================
 FILE: package.json
 ================================================
+
 // [OUTLINE - 43 symbols, 51 lines]
 // L2: "name": "auto"
 // L3: "version": "2026.11.5"
@@ -2021,10 +2027,10 @@ FILE: package.json
 // L48-L50: "devDependencies":
 // L49: "@aphrody/bun-types": "1.4.7"
 
-
 ================================================
 FILE: packages/agent/package.json
 ================================================
+
 // [OUTLINE - 13 symbols, 18 lines]
 // L2: "name": "@auto/agent"
 // L3: "version": "0.1.0"
@@ -2035,15 +2041,15 @@ FILE: packages/agent/package.json
 // L8: ".": "./src/index.ts"
 // L9: "./test-api": "./src/test-api.ts"
 // L11-L13: "dependencies":
-// L12: "@auto/ingest": "workspace:*"
+// L12: "@auto/ingest": "workspace:_"
 // L14-L17: "devDependencies":
-// L15: "@auto/api": "workspace:*"
+// L15: "@auto/api": "workspace:_"
 // L16: "@auto/store": "workspace:*"
-
 
 ================================================
 FILE: packages/automate/package.json
 ================================================
+
 // [OUTLINE - 10 symbols, 14 lines]
 // L2: "name": "@auto/automate"
 // L3: "version": "0.0.0"
@@ -2052,14 +2058,14 @@ FILE: packages/automate/package.json
 // L6: "type": "module"
 // L7-L10: "exports":
 // L8: ".": "./src/index.ts"
-// L9: "./*": "./src/*.ts"
+// L9: "./_": "./src/_.ts"
 // L11-L13: "dependencies":
 // L12: "zod": "^4"
-
 
 ================================================
 FILE: packages/billing/package.json
 ================================================
+
 // [OUTLINE - 8 symbols, 11 lines]
 // L2: "name": "@auto/billing"
 // L3: "version": "0.0.0"
@@ -2070,10 +2076,10 @@ FILE: packages/billing/package.json
 // L8-L10: "dependencies":
 // L9: "@auto/store": "workspace:*"
 
-
 ================================================
 FILE: packages/client/package.json
 ================================================
+
 // [OUTLINE - 12 symbols, 16 lines]
 // L2: "name": "@auto/client"
 // L3: "version": "0.0.0"
@@ -2084,14 +2090,14 @@ FILE: packages/client/package.json
 // L8: ".": "./src/api.ts"
 // L9: "./proxy": "./src/proxy.ts"
 // L11-L15: "dependencies":
-// L12: "@auto/automate": "workspace:*"
-// L13: "@auto/domain": "workspace:*"
+// L12: "@auto/automate": "workspace:_"
+// L13: "@auto/domain": "workspace:_"
 // L14: "@auto/store": "workspace:*"
-
 
 ================================================
 FILE: packages/domain/package.json
 ================================================
+
 // [OUTLINE - 6 symbols, 8 lines]
 // L2: "name": "@auto/domain"
 // L3: "version": "0.0.0"
@@ -2100,10 +2106,10 @@ FILE: packages/domain/package.json
 // L6: "type": "module"
 // L7: "exports": "./src/index.ts"
 
-
 ================================================
 FILE: packages/ingest/package.json
 ================================================
+
 // [OUTLINE - 11 symbols, 15 lines]
 // L2: "name": "@auto/ingest"
 // L3: "version": "0.0.0"
@@ -2114,13 +2120,13 @@ FILE: packages/ingest/package.json
 // L8: ".": "./src/index.ts"
 // L9: "./llm": "./src/llm.ts"
 // L11-L14: "dependencies":
-// L12: "@auto/domain": "workspace:*"
-// L13: "@auto/native": "workspace:*"
-
+// L12: "@auto/domain": "workspace:_"
+// L13: "@auto/native": "workspace:_"
 
 ================================================
 FILE: packages/mail/package.json
 ================================================
+
 // [OUTLINE - 8 symbols, 11 lines]
 // L2: "name": "@auto/mail"
 // L3: "version": "0.0.0"
@@ -2131,10 +2137,10 @@ FILE: packages/mail/package.json
 // L8: ".": "./src/index.ts"
 // L9: "./greenmail": "./src/greenmail.ts"
 
-
 ================================================
 FILE: packages/native/package.json
 ================================================
+
 // [OUTLINE - 6 symbols, 8 lines]
 // L2: "name": "@auto/native"
 // L3: "version": "0.0.0"
@@ -2143,10 +2149,10 @@ FILE: packages/native/package.json
 // L6: "type": "module"
 // L7: "exports": "./src/index.ts"
 
-
 ================================================
 FILE: packages/pa/package.json
 ================================================
+
 // [OUTLINE - 6 symbols, 8 lines]
 // L2: "name": "@auto/pa"
 // L3: "version": "0.0.0"
@@ -2155,10 +2161,10 @@ FILE: packages/pa/package.json
 // L6: "type": "module"
 // L7: "exports": "./src/index.ts"
 
-
 ================================================
 FILE: packages/services/package.json
 ================================================
+
 // [OUTLINE - 19 symbols, 23 lines]
 // L2: "name": "@auto/services"
 // L3: "version": "0.0.0"
@@ -2167,23 +2173,23 @@ FILE: packages/services/package.json
 // L6: "type": "module"
 // L7-L10: "exports":
 // L8: ".": "./src/evenements.ts"
-// L9: "./*": "./src/*.ts"
+// L9: "./_": "./src/_.ts"
 // L11-L22: "dependencies":
-// L12: "@auto/automate": "workspace:*"
-// L13: "@auto/billing": "workspace:*"
-// L14: "@auto/domain": "workspace:*"
-// L15: "@auto/ingest": "workspace:*"
-// L16: "@auto/mail": "workspace:*"
-// L17: "@auto/native": "workspace:*"
-// L18: "@auto/pa": "workspace:*"
-// L19: "@auto/store": "workspace:*"
+// L12: "@auto/automate": "workspace:_"
+// L13: "@auto/billing": "workspace:_"
+// L14: "@auto/domain": "workspace:_"
+// L15: "@auto/ingest": "workspace:_"
+// L16: "@auto/mail": "workspace:_"
+// L17: "@auto/native": "workspace:_"
+// L18: "@auto/pa": "workspace:_"
+// L19: "@auto/store": "workspace:_"
 // L20: "@auto/tenancy": "workspace:*"
 // L21: "quickjs-emscripten": "^0.32.0"
-
 
 ================================================
 FILE: packages/store/package.json
 ================================================
+
 // [OUTLINE - 11 symbols, 15 lines]
 // L2: "name": "@auto/store"
 // L3: "version": "0.0.0"
@@ -2194,13 +2200,13 @@ FILE: packages/store/package.json
 // L8-L10: "scripts":
 // L9: "migrate": "bun src/migrate.ts"
 // L11-L14: "dependencies":
-// L12: "@auto/domain": "workspace:*"
-// L13: "@auto/ingest": "workspace:*"
-
+// L12: "@auto/domain": "workspace:_"
+// L13: "@auto/ingest": "workspace:_"
 
 ================================================
 FILE: packages/tenancy/package.json
 ================================================
+
 // [OUTLINE - 21 symbols, 25 lines]
 // L2: "name": "@auto/tenancy"
 // L3: "version": "0.0.0"
@@ -2212,8 +2218,8 @@ FILE: packages/tenancy/package.json
 // L9: "./droits": "./src/droits.ts"
 // L10: "./segments": "./src/segments.ts"
 // L12-L24: "dependencies":
-// L13: "@auto/domain": "workspace:*"
-// L14: "@auto/store": "workspace:*"
+// L13: "@auto/domain": "workspace:_"
+// L14: "@auto/store": "workspace:_"
 // L15: "@better-auth/api-key": "1.7.16"
 // L16: "@better-auth/cimd": "1.7.16"
 // L17: "@better-auth/mcp": "1.7.16"
@@ -2224,10 +2230,10 @@ FILE: packages/tenancy/package.json
 // L22: "jose": "6.2.13"
 // L23: "kysely": "0.29.7"
 
-
 ================================================
 FILE: packages/ui/package.json
 ================================================
+
 // [OUTLINE - 27 symbols, 33 lines]
 // L2: "name": "@auto/ui"
 // L3: "version": "0.0.0"
@@ -2257,10 +2263,10 @@ FILE: packages/ui/package.json
 // L30: "@material-symbols/svg-400": "0.48.1"
 // L31: "@types/react": "^19.3.0"
 
-
 ================================================
 FILE: packages/video/package.json
 ================================================
+
 // [OUTLINE - 7 symbols, 10 lines]
 // L2: "name": "@auto/video"
 // L3: "version": "0.0.0"
@@ -2270,10 +2276,10 @@ FILE: packages/video/package.json
 // L7-L9: "exports":
 // L8: ".": "./src/scenario.ts"
 
-
 ================================================
 FILE: scripts/video-voice/pyproject.toml
 ================================================
+
 [project]
 name = "auto-video-voice"
 version = "0.1.0"
@@ -2290,17 +2296,17 @@ explicit = true
 torch = [{ index = "pytorch-cu124", marker = "sys_platform == 'win32'" }]
 torchaudio = [{ index = "pytorch-cu124", marker = "sys_platform == 'win32'" }]
 
-
 ================================================
 FILE: apps/admin/src/index.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 9 lines]
 // import ./serveur
-
 
 ================================================
 FILE: apps/api/src/index.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 50 lines]
 // import @auto/mail
 // import @auto/store
@@ -2309,10 +2315,10 @@ FILE: apps/api/src/index.ts
 // import ./observabilite
 // L36-L48: async function arreter()
 
-
 ================================================
 FILE: apps/desktop/src-tauri/src/lib.rs
 ================================================
+
 // [OUTLINE - 11 symbols, 188 lines]
 // import tauri
 // import tauri_plugin_opener
@@ -2331,32 +2337,32 @@ FILE: apps/desktop/src-tauri/src/lib.rs
 // L155-L160: fn origine()
 // L163-L187: fn verification_native_stricte()
 
-
 ================================================
 FILE: apps/desktop/src-tauri/src/main.rs
 ================================================
+
 // [OUTLINE - 1 symbols, 6 lines]
 // L4-L6: fn main()
-
 
 ================================================
 FILE: apps/standalone/src/index.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 39 lines]
 // import reflect-metadata
-
 
 ================================================
 FILE: apps/web/src/index.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 25 lines]
 // import ./serveur
 // L13-L23: async function arreter()
 
-
 ================================================
 FILE: apps/worker/src/index.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 74 lines]
 // import @auto/services
 // import @auto/store
@@ -2366,20 +2372,20 @@ FILE: apps/worker/src/index.ts
 // import ./worker
 // L64-L71: async function arreter()
 
-
 ================================================
 FILE: box/console/src/lib.rs
 ================================================
+
 // [OUTLINE - 4 symbols, 18 lines]
 // L7: pub mod app;
 // L8: pub mod types;
 // L11: pub mod serveur;
 // L15-L18: pub fn hydrate()
 
-
 ================================================
 FILE: box/console/src/main.rs
 ================================================
+
 // [OUTLINE - 4 symbols, 113 lines]
 // import tokio
 // import aphrody_box
@@ -2393,10 +2399,10 @@ FILE: box/console/src/main.rs
 // L33-L65: fn preparer(args: &[String])
 // L67-L113: async fn servir()
 
-
 ================================================
 FILE: crates/auto-connaissance/src/lib.rs
 ================================================
+
 // [OUTLINE - 9 symbols, 164 lines]
 // import aphrody_rag_core
 // import serde
@@ -2411,10 +2417,10 @@ FILE: crates/auto-connaissance/src/lib.rs
 // L139-L146: fn markdown_par_sections()
 // L149-L163: fn plus_proches_cosinus_et_mmr()
 
-
 ================================================
 FILE: crates/auto-docs/src/lib.rs
 ================================================
+
 // [OUTLINE - 20 symbols, 448 lines]
 // import auto_modele
 // import pdfcraft_cos
@@ -2441,10 +2447,10 @@ FILE: crates/auto-docs/src/lib.rs
 // L177-L393: pub fn rendre(f: &Facture) -> Result<Vec<u8>, Erreur>
 // L395-L448: fn assembler(
 
-
 ================================================
 FILE: crates/auto-facturx/src/lib.rs
 ================================================
+
 // [OUTLINE - 4 symbols, 32 lines]
 // import auto_modele
 // import cii
@@ -2454,10 +2460,10 @@ FILE: crates/auto-facturx/src/lib.rs
 // L14-L21: pub enum Erreur
 // L24-L32: pub fn generer(facture: &Facture, pdf_visuel: &[u8], date_unix: i64) -> Result<Vec<u8>, Erreur>
 
-
 ================================================
 FILE: crates/auto-ffi/src/lib.rs
 ================================================
+
 // [OUTLINE - 20 symbols, 403 lines]
 // import auto_modele
 // import std
@@ -2483,10 +2489,10 @@ FILE: crates/auto-ffi/src/lib.rs
 // L332-L371: fn abi_caviarder_signer_presentation()
 // L374-L402: fn abi_connaissance()
 
-
 ================================================
 FILE: crates/auto-fichiers/src/lib.rs
 ================================================
+
 // [OUTLINE - 36 symbols, 414 lines]
 // import caviardage
 // import presentation
@@ -2537,10 +2543,10 @@ FILE: crates/auto-fichiers/src/lib.rs
 // L394-L405: fn pdf_de_facture()
 // L408-L413: fn erreurs()
 
-
 ================================================
 FILE: crates/auto-modele/src/lib.rs
 ================================================
+
 // [OUTLINE - 29 symbols, 298 lines]
 // import serde
 // import std
@@ -2577,10 +2583,10 @@ FILE: crates/auto-modele/src/lib.rs
 // L283-L298: mod tests_gabarit
 // L287-L297: fn base64_et_couleur()
 
-
 ================================================
 FILE: crates/auto-sheets/src/lib.rs
 ================================================
+
 // [OUTLINE - 14 symbols, 250 lines]
 // import gridcraft_core
 // import gridcraft_model
@@ -2604,28 +2610,28 @@ FILE: crates/auto-sheets/src/lib.rs
 // L204-L211: pub struct EditionCellule
 // L213-L250: pub fn modifier(octets: &[u8], editions: &[EditionCellule]) -> Result<Vec<u8>, Erreur>
 
-
 ================================================
 FILE: packages/agent/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 6 lines]
 
+// [OUTLINE - 0 symbols, 6 lines]
 
 ================================================
 FILE: packages/automate/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 6 lines]
 
+// [OUTLINE - 0 symbols, 6 lines]
 
 ================================================
 FILE: packages/billing/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 4 lines]
 
+// [OUTLINE - 0 symbols, 4 lines]
 
 ================================================
 FILE: packages/domain/src/index.ts
 ================================================
+
 // [OUTLINE - 20 symbols, 202 lines]
 // L1: type Tva = 0 | 21 | 55 | 100 | 200;
 // L3-L11: interface Ligne
@@ -2648,10 +2654,10 @@ FILE: packages/domain/src/index.ts
 // L185-L189: function avoirTotal(facture: Document, numeroFacture: string, date: string): Document
 // L192-L197: function avoirPartiel(facture: Document, numeroFacture: string, date: string, lignes: Ligne[]): Document
 
-
 ================================================
 FILE: packages/ingest/src/index.ts
 ================================================
+
 // [OUTLINE - 6 symbols, 104 lines]
 // import @auto/native
 // import ./cii
@@ -2665,16 +2671,16 @@ FILE: packages/ingest/src/index.ts
 // L49-L66: async function extraireParLlm(llm: ClientLlm, texte: string, max = 24_000): Promise<FactureRecue>
 // L69-L104: async function ingerer(fichier: Uint8Array, o: OptionsIngestion =
 
-
 ================================================
 FILE: packages/mail/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 9 lines]
 
+// [OUTLINE - 0 symbols, 9 lines]
 
 ================================================
 FILE: packages/native/src/index.ts
 ================================================
+
 // [OUTLINE - 24 symbols, 315 lines]
 // import bun:ffi
 // import node:fs
@@ -2703,10 +2709,10 @@ FILE: packages/native/src/index.ts
 // L267-L271: interface NouvellePresentation
 // L281-L289: interface Morceau
 
-
 ================================================
 FILE: packages/pa/src/index.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 36 lines]
 // import ./b2brouter
 // import ./mock
@@ -2715,10 +2721,10 @@ FILE: packages/pa/src/index.ts
 // L21-L24: interface Options
 // L27-L36: function plateforme(nom: NomPlateforme, ids: Identifiants, o: Options =
 
-
 ================================================
 FILE: packages/store/src/index.ts
 ================================================
+
 // [OUTLINE - 19 symbols, 263 lines]
 // import @auto/domain
 // import ./db
@@ -2742,10 +2748,10 @@ FILE: packages/store/src/index.ts
 // L239-L251: async function enregistrerFichier(
 // L253-L261: async function lireFichier(
 
-
 ================================================
 FILE: packages/tenancy/src/index.ts
 ================================================
+
 // [OUTLINE - 39 symbols, 583 lines]
 // import @auto/domain
 // import @auto/store
@@ -2796,38 +2802,46 @@ FILE: packages/tenancy/src/index.ts
 // L530-L545: interface ResultatAnnuaire
 // L551-L581: async function rechercherSiren(identifiant: string, fetcher: typeof fetch = fetch): Promise<FicheSirene | null>
 
-
 ================================================
 FILE: packages/ui/src/react/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 2 lines]
 
+// [OUTLINE - 0 symbols, 2 lines]
 
 ================================================
 FILE: .env.production.example
 ================================================
+
 # Copier vers .env.production ; ne jamais versionner les secrets.
+
 AUTO_DB_PASSWORD=remplacer-par-un-secret-aleatoire
 AUTO_CLE_MAITRE=remplacer-par-64-caracteres-hexadecimaux
 AUTO_URL_APP=https://auto.exemple.fr
 AUTO_BIND=127.0.0.1
 AUTO_PORT=3001
+
 # Relais SMTP réel, obligatoire au démarrage de l’API en production.
+
 AUTO_SMTP_HOTE=smtp.exemple.fr
 AUTO_SMTP_PORT=587
 AUTO_SMTP_SECURITE=starttls
 AUTO_SMTP_UTILISATEUR=auto@exemple.fr
 AUTO_SMTP_MOT_DE_PASSE=remplacer
-# Production auto.aphrody.com (~/auto/prod.env sur le VPS, voir docs/DEPLOIEMENT.md) : base Neon, sans le service
-# postgres de compose. Noms seulement ; les valeurs viennent de `bun scripts/neon.ts env <fichier>`.
-# DATABASE_URL=            # URL poolée (-pooler) : API et worker
-# DATABASE_URL_DIRECT=     # URL directe : migrations et pg_dump
-# S3_ENDPOINT= S3_BUCKET= S3_ACCESS_KEY_ID= S3_SECRET_ACCESS_KEY= S3_REGION=   # stockage objet S3 de l'archivage
 
+# Production auto.aphrody.com (~/auto/prod.env sur le VPS, voir docs/DEPLOIEMENT.md) : base Neon, sans le service
+
+# postgres de compose. Noms seulement ; les valeurs viennent de `bun scripts/neon.ts env <fichier>`.
+
+# DATABASE_URL= # URL poolée (-pooler) : API et worker
+
+# DATABASE_URL_DIRECT= # URL directe : migrations et pg_dump
+
+# S3_ENDPOINT= S3_BUCKET= S3_ACCESS_KEY_ID= S3_SECRET_ACCESS_KEY= S3_REGION= # stockage objet S3 de l'archivage
 
 ================================================
 FILE: AY_FIELD_TEST.md
 ================================================
+
 # Essai terrain de `ay` sur auto
 
 2026-11-12, poste Windows, `ay` construit depuis `crates/ay` (`RUSTC_WRAPPER= cargo build -p aphrody`).
@@ -2846,10 +2860,10 @@ FILE: AY_FIELD_TEST.md
 
 Tests après correctifs : `cargo test -p aphrody` 21/21, `cargo test --workspace` d'auto 39/39.
 
-
 ================================================
 FILE: CONTRIBUTING.md
 ================================================
+
 # Contribuer
 
 ## Environnement
@@ -2866,7 +2880,6 @@ FILE: CONTRIBUTING.md
 - Migrations SQL : nouveau fichier numéroté dans `packages/store/migrations/`, jamais de modification d'une migration appliquée, RLS sur toute table de tenant.
 - Pas de secret ni de donnée client réelle dans le dépôt, les tests ou les issues.
 
-
 ================================================
 FILE: LICENSE
 ================================================
@@ -2875,180 +2888,180 @@ FILE: LICENSE
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-   1. Definitions.
+1.  Definitions.
 
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+    "License" shall mean the terms and conditions for use, reproduction,
+    and distribution as defined by Sections 1 through 9 of this document.
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
+    "Licensor" shall mean the copyright owner or entity authorized by
+    the copyright owner that is granting the License.
 
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
+    "Legal Entity" shall mean the union of the acting entity and all
+    other entities that control, are controlled by, or are under common
+    control with that entity. For the purposes of this definition,
+    "control" means (i) the power, direct or indirect, to cause the
+    direction or management of such entity, whether by contract or
+    otherwise, or (ii) ownership of fifty percent (50%) or more of the
+    outstanding shares, or (iii) beneficial ownership of such entity.
 
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
+    "You" (or "Your") shall mean an individual or Legal Entity
+    exercising permissions granted by this License.
 
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
+    "Source" form shall mean the preferred form for making modifications,
+    including but not limited to software source code, documentation
+    source, and configuration files.
 
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
+    "Object" form shall mean any form resulting from mechanical
+    transformation or translation of a Source form, including but
+    not limited to compiled object code, generated documentation,
+    and conversions to other media types.
 
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
+    "Work" shall mean the work of authorship, whether in Source or
+    Object form, made available under the License, as indicated by a
+    copyright notice that is included in or attached to the work
+    (an example is provided in the Appendix below).
 
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
+    "Derivative Works" shall mean any work, whether in Source or Object
+    form, that is based on (or derived from) the Work and for which the
+    editorial revisions, annotations, elaborations, or other modifications
+    represent, as a whole, an original work of authorship. For the purposes
+    of this License, Derivative Works shall not include works that remain
+    separable from, or merely link (or bind by name) to the interfaces of,
+    the Work and Derivative Works thereof.
 
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
+    "Contribution" shall mean any work of authorship, including
+    the original version of the Work and any modifications or additions
+    to that Work or Derivative Works thereof, that is intentionally
+    submitted to Licensor for inclusion in the Work by the copyright owner
+    or by an individual or Legal Entity authorized to submit on behalf of
+    the copyright owner. For the purposes of this definition, "submitted"
+    means any form of electronic, verbal, or written communication sent
+    to the Licensor or its representatives, including but not limited to
+    communication on electronic mailing lists, source code control systems,
+    and issue tracking systems that are managed by, or on behalf of, the
+    Licensor for the purpose of discussing and improving the Work, but
+    excluding communication that is conspicuously marked or otherwise
+    designated in writing by the copyright owner as "Not a Contribution."
 
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
+    "Contributor" shall mean Licensor and any individual or Legal Entity
+    on behalf of whom a Contribution has been received by Licensor and
+    subsequently incorporated within the Work.
 
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
+2.  Grant of Copyright License. Subject to the terms and conditions of
+    this License, each Contributor hereby grants to You a perpetual,
+    worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+    copyright license to reproduce, prepare Derivative Works of,
+    publicly display, publicly perform, sublicense, and distribute the
+    Work and such Derivative Works in Source or Object form.
 
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
+3.  Grant of Patent License. Subject to the terms and conditions of
+    this License, each Contributor hereby grants to You a perpetual,
+    worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+    (except as stated in this section) patent license to make, have made,
+    use, offer to sell, sell, import, and otherwise transfer the Work,
+    where such license applies only to those patent claims licensable
+    by such Contributor that are necessarily infringed by their
+    Contribution(s) alone or by combination of their Contribution(s)
+    with the Work to which such Contribution(s) was submitted. If You
+    institute patent litigation against any entity (including a
+    cross-claim or counterclaim in a lawsuit) alleging that the Work
+    or a Contribution incorporated within the Work constitutes direct
+    or contributory patent infringement, then any patent licenses
+    granted to You under this License for that Work shall terminate
+    as of the date such litigation is filed.
 
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
+4.  Redistribution. You may reproduce and distribute copies of the
+    Work or Derivative Works thereof in any medium, with or without
+    modifications, and in Source or Object form, provided that You
+    meet the following conditions:
 
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
+    (a) You must give any other recipients of the Work or
+    Derivative Works a copy of this License; and
 
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
+    (b) You must cause any modified files to carry prominent notices
+    stating that You changed the files; and
 
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
+    (c) You must retain, in the Source form of any Derivative Works
+    that You distribute, all copyright, patent, trademark, and
+    attribution notices from the Source form of the Work,
+    excluding those notices that do not pertain to any part of
+    the Derivative Works; and
 
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
+    (d) If the Work includes a "NOTICE" text file as part of its
+    distribution, then any Derivative Works that You distribute must
+    include a readable copy of the attribution notices contained
+    within such NOTICE file, excluding those notices that do not
+    pertain to any part of the Derivative Works, in at least one
+    of the following places: within a NOTICE text file distributed
+    as part of the Derivative Works; within the Source form or
+    documentation, if provided along with the Derivative Works; or,
+    within a display generated by the Derivative Works, if and
+    wherever such third-party notices normally appear. The contents
+    of the NOTICE file are for informational purposes only and
+    do not modify the License. You may add Your own attribution
+    notices within Derivative Works that You distribute, alongside
+    or as an addendum to the NOTICE text from the Work, provided
+    that such additional attribution notices cannot be construed
+    as modifying the License.
 
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
+    You may add Your own copyright statement to Your modifications and
+    may provide additional or different license terms and conditions
+    for use, reproduction, or distribution of Your modifications, or
+    for any such Derivative Works as a whole, provided Your use,
+    reproduction, and distribution of the Work otherwise complies with
+    the conditions stated in this License.
 
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
+5.  Submission of Contributions. Unless You explicitly state otherwise,
+    any Contribution intentionally submitted for inclusion in the Work
+    by You to the Licensor shall be under the terms and conditions of
+    this License, without any additional terms or conditions.
+    Notwithstanding the above, nothing herein shall supersede or modify
+    the terms of any separate license agreement you may have executed
+    with Licensor regarding such Contributions.
 
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
+6.  Trademarks. This License does not grant permission to use the trade
+    names, trademarks, service marks, or product names of the Licensor,
+    except as required for reasonable and customary use in describing the
+    origin of the Work and reproducing the content of the NOTICE file.
 
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
+7.  Disclaimer of Warranty. Unless required by applicable law or
+    agreed to in writing, Licensor provides the Work (and each
+    Contributor provides its Contributions) on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+    implied, including, without limitation, any warranties or conditions
+    of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+    PARTICULAR PURPOSE. You are solely responsible for determining the
+    appropriateness of using or redistributing the Work and assume any
+    risks associated with Your exercise of permissions under this License.
 
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
+8.  Limitation of Liability. In no event and under no legal theory,
+    whether in tort (including negligence), contract, or otherwise,
+    unless required by applicable law (such as deliberate and grossly
+    negligent acts) or agreed to in writing, shall any Contributor be
+    liable to You for damages, including any direct, indirect, special,
+    incidental, or consequential damages of any character arising as a
+    result of this License or out of the use or inability to use the
+    Work (including but not limited to damages for loss of goodwill,
+    work stoppage, computer failure or malfunction, or any and all
+    other commercial damages or losses), even if such Contributor
+    has been advised of the possibility of such damages.
 
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
+9.  Accepting Warranty or Additional Liability. While redistributing
+    the Work or Derivative Works thereof, You may choose to offer,
+    and charge a fee for, acceptance of support, warranty, indemnity,
+    or other liability obligations and/or rights consistent with this
+    License. However, in accepting such obligations, You may act only
+    on Your own behalf and on Your sole responsibility, not on behalf
+    of any other Contributor, and only if You agree to indemnify,
+    defend, and hold each Contributor harmless for any liability
+    incurred by, or claims asserted against, such Contributor by reason
+    of your accepting any such warranty or additional liability.
 
-   END OF TERMS AND CONDITIONS
+END OF TERMS AND CONDITIONS
 
-   APPENDIX: How to apply the Apache License to your work.
+APPENDIX: How to apply the Apache License to your work.
 
       To apply the Apache License to your work, attach the following
       boilerplate notice, with the fields enclosed by brackets "[]"
@@ -3059,24 +3072,24 @@ FILE: LICENSE
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [yyyy] [name of copyright owner]
+Copyright [yyyy] [name of copyright owner]
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 ================================================
 FILE: MIGRATION.md
 ================================================
+
 # Migration de auto : fr1 vers usa
 
 Relevé en lecture seule le 2026-11-12 (`ay ssh exec fr1|usa|fr2`), puis bascule faite le même jour (section 5). Les
@@ -3260,29 +3273,29 @@ Ancienne pile Aphrody (relevé du jour, à confirmer service par service) :
 
 Les rôles de build de fr1 (Chromium, AOSP, noyau, `/opt/*` sysroots et SDK, `/srv/build`) restent en place.
 
-
 ================================================
 FILE: NOTICE
 ================================================
+
 auto
 Copyright 2026 Aphrody
 
 Ce produit est distribué sous licence Apache 2.0 (voir LICENSE).
 
-
 ================================================
 FILE: SECURITY.md
 ================================================
+
 # Sécurité
 
 Signalez toute vulnérabilité en privé via [un avis de sécurité GitHub](https://github.com/aphrody-labs/auto/security/advisories/new), jamais dans une issue. Réponse sous 72 heures ouvrées.
 
 Périmètre prioritaire : isolation entre tenants (RLS), authentification et rôles, intégrité de la numérotation et de l'audit chaîné, Factur-X, données personnelles (RGPD).
 
-
 ================================================
 FILE: UI_PLAN.md
 ================================================
+
 # Plan UI d'auto : piles Rust natives et web
 
 Évaluation du 2026-11-12, sans réécriture. Surfaces actuelles : `apps/web` (React, Tailwind 4, Material 3, servi par
@@ -3326,22 +3339,22 @@ dernier push relevés sur l'API GitHub le jour même ; miroirs locaux : `third_p
    vello restent utiles comme bibliothèques (mise en page et rendu des PDF et du graphe), quel que soit le framework.
 5. Toute surface suit la règle Design-First du dépôt (cahier des charges et `DESIGN.md` avant le code).
 
-
 ================================================
 FILE: apps/admin/public/index.html
 ================================================
-// [OUTLINE - 0 symbols, 16 lines]
 
+// [OUTLINE - 0 symbols, 16 lines]
 
 ================================================
 FILE: apps/admin/src/console.css
 ================================================
-// [OUTLINE - 0 symbols, 27 lines]
 
+// [OUTLINE - 0 symbols, 27 lines]
 
 ================================================
 FILE: apps/admin/src/console.tsx
 ================================================
+
 // [OUTLINE - 14 symbols, 547 lines]
 // import @auto/client
 // import @auto/ui/format
@@ -3364,25 +3377,25 @@ FILE: apps/admin/src/console.tsx
 // L352-L360: async function agir(u: Utilisateur, f: () => Promise<unknown>)
 // L440-L540: function Console()
 
-
 ================================================
 FILE: apps/admin/src/manquants.ts
 ================================================
-// [OUTLINE - 0 symbols, 2 lines]
 
+// [OUTLINE - 0 symbols, 2 lines]
 
 ================================================
 FILE: apps/admin/src/serveur.test.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 32 lines]
 // import bun:test
 // import ./manquants
 // import ./serveur
 
-
 ================================================
 FILE: apps/admin/src/serveur.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 30 lines]
 // import @auto/client/proxy
 // import ../public/index.html
@@ -3390,10 +3403,10 @@ FILE: apps/admin/src/serveur.ts
 // L11-L20: function routesAdmin(o: OptionsAdmin)
 // L22-L30: function demarrerAdmin(o: OptionsAdmin &
 
-
 ================================================
 FILE: apps/api/e2e/n8n.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 90 lines]
 // import @auto/store
 // import @auto/native
@@ -3403,20 +3416,20 @@ FILE: apps/api/e2e/n8n.ts
 // import ../../../scripts/n8n
 // L27-L35: async function api<T = any>(path: string, token?: string, body?: unknown): Promise<T>
 
-
 ================================================
 FILE: apps/api/src/admin.test.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 141 lines]
 // import bun:test
 // import @auto/store
 // import ./app
 // L20-L28: async function api(path: string, token?: string, body?: unknown, method = body === undefined ? "GET" : "POST")
 
-
 ================================================
 FILE: apps/api/src/app.test.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 271 lines]
 // import bun:test
 // import @auto/store
@@ -3425,10 +3438,10 @@ FILE: apps/api/src/app.test.ts
 // L25-L33: async function api(path: string, token?: string, init:
 // L35-L38: async function brut(path: string, token: string)
 
-
 ================================================
 FILE: apps/api/src/app.ts
 ================================================
+
 // [OUTLINE - 5 symbols, 471 lines]
 // import @auto/domain
 // import @auto/store
@@ -3464,10 +3477,10 @@ FILE: apps/api/src/app.ts
 // L148-L471: function creerApp(sql: Sql, publier: Emetteur = outbox, options: OptionsApp =
 // L177-L206: async function normaliser(
 
-
 ================================================
 FILE: apps/api/src/auth.test.ts
 ================================================
+
 // [OUTLINE - 5 symbols, 351 lines]
 // import bun:test
 // import @auto/store
@@ -3478,10 +3491,10 @@ FILE: apps/api/src/auth.test.ts
 // L142-L219: async function jetonMcp(cookie: string)
 // L221-L229: async function mcp(jeton: string, method: string, params: object =
 
-
 ================================================
 FILE: apps/api/src/automatisations.test.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 556 lines]
 // import bun:test
 // import @auto/automate
@@ -3492,10 +3505,10 @@ FILE: apps/api/src/automatisations.test.ts
 // L34-L41: async function api(path: string, token?: string, body?: unknown, method?: string)
 // L43-L50: async function entreprise(nom = "Atelier Morel")
 
-
 ================================================
 FILE: apps/api/src/conformite.test.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 231 lines]
 // import bun:test
 // import @auto/store
@@ -3506,10 +3519,10 @@ FILE: apps/api/src/conformite.test.ts
 // import ./observabilite
 // L43-L51: async function api(path: string, token?: string, init:
 
-
 ================================================
 FILE: apps/api/src/connaissance.test.ts
 ================================================
+
 // [OUTLINE - 4 symbols, 220 lines]
 // import bun:test
 // import @auto/automate
@@ -3521,10 +3534,10 @@ FILE: apps/api/src/connaissance.test.ts
 // L77-L86: async function entreprise(nom: string)
 // L93-L102: async function essai(session: string, type: string, parametres: object, donnees?: unknown)
 
-
 ================================================
 FILE: apps/api/src/devis-public.test.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 111 lines]
 // import bun:test
 // import @auto/services/devis-public
@@ -3533,20 +3546,20 @@ FILE: apps/api/src/devis-public.test.ts
 // L25-L33: async function api(path: string, token?: string, body?: unknown)
 // L43-L51: async function devisEmis()
 
-
 ================================================
 FILE: apps/api/src/encaissement.test.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 131 lines]
 // import bun:test
 // import @auto/store
 // import ./app
 // L66-L74: async function api(path: string, token?: string, body?: unknown, method?: string)
 
-
 ================================================
 FILE: apps/api/src/gabarit.test.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 112 lines]
 // import bun:test
 // import node:zlib
@@ -3556,10 +3569,10 @@ FILE: apps/api/src/gabarit.test.ts
 // L29-L42: async function api(method: string, path: string, body?: unknown)
 // L45-L77: function png(largeur: number, hauteur: number, rvba: [number, number, number, number]): Uint8Array
 
-
 ================================================
 FILE: apps/api/src/imports.test.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 107 lines]
 // import bun:test
 // import @auto/store
@@ -3567,10 +3580,10 @@ FILE: apps/api/src/imports.test.ts
 // import ./app
 // L27-L39: async function api(path: string, body?: unknown)
 
-
 ================================================
 FILE: apps/api/src/modules/abonnement.test.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 330 lines]
 // import bun:test
 // import @auto/billing
@@ -3580,9 +3593,9 @@ FILE: apps/api/src/modules/abonnement.test.ts
 // L66-L74: async function api(path: string, token?: string, init:
 // L76-L84: async function webhook(evt: object, signature?: string)
 
-
 ================================================
 FILE: apps/api/src/modules/abonnement.ts
 ================================================
+
 // [AST-Smart Truncation: Full content exceeds budget, outline shown below]
 // [OUTLINE - 0 symbols, 25 lines]

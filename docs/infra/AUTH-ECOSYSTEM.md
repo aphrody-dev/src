@@ -182,3 +182,9 @@ Utilisation en CI (étape à ajouter dans un workflow, avec `permissions: id-tok
 | Agent vers Cloudflare                      | jeton de compte complet et permanent                  | 0 clic : jeton aux permissions nommées, expirant, révoqué en sortie                                                                         |
 | CLI sur un hôte sans navigateur (prd, fr2) | copier-coller de code ou de jeton                     | 1 clic d'approbation du code d'appareil (gh, wrangler, codex)                                                                               |
 | Reste propre à l'humain                    | gcloud `ai-agent` et `org-contact`, npm               | npm et crates.io ne demandent plus rien une fois en trusted publishing ; `SUBMODULES_TOKEN` remplacé par l App `aphrody-labs` le 2026-11-13 |
+
+## 11. Extension Cloudflare, Vercel et Antigravity (`agy`, 2026-11-14)
+
+- **Cloudflare (`wrangler` `4.162.0`, `cf` `1.0.0-beta.32`)** : jetons de compte (`CLOUDFLARE_API_TOKEN`) et utilisateur (`CF_API_TOKEN`) étendus aux groupes complets (`418` groupes de compte pour R2, Workers, Zones, Access, KV, D1, Basin, Flagship) ; télémétrie désactivée pour `wrangler`, `cf` et `vercel`.
+- **Vercel (`vercel` `65.16.0`)** : session CLI globale écrite sans variable d'environnement dans `%APPDATA%/com.vercel.cli/Data/auth.json` + `config.json` (`team_xCw3WGJLNTrufDRMc53z4rwl`), plus `VERCEL_ORG_ID` propagé par `packages/env-kit`.
+- **Synchronisation MCP des harnais (`packages/env-kit/src/editors.ts`)** : `ay env sync-editors` et `ay env doctor` couvrent désormais OpenCode, Zed, Pi, Antigravity CLI (`~/.gemini/antigravity-cli/mcp_config.json`), Antigravity Global (`~/.gemini/config/mcp_config.json`), Gemini CLI (`~/.gemini/settings.json`) et Claude Code (`~/.claude.json`) avec les serveurs MCP `cloudflare`, `cloudflare-docs` et `vercel` (portée OAuth/en-tête uniquement, aucune valeur secrète dans le dépôt).

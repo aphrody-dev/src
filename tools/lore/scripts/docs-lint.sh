@@ -104,12 +104,12 @@ classify() {
 
     case "${tool}" in
         vale)
-            # Vale's summary reads "✔ 0 errors, 0 warnings and 0 suggestions"
-            # when clean and "✖ N errors, M warnings …" when not. Any non-zero
-            # count (or the ✖ glyph) means findings; exit >= 2 means it aborted.
+            # Vale's summary reads " 0 errors, 0 warnings and 0 suggestions"
+            # when clean and " N errors, M warnings …" when not. Any non-zero
+            # count (or the  glyph) means findings; exit >= 2 means it aborted.
             if (( code >= 2 )); then
                 printf 'errored'
-            elif printf '%s' "${out}" | grep -qE '✖|[1-9][0-9]* (error|warning|suggestion)'; then
+            elif printf '%s' "${out}" | grep -qE '|[1-9][0-9]* (error|warning|suggestion)'; then
                 printf 'findings'
             elif (( code != 0 )); then
                 printf 'findings'

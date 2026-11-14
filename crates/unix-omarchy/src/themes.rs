@@ -12,6 +12,8 @@ pub enum ThemeError {
     Parse { line: usize, message: String },
     #[error("Theme not found: {0}")]
     NotFound(String),
+    #[error("Invalid theme name '{0}': must match ^[a-z0-9_][a-z0-9._+-]*$")]
+    InvalidName(String),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -539,6 +541,252 @@ impl ColorsToml {
         }
         Ok(written)
     }
+
+    pub fn hex_to_rgb_csv(color: &str) -> String {
+        let hex = Self::strip_hex(color);
+        if hex.len() >= 6 {
+            let r = u8::from_str_radix(&hex[0..2], 16).unwrap_or(0);
+            let g = u8::from_str_radix(&hex[2..4], 16).unwrap_or(0);
+            let b = u8::from_str_radix(&hex[4..6], 16).unwrap_or(0);
+            format!("{r},{g},{b}")
+        } else {
+            "0,0,0".to_string()
+        }
+    }
+
+    pub fn mix_hex(a: &str, b: &str, pct: f32) -> String {
+        let t = (pct / 100.0).clamp(0.0, 1.0);
+        let ha = Self::strip_hex(a);
+        let hb = Self::strip_hex(b);
+        let parse_rgb = |h: &str| -> (f32, f32, f32) {
+            if h.len() >= 6 {
+                (
+                    u8::from_str_radix(&h[0..2], 16).unwrap_or(0) as f32,
+                    u8::from_str_radix(&h[2..4], 16).unwrap_or(0) as f32,
+                    u8::from_str_radix(&h[4..6], 16).unwrap_or(0) as f32,
+                )
+            } else {
+                (0.0, 0.0, 0.0)
+            }
+        };
+        let (r1, g1, b1) = parse_rgb(&ha);
+        let (r2, g2, b2) = parse_rgb(&hb);
+        let r = (r1 + (r2 - r1) * t).round().clamp(0.0, 255.0) as u8;
+        let g = (g1 + (g2 - g1) * t).round().clamp(0.0, 255.0) as u8;
+        let b = (b1 + (b2 - b1) * t).round().clamp(0.0, 255.0) as u8;
+        format!("#{r:02x}{g:02x}{b:02x}")
+    }
+
+    pub fn lookup_token(&self, key: &str) -> Option<String> {
+        let val = match key.trim() {
+            "name" => self.name.clone(),
+            "mode" | "theme_type" => self.mode.clone(),
+            "accent" => self.accent.clone(),
+            "selection" | "selection_background" => self.selection.clone(),
+            "selection_foreground" | "cursor" => self.foreground.clone(),
+            "muted" | "color8" => self.muted.clone(),
+            "background" => self.background.clone(),
+            "dark_background" | "color0" => self.dark_background.clone(),
+            "darker_background" => self.darker_background.clone(),
+            "lighter_background" => self.lighter_background.clone(),
+            "foreground" => self.foreground.clone(),
+            "dark_foreground" => self.dark_foreground.clone(),
+            "light_foreground" | "color7" => self.light_foreground.clone(),
+            "bright_foreground" | "color15" => self.bright_foreground.clone(),
+            "red" | "color1" => self.red.clone(),
+            "yellow" | "color3" => self.yellow.clone(),
+            "orange" => self.orange.clone(),
+            "green" | "color2" => self.green.clone(),
+            "cyan" | "color6" => self.cyan.clone(),
+            "blue" | "color4" => self.blue.clone(),
+            "magenta" | "purple" | "color5" => self.magenta.clone(),
+            "brown" => self.brown.clone(),
+            "bright_red" | "color9" => self.bright_red.clone(),
+            "bright_yellow" | "color11" => self.bright_yellow.clone(),
+            "bright_green" | "color10" => self.bright_green.clone(),
+            "bright_cyan" | "color14" => self.bright_cyan.clone(),
+            "bright_blue" | "color12" => self.bright_blue.clone(),
+            "bright_magenta" | "color13" => self.bright_magenta.clone(),
+            "hyprland_active_border" => self.hyprland_active_border.clone()?,
+            "hyprland_inactive_border" => self.hyprland_inactive_border.clone()?,
+            "active_border_color" => self
+                .active_border_color
+                .clone()
+                .unwrap_or_else(|| self.accent.clone()),
+            "active_tab_background" => self
+                .active_tab_background
+                .clone()
+                .unwrap_or_else(|| self.accent.clone()),
+            _ => return None,
+        };
+        Some(val)
+    }
+
+    /// Render an Omarchy `.tpl` template (`{{ key }}`, `{{ key_strip }}`, `{{ key_rgb }}`,
+    /// `{{ color0 }}`..`{{ color15 }}`, `{{ theme_type }}`, `{{ mix a b N% }}`, `{{ hypr_gradient ... }}`).
+    pub fn render_template(&self, tpl: &str) -> String {
+        let mut out = String::with_capacity(tpl.len());
+        let mut rest = tpl;
+        while let Some(open) = rest.find("{{") {
+            out.push_str(&rest[..open]);
+            let after_open = &rest[open + 2..];
+            let Some(close) = after_open.find("}}") else {
+                out.push_str(&rest[open..]);
+                return out;
+            };
+            let expr = after_open[..close].trim();
+            if let Some(rendered) = self.eval_template_expr(expr) {
+                out.push_str(&rendered);
+            } else {
+                out.push_str("{{");
+                out.push_str(&after_open[..close]);
+                out.push_str("}}");
+            }
+            rest = &after_open[close + 2..];
+        }
+        out.push_str(rest);
+        out
+    }
+
+    fn eval_template_expr(&self, expr: &str) -> Option<String> {
+        let parts: Vec<&str> = expr.split_whitespace().collect();
+        if parts.is_empty() {
+            return None;
+        }
+        if parts.len() == 1 {
+            let key = parts[0];
+            if let Some(base) = key.strip_suffix("_strip") {
+                return self.lookup_token(base).map(|c| Self::strip_hex(&c));
+            }
+            if let Some(base) = key.strip_suffix("_rgb") {
+                return self.lookup_token(base).map(|c| Self::hex_to_rgb_csv(&c));
+            }
+            return self.lookup_token(key);
+        }
+        match parts[0] {
+            "mix" if parts.len() == 4 => {
+                let c1 = self
+                    .lookup_token(parts[1])
+                    .unwrap_or_else(|| parts[1].to_string());
+                let c2 = self
+                    .lookup_token(parts[2])
+                    .unwrap_or_else(|| parts[2].to_string());
+                let pct_str = parts[3].trim_end_matches('%');
+                let pct = pct_str.parse::<f32>().ok()?;
+                Some(Self::mix_hex(&c1, &c2, pct))
+            }
+            "hypr_gradient" | "shell_gradient" if parts.len() >= 3 => self
+                .lookup_token(parts[1])
+                .or_else(|| self.lookup_token(parts[2]))
+                .or_else(|| Some(parts[2..].join(" "))),
+            _ => None,
+        }
+    }
+}
+
+/// Validate a third-party theme name (`^[a-z0-9_][a-z0-9._+-]*$`, matching Omarchy `quattro`).
+pub fn validate_theme_name(name: &str) -> Result<(), ThemeError> {
+    let mut chars = name.chars();
+    let Some(first) = chars.next() else {
+        return Err(ThemeError::InvalidName(name.to_string()));
+    };
+    let first_ok = first.is_ascii_lowercase() || first.is_ascii_digit() || first == '_';
+    let rest_ok = chars.all(|c| {
+        c.is_ascii_lowercase() || c.is_ascii_digit() || matches!(c, '.' | '_' | '+' | '-')
+    });
+    if !first_ok || !rest_ok {
+        return Err(ThemeError::InvalidName(name.to_string()));
+    }
+    Ok(())
+}
+
+/// Strip executable scripts/terminal configs from a git-cloned third-party theme directory
+/// (per Omarchy `manual/43-making-your-own-theme.md` and `bin/omarchy-theme-set`).
+pub fn sanitize_third_party_theme(dir: &Path) -> Result<Vec<PathBuf>, ThemeError> {
+    if !dir.join(".git").exists() {
+        return Ok(Vec::new());
+    }
+    let mut removed = Vec::new();
+    sanitize_walk(dir, &mut removed)?;
+    removed.sort();
+    Ok(removed)
+}
+
+fn sanitize_walk(dir: &Path, removed: &mut Vec<PathBuf>) -> Result<(), ThemeError> {
+    const DENIED_FILES: &[&str] = &[
+        "alacritty.toml",
+        "foot.ini",
+        "ghostty.conf",
+        "kitty.conf",
+        "vscode.json",
+    ];
+    for entry in fs::read_dir(dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        let name = entry.file_name();
+        let name_str = name.to_string_lossy();
+        if name_str == ".git" {
+            continue;
+        }
+        if path.is_dir() {
+            sanitize_walk(&path, removed)?;
+        } else if path.is_file() {
+            let is_lua = path.extension().and_then(|e| e.to_str()) == Some("lua");
+            let is_denied = DENIED_FILES.iter().any(|d| *d == name_str.as_ref());
+            if is_lua || is_denied {
+                fs::remove_file(&path)?;
+                removed.push(path);
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Install a local theme directory into `dest_root/<name>`, validating the name and stripping
+/// unsafe files when `.git` is present inside `src_dir`.
+pub fn install_theme_from_dir(
+    src_dir: &Path,
+    dest_root: &Path,
+    name_override: Option<&str>,
+) -> Result<(PathBuf, Vec<PathBuf>), ThemeError> {
+    let raw_name = name_override
+        .map(str::to_string)
+        .or_else(|| {
+            src_dir
+                .file_name()
+                .and_then(|n| n.to_str())
+                .map(|s| {
+                    s.to_ascii_lowercase()
+                        .trim_start_matches("omarchy-")
+                        .trim_end_matches("-theme")
+                        .to_string()
+                })
+        })
+        .unwrap_or_default();
+    validate_theme_name(&raw_name)?;
+
+    let target = dest_root.join(&raw_name);
+    if target.exists() {
+        fs::remove_dir_all(&target)?;
+    }
+    copy_dir_recursive(src_dir, &target)?;
+    let stripped = sanitize_third_party_theme(&target)?;
+    Ok((target, stripped))
+}
+
+fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<(), ThemeError> {
+    fs::create_dir_all(dst)?;
+    for entry in fs::read_dir(src)? {
+        let entry = entry?;
+        let path = entry.path();
+        let target = dst.join(entry.file_name());
+        if path.is_dir() {
+            copy_dir_recursive(&path, &target)?;
+        } else if path.is_file() {
+            fs::copy(&path, &target)?;
+        }
+    }
+    Ok(())
 }
 
 fn strip_inline_comment(input: &str) -> &str {
@@ -631,7 +879,7 @@ impl AetherThemeRegistry {
     }
 }
 
-fn builtin_presets() -> [(&'static str, &'static str, &'static str); 25] {
+fn builtin_presets() -> [(&'static str, &'static str, &'static str); 27] {
     [
         (
             "catppuccin",
@@ -1376,7 +1624,7 @@ bright_magenta = "#2e2e2e"
         ),
         (
             "aphrody-m3-dark",
-            "sovereign-builtin",
+            "aphrody-builtin",
             r##"
 mode = "dark"
 accent = "#a8c7fa"
@@ -1410,7 +1658,7 @@ bright_magenta = "#eaddff"
         ),
         (
             "cachyos-emerald",
-            "sovereign-builtin",
+            "aphrody-builtin",
             r##"
 mode = "dark"
 accent = "#00e8c6"
@@ -1440,6 +1688,74 @@ bright_green = "#5efce4"
 bright_cyan = "#48cae4"
 bright_blue = "#7dd3fc"
 bright_magenta = "#c4b5fd"
+"##,
+        ),
+        (
+            "hyprland-kawase",
+            "aphrody-builtin",
+            r##"
+mode = "dark"
+accent = "#33ccff"
+selection = "#1b3a4b"
+muted = "#64748b"
+background = "#0e141b"
+dark_background = "#090d12"
+darker_background = "#05080b"
+lighter_background = "#18222e"
+foreground = "#e2e8f0"
+dark_foreground = "#64748b"
+light_foreground = "#cbd5e1"
+bright_foreground = "#f8fafc"
+hyprland_active_border = "rgba(33ccffee) rgba(00ff99ee) 45deg"
+hyprland_inactive_border = "rgba(334155aa)"
+red = "#f87171"
+yellow = "#fbbf24"
+orange = "#fb923c"
+green = "#00ff99"
+cyan = "#33ccff"
+blue = "#38bdf8"
+magenta = "#c084fc"
+brown = "#94a3b8"
+bright_red = "#fca5a5"
+bright_yellow = "#fde68a"
+bright_green = "#6ee7b7"
+bright_cyan = "#67e8f9"
+bright_blue = "#7dd3fc"
+bright_magenta = "#d8b4fe"
+"##,
+        ),
+        (
+            "fluent-2-dark",
+            "aphrody-builtin",
+            r##"
+mode = "dark"
+accent = "#60cdff"
+selection = "#1b3f57"
+muted = "#797979"
+background = "#202020"
+dark_background = "#191919"
+darker_background = "#111111"
+lighter_background = "#2c2c2c"
+foreground = "#ffffff"
+dark_foreground = "#9d9d9d"
+light_foreground = "#e6e6e6"
+bright_foreground = "#ffffff"
+hyprland_active_border = "rgba(60cdffee) rgba(0078d4ee) 45deg"
+hyprland_inactive_border = "rgba(3b3b3baa)"
+red = "#ff99a4"
+yellow = "#fce100"
+orange = "#f7630c"
+green = "#6ccb5f"
+cyan = "#60cdff"
+blue = "#0078d4"
+magenta = "#c299ff"
+brown = "#9d8370"
+bright_red = "#ffb9c0"
+bright_yellow = "#fff176"
+bright_green = "#9ae68f"
+bright_cyan = "#99e1ff"
+bright_blue = "#4cc2ff"
+bright_magenta = "#d8bdff"
 "##,
         ),
     ]

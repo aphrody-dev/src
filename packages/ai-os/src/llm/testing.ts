@@ -36,3 +36,41 @@ export const call = (id: string, name: string, input: unknown): ToolCall => ({
   name,
   input,
 });
+
+// Extracted from vercel-labs/emulate (Apache-2.0): local HTTP API emulation for no-network sandboxes & tests.
+export type EmulateRoute = {
+  method?: string;
+  match: string | RegExp | ((url: URL, req: Request) => boolean);
+  handle: (
+    req: Request,
+    url: URL,
+  ) => Response | unknown | Promise<Response | unknown>;
+};
+
+export function createEmulateFetch(
+  routes: EmulateRoute[],
+  fallback?: typeof fetch,
+): typeof fetch {
+  return (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const req = input instanceof Request ? input : new Request(input, init);
+    const url = new URL(req.url);
+    for (const r of routes) {
+      if (r.method && r.method.toUpperCase() !== req.method.toUpperCase())
+        continue;
+      const matched =
+        typeof r.match === "string"
+          ? url.pathname === r.match || url.href.startsWith(r.match)
+          : r.match instanceof RegExp
+            ? r.match.test(url.href) || r.match.test(url.pathname)
+            : r.match(url, req);
+      if (!matched) continue;
+      const out = await r.handle(req, url);
+      if (out instanceof Response) return out;
+      return Response.json(out);
+    }
+    if (fallback) return fallback(input, init);
+    return new Response(`emulate: no route for ${req.method} ${url.href}`, {
+      status: 404,
+    });
+  }) as typeof fetch;
+}

@@ -6,11 +6,11 @@ Read by every agent CLI (Claude Code, Codex, Antigravity, OpenCode, Pi, Zed). Re
 
 src is the public monorepo of Aphrody. Its direction is a game engine and creative suite built in the open: Bevy as engine, the Craft Apps and ArtCraft as creative tools, `crates/tv-*` and FFmpeg for media, Unreal Engine by interop only (private fork, never published), on top of the existing platform work (Bun and Rust tooling, deploy, Linux and Windows layers). State and work order: `docs/games/PLAN.md`. Nothing of that refactor is built yet; say so when asked.
 
-## 2. Layout (`ls` of each directory, 2026-11-13)
+## 2. Layout (`ls` of each directory, 2026-11-14)
 
-- [`apps/`](apps): `aphrody`, `aphrody-app`, `auto`, `l2l`, `nt`, `r2b`, `r2-site`, `rosegriffon`, `shenron`, `unixwin`, `yolo`; `auto`, `r2b`, `rosegriffon`, `shenron` are the only git submodules. `rosegriffon` and `shenron` are community sites Aphrody maintains, not Aphrody products.
-- [`packages/`](packages): Bun `@aphrody/*` packages (`ai-os`, `bun-parity`, `bun-plugins`, `chromium-bun`, `core`, `deploy`, `design`, `env-kit`, `ffi-bridge`, `forge`, `gaming`, `google-design`, `linux`, `machine`, `net`, `release`, `runtime-adapter`, `shell-matrix`, `upstream`, `vault`, `wck`).
-- [`crates/`](crates): Rust 2024 crates in one flat workspace (`ay`, `archguard`, `xtask`, `depot-*`, `lore*`, `aphrody-ui`, `corelib`, `core`, `core-capi`, `ffi`, `rust-stack`, `ring3-agent`, `gamescope-*`, `steam-depot`, `unix-*`, `tv-*`, `bench`, ...).
+- [`apps/`](apps): `aphrody` (SEO, static assets and Wayland WASM; `aphrody-app` merged), `auto`, `l2l`, `nt`, `r2b`, `rosegriffon`, `shenron`, `unixwin`; `rosegriffon` and `shenron` are the only git submodules and are community sites Aphrody maintains, not Aphrody products. (`r2-site` and `yolo` were merged/purged into `infra/cloudflare` and `packages/deploy`).
+- [`packages/`](packages): Bun `@aphrody/*` packages (`ai-os`, `assets`, `browser`, `chromium-bun`, `core`, `deploy`, `design`, `env-kit`, `ffi-bridge`, `gaming`, `i18n`, `machine`, `native`, `net`, `release`, `shell-matrix`, `upstream`, `vault`, `wck`).
+- [`crates/`](crates): Rust 2024 crates in one flat workspace (`ay`, `archguard`, `xtask`, `depot-*`, `lore*`, `taffy`, `aphrody-ui`, `aphrody-env`, `aphrody-vault`, `aphrody-v8`, `aphrody-cef`, `hypr-tiler`, `cosmic-compat`, `corelib`, `core`, `core-capi`, `ffi`, `rust-stack`, `gamescope-*`, `steam-depot`, `unix-omarchy`, `tv-*`, `bench`, ...).
 - [`infra/`](infra): fleet and deploy configuration assembled from upstream tools (`docs/infra/UPSTREAM-STACK.md`).
 - [`third_party/`](third_party): upstream checkouts and aphrody-labs forks, flat, pinned in `src.lock.json`, listed in `third_party/forks.txt`.
 
@@ -19,7 +19,7 @@ src is the public monorepo of Aphrody. Its direction is a game engine and creati
 - Agents are free: no approval step, no confirmation, no human in the loop. Decide, execute, verify, report what is and is not done.
 - Everything is committed and pushed directly on `main`; no branches, no worktrees, never push to an upstream.
 - Single interface: `just` and the `ay` CLI (`docs/NAMING.md`). Rust compiles in CI or on fr1, never on the workstation; prd runs production backends only, fr2 the edge.
-- UI framework is free (Bevy UI, egui, iced, WinUI 3, Tauri, GPUI, WebUI): the criteria are rendering quality, performance and function. Tokens come from `packages/design` and `crates/aphrody-ui` (`docs/DESIGN_SYSTEM.md`).
+- UI framework is free (Dioxus 0.8 + Blitz + AnyRender + Vello, GPUI + gpui-kit + `embedded_gpui` + Longbridge `nsh`, `taffy`, Ratatui TUI, Bevy UI, WinUI 3, WebUI, fused in `crates/aphrody-ui` `fusion` and exposed via `ay ui`): the criteria are rendering quality, performance and function. Tokens come from `packages/design` and `crates/aphrody-ui` (`docs/DESIGN_SYSTEM.md`, `docs/ui/STACK.md`).
 - AI features live in `packages/ai-os` only; providers and models are discovered at run time, none is hard-coded.
 - Publish in the open: public repositories, GitHub releases and tags, crates.io and npm, once a secret scan of the repository is clean (`docs/publish/STATUS.md`).
 

@@ -8,9 +8,13 @@ import { join } from "node:path";
 import { catalogs } from "../../i18n/src/index.ts";
 
 const NOTES = Object.fromEntries(
-  Object.entries(catalogs).map(([l, c]) => [l, (c as Record<string, string>)["home.hero.note"]]),
+  Object.entries(catalogs).map(([l, c]) => [
+    l,
+    (c as Record<string, string>)["home.hero.note"],
+  ]),
 );
-const HERO_STYLE = ".hero-gl{position:absolute;inset:0;width:100%;height:100%;display:block}[data-hero=gpu] use:not(.stars):not(.volt),[data-hero=gpu] .bg{display:none}.hero-note{position:absolute;z-index:2;left:16px;bottom:12px;max-width:min(56ch,calc(100% - 32px));margin:0;padding:8px 14px;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container-highest);color:var(--md-sys-color-on-surface);font:.8125rem/1.25 inherit}";
+const HERO_STYLE =
+  ".hero-gl{position:absolute;inset:0;width:100%;height:100%;display:block}[data-hero=gpu] use:not(.stars):not(.volt),[data-hero=gpu] .bg{display:none}.hero-note{position:absolute;z-index:2;left:16px;bottom:12px;max-width:min(56ch,calc(100% - 32px));margin:0;padding:8px 14px;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container-highest);color:var(--md-sys-color-on-surface);font:.8125rem/1.25 inherit}";
 /** Themes dawn and ember from packages/design/tokens/themes.css: the plain blocks only. */
 export function themeBlocks(root: string): string {
   const f = join(root, "packages", "design", "tokens", "themes.css");
@@ -23,10 +27,12 @@ export function themeBlocks(root: string): string {
 
 /** Inline head snippet: data-theme from the stored choice, else the system scheme (no flash). */
 /** Inline head snippet of aphrody.com (system scheme, no flash); the stored choice is applied again by theme.js. */
-export const THEME_APPLY = 'document.documentElement.dataset.theme=matchMedia("(prefers-color-scheme:dark)").matches?"ember":"dawn"';
+export const THEME_APPLY =
+  'document.documentElement.dataset.theme=matchMedia("(prefers-color-scheme:dark)").matches?"ember":"dawn"';
 
 /** Full apply (stored choice, else system scheme), used by the scripts and as the blocking head script of aphrody.app. */
-const APPLY_FULL = 'var r=document.documentElement,v;try{v=localStorage.getItem("aphrody-theme")}catch(x){}r.dataset.theme=v==="dark"||(v!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches)?"ember":"dawn"';
+const APPLY_FULL =
+  'var r=document.documentElement,v;try{v=localStorage.getItem("aphrody-theme")}catch(x){}r.dataset.theme=v==="dark"||(v!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches)?"ember":"dawn"';
 
 /** Theme script: the snippet above, system scheme changes, and the click on [data-theme-toggle]. */
 export const THEME_JS = `(function(){${APPLY_FULL};var m=matchMedia("(prefers-color-scheme:dark)"),k="aphrody-theme";function sync(){document.querySelectorAll("[data-theme-toggle]").forEach(function(b){b.setAttribute("aria-pressed",String(r.dataset.theme==="ember"))})}function a(){var s;try{s=localStorage.getItem(k)}catch(x){}r.dataset.theme=s==="dark"||(s!=="light"&&m.matches)?"ember":"dawn";sync()}a();m.addEventListener("change",a);document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-theme-toggle]");if(!b)return;try{localStorage.setItem(k,r.dataset.theme==="ember"?"light":"dark")}catch(x){}a()})})();`;
@@ -116,19 +122,25 @@ draw();hero.dataset.hero="gpu";if(motion)requestAnimationFrame(loop);
 }catch(x){fail("error:"+(x&&x.message||x))}})();`;
 
 /** CSS shared by both sites: theme switch, hero canvas and fallback note. Roles only. */
-const THEME_RULES = ".theme-btn{flex:none;width:48px;height:48px;border:0;border-radius:var(--md-sys-shape-corner-full);background:transparent;color:var(--md-sys-color-on-surface);display:inline-grid;place-items:center;cursor:pointer}.theme-btn:hover{background:color-mix(in srgb,var(--md-sys-color-on-surface) 8%,transparent)}.theme-btn:focus-visible{outline:3px solid var(--md-sys-color-secondary);outline-offset:2px}.theme-btn svg{fill:currentColor}";
+const THEME_RULES =
+  ".theme-btn{flex:none;width:48px;height:48px;border:0;border-radius:var(--md-sys-shape-corner-full);background:transparent;color:var(--md-sys-color-on-surface);display:inline-grid;place-items:center;cursor:pointer}.theme-btn:hover{background:color-mix(in srgb,var(--md-sys-color-on-surface) 8%,transparent)}.theme-btn:focus-visible{outline:3px solid var(--md-sys-color-secondary);outline-offset:2px}.theme-btn svg{fill:currentColor}";
 /** CSS of the theme switch for pages that render the button in markup (aphrody.app). */
 export const UI_CSS = THEME_RULES;
 
-const ICON = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 2v14a7 7 0 0 1 0-14Z"/></svg>';
+const ICON =
+  '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 2v14a7 7 0 0 1 0-14Z"/></svg>';
 
-const LABELS = Object.fromEntries(Object.entries(catalogs).map(([l, c]) => [l, (c as Record<string, string>)["home.theme"]]));
+const LABELS = Object.fromEntries(
+  Object.entries(catalogs).map(([l, c]) => [
+    l,
+    (c as Record<string, string>)["home.theme"],
+  ]),
+);
 /** aphrody.com: the switch button is created by script (it does nothing without it) so the first HTML stays inside the 14 KB window. */
 export const THEME_BTN_JS = `(function(){var h=document.querySelector(".bar");if(!h||document.querySelector("[data-theme-toggle]"))return;var L=${JSON.stringify(LABELS)};var s=document.createElement("style");s.textContent=${JSON.stringify(THEME_RULES + ".bar .theme-btn{position:absolute;right:16px;top:8px}")};document.head.appendChild(s);var b=document.createElement("button");b.className="theme-btn";b.type="button";b.setAttribute("data-theme-toggle","");b.setAttribute("aria-pressed",String(document.documentElement.dataset.theme==="ember"));b.setAttribute("aria-label",L[document.documentElement.lang]||L.en);b.innerHTML=${JSON.stringify(ICON)};h.appendChild(b)})();`;
 
 /** One deferred file for aphrody.com: theme script, switch button, hero. */
 export const HOME_JS = THEME_JS + THEME_BTN_JS + HERO_JS;
-
 
 /** Theme switch button (sun and moon glyphs, Material Symbols outlines), label localized. */
 export const themeButton = (label: string): string =>

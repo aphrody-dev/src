@@ -1,10 +1,12 @@
 # Graph Report - artcraft
 
 ## Corpus Check
+
 - **Nodes:** 63598 · **Edges:** 116529 · **Communities:** 4215
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `Some()` [function] - 3834 connections (crates/desktop/artcraft/src/services/worldlabs/windows/worldlabs_login_window/worldlabs_login_window_thread.rs:L121)
 2. `ammo.wasm.js` [file] - 3131 connections (frontend/apps/artcraft/app/public/jsm/libs/ammo.wasm.js:L1)
 3. `Ok()` [function] - 2064 connections (crates/desktop/artcraft/src/lib.rs:L207)
@@ -19,6 +21,7 @@
 12. `enums` [import] - 354 connections (crates/desktop/artcraft/src/services/worldlabs/windows/worldlabs_login_window/worldlabs_login_window_thread.rs:L20)
 
 ## Key Structural Connections
+
 - `tauri-mac.conf.json` --[defines]--> `$schema` (Extracted)
 - `tauri-mac.conf.json` --[defines]--> `productName` (Extracted)
 - `tauri-mac.conf.json` --[defines]--> `version` (Extracted)

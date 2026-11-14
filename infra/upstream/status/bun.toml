@@ -17,6 +17,13 @@ pr = "https://github.com/oven-sh/bun/pull/48784"
 owner = "bun-windows"
 updated = "2026-11-13"
 
+[patch."cargo_lock_record_bun_archive_s_bun_libdeflate_sys_and_bun_zlib_dependen"]
+subject = "Cargo.lock: record bun_archive's bun_libdeflate_sys and bun_zlib dependencies"
+status = "pending"
+note = "companion to oven-sh/bun#48792"
+owner = "bun-windows"
+updated = "2026-11-14"
+
 [patch."child_process_expose_the_parent-end_pipe_fd_through_stream_handle"]
 subject = "child_process: expose the parent-end pipe fd through stream._handle"
 status = "submitted"
@@ -32,12 +39,61 @@ note = "aphrody-only: CI du fork (régression Windows)"
 owner = "bun-windows"
 updated = "2026-11-13"
 
+[patch."ci_native_bench_musl_builds_in_alpine_glibc_ones_on_the_host_bench-only"]
+subject = "ci(native): bench musl builds in alpine, glibc ones on the host; bench-only mode"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
+[patch."ci_native_download_each_target_s_artifact_into_its_own_directory"]
+subject = "ci(native): download each target's artifact into its own directory"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
+[patch."ci_native_drop_the_duplicated_artifacts_run_input"]
+subject = "ci(native): drop the duplicated artifacts_run input"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
+[patch."ci_native_http_bench_in_rotated_rounds_median_canary_run_again_last_as"]
+subject = "ci(native): HTTP bench in rotated rounds (median), canary run again last as a control"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
+[patch."ci_native_http_bench_in_rotated_rounds_median_canary_run_again_last_as_a"]
+subject = "ci(native): HTTP bench in rotated rounds (median), canary run again last as a control"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
 [patch."ci_native_leave_the_windows_sysroot_out_of_the_build_host"]
 subject = "ci(native): leave the Windows sysroot out of the build host"
 status = "inappropriate"
 note = "aphrody-only: CI du fork (build natif)"
 owner = "bun-native"
 updated = "2026-11-13"
+
+[patch."ci_native_link_gnu_with_canary_s_order_file_trimmable_like_ci-build_st"]
+subject = "ci(native): link gnu with canary's order file, trimmable like ci-build; startup profile in the bench"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
+[patch."ci_native_link_gnu_with_canary_s_order_file_trimmable_like_ci-build_star"]
+subject = "ci(native): link gnu with canary's order file, trimmable like ci-build; startup profile in the bench"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
 
 [patch."ci_native_release_build_thinlto_linux-x64_gnu_musl_windows-x64_and_non-r"]
 subject = "ci: native release build (ThinLTO, linux-x64 gnu/musl, windows-x64) and non-regression bench"
@@ -53,13 +109,57 @@ note = "aphrody-only: CI du fork (build natif)"
 owner = "bun-native"
 updated = "2026-11-13"
 
+[patch."ci_native_syscall_counts_strace_-c_of_bun_-e_0_and_the_test_runner_100"]
+subject = "ci(native): syscall counts (strace -c) of bun -e 0 and the test runner; 100 runs of the test runner"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
+[patch."ci_native_syscall_counts_strace_-c_of_bun_-e_0_and_the_test_runner_100_r"]
+subject = "ci(native): syscall counts (strace -c) of bun -e 0 and the test runner; 100 runs of the test runner"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
+[patch."ci_native_trace_the_fork_s_own_order_file_trace-order_job_link_gnu_wit"]
+subject = "ci(native): trace the fork's own order file (trace-order job), link gnu with it"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
+[patch."ci_native_trace_the_fork_s_own_order_file_trace-order_job_link_gnu_with"]
+subject = "ci(native): trace the fork's own order file (trace-order job), link gnu with it"
+status = "inappropriate"
+note = "aphrody-only: CI du fork (build natif)"
+owner = "bun-native"
+updated = "2026-11-14"
+
+[patch."completions_compare_the_windows_test_output_with_the_script_without_crl"]
+subject = "completions: compare the Windows test output with the script without CRLF"
+status = "submitted"
+note = "oven-sh/bun#48793"
+pr = "https://github.com/oven-sh/bun/pull/48793"
+owner = "bun-windows"
+updated = "2026-11-14"
+
+[patch."completions_compare_the_windows_test_output_with_the_script_without_crlf"]
+subject = "completions: compare the Windows test output with the script without CRLF"
+status = "submitted"
+note = "oven-sh/bun#48793"
+pr = "https://github.com/oven-sh/bun/pull/48793"
+owner = "bun-windows"
+updated = "2026-11-14"
+
 [patch."completions_print_the_script_for_bash_zsh_and_fish_on_windows"]
 subject = "completions: print the script for bash, zsh and fish on Windows"
-status = "pending"
-note = "Fixes #25042 ; #28122 fermé sans fusion"
+status = "submitted"
+note = "oven-sh/bun#48793 (Fixes #25042)"
+pr = "https://github.com/oven-sh/bun/pull/48793"
 owner = "bun-windows"
-updated = "2026-11-13"
-
+updated = "2026-11-14"
 
 [patch."docs_sizes_bun_gzipsync_and_bun_deflatesync_give_for_the_utils_examples"]
 subject = "docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples"
@@ -93,6 +193,22 @@ pr = "https://github.com/oven-sh/bun/pull/45742"
 owner = "amont"
 updated = "2026-11-13"
 
+[patch."shell_use_bun_core_cast_slice_mut_in_the_dead_bin_link_check_no_bytemuc"]
+subject = "shell: use bun_core::cast_slice_mut in the dead bin link check (no bytemuck in bun_install)"
+status = "submitted"
+note = "oven-sh/bun#45742"
+pr = "https://github.com/oven-sh/bun/pull/45742"
+owner = "amont"
+updated = "2026-11-14"
+
+[patch."shell_use_bun_core_cast_slice_mut_in_the_dead_bin_link_check_no_bytemuck"]
+subject = "shell: use bun_core::cast_slice_mut in the dead bin link check (no bytemuck in bun_install)"
+status = "submitted"
+note = "oven-sh/bun#45742"
+pr = "https://github.com/oven-sh/bun/pull/45742"
+owner = "amont"
+updated = "2026-11-14"
+
 [patch."sys_windows_report_enoent_for_an_empty_path_instead_of_acting_on_the_dir"]
 subject = "sys(windows): report ENOENT for an empty path instead of acting on the directory it is relative to"
 status = "submitted"
@@ -101,9 +217,24 @@ pr = "https://github.com/oven-sh/bun/pull/38052"
 owner = "amont"
 updated = "2026-11-13"
 
+[patch."upgrade_completions_cargo_lock_entries_for_bun_archive_s_zip_dependencie"]
+subject = "upgrade, completions: Cargo.lock entries for bun_archive's zip dependencies; read $SHELL through zstr!"
+status = "pending"
+note = "companion to oven-sh/bun#48792 and #48793"
+owner = "bun-windows"
+updated = "2026-11-14"
+
+[patch."upgrade_completions_cargo_lock_entries_for_bun_archive_s_zip_dependencies"]
+subject = "upgrade, completions: Cargo.lock entries for bun_archive's zip dependencies; read $SHELL through zstr!"
+status = "pending"
+note = "companion to oven-sh/bun#48792 and #48793"
+owner = "bun-windows"
+updated = "2026-11-14"
+
 [patch."upgrade_unpack_the_windows_release_in-process_and_check_canary_downloads"]
 subject = "upgrade: unpack the Windows release in-process and check canary downloads against the API digest"
-status = "pending"
-note = "Windows : Expand-Archive de PowerShell 7 sous 5.1 ; canary vérifié contre le digest de l'API"
+status = "submitted"
+note = "oven-sh/bun#48792 (Windows Expand-Archive + canary API digest)"
+pr = "https://github.com/oven-sh/bun/pull/48792"
 owner = "bun-windows"
-updated = "2026-11-13"
+updated = "2026-11-14"

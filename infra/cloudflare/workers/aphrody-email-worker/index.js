@@ -7,23 +7,27 @@ var index_default = {
     const subject = message.headers?.get("subject") || "(No Subject)";
     const messageId = message.headers?.get("message-id") || id;
     const spfStatus = message.headers?.get("received-spf") || "unknown";
-    const dkimStatus = message.headers?.get("dkim-signature") ? "signed" : "unsigned";
+    const dkimStatus = message.headers?.get("dkim-signature")
+      ? "signed"
+      : "unsigned";
     if (env.DB) {
       try {
         await env.DB.prepare(
-          "INSERT INTO inbound_emails (id, messageId, fromAddress, toAddress, subject, spfStatus, dkimStatus, rawHeaders, bodySnippet, receivedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        ).bind(
-          id,
-          messageId,
-          from,
-          to,
-          subject,
-          spfStatus,
-          dkimStatus,
-          "",
-          "",
-          Date.now()
-        ).run();
+          "INSERT INTO inbound_emails (id, messageId, fromAddress, toAddress, subject, spfStatus, dkimStatus, rawHeaders, bodySnippet, receivedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        )
+          .bind(
+            id,
+            messageId,
+            from,
+            to,
+            subject,
+            spfStatus,
+            dkimStatus,
+            "",
+            "",
+            Date.now(),
+          )
+          .run();
       } catch (err) {
         console.error("Failed to insert inbound email into D1:", err);
       }
@@ -43,13 +47,13 @@ var index_default = {
         worker: "aphrody-email-worker",
         edge: "cloudflare",
         d1_connected: !!env.DB,
-        time: (/* @__PURE__ */ new Date()).toISOString()
+        time: /* @__PURE__ */ new Date().toISOString(),
       });
     }
     if (url.pathname === "/api/inbound/latest" && env.DB) {
       try {
         const rows = await env.DB.prepare(
-          "SELECT * FROM inbound_emails ORDER BY receivedAt DESC LIMIT 20"
+          "SELECT * FROM inbound_emails ORDER BY receivedAt DESC LIMIT 20",
         ).all();
         return Response.json({ emails: rows.results });
       } catch (err) {
@@ -58,11 +62,9 @@ var index_default = {
     }
     return new Response("Aphrody Cloudflare Edge Email Worker (2026)", {
       status: 200,
-      headers: { "Content-Type": "text/plain" }
+      headers: { "Content-Type": "text/plain" },
     });
-  }
+  },
 };
-export {
-  index_default as default
-};
+export { index_default as default };
 //# sourceMappingURL=index.js.map

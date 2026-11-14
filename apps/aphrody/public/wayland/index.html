@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>
+      Aphrody Wayland Wasm - Pure-C Wayland Compositor in WebAssembly
+    </title>
+    <meta
+      name="description"
+      content="Interactive pure-C Wayland compositor compiled to wasm32 with LLVM clang, aligned with wayland.xml, WebAssembly spec, and Material 3 design tokens."
+    />
+    <link rel="canonical" href="https://aphrody.com/wayland/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aphrody" />
+    <meta
+      property="og:title"
+      content="Aphrody Wayland Wasm - Pure-C Wayland Compositor in WebAssembly"
+    />
+    <meta
+      property="og:description"
+      content="Interactive pure-C Wayland compositor compiled to wasm32 with LLVM clang, aligned with wayland.xml and Material 3 tokens."
+    />
+    <meta property="og:url" content="https://aphrody.com/wayland/" />
+    <meta property="og:image" content="https://aphrody.com/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/tokens.css" />
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: var(--md-ref-typeface-plain);
+        background: var(--md-sys-color-surface);
+        color: var(--md-sys-color-on-surface);
+        min-height: 100svh;
+        padding: 1.5rem;
+      }
+      .shell {
+        max-width: 72rem;
+        margin: 0 auto;
+        display: grid;
+        gap: 1rem;
+      }
+      .status-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        background: var(--md-sys-color-surface-container-high);
+        border: 1px solid var(--md-sys-color-outline-variant);
+        border-radius: var(--md-sys-shape-corner-medium);
+        font-size: var(--md-sys-typescale-body-medium-size);
+      }
+      .status-bar a {
+        color: var(--md-sys-color-primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      @media (min-width: 960px) {
+        .workspace {
+          grid-template-columns: 1.45fr 1fr;
+          align-items: start;
+        }
+      }
+      .card {
+        background: var(--md-sys-color-surface-container-low);
+        border: 1px solid var(--md-sys-color-outline-variant);
+        border-radius: var(--md-sys-shape-corner-large);
+        padding: 1rem;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+      button {
+        font-family: inherit;
+        font-size: var(--md-sys-typescale-label-large-size);
+        font-weight: 500;
+        padding: 0.5rem 0.9rem;
+        border-radius: var(--md-sys-shape-corner-full);
+        border: 1px solid var(--md-sys-color-outline-variant);
+        background: var(--md-sys-color-surface-container);
+        color: var(--md-sys-color-on-surface);
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--md-sys-color-primary);
+        color: var(--md-sys-color-on-primary);
+        border-color: var(--md-sys-color-primary);
+      }
+      button:focus-visible,
+      canvas:focus-visible {
+        outline: 2px solid var(--md-sys-color-primary);
+        outline-offset: 2px;
+      }
+      canvas {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: var(--md-sys-shape-corner-medium);
+        border: 1px solid var(--md-sys-color-primary);
+        background: var(--md-sys-color-surface-container-lowest);
+        touch-action: none;
+      }
+      .mono {
+        font-family: var(--md-ref-typeface-code);
+        font-size: var(--md-sys-typescale-body-small-size);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--md-ref-typeface-code);
+        font-size: var(--md-sys-typescale-body-small-size);
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.35rem 0.45rem;
+        border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      }
+      .specs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: var(--md-sys-typescale-body-medium-size);
+      }
+      .specs a {
+        color: var(--md-sys-color-primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+      }
+    </style>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Aphrody Wayland Wasm Compositor",
+        "url": "https://aphrody.com/wayland/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "WebAssembly"
+      }
+    </script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="status-bar">
+        <div>
+          <a href="/">Aphrody</a> / <strong>Wayland Wasm (wasm32)</strong>
+        </div>
+        <div id="wl-status" class="mono">Loading /wayland.wasm...</div>
+      </header>
+
+      <section class="workspace" aria-label="Wayland Compositor Workspace">
+        <div class="card">
+          <div
+            class="toolbar"
+            role="toolbar"
+            aria-label="Wayland Surface Controls"
+          >
+            <button id="btn-new-surface" class="primary" type="button">
+              New wl_surface
+            </button>
+            <button id="btn-close-surface" type="button">Close Focused</button>
+            <button id="btn-sync" type="button">wl_display.sync</button>
+            <button data-layout="0" type="button">DwindleMaster</button>
+            <button data-layout="1" type="button">DwindleStack</button>
+            <button data-layout="2" type="button">Monocle</button>
+          </div>
+          <canvas
+            id="wl-canvas"
+            width="720"
+            height="420"
+            tabindex="0"
+            role="application"
+            aria-label="Interactive pure-C Wayland wasm32 compositor surface. Click to focus a surface; press 1, 2, or 3 to switch tiling layout; press N for a new surface or W to close."
+          ></canvas>
+          <p id="wl-announce" class="sr-only" aria-live="polite"></p>
+        </div>
+
+        <aside class="card" aria-label="Wayland Wire Protocol Inspector">
+          <h2>Wayland Wire Stream (wayland.xml)</h2>
+          <p>
+            Zero-copy linear memory framebuffer + C11 wire ring buffer compiled
+            with LLVM <code>clang --target=wasm32 -nostdlib</code>.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Seq</th>
+                <th>Dir</th>
+                <th>Object</th>
+                <th>Opcode</th>
+                <th>Size</th>
+                <th>Args</th>
+              </tr>
+            </thead>
+            <tbody id="wl-wire-body"></tbody>
+          </table>
+        </aside>
+      </section>
+
+      <footer class="card specs">
+        <span>Aligned with:</span>
+        <a href="https://webassembly.org/">WebAssembly.org</a>
+        <a href="https://webassembly.github.io/spec/">W3C WebAssembly Spec</a>
+        <a href="https://github.com/aphrody-labs/wayland-c"
+          >aphrody-labs/wayland-c (wayland.xml)</a
+        >
+        <a href="https://github.com/GoogleChrome/modern-web-guidance"
+          >GoogleChrome/modern-web-guidance</a
+        >
+        <a href="/en/">English</a>
+        <a href="/">FR</a>
+      </footer>
+    </main>
+    <script type="module" src="/wayland/wayland-host.js"></script>
+  </body>
+</html>

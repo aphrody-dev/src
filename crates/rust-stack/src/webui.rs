@@ -133,7 +133,7 @@ impl WebUiStore {
         let hash = blake3::hash(format!("{title}:{now}").as_bytes()).to_hex();
         let id = format!("conv_{}", &hash[..12]);
         let clean_title = if title.trim().is_empty() {
-            "New Sovereign Session"
+            "New Aphrody Session"
         } else {
             title.trim()
         };
@@ -253,6 +253,7 @@ impl WebUiStore {
 }
 
 pub fn render_workspace_html() -> String {
+    let m3_css = crate::shadcn_rs::aphrody_m3_brand_css();
     let css = theme_css_tokens(ThemeMode::AphrodyDark);
     let badge_html = UiPrimitive::Badge {
         label: "PURE RUST 2024".to_string(),
@@ -274,7 +275,7 @@ pub fn render_workspace_html() -> String {
     }
     .render_html();
     let status_card = UiPrimitive::Card {
-        title: "Sovereign Inference Router".to_string(),
+        title: "Aphrody Inference Router".to_string(),
         subtitle: Some("ring3 :8787 | ai-os :4318 | triad :4319 | ollama :11434".to_string()),
         body: "Blake3 prompt cache + SQLite WAL history + Better-Auth IAM active.".to_string(),
         footer: Some("Zero Node.js / Zero Python runtime dependencies".to_string()),
@@ -296,8 +297,9 @@ pub fn render_workspace_html() -> String {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>rust-stack | Sovereign AI Workspace</title>
+  <title>rust-stack | Aphrody AI Workspace</title>
   <style>
+{m3_css}
 {css}
     * {{ box-sizing: border-box; }}
     body {{
@@ -595,6 +597,16 @@ pub fn render_workspace_html() -> String {
     )
 }
 
+/// Renders any shared canonical UI page through `aphrody-ui::fusion` for fullstack SSR/TUI/WebGPU/GPUI delivery.
+pub fn render_fusion_fullstack_page(
+    page: aphrody_ui::fusion::CanonicalPage,
+    preset: aphrody_ui::fusion::FusionThemePreset,
+    dark: bool,
+    target: aphrody_ui::fusion::RenderTarget,
+) -> Result<aphrody_ui::fusion::RenderedFrame, String> {
+    aphrody_ui::fusion::render_page_to_target(page, preset, dark, target, None, None)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -622,5 +634,15 @@ mod tests {
         let html = render_workspace_html();
         assert!(html.contains("navigator.gpu"));
         assert!(html.contains("/v1/chat/completions"));
+
+        let ssr = render_fusion_fullstack_page(
+            aphrody_ui::fusion::CanonicalPage::WaylandBrowserCompositor,
+            aphrody_ui::fusion::FusionThemePreset::Hyprland,
+            true,
+            aphrody_ui::fusion::RenderTarget::WebWasmSsr,
+        )
+        .unwrap();
+        assert!(ssr.payload.contains("<!doctype html>"));
+        assert_eq!(ssr.vitals.horizontal_overflow_px, 0.0);
     }
 }

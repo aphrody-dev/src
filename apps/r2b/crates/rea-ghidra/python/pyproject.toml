@@ -1,0 +1,9 @@
+[project]
+name = "rea-ghidra-uv"
+version = "1.0.0"
+description = "Zero-dependency uv Python ctypes bridge to n2b_ffi.dll (REA -> Ghidra-Rust headless automation)"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+rea-ghidra-py = "rea_ghidra_uv:main"

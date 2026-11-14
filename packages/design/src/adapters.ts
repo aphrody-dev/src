@@ -14,6 +14,7 @@ import {
   hexFromArgb,
 } from "@material/material-color-utilities";
 import { dynamicScheme } from "./schemes.ts";
+import { buildThemes, LAYOUT, THEMES } from "./themes.ts";
 
 const pkg = join(import.meta.dir, "..");
 const out = join(pkg, "tokens", "adapters");
@@ -601,6 +602,20 @@ const title = (k: string) =>
     .split("-")
     .map((w) => w[0].toUpperCase() + w.slice(1))
     .join(" ");
+const builtThemes = buildThemes();
+const presetColorTable = Object.fromEntries(
+  THEMES.map((th) => [
+    th.name,
+    {
+      seed: th.seed,
+      variant: th.variant,
+      defaultMode: th.default,
+      light: (builtThemes.themes as Record<string, any>)[th.name].light,
+      dark: (builtThemes.themes as Record<string, any>)[th.name].dark,
+    },
+  ]),
+);
+
 files["gpui-kit.json"] =
   JSON.stringify(
     {
@@ -619,6 +634,7 @@ files["gpui-kit.json"] =
         colors: gpuiColors(m),
         highlight: gpuiHighlight(m),
       })),
+      presets: presetColorTable,
     },
     null,
     2,
@@ -662,10 +678,31 @@ files["webui-tokens.json"] =
           },
         ]),
       ),
+      presets: presetColorTable,
     },
     null,
     2,
   ) + "\n";
+
+// 11. Taffy Layout + Multi-Theme Rust adapter (`tokens/adapters/taffy_tokens.rs`)
+files["taffy_tokens.rs"] =
+  `${header("//")}// Rust layout & theme constants shared with crates/taffy and crates/aphrody-ui.
+
+pub const GAP_PX: f32 = ${LAYOUT.gap}.0;
+pub const FOCUS_RING_PX: f32 = ${LAYOUT["focus-ring"]}.0;
+pub const WINDOW_RADIUS_PX: f32 = ${LAYOUT["window-radius"]}.0;
+
+pub const SHAPE_EXTRA_SMALL_PX: f32 = ${px("extra-small")}.0;
+pub const SHAPE_SMALL_PX: f32 = ${px("small")}.0;
+pub const SHAPE_MEDIUM_PX: f32 = ${px("medium")}.0;
+pub const SHAPE_LARGE_PX: f32 = ${px("large")}.0;
+pub const SHAPE_EXTRA_LARGE_PX: f32 = ${px("extra-large")}.0;
+
+/// (id, seed_hex, variant, default_dark) matching packages/design/src/themes.ts
+pub const FUSION_PRESETS: &[(&str, &str, &str, bool)] = &[
+${THEMES.map((th) => `    (${JSON.stringify(th.name)}, ${JSON.stringify(th.seed)}, ${JSON.stringify(th.variant)}, ${th.default === "dark"}),`).join("\n")}
+];
+`;
 
 // --- écriture / vérification ---
 let drift = 0;

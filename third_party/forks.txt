@@ -183,8 +183,8 @@ servo/servo Rust
 servo/stylo Rust
 DioxusLabs/blitz Rust
 DioxusLabs/anyrender Rust
-DioxusLabs/taffy Rust
-DioxusLabs/blitz-website Rust
+DioxusLabs/dioxus Rust
+DioxusLabs/dioxus-components Rust
 DioxusLabs/accessibility-cli Rust
 DioxusLabs/blitz-chrome-devtools-frontend Python
 # Pile terminal centrale (2026-11-13) : intelligent-terminal + dependances, Rust/Zig/terminal anomalyco, vercel-labs, Microsoft ; voir docs/terminal/ARCHITECTURE.md
@@ -287,7 +287,6 @@ sched-ext/scx C
 zen-kernel/zen-kernel C
 damentz/liquorix-package Shell
 torvalds/linux C
-mingw-w64/mingw-w64 C
 mstorsjo/llvm-mingw Shell
 reactos/reactos C
 LiberNT/LiberNT C
@@ -318,6 +317,12 @@ addyosmani/web-quality-skills Shell
 microsoft/apm Python
 material-components/material-web TypeScript
 longbridge/gpui-kit Rust
+longbridge/gpui-fast Rust
+longbridge/nsh Rust
+longbridge/longbridge-terminal Rust
+longbridge/omarchy-longbridge Rust
+zed-industries/zed Rust
+zed-industries/embedded_gpui Rust
 microsoft/webui Rust
 google-labs-code/stax TypeScript
 google-labs-code/design.md TypeScript
@@ -418,3 +423,10 @@ penpot/penpot Clojure
 livekit/livekit Go
 immich-app/immich TypeScript
 viliusle/miniPaint JavaScript
+ziglang/zig Zig
+rust-cross/cargo-zigbuild Rust
+GoogleChrome/modern-web-guidance-src TypeScript
+wayland/wayland C
+rust-lang/cargo Rust
+rust-lang/rust Rust
+rust-lang/crates.io Rust

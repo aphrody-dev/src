@@ -8,126 +8,54 @@
     "why": "API d'aphrody.app (Worker aphrody-deploy) ; / redirige vers /api/projects"
   },
   "api.aphrody.com": 200,
-  "app-audio.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-cad.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-compositing.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-documents.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-generation.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-images.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-interface-layouts.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-layout.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-pdf.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-photo-processing.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-slides.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-tables.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-vectors.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "app-video.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
-  "art.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
-  "auth.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
+  "app-audio.aphrody.app": 200,
+  "app-cad.aphrody.app": 200,
+  "app-compositing.aphrody.app": 200,
+  "app-documents.aphrody.app": 200,
+  "app-generation.aphrody.app": 200,
+  "app-images.aphrody.app": 200,
+  "app-interface-layouts.aphrody.app": 200,
+  "app-layout.aphrody.app": 200,
+  "app-pdf.aphrody.app": 200,
+  "app-photo-processing.aphrody.app": 200,
+  "app-slides.aphrody.app": 200,
+  "app-tables.aphrody.app": 200,
+  "app-vectors.aphrody.app": 200,
+  "app-video.aphrody.app": 200,
+  "art.aphrody.com": 200,
+  "auth.aphrody.app": 302,
   "auth.aphrody.com": 200,
   "bot.aphrody.com": 200,
   "bxc.aphrody.com": 200,
-  "cad.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
-  "calendar.aphrody.com": {
-    "status": 404,
-    "why": "404 du Worker ou du conteneur (pas de page racine)"
-  },
+  "cad.aphrody.com": 200,
+  "calendar.aphrody.com": 200,
   "cdn.aphrody.com": 200,
   "chat.aphrody.com": 200,
   "console.aphrody.com": 302,
   "control.aphrody.com": 302,
-  "craft.aphrody.app": {
-    "status": 404,
-    "why": "aucun backend sur ce nom : ingress *.aphrody.app -> http_status:404 (la plateforme est le Worker aphrody-deploy, packages/deploy)"
-  },
+  "craft.aphrody.app": 302,
   "creator.aphrody.com": 200,
   "dbfr.aphrody.com": 200,
   "deploy.aphrody.app": {
     "status": 302,
     "why": "redirection vers https://aphrody.app/dashboard (Worker aphrody-deploy)"
   },
-  "design.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
-  "docs.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
+  "design.aphrody.com": 200,
+  "docs.aphrody.com": 200,
   "downloads.aphrody.com": {
     "status": 404,
     "why": "404 du Worker ou du conteneur (pas de page racine)"
   },
   "drive.aphrody.com": 200,
-  "fig.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
+  "fig.aphrody.com": 200,
   "git.aphrody.app": {
     "status": 302,
     "why": "redirection vers https://github.com/aphrody-labs/src (Worker aphrody-deploy)"
   },
-  "https://aphrody.com/api/health": {
-    "status": 503,
-    "why": "/api rendu par le Worker aphrody (pas d appel origine)"
-  },
+  "https://aphrody.com/api/health": 200,
   "inacord.aphrody.com": 200,
   "mail.aphrody.com": 200,
-  "maps.aphrody.com": {
-    "status": 404,
-    "why": "404 du Worker ou du conteneur (pas de page racine)"
-  },
+  "maps.aphrody.com": 200,
   "mcp.aphrody.com": 200,
   "meet.aphrody.com": 200,
   "mig-commons.aphrody.com": 302,
@@ -135,39 +63,15 @@
   "mig-test.aphrody.com": 200,
   "n2b.aphrody.com": 200,
   "nie.aphrody.com": 200,
-  "os.aphrody.com": {
-    "status": 404,
-    "why": "404 du Worker ou du conteneur (pas de page racine)"
-  },
-  "pdf.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
-  "photos.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
-  "play.aphrody.app": {
-    "status": 404,
-    "why": "404 du Worker ou du conteneur (pas de page racine)"
-  },
-  "play.aphrody.com": {
-    "status": 404,
-    "why": "404 du Worker ou du conteneur (pas de page racine)"
-  },
+  "os.aphrody.com": 200,
+  "pdf.aphrody.com": 200,
+  "photos.aphrody.com": 200,
+  "play.aphrody.app": 200,
+  "play.aphrody.com": 200,
   "search.aphrody.com": 200,
-  "sheets.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
-  "slides.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
-  "sound.aphrody.com": {
-    "status": 404,
-    "why": "route du Worker aphrody-webos, qui répond désormais 404 (502 avant le déploiement du 2026-11-13 vers 04:15) ; relu le 2026-11-13"
-  },
+  "sheets.aphrody.com": 200,
+  "slides.aphrody.com": 200,
+  "sound.aphrody.com": 200,
   "source.aphrody.app": {
     "status": 302,
     "why": "redirection vers https://github.com/aphrody-labs/src (Worker aphrody-deploy)"

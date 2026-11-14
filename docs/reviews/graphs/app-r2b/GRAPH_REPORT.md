@@ -1,10 +1,12 @@
 # Graph Report - r2b
 
 ## Corpus Check
+
 - **Nodes:** 175107 · **Edges:** 382909 · **Communities:** 2475
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `expect()` [function] - 3546 connections (src/replica/replica-test/e2e.example.spec.ts:L25-L27)
 2. `vitest` [import] - 3539 connections (src/rea/tests/support/artifactClientScope.ts:L1)
 3. `it()` [function] - 2460 connections (src/rea/tests/support/jsonClientRegistrationContract.ts:L47-L78)
@@ -19,6 +21,7 @@
 12. `ok()` [function] - 1195 connections (src/rea/tests/support/cli/apktoolCli.ts:L21-L26)
 
 ## Key Structural Connections
+
 - `package.json` --[defines]--> `name` (Extracted)
 - `package.json` --[defines]--> `version` (Extracted)
 - `package.json` --[defines]--> `private` (Extracted)

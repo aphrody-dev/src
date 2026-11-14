@@ -2,141 +2,194 @@
 //!
 //! Contract (mirrored by `packages/core/src/ffi.ts` and `include/aphrody_core.h`):
 //! - Strings in are NUL-terminated UTF-8; strings out are NUL-terminated UTF-8 JSON owned by
-//!   the library and released with [`core_free`].
+//!   the library and released with [`core_free`] or [`aphrody_free`].
 //! - Errors come back as `{"error": "..."}` JSON; null only when the output holds a NUL byte.
 //! - Build with the shared LLVM toolchain (docs/llvm/UNIFIED-TOOLCHAIN.md) for cross-language LTO.
 
-use aphrody_core::{SupportedLanguage, TreeSitterEngine, hash, index};
-use std::ffi::{CStr, CString, c_char};
-use std::path::{Path, PathBuf};
+pub mod cabi;
+#[cfg(feature = "ai-os")]
+pub mod ai_os;
 
-/// Bumped on any signature change.
-pub const CORE_ABI_VERSION: u32 = 1;
-
-/// Per-file callback for [`core_index_each`]: one `IndexedFile` JSON, borrowed for the call.
-pub type CoreFileCallback = extern "C" fn(file_json: *const c_char);
-
-fn arg<'a>(p: *const c_char) -> &'a str {
-    if p.is_null() {
-        return "";
-    }
-    // SAFETY: caller passes a NUL-terminated string valid for the duration of the call.
-    unsafe { CStr::from_ptr(p) }.to_str().unwrap_or("")
-}
-
-fn out(s: String) -> *mut c_char {
-    CString::new(s).map(CString::into_raw).unwrap_or(std::ptr::null_mut())
-}
-
-fn err(msg: impl std::fmt::Display) -> *mut c_char {
-    out(serde_json::json!({ "error": msg.to_string() }).to_string())
-}
-
+/// Unified Aphrody C ABI version.
 #[unsafe(no_mangle)]
-pub extern "C" fn core_abi_version() -> u32 {
-    CORE_ABI_VERSION
+pub extern "C" fn aphrody_abi_version() -> u32 {
+    cabi::APHRODY_ABI_VERSION
 }
 
-/// Release a string returned by any `core_*` function. Null is a no-op.
+/// Release a string returned by any C ABI function in this library. Null is a no-op.
+///
+/// # Safety
+/// `p` must be null or a C string allocated by an Aphrody C ABI function.
 #[unsafe(no_mangle)]
-pub extern "C" fn core_free(p: *mut c_char) {
-    if !p.is_null() {
-        // SAFETY: `p` was produced by `CString::into_raw` in this library.
-        drop(unsafe { CString::from_raw(p) });
-    }
+pub unsafe extern "C" fn aphrody_free(p: *mut std::ffi::c_char) {
+    // SAFETY: `p` is null or was produced by `into_c_string` in an Aphrody C ABI library.
+    unsafe { cabi::free_c_string(p) };
 }
 
-/// Comma-separated tree-sitter grammars compiled in.
-#[unsafe(no_mangle)]
-pub extern "C" fn core_languages() -> *mut c_char {
-    out(SupportedLanguage::ALL.iter().map(|l| l.name()).collect::<Vec<_>>().join(","))
-}
-
-/// Parse `content` (grammar picked from `path`) into an `AstFileSummary` JSON.
-#[unsafe(no_mangle)]
-pub extern "C" fn core_parse_json(path: *const c_char, content: *const c_char) -> *mut c_char {
-    let path = arg(path);
-    match TreeSitterEngine::parse_file(Path::new(path), arg(content)) {
-        Some(summary) => out(serde_json::to_string(&summary).unwrap_or_default()),
-        None => err(format!("unsupported language or parse failure: {path}")),
-    }
-}
-
-/// Run a tree-sitter S-expression query; `path` only selects the grammar.
-#[unsafe(no_mangle)]
-pub extern "C" fn core_query_json(
-    path: *const c_char,
-    content: *const c_char,
-    query: *const c_char,
-) -> *mut c_char {
-    let Some(lang) = TreeSitterEngine::detect_language(Path::new(arg(path))) else {
-        return err("unsupported language");
+#[cfg(feature = "core")]
+mod core_exports {
+    use crate::cabi::{
+        self, APHRODY_ABI_VERSION, AphrodySlice, AphrodyStatus, c_str, free_c_string, into_c_string,
+        json_err, json_ok, raw_slice,
     };
-    match TreeSitterEngine::query_sexpr(lang, arg(content), arg(query)) {
-        Ok(caps) => out(serde_json::to_string(&caps).unwrap_or_default()),
-        Err(e) => err(e),
+    use aphrody_core::{SupportedLanguage, TreeSitterEngine, hash, index};
+    use std::ffi::{CString, c_char};
+    use std::path::{Path, PathBuf};
+
+    /// Bumped on any signature change.
+    pub const CORE_ABI_VERSION: u32 = APHRODY_ABI_VERSION;
+
+    /// Per-file callback for [`core_index_each`]: one `IndexedFile` JSON, borrowed for the call.
+    pub type CoreFileCallback = extern "C" fn(file_json: *const c_char);
+
+    /// Core C ABI version (alias of [`crate::aphrody_abi_version`]).
+    #[unsafe(no_mangle)]
+    pub extern "C" fn core_abi_version() -> u32 {
+        CORE_ABI_VERSION
     }
-}
 
-/// BLAKE3 of `len` bytes at `data`, written as 64 hex chars + NUL into `out65`. 0 on success.
-#[unsafe(no_mangle)]
-pub extern "C" fn core_blake3_hex(data: *const u8, len: usize, out65: *mut u8) -> i32 {
-    if out65.is_null() || (data.is_null() && len != 0) {
-        return -1;
+    /// Release a string returned by any `core_*` function. Null is a no-op.
+    #[unsafe(no_mangle)]
+    pub extern "C" fn core_free(p: *mut c_char) {
+        // SAFETY: `p` is null or was produced by `into_c_string` in this library.
+        unsafe { free_c_string(p) };
     }
-    let bytes = if len == 0 {
-        &[][..]
-    } else {
-        // SAFETY: caller guarantees `data` points to `len` readable bytes.
-        unsafe { std::slice::from_raw_parts(data, len) }
-    };
-    let hex = hash::blake3_hex(bytes);
-    // SAFETY: caller guarantees `out65` has 65 writable bytes.
-    unsafe {
-        std::ptr::copy_nonoverlapping(hex.as_ptr(), out65, 64);
-        *out65.add(64) = 0;
+
+    /// Comma-separated tree-sitter grammars compiled in.
+    #[unsafe(no_mangle)]
+    pub extern "C" fn core_languages() -> *mut c_char {
+        into_c_string(
+            SupportedLanguage::ALL
+                .iter()
+                .map(|l| l.name())
+                .collect::<Vec<_>>()
+                .join(","),
+        )
     }
-    0
-}
 
-fn split_includes(s: &str) -> Vec<PathBuf> {
-    s.split(['\n', ';']).filter(|p| !p.is_empty()).map(PathBuf::from).collect()
-}
-
-/// Index `root` restricted to `includes` (`;`-separated, may be empty).
-/// `follow_ignore != 0` honours .gitignore. Returns the full `Index` JSON.
-#[unsafe(no_mangle)]
-pub extern "C" fn core_index_json(
-    root: *const c_char,
-    includes: *const c_char,
-    follow_ignore: i32,
-) -> *mut c_char {
-    let idx = index::build(Path::new(arg(root)), &split_includes(arg(includes)), follow_ignore != 0);
-    out(serde_json::to_string(&idx).unwrap_or_default())
-}
-
-/// Same walk as [`core_index_json`] but streams each file to `cb` on the calling thread
-/// and returns only the `IndexStats` JSON.
-#[unsafe(no_mangle)]
-pub extern "C" fn core_index_each(
-    root: *const c_char,
-    includes: *const c_char,
-    follow_ignore: i32,
-    cb: Option<CoreFileCallback>,
-) -> *mut c_char {
-    let Some(cb) = cb else { return err("null callback") };
-    let idx = index::build(Path::new(arg(root)), &split_includes(arg(includes)), follow_ignore != 0);
-    for f in &idx.files {
-        if let Ok(c) = CString::new(serde_json::to_string(f).unwrap_or_default()) {
-            cb(c.as_ptr());
+    /// Parse `content` (grammar picked from `path`) into an `AstFileSummary` JSON.
+    #[unsafe(no_mangle)]
+    pub extern "C" fn core_parse_json(path: *const c_char, content: *const c_char) -> *mut c_char {
+        // SAFETY: caller passes NUL-terminated strings valid for the call.
+        let path_str = unsafe { c_str(path) };
+        let content_str = unsafe { c_str(content) };
+        match TreeSitterEngine::parse_file(Path::new(path_str), content_str) {
+            Some(summary) => json_ok(&summary),
+            None => json_err(format!("unsupported language or parse failure: {path_str}")),
         }
     }
-    out(serde_json::to_string(&idx.stats).unwrap_or_default())
+
+    /// Run a tree-sitter S-expression query; `path` only selects the grammar.
+    #[unsafe(no_mangle)]
+    pub extern "C" fn core_query_json(
+        path: *const c_char,
+        content: *const c_char,
+        query: *const c_char,
+    ) -> *mut c_char {
+        // SAFETY: caller passes NUL-terminated strings valid for the call.
+        let path_str = unsafe { c_str(path) };
+        let Some(lang) = TreeSitterEngine::detect_language(Path::new(path_str)) else {
+            return json_err("unsupported language");
+        };
+        let content_str = unsafe { c_str(content) };
+        let query_str = unsafe { c_str(query) };
+        match TreeSitterEngine::query_sexpr(lang, content_str, query_str) {
+            Ok(caps) => json_ok(&caps),
+            Err(e) => json_err(e),
+        }
+    }
+
+    /// BLAKE3 of `len` bytes at `data`, written as 64 hex chars + NUL into `out65`. 0 on success.
+    #[unsafe(no_mangle)]
+    pub extern "C" fn core_blake3_hex(data: *const u8, len: usize, out65: *mut u8) -> i32 {
+        if out65.is_null() || (data.is_null() && len != 0) {
+            return AphrodyStatus::InvalidArg as i32;
+        }
+        // SAFETY: caller guarantees `data` points to `len` readable bytes.
+        let bytes = unsafe { raw_slice(data, len) };
+        let hex = hash::blake3_hex(bytes);
+        // SAFETY: caller guarantees `out65` has 65 writable bytes.
+        unsafe {
+            std::ptr::copy_nonoverlapping(hex.as_ptr(), out65, 64);
+            *out65.add(64) = 0;
+        }
+        AphrodyStatus::Ok as i32
+    }
+
+    /// BLAKE3 of `slice`, written as 64 hex chars + NUL into `out65`. 0 on success.
+    #[unsafe(no_mangle)]
+    pub extern "C" fn core_blake3_slice_hex(slice: AphrodySlice, out65: *mut u8) -> i32 {
+        core_blake3_hex(slice.ptr, slice.len, out65)
+    }
+
+    fn split_includes(s: &str) -> Vec<PathBuf> {
+        s.split(['\n', ';'])
+            .filter(|p| !p.is_empty())
+            .map(PathBuf::from)
+            .collect()
+    }
+
+    /// Index `root` restricted to `includes` (`;`-separated, may be empty).
+    /// `follow_ignore != 0` honours .gitignore. Returns the full `Index` JSON.
+    #[unsafe(no_mangle)]
+    pub extern "C" fn core_index_json(
+        root: *const c_char,
+        includes: *const c_char,
+        follow_ignore: i32,
+    ) -> *mut c_char {
+        // SAFETY: caller passes NUL-terminated strings valid for the call.
+        let root_str = unsafe { c_str(root) };
+        let includes_str = unsafe { c_str(includes) };
+        let idx = index::build(
+            Path::new(root_str),
+            &split_includes(includes_str),
+            follow_ignore != 0,
+        );
+        json_ok(&idx)
+    }
+
+    /// Same walk as [`core_index_json`] but streams each file to `cb` on the calling thread
+    /// and returns only the `IndexStats` JSON.
+    #[unsafe(no_mangle)]
+    pub extern "C" fn core_index_each(
+        root: *const c_char,
+        includes: *const c_char,
+        follow_ignore: i32,
+        cb: Option<CoreFileCallback>,
+    ) -> *mut c_char {
+        let Some(cb) = cb else {
+            return json_err("null callback");
+        };
+        // SAFETY: caller passes NUL-terminated strings valid for the call.
+        let root_str = unsafe { c_str(root) };
+        let includes_str = unsafe { c_str(includes) };
+        let idx = index::build(
+            Path::new(root_str),
+            &split_includes(includes_str),
+            follow_ignore != 0,
+        );
+        for f in &idx.files {
+            if let Ok(c) = CString::new(serde_json::to_string(f).unwrap_or_default()) {
+                cb(c.as_ptr());
+            }
+        }
+        json_ok(&idx.stats)
+    }
+
+    // Keep `cabi` constants referenced for cbindgen export.
+    #[allow(dead_code)]
+    const _KEEP_ABI_VERSION: u32 = cabi::APHRODY_ABI_VERSION;
 }
 
-#[cfg(test)]
+#[cfg(feature = "core")]
+pub use core_exports::*;
+#[cfg(feature = "ai-os")]
+pub use ai_os::*;
+
+#[cfg(all(test, feature = "core"))]
 mod tests {
     use super::*;
+    use std::ffi::{CStr, CString, c_char};
     use std::sync::atomic::{AtomicUsize, Ordering};
 
     fn take(p: *mut c_char) -> String {
@@ -164,14 +217,17 @@ mod tests {
 
     #[test]
     fn languages_lists_all() {
-        assert_eq!(take(core_languages()).split(',').count(), SupportedLanguage::ALL.len());
+        assert_eq!(
+            take(core_languages()).split(',').count(),
+            aphrody_core::SupportedLanguage::ALL.len()
+        );
     }
 
     #[test]
     fn blake3_matches_core() {
         let mut buf = [0u8; 65];
         assert_eq!(core_blake3_hex(b"abc".as_ptr(), 3, buf.as_mut_ptr()), 0);
-        assert_eq!(&buf[..64], hash::blake3_hex(b"abc").as_bytes());
+        assert_eq!(&buf[..64], aphrody_core::hash::blake3_hex(b"abc").as_bytes());
         assert_eq!(buf[64], 0);
     }
 
@@ -185,7 +241,7 @@ mod tests {
         let root = CString::new(env!("CARGO_MANIFEST_DIR")).unwrap();
         let inc = CString::new("src").unwrap();
         let stats = take(core_index_each(root.as_ptr(), inc.as_ptr(), 1, Some(count)));
-        assert!(stats.contains("\"parsed\":1"), "{stats}");
-        assert_eq!(SEEN.load(Ordering::Relaxed), 1);
+        assert!(stats.contains("\"parsed\":2"), "{stats}");
+        assert_eq!(SEEN.load(Ordering::Relaxed), 2);
     }
 }

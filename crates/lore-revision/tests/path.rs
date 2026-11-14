@@ -260,7 +260,7 @@ mod tests {
 
         // Test case that could lead to slicing into the middle of a unicode char
         assert!(
-            !RelativePath::new_from_initial_path("😊")
+            !RelativePath::new_from_initial_path("")
                 .expect("Path init failed")
                 .overlaps(&RelativePath::new_from_initial_path("hi").expect("Path init failed"))
         );

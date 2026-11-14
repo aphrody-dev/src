@@ -451,12 +451,7 @@ export async function localFingerprint(
 export const TASK = "aphrody-vault-sync";
 export const PUSH_TASK = "aphrody-vault-push";
 
-const xmlEsc = (s: string) =>
-  s
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+const xmlEsc = (s: string) => Bun.escapeHTML(s);
 
 /**
  * Two tasks:

@@ -25,6 +25,7 @@ Je n'ai relu aucune source. Le diff est le seul élément dont je dispose. Je n'
 12. `ARTCRAFT.md`, ligne 34 : le texte parle de « thin LTO and one codegen unit as set by each repository ». C'est affirmé sans citer le `Cargo.toml` correspondant. Correction : indiquer le fichier et les valeurs.
 
 **Bilan**
+
 - Le contenu est utile, mais plusieurs lignes ne passent pas le critère « reproductible et vérifiable » que la page revendique : tokens non référencés au fichier et à la ligne, patch non publié, hash orphelin.
 - Les étapes 2 et 7 sont marquées « Done » alors qu'elles sont partielles : toolchain non conforme, soundcraft patché localement.
 - Les deux erreurs de tableau (`||`) sont des défauts de rendu à corriger tout de suite.

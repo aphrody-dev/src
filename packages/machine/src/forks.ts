@@ -28,14 +28,19 @@ const FORKS: Fork[] = [
       "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
   },
   { name: "wine", upstream: "https://gitlab.winehq.org/wine/wine.git" }, // fork GitHub du miroir wine-mirror/wine
-  {
-    name: "mingw-w64",
-    upstream: "https://git.code.sf.net/p/mingw-w64/mingw-w64",
-  }, // fork du miroir GitHub non officiel
   // Shell et outils (remplacement de Git Bash, MSYS2, pwsh, WSL)
+  {
+    name: "coreutils",
+    upstream: gh("microsoft/coreutils"),
+    remotes: { uutils: gh("uutils/coreutils") },
+  },
+  {
+    name: "intelligent-terminal",
+    upstream: gh("microsoft/intelligent-terminal"),
+    remotes: { terminal: gh("microsoft/terminal") },
+  },
   ...[
     "microsoft/git",
-    "microsoft/coreutils",
     "uutils/findutils",
     "uutils/diffutils",
     "uutils/sed",
@@ -50,8 +55,6 @@ const FORKS: Fork[] = [
     "microsoft/winget-cli",
     "PowerShell/DSC",
     "PowerShell/PowerShell",
-    "microsoft/terminal",
-    "microsoft/intelligent-terminal",
     "microsoft/microsoft-ui-xaml",
     "microsoft/WindowsAppSDK",
     "microsoft/react-native-windows",
@@ -71,7 +74,7 @@ const FORKS: Fork[] = [
     "reubeno/brush",
     "hex2f/gash",
     "magicant/yash-rs",
-    "nuta/nsh",
+    "longbridge/nsh",
     "nixpulvis/oursh",
     "km-clay/shed",
     "mpecan/rable",
@@ -88,7 +91,6 @@ const FORKS: Fork[] = [
     "lccc-project/lc-binutils",
     "m4b/bingrep",
   ].map((r) => ({ name: r.split("/")[1]!, upstream: gh(r) })),
-  { name: "uutils-coreutils", upstream: gh("uutils/coreutils") },
   { name: "redox-binutils", upstream: gh("redox-os/binutils") },
   {
     name: "winget-pkgs",
@@ -116,10 +118,15 @@ const FORKS: Fork[] = [
     "ChromeDevTools/chrome-devtools-mcp",
     "GoogleChromeLabs/chrome-for-testing",
     "DioxusLabs/anyrender",
-    "DioxusLabs/blitz-website",
+    "DioxusLabs/dioxus",
+    "DioxusLabs/dioxus-components",
     "DioxusLabs/accessibility-cli",
     "DioxusLabs/blitz-chrome-devtools-frontend",
   ].map((r) => ({ name: r.split("/")[1]!, upstream: gh(r) })),
+  {
+    name: "wayland-c",
+    upstream: "https://gitlab.freedesktop.org/wayland/wayland.git",
+  },
   // Pile terminal centrale (2026-11-13) : intelligent-terminal et ses dépendances (tools/wta/Cargo.toml,
   // vcpkg.json, dep/nuget/packages.config), dépôts Rust/Zig/terminal/UI des orgs anomalyco, vercel-labs et
   // de la liste Microsoft du propriétaire. Voir docs/terminal/ARCHITECTURE.md.

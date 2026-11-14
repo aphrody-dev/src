@@ -182,11 +182,11 @@ Normalization, in the order the paths sort:
 Ancestor counts over the six survivors, and the depths they group into:
 
 ```text
-ASSETS            4  ✓          depth 1   ASSETS
-ASSETS/Meshes     2  ✓          depth 2   ASSETS/Meshes, ASSETS/Textures
-ASSETS/Textures   2  ✓
-Config            1  ✗
-Docs              1  ✗
+ASSETS            4            depth 1   ASSETS
+ASSETS/Meshes     2            depth 2   ASSETS/Meshes, ASSETS/Textures
+ASSETS/Textures   2  
+Config            1  
+Docs              1  
 ```
 
 Prefix resolution, then the two depths:

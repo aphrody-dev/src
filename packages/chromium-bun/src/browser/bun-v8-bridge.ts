@@ -42,14 +42,24 @@ export const BUN_CHROMIUM_UPSTREAM_REPOS: readonly ForkedRepoEntry[] = [
       "Bun's patched Apple WebKit / JavaScriptCore fork with Riptide GC, B3/FTL JIT, SIMD, and AoT runtime facts",
   },
   {
-    name: "rusty_v8",
+    name: "aphrody-v8",
     fullName: "aphrody-labs/rusty_v8",
     upstream: "denoland/rusty_v8",
     url: "https://github.com/aphrody-labs/rusty_v8",
     plane: "guest-browser-v8",
     category: "v8-binding",
     description:
-      "Zero-overhead Rust FFI bindings to Chromium V8 Isolates, Contexts, ScriptCompiler, and IsolateHandle",
+      "Replicated in crates/aphrody-v8 + third_party/rusty_v8: Rust FFI & C ABI bindings to V8 Isolates, Contexts, SnapshotCreator, and Inspector",
+  },
+  {
+    name: "aphrody-cef",
+    fullName: "aphrody-labs/src",
+    upstream: "tauri-apps/cef-rs",
+    url: "https://github.com/aphrody-labs/src",
+    plane: "guest-browser-v8",
+    category: "v8-binding",
+    description:
+      "Replicated in crates/aphrody-cef: CEF App, OSR RenderHandler, and Browser lifecycle unified onto crates/aphrody-v8",
   },
 ] as const;
 

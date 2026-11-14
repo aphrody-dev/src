@@ -13,11 +13,6 @@ description = "Bun OS Steam owner: VDF text/binary parser and writer, install an
 [lib]
 name = "bun_steam"
 
-[[bin]]
-name = "bun-steam-depot"
-path = "src/bin/bun-steam-depot.rs"
-required-features = ["depot"]
-
 [lints.rust]
 unsafe_op_in_unsafe_fn = "deny"
 unused_must_use = "deny"

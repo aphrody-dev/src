@@ -1,0 +1,37 @@
+---
+title: "Modern Web Guidance and @aphrody/wck"
+description: "Pure Bun Modern Web Guidance validator, hybrid BM25+Int8 RAG, mwg_capi.dll C23 FFI, and agent MCP integration."
+---
+
+# Modern Web Guidance, RAG, and @aphrody/wck
+
+<Callout type="info" title="Zero-Dependency Pure Bun + C23 Native Core">
+`@aphrody/wck` runs with zero external npm dependencies on Bun v1.4.4+, pairing `mwg_capi.dll` (`bun:ffi`) with a deterministic pure-Bun fallback.
+</Callout>
+
+Generated from `packages/wck`, `crates/core-capi/include/`, and `packages/ai-os`.
+
+## 1. Package Overview
+
+- **Package**: `@aphrody/wck` v1.0.0 (0 external npm dependencies).
+- **Description**: Compile-Time Web Validator (Google SEO + AI Mode SEO + Modern Web Guidelines + Core Web Vitals + Lighthouse 100 + WASM + WebGPU Chromium Spec).
+- **Native Core**: `mwg_capi.dll` compiled from `crates/core-capi/c/mwg_core.c` with C23 strict flags and `bun:ffi` bridge (`packages/wck/src/mwg-ffi.ts`) plus deterministic pure-Bun fallback.
+
+## 2. C ABI Surface (`aphrody_mwg.h`)
+
+- **Defines (2)**: `APHRODY_ABI_VERSION`, `APHRODY_MWG_ABI_VERSION`
+- **Functions (0)**: 
+
+## 3. Hybrid RAG Search and Baseline Gates
+
+<Cards>
+  <Card title="Hybrid Retrieval" description="Okapi BM25 lexical scoring + Int8 quantized 256d static embeddings fused via Reciprocal Rank Fusion (RRF) over packages/wck/data/." />
+  <Card title="Baseline Gates & MCP" description=".mwgrc configuration, legacy-scan/search/retrieve/list/baselinestatus/mdx CLI subcommands, and packages/ai-os MCP tool integration." />
+</Cards>
+
+## 4. Verification
+
+```sh
+bun test ./packages/wck
+bun check packages/wck
+```

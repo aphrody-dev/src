@@ -9,11 +9,13 @@ use std::process::Command;
 
 pub mod ai;
 pub mod build;
+pub mod bump;
 pub mod bun;
 pub mod chromium;
 mod exec;
 pub mod low;
 pub mod self_update;
+pub mod ui;
 
 /// Arguments forwarded verbatim to the command's own parser (including `--help`).
 #[derive(clap::Args, Debug, PartialEq)]
@@ -30,8 +32,9 @@ Areas:
   bun        bun (upstream watch), docs (Bun docs index), flat (fork crates in crates/bun-flat), hash, time
   chromium   chromium (fr1 build chain), gclient, fetch, gn, ninja, cipd, cl, vpy, engines (V8, JSC, Dawn, wgpu)
   fleet      ssh, deploy, auth, secret, vault, ai, agents
+  linux      omarchy, linux, pkg (Omarchy quattro command center + CachyOS kernel/pkg/WSL2 via aphrody-omarchy)
   measure    bench, time
-  design     design (DESIGN.md lint/export/spec, Stitch, push), jules (Google Jules agent: run, sessions, sources)
+  design     design (DESIGN.md lint/export/spec via aphrody-ui; stitch/push via ai-os), jules (ai-os jules), ui (aphrody-ui fusion)
   gaming     gaming (Steam, Proton, Vulkan, DirectX via packages/gaming), steam (Steam data as JSON)
   assets     assets (fetch, optimize, bundle, publish via packages/assets)
 
@@ -83,19 +86,25 @@ pub enum Cmd {
     /// Assets, download to deploy (packages/assets): list, verify, fetch, optimize, bundle, publish, attribution
     #[command(disable_help_flag = true)]
     Assets(Rest),
-    /// DESIGN.md (google-labs-code/design.md) lint, export, spec; Stitch client; push to Stitch (packages/google-design)
+    /// DESIGN.md lint, export, spec (aphrody-ui); Stitch client / push (ai-os)
     #[command(disable_help_flag = true)]
     Design(Rest),
+    /// Unified full-stack UI framework (`aphrody-ui::fusion`): targets, presets, components, manifest, render
+    #[command(disable_help_flag = true)]
+    Ui(Rest),
     /// Google Jules coding agent: run [--wait], sessions, show, activities, approve, send, sources (ai-os jules)
     #[command(disable_help_flag = true)]
     Jules(Rest),
     /// Patch stacks of the bun and Chromium forks: status, sync, check, pr, mark, gc, export (packages/upstream)
     #[command(disable_help_flag = true)]
     Upstream(Rest),
-    /// Linux system layer: patchset versions, sync, patch stacks, kernel builds on fr1 or CI (packages/linux)
+    /// Omarchy (quattro) + CachyOS command center: commands, theme, plugin, font, manual, kernel, pkg, wsl
+    #[command(disable_help_flag = true)]
+    Omarchy(Rest),
+    /// Linux system layer: patchset versions, sync, patch stacks, kernel builds on fr1 or CI (aphrody-omarchy)
     #[command(disable_help_flag = true)]
     Linux(Rest),
-    /// Package recipes for every distro: list, matrix, gen, build, check (packages/linux, infra/pkg)
+    /// Package recipes for every distro: list, matrix, gen, build, check (aphrody-omarchy, infra/pkg)
     #[command(disable_help_flag = true)]
     Pkg(Rest),
     /// Release from fr1: tags, GitHub release, crates.io, npm, PyPI, vcpkg/CMake; dry-run unless `publish` (packages/release)
@@ -152,10 +161,27 @@ pub enum Cmd {
     Sys(SysArgs),
     /// Install and update the toolchain from tools.toml: --check, --list, --setup
     Up(up::UpArgs),
+    /// Cross-platform binary & PATH manager (packages/machine): status, purge, which, add, rm, link, unlink
+    #[command(disable_help_flag = true)]
+    Bin(Rest),
+    /// Cross-platform PATH manager alias (packages/machine)
+    #[command(disable_help_flag = true)]
+    Path(Rest),
+    /// Tree-sitter codebase index & doc generator (packages/core)
+    #[command(disable_help_flag = true)]
+    Index(Rest),
+    /// Localization catalog checker & key extractor (packages/i18n)
+    #[command(disable_help_flag = true)]
+    I18n(Rest),
+    /// Cross-shell conformance matrix (packages/shell-matrix)
+    #[command(disable_help_flag = true)]
+    ShellMatrix(Rest),
     /// Update `ay` itself from the dist GitHub Releases (axoupdater)
     SelfUpdate(self_update::SelfUpdateArgs),
     /// Upstream watch of oven-sh/bun for the fork: watch [--json] [--apply] [--install-schedule], bump [--write]
     Bun(bun::BunArgs),
+    /// Unified monorepo auto-bump via `bun pm`, `depot-gclient`, `crates.io` (`cargo update`) and `ay bun bump`
+    Bump(bump::BumpArgs),
     /// Inference providers behind LiteLLM (infra/ai/ai.toml): ls, install, service, pull, config, check, auth, push, up
     Ai(ai::AiArgs),
     #[command(flatten)]
@@ -186,6 +212,11 @@ pub enum Route {
     Arch(Vec<String>),
     Xtk(Vec<String>),
     Depot(&'static str, Vec<String>),
+    Design(Vec<String>),
+    Ui(Vec<String>),
+    Linux(Vec<String>),
+    Omarchy(Vec<String>),
+    Pkg(Vec<String>),
     Bench(Vec<String>),
     External(&'static str, Vec<String>),
     /// `bun packages/env-kit/src/cli.ts <args>` (TypeScript, run in place by bun).
@@ -201,6 +232,7 @@ pub enum Route {
     Up(up::UpArgs),
     SelfUpdate(self_update::SelfUpdateArgs),
     Bun(bun::BunArgs),
+    Bump(bump::BumpArgs),
     Ai(ai::AiArgs),
     Low(low::LowCmd),
 }
@@ -257,11 +289,16 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
         Cmd::Gaming(r) => Route::Package("gaming", r.args),
         Cmd::Assets(r) => Route::Package("assets", r.args),
-        Cmd::Design(r) => Route::Package("google-design", r.args),
+        Cmd::Design(r) => match r.args.first().map(String::as_str) {
+            Some("stitch" | "push") => Route::Package("ai-os", r.args),
+            _ => Route::Design(r.args),
+        },
+        Cmd::Ui(r) => Route::Ui(r.args),
         Cmd::Jules(r) => Route::Package("ai-os", prefixed(&["jules"], &r.args)),
         Cmd::Upstream(r) => Route::Package("upstream", r.args),
-        Cmd::Linux(r) => Route::Package("linux", r.args),
-        Cmd::Pkg(r) => Route::Package("linux", prefixed(&["pkg"], &r.args)),
+        Cmd::Omarchy(r) => Route::Omarchy(r.args),
+        Cmd::Linux(r) => Route::Linux(r.args),
+        Cmd::Pkg(r) => Route::Pkg(r.args),
         Cmd::Release(r) => Route::Package("release", r.args),
         Cmd::Lfs(r) => {
             let (sub, rest) = r.args.split_first().map_or(("build", &[][..]), |(s, rest)| (s.as_str(), rest));
@@ -284,8 +321,13 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Build(b) => Route::Build(b),
         Cmd::Sys(s) => Route::Sys(s),
         Cmd::Up(u) => Route::Up(u),
+        Cmd::Bin(r) | Cmd::Path(r) => Route::Package("machine", prefixed(&["binpath"], &r.args)),
+        Cmd::Index(r) => Route::Package("core", r.args),
+        Cmd::I18n(r) => Route::Package("i18n", r.args),
+        Cmd::ShellMatrix(r) => Route::Package("shell-matrix", r.args),
         Cmd::SelfUpdate(a) => Route::SelfUpdate(a),
         Cmd::Bun(a) => Route::Bun(a),
+        Cmd::Bump(a) => Route::Bump(a),
         Cmd::Ai(a) => Route::Ai(a),
         Cmd::Low(c) => Route::Low(c),
     }
@@ -312,6 +354,11 @@ fn run_route(route: Route) -> i32 {
         Route::Arch(args) => archguard::cli::run("ay arch", &args),
         Route::Xtk(args) => xtk::run("ay", &args),
         Route::Depot(name, args) => depot_cli::run(name, &args),
+        Route::Design(args) => aphrody_ui::design_md::run_cli(&repo_root(), &args),
+        Route::Ui(args) => ui::run(&args),
+        Route::Linux(args) => aphrody_omarchy::cli::run_linux_args(&args),
+        Route::Omarchy(args) => aphrody_omarchy::cli::run_omarchy_args(&args),
+        Route::Pkg(args) => aphrody_omarchy::cli::run_pkg_args(&args),
         Route::Bench(args) => run_bench(&args),
         Route::External(program, args) => exec::run_external(program, &args),
         Route::Package(name, args) => exec::run_package(name, &args),
@@ -325,6 +372,7 @@ fn run_route(route: Route) -> i32 {
         Route::Up(args) => up::run(args),
         Route::SelfUpdate(args) => self_update::run(args),
         Route::Bun(args) => bun::run(args),
+        Route::Bump(args) => bump::run(args),
         Route::Ai(args) => ai::run(args),
         Route::Low(c) => low::run(c),
     }
@@ -499,6 +547,15 @@ mod tests {
     }
 
     #[test]
+    fn ui_routes_to_fusion_cli() {
+        assert_eq!(parse("ui targets --json"), Route::Ui(v(&["targets", "--json"])));
+        assert_eq!(
+            parse("ui render --page studio-workspace --target web-wasm-ssr"),
+            Route::Ui(v(&["render", "--page", "studio-workspace", "--target", "web-wasm-ssr"]))
+        );
+    }
+
+    #[test]
     fn up_and_self_update_flags() {
         let Route::Up(u) = parse("up --check just ripgrep") else { panic!("not up") };
         assert!(u.check && !u.list && !u.setup);
@@ -563,8 +620,8 @@ mod tests {
 
     #[test]
     fn design_and_jules_run_their_packages() {
-        assert_eq!(parse("design lint --format text"), Route::Package("google-design", v(&["lint", "--format", "text"])));
-        assert_eq!(parse("design stitch projects"), Route::Package("google-design", v(&["stitch", "projects"])));
+        assert_eq!(parse("design lint --format text"), Route::Design(v(&["lint", "--format", "text"])));
+        assert_eq!(parse("design stitch projects"), Route::Package("ai-os", v(&["stitch", "projects"])));
         assert_eq!(parse("jules run --wait -"), Route::Package("ai-os", v(&["jules", "run", "--wait", "-"])));
     }
 
@@ -575,9 +632,10 @@ mod tests {
     }
 
     #[test]
-    fn linux_and_pkg_run_the_linux_package() {
-        assert_eq!(parse("linux status --json"), Route::Package("linux", v(&["status", "--json"])));
-        assert_eq!(parse("pkg gen all --target arch"), Route::Package("linux", v(&["pkg", "gen", "all", "--target", "arch"])));
+    fn linux_pkg_and_omarchy_run_aphrody_omarchy() {
+        assert_eq!(parse("omarchy commands --check"), Route::Omarchy(v(&["commands", "--check"])));
+        assert_eq!(parse("linux status --json"), Route::Linux(v(&["status", "--json"])));
+        assert_eq!(parse("pkg gen all --target arch"), Route::Pkg(v(&["gen", "all", "--target", "arch"])));
     }
 
     #[test]

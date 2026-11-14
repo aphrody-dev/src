@@ -76,24 +76,26 @@ Nothing compiles on the workstation.
 
 Exception to `AGENTS.md` (decision of 2026-11-13, also recorded in `AGENTS.md`): for an upstream contribution, the upstream project's policy prevails when it requires it. Each Chromium CL carries an `AI assistance: <tool, parts concerned>` paragraph in its description; `check` requires it for Chromium (rule `cr-ai-note`) and does not apply the AI attribution ban there, which remains in force for bun and everywhere else. The owner reviews each CL, sends it and answers reviewers personally: unavoidable human requirement, recorded in the NHITL index (`packages/ai-os/src/nhitl/ledger.json`, status `inevitable`, along with the CLA signature).
 
-## 7. State of the stacks (2026-11-13 03:30 UTC, `ay upstream status --markdown`)
+## 7. State of the stacks (2026-11-14, `ay upstream status --markdown`)
 
-bun: `aphrody-labs/bun` = `oven-sh/bun` `9ea3c693a2` ("Bump to 1.4.5") + 15 patches; the minifier docs patch (no visible effect: the published page already has its title) was removed from the fork on 2026-11-13.
+bun: `aphrody-labs/bun` (`b6c3f857f7`) = `oven-sh/bun` `9098897a1737` (1.4.5-canary, 0 commits behind upstream) + 25 patches (10 submitted PRs, 2 pending `Cargo.lock` companions, 13 `inappropriate` Aphrody CI/Windows-regression patches):
 
-| #        | Patch                                                                                            | Status                     | Review                              | Owner        |
-| -------- | ------------------------------------------------------------------------------------------------ | -------------------------- | ----------------------------------- | ------------ |
-| 1        | child_process: expose the parent-end pipe fd through stream._handle                              | proposed (port)            | oven-sh/bun#39760 (robobun), open   | upstream     |
-| 2        | build: pass the .bind.ts schema list to the codegen scripts in a file                            | proposed                   | oven-sh/bun#48787, open (section 8) | upstream     |
-| 4, 5, 15 | ci: native release build ; ci(native): sysroot ; ci(native): dispatch only                       | Aphrody-specific (fork CI) | -                                   | native build |
-| 6        | upgrade: unpack the Windows release in-process and check canary downloads against the API digest | to be proposed             | -                                   | bun Windows  |
-| 7        | completions: print the script for bash, zsh and fish on Windows (Fixes #25042)                   | to be proposed             | -                                   | bun Windows  |
-| 8        | sys(windows): report ENOENT for an empty path                                                    | proposed (port)            | oven-sh/bun#38052, open             | upstream     |
-| 9        | node:fs: resolve a relative path that normalizes to nothing to the cwd on Windows                | proposed (port)            | oven-sh/bun#45410, open             | upstream     |
-| 10       | import.meta.main: compare the main module's key as a URL in every executable                     | proposed (port)            | oven-sh/bun#48698, open             | upstream     |
-| 11       | shell: skip a dead bin link for the script words bun, bunx and node (Windows)                    | proposed (port)            | oven-sh/bun#45742, open             | upstream     |
-| 12       | ci(aphrody): cross-compile bun.exe for Windows x64 and run the fork's Windows regression tests   | Aphrody-specific           | -                                   | bun Windows  |
-| 13       | build: xwin 0.10.0, which reads the current Visual Studio manifest                               | proposed                   | oven-sh/bun#48784, open             | bun Windows  |
-| 14       | docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples                         | proposed                   | oven-sh/bun#48786, open             | bun audit    |
+| #                          | Patch                                                                                                     | Status                     | Review                              | Owner                    |
+| -------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------- | ----------------------------------- | ------------------------ |
+| 1                          | child_process: expose the parent-end pipe fd through stream._handle                                       | proposed (port)            | oven-sh/bun#39760 (robobun), open   | amont                    |
+| 2                          | build: pass the .bind.ts schema list to the codegen scripts in a file                                     | proposed                   | oven-sh/bun#48787, open (section 8) | upstream-stack           |
+| 3, 4, 11, 14, 18-21, 23-25 | ci(native) / ci(aphrody): ThinLTO release builds, sysroot, dispatch-only, trace-order, Windows regression | Aphrody-specific (fork CI) | -                                   | bun-native / bun-windows |
+| 5                          | upgrade: unpack the Windows release in-process and check canary downloads against the API digest          | proposed                   | oven-sh/bun#48792, open             | bun-windows              |
+| 6, 22                      | completions: print the script for bash, zsh and fish on Windows; strip CRLF in test (Fixes #25042)        | proposed                   | oven-sh/bun#48793, open             | bun-windows              |
+| 7                          | sys(windows): report ENOENT for an empty path                                                             | proposed (port)            | oven-sh/bun#38052, open             | amont                    |
+| 8                          | node:fs: resolve a relative path that normalizes to nothing to the cwd on Windows                         | proposed (port)            | oven-sh/bun#45410, open             | amont                    |
+| 9                          | import.meta.main: compare the main module's key as a URL in every executable                              | proposed (port)            | oven-sh/bun#48698, open             | amont                    |
+| 10, 17                     | shell: skip a dead bin link for bun, bunx, node (Windows); `bun_core::cast_slice_mut`                     | proposed (port)            | oven-sh/bun#45742, open             | amont                    |
+| 12                         | build: xwin 0.10.0, which reads the current Visual Studio manifest                                        | proposed                   | oven-sh/bun#48784, open             | bun-windows              |
+| 13                         | docs: sizes Bun.gzipSync and Bun.deflateSync give for the utils examples                                  | proposed                   | oven-sh/bun#48786, open             | bun-audit                |
+| 15, 16                     | Cargo.lock: record `bun_archive`'s `bun_libdeflate_sys` and `bun_zlib` dependencies                       | pending (companion #48792) | -                                   | bun-windows              |
+
+Tracked `oven-sh/bun` Windows/related issues (`ay bun watch`): `#25042`, `#30084`, `#38052`, `#39747`, `#39760`, `#44761`, `#45059`, `#45410`, `#45742`, `#47420`, `#48351`, `#48385`, `#48531`, `#48581`, `#48689`, `#48698`.
 
 Linux stacks (2026-11-13): `linux-cachyos` (1 patch, `_llvm_prefix`), `cachyos-pkgbuilds`, `kernel-patches`, `liquorix`, `scx` (empty series), "series" model, patches in `infra/upstream/patches/<stack>/`, synchronized on prd with bun; patchsets tracked without a fork in `infra/linux/patchsets.toml` (`docs/linux/PATCHSETS.md`).
 

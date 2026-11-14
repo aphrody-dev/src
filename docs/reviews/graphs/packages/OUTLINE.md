@@ -1098,6 +1098,7 @@ packages/
 ================================================
 FILE: ai-os/README.md
 ================================================
+
 # @aphrody/ai-os
 
 The single AI unit of `src`: agent core, model bridge, relay, gateway, research and TUI in one Bun package, with no
@@ -1137,10 +1138,10 @@ None remains.
 
 License: MIT OR Apache-2.0. Third-party notices in `NOTICE` and `licenses/`.
 
-
 ================================================
 FILE: ai-os/docs/ARCHITECTURE.md
 ================================================
+
 # Architecture
 
 One repo for the agent stack, from GPU runtime to the user-facing surfaces. Names come from the root `identity.toml` (`[products.ai-os]`).
@@ -1258,10 +1259,10 @@ Fusion tuning (2026-11-12, `bun bench/retrieval.ts --tune [--embedder provider/m
 
 Default fusion is weighted RRF (k=60) with lexical 0.2, semantic 0.7, structural 0.05, recency 0.05. With bge-m3, held-out recall equals the best single head; the pack has only 30 queries, so the weights must be re-tuned once a larger labeled set exists.
 
-
 ================================================
 FILE: deploy/README.md
 ================================================
+
 # @aphrody/deploy: aphrody.app
 
 First-party deployment platform of the monorepo (the role Vercel plays for its users, `docs/ALPHABET.md`), on Cloudflare Workers and R2. No `vercel.json`, no Vercel dependency.
@@ -1298,10 +1299,10 @@ First-party deployment platform of the monorepo (the role Vercel plays for its u
 - Not migrated: the three belong to rosegriffon (`apps/rosegriffon`, a community product maintained by Aphrody, not an Aphrody product), their root directories do not exist in `src`, and there is nothing deployed to move. Same for `apps/shenron/vercel.json` (submodule, community product).
 - In `src` itself nothing is served by Vercel. What remains is portability code: `scripts/deploy-target.ts <app> vercel` (render only, refuses commercial apps) and `apps/r2-site/src/entry.vercel.ts` (adapter of `packages/runtime-adapter`).
 
-
 ================================================
 FILE: env-kit/README.md
 ================================================
+
 # `@aphrody/env-kit` — Sovereign Monorepo Environment & Secret Architecture
 
 Zero-dependency cross-language environment loader, secret redaction guard, and unified editor/CLI credential synchronizer for `C:\src`.
@@ -1370,10 +1371,10 @@ Inventory in `infra/deploy.toml` (`[nodes.*]`, `[auth.*]`).
 | **Lua 5.1+ / LuaJIT**         | `C:\src\packages\env-kit\loaders\lua\sovereign_env.lua`   | `require("sovereign_env").load()` (via `LUA_PATH`)                       |
 | **PowerShell / POSIX**        | `C:\src\packages\env-kit\loaders\shell\load-env.ps1`      | `. C:\src\packages\env-kit\loaders\shell\load-env.ps1` / `. load-env.sh` |
 
-
 ================================================
 FILE: google-design/README.md
 ================================================
+
 # Google Design Sovereign Mirror & UI Gate (`gds`)
 
 Complete local mirror, HCT perceptual color engine, universal multi-surface token compiler, and UI gate verification engine for Google Design (`design.google`), Material Design 3 (`m3.material.io`), Google Stitch, Figma Code Connect, and Gemini Web Canvas.
@@ -1463,10 +1464,10 @@ The following upstream repositories are tracked locally with minimal byte footpr
 - `google-labs-code/stitch-skills`
 - `google-labs-code/design.md`
 
-
 ================================================
 FILE: machine/README.md
 ================================================
+
 # packages/machine/ — poste Windows reproductible, du noyau à Claude Code
 
 Décisions et preuves : [aphrody-labs/nt docs/research](https://github.com/aphrody-labs/nt/tree/main/docs/research) (`shell-replacement.md`, `claude-to-nt-stack.md`, `fork-merge-plan.md`, `rust-in-windows.md`). Profil matériel : skill `windows-machine`.
@@ -1495,10 +1496,10 @@ Ces réglages changent la posture de sécurité du poste ; ils restent une déci
 | Réduire les protections des connecteurs d'agent                                                      | Paramètres > Système > Avancé > Composants IA         | non activé                                                                     |
 | Computer use de Claude Desktop                                                                       | Claude Desktop > Settings > This computer             | à décider (préversion, Windows)                                                |
 
-
 ================================================
 FILE: wck/README.md
 ================================================
+
 # wck: Sovereign Compile-Time Web & Lighthouse Gate
 
 Deterministic, zero-compromise Compile-Time Web Validator implementing all 7 mandatory specifications for modern web platforms.
@@ -1563,10 +1564,10 @@ wck C:\src\crates\gamescope-rs\web\index.html
 wck C:\src\apps\aphrody\dist --json
 ```
 
-
 ================================================
 FILE: ai-os/package.json
 ================================================
+
 // [OUTLINE - 35 symbols, 42 lines]
 // L2: "name": "@aphrody/ai-os"
 // L3: "version": "0.2.0"
@@ -1604,10 +1605,10 @@ FILE: ai-os/package.json
 // L39: "url": "git+https://github.com/aphrody-labs/src.git"
 // L40: "directory": "packages/ai-os"
 
-
 ================================================
 FILE: ai-os/python/agent_core/pyproject.toml
 ================================================
+
 [build-system]
 requires = ["maturin>=1.9,<2"]
 build-backend = "maturin"
@@ -1622,10 +1623,10 @@ requires-python = ">=3.10"
 manifest-path = "../../../../crates/agent-py/Cargo.toml"
 module-name = "agent_core"
 
-
 ================================================
 FILE: ai-os/python/hermes_agent_memory/pyproject.toml
 ================================================
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -1646,20 +1647,20 @@ dev = ["pytest>=8"]
 [tool.uv.sources]
 agent-core = { workspace = true }
 
-
 ================================================
 FILE: ai-os/python/research_ref/pyproject.toml
 ================================================
+
 [project]
 name = "research-ref"
 version = "0.1.0"
 description = "Reference validator for agent research results (TS port in packages/ai-os/src/research)."
 requires-python = ">=3.14"
 
-
 ================================================
 FILE: assets/package.json
 ================================================
+
 // [OUTLINE - 25 symbols, 33 lines]
 // L2: "name": "@aphrody/assets"
 // L3: "version": "0.1.0"
@@ -1687,10 +1688,10 @@ FILE: assets/package.json
 // L30: "access": "public"
 // L31: "registry": "https://registry.npmjs.org/"
 
-
 ================================================
 FILE: bun-parity/package.json
 ================================================
+
 // [OUTLINE - 28 symbols, 42 lines]
 // L2: "name": "@aphrody/bun-parity"
 // L3: "version": "1.0.0"
@@ -1721,10 +1722,10 @@ FILE: bun-parity/package.json
 // L39: "access": "public"
 // L40: "registry": "https://registry.npmjs.org/"
 
-
 ================================================
 FILE: bun-plugins/package.json
 ================================================
+
 // [OUTLINE - 19 symbols, 24 lines]
 // L2: "name": "@aphrody/bun-plugins"
 // L3: "version": "1.0.0"
@@ -1746,10 +1747,10 @@ FILE: bun-plugins/package.json
 // L21: "access": "public"
 // L22: "registry": "https://registry.npmjs.org/"
 
-
 ================================================
 FILE: chromium-bun/package.json
 ================================================
+
 // [OUTLINE - 25 symbols, 31 lines]
 // L2: "name": "@aphrody/chromium-bun"
 // L3: "version": "0.0.0"
@@ -1777,10 +1778,10 @@ FILE: chromium-bun/package.json
 // L28: "url": "git+https://github.com/aphrody-labs/src.git"
 // L29: "directory": "packages/chromium-bun"
 
-
 ================================================
 FILE: core/package.json
 ================================================
+
 // [OUTLINE - 14 symbols, 19 lines]
 // L2: "name": "@aphrody/core"
 // L3: "version": "0.1.0"
@@ -1797,10 +1798,10 @@ FILE: core/package.json
 // L16: "test": "bun test"
 // L17: "check": "bun check"
 
-
 ================================================
 FILE: deploy/package.json
 ================================================
+
 // [OUTLINE - 20 symbols, 25 lines]
 // L2: "name": "@aphrody/deploy"
 // L3: "version": "0.1.0"
@@ -1823,10 +1824,10 @@ FILE: deploy/package.json
 // L22: "url": "git+https://github.com/aphrody-labs/src.git"
 // L23: "directory": "packages/deploy"
 
-
 ================================================
 FILE: design/package.json
 ================================================
+
 // [OUTLINE - 29 symbols, 34 lines]
 // L2: "name": "@aphrody/design"
 // L3: "version": "0.1.0"
@@ -1858,10 +1859,10 @@ FILE: design/package.json
 // L31: "material-symbols": "catalog:"
 // L33: "license": "MIT OR Apache-2.0"
 
-
 ================================================
 FILE: env-kit/loaders/rust/Cargo.toml
 ================================================
+
 [package]
 name = "aphrody-env"
 version = "0.1.0"
@@ -1871,10 +1872,10 @@ license = "MIT"
 
 [dependencies]
 
-
 ================================================
 FILE: env-kit/package.json
 ================================================
+
 // [OUTLINE - 25 symbols, 31 lines]
 // L2: "name": "@aphrody/env-kit"
 // L3: "version": "1.0.0"
@@ -1902,10 +1903,10 @@ FILE: env-kit/package.json
 // L28: "access": "public"
 // L29: "registry": "https://registry.npmjs.org/"
 
-
 ================================================
 FILE: ffi-bridge/package.json
 ================================================
+
 // [OUTLINE - 15 symbols, 19 lines]
 // L2: "name": "@aphrody/ffi-bridge"
 // L3: "version": "1.27.0"
@@ -1923,10 +1924,10 @@ FILE: ffi-bridge/package.json
 // L17: "devDependencies":
 // L18: "packageManager": "bun@1.4.4"
 
-
 ================================================
 FILE: forge/package.json
 ================================================
+
 // [OUTLINE - 24 symbols, 31 lines]
 // L2: "name": "@aphrody/forge"
 // L3: "version": "1.1.0"
@@ -1953,10 +1954,10 @@ FILE: forge/package.json
 // L28: "access": "public"
 // L29: "registry": "https://registry.npmjs.org/"
 
-
 ================================================
 FILE: gaming/package.json
 ================================================
+
 // [OUTLINE - 30 symbols, 39 lines]
 // L2: "name": "@aphrody/gaming"
 // L3: "version": "1.0.0"
@@ -1989,10 +1990,10 @@ FILE: gaming/package.json
 // L34: "./dx": "./src/dx.ts"
 // L36-L38: "files": [
 
-
 ================================================
 FILE: google-design/package.json
 ================================================
+
 // [OUTLINE - 34 symbols, 40 lines]
 // L2: "name": "@aphrody/google-design"
 // L3: "version": "2.0.0"
@@ -2029,10 +2030,10 @@ FILE: google-design/package.json
 // L37: "url": "git+https://github.com/aphrody-labs/src.git"
 // L38: "directory": "packages/google-design"
 
-
 ================================================
 FILE: i18n/package.json
 ================================================
+
 // [OUTLINE - 26 symbols, 33 lines]
 // L2: "name": "@aphrody/i18n"
 // L3: "version": "0.1.0"
@@ -2042,7 +2043,7 @@ FILE: i18n/package.json
 // L7: "types": "./src/index.ts"
 // L8-L11: "exports":
 // L9: ".": "./src/index.ts"
-// L10: "./locales/*": "./locales/*"
+// L10: "./locales/_": "./locales/_"
 // L12-L14: "bin":
 // L13: "aphrody-i18n": "./src/cli.ts"
 // L15-L20: "scripts":
@@ -2061,10 +2062,10 @@ FILE: i18n/package.json
 // L30: "access": "public"
 // L31: "registry": "https://registry.npmjs.org/"
 
-
 ================================================
 FILE: linux/package.json
 ================================================
+
 // [OUTLINE - 16 symbols, 21 lines]
 // L2: "name": "@aphrody/linux"
 // L3: "version": "1.0.0"
@@ -2083,10 +2084,10 @@ FILE: linux/package.json
 // L18: "url": "git+https://github.com/aphrody-labs/src.git"
 // L19: "directory": "packages/linux"
 
-
 ================================================
 FILE: machine/package.json
 ================================================
+
 // [OUTLINE - 16 symbols, 20 lines]
 // L2: "name": "@aphrody/machine"
 // L3: "version": "0.1.0"
@@ -2105,10 +2106,10 @@ FILE: machine/package.json
 // L17: "url": "git+https://github.com/aphrody-labs/src.git"
 // L18: "directory": "packages/machine"
 
-
 ================================================
 FILE: net/package.json
 ================================================
+
 // [OUTLINE - 9 symbols, 12 lines]
 // L2: "name": "@aphrody/net"
 // L3: "version": "0.2.0"
@@ -2120,10 +2121,10 @@ FILE: net/package.json
 // L9: "test": "bun test"
 // L10: "test:e2e-auth": "bun test test/gemini.e2e-auth.test.ts"
 
-
 ================================================
 FILE: release/package.json
 ================================================
+
 // [OUTLINE - 14 symbols, 19 lines]
 // L2: "name": "@aphrody/release"
 // L3: "version": "1.0.0"
@@ -2140,10 +2141,10 @@ FILE: release/package.json
 // L16: "url": "git+https://github.com/aphrody-labs/src.git"
 // L17: "directory": "packages/release"
 
-
 ================================================
 FILE: runtime-adapter/package.json
 ================================================
+
 // [OUTLINE - 15 symbols, 19 lines]
 // L2: "name": "@aphrody/runtime-adapter"
 // L3: "version": "0.1.0"
@@ -2161,10 +2162,10 @@ FILE: runtime-adapter/package.json
 // L17: "dependencies":
 // L18: "devDependencies":
 
-
 ================================================
 FILE: shell-matrix/package.json
 ================================================
+
 // [OUTLINE - 12 symbols, 16 lines]
 // L2: "name": "@aphrody/shell-matrix"
 // L3: "version": "0.1.0"
@@ -2179,14 +2180,14 @@ FILE: shell-matrix/package.json
 // L13: "url": "git+https://github.com/aphrody-labs/src.git"
 // L14: "directory": "packages/shell-matrix"
 
-
 ================================================
 FILE: site/package.json
 ================================================
+
 // [OUTLINE - 17 symbols, 23 lines]
 // L2: "name": "@aphrody/site"
 // L3: "version": "0.1.0"
-// L4: "description": "Framework de sites statiques sur bun : conventions app/ (page, layout, not-found, route, [param], generateStaticParams), métadonnées, i18n, images, polices, CDN /_static immuable, _headers et _redirects."
+// L4: "description": "Framework de sites statiques sur bun : conventions app/ (page, layout, not-found, route, [param], generateStaticParams), métadonnées, i18n, images, polices, CDN /_static immuable, _headers et *redirects."
 // L5: "private": true
 // L6: "type": "module"
 // L7-L9: "bin":
@@ -2199,13 +2200,13 @@ FILE: site/package.json
 // L16: "test": "bun test"
 // L18-L21: "dependencies":
 // L19: "@aphrody/design": "workspace:*"
-// L20: "@aphrody/wck": "workspace:*"
+// L20: "@aphrody/wck": "workspace:_"
 // L22: "license": "MIT OR Apache-2.0"
-
 
 ================================================
 FILE: upstream/package.json
 ================================================
+
 // [OUTLINE - 22 symbols, 28 lines]
 // L2: "name": "@aphrody/upstream"
 // L3: "version": "1.0.0"
@@ -2230,13 +2231,16 @@ FILE: upstream/package.json
 // L25: "access": "public"
 // L26: "registry": "https://registry.npmjs.org/"
 
-
 ================================================
 FILE: vault/native/Cargo.toml
 ================================================
+
 # aphrody-vault: Rust side of @aphrody/vault (docs/infra/VAULT.md). Same on-disk formats as the TS
+
 # package: DPAPI blobs (entropy v1) / systemd-creds credentials, AYV1 envelopes, age X25519.
+
 # Member of the root workspace (explicit entry in the root Cargo.toml), built in CI or on fr1.
+
 [package]
 name = "aphrody-vault"
 version = "0.1.0"
@@ -2252,29 +2256,29 @@ crate-type = ["rlib", "cdylib"]
 age = { workspace = true }
 aes-gcm = { workspace = true }
 tokio = { workspace = true, features = [
-  "rt",
-  "rt-multi-thread",
-  "process",
-  "fs",
-  "io-util",
-  "macros",
+"rt",
+"rt-multi-thread",
+"process",
+"fs",
+"io-util",
+"macros",
 ] }
 zeroize = { workspace = true }
 getrandom = { workspace = true }
 
 [target.'cfg(windows)'.dependencies]
 windows = { workspace = true, features = [
-  "Win32_Foundation",
-  "Win32_Security_Cryptography",
+"Win32_Foundation",
+"Win32_Security_Cryptography",
 ] }
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
 
-
 ================================================
 FILE: vault/package.json
 ================================================
+
 // [OUTLINE - 15 symbols, 19 lines]
 // L2: "name": "@aphrody/vault"
 // L3: "version": "0.1.0"
@@ -2292,10 +2296,10 @@ FILE: vault/package.json
 // L17: "license": "MIT OR Apache-2.0"
 // L18: "private": true
 
-
 ================================================
 FILE: wck/package.json
 ================================================
+
 // [OUTLINE - 21 symbols, 27 lines]
 // L2: "name": "@aphrody/wck"
 // L3: "version": "1.0.0"
@@ -2319,16 +2323,16 @@ FILE: wck/package.json
 // L24: "access": "public"
 // L25: "registry": "https://registry.npmjs.org/"
 
-
 ================================================
 FILE: ai-os/src/core/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 62 lines]
 
+// [OUTLINE - 0 symbols, 62 lines]
 
 ================================================
 FILE: ai-os/src/fabric/index.ts
 ================================================
+
 // [OUTLINE - 32 symbols, 787 lines]
 // import node:crypto
 // import node:fs
@@ -2369,10 +2373,10 @@ FILE: ai-os/src/fabric/index.ts
 // L724-L760: async function bench(prompt: string, n = 128, root = srcRoot())
 // L763-L787: async function serveNode(id: string, root = srcRoot())
 
-
 ================================================
 FILE: ai-os/src/gateway/index.ts
 ================================================
+
 // [OUTLINE - 10 symbols, 368 lines]
 // import node:crypto
 // import ../core/agent
@@ -2390,10 +2394,10 @@ FILE: ai-os/src/gateway/index.ts
 // L305-L318: fetch(req, srv)
 // L320-L352: async message(ws, raw)
 
-
 ================================================
 FILE: ai-os/src/google/jules/index.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 137 lines]
 // import ./client.js
 // import ./storage/node-fs.js
@@ -2402,34 +2406,34 @@ FILE: ai-os/src/google/jules/index.ts
 // import ./storage/root.js
 // L42-L44: function connect(options: JulesOptions =
 
-
 ================================================
 FILE: ai-os/src/google/stitch/generated/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 19 lines]
 
+// [OUTLINE - 0 symbols, 19 lines]
 
 ================================================
 FILE: ai-os/src/google/stitch/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 75 lines]
 
+// [OUTLINE - 0 symbols, 75 lines]
 
 ================================================
 FILE: ai-os/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 12 lines]
 
+// [OUTLINE - 0 symbols, 12 lines]
 
 ================================================
 FILE: ai-os/src/llm/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 21 lines]
 
+// [OUTLINE - 0 symbols, 21 lines]
 
 ================================================
 FILE: ai-os/src/nhitl/index.ts
 ================================================
+
 // [OUTLINE - 17 symbols, 279 lines]
 // import bun:sqlite
 // import node:fs
@@ -2453,10 +2457,10 @@ FILE: ai-os/src/nhitl/index.ts
 // L256-L274: stats()
 // L276-L278: close()
 
-
 ================================================
 FILE: ai-os/src/research/index.ts
 ================================================
+
 // [OUTLINE - 12 symbols, 309 lines]
 // import ../llm/generate
 // import ../llm/schema
@@ -2479,10 +2483,10 @@ FILE: ai-os/src/research/index.ts
 // L225-L282: async function research(o: ResearchOptions)
 // L285-L300: async function validateDir(outlinePath: string, fieldsPath?: string)
 
-
 ================================================
 FILE: ai-os/src/review/index.ts
 ================================================
+
 // [OUTLINE - 33 symbols, 1207 lines]
 // import node:fs
 // import node:path
@@ -2528,10 +2532,10 @@ FILE: ai-os/src/review/index.ts
 // L1156-L1167: function commonDir(files: string[]): string
 // L1172-L1207: function mine(root = srcRoot())
 
-
 ================================================
 FILE: ai-os/src/tui/index.ts
 ================================================
+
 // [OUTLINE - 4 symbols, 138 lines]
 // import node:readline
 // import node:util
@@ -2543,26 +2547,26 @@ FILE: ai-os/src/tui/index.ts
 // L56-L90: async function handle(
 // L92-L138: async function startTui(o: TuiOptions)
 
-
 ================================================
 FILE: bun-parity/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 9 lines]
 
+// [OUTLINE - 0 symbols, 9 lines]
 
 ================================================
 FILE: bun-parity/src/patcher/index.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 25 lines]
 // import ../types.ts
 // import ./preload-gen.ts
 // import ./rust-gen.ts
 // L9-L25: async function runFullAutoPatch(
 
-
 ================================================
 FILE: bun-parity/src/polyfills/index.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 91 lines]
 // import ./scheduler.ts
 // import ./locks.ts
@@ -2574,10 +2578,10 @@ FILE: bun-parity/src/polyfills/index.ts
 // L39-L46: interface ChromiumParityInstalled
 // L48-L91: function installAllChromiumPolyfills(
 
-
 ================================================
 FILE: bun-parity/src/recon/index.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 77 lines]
 // import ../types.ts
 // import ./html.ts
@@ -2591,57 +2595,57 @@ FILE: bun-parity/src/recon/index.ts
 // import ./stack.ts
 // L16-L77: async function runFullParityScan(
 
-
 ================================================
 FILE: bun-plugins/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 5 lines]
 
+// [OUTLINE - 0 symbols, 5 lines]
 
 ================================================
 FILE: chromium-bun/src/engines/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 5 lines]
 
+// [OUTLINE - 0 symbols, 5 lines]
 
 ================================================
 FILE: chromium-bun/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 17 lines]
 
+// [OUTLINE - 0 symbols, 17 lines]
 
 ================================================
 FILE: chromium-bun/src/search/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 5 lines]
 
+// [OUTLINE - 0 symbols, 5 lines]
 
 ================================================
 FILE: chromium-bun/src/webui_poc/index.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 9 lines]
 // L7-L9: function initializeWebUI(): string
-
 
 ================================================
 FILE: core/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 10 lines]
 
+// [OUTLINE - 0 symbols, 10 lines]
 
 ================================================
 FILE: design/src/index.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 18 lines]
 // import ../tokens/tokens.json
 // L5: type Mode = keyof typeof tokens.color;
 // L6: type Role = keyof typeof tokens.color.light;
 // L13-L17: function ansi(name: Role, mode: Mode = "dark", bg = false): string
 
-
 ================================================
 FILE: env-kit/loaders/rust/src/lib.rs
 ================================================
+
 // [OUTLINE - 29 symbols, 431 lines]
 // import std
 // import std
@@ -2680,10 +2684,10 @@ FILE: env-kit/loaders/rust/src/lib.rs
 // L411-L416: fn redacts_secret_string_in_debug_and_display()
 // L419-L430: fn sovereign_env_debug_never_leaks_secrets()
 
-
 ================================================
 FILE: env-kit/src/index.ts
 ================================================
+
 // [OUTLINE - 22 symbols, 556 lines]
 // import node:fs
 // import node:path
@@ -2710,22 +2714,22 @@ FILE: env-kit/src/index.ts
 // L521-L528: interface EnvMergePlan
 // L534-L554: function planEnvMerge(
 
-
 ================================================
 FILE: gaming/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 9 lines]
 
+// [OUTLINE - 0 symbols, 9 lines]
 
 ================================================
 FILE: google-design/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 16 lines]
 
+// [OUTLINE - 0 symbols, 16 lines]
 
 ================================================
 FILE: google-design/src/assets/index.ts
 ================================================
+
 // [OUTLINE - 5 symbols, 214 lines]
 // import node:crypto
 // import node:fs
@@ -2743,16 +2747,16 @@ FILE: google-design/src/assets/index.ts
 // L83-L103: function inferDimensionsOrDuration(relPosix: string): string | undefined
 // L109-L204: function generateAssetBank(outDir: string): AssetBankGenerationResult
 
-
 ================================================
 FILE: google-design/src/design-md/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 71 lines]
 
+// [OUTLINE - 0 symbols, 71 lines]
 
 ================================================
 FILE: google-design/src/design-md/linter/rules/index.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 72 lines]
 // import ./types.js
 // import ../../model/spec.js
@@ -2770,10 +2774,10 @@ FILE: google-design/src/design-md/linter/rules/index.ts
 // import ./omitted.js
 // L46-L54: function toLintRule(descriptor: RuleDescriptor): LintRule
 
-
 ================================================
 FILE: i18n/src/index.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 11 lines]
 // import ../locales/en.json
 // import ../locales/es.json
@@ -2781,10 +2785,10 @@ FILE: i18n/src/index.ts
 // import ../locales/ja.json
 // import ../locales/zh-CN.json
 
-
 ================================================
 FILE: runtime-adapter/src/index.ts
 ================================================
+
 // [OUTLINE - 11 symbols, 141 lines]
 // import ./cf
 // import ./env
@@ -2801,16 +2805,16 @@ FILE: runtime-adapter/src/index.ts
 // L117-L137: async function vps(app: AppDef, argv: string[] = Bun.argv)
 // L139-L141: function defineApp(app: AppDef): AppDef
 
-
 ================================================
 FILE: site/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 14 lines]
 
+// [OUTLINE - 0 symbols, 14 lines]
 
 ================================================
 FILE: vault/native/src/lib.rs
 ================================================
+
 // [OUTLINE - 9 symbols, 62 lines]
 // import ayv1
 // import envelope
@@ -2825,48 +2829,51 @@ FILE: vault/native/src/lib.rs
 // L48-L50: fn from(e: std::io::Error) -> Self
 // L56-L62: pub fn valid_name(n: &str) -> bool
 
-
 ================================================
 FILE: vault/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 33 lines]
 
+// [OUTLINE - 0 symbols, 33 lines]
 
 ================================================
 FILE: wck/src/index.ts
 ================================================
-// [OUTLINE - 0 symbols, 10 lines]
 
+// [OUTLINE - 0 symbols, 10 lines]
 
 ================================================
 FILE: DEPS.rules
 ================================================
-# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
-layer = 3
 
+# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
+
+layer = 3
 
 ================================================
 FILE: ai-os/DEPS.rules
 ================================================
-# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
-layer = 4
 
+# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
+
+layer = 4
 
 ================================================
 FILE: ai-os/NOTICE
 ================================================
+
 agent - Copyright (c) 2026 Aphrody contributors. Dual-licensed MIT OR Apache-2.0.
 
 Portions derived from (all MIT, full texts in licenses/):
-- OpenClaw  (c) 2026 OpenClaw Foundation   - fork aphrody-labs/openclaw
-- Hermes Agent (c) 2025 Nous Research      - fork aphrody-labs/hermes-agent
-- pi (c) 2025 Mario Zechner                - third_party/pi
-- opencode (c) 2025 opencode               - third_party/opencode
 
+- OpenClaw (c) 2026 OpenClaw Foundation - fork aphrody-labs/openclaw
+- Hermes Agent (c) 2025 Nous Research - fork aphrody-labs/hermes-agent
+- pi (c) 2025 Mario Zechner - third_party/pi
+- opencode (c) 2025 opencode - third_party/opencode
 
 ================================================
 FILE: ai-os/bench/retrieval.ts
 ================================================
+
 // [OUTLINE - 6 symbols, 327 lines]
 // import ../src/core/index
 // import node:fs
@@ -2880,20 +2887,20 @@ FILE: ai-os/bench/retrieval.ts
 // L156-L200: async function tune(embedder: Embedder = hashEmbedder())
 // L212-L314: async function evalLarge(embedder: Embedder = hashEmbedder())
 
-
 ================================================
 FILE: ai-os/bench/srcdocs.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 64 lines]
 // import node:fs
 // import node:path
 // L7-L10: type EvalSet =
 // L13-L55: async function buildSrcDocs(
 
-
 ================================================
 FILE: ai-os/config/model-routing.json
 ================================================
+
 // [OUTLINE - 259 symbols, 305 lines]
 // L2: "fetched": "2026-11-13"
 // L3: "currency": "USD per MTok"
@@ -3155,10 +3162,10 @@ FILE: ai-os/config/model-routing.json
 // L295: "Carbon 4": "gemini-4-carbon"
 // L297-L304: "sources": [
 
-
 ================================================
 FILE: ai-os/config/review.json
 ================================================
+
 // [OUTLINE - 134 symbols, 188 lines]
 // L2: "$comment": "ai-os review (src/review, docs/reviews/README.md). Aucun modèle ni fournisseur ici : les voix ne déclarent que des familles de moteurs (expressions régulières sur les identifiants du registre : CLI d'agents + llm_models) et des classes de tâche de config/model-routing.json ; l'ordre réel vient de orch/select.ts (santé, refroidissements)."
 // L3: "threshold": 16
@@ -3203,11 +3210,11 @@ FILE: ai-os/config/review.json
 // L46: "chromiumos": "chromiumos|ebuild$"
 // L48-L187: "sources": [
 // L50: "id": "eng-practices-looking-for"
-// L51: "topics": ["*"]
+// L51: "topics": ["_"]
 // L52: "github": "google/eng-practices"
 // L53: "path": "review/reviewer/looking-for.md"
 // L56: "id": "eng-practices-standard"
-// L57: "topics": ["*"]
+// L57: "topics": ["_"]
 // L58: "github": "google/eng-practices"
 // L59: "path": "review/reviewer/standard.md"
 // L62: "id": "eng-practices-small-cls"
@@ -3295,10 +3302,10 @@ FILE: ai-os/config/review.json
 // L184: "github": "bazelbuild/bazel"
 // L185: "path": "docs/build/style-guide.mdx"
 
-
 ================================================
 FILE: ai-os/docs/BRAIN.md
 ================================================
+
 # ai-os brain
 
 One brain for Claude Code and agy (Antigravity CLI), owned by `@aphrody/ai-os`.
@@ -3342,10 +3349,10 @@ One brain for Claude Code and agy (Antigravity CLI), owned by `@aphrody/ai-os`.
   `docs/reviews/brain-gemini-2026-11-13.md`.
 - agy hooks: both hooks.json files carried a UTF-8 BOM and were silently ignored (a test write reached System32). BOM removed, matcher updated to current tool names (run_command, write_to_file, replace_file_content, multi_replace_file_content); a probe hook captured the real PreToolUse payload and pre-tool-guard denies a System32 write with it. MCP: `agy mcp list` shows ai-os and hostinger, and a headless call to an ai-os tool succeeded.
 
-
 ================================================
 FILE: ai-os/docs/FUSION.md
 ================================================
+
 # Fusion: OpenClaw + Hermes ecosystems -> aphrody-labs/agent
 
 Listed 2026-11-12 with `gh api orgs/openclaw/repos` (non-archived) and `gh api orgs/NousResearch/repos` (agent-related).
@@ -3430,10 +3437,10 @@ Status: done / partial / todo / skip (out of scope: macOS/Apple-only, org ops, f
 - `bun run build` on prd: blocked. TypeScript 7 native API (`typescript/sync`, SyncRpcChannel) reads `child.stdout._handle.fd`, a Node internal Bun does not expose. Options: patch typescript (patchedDependencies) to use a FIFO on POSIX like its Windows named-pipe path, or add `_handle.fd` to Bun's child_process in aphrody-labs/bun.
 - Not started: replacing tsx/vitest/esbuild per package.
 
-
 ================================================
 FILE: ai-os/docs/LEGACY-INVENTORY.md
 ================================================
+
 # Legacy AI inventory (src @ 5525822)
 
 Lines = .ts/.rs/.py/.zig. Imported with `git archive HEAD packages/<name>` into `legacy/<name>`; deleted from src.
@@ -3472,10 +3479,10 @@ Lines = .ts/.rs/.py/.zig. Imported with `git archive HEAD packages/<name>` into 
 - Dropped (no consumer, or replaced by vendor SDKs): ai-os extractor, system1 trainer/decisional engine, sentinel, posix/nix/wasm-webgpu, bun:ffi desktop bus (windows-rs crate planned), benchmark arena, rosegriffon ops; knowledge-engine docs/skills generators, kernel crawler, agy session auditor; agy (Antigravity CLI glue, gemma lab, notebook, finops, web app, rust-desktop).
 - Source remains in git history: aphrody-labs/src@5525822 packages/_, aphrody-labs/agent@efa63bb legacy/_.
 
-
 ================================================
 FILE: ai-os/docs/MODEL_ROUTING.md
 ================================================
+
 # Model routing
 
 Fetched 2026-11-13. Prices in USD per million tokens (MTok), standard tier, global routing.
@@ -3558,10 +3565,10 @@ Cost estimates use standard prices above (pre-2026-12-01), thinking counted as o
 
 Escalation: any route whose primary fails twice or returns low confidence escalates one tier (Haiku 5.5 -> Sonnet 5.5 -> Opus 5.5; Flash-Lite -> Hydrogen -> Carbon). Use prompt caching on stable system prompts and repo context for every Claude route (cache hit 0.01-0.20, A1).
 
-
 ================================================
 FILE: ai-os/docs/NHITL.md
 ================================================
+
 # NHITL index
 
 Owner rule: do everything else that remains to be done before a summary; a pause, a final question or an action left to the owner violates NHITL (no human in the loop). Everything that violates it is indexed here.
@@ -3569,4 +3576,3 @@ Owner rule: do everything else that remains to be done before a summary; a pause
 ## Command
 
 [... truncated by token budget ...]
-

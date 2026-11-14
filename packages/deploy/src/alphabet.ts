@@ -86,15 +86,9 @@ export function section(a: Alphabet, prefix: string): Section | undefined {
   );
 }
 
-const escHtml = (s: string) =>
-  s.replace(
-    /[&<>"]/g,
-    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!,
-  );
-
 /** Inline markdown to HTML: `code`, **bold**, [text](url) and bare https URLs. Input is escaped first. */
 export function inline(md: string): string {
-  let s = escHtml(md);
+  let s = Bun.escapeHTML(md);
   s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
   s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2">$1</a>');

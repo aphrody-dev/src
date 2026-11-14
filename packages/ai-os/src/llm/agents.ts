@@ -166,3 +166,18 @@ export const claude = (prompt: string, model?: string) =>
     ],
     (j) => String(j.result ?? ""),
   );
+
+export const opencode = (prompt: string, model?: string) =>
+  cli(
+    "opencode",
+    [
+      "opencode",
+      "run",
+      "--archived",
+      "--format",
+      "json",
+      ...(model ? ["--model", model] : []),
+      prompt,
+    ],
+    (j) => String(j.text ?? j.result ?? j.response ?? ""),
+  );

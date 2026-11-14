@@ -4,9 +4,6 @@
   "description": "Conformance matrix for sh/bash candidates replacing Git Bash/MSYS2 (Claude Code invocation, POSIX, bash, Windows paths)",
   "type": "module",
   "private": true,
-  "bin": {
-    "shell-matrix": "./src/cli.ts"
-  },
   "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",

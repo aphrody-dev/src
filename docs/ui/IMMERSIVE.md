@@ -5,6 +5,7 @@ Code: `apps/aphrody/src/immersive/` (stage.ts WebGPU renderer, shader.ts WGSL, m
 The DOM stays the source of truth (links, buttons, focus, text). The canvas draws a lit plate, shadow and parallax particles at each item rectangle. Inputs: pointer, arrows and WASD, gamepad (d-pad, left stick, A, right stick for parallax). Fallbacks: no WebGPU, forced-colors, prefers-contrast, save-data, device loss: plain DOM. prefers-reduced-motion: static frames drawn on events only.
 
 Measured 2026-11-13 on the workstation (Chrome 157, RTX 4070, 144 Hz display, viewport 1887x2044, dpr 1, local server):
+
 - Frame rate, home cards and /play launcher: 144 fps, frame time p50 6.9 ms, p95 7.0 to 7.2 ms, max 7.3 ms (300 frames, vsync bound; GPU headroom not measured).
 - Reduced motion: 0 frames while idle, 1 frame per input event.
 - Navigation: ArrowRight/ArrowLeft and a mocked gamepad d-pad move focus between cards (checked in page); real gamepad hardware not tested.

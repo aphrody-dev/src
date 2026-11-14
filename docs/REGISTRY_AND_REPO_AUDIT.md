@@ -11,28 +11,28 @@ Scope: `C:\src` (25 sub-units + root), `aphrody-dev` (66 repositories), `aphrody
 
 In line with the principle of clear, natural identifiers without artificial prefixes, the 20 private `aphrody-dev/src-*` repositories were renamed to their canonical names (GitHub provides transparent HTTP/Git redirection, and all local `origin` remotes + `.gitmodules` were updated):
 
-| Old repository                  | New canonical repository    | Local unit (`C:\src`)    | Synchronized branches  |
-| :------------------------------ | :-------------------------- | :----------------------- | :--------------------- |
-| `aphrody-dev/src-ai-os`         | `aphrody-dev/ai-os`         | `packages/ai-os`         | `main`, `dev`          |
-| `aphrody-dev/src-ai-triad`      | `aphrody-dev/ai-triad`      | `packages/ai-triad`      | `main`, `dev`          |
-| `aphrody-dev/src-brain`         | `aphrody-dev/brain`         | `packages/brain`         | `main`, `dev`          |
-| `aphrody-dev/src-bun-parity`    | `aphrody-dev/bun-parity`    | `packages/bun-parity`    | `main`, `dev`          |
-| `aphrody-dev/src-bun-plugins`   | `aphrody-dev/bun-plugins`   | `packages/bun-plugins`   | `main`, `dev`          |
-| `aphrody-dev/src-chromium-bun`  | `aphrody-dev/chromium-bun`  | `packages/chromium-bun`  | `main`, `dev`          |
-| `aphrody-dev/src-env-kit`       | `aphrody-dev/env-kit`       | `packages/env-kit`       | `main`, `dev`          |
-| `aphrody-dev/src-forge`         | `aphrody-dev/forge`         | `packages/forge`         | `main`, `dev`          |
-| `aphrody-dev/src-google-design` | `aphrody-dev/google-design` | `packages/google-design` | `main`, `dev`          |
-| `aphrody-dev/src-pi-opencode`   | `aphrody-dev/pi-opencode`   | `packages/pi-opencode`   | `main`, `dev`          |
-| `aphrody-dev/src-bench`         | `aphrody-dev/bench`         | `crates/bench`           | `main`, `dev`          |
-| `aphrody-dev/src-depot`         | `aphrody-dev/depot`         | `crates/depot`           | `main`, `dev`          |
-| `aphrody-dev/src-gamescope-rs`  | `aphrody-dev/gamescope-rs`  | `crates/gamescope-rs`    | `main`, `dev`          |
-| `aphrody-dev/src-ring3-agent`   | `aphrody-dev/ring3-agent`   | `crates/ring3-agent`     | `main`, `dev`          |
-| `aphrody-dev/src-rust-stack`    | `aphrody-dev/rust-stack`    | `crates/rust-stack`      | `main`, `dev`          |
-| `aphrody-dev/src-unix`          | `aphrody-dev/unix`          | `crates/unix`            | `main`, `dev`          |
-| `aphrody-dev/src-wayland`       | `aphrody-dev/wayland`       | `crates/wayland`         | `main`, `dev`          |
-| `aphrody-dev/src-xtask`         | `aphrody-dev/xtask`         | `crates/xtask`           | `main`, `dev`          |
-| `aphrody-dev/src-infra`         | `aphrody-dev/infra`         | `infra`                  | `main`, `dev`          |
-| `aphrody-dev/src-mesh-vn`       | `aphrody-dev/mesh-vn`       | `infra/mesh-vn`          | `main`, `dev`          |
+| Old repository                  | New canonical repository    | Local unit (`C:\src`)    | Synchronized branches |
+| :------------------------------ | :-------------------------- | :----------------------- | :-------------------- |
+| `aphrody-dev/src-ai-os`         | `aphrody-dev/ai-os`         | `packages/ai-os`         | `main`, `dev`         |
+| `aphrody-dev/src-ai-triad`      | `aphrody-dev/ai-triad`      | `packages/ai-triad`      | `main`, `dev`         |
+| `aphrody-dev/src-brain`         | `aphrody-dev/brain`         | `packages/brain`         | `main`, `dev`         |
+| `aphrody-dev/src-bun-parity`    | `aphrody-dev/bun-parity`    | `packages/bun-parity`    | `main`, `dev`         |
+| `aphrody-dev/src-bun-plugins`   | `aphrody-dev/bun-plugins`   | `packages/bun-plugins`   | `main`, `dev`         |
+| `aphrody-dev/src-chromium-bun`  | `aphrody-dev/chromium-bun`  | `packages/chromium-bun`  | `main`, `dev`         |
+| `aphrody-dev/src-env-kit`       | `aphrody-dev/env-kit`       | `packages/env-kit`       | `main`, `dev`         |
+| `aphrody-dev/src-forge`         | `aphrody-dev/forge`         | `packages/forge`         | `main`, `dev`         |
+| `aphrody-dev/src-google-design` | `aphrody-dev/google-design` | `packages/google-design` | `main`, `dev`         |
+| `aphrody-dev/src-pi-opencode`   | `aphrody-dev/pi-opencode`   | `packages/pi-opencode`   | `main`, `dev`         |
+| `aphrody-dev/src-bench`         | `aphrody-dev/bench`         | `crates/bench`           | `main`, `dev`         |
+| `aphrody-dev/src-depot`         | `aphrody-dev/depot`         | `crates/depot`           | `main`, `dev`         |
+| `aphrody-dev/src-gamescope-rs`  | `aphrody-dev/gamescope-rs`  | `crates/gamescope-rs`    | `main`, `dev`         |
+| `aphrody-dev/src-ring3-agent`   | `aphrody-dev/ring3-agent`   | `crates/ring3-agent`     | `main`, `dev`         |
+| `aphrody-dev/src-rust-stack`    | `aphrody-dev/rust-stack`    | `crates/rust-stack`      | `main`, `dev`         |
+| `aphrody-dev/src-unix`          | `aphrody-dev/unix`          | `crates/unix`            | `main`, `dev`         |
+| `aphrody-dev/src-wayland`       | `aphrody-dev/wayland`       | `crates/wayland`         | `main`, `dev`         |
+| `aphrody-dev/src-xtask`         | `aphrody-dev/xtask`         | `crates/xtask`           | `main`, `dev`         |
+| `aphrody-dev/src-infra`         | `aphrody-dev/infra`         | `infra`                  | `main`, `dev`         |
+| `aphrody-dev/src-mesh-vn`       | `aphrody-dev/mesh-vn`       | `infra/mesh-vn`          | `main`, `dev`         |
 
 ### 1.2 New repositories created and synchronized (5 repositories)
 

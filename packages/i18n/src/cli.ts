@@ -98,8 +98,12 @@ async function main(argv: string[]): Promise<number> {
     );
     return unknown.length ? 1 : 0;
   }
+  if (!cmd || cmd === "help" || cmd === "--help" || cmd === "-h") {
+    console.log(USAGE);
+    return 0;
+  }
   console.error(USAGE);
-  return cmd ? 2 : 0;
+  return 2;
 }
 
 process.exitCode = await main(Bun.argv.slice(2));

@@ -16,8 +16,8 @@ cd "$SCRIPT_DIR/.."
 PASS=0; FAIL=0
 step()  { echo ""; echo "=== $1 ==="; }
 info()  { echo "  $1"; }
-pass()  { echo "  ✓ $1"; PASS=$((PASS + 1)); }
-fail()  { echo "  ✗ $1"; FAIL=$((FAIL + 1)); }
+pass()  { echo "   $1"; PASS=$((PASS + 1)); }
+fail()  { echo "   $1"; FAIL=$((FAIL + 1)); }
 check() { if echo "$OUTPUT" | grep -q "$1"; then pass "$2"; else fail "$2"; fi; }
 
 # ─── Deployment info ────────────────────────────────────────────────────────

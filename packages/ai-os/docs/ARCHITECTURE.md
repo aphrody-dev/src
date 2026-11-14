@@ -1,116 +1,49 @@
-# Architecture
+# Architecture (`@aphrody/ai-os`)
 
-One repo for the agent stack, from GPU runtime to the user-facing surfaces. Names come from the root `identity.toml` (`[products.ai-os]`).
-Workspaces: bun (`packages/*`), cargo (`crates/*`), uv (`python/*`). Native code builds on the shared Chromium LLVM
-toolchain (see `C:\src\docs\llvm\UNIFIED-TOOLCHAIN.md`); native CI runs on the `prd` self-hosted runner, never on the dev PC.
+Cross-platform sandboxed Unix/GNU-like OS distribution for autonomous agents. Workspaces: Bun (`packages/ai-os`), Rust 2024 (`crates/core-capi`, `crates/agent-context`, `crates/agent-py`, `crates/unix-omarchy`), Python `uv` (`packages/ai-os/python`). Native code compiles with the shared Chromium LLVM 24 toolchain (`docs/llvm/UNIFIED-TOOLCHAIN.md`) on `fr1`/CI, never on the workstation.
 
 ## Layers
 
 ```
- L7 surfaces   cli (agent) | tui | desktop | web | mobile | HTTP API | MCP server | A2A/ACP/AG-UI endpoints
- L6 gateway    channels (Chat SDK adapters), auth, sessions, routing     <- OpenClaw gateway, ai-triad gateway
- L5 core       loop (AI SDK) | tools | memory | skills | learning loop | scheduler/heartbeat | sandbox | hooks/plugins
- L4 providers  AI SDK providers (anthropic, openai-compatible, AI Gateway, Workers AI) | local endpoint
- L3 weights    HF hub fetch -> content-addressed store (blake3) -> R2 cache
- L2 inference  llama.cpp server | ONNX Runtime (DirectML/CUDA) | candle/burn | vLLM (Linux, prd)
- L1 runtime    wgpu/Dawn (WebGPU) | CUDA | Vulkan | DirectML | CPU (AVX2/AVX-512)
- L0 platform   Windows 11 native (windows-rs) | Linux 7.x | Cloudflare Workers/DO | Vercel Functions (runtime-adapter)
+ L6 protocols  Relay (MCP 2026-07-28 + 2025-11-25, A2A 1.0.1, ACP 1.31.0, OAuth 2.1) | Gateway (OpenAI, UIMessageStream v7)
+ L5 agent-os   POSIX/FHS VFS (/etc/ai-os, /var/lib/ai-os, /proc/agent, /dev/{llm,rag,world,sys1}) | orch | brain | review | nhitl
+ L4 cognition  System 1 fast-path (<1ms policy router) <-> Causal World Model (surprise) <-> System 2 LLM + multi-head Context RAG
+ L3 userland   OverlaySandbox / wasmsh -> rubash + niubash 1.5.0 + yash-rs + uutils/coreutils + WinuxCmd (Windows NT + Linux)
+ L2 sandbox    litebox (Library OS Win32+Linux) | hyperlight (WHP/KVM micro-VM ~1-2ms) | wasmtime + cap-std | Landlock/JobObjects
+ L1 inference  fabric (llama.cpp v1.0 RPC WireGuard) | mistralrs 0.8 | ort 2.0-rc.15 | burn 0.23 + cubecl | cloud gateways
+ L0 c-abi      aphrody_core_capi (include/aphrody_core.h: core_* + ai_os_*) loaded via bun:ffi / pyo3 / C23 ThinLTO
 ```
 
-## Modules
+## Active Subsystems (`packages/ai-os/src`)
 
-| Module                                   | Path                             | Status                                       |
-| ---------------------------------------- | -------------------------------- | -------------------------------------------- |
-| core loop, tools, memory, skills         | `src/core`                       | done: `agent run`, e2e test green on Windows |
-| scheduler / heartbeat                    | `packages/scheduler`             | planned                                      |
-| gateway + channels                       | `src/gateway`                    | planned                                      |
-| tui                                      | `src/tui`                        | planned                                      |
-| mcp server/client                        | `src/relay` (MCP)                | planned                                      |
-| inference / weights                      | `crates/infer`, `crates/weights` | planned                                      |
-| python bridge                            | `python/agent_py` (pyo3)         | planned                                      |
-| legacy (migrated as-is, to be dissolved) | `legacy/*`                       | imported                                     |
+| Subsystem                      | Path                                                                                            | Status & Scope                                                                                                                                                         |
+| :----------------------------- | :---------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unified C ABI & FHS VFS        | `src/core/cabi.ts` + `crates/core-capi/src/ai_os.rs`                                            | `ai_os_uname_json`, `ai_os_vfs_resolve_json`, `ai_os_llm_spec_json`, `ai_os_rag_*`, `ai_os_world_*`, `ai_os_sys1_decide_json`                                          |
+| Core runtime & sandbox         | `src/core/{agent,context,memory,sandbox,shell,skills,skill-lint,council,secrets,home,tools}.ts` | Multi-step tool loop, `OverlaySandbox`, `runSandboxedJs`, `runJustBash`, FTS5+semantic+structural+recency `Context`                                                    |
+| Runtime LLM bridge             | `src/llm`                                                                                       | Zero hardcoded models; discovers `openai`, `anthropic`, `google`, `openrouter`, `huggingface`, `vercel`, `cloudflare`, `ollama`, `fabric`, `agy`, `claude`, `opencode` |
+| Protocol relay                 | `src/relay`                                                                                     | HTTP/WS/TCP/TLS/stdio: MCP `2026-07-28` (`server/discover`) + `2025-11-25`, A2A `1.0.1`, ACP `1.31.0`, OAuth 2.1, outbound singleflight cache                          |
+| Gateway                        | `src/gateway`                                                                                   | OpenAI `/v1/chat/completions`, Vercel AI SDK v7 `UIMessageStream`, JSON Patch UI specs, channel webhooks                                                               |
+| Orchestrator & Fabric          | `src/orch`, `src/fabric`                                                                        | Fleet routing (`fr1`, `prd`, `fr2`), distributed `llama-server` RPC over WireGuard                                                                                     |
+| Brain, Research, Review, NHITL | `src/brain`, `src/research`, `src/review`, `src/nhitl`                                          | Memory sync/zstd archive, Context7 v2 + fact-check, multi-voice tribunal, NHITL scanner                                                                                |
+| Google Cloud Agents            | `src/google/{jules,stitch}`                                                                     | Absorbed Jules API and Stitch MCP clients                                                                                                                              |
 
-## Feature mapping
+> Purged modules (delegated to host CLIs `agy`, Claude Code, OpenCode, or upstream tools): `src/tui`, `src/core/pm.ts`, `src/core/hub.ts`, `src/core/scheduler.ts`, `src/core/lattice.ts`, `src/relay/portless.ts`, `native/fx`, and fake `crates/ring3-agent`. See [../../../docs/research/fx-vs-rust-c-agent-os-2026-11.md](../../../docs/research/fx-vs-rust-c-agent-os-2026-11.md).
 
-Source: OC = OpenClaw (fork aphrody-labs/openclaw), HA = Hermes Agent (fork aphrody-labs/hermes-agent), pi, OCd = opencode,
-L = legacy src packages. Approach: SDK = native vendor SDK, FORK = code from our fork, OWN = our own code.
+## Context (Multi-Head Retrieval)
 
-| Feature                                  | From                                                                                 | Module             | Approach                                                          |
-| ---------------------------------------- | ------------------------------------------------------------------------------------ | ------------------ | ----------------------------------------------------------------- |
-| agent loop, multi-step tool calls        | pi, OCd, HA                                                                          | core/agent.ts      | SDK: Vercel AI SDK `generateText` + `isStepCount`                 |
-| model providers, fallback                | HA (anthropic_adapter, auxiliary_client), L ai-os/providers, pi-opencode/lu-provider | core/model.ts      | SDK: `@ai-sdk/*`, AI Gateway                                      |
-| read/write/edit/bash tools               | pi (4 tools), OCd                                                                    | core/tools.ts      | OWN (small)                                                       |
-| persistent memory, FTS recall            | HA memory_tool, memory_manager; L brain, ai-os/nexus/brain-memory                    | core/memory.ts     | OWN on bun:sqlite FTS5, semantics from HA                         |
-| skill creation (SKILL.md), self-learning | HA skill_manager_tool, learning_graph                                                | core/skills.ts     | OWN, Agent Skills format, semantics from HA                       |
-| skill lint/provenance/lock               | HA skill_linter, skill_provenance, skill_lock                                        | core/skills        | FORK port (planned)                                               |
-| scheduler, heartbeat, cron               | OC heartbeat, HA cron/                                                               | scheduler          | SDK: Workflow (durable) + Cloudflare Agents schedule; local timer |
-| multi-channel gateway                    | OC gateway/channels                                                                  | gateway            | SDK: Chat SDK adapters                                            |
-| sessions, compaction                     | HA compression, OCd sessions                                                         | core/session       | OWN (planned)                                                     |
-| sandbox                                  | OC sandbox, HA docker                                                                | core/sandbox       | Windows AppContainer (windows-rs), Vercel Sandbox, CF Sandbox     |
-| hooks, plugins                           | OC plugins, OCd plugins                                                              | core/hooks         | OWN (Claude Code hook format)                                     |
-| MCP client/server                        | L ai-os/protocols/mcp, knowledge-engine/mcp, ai-triad/server                         | mcp                | SDK: `@modelcontextprotocol/sdk`, AI SDK MCP client               |
-| A2A                                      | L ai-os/protocols/a2a                                                                | protocols          | SDK: A2A (Google, fork adk-python for reference)                  |
-| ACP                                      | HA acp_adapter, L ai-os/protocols/acp, ai-triad                                      | protocols          | SDK: ACP                                                          |
-| AG-UI                                    | -                                                                                    | web                | SDK: AG-UI                                                        |
-| TUI                                      | pi, OCd                                                                              | tui                | FORK (pi tui)                                                     |
-| web UI                                   | OC apps, L ai-triad WebGUI, agy web-app                                              | web                | SDK: AI SDK UI                                                    |
-| desktop                                  | OC apps, L agy rust-desktop                                                          | desktop            | OWN (windows-rs / webview)                                        |
-| deep research, fact-check, context7      | L knowledge-engine                                                                   | tools/research     | OWN (migrate)                                                     |
-| cross-CLI council (codex/gemini/claude)  | L ai-triad, ai-os/triad (duplicate)                                                  | tools/council      | OWN (dedupe into one)                                             |
-| standards sentinel, extractor            | L ai-os/sentinel, extractor                                                          | tools/sentinel     | OWN (migrate or drop)                                             |
-| bun:ffi computer-use bus                 | L ai-os/ffi                                                                          | crates/desktop-use | windows-rs (replace FFI)                                          |
-| session merge                            | L brain                                                                              | core/session       | OWN (fold into memory)                                            |
-| gemma lab, notebook, finops              | L agy                                                                                | tools/*            | evaluate, likely drop                                             |
-| local inference                          | L ai-os/native, zig                                                                  | crates/infer       | FORK llama.cpp / ONNX Runtime (fork onnxruntime)                  |
-| WebGPU                                   | L ai-os/wasm-webgpu                                                                  | crates/gpu         | FORK wgpu / dawn                                                  |
-| deploy targets                           | -                                                                                    | adapters           | `packages/runtime-adapter` (src branch hosting/portable)          |
-| parsing / code graph                     | -                                                                                    | tools/code         | crates/core (src branch core/common-lib), tree-sitter             |
+Module `src/core/context.ts` + Rust `crates/agent-context` (shared SQLite WAL schema `entries`, `entries_fts`, `kv`).
 
-## ADR
+| Stage               | Implementation                                                                                                                    |
+| :------------------ | :-------------------------------------------------------------------------------------------------------------------------------- |
+| Encoder             | `Context.ingest`: memories, `SKILL.md`, research results, `MEMORY.md`, code symbol chunks                                         |
+| Multi-head scoring  | Parallel heads: lexical (FTS5 `bm25`), semantic (cached embeddings), structural (symbol overlap), recency (exponential half-life) |
+| Masking & Redaction | Scope allowlist + predicate applied before `LIMIT` (no starvation); `redactText` strips secrets on output                         |
+| Fusion              | Weighted RRF (`k = 60`, default weights: lexical `0.2`, semantic `0.7`, structural `0.05`, recency `0.05`)                        |
 
-| #    | Decision                                                                                                             |
-| ---- | -------------------------------------------------------------------------------------------------------------------- |
-| 0001 | Agent loop on Vercel AI SDK 7 (installed 7.0.170); no hand-written provider clients.                                 |
-| 0002 | Memory on bun:sqlite + FTS5, one file per home (`AGENT_HOME`). Embeddings later via local ONNX model.                |
-| 0003 | Skills use the Agent Skills format (SKILL.md + YAML front matter), compatible with Claude Code.                      |
-| 0004 | Legacy src AI packages imported verbatim into `legacy/` then dissolved module by module; src history is the archive. |
-| 0005 | OpenClaw/Hermes/pi/opencode code is MIT; ported code keeps notices in `NOTICE` + `licenses/`.                        |
-| 0006 | Native builds on the prd runner with the Chromium LLVM toolchain; GitHub-hosted CI runs bun tests only.              |
-| 0007 | Windows native first (no WSL); Linux second; Cloudflare/Vercel through runtime-adapter.                              |
-| 0008 | Product name only in root `identity.toml`.                                                                           |
+Retrieval benchmark (`bun bench/retrieval.ts`, 39 entries, 30 queries):
 
-## Context (attention-style selection)
-
-Design rules: C:\src\var\data\ai_foundations_to_agi\attention_is_all_you_need_full_llm_markdown.md §7. Module `src/core/context.ts`.
-
-| Transformer             | Implementation                                                                                                                                                                          |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| encoder                 | `Context.ingest`: memories, skills (`Skills.sync`), research results (`researchEntries`, one entry per item x field), MEMORY.md, code chunks with symbols                               |
-| multi-head Q·K          | heads run in parallel: lexical (FTS5 bm25), semantic (embeddings: hash offline, Workers AI bge-m3, llama.cpp), structural (symbol overlap; crates/core graph next), recency (half-life) |
-| scaling + softmax       | per-head standardization, linear merge in logit space (weights = W^O, `config.json`), one softmax over candidates                                                                       |
-| masking                 | `Mask` (scopes, sources, predicate) applied before scoring; `redactText` on every selected entry                                                                                        |
-| top-k, O(n²) bound      | candidate cap (200), top-k under a token budget                                                                                                                                         |
-| KV-cache                | embeddings cached by (embedder, sha256(text)) in `kv`; static persona prefix first in the system prompt so provider prompt caches hit                                                   |
-| decoder cross-attention | `run()` selects context for the task and puts it after the persona prefix; memory_search, skills and research reads all go through `select()`                                           |
-| FFN per position        | `agent research` items run as independent parallel workers (batch_size)                                                                                                                 |
-
-Bench (`bun bench/retrieval.ts [--embedder provider/model]`, 39 entries, 30 queries, Windows PC, 2026-11-12):
-
-| embedder            | head config    | P@1   | R@5   | MRR   | ms/query                 |
-| ------------------- | -------------- | ----- | ----- | ----- | ------------------------ |
-| hash512             | lexical        | 0.200 | 0.533 | 0.343 | 1.4                      |
-| hash512             | merged         | 0.133 | 0.533 | 0.306 | 2.1                      |
-| bge-m3 (Workers AI) | semantic       | 0.200 | 0.800 | 0.423 | 228 cold, about 2 cached |
-| bge-m3 (Workers AI) | merged 0.5/0.5 | 0.167 | 0.733 | 0.371 | 2.5                      |
-
-Queries reuse each item's description for all of its fields, so P@1 is low by construction; R@5 is the metric to watch.
-Next: learn head weights on a labeled set, structural head from crates/core (tree-sitter), and a hierarchical summary layer for large n.
-
-Fusion tuning (2026-11-12, `bun bench/retrieval.ts --tune [--embedder provider/model]`): grid over lexical/semantic weights x {rrf, logit}, objective R@5 then MRR.
-
-| embedder | best single head R@5 | tuned (rrf 0.2/0.8) R@5 in-sample | leave-one-item-out R@5 |
-| -------- | -------------------- | --------------------------------- | ---------------------- |
-| hash512  | 0.533                | 0.567                             | 0.467                  |
-| bge-m3   | 0.800 (semantic)     | 0.867                             | 0.800                  |
-
-Default fusion is weighted RRF (k=60) with lexical 0.2, semantic 0.7, structural 0.05, recency 0.05. With bge-m3, held-out recall equals the best single head; the pack has only 30 queries, so the weights must be re-tuned once a larger labeled set exists.
+| Embedder              | Head Config         | P@1   | R@5               | MRR   | ms/query             |
+| :-------------------- | :------------------ | :---- | :---------------- | :---- | :------------------- |
+| `hash512`             | lexical             | 0.200 | 0.533             | 0.343 | 1.4                  |
+| `bge-m3` (Workers AI) | semantic            | 0.200 | 0.800             | 0.423 | 228 cold / ~2 cached |
+| `bge-m3` (Workers AI) | tuned RRF (0.2/0.8) | -     | 0.867 (0.800 LOO) | -     | 2.5                  |

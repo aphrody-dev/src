@@ -1,10 +1,12 @@
 # Graph Report - auto
 
 ## Corpus Check
+
 - **Nodes:** 15215 · **Edges:** 24824 · **Communities:** 663
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `openapi.json` [file] - 911 connections (docs/openapi.json:L1)
 2. `noeuds.ts` [file] - 322 connections (packages/automate/src/noeuds.ts:L1)
 3. `__wbg_get_imports` [function] - 283 connections (apps/web/public/craft/word/wordcraft_web.js:L23-L3020)
@@ -19,6 +21,7 @@
 12. `automatisations.test.ts` [file] - 127 connections (apps/web/e2e/automatisations.test.ts:L1)
 
 ## Key Structural Connections
+
 - `package.json` --[defines]--> `name` (Extracted)
 - `package.json` --[defines]--> `version` (Extracted)
 - `package.json` --[defines]--> `private` (Extracted)

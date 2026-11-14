@@ -16,7 +16,7 @@ use std::time::Instant;
 #[command(
     name = "rust-stack",
     version = "0.1.0",
-    about = "100% Pure-Rust Sovereign Stack: Better-Auth + shadcn_rs + Open-WebUI + OpenCode + OpenAI Gateway"
+    about = "100% Pure-Rust Aphrody Stack: Better-Auth + shadcn_rs + Open-WebUI + OpenCode + OpenAI Gateway"
 )]
 struct Cli {
     #[command(subcommand)]
@@ -276,7 +276,7 @@ fn run_benchmarks(iters: usize) -> Result<(), String> {
     let t2 = Instant::now();
     let mut html_bytes = 0usize;
     for _ in 0..n {
-        let s = render_card_fast("Sovereign Card", "Zero-JS OKLCH SSR benchmark");
+        let s = render_card_fast("Aphrody Card", "Zero-JS OKLCH SSR benchmark");
         html_bytes += s.len();
     }
     let card_secs = t2.elapsed().as_secs_f64();

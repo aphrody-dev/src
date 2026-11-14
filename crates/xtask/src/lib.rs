@@ -387,7 +387,6 @@ const LINUX_THIRD_PARTY: &[&str] = &[
     "omarchy",
     "omarchy-pkgs",
     "omarchy-plugin-marketplace",
-    "omarchy-site",
     "pacman",
     "pkg-cosmic-session",
     "pkg-hyprland",
@@ -425,7 +424,7 @@ fn classify_pillar(rel_name: &str) -> &'static str {
         || rel_name == "crates/unix"
     {
         "linux-kernel"
-    } else if third_party_in(rel_name, AOSP_THIRD_PARTY) || rel_name == "apps/aphrody-app" {
+    } else if third_party_in(rel_name, AOSP_THIRD_PARTY) {
         "aosp"
     } else {
         "git"

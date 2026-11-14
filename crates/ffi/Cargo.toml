@@ -24,6 +24,7 @@ depot = [
 web = ["dep:corelib"]
 
 [dependencies]
+aphrody-core-capi = { workspace = true, default-features = false }
 corelib = { workspace = true, optional = true }
 depot-core = { workspace = true, optional = true }
 aphrody-core = { workspace = true, optional = true }

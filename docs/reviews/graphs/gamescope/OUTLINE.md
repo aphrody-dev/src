@@ -274,18 +274,19 @@ gamescope/
 ================================================
 FILE: README.md
 ================================================
+
 ## gamescope: the micro-compositor formerly known as steamcompmgr
 
 In an embedded session usecase, gamescope does the same thing as steamcompmgr, but with less extra copies and latency:
 
- - It's getting game frames through Wayland by way of Xwayland, so there's no copy within X itself before it gets the frame.
- - It can use DRM/KMS to directly flip game frames to the screen, even when stretching or when notifications are up, removing another copy.
- - When it does need to composite with the GPU, it does so with async Vulkan compute, meaning you get to see your frame quick even if the game already has the GPU busy with the next frame.
+- It's getting game frames through Wayland by way of Xwayland, so there's no copy within X itself before it gets the frame.
+- It can use DRM/KMS to directly flip game frames to the screen, even when stretching or when notifications are up, removing another copy.
+- When it does need to composite with the GPU, it does so with async Vulkan compute, meaning you get to see your frame quick even if the game already has the GPU busy with the next frame.
 
 It also runs on top of a regular desktop, the 'nested' usecase steamcompmgr didn't support.
 
- - Because the game is running in its own personal Xwayland sandbox desktop, it can't interfere with your desktop and your desktop can't interfere with it.
- - You can spoof a virtual screen with a desired resolution and refresh rate as the only thing the game sees, and control/resize the output as needed. This can be useful in exotic display configurations like ultrawide or multi-monitor setups that involve rotation.
+- Because the game is running in its own personal Xwayland sandbox desktop, it can't interfere with your desktop and your desktop can't interfere with it.
+- You can spoof a virtual screen with a desired resolution and refresh rate as the only thing the game sees, and control/resize the output as needed. This can be useful in exotic display configurations like ultrawide or multi-monitor setups that involve rotation.
 
 It runs on Mesa + AMD or Intel, and could be made to run on other Mesa/DRM drivers with minimal work. AMD requires Mesa 20.3+, Intel requires Mesa 21.2+. For NVIDIA's proprietary driver, version 515.43.04+ is required (make sure the `nvidia-drm.modeset=1` kernel parameter is set).
 
@@ -294,6 +295,7 @@ If running RadeonSI clients with older cards (GFX8 and below), currently have to
 ## Building
 
 Dependent first (**Debian/Debian-based**):
+
 ```
 apt install meson ninja-build pkg-config cmake libpipewire-0.3-dev hwdata libx11-dev libwayland-dev libvulkan-dev wayland-protocols libx11-xcb-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxxf86vm-dev libxtst-dev libxres-dev libxmu-dev libxkbcommon-dev libcap-dev libsdl2-dev libavif-dev libpixman-1-dev liblcms2-dev libseat-dev libinput-dev xwayland libxcb-composite0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-res0-dev glslang-tools libluajit-5.1-dev libcatch2-dev
 ```
@@ -315,14 +317,14 @@ meson install -C build/ --skip-subprojects
 
 ## Keyboard shortcuts
 
-* **Super + F** : Toggle fullscreen
-* **Super + N** : Toggle nearest neighbour filtering
-* **Super + U** : Toggle FSR upscaling
-* **Super + Y** : Toggle NIS upscaling
-* **Super + I** : Increase FSR sharpness by 1
-* **Super + O** : Decrease FSR sharpness by 1
-* **Super + S** : Take screenshot (currently goes to `/tmp/gamescope_$DATE.png`)
-* **Super + G** : Toggle keyboard grab
+- **Super + F** : Toggle fullscreen
+- **Super + N** : Toggle nearest neighbour filtering
+- **Super + U** : Toggle FSR upscaling
+- **Super + Y** : Toggle NIS upscaling
+- **Super + I** : Increase FSR sharpness by 1
+- **Super + O** : Decrease FSR sharpness by 1
+- **Super + S** : Take screenshot (currently goes to `/tmp/gamescope_$DATE.png`)
+- **Super + G** : Toggle keyboard grab
 
 ## Examples
 
@@ -343,17 +345,17 @@ gamescope -w 1920 -h 1080 -W 3440 -H 1440 -b -- %command%
 
 See `gamescope --help` for a full list of options.
 
-* `-W`, `-H`: set the resolution used by gamescope. Resizing the gamescope window will update these settings. Ignored in embedded mode. If `-H` is specified but `-W` isn't, a 16:9 aspect ratio is assumed. Defaults to 1280×720.
-* `-w`, `-h`: set the resolution used by the game. If `-h` is specified but `-w` isn't, a 16:9 aspect ratio is assumed. Defaults to the values specified in `-W` and `-H`.
-* `-r`: set a frame-rate limit for the game. Specified in frames per second. Defaults to unlimited.
-* `-o`: set a frame-rate limit for the game when unfocused. Specified in frames per second. Defaults to unlimited.
-* `-F fsr`: use AMD FidelityFX™ Super Resolution 1.0 for upscaling
-* `-F nis`: use NVIDIA Image Scaling v1.0.3 for upscaling
-* `-F sgsr`: use Snapdragon™ Game Super Resolution 1 with RCAS sharpening for upscaling
-* `-S integer`: use integer scaling.
-* `-S stretch`: use stretch scaling, the game will fill the window. (e.g. 4:3 to 16:9)
-* `-b`: create a border-less window.
-* `-f`: create a full-screen window.
+- `-W`, `-H`: set the resolution used by gamescope. Resizing the gamescope window will update these settings. Ignored in embedded mode. If `-H` is specified but `-W` isn't, a 16:9 aspect ratio is assumed. Defaults to 1280×720.
+- `-w`, `-h`: set the resolution used by the game. If `-h` is specified but `-w` isn't, a 16:9 aspect ratio is assumed. Defaults to the values specified in `-W` and `-H`.
+- `-r`: set a frame-rate limit for the game. Specified in frames per second. Defaults to unlimited.
+- `-o`: set a frame-rate limit for the game when unfocused. Specified in frames per second. Defaults to unlimited.
+- `-F fsr`: use AMD FidelityFX™ Super Resolution 1.0 for upscaling
+- `-F nis`: use NVIDIA Image Scaling v1.0.3 for upscaling
+- `-F sgsr`: use Snapdragon™ Game Super Resolution 1 with RCAS sharpening for upscaling
+- `-S integer`: use integer scaling.
+- `-S stretch`: use stretch scaling, the game will fill the window. (e.g. 4:3 to 16:9)
+- `-b`: create a border-less window.
+- `-f`: create a full-screen window.
 
 ## Reshade support
 
@@ -374,13 +376,13 @@ Pull requests for improving Reshade compatibility support are appreciated.
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/gamescope.svg?exclude_unsupported=1)](https://repology.org/project/gamescope/versions)
 
-
 ================================================
 FILE: scripts/README.md
 ================================================
+
 # Gamescope Script/Config Files
 
-## ⚠️ Health Warning ⚠️
+## ️ Health Warning ️
 
 Gamescope scripting/configuration is currently experimental and subject to change massively.
 
@@ -391,9 +393,10 @@ Scripts and configs working between revisions is not guaranteed to work, it shou
 Gamescope uses Lua for it's configuration and scripting system.
 
 Scripts ending in `.lua` are executed recursively in alphabetical order from the following directories:
- - `/usr/share/gamescope`
- - `/etc/gamescope`
- - `$XDG_CONFIG_DIR/gamescope`
+
+- `/usr/share/gamescope`
+- `/etc/gamescope`
+- `$XDG_CONFIG_DIR/gamescope`
 
 You can develop easily without overriding your installation by setting `script_use_local_scripts` which will eliminate `/usr/share/gamescope` and `/etc/gamescope` from being read, and instead read from `../config` of where Gamescope is run instead of those.
 
@@ -454,10 +457,10 @@ end)
 
 Coming soon...
 
-
 ================================================
 FILE: src/shaders/NVIDIAImageScaling/README.md
 ================================================
+
 # NVIDIA Image Scaling SDK v1.0.3
 
 The MIT License(MIT)
@@ -481,8 +484,6 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-
 ## Introduction
 
 The NVIDIA Image Scaling SDK provides a single spatial scaling and sharpening algorithm
@@ -495,8 +496,6 @@ algorithm is named NVSharpen. Both algorithms are provided as compute shaders an
 developers are free to integrate them in their applications. Note that if you integrate NVScaler, you
 should NOT integrate NVSharpen, as NVScaler already includes a sharpening pass
 
-
-
 ## Pipeline Placement
 
 The call into the NVIDIA Image Scaling shaders must occur during the post-processing phase after tone-mapping.
@@ -505,29 +504,25 @@ either not visible or too strong. Since sharpening algorithms can enhance noisy 
 that certain effects such as film grain should occur after NVScaler or NVSharpen. Low-pass filters such as motion blur or
 light bloom are recommended to be applied before NVScaler or NVSharpen to avoid sharpening attenuation.
 
-
-
 ## Color Space and Ranges
 
 NVIDIA Image Scaling shaders can process color textures stored as either LDR or HDR with the following
 restrictions:
 
-1) LDR
+1. LDR
    - The range of color values must be in the [0, 1] range
    - The input color texture must be in display-referred color-space after tone mapping and OETF (gamma-correction)
      has been applied
-2) HDR PQ
+2. HDR PQ
    - The range of color values must be in the [0, 1] range
    - The input color texture must be in display-referred color-space after tone mapping with Rec.2020 PQ OETF applied
-3) HDR Linear
+3. HDR Linear
    - The recommended range of color values is [0, 12.5], where luminance value (as per BT. 709) of
      1.0 maps to brightness value of 80nits (sRGB peak) and 12.5 maps to 1000nits
    - The input color texture may have luminance values that are either linear and scene-referred or
      linear and display-referred (after tone mapping)
 
 If the input color texture sent to NVScaler/NVSharpen is in HDR format set NIS_HDR_MODE define to either NIS_HDR_MODE_LINEAR (1) or NIS_HDR_MODE_PQ (2).
-
-
 
 ## Supported Texture Formats
 
@@ -546,7 +541,6 @@ fp32 format: coef_scaler, coef_USM
 
 fp16 format: coef_scaler_fp16, coef_USM_fp16
 
-
 ### Resource States, Buffers, and Sampler:
 
 The game or application calling NVIDIA Image Scaling SDK shaders must ensure that the textures are in
@@ -558,8 +552,6 @@ the correct state.
 - The configuration variables must be passed as constant buffer. Constant Buffer View (CBV) in DirectX
 - The sampler for texture pixel sampling must use linear filter interpolation and clamp to edge addressing mode
 
-
-
 ## Adding NVIDIA Image Scaling SDK to a Project
 
 Include NIS_Scaler.h directly in your application or alternative use the provided NIS_Main.hlsl or NIS_Main.glsl shader files.
@@ -567,13 +559,12 @@ Use NIS_Config.h to get the ideal shader dispatch values for your platform, to c
 values (NVScalerUpdateConfig, and NVSharpenUpdateConfig), and to access the algorithm coefficients (coef_scale, coef_USM, coef_scale_fp16, coef_USM_fp16).
 
 - Device\
-  NIS_Scaler.h    : HLSL shader file\
-  NIS_Main.hlsl   : Main HLSL shader example (can be replaced by your own) \
-  NIS_Main.glsl   : Main GLSL shader example (can ge replaced by your own)
+  NIS_Scaler.h : HLSL shader file\
+  NIS_Main.hlsl : Main HLSL shader example (can be replaced by your own) \
+  NIS_Main.glsl : Main GLSL shader example (can ge replaced by your own)
 
 - Host Configuration\
-  NIS_Config.h    : Configuration structure
-
+  NIS_Config.h : Configuration structure
 
 ### Defines:
 
@@ -590,17 +581,15 @@ values (NVScalerUpdateConfig, and NVSharpenUpdateConfig), and to access the algo
 **NIS_NV12_SUPPORT**: default(**0**) disabled, (1) enable NV12 input\
 **NIS_CLAMP_OUTPUT**: default(**0**) disabled, (1) enable output clamp
 
-
-*Default NVScaler shader constants:*
+_Default NVScaler shader constants:_
 
 [**NIS_BLOCK_WIDTH**, **NIS_BLOCK_HEIGHT**, **NIS_THREAD_GROUP_SIZE**] = [32, 24, 256]
 
-*Default NVSharpen shader constants:*
+_Default NVSharpen shader constants:_
 
 [**NIS_BLOCK_WIDTH**, **NIS_BLOCK_HEIGHT**, **NIS_THREAD_GROUP_SIZE**] = [32, 32, 256]
 
-
-*Defines for HLSL with DXC bindings:*
+_Defines for HLSL with DXC bindings:_
 
 **NIS_DXC**: (0) disabled, (1) enable HLSL DXC Vulkan support
 
@@ -632,8 +621,6 @@ struct NISOptimizer
 };
 ```
 
-
-
 ## HDR shader settings
 
 Use the following enum values for setting NIS_HDR_MODE
@@ -647,9 +634,8 @@ enum class NISHDRMode : uint32_t
 };
 ```
 
-
-
 ## Integration of NVScaler
+
 The integration instructions in this section can be applied with minimal changes to your own DX11, DX12, or Vulkan application, using HLSL or GLSL.
 
 ### Compile the NIS_Main.hlsl shader
@@ -752,8 +738,6 @@ context->Dispatch(UINT(std::ceil(outputWidth / float(blockWidth))),
                   UINT(std::ceil(outputHeight / float(blockHeight))), 1);
 ```
 
-
-
 ## Integration of NVSharpen
 
 If your application requires upscaling and sharpening do not use NVSharpen use NVScaler instead. Since NVScaler performs both operations, upscaling and sharpening, in one step, it performs faster and produces better image quality.
@@ -838,12 +822,13 @@ context->CSSetShader(NVSharpenCS.Get(), nullptr, 0);
 context->Dispatch(UINT(std::ceil(outputWidth / float(blockWidth))),
                   UINT(std::ceil(outputHeight / float(blockHeight))), 1);
 ```
-###	Streamline Nvidia Image Scaling Plug-in Integration
+
+### Streamline Nvidia Image Scaling Plug-in Integration
+
 Streamline is an open-source solution that facilitates the integration of the latest NVIDIA and other independent hardware vendors super resolution technologies into applications and games.
 For a high-level overview of NIVIDA Streamline, visit NVIDIA Developer Streamline page https://developer.nvidia.com/rtx/streamline. \
 The Streamline SDK can be found here NVIDIA Streamline Github Page https://github.com/NVIDIAGameWorks/Streamline. \
 For Streamline NIS plug-in integration instructions and documentation, see the Streamline NIS Programming Guide https://github.com/NVIDIAGameWorks/Streamline/blob/main/docs/ProgrammingGuideNIS.md
-
 
 ## Samples
 
@@ -854,6 +839,7 @@ For Streamline NIS plug-in integration instructions and documentation, see the S
 - CMake 3.16 : https://cmake.org/download/
 
 for building the Vulkan sample:
+
 - Vulkan SDK 1.2.189.2 : https://vulkan.lunarg.com/
 
 ### Build
@@ -898,6 +884,7 @@ Open the solution with Visual Studio 2019. Right-click the sample project and se
 ================================================
 FILE: LICENSE
 ================================================
+
 BSD 2-Clause License
 
 Copyright (c) 2013-2022, Valve Corporation
@@ -937,12 +924,12 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
 
-* Redistributions of source code must retain the above copyright
+- Redistributions of source code must retain the above copyright
   notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright
+- Redistributions in binary form must reproduce the above copyright
   notice, this list of conditions and the following disclaimer in the
   documentation and/or other materials provided with the distribution.
-* Neither the name of the copyright holder nor the names of its
+- Neither the name of the copyright holder nor the names of its
   contributors may be used to endorse or promote products derived from
   this software without specific prior written permission.
 
@@ -972,17 +959,16 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-
 ================================================
 FILE: default_extras_install.sh
 ================================================
-// [OUTLINE - 0 symbols, 8 lines]
 
+// [OUTLINE - 0 symbols, 8 lines]
 
 ================================================
 FILE: layer/VkLayer_FROG_gamescope_wsi.cpp
 ================================================
+
 // [OUTLINE - 95 symbols, 2341 lines]
 // import "vkroots.h"
 // import "xcb_helpers.hpp"
@@ -1025,9 +1011,9 @@ FILE: layer/VkLayer_FROG_gamescope_wsi.cpp
 // L154: PresentInfoSlice(const PresentInfoSlice &) = delete;
 // L155: PresentInfoSlice &operator=(const PresentInfoSlice &) = delete;
 // L162-L169: T &append(const VkBaseInStructure *entry)
-// L172-L179: void slice(const VkBaseInStructure *entry, uint32_t index, Array T::*array)
+// L172-L179: void slice(const VkBaseInStructure *entry, uint32_t index, Array T::_array)
 // L187-L193: uint32_t clientAppId()
-// L195-L197: static const char* gamescopeWaylandSocket()
+// L195-L197: static const char_ gamescopeWaylandSocket()
 // L199-L204: static bool isAppInfoGamescope(const VkApplicationInfo *appInfo)
 // L206-L245: static bool isRunningUnderGamescope()
 // L231: struct stat
@@ -1108,66 +1094,67 @@ FILE: layer/VkLayer_FROG_gamescope_wsi.cpp
 // L2324-L2329: static PFN_vkVoidFunction VKAPI_CALL getPhysicalDeviceProcAddr(VkInstance instance, const char *name)
 // L2332-L2341: VK_LAYER_EXPORT VKAPI_ATTR VkResult VKAPI_CALL vkNegotiateLoaderLayerInterfaceVersion(VkNegotiateLayerInterface *interface)
 
-
 ================================================
 FILE: layer/VkLayer_FROG_gamescope_wsi.json.in
 ================================================
-{
-    "file_format_version" : "1.0.0",
-    "layer" : {
-      "name": "VK_LAYER_FROG_gamescope_wsi_@family@",
-      "type": "GLOBAL",
-      "api_version": "1.3.221",
-      "library_path": "@lib_dir@/libVkLayer_FROG_gamescope_wsi_@family@.so",
-      "implementation_version": "1",
-      "description": "Gamescope WSI (XWayland Bypass) Layer (@family@)",
-      "functions": {
-         "vkNegotiateLoaderLayerInterfaceVersion": "vkNegotiateLoaderLayerInterfaceVersion"
-      },
-      "enable_environment": {
-        "ENABLE_GAMESCOPE_WSI": "1"
-      },
-      "disable_environment": {
-        "DISABLE_GAMESCOPE_WSI": "1"
-      }
-    }
-}
 
+{
+"file_format_version" : "1.0.0",
+"layer" : {
+"name": "VK_LAYER_FROG_gamescope_wsi_@family@",
+"type": "GLOBAL",
+"api_version": "1.3.221",
+"library_path": "@lib_dir@/libVkLayer_FROG_gamescope_wsi_@family@.so",
+"implementation_version": "1",
+"description": "Gamescope WSI (XWayland Bypass) Layer (@family@)",
+"functions": {
+"vkNegotiateLoaderLayerInterfaceVersion": "vkNegotiateLoaderLayerInterfaceVersion"
+},
+"enable_environment": {
+"ENABLE_GAMESCOPE_WSI": "1"
+},
+"disable_environment": {
+"DISABLE_GAMESCOPE_WSI": "1"
+}
+}
+}
 
 ================================================
 FILE: layer/meson.build
 ================================================
+
 vkroots_dep = dependency('vkroots')
 if not cppc.compiles('''
-  #include <vulkan/vulkan.h>
-  #if !defined(VK_EXT_PRESENT_TIMING_SPEC_VERSION) || VK_EXT_PRESENT_TIMING_SPEC_VERSION < 3
-  #error Vulkan headers with VK_EXT_present_timing revision 3 are required
-  #endif
+#include <vulkan/vulkan.h>
+#if !defined(VK_EXT_PRESENT_TIMING_SPEC_VERSION) || VK_EXT_PRESENT_TIMING_SPEC_VERSION < 3
+#error Vulkan headers with VK_EXT_present_timing revision 3 are required
+#endif
 ''', dependencies: vulkan_dep, name: 'VK_EXT_present_timing revision 3')
-  error('The Gamescope WSI layer requires Vulkan-Headers 1.4.335 or newer')
+error('The Gamescope WSI layer requires Vulkan-Headers 1.4.335 or newer')
 endif
 dep_xcb = dependency('xcb')
 dep_x11_xcb = dependency('x11-xcb')
 wayland_client = dependency('wayland-client')
 
 gamescope_wsi_layer = shared_library('VkLayer_FROG_gamescope_wsi_' + host_machine.cpu_family(), 'VkLayer_FROG_gamescope_wsi.cpp', protocols_client_src,
-  dependencies     : [ vkroots_dep, vulkan_dep, dep_xcb, dep_x11, dep_x11_xcb, glm_dep, wayland_client ],
-  install          : true )
+dependencies : [ vkroots_dep, vulkan_dep, dep_xcb, dep_x11, dep_x11_xcb, glm_dep, wayland_client ],
+install : true )
 
 out_lib_dir = join_paths(prefix, lib_dir)
 
 configure_file(
-    input         : 'VkLayer_FROG_gamescope_wsi.json.in',
-    output        : 'VkLayer_FROG_gamescope_wsi.' + host_machine.cpu_family() + '.json',
-    configuration : {'family' : host_machine.cpu_family(), 'lib_dir' : out_lib_dir },
-    install       : true,
-    install_dir   : join_paths(data_dir, 'vulkan', 'implicit_layer.d'),
-    install_tag   : 'runtime'
+input : 'VkLayer_FROG_gamescope_wsi.json.in',
+output : 'VkLayer_FROG_gamescope_wsi.' + host_machine.cpu_family() + '.json',
+configuration : {'family' : host_machine.cpu_family(), 'lib_dir' : out_lib_dir },
+install : true,
+install_dir : join_paths(data_dir, 'vulkan', 'implicit_layer.d'),
+install_tag : 'runtime'
 )
 
 ================================================
 FILE: layer/present_timing.hpp
 ================================================
+
 // [OUTLINE - 13 symbols, 197 lines]
 // import <vulkan/vulkan.h>
 // import <algorithm>
@@ -1189,10 +1176,10 @@ FILE: layer/present_timing.hpp
 // L163-L172: uint32_t availableCount(bool outOfOrder) const
 // L175-L186: uint32_t writeStages(const Entry &entry, VkPresentStageTimeEXT *outputs, uint32_t capacity)
 
-
 ================================================
 FILE: layer/vulkan_operators.hpp
 ================================================
+
 // [OUTLINE - 12 symbols, 90 lines]
 // import <vulkan/vulkan_core.h>
 // L5-L13: inline bool operator == (
@@ -1208,10 +1195,10 @@ FILE: layer/vulkan_operators.hpp
 // L80-L83: inline bool operator == (VkOffset2D a, VkOffset2D b)
 // L86-L89: inline bool operator != (VkOffset2D a, VkOffset2D b)
 
-
 ================================================
 FILE: layer/xcb_helpers.hpp
 ================================================
+
 // [OUTLINE - 15 symbols, 214 lines]
 // import <X11/Xlib-xcb.h>
 // import <xcb/composite.h>
@@ -1233,10 +1220,10 @@ FILE: layer/xcb_helpers.hpp
 // L167-L205: static std::optional<VkExtent2D> getLargestObscuringChildWindowSize(xcb_connection_t* connection, xcb_window_t window)
 // L209-L214: inline int32_t iabs(int32_t a)
 
-
 ================================================
 FILE: looks/cb_deut_g22.cube
 ================================================
+
 LUT_3D_SIZE 11
 0.0000000 0.0000000 0.0000000
 0.1165109 0.0000000 0.1016032
@@ -2570,10 +2557,10 @@ LUT_3D_SIZE 11
 0.8560736 1.0000000 0.8961900
 0.9999999 1.0000000 1.0000000
 
-
 ================================================
 FILE: looks/cb_deut_pq.cube
 ================================================
+
 LUT_3D_SIZE 17
 0.0000007 0.0000007 0.0000007
 0.0718908 0.0000007 0.0634295
@@ -5771,4 +5758,3 @@ LUT_3D_SIZE 17
 0.9112872 0.0000007 0.89596
 
 [... truncated by token budget ...]
-

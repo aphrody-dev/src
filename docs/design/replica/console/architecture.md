@@ -14,21 +14,21 @@ Inputs: `recon.md`, `features.csv` (commit 765af380), the code already in the tr
 
 ## What exists (read in the tree, not assumed)
 
-| item | state |
-| --- | --- |
-| `crates/gamescope-core` | pure CPU lib: `pacing.rs` (RefreshRate, RollingFrameHistogram, LatencyBudgetCalculator), `hdr.rs` (PQ, scRGB, tonemap params), `scaling.rs`, `composition.rs`; uncommitted work by the gamescope agents: `ui.rs` (Rect, Dir, Input, `spatial_next`, Smooth, `row_xs`, Quad, Painter) and `console.rs` (Shell Ps/Switch, Theme, Tile, Item, Screen Login/Home, `App`) |
-| `crates/gamescope-web-wasm` | wgpu `web` + `webgpu` cdylib; uncommitted `console.rs` + `console.wgsl`: one instanced-quad pipeline (kinds fill, glyph, icon, shadow), 2048x2048 RGBA atlas uploaded from JS (`set_atlas`), glyph advances measured on the JS side |
-| `crates/gamescope-wgsl` | shaders `easu.wgsl`, `rcas.wgsl`, `composite_hdr.wgsl` |
-| `crates/gamescope-cli` | native CLI |
-| `crates/aphrody-ui` | tokens bridge, `bevy`, `web` (bevy + webgpu) and `egui` features, brand, color, components, layout |
-| `crates/game` | Bevy demo: published at cdn.aphrody.com/game/ (game.js, game_bg.wasm), fps harness `scripts/game-fps.ts` |
-| `apps/aphrody-app` | separate Cargo workspace (own Cargo.lock): `aphrody-core` (layout, wire, store, WAL, webmcp), `aphrody-wasm` (WebGPU mica, OPFS), `aphrody-host` (CLI, TUI, COOP/COEP server), `aphrody-android` (NDK cdylib); packaging alpine, arch, nix, wayland |
-| `apps/aphrody/src/gamescope` | page and build of the /gamescope demo |
-| `packages/design` | `tokens/themes.json`: 7 themes (aphrody, dawn, ember, frost, mono, night, workshop), light and dark, Material 3 roles; `tokens.rs` for Rust |
-| `packages/i18n` | locales fr, en, zh-CN, ja, es |
-| `packages/assets/data/games.sqlite` | table `games(store, ext_id, name, url, cover, platforms, genres, free, developer, release, desc, synced)` + FTS5 |
-| `assets/library/icons/vendors` | 20 real vendor icons (steam, epic, gog, itch, xbox, googleplay, flathub, windows, ...) |
-| Not found | any iOS crate, any native winit shell, any text rasteriser dependency in the workspace, any sqlite code for the shell, an audio crate, a gamepad layer wired to the shell (`gilrs 0.11.2` is only in the lockfile) |
+| item                                | state                                                                                                                                                                                                                                                                                                                                                                |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `crates/gamescope-core`             | pure CPU lib: `pacing.rs` (RefreshRate, RollingFrameHistogram, LatencyBudgetCalculator), `hdr.rs` (PQ, scRGB, tonemap params), `scaling.rs`, `composition.rs`; uncommitted work by the gamescope agents: `ui.rs` (Rect, Dir, Input, `spatial_next`, Smooth, `row_xs`, Quad, Painter) and `console.rs` (Shell Ps/Switch, Theme, Tile, Item, Screen Login/Home, `App`) |
+| `crates/gamescope-web-wasm`         | wgpu `web` + `webgpu` cdylib; uncommitted `console.rs` + `console.wgsl`: one instanced-quad pipeline (kinds fill, glyph, icon, shadow), 2048x2048 RGBA atlas uploaded from JS (`set_atlas`), glyph advances measured on the JS side                                                                                                                                  |
+| `crates/gamescope-wgsl`             | shaders `easu.wgsl`, `rcas.wgsl`, `composite_hdr.wgsl`                                                                                                                                                                                                                                                                                                               |
+| `crates/gamescope-cli`              | native CLI                                                                                                                                                                                                                                                                                                                                                           |
+| `crates/aphrody-ui`                 | tokens bridge, `bevy`, `web` (bevy + webgpu) and `egui` features, brand, color, components, layout                                                                                                                                                                                                                                                                   |
+| `crates/game`                       | Bevy demo: published at cdn.aphrody.com/game/ (game.js, game_bg.wasm), fps harness `scripts/game-fps.ts`                                                                                                                                                                                                                                                             |
+| `apps/aphrody-app`                  | separate Cargo workspace (own Cargo.lock): `aphrody-core` (layout, wire, store, WAL, webmcp), `aphrody-wasm` (WebGPU mica, OPFS), `aphrody-host` (CLI, TUI, COOP/COEP server), `aphrody-android` (NDK cdylib); packaging alpine, arch, nix, wayland                                                                                                                  |
+| `apps/aphrody/src/gamescope`        | page and build of the /gamescope demo                                                                                                                                                                                                                                                                                                                                |
+| `packages/design`                   | `tokens/themes.json`: 7 themes (aphrody, dawn, ember, frost, mono, night, workshop), light and dark, Material 3 roles; `tokens.rs` for Rust                                                                                                                                                                                                                          |
+| `packages/i18n`                     | locales fr, en, zh-CN, ja, es                                                                                                                                                                                                                                                                                                                                        |
+| `packages/assets/data/games.sqlite` | table `games(store, ext_id, name, url, cover, platforms, genres, free, developer, release, desc, synced)` + FTS5                                                                                                                                                                                                                                                     |
+| `assets/library/icons/vendors`      | 20 real vendor icons (steam, epic, gog, itch, xbox, googleplay, flathub, windows, ...)                                                                                                                                                                                                                                                                               |
+| Not found                           | any iOS crate, any native winit shell, any text rasteriser dependency in the workspace, any sqlite code for the shell, an audio crate, a gamepad layer wired to the shell (`gilrs 0.11.2` is only in the lockfile)                                                                                                                                                   |
 
 fps baseline, reconciled: both figures are in `docs/reviews/PROOF-2026-11-13.md` and measure different things on the same machine (Chrome 157 headless, RTX 4070, 1920x1080, `scripts/game-fps.ts`). Line 24, local build served by `server.ts`: 3438 frames, median 243.9 fps, p95 4.9 ms, p99 9.4 ms, worst 16.1 ms (warm, no network). Line 25, live `https://aphrody.com/play?autostart=1` with wasm from cdn.aphrody.com/game/: 739 frames, median 153.9 fps, p95 8.5 ms, cold start. The shell baseline to design against is the live one: 153.9 fps median clears 120 Hz but its p95 of 8.5 ms is already over the 8.33 ms budget, which is why the shell gate is on p99 frame time, not on the median. The 3D game scene costs far more than a one-draw-call UI pass, so both numbers are an upper bound on shell cost, not a shell measurement.
 
@@ -36,29 +36,29 @@ Version pins read in `Cargo.lock` (2026-11-13): bevy 0.20.1, wgpu 30.0.2 (worksp
 
 ## Stack
 
-| layer | choice | why |
-| --- | --- | --- |
-| language | Rust 2024, one core, many targets | repo rule; the same `gamescope-core` runs on wasm, desktop, Android and iOS |
-| shell renderer | own wgpu 30 instanced-quad painter (existing design in `gamescope-web-wasm`), extracted into `gamescope-render` | one draw call for the whole UI, no ECS or layout overhead in the 8.33 ms budget, already implemented and shared by native and wasm; Bevy UI would add a frame schedule and a bigger wasm for no gain on a fixed 2D scene |
-| Bevy 0.20.1 | kept for 3D and previews only (`crates/game`, hero scenes, optional in-shell 3D tile) behind the `bevy` feature of `aphrody-ui` | pinned in the workspace; used where a scene graph is worth it; the shell never depends on it |
-| window and input native | winit 0.30.13 | pinned; Windows, Linux Wayland and X11, Android, iOS from one event loop |
-| GPU API | wgpu 30: DX12 on Windows 11, Vulkan on Linux and Android, Metal on iOS, WebGPU in Chromium | one codepath, per-OS backend chosen by wgpu; the Windows machine has HDR 1440p144 (windows-machine profile) |
-| immediate-mode tools | egui 0.37 only for the debug overlay (frame graph, focus tree inspector) and dev tools | fast to build, never in the shipped shell path |
-| gpui-kit | not used by the shell; allowed for desktop-only apps in the suite | its widgets target pointer desktop UIs, not 10-foot focus UIs; rendering criteria fail the 10-foot case |
-| layout | pure functions in `gamescope-core` (`row_xs`, grid rules) plus taffy 0.15.1 for flex panes in settings and store only | rows and grids are cheaper by hand; taffy only where nesting is real |
-| focus | `spatial_next` evolved into a focus-tree engine (section below) | owned code, unit-testable without a GPU |
-| text | JS canvas glyph atlas on the web (existing); native needs a rasteriser and shaper. Candidates cosmic-text, swash, parley, fontdue: none is in the workspace, so the pick is made at S06 after reading each crate on crates.io and its license, not from memory | Latin, CJK, RTL shaping; on-demand glyph cache, not a static grid |
-| fonts | Atkinson Hyperlegible Next (OFL, already shipped by `assets/brand/gen/fonts`), Instrument Sans and Karla (OFL per recon), Noto Sans JP and SC (OFL, fetched from Google Fonts at S06), Roboto for the `Tv` variant, plus the fonts embedded in the .fig references | CJK strategy: Latin primary, per-locale CJK fallback subset by locale, glyphs rasterised on demand |
-| icons | Material Symbols, the icon sets and button glyphs of the console references extracted from the .fig files, real vendor favicons from `assets/library/icons/vendors` | taken verbatim from their sources; vector first |
-| tokens | `packages/design/tokens/themes.json` + `tokens.rs`; 7 themes x light/dark; layout variant is a token set (metrics, radii, motion, safe area), not a code fork | Material 3 roles as the single colour vocabulary |
-| i18n | `packages/i18n` locales fr, en, zh-CN, ja, es compiled to a Rust table by `ay` at build time | same strings on web, native, mobile |
-| local data | SQLite: `rusqlite 0.42.0` native and Android/iOS, SQLite compiled to wasm over OPFS on the web (`aphrody-wasm/opfs.rs` exists), `bun:sqlite` only on the server side (catalogue builds) | one schema (`schema.sql`); sqlx is rejected: async pool and compile-time macros add weight for a single-writer local file |
-| catalogue | `packages/assets/data/games.sqlite` attached read-only, shipped to wasm as a range-fetched file | already built, FTS5 for S15 |
-| audio | UI sounds from the references where present plus synthesised ones (`crates/game/src/synth.rs` exists). Backend crate chosen at S09 among those verified on crates.io | no gating; format and size are the criteria |
-| gamepad | gilrs 0.11.2 native, Gamepad API in Chromium, Android `InputDevice`, iOS GameController framework | platform-native paths |
-| companion link | `aphrody-core` wire + WebMCP (existing) | the app already speaks it |
-| hosting | web build at aphrody.app (existing Worker `aphrody-app-site`, R2 `aphrody-dist`), assets on cdn.aphrody.com; aphrody.com links only | owner decision |
-| CI | fr1 builds (ci.yml self-hosted), judge.yml fast gates | repo rule: nothing compiles on the PC |
+| layer                   | choice                                                                                                                                                                                                                                                             | why                                                                                                                                                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| language                | Rust 2024, one core, many targets                                                                                                                                                                                                                                  | repo rule; the same `gamescope-core` runs on wasm, desktop, Android and iOS                                                                                                                                              |
+| shell renderer          | own wgpu 30 instanced-quad painter (existing design in `gamescope-web-wasm`), extracted into `gamescope-render`                                                                                                                                                    | one draw call for the whole UI, no ECS or layout overhead in the 8.33 ms budget, already implemented and shared by native and wasm; Bevy UI would add a frame schedule and a bigger wasm for no gain on a fixed 2D scene |
+| Bevy 0.20.1             | kept for 3D and previews only (`crates/game`, hero scenes, optional in-shell 3D tile) behind the `bevy` feature of `aphrody-ui`                                                                                                                                    | pinned in the workspace; used where a scene graph is worth it; the shell never depends on it                                                                                                                             |
+| window and input native | winit 0.30.13                                                                                                                                                                                                                                                      | pinned; Windows, Linux Wayland and X11, Android, iOS from one event loop                                                                                                                                                 |
+| GPU API                 | wgpu 30: DX12 on Windows 11, Vulkan on Linux and Android, Metal on iOS, WebGPU in Chromium                                                                                                                                                                         | one codepath, per-OS backend chosen by wgpu; the Windows machine has HDR 1440p144 (windows-machine profile)                                                                                                              |
+| immediate-mode tools    | egui 0.37 only for the debug overlay (frame graph, focus tree inspector) and dev tools                                                                                                                                                                             | fast to build, never in the shipped shell path                                                                                                                                                                           |
+| gpui-kit                | not used by the shell; allowed for desktop-only apps in the suite                                                                                                                                                                                                  | its widgets target pointer desktop UIs, not 10-foot focus UIs; rendering criteria fail the 10-foot case                                                                                                                  |
+| layout                  | pure functions in `gamescope-core` (`row_xs`, grid rules) plus taffy 0.15.1 for flex panes in settings and store only                                                                                                                                              | rows and grids are cheaper by hand; taffy only where nesting is real                                                                                                                                                     |
+| focus                   | `spatial_next` evolved into a focus-tree engine (section below)                                                                                                                                                                                                    | owned code, unit-testable without a GPU                                                                                                                                                                                  |
+| text                    | JS canvas glyph atlas on the web (existing); native needs a rasteriser and shaper. Candidates cosmic-text, swash, parley, fontdue: none is in the workspace, so the pick is made at S06 after reading each crate on crates.io and its license, not from memory     | Latin, CJK, RTL shaping; on-demand glyph cache, not a static grid                                                                                                                                                        |
+| fonts                   | Atkinson Hyperlegible Next (OFL, already shipped by `assets/brand/gen/fonts`), Instrument Sans and Karla (OFL per recon), Noto Sans JP and SC (OFL, fetched from Google Fonts at S06), Roboto for the `Tv` variant, plus the fonts embedded in the .fig references | CJK strategy: Latin primary, per-locale CJK fallback subset by locale, glyphs rasterised on demand                                                                                                                       |
+| icons                   | Material Symbols, the icon sets and button glyphs of the console references extracted from the .fig files, real vendor favicons from `assets/library/icons/vendors`                                                                                                | taken verbatim from their sources; vector first                                                                                                                                                                          |
+| tokens                  | `packages/design/tokens/themes.json` + `tokens.rs`; 7 themes x light/dark; layout variant is a token set (metrics, radii, motion, safe area), not a code fork                                                                                                      | Material 3 roles as the single colour vocabulary                                                                                                                                                                         |
+| i18n                    | `packages/i18n` locales fr, en, zh-CN, ja, es compiled to a Rust table by `ay` at build time                                                                                                                                                                       | same strings on web, native, mobile                                                                                                                                                                                      |
+| local data              | SQLite: `rusqlite 0.42.0` native and Android/iOS, SQLite compiled to wasm over OPFS on the web (`aphrody-wasm/opfs.rs` exists), `bun:sqlite` only on the server side (catalogue builds)                                                                            | one schema (`schema.sql`); sqlx is rejected: async pool and compile-time macros add weight for a single-writer local file                                                                                                |
+| catalogue               | `packages/assets/data/games.sqlite` attached read-only, shipped to wasm as a range-fetched file                                                                                                                                                                    | already built, FTS5 for S15                                                                                                                                                                                              |
+| audio                   | UI sounds from the references where present plus synthesised ones (`crates/game/src/synth.rs` exists). Backend crate chosen at S09 among those verified on crates.io                                                                                               | no gating; format and size are the criteria                                                                                                                                                                              |
+| gamepad                 | gilrs 0.11.2 native, Gamepad API in Chromium, Android `InputDevice`, iOS GameController framework                                                                                                                                                                  | platform-native paths                                                                                                                                                                                                    |
+| companion link          | `aphrody-core` wire + WebMCP (existing)                                                                                                                                                                                                                            | the app already speaks it                                                                                                                                                                                                |
+| hosting                 | web build at aphrody.app (existing Worker `aphrody-app-site`, R2 `aphrody-dist`), assets on cdn.aphrody.com; aphrody.com links only                                                                                                                                | owner decision                                                                                                                                                                                                           |
+| CI                      | fr1 builds (ci.yml self-hosted), judge.yml fast gates                                                                                                                                                                                                              | repo rule: nothing compiles on the PC                                                                                                                                                                                    |
 
 ## Crate map (17)
 
@@ -66,16 +66,16 @@ Existing (9): `gamescope-core`, `gamescope-wgsl`, `gamescope-web-wasm`, `gamesco
 
 New (8), created only when the extraction is needed by a milestone and after the two gamescope agents commit their files:
 
-| crate | role | depends on | milestone |
-| --- | --- | --- | --- |
-| `gamescope-shell` | screens, flows, `App` state machine, mock catalogue; moved out of `gamescope-core/console.rs` | core | S01 refactor |
-| `gamescope-render` | wgpu painter, atlas, pipelines, render graph, HDR/upscale passes; native + wasm | core, wgsl, wgpu | S01 |
-| `gamescope-text` | shaping, glyph cache, fallback chain per locale | render | S06 |
-| `gamescope-input` | device abstraction to `Input` events, bindings, dead zones, repeat, touch gestures, remote keys | core | S02 |
-| `gamescope-store` | SQLite access (`scoped(profile)`), migrations from `schema.sql`, OPFS driver | rusqlite / wasm | S07 |
-| `gamescope-audio` | UI sounds, volume, ducking | core | S09 |
-| `gamescope-native` | winit app: Windows, Linux (Wayland, X11, gamescope-session), fullscreen, HDR surface, cursor hiding | shell, render, input, store | S08 |
-| `gamescope-mobile` | Android activity and iOS entry, safe areas, touch layout, haptics; consumed by `aphrody-android` and an iOS target | native | M5 |
+| crate              | role                                                                                                               | depends on                  | milestone    |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------ | --------------------------- | ------------ |
+| `gamescope-shell`  | screens, flows, `App` state machine, mock catalogue; moved out of `gamescope-core/console.rs`                      | core                        | S01 refactor |
+| `gamescope-render` | wgpu painter, atlas, pipelines, render graph, HDR/upscale passes; native + wasm                                    | core, wgsl, wgpu            | S01          |
+| `gamescope-text`   | shaping, glyph cache, fallback chain per locale                                                                    | render                      | S06          |
+| `gamescope-input`  | device abstraction to `Input` events, bindings, dead zones, repeat, touch gestures, remote keys                    | core                        | S02          |
+| `gamescope-store`  | SQLite access (`scoped(profile)`), migrations from `schema.sql`, OPFS driver                                       | rusqlite / wasm             | S07          |
+| `gamescope-audio`  | UI sounds, volume, ducking                                                                                         | core                        | S09          |
+| `gamescope-native` | winit app: Windows, Linux (Wayland, X11, gamescope-session), fullscreen, HDR surface, cursor hiding                | shell, render, input, store | S08          |
+| `gamescope-mobile` | Android activity and iOS entry, safe areas, touch layout, haptics; consumed by `aphrody-android` and an iOS target | native                      | M5           |
 
 Home and packaging: `apps/aphrody-app` hosts the launcher binary target (`aphrody-host` gains a `launcher` subcommand) and the web entry `web/index.html`; the shell crates live in the root workspace under `crates/` (purity rule) and are consumed by `apps/aphrody-app` by path. Root dir whitelist is untouched (no new root dirs). A perf harness lives in `crates/bench` (`ay bench`).
 
@@ -102,17 +102,17 @@ Token mapping: colours from the Material 3 roles of the chosen theme; `Ps` defau
 
 Target: 120 Hz means 8.33 ms per frame; 144 Hz panels (the PC is 1440p144) means 6.94 ms. All numbers below are allocations to be verified, not measurements.
 
-| stage | budget (ms) | rule |
-| --- | --- | --- |
-| input drain and focus step | 0.2 | events batched per frame, no allocation |
-| state update, springs (`Smooth`) | 0.3 | fixed-step integration, dirty flags |
-| layout | 0.5 | cached per screen; recomputed only on resize, locale or content change |
-| paint to instance buffer | 0.6 | persistent `Vec<Quad>`, only dirty rows rewritten |
-| upload | 0.3 | one `write_buffer` of the dirty range, ring of 3 buffers |
-| text and image atlas work | 0.5 amortised | glyph and tile uploads off the critical path, 1 upload per frame max |
-| GPU shell pass | 2.5 | one instanced draw, premultiplied alpha, shadows as analytic SDF quads |
-| upscale / HDR composite | 1.0 | existing EASU/RCAS and `composite_hdr` passes, only when the render scale is below 100 % or HDR is on |
-| margin | about 2.4 | present, OS jitter; frame-time p99 gate is 8.33 ms |
+| stage                            | budget (ms)   | rule                                                                                                  |
+| -------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------- |
+| input drain and focus step       | 0.2           | events batched per frame, no allocation                                                               |
+| state update, springs (`Smooth`) | 0.3           | fixed-step integration, dirty flags                                                                   |
+| layout                           | 0.5           | cached per screen; recomputed only on resize, locale or content change                                |
+| paint to instance buffer         | 0.6           | persistent `Vec<Quad>`, only dirty rows rewritten                                                     |
+| upload                           | 0.3           | one `write_buffer` of the dirty range, ring of 3 buffers                                              |
+| text and image atlas work        | 0.5 amortised | glyph and tile uploads off the critical path, 1 upload per frame max                                  |
+| GPU shell pass                   | 2.5           | one instanced draw, premultiplied alpha, shadows as analytic SDF quads                                |
+| upscale / HDR composite          | 1.0           | existing EASU/RCAS and `composite_hdr` passes, only when the render scale is below 100 % or HDR is on |
+| margin                           | about 2.4     | present, OS jitter; frame-time p99 gate is 8.33 ms                                                    |
 
 Render graph (fixed, 4 nodes): `background` (gradient and light cone, cached to a texture, redrawn on theme change) -> `shell` (instanced quads with the atlas) -> `overlay` (hints, toast, status bar) -> `present` (optional upscale and HDR). Passes are skipped when nothing is dirty and the monitor is not animating; idle frames are not rendered (battery and fan noise).
 
@@ -131,13 +131,13 @@ HDR: scRGB surface where wgpu exposes it, `hdr.rs` PQ and tonemap with a paper-w
 
 ## Platform matrix
 
-| target | window | GPU | input | proof |
-| --- | --- | --- | --- | --- |
-| Windows 11 | winit fullscreen borderless | DX12 | gilrs (XInput), keyboard, mouse | agent-desktop screenshots of the running exe on the PC (RTX 4070) |
-| Linux | winit Wayland and X11; runs as a gamescope-session client or compositor-hosted; `packaging/wayland` desktop file exists | Vulkan | gilrs/evdev, libinput | run on fr1 under a virtual display only labelled as such; real GPU run needs a Linux box with a GPU, none is in the fleet description, so Linux proof stays "headless, labelled" until one is provided |
-| Chromium | canvas fullscreen API, wasm | WebGPU | Gamepad API, keyboard, touch | real Chrome 157 with GPU on the PC through claude-in-chrome, at aphrody.app |
-| Android and Android TV | NativeActivity via `aphrody-android` | Vulkan | touch, gamepad, TV remote keys | emulator screenshots (labelled) then a device; TV banner and `LEANBACK_LAUNCHER` intent filter declared in the manifest |
-| iOS | UIKit entry | Metal | touch, GameController | simulator screenshots (labelled); device proof requires hardware not in the fleet |
+| target                 | window                                                                                                                  | GPU    | input                           | proof                                                                                                                                                                                                  |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Windows 11             | winit fullscreen borderless                                                                                             | DX12   | gilrs (XInput), keyboard, mouse | agent-desktop screenshots of the running exe on the PC (RTX 4070)                                                                                                                                      |
+| Linux                  | winit Wayland and X11; runs as a gamescope-session client or compositor-hosted; `packaging/wayland` desktop file exists | Vulkan | gilrs/evdev, libinput           | run on fr1 under a virtual display only labelled as such; real GPU run needs a Linux box with a GPU, none is in the fleet description, so Linux proof stays "headless, labelled" until one is provided |
+| Chromium               | canvas fullscreen API, wasm                                                                                             | WebGPU | Gamepad API, keyboard, touch    | real Chrome 157 with GPU on the PC through claude-in-chrome, at aphrody.app                                                                                                                            |
+| Android and Android TV | NativeActivity via `aphrody-android`                                                                                    | Vulkan | touch, gamepad, TV remote keys  | emulator screenshots (labelled) then a device; TV banner and `LEANBACK_LAUNCHER` intent filter declared in the manifest                                                                                |
+| iOS                    | UIKit entry                                                                                                             | Metal  | touch, GameController           | simulator screenshots (labelled); device proof requires hardware not in the fleet                                                                                                                      |
 
 Mobile layout: portrait uses the companion patterns from recon (header = status and clock, launcher cards = actions, bottom tab bar from `docs/DESIGN_SYSTEM.md`), landscape reuses the `Switch` variant with touch targets of 48 dp; same Rust core, native chrome only at the safe-area edges.
 
@@ -147,14 +147,14 @@ Schema in `schema.sql` (17 tables, STRICT, UTC unix ms, per-profile ownership by
 
 ## Interfaces (instead of a web API)
 
-| surface | direction | content |
-| --- | --- | --- |
-| wasm exports | JS to Rust | `App::new(shell, w, h)`, `input(code)`, `pointer(x, y, kind)`, `resize`, `frame(dt)`, `set_atlas`, `set_locale`, `set_theme` (names follow the existing `console.rs` once it is committed) |
-| JS imports | Rust to JS | glyph raster request, OPFS read/write, gamepad poll, fullscreen toggle |
-| native app | process | CLI flags `--shell ps|switch|tv`, `--fps-cap`, `--hdr`, `--profile`; session mode for gamescope |
-| companion | wire | existing `aphrody-core` wire and WebMCP tools: `library.list`, `profile.current`, `launch`, `remote.input` |
-| launch | shell to OS | `launch_uri` (steam://, file, URL) through a `Launcher` trait per OS; never executes without a user select |
-| webhooks, jobs | none | no accounts, payments or sync backend in scope |
+| surface        | direction   | content                                                                                                                                                                                    |
+| -------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| wasm exports   | JS to Rust  | `App::new(shell, w, h)`, `input(code)`, `pointer(x, y, kind)`, `resize`, `frame(dt)`, `set_atlas`, `set_locale`, `set_theme` (names follow the existing `console.rs` once it is committed) |
+| JS imports     | Rust to JS  | glyph raster request, OPFS read/write, gamepad poll, fullscreen toggle                                                                                                                     |
+| native app     | process     | CLI flags `--shell ps                                                                                                                                                                      | switch | tv`, `--fps-cap`, `--hdr`, `--profile`; session mode for gamescope |
+| companion      | wire        | existing `aphrody-core` wire and WebMCP tools: `library.list`, `profile.current`, `launch`, `remote.input`                                                                                 |
+| launch         | shell to OS | `launch_uri` (steam://, file, URL) through a `Launcher` trait per OS; never executes without a user select                                                                                 |
+| webhooks, jobs | none        | no accounts, payments or sync backend in scope                                                                                                                                             |
 
 ## Performance and proof strategy
 
@@ -167,13 +167,13 @@ Schema in `schema.sql` (17 tables, STRICT, UTC unix ms, per-profile ownership by
 
 M0 slice, from recon (screens S01 to S05, flows F01, F02, F05, F10), in this order:
 
-| step | screens | work | tables | proof |
-| --- | --- | --- | --- | --- |
-| S01 | login and profile picker | profile cards, add user, clock, power; wallpaper pass | profile, avatar | Chrome screenshot, focus move and confirm |
-| S02 | profile overlay | overlay scope with focus restore | profile | open, back, focus returns |
-| S03 | home, game row (Ps) | tab bar, hero, scale-up tile row, must-see block | game, library | tile focus scale spring, row scroll |
-| S04 | home, tile row (Switch) | status bar, tile row, hints footer | controller, library | same, plus layout switch by token |
-| S05 | round menu row | 8 to 10 round icons extracted from the reference, selection, badge | setting | down from S04, select an item |
+| step | screens                  | work                                                               | tables              | proof                                     |
+| ---- | ------------------------ | ------------------------------------------------------------------ | ------------------- | ----------------------------------------- |
+| S01  | login and profile picker | profile cards, add user, clock, power; wallpaper pass              | profile, avatar     | Chrome screenshot, focus move and confirm |
+| S02  | profile overlay          | overlay scope with focus restore                                   | profile             | open, back, focus returns                 |
+| S03  | home, game row (Ps)      | tab bar, hero, scale-up tile row, must-see block                   | game, library       | tile focus scale spring, row scroll       |
+| S04  | home, tile row (Switch)  | status bar, tile row, hints footer                                 | controller, library | same, plus layout switch by token         |
+| S05  | round menu row           | 8 to 10 round icons extracted from the reference, selection, badge | setting             | down from S04, select an item             |
 
 Then:
 

@@ -1,0 +1,15 @@
+[package]
+name = "aphrody-cef"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Core CEF browser & OSR abstractions replicating tauri-apps/cef-rs unified with aphrody-v8"
+
+[lib]
+name = "aphrody_cef"
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+aphrody-v8 = { path = "../aphrody-v8" }
+serde.workspace = true
+serde_json.workspace = true

@@ -361,7 +361,7 @@ const specs: Spec[] = [
     hosts: ["pc", "fr1"],
     source: "npm",
     pkg: "wrangler",
-    why: "apps/aphrody, apps/aphrody-app, apps/r2-site workers",
+    why: "Cloudflare Workers deploy",
   },
   {
     name: "docker-engine",

@@ -1,0 +1,11 @@
+# Aphrody
+
+> Open-source Rust game engine, creative suite, Wayland in-browser shell, and cross-platform Unix/Windows toolchain.
+
+Merged portal metadata for aphrody.com and aphrody.app. Static SEO and brand asset distribution.
+
+## Discovery
+
+- [Sitemap index](https://aphrody.com/sitemap.xml)
+- [Full content](https://aphrody.com/llms-full.txt)
+- [Source repository](https://github.com/aphrody-labs/src)

@@ -13,8 +13,8 @@ variable "PUSH_CACHE" { default = "false" }
 variable "CARGO_BUILD_JOBS" { default = "4" }
 
 group "default" { targets = ["services", "runtime"] }
-group "services" { targets = ["ai-os", "aphrody", "r2-site", "api-gateway", "loreserver", "r3d", "rust-stack"] }
-group "bun" { targets = ["ai-os", "aphrody", "r2-site", "api-gateway"] }
+group "services" { targets = ["ai-os", "api-gateway", "loreserver", "r3d", "rust-stack"] }
+group "bun" { targets = ["ai-os", "api-gateway"] }
 group "rust" { targets = ["loreserver", "r3d", "rust-stack", "runtime"] }
 group "smoke" { targets = ["services"] }
 group "products" { targets = ["shenron"] }
@@ -50,21 +50,6 @@ target "ai-os" {
   tags = ["${REGISTRY}/ai-os:${TAG}", "${REGISTRY}/ai-os:latest"]
   cache-from = ["type=registry,ref=${REGISTRY}/cache:bun"]
   cache-to = PUSH_CACHE == "true" ? ["type=registry,ref=${REGISTRY}/cache:bun,mode=max"] : []
-}
-target "aphrody" {
-  inherits = ["ai-os"]
-  target = "aphrody"
-  tags = ["${REGISTRY}/aphrody:${TAG}", "${REGISTRY}/aphrody:latest"]
-}
-target "yolo" {
-  inherits = ["ai-os"]
-  target = "yolo"
-  tags = ["${REGISTRY}/yolo:${TAG}", "${REGISTRY}/yolo:latest"]
-}
-target "r2-site" {
-  inherits = ["ai-os"]
-  target = "r2-site"
-  tags = ["${REGISTRY}/r2-site:${TAG}", "${REGISTRY}/r2-site:latest"]
 }
 target "api-gateway" {
   inherits = ["ai-os"]

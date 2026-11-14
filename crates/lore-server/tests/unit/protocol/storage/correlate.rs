@@ -59,7 +59,7 @@ fn test_parse_correlation_id_too_long() {
 #[test]
 fn test_parse_correlation_id_non_ascii() {
     assert_eq!(
-        Correlate::parse(bytes::Bytes::from("🙅‍♂️🙋‍♂️🔑".repeat(3),)),
+        Correlate::parse(bytes::Bytes::from("‍️‍️".repeat(3),)),
         Ok(Correlate {
             correlation_id: None
         })

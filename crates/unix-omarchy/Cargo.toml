@@ -4,10 +4,22 @@ name = "aphrody-omarchy"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Sovereign Omarchy + CachyOS + Arch Linux GitLab fusion engine: Aether theme compiler, plugin marketplace scanner, PKGBUILD synthesizer, and native WSL2 distro builder"
+description = "Unified Omarchy + CachyOS + Arch/Linux orchestration engine: hardware probe, kernel/patchsets, multi-distro recipes, Aether themes, plugins, and WSL2 bundle builder"
 
 [dependencies]
-unix-cachyos = { version = "0.4.0", path = "../unix-cachyos" }
+sys = { version = "0.4.0", path = "../sys", package = "aphrody-sys" }
+bun-steam = { version = "1.4.8", package = "steam-depot", path = "../steam-depot" }
+anyhow.workspace = true
+clap.workspace = true
+hex.workspace = true
+regex.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+sha2.workspace = true
 thiserror.workspace = true
+toml.workspace = true
+ureq.workspace = true
+
+[[bin]]
+name = "omarchy"
+path = "src/bin/omarchy.rs"

@@ -83,3 +83,9 @@ Debian/Ubuntu rule: these are output targets for their users. Their containers s
 | full AOSP or ChromiumOS checkout                                                                       | space: fr1 has 93 GB free (`df`, 2026-11-13) for the Chromium factory; partial mirror of 3.3 GB only                                  |
 | zen-kernel fork as a daily stack                                                                       | 6.9 GB; tracked by the registry and the `zen` remote                                                                                  |
 | licenses without a file (`CachyOS-PKGBUILDS`, `kernel-patches`: no license detected by the GitHub API) | forked under GitHub's terms (public fork), nothing is republished outside GitHub; our patches stay under MIT OR Apache-2.0            |
+
+## 6. UI fusion and desktop shell ownership
+
+- Layout engine: `crates/taffy` (`taffy 0.15.1` first-party, shared by `aphrody-ui`, `hypr-tiler`, `cosmic-compat`, Dioxus/Blitz, GPUI, and Longbridge `nsh` via `packages/design/tokens/adapters/taffy_tokens.rs`).
+- Multi-target fusion (`crates/aphrody-ui::fusion` and `ay ui`): 23 `UiKind` components, 9 themes, 4 canonical pages rendered across TUI (`ratatui-core`/`anstyle`), CLI, Web WASM/SSR (`dioxus-ssr`, `gamescope-web-wasm`), WebGPU (`anyrender`/`vello`/`wgpu`), GPUI, `embedded_gpui` (5-rule OCAP `ObjectHost`), `winit`/`wgpu`, WinUI 3, Mobile (`nsh`), Linux Wayland, and Unix POSIX.
+- Forks pinned in `third_party/forks.txt` and `packages/machine/src/forks.ts`: `aphrody-labs/dioxus`, `aphrody-labs/dioxus-components`, `aphrody-labs/blitz`, `aphrody-labs/anyrender`, `aphrody-labs/native-shell`, `aphrody-labs/gpui-kit`, `aphrody-labs/gpui-fast`, `aphrody-labs/longbridge-terminal`, `aphrody-labs/omarchy-longbridge`, `aphrody-labs/zed`, `aphrody-labs/embedded_gpui`.

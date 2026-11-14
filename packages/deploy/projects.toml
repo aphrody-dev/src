@@ -16,9 +16,9 @@
 
 [project.aphrody]
 path = "apps/aphrody"
-build = "bun run build"
-out = "dist"
-domains = ["aphrody.com", "www.aphrody.com"]
+build = "bun -e \"\""
+out = "public"
+domains = ["aphrody.com", "www.aphrody.com", "aphrody.app", "www.aphrody.app"]
 worker = "aphrody"
 watch = [
   "apps/aphrody/**",
@@ -26,21 +26,11 @@ watch = [
   "packages/deploy/src/alphabet.ts",
   "packages/deploy/src/m3.ts",
   "packages/design/tokens/**",
+  "packages/design/**",
   "packages/wck/**",
-  "packages/site/**",
   "assets/brand/**",
 ]
 env = ["PUBLIC_CONTACT_EMAIL", "INDEXNOW_KEY"]
-exclude = ["**/*.gz", "**/*.br", "**/*.exe"]
-production = "auto"
-budgets = { LCP = 2500, INP = 200, CLS = 0.1 }
-
-[project.yolo]
-path = "apps/yolo"
-build = "bun run build"
-out = "dist"
-domains = ["yolo.aphrody.app"]
-watch = ["apps/yolo/**", "packages/site/**", "packages/design/**"]
 exclude = ["**/*.gz", "**/*.br", "**/*.exe"]
 production = "auto"
 budgets = { LCP = 2500, INP = 200, CLS = 0.1 }

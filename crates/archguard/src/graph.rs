@@ -236,7 +236,7 @@ pub fn build_monorepo_graph(root: &Path) -> MonorepoGraph {
                 let name = p.file_name().and_then(|n| n.to_str()).unwrap_or("");
                 if !name.starts_with('.') {
                     let id = format!("crates/{}", name);
-                    let layer = if name == "unix" {
+                    let layer = if matches!(name, "unix" | "taffy") {
                         MonorepoLayer::Layer0Kernel
                     } else {
                         MonorepoLayer::Layer1Systems

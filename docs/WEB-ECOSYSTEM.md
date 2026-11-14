@@ -4,11 +4,11 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [GoogleChrome](https://github.com/GoogleChrome)
 
-| dépôt                                                                                  | ★     | push       | lang       | description                                                            |
+| dépôt                                                                                  |       | push       | lang       | description                                                            |
 | -------------------------------------------------------------------------------------- | ----- | ---------- | ---------- | ---------------------------------------------------------------------- |
 | [lighthouse](https://github.com/GoogleChrome/lighthouse)                               | 31051 | 2026-11-12 | JavaScript | Automated auditing, performance metrics, and best practices for the we |
 | [chrome-extensions-samples](https://github.com/GoogleChrome/chrome-extensions-samples) | 17858 | 2026-11-10 | JavaScript | Chrome Extensions Samples                                              |
-| [workbox](https://github.com/GoogleChrome/workbox)                                     | 13043 | 2026-10-29 | JavaScript | 📦 Workbox: JavaScript libraries for Progressive Web Apps              |
+| [workbox](https://github.com/GoogleChrome/workbox)                                     | 13043 | 2026-10-29 | JavaScript | Workbox: JavaScript libraries for Progressive Web Apps                 |
 | [web-vitals](https://github.com/GoogleChrome/web-vitals)                               | 8674  | 2026-11-12 | JavaScript | Essential metrics for a healthy site.                                  |
 | [lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci)                         | 7140  | 2026-11-12 | JavaScript | Automate running Lighthouse for every commit, viewing the changes, and |
 | [modern-web-guidance](https://github.com/GoogleChrome/modern-web-guidance)             | 6120  | 2026-11-10 | null       | Keep your coding agent up to date with the latest web best practices   |
@@ -28,11 +28,11 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [GoogleChromeLabs](https://github.com/GoogleChromeLabs)
 
-| dépôt                                                                                              | ★     | push       | lang       | description                                                            |
+| dépôt                                                                                              |       | push       | lang       | description                                                            |
 | -------------------------------------------------------------------------------------------------- | ----- | ---------- | ---------- | ---------------------------------------------------------------------- |
 | [squoosh](https://github.com/GoogleChromeLabs/squoosh)                                             | 26187 | 2026-10-22 | TypeScript | Make images smaller using best-in-class codecs, right in the browser.  |
 | [comlink](https://github.com/GoogleChromeLabs/comlink)                                             | 12811 | 2026-11-05 | TypeScript | Comlink makes WebWorkers enjoyable.                                    |
-| [quicklink](https://github.com/GoogleChromeLabs/quicklink)                                         | 11306 | 2026-11-01 | JavaScript | ⚡️Faster subsequent page-loads by prefetching in-viewport links during |
+| [quicklink](https://github.com/GoogleChromeLabs/quicklink)                                         | 11306 | 2026-11-01 | JavaScript | ️Faster subsequent page-loads by prefetching in-viewport links during   |
 | [ui-element-samples](https://github.com/GoogleChromeLabs/ui-element-samples)                       | 4117  | 2026-09-15 | JavaScript | A collection of prototyped UI elements                                 |
 | [bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap)                                       | 3167  | 2026-10-12 | TypeScript | Bubblewrap is a Command Line Interface (CLI) that helps developers to  |
 | [jsvu](https://github.com/GoogleChromeLabs/jsvu)                                                   | 2035  | 2026-10-23 | JavaScript | JavaScript (engine) Version Updater                                    |
@@ -63,7 +63,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [chromium](https://github.com/chromium)
 
-| dépôt                                                                        | ★     | push       | lang       | description                                                            |
+| dépôt                                                                        |       | push       | lang       | description                                                            |
 | ---------------------------------------------------------------------------- | ----- | ---------- | ---------- | ---------------------------------------------------------------------- |
 | [chromium](https://github.com/chromium/chromium)                             | 25317 | 2026-11-12 | null       | The official GitHub mirror of the Chromium source                      |
 | [permission.site](https://github.com/chromium/permission.site)               | 1254  | 2026-10-21 | JavaScript | A site to test the interaction of web APIs and browser permissions.    |
@@ -76,7 +76,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [brave](https://github.com/brave)
 
-| dépôt                                                                       | ★     | push       | lang                | description                                                            |
+| dépôt                                                                       |       | push       | lang                | description                                                            |
 | --------------------------------------------------------------------------- | ----- | ---------- | ------------------- | ---------------------------------------------------------------------- |
 | [brave-browser](https://github.com/brave/brave-browser)                     | 24189 | 2026-11-12 | null                | Brave browser for Android, iOS, Linux, macOS, Windows.                 |
 | [brave-core](https://github.com/brave/brave-core)                           | 3779  | 2026-11-12 | C++                 | Core engine for the Brave browser for mobile and desktop. For issues h |
@@ -111,7 +111,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [imputnet](https://github.com/imputnet)
 
-| dépôt                                                                      | ★     | push       | lang       | description                                                            |
+| dépôt                                                                      |       | push       | lang       | description                                                            |
 | -------------------------------------------------------------------------- | ----- | ---------- | ---------- | ---------------------------------------------------------------------- |
 | [helium](https://github.com/imputnet/helium)                               | 22623 | 2026-11-12 | C++        | Private, fast, and honest web browser                                  |
 | [helium-windows](https://github.com/imputnet/helium-windows)               | 1488  | 2026-11-10 | C++        | Helium Browser for Windows                                             |
@@ -131,7 +131,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [servo](https://github.com/servo)
 
-| dépôt                                                                     | ★     | push       | lang       | description                                                            |
+| dépôt                                                                     |       | push       | lang       | description                                                            |
 | ------------------------------------------------------------------------- | ----- | ---------- | ---------- | ---------------------------------------------------------------------- |
 | [servo](https://github.com/servo/servo)                                   | 38483 | 2026-11-12 | Rust       | Servo aims to empower developers with a lightweight, high-performance  |
 | [webrender](https://github.com/servo/webrender)                           | 3380  | 2026-11-08 | Rust       | A GPU-based renderer for the web                                       |
@@ -162,7 +162,7 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [lightpanda-io](https://github.com/lightpanda-io)
 
-| dépôt                                                                     | ★     | push       | lang       | description                                                            |
+| dépôt                                                                     |       | push       | lang       | description                                                            |
 | ------------------------------------------------------------------------- | ----- | ---------- | ---------- | ---------------------------------------------------------------------- |
 | [browser](https://github.com/lightpanda-io/browser)                       | 41946 | 2026-11-12 | Zig        | Lightpanda: the headless browser designed for AI and automation        |
 | [agent-skill](https://github.com/lightpanda-io/agent-skill)               | 118   | 2026-11-05 | Shell      | Lightpanda browser skill for agents                                    |
@@ -184,14 +184,14 @@ Source : `gh api search/repositories?q=org:<org>+archived:false+pushed:>=2026-08
 
 ## [h4ckf0r0day](https://github.com/h4ckf0r0day)
 
-| dépôt                                                                 | ★     | push       | lang   | description                                         |
+| dépôt                                                                 |       | push       | lang   | description                                         |
 | --------------------------------------------------------------------- | ----- | ---------- | ------ | --------------------------------------------------- |
 | [obscura](https://github.com/h4ckf0r0day/obscura)                     | 33213 | 2026-11-12 | Rust   | The headless browser for AI agents and web scraping |
 | [obscura-benchmark](https://github.com/h4ckf0r0day/obscura-benchmark) | 12    | 2026-10-04 | Python | Obscura browser benchmark                           |
 
 ## [vercel-labs](https://github.com/vercel-labs)
 
-| dépôt                                                                                         | ★     | push       | lang       | description                                                            |
+| dépôt                                                                                         |       | push       | lang       | description                                                            |
 | --------------------------------------------------------------------------------------------- | ----- | ---------- | ---------- | ---------------------------------------------------------------------- |
 | [agent-browser](https://github.com/vercel-labs/agent-browser)                                 | 50188 | 2026-11-12 | Rust       | Browser automation CLI for AI agents                                   |
 | [skills](https://github.com/vercel-labs/skills)                                               | 39093 | 2026-11-10 | TypeScript | The open agent skills tool - npx skills                                |

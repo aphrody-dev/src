@@ -12,7 +12,9 @@ pub use protocol as proto;
 pub use state as st;
 #[cfg(windows)]
 pub use transport::hyperv::SockAddrHv;
-pub use transport::{LoopbackTransport, WaylandTransport};
+#[cfg(unix)]
+pub use transport::unix::{UnixWaylandTransport, resolve_wayland_socket_path};
+pub use transport::{LoopbackTransport, WaylandEndpoint, WaylandTransport};
 pub use wire::{WaylandArgument, WaylandMessage, WireError};
 
 #[cfg(test)]

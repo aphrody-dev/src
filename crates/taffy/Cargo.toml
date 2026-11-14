@@ -1,0 +1,74 @@
+[package]
+name = "taffy"
+version = "0.15.1"
+authors = [
+  "Alice Cecile <alice.i.cecile@gmail.com>",
+  "Johnathan Kelley <jkelleyrtp@gmail.com>",
+  "Nico Burns <nico@nicoburns.com>",
+  "aphrody-dev",
+]
+edition.workspace = true
+rust-version.workspace = true
+description = "First-party Layer-0 UI, Wayland, terminal, and compositing layout engine (absorbed DioxusLabs/taffy)"
+repository.workspace = true
+keywords = ["cross-platform", "layout", "flexbox", "css-grid", "grid"]
+categories = ["gui"]
+license = "MIT"
+
+[dependencies]
+serde = { version = "1.0.229", default-features = false, optional = true, features = ["serde_derive"] }
+slotmap = { version = "1.1.1", default-features = false, optional = true }
+rustc-hash = { version = "2.1.3", default-features = false, optional = true }
+smallvec = { workspace = true, optional = true }
+cssparser = { workspace = true, optional = true }
+
+[features]
+default = [
+  "std",
+  "taffy_tree",
+  "flexbox",
+  "flexbox_balance",
+  "grid",
+  "block_layout",
+  "float_layout",
+  "calc",
+  "content_size",
+  "detailed_layout_info",
+]
+## Enables the Block layout algorithm. See [`compute_block_layout`](crate::compute_block_layout).
+block_layout = []
+## Enables the Float layout algorithm. This is a sub-feature of block layout.
+float_layout = []
+## Enables the Flexbox layout algorithm. See [`compute_flexbox_layout`](crate::compute_flexbox_layout).
+flexbox = []
+## Enables support for `flex-wrap: balance` and `flex-line-count` from CSS Flexbox Level 2.
+flexbox_balance = ["flexbox"]
+## Enables the CSS Grid layout algorithm. See [`compute_grid_layout`](crate::compute_grid_layout).
+grid = ["dep:smallvec"]
+## Enables calc() values for all layout algorithms.
+calc = []
+## Causes all algorithms to compute and output a content size for each node.
+content_size = []
+## Causes algorithms to store detailed information of the nodes in TaffyTree.
+detailed_layout_info = []
+## Use strict provenance APIs for pointer manipulation.
+strict_provenance = []
+## Enable the built-in Taffy node tree. See [`TaffyTree`](crate::TaffyTree).
+taffy_tree = ["dep:slotmap", "dep:rustc-hash"]
+## Add [`serde`] derives to Style structs.
+serde = ["dep:serde", "serde/alloc"]
+## Implement `FromStr` trait for Taffy style types.
+parse = ["dep:cssparser"]
+## Enable the `parse` feature with proc-macro dependent optimisations.
+parse_faster = ["parse", "cssparser/fast_match_byte"]
+## Allow Taffy to depend on the Rust Standard Library (`std`).
+std = ["serde?/std", "slotmap?/std"]
+## Deprecated no-op retained for compatibility.
+alloc = []
+## Internal feature for debugging.
+debug = ["std"]
+## Internal feature for profiling.
+profile = ["std"]
+
+[dev-dependencies]
+serde_json = { workspace = true }

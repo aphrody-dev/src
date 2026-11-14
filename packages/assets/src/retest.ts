@@ -7,11 +7,7 @@ import { libraryRoot } from "./manifest.ts";
 import { manifestPaths, testCommand } from "./test.ts";
 
 /** Forks and vendors whose pin change can change a decode result. */
-export const PIN_PATHS = [
-  "third_party/ffmpeg",
-  "third_party/storyteller-bevy",
-  "third_party/artcraft",
-];
+export const PIN_PATHS = ["third_party/ffmpeg", "third_party/artcraft"];
 /** Cargo.lock packages that decode assets. */
 export const LOCK_PACKAGES = [
   "bevy",

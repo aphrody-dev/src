@@ -1,6 +1,6 @@
-# Rust Sovereign Alternatives Matrix (`rust-stack` v0.1.0)
+# Rust Alternatives Matrix (`rust-stack` v0.1.0)
 
-Empirical architecture and performance matrix comparing legacy TypeScript / Python / Go stacks against upstream pure-Rust reference repositories (`C:\src\third_party\rust-ecosystem\`) and our unified Fat-LTO sovereign binary (`C:\src\crates\rust-stack`).
+Empirical architecture and performance matrix comparing legacy TypeScript / Python / Go stacks against upstream pure-Rust reference repositories (`C:\src\third_party\rust-ecosystem\`) and our unified Fat-LTO Rust binary (`C:\src\crates\rust-stack`).
 
 ## 1. Measured `rust-stack` Production Telemetry (Windows x86_64, `rustc 1.101.0-nightly`, Rust 2024, Fat-LTO)
 

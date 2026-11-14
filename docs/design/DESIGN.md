@@ -1,49 +1,98 @@
 ---
 name: Aphrody Precision Workspace
 colors:
-  surface: '#fbf8ff'
-  surface-dim: '#dad8e7'
-  surface-bright: '#fbf8ff'
-  surface-container-lowest: '#ffffff'
-  surface-container-low: '#f4f2ff'
-  surface-container: '#eeecfb'
-  surface-container-high: '#e8e7f6'
-  surface-container-highest: '#e2e1f0'
-  on-surface: '#1a1b25'
-  on-surface-variant: '#444657'
-  inverse-surface: '#2f303b'
-  inverse-on-surface: '#f1effe'
-  outline: '#747689'
-  outline-variant: '#c4c5da'
-  surface-tint: '#1242ff'
-  primary: '#002eca'
-  on-primary: '#ffffff'
-  primary-container: '#1242ff'
-  on-primary-container: '#d1d6ff'
-  inverse-primary: '#bac3ff'
-  secondary: '#0136e8'
-  on-secondary: '#ffffff'
-  secondary-container: '#3456ff'
-  on-secondary-container: '#eaeaff'
-  tertiary: '#3a4663'
-  on-tertiary: '#ffffff'
-  tertiary-container: '#525e7c'
-  on-tertiary-container: '#ccd8fc'
-  error: '#ba1a1a'
-  on-error: '#ffffff'
-  error-container: '#ffdad6'
-  on-error-container: '#93000a'
-  background: '#fbf8ff'
-  on-background: '#1a1b25'
-  surface-variant: '#e2e1f0'
+  surface: "#fbf8ff"
+  surface-dim: "#dad8e7"
+  surface-bright: "#fbf8ff"
+  surface-container-lowest: "#ffffff"
+  surface-container-low: "#f4f2ff"
+  surface-container: "#eeecfb"
+  surface-container-high: "#e8e7f6"
+  surface-container-highest: "#e2e1f0"
+  on-surface: "#1a1b25"
+  on-surface-variant: "#444657"
+  inverse-surface: "#2f303b"
+  inverse-on-surface: "#f1effe"
+  outline: "#747689"
+  outline-variant: "#c4c5da"
+  surface-tint: "#1242ff"
+  primary: "#002eca"
+  on-primary: "#ffffff"
+  primary-container: "#1242ff"
+  on-primary-container: "#d1d6ff"
+  inverse-primary: "#bac3ff"
+  secondary: "#0136e8"
+  on-secondary: "#ffffff"
+  secondary-container: "#3456ff"
+  on-secondary-container: "#eaeaff"
+  tertiary: "#3a4663"
+  on-tertiary: "#ffffff"
+  tertiary-container: "#525e7c"
+  on-tertiary-container: "#ccd8fc"
+  error: "#ba1a1a"
+  on-error: "#ffffff"
+  error-container: "#ffdad6"
+  on-error-container: "#93000a"
+  background: "#fbf8ff"
+  on-background: "#1a1b25"
+  surface-variant: "#e2e1f0"
 typography:
-  headline-lg: {fontFamily: Inter, fontSize: 1.5rem, fontWeight: '600', lineHeight: 1.75rem, letterSpacing: -0.02em}
-  headline-sm: {fontFamily: Inter, fontSize: 1.125rem, fontWeight: '600', lineHeight: 1.375rem, letterSpacing: -0.015em}
-  title-md: {fontFamily: Inter, fontSize: 0.875rem, fontWeight: '600', lineHeight: 1.125rem, letterSpacing: -0.01em}
-  body-md: {fontFamily: Inter, fontSize: 0.8125rem, fontWeight: '400', lineHeight: 1.125rem, letterSpacing: 0em}
-  body-sm: {fontFamily: Inter, fontSize: 0.75rem, fontWeight: '400', lineHeight: 1rem, letterSpacing: 0.01em}
-  label-md: {fontFamily: Inter, fontSize: 0.6875rem, fontWeight: '600', lineHeight: 0.875rem, letterSpacing: 0.04em}
-  label-sm: {fontFamily: Inter, fontSize: 0.625rem, fontWeight: '600', lineHeight: 0.75rem, letterSpacing: 0.06em}
+  headline-lg:
+    {
+      fontFamily: Inter,
+      fontSize: 1.5rem,
+      fontWeight: "600",
+      lineHeight: 1.75rem,
+      letterSpacing: -0.02em,
+    }
+  headline-sm:
+    {
+      fontFamily: Inter,
+      fontSize: 1.125rem,
+      fontWeight: "600",
+      lineHeight: 1.375rem,
+      letterSpacing: -0.015em,
+    }
+  title-md:
+    {
+      fontFamily: Inter,
+      fontSize: 0.875rem,
+      fontWeight: "600",
+      lineHeight: 1.125rem,
+      letterSpacing: -0.01em,
+    }
+  body-md:
+    {
+      fontFamily: Inter,
+      fontSize: 0.8125rem,
+      fontWeight: "400",
+      lineHeight: 1.125rem,
+      letterSpacing: 0em,
+    }
+  body-sm:
+    {
+      fontFamily: Inter,
+      fontSize: 0.75rem,
+      fontWeight: "400",
+      lineHeight: 1rem,
+      letterSpacing: 0.01em,
+    }
+  label-md:
+    {
+      fontFamily: Inter,
+      fontSize: 0.6875rem,
+      fontWeight: "600",
+      lineHeight: 0.875rem,
+      letterSpacing: 0.04em,
+    }
+  label-sm:
+    {
+      fontFamily: Inter,
+      fontSize: 0.625rem,
+      fontWeight: "600",
+      lineHeight: 0.75rem,
+      letterSpacing: 0.06em,
+    }
 rounded:
   sm: 0.25rem
   DEFAULT: 0.5rem

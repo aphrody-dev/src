@@ -1,10 +1,12 @@
 # Graph Report - storyteller-bevy
 
 ## Corpus Check
+
 - **Nodes:** 4847 · **Edges:** 6596 · **Communities:** 472
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `timeline_animation.rs` [file] - 66 connections (studio/src/anim/timeline_animation.rs:L1)
 2. `icon.element.ts` [file] - 59 connections (studio-ui/src/lib/icon.element.ts:L1)
 3. `html()` [function] - 58 connections (studio-web/src/lib/transform-toolbar.element.ts:L52-L101)
@@ -19,6 +21,7 @@
 12. `lit` [import] - 49 connections (studio-web/src/lib/transform-toolbar.element.ts:L4)
 
 ## Key Structural Connections
+
 - `ci.sh` --[calls]--> `set()` (Inferred)
 - `ci.sh` --[calls]--> `rustup()` (Inferred)
 - `ci.sh` --[calls]--> `npm()` (Inferred)

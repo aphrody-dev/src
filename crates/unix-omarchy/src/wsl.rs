@@ -5,7 +5,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use thiserror::Error;
-use unix_cachyos::{CachyOsConfigGenerator, SystemHardwareProfile};
+use crate::cachyos::{CachyOsConfigGenerator, SystemHardwareProfile};
 
 // Single source of truth: infra/wsl-distro. The builder re-emits these files (optionally re-parameterized).
 const WSLCONFIG: &str = include_str!("../../../infra/wsl-distro/.wslconfig");

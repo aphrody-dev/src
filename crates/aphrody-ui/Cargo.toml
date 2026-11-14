@@ -24,8 +24,40 @@ required-features = ["brand"]
 [features]
 # color, components and shared are always built; the heavy modules are opt-out features so a renderer
 # (GPUI, WebGPU) can depend on `aphrody-ui = { default-features = false, features = ["std", "serde"] }`.
-default = ["std", "serde", "layout", "react", "next", "brand"]
-layout = ["dep:lightningcss"]
+default = [
+  "std",
+  "serde",
+  "layout",
+  "react",
+  "next",
+  "brand",
+  "fusion",
+  "anyrender",
+  "dioxus",
+  "tui",
+  "editor",
+]
+layout = [
+  "dep:lightningcss",
+  "dep:taffy",
+  "dep:parley",
+  "dep:kurbo",
+  "dep:peniko",
+  "dep:accesskit",
+]
+fusion = ["std", "serde", "layout"]
+anyrender = ["fusion", "dep:anyrender"]
+vello = ["anyrender", "dep:vello", "dep:wgpu"]
+dioxus = [
+  "fusion",
+  "dep:dioxus-core",
+  "dep:dioxus-signals",
+  "dep:dioxus-ssr",
+  "dep:subsecond-types",
+]
+tui = ["fusion", "dep:ratatui-core", "dep:ratatui-widgets", "dep:anstyle"]
+tui-crossterm = ["tui", "dep:ratatui-crossterm", "dep:crossterm"]
+editor = ["fusion", "dep:ropey"]
 react = [
   "layout",
   "dep:oxc_allocator",
@@ -58,13 +90,23 @@ image = { workspace = true, optional = true, features = ["png", "jpeg"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 lightningcss = { workspace = true, optional = true }
-taffy = { workspace = true, features = [
+parley = { workspace = true, optional = true }
+kurbo = { workspace = true, optional = true }
+peniko = { workspace = true, optional = true }
+accesskit = { workspace = true, optional = true }
+taffy = { workspace = true, optional = true, features = [
   "std",
   "taffy_tree",
   "flexbox",
+  "flexbox_balance",
   "grid",
   "block_layout",
+  "float_layout",
+  "calc",
   "content_size",
+  "detailed_layout_info",
+  "parse",
+  "serde",
 ] }
 bevy = { workspace = true, optional = true, features = [
   "std",
@@ -88,6 +130,20 @@ sha2 = { workspace = true, optional = true }
 toml = { workspace = true, optional = true }
 walkdir = { workspace = true, optional = true }
 resvg = { version = "0.50.0", default-features = false, features = ["text"], optional = true }
+# Fusion fullstack UI ecosystem (Dioxus 0.8, AnyRender + Vello, Ratatui, Ropey, Anstyle)
+anyrender = { workspace = true, optional = true }
+vello = { workspace = true, optional = true }
+wgpu = { workspace = true, optional = true }
+dioxus-core = { workspace = true, optional = true, features = ["macro"] }
+dioxus-signals = { workspace = true, optional = true }
+dioxus-ssr = { workspace = true, optional = true }
+subsecond-types = { workspace = true, optional = true }
+ratatui-core = { workspace = true, optional = true }
+ratatui-widgets = { workspace = true, optional = true }
+ratatui-crossterm = { workspace = true, optional = true }
+crossterm = { workspace = true, optional = true }
+anstyle = { workspace = true, optional = true }
+ropey = { workspace = true, optional = true }
 # brand::model: tile geometry shared with the wasm renderer, meshoptimizer codecs (glTF EXT_meshopt_compression).
 aphrody-brand-gpu = { path = "../aphrody-brand-gpu", optional = true }
 meshopt = { version = "0.7.0", optional = true }

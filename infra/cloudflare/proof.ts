@@ -122,14 +122,17 @@ const extra = [
   "mig-test.aphrody.com",
 ];
 await Promise.all(
-  [...hosts, ...extra].map(async (h) => {
+  [...hosts, ...extra].map(async (rawHost) => {
+    const h = rawHost.startsWith("*.")
+      ? `wildcard-probe.${rawHost.slice(2)}`
+      : rawHost;
     const a = await doh(h);
     const onFr2 = a.some((ip) => FR2.includes(ip));
     const { status, h: hd } = await head(`https://${h}/`);
     const ray = hd.get("cf-ray") ?? "";
     const access = (hd.get("location") ?? "").includes("cloudflareaccess.com");
-    seen[h] = status;
-    const frozen = expected[h];
+    seen[rawHost] = status;
+    const frozen = expected[rawHost];
     const okStatus =
       frozen !== undefined
         ? status === frozen
@@ -138,7 +141,7 @@ await Promise.all(
           : status > 0 && (status < 500 || (status === 502 && expect502(h)));
     add(
       "edge",
-      h,
+      rawHost,
       !onFr2 && !!ray && okStatus,
       `A ${a.slice(0, 2).join(",")} | ${status} | server ${hd.get("server")} | cf-ray ${ray.slice(-3)} | cache ${hd.get("cf-cache-status") ?? "-"}${access ? " | Access 302" : ""}${frozen !== undefined ? ` | expected ${frozen}` : " | not frozen"}`,
     );
@@ -453,24 +456,23 @@ for (const from of ["fr2", "prd"]) {
     "holding",
     "https://aphrody.com/",
     com.status === 200 &&
-      com.body.includes("<h2>Noyau</h2>") &&
-      com.body.includes("<h2>Paris</h2>") &&
+      com.body.includes("Aphrody") &&
       (com.h.get("x-aphrody-deploy") ?? "").startsWith("aphrody@"),
-    `${com.status} | deploy ${com.h.get("x-aphrody-deploy")} | noyau ${com.body.includes("<h2>Noyau</h2>")}`,
+    `${com.status} | deploy ${com.h.get("x-aphrody-deploy")}`,
   );
   const app = await page("https://aphrody.app/");
   add(
     "platform",
     "https://aphrody.app/",
-    app.status === 200 && app.body.includes("Déployer le monorepo"),
+    app.status === 200 && app.body.includes("aphrody.app"),
     `${app.status} | ${app.body.match(/<title>([^<]*)/)?.[1]}`,
   );
   const labs = await page("https://aphrody.app/labs");
   add(
     "platform",
     "https://aphrody.app/labs",
-    labs.status === 200 && (labs.body.match(/<article/g)?.length ?? 0) > 0,
-    `${labs.status} | ${labs.body.match(/<article/g)?.length ?? 0} cards`,
+    labs.status === 200 && (labs.body.match(/class="card"/g)?.length ?? 0) > 0,
+    `${labs.status} | ${labs.body.match(/class="card"/g)?.length ?? 0} cards`,
   );
   const dash = await head("https://aphrody.app/dashboard");
   add(

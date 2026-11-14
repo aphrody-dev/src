@@ -1,10 +1,12 @@
 # Graph Report - rosegriffon
 
 ## Corpus Check
+
 - **Nodes:** 192490 · **Edges:** 306502 · **Communities:** 8477
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `zukan-hashes.json` [file] - 5948 connections (packages/azalee/src/wiki/zukan-hashes.json:L1)
 2. `zukan-hashes.json` [file] - 5948 connections (packages/inagle/src/zukan/zukan-hashes.json:L1)
 3. `legacy_team_collation.json` [file] - 5415 connections (crates/aphrody-nie-wiki/src/legacy_team_collation.json:L1)
@@ -19,6 +21,7 @@
 12. `Vec::new()` [function] - 1010 connections (crates/aphrody-nie-launcher/src/eac.rs:L49)
 
 ## Key Structural Connections
+
 - `package.json` --[defines]--> `name` (Extracted)
 - `package.json` --[defines]--> `version` (Extracted)
 - `package.json` --[defines]--> `private` (Extracted)

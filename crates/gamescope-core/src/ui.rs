@@ -416,4 +416,79 @@ mod tests {
         assert_eq!(Input::from_code(3), Some(Input::Dir(Dir::Right)));
         assert_eq!(Input::from_code(99), None);
     }
+
+    #[test]
+    fn hud_overlay_uses_first_party_taffy() {
+        let rects = compute_hud_overlay_rects(1280.0, 720.0, 3);
+        assert_eq!(rects.len(), 3);
+        assert!(rects[0].x >= 24.0);
+        assert!(rects[1].x > rects[0].x);
+        assert_eq!(rects[0].height, 44.0);
+    }
+}
+
+/// Computes horizontal overlay HUD pill bounding rects using first-party `taffy::TaffyTree`.
+#[must_use]
+pub fn compute_hud_overlay_rects(
+    viewport_w: f32,
+    viewport_h: f32,
+    item_count: usize,
+) -> Vec<taffy::LayoutRect> {
+    if item_count == 0 {
+        return Vec::new();
+    }
+    let mut tree: taffy::TaffyTree<()> = taffy::TaffyTree::new();
+    let mut leaves = Vec::with_capacity(item_count);
+    for _ in 0..item_count {
+        let leaf = tree
+            .new_leaf(taffy::Style {
+                flex_grow: 1.0,
+                size: taffy::Size {
+                    width: taffy::style_helpers::auto(),
+                    height: taffy::style_helpers::length(44.0),
+                },
+                ..taffy::Style::DEFAULT
+            })
+            .expect("hud leaf");
+        leaves.push(leaf);
+    }
+    let root = tree
+        .new_with_children(
+            taffy::Style {
+                display: taffy::Display::Flex,
+                flex_direction: taffy::FlexDirection::Row,
+                gap: taffy::Size {
+                    width: taffy::style_helpers::length(16.0),
+                    height: taffy::style_helpers::length(0.0),
+                },
+                padding: taffy::Rect {
+                    left: taffy::style_helpers::length(24.0),
+                    right: taffy::style_helpers::length(24.0),
+                    top: taffy::style_helpers::length(20.0),
+                    bottom: taffy::style_helpers::length(0.0),
+                },
+                size: taffy::Size {
+                    width: taffy::style_helpers::length(viewport_w.max(64.0)),
+                    height: taffy::style_helpers::length(viewport_h.max(64.0)),
+                },
+                ..taffy::Style::DEFAULT
+            },
+            &leaves,
+        )
+        .expect("hud root");
+    tree.compute_layout(
+        root,
+        taffy::Size {
+            width: taffy::AvailableSpace::Definite(viewport_w.max(64.0)),
+            height: taffy::AvailableSpace::Definite(viewport_h.max(64.0)),
+        },
+    )
+    .expect("hud compute layout");
+    leaves
+        .into_iter()
+        .map(|id| {
+            let l = tree.layout(id).expect("hud item layout");
+            taffy::LayoutRect::from_taffy_layout(l, taffy::Point::ZERO)
+        })
+        .collect()
 }

@@ -9,63 +9,53 @@ Brand, tokens and icons: [assets/brand](assets/brand) (`ay brand build`, design 
 
 # src
 
-Monorepo of Aphrody. The contract for contributors and agents is [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md); the target architecture is [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the roadmap [docs/STACK-ROADMAP.md](docs/STACK-ROADMAP.md).
+Monorepo of Aphrody. Contract: [AGENTS.md](AGENTS.md) and [GEMINI.md](GEMINI.md). Master plan: [docs/PLAN.mdx](docs/PLAN.mdx).
+
+## Stack Overview
+
+- **Pure C23 LLVM ABI Core**: [crates/core-capi](crates/core-capi) (`aphrody_core.h` exporting `core_*` and unified `ai_os_*`, `aphrody_zig.h`, `aphrody_mwg.h`) compiled with `clang` ThinLTO and `-Wall -Wextra -Wpedantic -Werror`. See [docs/llvm/PURE-C-LLVM.mdx](docs/llvm/PURE-C-LLVM.mdx).
+- **Agent OS (`@aphrody/ai-os`)**: cross-platform sandboxed Unix/GNU-like OS distribution for agents unifying FHS VFS (`/etc/ai-os`, `/var/lib/ai-os`, `/proc/agent`, `/dev/{llm,rag,world,sys1}`), LLM, RAG, World Model, and System 1 decision under one C ABI (`aphrody_core_capi`).
+- **Bun v1.4.5+ Runtime**: pure Bun TypeScript packages with zero third-party npm dependencies (`bun:ffi`, `bun:sqlite`, `Bun.Glob`, `Bun.serve`).
+- **Rust 2024 Workspace**: 81 crates in `crates/*` (edition 2024, rust-version 1.85, 278 workspace dependencies) including `ay` CLI, `archguard`, `core`, `core-capi`, `ffi`, `bun-flat`, `tv-*`, `steam-depot`, `lore*`.
+- **Zig 0.17.1 Native Cores**: `packages/native/native` and browser cores exporting stable C ABI symbols via `aphrody_zig.h`.
+- **Modern Web Guidance (`@aphrody/wck`)**: pure Bun + `mwg_capi` (`packages/wck/native`) hybrid RAG search, Baseline gates, and MCP tools. See [docs/web/MODERN-WEB-GUIDANCE.mdx](docs/web/MODERN-WEB-GUIDANCE.mdx).
+- **`ay` Multicall CLI**: unified repository interface (`ay arch check --strict`, `ay manifests`, `ay flat check`, `ay gaming`, `ay steam`).
 
 ## Layout
 
-| Directory                                                                                                                                                     | Content                                                                                                                                                                                                                                                                                              |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`apps/`](apps)                                                                                                                                               | `aphrody`, `aphrody-app`, `auto`, `l2l`, `nt`, `r2-site`, `r2b`, `unixwin`, `yolo`, and two community sites maintained by Aphrody, `rosegriffon` and `shenron`. `auto`, `r2b`, `rosegriffon` and `shenron` are git submodules.                                                                       |
-| [`packages/`](packages)                                                                                                                                       | Bun `@aphrody/*` packages: `ai-os` (the only AI product), `bun-parity`, `bun-plugins`, `chromium-bun`, `core`, `deploy`, `design`, `env-kit`, `ffi-bridge`, `forge`, `gaming`, `google-design`, `linux`, `machine`, `net`, `release`, `runtime-adapter`, `shell-matrix`, `upstream`, `vault`, `wck`. |
-| [`crates/`](crates)                                                                                                                                           | Rust 2024 crates in one flat Cargo workspace: `ay` (the repository CLI), `archguard`, `xtask`, `depot-*`, `lore*`, `aphrody-ui`, `core`, `core-capi`, `ffi`, `rust-stack`, `tv-*`, `gamescope-*`, `steam-depot`, `conformance`, `apm` and others.                                                    |
-| [`infra/`](infra)                                                                                                                                             | Fleet and deploy configuration assembled from upstream tools (`docker`, `cluster`, `cloudflare`, `fleet`, `mesh-vn`, `chromium-factory` and others).                                                                                                                                                 |
-| [`third_party/`](third_party)                                                                                                                                 | Upstream checkouts and aphrody-labs forks, pinned in [`src.lock.json`](src.lock.json); fork list in [`third_party/forks.txt`](third_party/forks.txt). No local modification.                                                                                                                         |
-| [`docs/`](docs), [`assets/`](assets), [`conformance/`](conformance), [`licenses/`](licenses), [`plugins/`](plugins), [`scripts/`](scripts), [`tools/`](tools) | Documentation, brand assets, conformance suites, license texts, Claude Code plugins (`labs`, `aphrody-nhitl`), scripts and tooling.                                                                                                                                                                  |
+| Directory                     | Count / Content                                                                                                                                                                                                                      |
+| :---------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`apps/`](apps)               | 8 apps: `aphrody`, `auto`, `l2l`, `nt`, `r2b`, `rosegriffon` (submodule), `shenron` (submodule), `unixwin`                                                                                                                           |
+| [`packages/`](packages)       | 19 Bun `@aphrody/*` packages: `ai-os`, `assets`, `browser`, `chromium-bun`, `core`, `deploy`, `design`, `env-kit`, `ffi-bridge`, `gaming`, `i18n`, `machine`, `native`, `net`, `release`, `shell-matrix`, `upstream`, `vault`, `wck` |
+| [`crates/`](crates)           | 81 Rust 2024 crates (`ay`, `archguard`, `core-capi`, `bun-flat`, `ffi`, `rust-stack`, `tv-*`, `steam-depot`, `lore*`)                                                                                                                |
+| [`infra/`](infra)             | Fleet, Docker, Cloudflare, and Chromium factory configuration                                                                                                                                                                        |
+| [`third_party/`](third_party) | Pinned upstream checkouts and forks in `src.lock.json` (`DEPS`, `.gitmodules`)                                                                                                                                                       |
+| [`docs/`](docs)               | Architecture MDX plans, LLVM/C ABI docs, Modern Web Guidance, and generated [`docs/reference/`](docs/reference)                                                                                                                      |
 
-## Pins and licenses
+## Live Graph and Index
 
-- `src.lock.json` is the only pin; [`DEPS`](DEPS) and [`.gitmodules`](.gitmodules) are derived from it by `ay manifests`. [`MAINTAINERS`](MAINTAINERS) is maintained by hand.
-- First-party code is MIT OR Apache-2.0 ([LICENSE-MIT](LICENSE-MIT), [LICENSE-APACHE](LICENSE-APACHE)). The dependency policy is in `deny.toml` and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+- SQLite index (`var/index/core.db`): 8000 files, 164631 symbols, 62394 imports, 1181320 call refs.
+- Code graph (`graphify-out/GRAPH_REPORT.md`): 695105 nodes, 1371565 edges, 25459 communities.
 
 ## Commands
 
-Rust compiles in CI or on the build host, not on the workstation.
+Rust compiles in CI or on the build host (`fr1`), never on the workstation.
 
 ```sh
-just doctor          # toolchain doctor
-just arch-check      # architecture gate (ay arch check --strict for the strict form)
-just lock            # lock the checkout in src.lock.json, then derive DEPS and .gitmodules
-just manifests-check # derived manifests and gitlinks match src.lock.json
-just env-doctor      # check the masked .env vault and editor auth wiring
-just graph <path> <name>   # tree-sitter code graph into graphify-out/<name>
-just deploy          # docker compose pull + up --wait on a host
-just verify-all      # architecture gate, doctor, Bun suites, then ci.yml for Rust
+just doctor                            # toolchain doctor
+just arch-check                        # architecture gate (ay arch check --strict)
+bun scripts/checkdeps.ts               # Chromium-style DEPS.rules layer gate
+bun packages/core/src/cli.ts gen-docs  # regenerate README.md, MDX plans, and docs/reference/*.md
+bun packages/core/src/cli.ts search <q> # fuzzy symbol and doc search
+bun test packages/wck                  # @aphrody/wck Modern Web Guidance suite
 ```
 
-## Where to read
+## Key Documents
 
-| Topic                                        | Document                                                                                                                                     |
-| :------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------- |
-| Design system and UI                         | [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md), [docs/ui/STACK.md](docs/ui/STACK.md), [packages/design/DESIGN.md](packages/design/DESIGN.md) |
-| Media (`crates/tv-*`)                        | [docs/tv](docs/tv)                                                                                                                           |
-| Gaming and Steam                             | [docs/gaming/OWNERSHIP.md](docs/gaming/OWNERSHIP.md)                                                                                         |
-| Epic Games and Unreal Engine resources       | [docs/epic/RESOURCES.md](docs/epic/RESOURCES.md), [docs/epic/TRACKING.md](docs/epic/TRACKING.md)                                             |
-| Games and creative suite (plan, not started) | [docs/games/PLAN.md](docs/games/PLAN.md)                                                                                                     |
-| Deploy                                       | [docs/infra/DEPLOY.md](docs/infra/DEPLOY.md)                                                                                                 |
-| Session ledgers                              | [docs/SESSION-LEDGER-2026-11-13.md](docs/SESSION-LEDGER-2026-11-13.md)                                                                       |
-
-## Labs (merged 2026-11-12)
-
-Aphrody Labs: self-hosted platform work; its former binary is now `ay conformance`.
-
-| Path                                                                           | Content                                                                        |
-| :----------------------------------------------------------------------------- | :----------------------------------------------------------------------------- |
-| `crates/conformance`, `conformance/`                                           | pinned conformance suites, CLI `ay conformance`                                |
-| `crates/lore*`, `licenses/lore`, `tools/lore`                                  | Lore VCS, absorbed (MIT)                                                       |
-| `crates/apm`                                                                   | APM crate                                                                      |
-| `[patch.crates-io]`                                                            | patched crates as aphrody-labs forks pinned by `rev` (quinn-proto, glob-match) |
-| `third_party/oils`, `third_party/{vendor.lock,chrome-channels.toml,forks.txt}` | oils fork and pins                                                             |
-| `infra/chromium-factory`                                                       | Chromium build factory                                                         |
-| `plugins/labs`                                                                 | Claude Code plugin `labs` ([docs/PLUGIN.md](docs/PLUGIN.md))                   |
-
-Recipes: `just lab-build`, `just lab-dev`, `just lab-conformance`.
+| Topic                       | Document                                                                                                                                                                                     |
+| :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Master Architectural Plan   | [docs/PLAN.mdx](docs/PLAN.mdx)                                                                                                                                                               |
+| Pure C23 LLVM Core & C ABI  | [docs/llvm/PURE-C-LLVM.mdx](docs/llvm/PURE-C-LLVM.mdx)                                                                                                                                       |
+| Modern Web Guidance & RAG   | [docs/web/MODERN-WEB-GUIDANCE.mdx](docs/web/MODERN-WEB-GUIDANCE.mdx)                                                                                                                         |
+| Reference Pillars           | [docs/reference/tree-sitter.md](docs/reference/tree-sitter.md), [docs/reference/llvm-toolchain.md](docs/reference/llvm-toolchain.md), [docs/reference/bun-ffi.md](docs/reference/bun-ffi.md) |
+| Games & Creative Suite Plan | [docs/games/PLAN.md](docs/games/PLAN.md)                                                                                                                                                     |

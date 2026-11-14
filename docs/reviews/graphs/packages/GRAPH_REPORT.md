@@ -1,10 +1,12 @@
 # Graph Report - packages
 
 ## Corpus Check
+
 - **Nodes:** 22692 · **Edges:** 33849 · **Communities:** 1081
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `material-symbols-index.json` [file] - 3866 connections (google-design/assets/symbols/material-symbols-index.json:L1)
 2. `join()` [function] - 440 connections (site/src/cli.ts:L13)
 3. `JSON.stringify()` [function] - 230 connections (site/src/build.ts:L276)
@@ -19,6 +21,7 @@
 12. `readFileSync()` [function] - 158 connections (site/src/serve.ts:L52)
 
 ## Key Structural Connections
+
 - `package.json` --[defines]--> `name` (Extracted)
 - `package.json` --[defines]--> `version` (Extracted)
 - `package.json` --[defines]--> `description` (Extracted)

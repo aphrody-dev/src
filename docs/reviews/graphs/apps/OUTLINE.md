@@ -314,6 +314,7 @@ apps/
 ================================================
 FILE: aphrody/README.md
 ================================================
+
 # aphrody.com
 
 Pixel-identical replica of `https://www.google.com/` aligned with `https://design.google/`, Chromium UI (`C:\src\third_party\chromium\src\docs\ui\index.md` / GoogleChrome standards), Microsoft Fluent UI 2, Apple macOS Sequoia traffic-light windowing, Storytold WASM+WebGPU Creative Suite, and Universal Declarative Store & Multi-Ecosystem Package Manager.
@@ -405,10 +406,10 @@ bun run pm awesome <markdown-url-or-file>
 bun run pm bench
 ```
 
-
 ================================================
 FILE: aphrody-app/README.md
 ================================================
+
 # Aphrody App (`aphrody.app`)
 
 Pure-Rust (Edition 2024, zero TypeScript) multi-target desktop & web application combining WebGPU/WGSL Mica rendering, Wayland wire-protocol & tiling layouts, Fluid-style total-order CRDT state (`SharedMap`, `SharedString`, `SharedCounter`), Blake3 content-addressed OPFS/WAL storage, and W3C WebMCP (`navigator.modelContext` + HTTP JSON-RPC `/mcp`).
@@ -439,10 +440,10 @@ wck ./dist
 - **Wayland Session**: `packaging/wayland/aphrody-app.desktop`
 - **Android Native**: `cargo build -p aphrody-android --target aarch64-linux-android --release`
 
-
 ================================================
 FILE: nt/README.md
 ================================================
+
 # nt
 
 Modèle du **vrai** Windows NT de ce poste, en direct et rendu entièrement par le GPU, sur la pile Microsoft.
@@ -481,10 +482,10 @@ just winui-rs     # WinUI 3 depuis Rust
 
 Aucune compilation sur le poste du propriétaire : `.github/workflows/ci.yml` compile la coque, la sonde et la scène.
 
-
 ================================================
 FILE: nt/docs/msindex/README.md
 ================================================
+
 # msindex : pile Microsoft indexée et prouvée sur ce poste
 
 Généré le 2026-11-12 par `sdk/tools/msindex` (`just msindex <src>`), vérifiable par `just msindex-verify <src>`.
@@ -562,10 +563,10 @@ Empreinte du graphe : `1b9767a8e6b276d7c3766b9379880d9e815ab34b8112e7b7e5f66ec5d
 - headers : 1
 - module : 1
 
-
 ================================================
 FILE: aphrody/package.json
 ================================================
+
 // [OUTLINE - 17 symbols, 20 lines]
 // L2: "name": "@aphrody/aphrody"
 // L3: "version": "1.0.0"
@@ -585,17 +586,17 @@ FILE: aphrody/package.json
 // L18: "dependencies":
 // L19: "devDependencies":
 
-
 ================================================
 FILE: aphrody-app/Cargo.toml
 ================================================
+
 [workspace]
 resolver = "3"
 members = [
-  "crates/aphrody-core",
-  "crates/aphrody-wasm",
-  "crates/aphrody-host",
-  "crates/aphrody-android",
+"crates/aphrody-core",
+"crates/aphrody-wasm",
+"crates/aphrody-host",
+"crates/aphrody-android",
 ]
 
 [workspace.package]
@@ -620,10 +621,10 @@ strip = true
 inherits = "release"
 opt-level = "s"
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-android/Cargo.toml
 ================================================
+
 [package]
 name = "aphrody-android"
 version.workspace = true
@@ -638,10 +639,10 @@ crate-type = ["cdylib"]
 [dependencies]
 aphrody-core.workspace = true
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/Cargo.toml
 ================================================
+
 [package]
 name = "aphrody-core"
 version.workspace = true
@@ -654,10 +655,10 @@ serde.workspace = true
 serde_json.workspace = true
 blake3.workspace = true
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-host/Cargo.toml
 ================================================
+
 [package]
 name = "aphrody-host"
 version.workspace = true
@@ -675,10 +676,10 @@ serde.workspace = true
 serde_json.workspace = true
 blake3.workspace = true
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-wasm/Cargo.toml
 ================================================
+
 [package]
 name = "aphrody-wasm"
 version.workspace = true
@@ -703,72 +704,74 @@ serde.workspace = true
 [target.'cfg(target_arch = "wasm32")'.dependencies.web-sys]
 version = "0.3"
 features = [
-  "Window",
-  "Document",
-  "Element",
-  "HtmlElement",
-  "HtmlCanvasElement",
-  "Navigator",
-  "Location",
-  "Performance",
-  "DomRect",
-  "Event",
-  "EventTarget",
-  "KeyboardEvent",
-  "MouseEvent",
-  "PointerEvent",
-  "MessageEvent",
-  "EventSource",
-  "RequestInit",
-  "Response",
-  "console",
-  "Gpu",
-  "GpuAdapter",
-  "GpuDevice",
-  "GpuQueue",
-  "GpuCanvasContext",
-  "GpuCanvasConfiguration",
-  "GpuTextureFormat",
-  "GpuShaderModule",
-  "GpuShaderModuleDescriptor",
-  "GpuRenderPipeline",
-  "GpuRenderPipelineDescriptor",
-  "GpuVertexState",
-  "GpuFragmentState",
-  "GpuColorTargetState",
-  "GpuBuffer",
-  "GpuBufferDescriptor",
-  "GpuBindGroup",
-  "GpuBindGroupDescriptor",
-  "GpuBindGroupEntry",
-  "GpuBufferBinding",
-  "GpuBindGroupLayout",
-  "GpuCommandEncoder",
-  "GpuCommandBuffer",
-  "GpuRenderPassEncoder",
-  "GpuRenderPassDescriptor",
-  "GpuRenderPassColorAttachment",
-  "GpuTexture",
-  "GpuTextureView",
-  "GpuLoadOp",
-  "GpuStoreOp",
-  "GpuAutoLayoutMode",
-  "gpu_buffer_usage",
-  "StorageManager",
-  "FileSystemDirectoryHandle",
-  "FileSystemFileHandle",
-  "FileSystemGetFileOptions",
-  "FileSystemWritableFileStream",
-  "File",
-  "Blob",
+"Window",
+"Document",
+"Element",
+"HtmlElement",
+"HtmlCanvasElement",
+"Navigator",
+"Location",
+"Performance",
+"DomRect",
+"Event",
+"EventTarget",
+"KeyboardEvent",
+"MouseEvent",
+"PointerEvent",
+"MessageEvent",
+"EventSource",
+"RequestInit",
+"Response",
+"console",
+"Gpu",
+"GpuAdapter",
+"GpuDevice",
+"GpuQueue",
+"GpuCanvasContext",
+"GpuCanvasConfiguration",
+"GpuTextureFormat",
+"GpuShaderModule",
+"GpuShaderModuleDescriptor",
+"GpuRenderPipeline",
+"GpuRenderPipelineDescriptor",
+"GpuVertexState",
+"GpuFragmentState",
+"GpuColorTargetState",
+"GpuBuffer",
+"GpuBufferDescriptor",
+"GpuBindGroup",
+"GpuBindGroupDescriptor",
+"GpuBindGroupEntry",
+"GpuBufferBinding",
+"GpuBindGroupLayout",
+"GpuCommandEncoder",
+"GpuCommandBuffer",
+"GpuRenderPassEncoder",
+"GpuRenderPassDescriptor",
+"GpuRenderPassColorAttachment",
+"GpuTexture",
+"GpuTextureView",
+"GpuLoadOp",
+"GpuStoreOp",
+"GpuAutoLayoutMode",
+"gpu_buffer_usage",
+"StorageManager",
+"FileSystemDirectoryHandle",
+"FileSystemFileHandle",
+"FileSystemGetFileOptions",
+"FileSystemWritableFileStream",
+"File",
+"Blob",
 ]
-
 
 ================================================
 FILE: nt/justfile
 ================================================
+
 # nt — point d'entrée unique. Architecture : docs/plan/architecture-microsoft.md.
+
 # Windows (niubash) et Unix ; les recettes qui lisent le Windows réel sont marquées [windows].
+
 set shell := ["sh", "-cu"]
 set windows-shell := ["niu", "-cu"]
 
@@ -780,103 +783,121 @@ platform := if rid =~ "arm64$" { "ARM64" } else { "x64" }
 default: lint web
 
 # Outils épinglés : DXC 1.9.2609, Agility SDK 1.620.2 ; Windows : niubash 1.5.0, CMake 4.5.0, Ninja 1.13.2 -> sdk/tools/
+
 tools:
-    bun sdk/tools/fetch-tools.ts
+bun sdk/tools/fetch-tools.ts
 
 install:
-    bun install --frozen-lockfile
+bun install --frozen-lockfile
 
 lint: install
-    bun fmt --check
-    bun check
+bun fmt --check
+bun check
 
 # Scène GPU du noyau (WebGPU) -> target/web
+
 web: install
-    bun build modules/web/nt.html --outdir target/web --minify
+bun build modules/web/nt.html --outdir target/web --minify
 
 # Serveur : noyau NT en direct (WebSocket /kernel), /api/icon, /api/index, /desktop.svg
+
 serve: install
-    bun sdk/tools/host/server.ts
+bun sdk/tools/host/server.ts
 
 # Index complet de %SystemRoot% (FindFirstFileExW + SQLite FTS5 + en-têtes PE) -> target/index/windows.sqlite
+
 [windows]
 index root="":
-    bun sdk/tools/host/winindex.ts {{ root }} --pe
+bun sdk/tools/host/winindex.ts {{ root }} --pe
 
 # Bureau Windows entier vectorisé en SVG (UI Automation) -> target/desktop.svg
+
 [windows]
 desktop-svg:
-    bun sdk/tools/host/desktop-svg.ts
+bun sdk/tools/host/desktop-svg.ts
 
 # Poste de développement Windows : WinGet Configuration v3 (VS Build Tools 2026 + C++, .NET 11, bun, just, niubash, Rust…)
+
 [windows]
 setup:
-    winget configure -f .config/configuration.winget
+winget configure -f .config/configuration.winget
 
 # Sonde des capacités Direct3D 12 : C++23 `import std` (CMake 4.5 + Ninja + MSVC), vcpkg (directx-headers, wil)
+
 [windows]
 probe: tools
-    cd sdk/tools/gpuprobe && bun ../vsdev.ts cmake --workflow --preset windows
+cd sdk/tools/gpuprobe && bun ../vsdev.ts cmake --workflow --preset windows
 
 # Coque native WinUI 3 NativeAOT, non empaquetée autonome -> target/dotnet/publish/Nt.App/ ; données : `just serve`
+
 [windows]
 app:
-    dotnet publish base/shell/explorer -c Release -r {{ rid }}
+dotnet publish base/shell/explorer -c Release -r {{ rid }}
 
 # .NET -> bun sans node-api-dotnet (docs/bun/dotnet-native.md) : Nt.Interop en IL (hostfxr) et NativeAOT, puis liaisons
+
 # bun:ffi générées depuis les métadonnées ECMA-335 -> target/dotnet-ffi. Compile : CI uniquement.
+
 interop:
-    dotnet build sdk/dotnet/Nt.Interop -c Release
-    dotnet publish sdk/dotnet/Nt.Interop -c Release -r {{ rid }}
-    bun sdk/tools/dotnet-ffi/gen.ts target/dotnet/bin/Nt.Interop/release/Nt.Interop.dll --out target/dotnet-ffi --native target/dotnet/publish/Nt.Interop/release_{{ rid }}
+dotnet build sdk/dotnet/Nt.Interop -c Release
+dotnet publish sdk/dotnet/Nt.Interop -c Release -r {{ rid }}
+bun sdk/tools/dotnet-ffi/gen.ts target/dotnet/bin/Nt.Interop/release/Nt.Interop.dll --out target/dotnet-ffi --native target/dotnet/publish/Nt.Interop/release_{{ rid }}
 
 # Tests d'interop (après `just interop`) : NativeAOT puis CoreCLR hébergé, chacun dans son processus
+
 test-interop:
-    bun test ./sdk/tools/dotnet-ffi/native.test.ts
-    bun test ./sdk/tools/dotnet-ffi/hosted.test.ts
+bun test ./sdk/tools/dotnet-ffi/native.test.ts
+bun test ./sdk/tools/dotnet-ffi/hosted.test.ts
 
 # Coût d'appel bun -> .NET (OS, JS, NativeAOT, CoreCLR) -> target/bench/dotnet-ffi-<rid>.json
+
 bench-interop:
-    NT_RID={{ rid }} bun sdk/tools/dotnet-ffi/bench.ts
+NT_RID={{ rid }} bun sdk/tools/dotnet-ffi/bench.ts
 
 # Graphe des fonctionnalités de bun amont (arbre source local) -> docs/bun/feature-graph.{json,md}
+
 bun-graph src:
-    bun sdk/tools/bun-graph.ts {{ src }} --out docs/bun
+bun sdk/tools/bun-graph.ts {{ src }} --out docs/bun
 
 # Index récursif et prouvé de la pile Microsoft du poste (Win32/WDK/WinRT, Windows App SDK + WinUI 3, .NET 10/11, windows-rs,
+
 # UCRT/CRT/STL) -> target/index/msindex.sqlite, docs/msindex/{lock.json,README.md}. src : racine du monorepo src.
+
 [windows]
 msindex src:
-    bun sdk/tools/msindex/main.ts --src {{ src }}
+bun sdk/tools/msindex/main.ts --src {{ src }}
 
 # Reproductibilité : entrées identiques au verrou docs/msindex/lock.json et même empreinte de graphe, sinon échec
+
 [windows]
 msindex-verify src:
-    bun sdk/tools/msindex/main.ts --src {{ src }} --verify
+bun sdk/tools/msindex/main.ts --src {{ src }} --verify
 
 # Coque en MSIX projet unique -> target/dotnet/msix/ ; signé si NT_CERT (pfx) et NT_CERT_PASSWORD sont définis
+
 [windows]
 msix:
-    dotnet publish base/shell/explorer -c Release -r {{ rid }} -p:Platform={{ platform }} -p:NtPackage=msix
+dotnet publish base/shell/explorer -c Release -r {{ rid }} -p:Platform={{ platform }} -p:NtPackage=msix
 
 # WinUI 3 depuis Rust (windows-reactor, fork windows-rs épinglé) -> target/cargo/release/reactor-winui-hello.exe
+
 [windows]
 winui-rs:
-    cd sdk/rust && cargo -Zgit=shallow-deps build --release --locked
-
+cd sdk/rust && cargo -Zgit=shallow-deps build --release --locked
 
 ================================================
 FILE: nt/modules/web/package.json
 ================================================
+
 // [OUTLINE - 3 symbols, 5 lines]
 // L2: "name": "@aphrody/web"
 // L3: "private": true
 // L4: "type": "module"
 
-
 ================================================
 FILE: nt/package.json
 ================================================
+
 // [OUTLINE - 12 symbols, 16 lines]
 // L2: "name": "@aphrody/nt"
 // L3: "version": "0.0.0"
@@ -891,12 +912,14 @@ FILE: nt/package.json
 // L13: "tree-sitter-cpp": "catalog:"
 // L14: "web-tree-sitter": "catalog:"
 
-
 ================================================
 FILE: nt/sdk/rust/Cargo.toml
 ================================================
+
 # Échantillons Rust de nt sur la pile WinUI de windows-rs (windows-reactor : WinUI 3 déclaratif, Windows App SDK 2.x).
+
 # Le cœur Rust de nt vit dans le monorepo windows-rs (fork aphrody-labs, master) ; ici seulement des échantillons.
+
 [workspace]
 resolver = "3"
 members = ["brand", "winui-hello"]
@@ -906,14 +929,17 @@ edition = "2024"
 publish = false
 
 [workspace.dependencies]
-# Fork aphrody-labs/windows-rs épinglé par commit (= microsoft/windows-rs master 8ca69fda du 2026-11-11) :
-# windows-reactor 0.101.0, non publié sur crates.io (0.100.0). Dépendance git, jamais de chemin local.
-windows-reactor = { git = "https://github.com/aphrody-labs/windows-rs", rev = "8ca69fdaa9d69c78b9bcfbee96c6916f2282e7f0" }
 
+# Fork aphrody-labs/windows-rs épinglé par commit (= microsoft/windows-rs master 8ca69fda du 2026-11-11) :
+
+# windows-reactor 0.101.0, non publié sur crates.io (0.100.0). Dépendance git, jamais de chemin local.
+
+windows-reactor = { git = "https://github.com/aphrody-labs/windows-rs", rev = "8ca69fdaa9d69c78b9bcfbee96c6916f2282e7f0" }
 
 ================================================
 FILE: nt/sdk/rust/brand/Cargo.toml
 ================================================
+
 [package]
 name = "nt-brand"
 version = "0.1.0"
@@ -925,11 +951,12 @@ license = "MIT OR Apache-2.0"
 [lib]
 path = "src/lib.rs"
 
-
 ================================================
 FILE: nt/sdk/rust/winui-hello/Cargo.toml
 ================================================
+
 # Conventions des échantillons windows-rs (crates/samples/reactor/*) : version 0.0.0, édition 2024, non publié.
+
 [package]
 name = "reactor-winui-hello"
 version = "0.0.0"
@@ -939,10 +966,10 @@ publish.workspace = true
 [dependencies]
 windows-reactor = { workspace = true }
 
-
 ================================================
 FILE: r2-site/package.json
 ================================================
+
 // [OUTLINE - 9 symbols, 12 lines]
 // L2: "name": "@aphrody/r2-site"
 // L3: "version": "0.1.0"
@@ -954,10 +981,10 @@ FILE: r2-site/package.json
 // L9: "test": "bun test"
 // L10: "check": "bun check"
 
-
 ================================================
 FILE: yolo/package.json
 ================================================
+
 // [OUTLINE - 18 symbols, 23 lines]
 // L2: "name": "@aphrody/yolo"
 // L3: "version": "1.0.0"
@@ -978,10 +1005,10 @@ FILE: yolo/package.json
 // L20: "@aphrody/chromium-bun": "workspace:*"
 // L22: "devDependencies":
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-android/src/lib.rs
 ================================================
+
 // [OUTLINE - 7 symbols, 75 lines]
 // import aphrody_core
 // import aphrody_core
@@ -998,10 +1025,10 @@ FILE: aphrody-app/crates/aphrody-android/src/lib.rs
 // L62-L75: mod tests
 // L66-L74: fn android_c_abi_roundtrip()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/src/lib.rs
 ================================================
+
 // [OUTLINE - 10 symbols, 21 lines]
 // L1: pub mod fluid;
 // L2: pub mod layout;
@@ -1014,10 +1041,10 @@ FILE: aphrody-app/crates/aphrody-core/src/lib.rs
 // L13: pub trait MaybeSend
 // L17: pub trait MaybeSend: Send
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-host/src/main.rs
 ================================================
+
 // [OUTLINE - 6 symbols, 152 lines]
 // import aphrody_core
 // import aphrody_core
@@ -1033,30 +1060,30 @@ FILE: aphrody-app/crates/aphrody-host/src/main.rs
 // L37-L145: fn run() -> Result<(), String>
 // L147-L152: fn main()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-wasm/src/lib.rs
 ================================================
+
 // [OUTLINE - 4 symbols, 11 lines]
 // L4: pub mod scene;
 // L7: mod gpu;
 // L9: mod opfs;
 // L11: mod web;
 
-
 ================================================
 FILE: nt/sdk/rust/brand/src/lib.rs
 ================================================
+
 // [OUTLINE - 3 symbols, 29 lines]
 // import super
 // L10-L17: pub const fn rgba_f32(c: u32) -> [f32; 4]
 // L20-L29: mod tests
 // L24-L28: fn primaire_de_marque()
 
-
 ================================================
 FILE: nt/sdk/rust/winui-hello/src/main.rs
 ================================================
+
 // [OUTLINE - 6 symbols, 49 lines]
 // import windows_reactor
 // L9-L12: enum Message
@@ -1066,17 +1093,18 @@ FILE: nt/sdk/rust/winui-hello/src/main.rs
 // L33-L44: fn view(&self, _input: &(), context: &mut ViewContext<Self>) -> View
 // L47-L49: fn main()
 
-
 ================================================
 FILE: DEPS.rules
 ================================================
-# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
-layer = 5
 
+# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
+
+layer = 5
 
 ================================================
 FILE: aphrody/DESIGN.md
 ================================================
+
 # DESIGN.md — aphrody.com
 
 Design specification for the aphrody.com brand homepage. Requirements and content live in `PRD.md`; this file defines the visual system. The tokens are implemented in `src/seo/home-css.ts`.
@@ -1128,10 +1156,10 @@ Contrast (WCAG 2.2, computed): light ink/paper 14.87, muted/tile 6.42, active/pa
 - Product status is plain text with a colored text label, never a fake "live" pulse animation.
 - Copy names things by what people use ("le catalogue de paquets"), not by how they are built.
 
-
 ================================================
 FILE: aphrody/PRD.md
 ================================================
+
 # Cahier des charges (PRD) — aphrody.com, page d'accueil de la marque
 
 | Champ           | Valeur                                                                                             |
@@ -1210,10 +1238,10 @@ Interdits : témoignages, notes, chiffres d'usage, logos de clients, promesses d
 | Aucune trace d'IA            | 0 occurrence de « Gemini », « IA », « AI mode » sur la home et dans les sitemaps | tests                     |
 | Anti-slop                    | 0 emoji, 0 formule promotionnelle                                                | `gds audit-slop`          |
 
-
 ================================================
 FILE: aphrody/build.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 280 lines]
 // import fs
 // import path
@@ -1232,30 +1260,30 @@ FILE: aphrody/build.ts
 // L52-L56: function emit(rel: string, content: string | Uint8Array): void
 // L233-L238: function walk(dir: string): string[]
 
-
 ================================================
 FILE: aphrody/edge/worker.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 86 lines]
 // import @aphrody/deploy/src/serve.ts
 // import @aphrody/deploy/src/runtime.ts
 // L20-L26: interface Env
 // L35-L85: async fetch(
 
-
 ================================================
 FILE: aphrody/pm.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 228 lines]
 // import ./src/store/universal-manager
 // import ./src/benchmark/stack-picker
 // import fs
 // L28-L223: async function main()
 
-
 ================================================
 FILE: aphrody/server.ts
 ================================================
+
 // [OUTLINE - 8 symbols, 339 lines]
 // import bun
 // import fs
@@ -1281,10 +1309,10 @@ FILE: aphrody/server.ts
 // L125-L136: function htmlHeaders(pathname: string): Record<string, string>
 // L140-L336: async fetch(
 
-
 ================================================
 FILE: aphrody/src/benchmark/stack-picker.ts
 ================================================
+
 // [OUTLINE - 13 symbols, 487 lines]
 // import ../suite/wasm-kernel
 // L20-L25: type WorkloadType =
@@ -1301,10 +1329,10 @@ FILE: aphrody/src/benchmark/stack-picker.ts
 // L432-L444: interface FullBenchmarkSuiteReport
 // L446-L487: async function runBenchmarkSuite(): Promise<FullBenchmarkSuiteReport>
 
-
 ================================================
 FILE: aphrody/src/client/boot.ts
 ================================================
+
 // [OUTLINE - 16 symbols, 253 lines]
 // import ./../seo/webmcp-tools
 // L13-L19: interface Cfg
@@ -1324,10 +1352,10 @@ FILE: aphrody/src/client/boot.ts
 // L209-L232: function initWebMcp(): void
 // L217-L225: async execute(args: Record<string, unknown>)
 
-
 ================================================
 FILE: aphrody/src/client/play.ts
 ================================================
+
 // [OUTLINE - 4 symbols, 91 lines]
 // import ../immersive/play-launcher.ts
 // L5-L9: interface PlayState
@@ -1335,10 +1363,10 @@ FILE: aphrody/src/client/play.ts
 // L33-L43: async function hasWebGpu(): Promise<boolean>
 // L48-L88: async function main()
 
-
 ================================================
 FILE: aphrody/src/data/games.json
 ================================================
+
 // [OUTLINE - 624 symbols, 1 lines]
 // L1: "store":"epic"
 // L1: "ext_id":"d37f3694e7a04edb8347f3cb6320f9d3"
@@ -1351,11 +1379,11 @@ FILE: aphrody/src/data/games.json
 // L1: "developer":"SEGA of Europe"
 // L1: "release":null
 // L1: "desc":
-// L1: "en":"Discover the true meaning of fear in Alien: Isolation, a survival horror set in an atmosphere of constant dread and mortal danger...   Created using the CATHODE™ engine."
-// L1: "fr":"Découvrez le vrai sens de la peur dans Alien: Isolation, un survival horror se déroulant dans une atmosphère d'épouvante et de danger constants.   Créé avec le moteur CATHODE™."
-// L1: "zh-CN":"在《Alien: Isolation》这款以持续恐惧和致命危险气氛为背景的生存恐怖游戏中，发掘恐惧的真正意义。   使用 CATHODE™ 引擎打造。"
-// L1: "ja":"絶え間ない不安と死の危険の気配が迫る『Alien: Isolation』で真の恐怖を味わおう。   CATHODE™エンジンを使用して制作。"
-// L1: "es":"Descubre el verdadero significado del terror en Alien: Isolation, un juego de horror y supervivencia que transcurre en un ambiente de constante tensión y peligro.   Creado con el motor de juego CATHODE™."
+// L1: "en":"Discover the true meaning of fear in Alien: Isolation, a survival horror set in an atmosphere of constant dread and mortal danger... Created using the CATHODE™ engine."
+// L1: "fr":"Découvrez le vrai sens de la peur dans Alien: Isolation, un survival horror se déroulant dans une atmosphère d'épouvante et de danger constants. Créé avec le moteur CATHODE™."
+// L1: "zh-CN":"在《Alien: Isolation》这款以持续恐惧和致命危险气氛为背景的生存恐怖游戏中，发掘恐惧的真正意义。 使用 CATHODE™ 引擎打造。"
+// L1: "ja":"絶え間ない不安と死の危険の気配が迫る『Alien: Isolation』で真の恐怖を味わおう。 CATHODE™エンジンを使用して制作。"
+// L1: "es":"Descubre el verdadero significado del terror en Alien: Isolation, un juego de horror y supervivencia que transcurre en un ambiente de constante tensión y peligro. Creado con el motor de juego CATHODE™."
 // L1: "store":"epic"
 // L1: "ext_id":"8f80897c0b6e4e678fed08da169d44be"
 // L1: "name":"Castlevania Anniversary Collection"
@@ -1401,7 +1429,7 @@ FILE: aphrody/src/data/games.json
 // L1: "desc":
 // L1: "en":"Ghostrunner 2 is a hardcore FPP slasher set in a post-apocalyptic, cyberpunk world. Featuring everything fans loved about Ghostrunner plus incredible boss fights, new interactive story, thrilling motorbike levels, improved skills, and more cyber ninja action. "
 // L1: "fr":"Ghostrunner 2 est un slasher FPP intense se déroulant dans un monde cyberpunk post-apocalyptique. Il comprend tout ce que les fans ont adoré dans Ghostrunner, avec en plus des combats de boss, une nouvelle histoire interactive, des niveaux en moto palpitants, des compétences améliorées et plus d'act"
-// L1: "zh-CN":"《幽灵行者 2》是第一人称视角硬核砍杀游戏的续作，故事背景设定在后世界末日的赛博朋克世界。游戏延续了《幽灵行者》粉丝喜爱的所有内容，包括精彩绝伦的 BOSS 战、全新的可互动式剧情主线、刺激的摩托车关卡、重新优化的技能以及更多生化忍者的打斗场面。  "
+// L1: "zh-CN":"《幽灵行者 2》是第一人称视角硬核砍杀游戏的续作，故事背景设定在后世界末日的赛博朋克世界。游戏延续了《幽灵行者》粉丝喜爱的所有内容，包括精彩绝伦的 BOSS 战、全新的可互动式剧情主线、刺激的摩托车关卡、重新优化的技能以及更多生化忍者的打斗场面。 "
 // L1: "ja":"『ゴーストランナー 2』は、サイバーパンクの街を駆け抜けるハードコアFPPアクションゲーム！『ゴーストランナー』で好評だった要素に加え、熾烈なボス戦、没入感あふれる新たなストーリー、迫力満点のバイクステージ、改良されたスキル、サイバー忍者アクションが集結！ "
 // L1: "es":"Ghostrunner 2 es acción hardcore en primera persona con katanas en un mundo ciberpunk postapocalíptico. Con lo que gustó de Ghostrunner e increíbles batallas contra jefes, más habilidades, una historia interactiva, niveles en moto y más acción ciberninja. "
 // L1: "store":"epic"
@@ -1965,18 +1993,18 @@ FILE: aphrody/src/data/games.json
 // L1: "ja":"We are the world’s premier motorsports racing game. An iRacing membership provides entry into the newest form of motorsport: internet racing. Internet racing is a fun, easy, and inexpensive way for race fan and gamers alike to enjoy the thrill of the racetrack from the comfort of their home."
 // L1: "es":"We are the world’s premier motorsports racing game. An iRacing membership provides entry into the newest form of motorsport: internet racing. Internet racing is a fun, easy, and inexpensive way for race fan and gamers alike to enjoy the thrill of the racetrack from the comfort of their home."
 
-
 ================================================
 FILE: aphrody/src/data/suggestions.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 46 lines]
 // L1-L4: interface SuggestionItem
 // L22-L46: function getSuggestions(query: string): SuggestionItem[]
 
-
 ================================================
 FILE: aphrody/src/design/material-tokens.ts
 ================================================
+
 // [OUTLINE - 8 symbols, 203 lines]
 // import ../../../../assets/brand/gen/symbols/symbols.json
 // L8-L38: interface MaterialThemeTokens
@@ -1988,17 +2016,17 @@ FILE: aphrody/src/design/material-tokens.ts
 // L195-L197: function m3Vars(t: MaterialThemeTokens): string
 // L199-L203: function getMaterialCssSubset(): string
 
-
 ================================================
 FILE: aphrody/src/globals.d.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 45 lines]
 // L5-L8: interface ImportMeta
-
 
 ================================================
 FILE: aphrody/src/google/config.ts
 ================================================
+
 // [OUTLINE - 8 symbols, 132 lines]
 // L8-L16: interface GoogleEnv
 // L18-L27: interface GoogleConfig
@@ -2009,19 +2037,19 @@ FILE: aphrody/src/google/config.ts
 // L80-L82: function configScriptTag(cfg: GoogleConfig): string
 // L84-L132: function buildCsp(cfg: GoogleConfig): string
 
-
 ================================================
 FILE: aphrody/src/google/relay.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 76 lines]
 // L13-L17: interface RelayOptions
 // L19-L24: function noContent(state: string): Response
 // L26-L76: async function handleCollect(
 
-
 ================================================
 FILE: aphrody/src/holding/page.ts
 ================================================
+
 // [OUTLINE - 16 symbols, 403 lines]
 // import node:fs
 // import node:path
@@ -2044,27 +2072,27 @@ FILE: aphrody/src/holding/page.ts
 // L339-L345: function themeBlocks(root: string): string
 // L401-L403: function holdingCss(root: string): string
 
-
 ================================================
 FILE: aphrody/src/immersive/build.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 43 lines]
 // import node:fs
 // import node:path
 // L16-L43: async function buildImmersive(root: string, dist: string, entries: Record<string, string>): Promise<string[]>
 
-
 ================================================
 FILE: aphrody/src/immersive/home-entry.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 18 lines]
 // import ./stage.ts
 // L7-L14: function boot()
 
-
 ================================================
 FILE: aphrody/src/immersive/motion.ts
 ================================================
+
 // [OUTLINE - 5 symbols, 45 lines]
 // import ./tokens.macro.ts
 // L8-L12: function dur(name: string): number
@@ -2073,45 +2101,45 @@ FILE: aphrody/src/immersive/motion.ts
 // L23-L40: step(dt: number): boolean
 // L41-L44: snap(v: number)
 
-
 ================================================
 FILE: aphrody/src/immersive/nav.ts
 ================================================
+
 // [OUTLINE - 4 symbols, 39 lines]
 // L2: type Dir = "left" | "right" | "up" | "down";
 // L3-L8: interface Box
 // L14-L33: function pickNext(boxes: Box[], from: number, dir: Dir): number
 // L36-L39: function stickDir(x: number, y: number, dead = 0.5): Dir | null
 
-
 ================================================
 FILE: aphrody/src/immersive/play-launcher.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 52 lines]
 // import ./stage.ts
 // import ./sound.ts
 // L9-L52: async function launcher(): Promise<void>
 
-
 ================================================
 FILE: aphrody/src/immersive/shader.ts
 ================================================
-// [OUTLINE - 0 symbols, 110 lines]
 
+// [OUTLINE - 0 symbols, 110 lines]
 
 ================================================
 FILE: aphrody/src/immersive/sound.ts
 ================================================
+
 // [OUTLINE - 4 symbols, 46 lines]
 // L3-L7: interface Sounds
 // L11-L46: function createSounds(base: string): Sounds
 // L25-L33: unlock()
 // L34-L43: play(name)
 
-
 ================================================
 FILE: aphrody/src/immersive/stage.ts
 ================================================
+
 // [OUTLINE - 7 symbols, 414 lines]
 // import ./shader.ts
 // import ./motion.ts
@@ -2124,10 +2152,10 @@ FILE: aphrody/src/immersive/stage.ts
 // L68-L78: interface ItemState
 // L80-L414: async function startStage(o: StageOptions): Promise<StageHandle | null>
 
-
 ================================================
 FILE: aphrody/src/immersive/tokens.macro.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 25 lines]
 // import node:fs
 // import node:path
@@ -2135,16 +2163,16 @@ FILE: aphrody/src/immersive/tokens.macro.ts
 // L13-L20: function parseMotion(css: string): MotionTokens
 // L22-L25: function motionTokens(): MotionTokens
 
-
 ================================================
 FILE: aphrody/src/m3.css
 ================================================
-// [OUTLINE - 0 symbols, 155 lines]
 
+// [OUTLINE - 0 symbols, 155 lines]
 
 ================================================
 FILE: aphrody/src/os/build.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 71 lines]
 // import node:fs
 // import node:path
@@ -2152,10 +2180,10 @@ FILE: aphrody/src/os/build.ts
 // import ./vendor.ts
 // L23-L71: async function buildOs(
 
-
 ================================================
 FILE: aphrody/src/os/client/apps.ts
 ================================================
+
 // [OUTLINE - 13 symbols, 750 lines]
 // import ./i18n.ts
 // import ./wm.ts
@@ -2175,10 +2203,10 @@ FILE: aphrody/src/os/client/apps.ts
 // L647-L750: function withGamescope(w: Win, host: HTMLElement): void
 // L746-L748: get handle()
 
-
 ================================================
 FILE: aphrody/src/os/client/gamescope.ts
 ================================================
+
 // [OUTLINE - 8 symbols, 348 lines]
 // import ../../../../../crates/gamescope-wgsl/src/shaders/easu.wgsl
 // import ../../../../../crates/gamescope-wgsl/src/shaders/rcas.wgsl
@@ -2191,16 +2219,16 @@ FILE: aphrody/src/os/client/gamescope.ts
 // L105-L348: async function startGamescope(
 // L339-L345: function destroy()
 
-
 ================================================
 FILE: aphrody/src/os/client/i18n.ts
 ================================================
-// [OUTLINE - 0 symbols, 12 lines]
 
+// [OUTLINE - 0 symbols, 12 lines]
 
 ================================================
 FILE: aphrody/src/os/client/lib.ts
 ================================================
+
 // [OUTLINE - 5 symbols, 95 lines]
 // L2: type Kind = "rom" | "iso" | "swf" | "other";
 // L3-L9: interface Entry
@@ -2208,10 +2236,10 @@ FILE: aphrody/src/os/client/lib.ts
 // L54-L58: async function put(file: File): Promise<void>
 // L65-L88: async function pick(accept = ""): Promise<File[]>
 
-
 ================================================
 FILE: aphrody/src/os/client/os.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 149 lines]
 // import ../../immersive/stage.ts
 // import ../../immersive/sound.ts
@@ -2220,45 +2248,45 @@ FILE: aphrody/src/os/client/os.ts
 // import ./wm.ts
 // import ./apps.ts
 
-
 ================================================
 FILE: aphrody/src/os/client/wgsl.d.ts
 ================================================
-// [OUTLINE - 0 symbols, 4 lines]
 
+// [OUTLINE - 0 symbols, 4 lines]
 
 ================================================
 FILE: aphrody/src/os/client/wm.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 107 lines]
 // import ./i18n.ts
 // L4-L9: interface Win
 // L19-L102: function openWindow(
 // L59-L66: function close()
 
-
 ================================================
 FILE: aphrody/src/os/page.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 160 lines]
 // import ../../../../packages/i18n/src/index.ts
 // L6: type OsLocale = (typeof OS_LOCALES)[number];
 // L37: type AppId = (typeof APPS)[number];
 // L121-L160: function renderOs(root: string, locale: OsLocale, pet: string): string
 
-
 ================================================
 FILE: aphrody/src/os/server.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 171 lines]
 // import ./page.ts
 // import ../store/universal-manager
 // L117-L171: async function handleOs(
 
-
 ================================================
 FILE: aphrody/src/os/vendor.lock.json
 ================================================
+
 // [OUTLINE - 33 symbols, 43 lines]
 // L2-L6: "v86-js":
 // L3: "url": "https://github.com/copy/v86/releases/download/latest/libv86.js"
@@ -2294,10 +2322,10 @@ FILE: aphrody/src/os/vendor.lock.json
 // L39: "LICENSE_APACHE": "ruffle/LICENSE_APACHE"
 // L40: "LICENSE_MIT": "ruffle/LICENSE_MIT"
 
-
 ================================================
 FILE: aphrody/src/os/vendor.ts
 ================================================
+
 // [OUTLINE - 3 symbols, 95 lines]
 // import node:fs
 // import node:path
@@ -2305,19 +2333,19 @@ FILE: aphrody/src/os/vendor.ts
 // L24-L61: async function unzip(buf: Uint8Array): Promise<Map<string, Uint8Array>>
 // L63-L95: async function fetchVendor(dir: string): Promise<string[]>
 
-
 ================================================
 FILE: aphrody/src/play/page.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 96 lines]
 // import ../../../../packages/i18n/src/index.ts
 // L7: type PlayLocale = (typeof PLAY_LOCALES)[number];
 // L27-L96: function renderPlay(locale: PlayLocale = "en"): string
 
-
 ================================================
 FILE: aphrody/src/runtime/assets.ts
 ================================================
+
 // [OUTLINE - 8 symbols, 194 lines]
 // import fs
 // import path
@@ -2332,10 +2360,10 @@ FILE: aphrody/src/runtime/assets.ts
 // L149-L156: function etagMatches(header: string | null, etag: string): boolean
 // L158-L194: function respondWithAsset(
 
-
 ================================================
 FILE: aphrody/src/runtime/hash.ts
 ================================================
+
 // [OUTLINE - 7 symbols, 89 lines]
 // import fs
 // import os
@@ -2349,10 +2377,10 @@ FILE: aphrody/src/runtime/hash.ts
 // L75-L83: function getHashEngine(): HashEngine
 // L86-L89: function strongEtag(bytes: Uint8Array, variant = ""): string
 
-
 ================================================
 FILE: aphrody/src/seo/documents.ts
 ================================================
+
 // [OUTLINE - 16 symbols, 274 lines]
 // import ./site
 // import ../holding/page
@@ -2376,16 +2404,16 @@ FILE: aphrody/src/seo/documents.ts
 // L256-L265: function indexNowKey(
 // L267-L274: function indexNowPayload(key: string): Record<string, unknown>
 
-
 ================================================
 FILE: aphrody/src/seo/home-css.ts
 ================================================
-// [OUTLINE - 0 symbols, 62 lines]
 
+// [OUTLINE - 0 symbols, 62 lines]
 
 ================================================
 FILE: aphrody/src/seo/home.ts
 ================================================
+
 // [OUTLINE - 6 symbols, 298 lines]
 // import ./site
 // import ./schema-graph
@@ -2398,10 +2426,10 @@ FILE: aphrody/src/seo/home.ts
 // L196-L207: function tileHtml(t: Tile, c: Pick<HomeCopy, "status">): string
 // L209-L298: function renderBrandHome(locale: Locale): string
 
-
 ================================================
 FILE: aphrody/src/seo/html.ts
 ================================================
+
 // [OUTLINE - 15 symbols, 448 lines]
 // import ./site
 // import ./schema-graph
@@ -2424,17 +2452,17 @@ FILE: aphrody/src/seo/html.ts
 // L405-L417: function render404(locale: Locale, cfg: GoogleConfig): string
 // L419-L446: function renderSearchResults(
 
-
 ================================================
 FILE: aphrody/src/seo/page-css.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 38 lines]
 // L7-L14: function minifyCss(css: string): string
-
 
 ================================================
 FILE: aphrody/src/seo/schema-graph.ts
 ================================================
+
 // [OUTLINE - 6 symbols, 165 lines]
 // import ./site
 // L12-L15: interface GraphFaq
@@ -2444,10 +2472,10 @@ FILE: aphrody/src/seo/schema-graph.ts
 // L42-L149: function buildPageGraph(o: PageGraphOptions): Record<string, unknown>
 // L151-L155: function graphToScript(graph: Record<string, unknown>): string
 
-
 ================================================
 FILE: aphrody/src/seo/site.ts
 ================================================
+
 // [OUTLINE - 13 symbols, 391 lines]
 // L12: type Locale = "fr" | "en";
 // L17-L23: interface LocalizedHub
@@ -2463,17 +2491,17 @@ FILE: aphrody/src/seo/site.ts
 // L376-L387: function pathGroups(): Record<
 // L389-L391: function findVertical(slug: string): Vertical | undefined
 
-
 ================================================
 FILE: aphrody/src/seo/webmcp-tools.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 56 lines]
 // L7-L18: interface WebMcpTool
-
 
 ================================================
 FILE: aphrody/src/store/database.ts
 ================================================
+
 // [OUTLINE - 8 symbols, 153 lines]
 // import bun:sqlite
 // import fs
@@ -2488,75 +2516,75 @@ FILE: aphrody/src/store/database.ts
 // L132-L148: private rowToPackage(r: any): StorePackage
 // L150-L152: public close(): void
 
-
 ================================================
 FILE: aphrody/src/store/drivers/aur.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 95 lines]
 // import ../types
 // L57-L95: async function searchAurPackages(
 
-
 ================================================
 FILE: aphrody/src/store/drivers/bun.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 73 lines]
 // import ../types
 // L65-L73: async function searchBunPackages(
 
-
 ================================================
 FILE: aphrody/src/store/drivers/flatpak.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 94 lines]
 // import ../types
 // L57-L94: async function searchFlatpakPackages(
 
-
 ================================================
 FILE: aphrody/src/store/drivers/nix.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 66 lines]
 // import ../types
 // L58-L66: async function searchNixPackages(
 
-
 ================================================
 FILE: aphrody/src/store/drivers/playstore.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 66 lines]
 // import ../types
 // L58-L66: async function searchPlayStorePackages(
 
-
 ================================================
 FILE: aphrody/src/store/drivers/wasm-hub.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 100 lines]
 // import ../types
 // L92-L100: async function searchWasmHubPackages(
 
-
 ================================================
 FILE: aphrody/src/store/drivers/winget.ts
 ================================================
+
 // [OUTLINE - 1 symbols, 94 lines]
 // import ../types
 // L84-L94: async function searchWingetPackages(
 
-
 ================================================
 FILE: aphrody/src/store/types.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 33 lines]
 // import ../benchmark/stack-picker
 // L8-L16: type Ecosystem =
 // L18-L33: interface StorePackage
 
-
 ================================================
 FILE: aphrody/src/store/universal-manager.ts
 ================================================
+
 // [OUTLINE - 5 symbols, 107 lines]
 // import ./database
 // import ./drivers/bun
@@ -2574,16 +2602,16 @@ FILE: aphrody/src/store/universal-manager.ts
 // L43-L54: private seedCuratedPackages(): void
 // L56-L106: public async search(
 
-
 ================================================
 FILE: aphrody/src/style.css
 ================================================
-// [OUTLINE - 0 symbols, 418 lines]
 
+// [OUTLINE - 0 symbols, 418 lines]
 
 ================================================
 FILE: aphrody/src/suite/wasm-kernel.ts
 ================================================
+
 // [OUTLINE - 6 symbols, 191 lines]
 // L13-L27: interface StorytoldWasmExports
 // L29-L41: function encodeLeb128(value: number): number[]
@@ -2592,18 +2620,18 @@ FILE: aphrody/src/suite/wasm-kernel.ts
 // L52-L178: function buildStorytoldWasmBinary(): Uint8Array
 // L182-L191: async function getStorytoldWasm(): Promise<StorytoldWasmExports>
 
-
 ================================================
 FILE: aphrody/src/types.d.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 65 lines]
 // L11-L14: interface ImportMeta
 // L33-L47: class Database
 
-
 ================================================
 FILE: aphrody/tests/aphrody.test.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 413 lines]
 // import bun:test
 // import fs
@@ -2615,10 +2643,10 @@ FILE: aphrody/tests/aphrody.test.ts
 // import ../src/store/universal-manager
 // import ../src/benchmark/stack-picker
 
-
 ================================================
 FILE: aphrody/tests/immersive.test.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 67 lines]
 // import bun:test
 // import ../src/immersive/motion.ts
@@ -2626,18 +2654,18 @@ FILE: aphrody/tests/immersive.test.ts
 // import ../src/immersive/tokens.macro.ts
 // import ../src/play/page
 
-
 ================================================
 FILE: aphrody/tests/play.test.ts
 ================================================
+
 // [OUTLINE - 0 symbols, 26 lines]
 // import bun:test
 // import ../src/play/page
 
-
 ================================================
 FILE: aphrody/tests/seo.test.ts
 ================================================
+
 // [OUTLINE - 2 symbols, 529 lines]
 // import bun:test
 // import fs
@@ -2654,10 +2682,10 @@ FILE: aphrody/tests/seo.test.ts
 // L44-L62: function assertWellFormed(xml: string): void
 // L64-L74: function ldGraph(html: string): Array<Record<string, any>>
 
-
 ================================================
 FILE: aphrody/tsconfig.json
 ================================================
+
 // [OUTLINE - 13 symbols, 16 lines]
 // L2-L14: "compilerOptions":
 // L3: "target": "ESNext"
@@ -2673,23 +2701,28 @@ FILE: aphrody/tsconfig.json
 // L13: "types": ["bun", "@webgpu/types"]
 // L15: "include": ["src", "server.ts", "build.ts", "tests", "edge"]
 
-
 ================================================
 FILE: aphrody/wrangler.toml
 ================================================
+
 name = "aphrody"
 main = "edge/worker.ts"
 compatibility_date = "2026-11-01"
 workers_dev = false
 
 # aphrody.com is served from the production deployment of project "aphrody" on aphrody.app
+
 # (packages/deploy: R2 aphrody-dist, deploys/aphrody/<sha>/, pointer deploys/aphrody/_state.json).
+
 # `ay deploy aphrody` builds dist/ in CI and moves the pointer; this Worker is deployed only when
+
 # edge/worker.ts or packages/deploy/src/serve.ts change. Headers (HSTS, CSP, Link preload) come
+
 # from dist/_headers of each deployment.
+
 routes = [
-  { pattern = "aphrody.com/*", zone_name = "aphrody.com" },
-  { pattern = "www.aphrody.com", custom_domain = true },
+{ pattern = "aphrody.com/*", zone_name = "aphrody.com" },
+{ pattern = "www.aphrody.com", custom_domain = true },
 ]
 
 [[r2_buckets]]
@@ -2698,10 +2731,13 @@ bucket_name = "aphrody-dist"
 
 [vars]
 PROJECT = "aphrody"
-# Empty: /api/*, /g/*, /search go to the zone origin (cloudflared tunnel mig-prd -> prd aphrody service).
+
+# Empty: /api/_, /g/_, /search go to the zone origin (cloudflared tunnel mig-prd -> prd aphrody service).
+
 ORIGIN_URL = ""
 
 # Web Analytics + Speed Insights of aphrody.com: the Insights Durable Object lives in the platform Worker.
+
 [[durable_objects.bindings]]
 name = "INSIGHTS"
 class_name = "Insights"
@@ -2713,10 +2749,10 @@ binding = "IMAGES"
 [observability]
 enabled = true
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/src/fluid.rs
 ================================================
+
 // [OUTLINE - 67 symbols, 746 lines]
 // import serde
 // import serde_json
@@ -2790,10 +2826,10 @@ FILE: aphrody-app/crates/aphrody-core/src/fluid.rs
 // L708-L734: fn small_string_scenarios_converge()
 // L736-L745: fn rejects_gaps()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/src/layout.rs
 ================================================
+
 // [OUTLINE - 23 symbols, 205 lines]
 // import serde
 // import super
@@ -2821,10 +2857,10 @@ FILE: aphrody-app/crates/aphrody-core/src/layout.rs
 // L186-L196: fn niri_keeps_focus_visible()
 // L199-L204: fn layout_kind_names_roundtrip()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/src/state.rs
 ================================================
+
 // [OUTLINE - 9 symbols, 181 lines]
 // import crate
 // import crate
@@ -2843,10 +2879,10 @@ FILE: aphrody-app/crates/aphrody-core/src/state.rs
 // L157-L181: mod tests
 // L161-L180: fn builtin_tools_drive_state()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/src/store.rs
 ================================================
+
 // [OUTLINE - 83 symbols, 754 lines]
 // import crate
 // import serde
@@ -2941,10 +2977,10 @@ FILE: aphrody-app/crates/aphrody-core/src/store.rs
 // L725-L736: fn checkpoint_truncates_wal_and_gc_reclaims()
 // L740-L753: fn file_backend_roundtrip()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/src/wayland.rs
 ================================================
+
 // [OUTLINE - 24 symbols, 444 lines]
 // import crate
 // import crate
@@ -2976,10 +3012,10 @@ FILE: aphrody-app/crates/aphrody-core/src/wayland.rs
 // L423-L430: fn sync_fires_done_and_delete_id()
 // L433-L443: fn protocol_errors_are_reported()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/src/webmcp.rs
 ================================================
+
 // [OUTLINE - 34 symbols, 370 lines]
 // import serde_json
 // import super
@@ -3018,10 +3054,10 @@ FILE: aphrody-app/crates/aphrody-core/src/webmcp.rs
 // L344-L362: fn jsonrpc_flow()
 // L366-L369: fn duplicate_names_rejected()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/src/wire.rs
 ================================================
+
 // [OUTLINE - 20 symbols, 252 lines]
 // import super
 // L11-L17: pub enum WireError
@@ -3045,10 +3081,10 @@ FILE: aphrody-app/crates/aphrody-core/src/wire.rs
 // L230-L239: fn rejects_malformed()
 // L242-L251: fn frame_splitting()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-core/src/wm.rs
 ================================================
+
 // [OUTLINE - 33 symbols, 314 lines]
 // import crate
 // import serde
@@ -3088,10 +3124,10 @@ FILE: aphrody-app/crates/aphrody-core/src/wm.rs
 // L288-L300: fn every_layout_places_every_window()
 // L303-L313: fn hit_testing_prefers_topmost_floating()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-host/src/dist.rs
 ================================================
+
 // [OUTLINE - 16 symbols, 223 lines]
 // import aphrody_core
 // import std
@@ -3114,10 +3150,10 @@ FILE: aphrody-app/crates/aphrody-host/src/dist.rs
 // L204-L215: fn static_files_are_well_formed()
 // L218-L222: fn no_emoji_or_non_ascii_in_generated_text()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-host/src/http.rs
 ================================================
+
 // [OUTLINE - 23 symbols, 438 lines]
 // import aphrody_core
 // import aphrody_core
@@ -3158,10 +3194,10 @@ FILE: aphrody-app/crates/aphrody-host/src/http.rs
 // L382-L393: fn serves_static_with_isolation_headers()
 // L396-L437: fn mcp_and_ops_relay_end_to_end()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-host/src/tui.rs
 ================================================
+
 // [OUTLINE - 7 symbols, 139 lines]
 // import aphrody_core
 // import aphrody_core
@@ -3174,30 +3210,30 @@ FILE: aphrody-app/crates/aphrody-host/src/tui.rs
 // L121-L130: fn plain_snapshot_contains_titles_and_active_workspace()
 // L133-L138: fn color_snapshot_uses_fluent_tokens()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-wasm/shaders/mica.wgsl
 ================================================
+
 // Mica backdrop and rounded-rect SDF windows. Fluent UI 2 tokens:
-//   #0F0F0F (bg), #1C1C1C (layer), #0078D4 (brand), #60CDFF (brand light).
+// #0F0F0F (bg), #1C1C1C (layer), #0078D4 (brand), #60CDFF (brand light).
 // Colors are written straight to a non-sRGB canvas format.
 
 struct Uniforms {
-    // x,y = resolution in device pixels, z = time in seconds, w = window count
-    info: vec4<f32>,
-    // x = device pixel ratio, y = hovered window index (-1 for none)
-    extra: vec4<f32>,
-    // per window: x, y, w, h in device pixels
-    rects: array<vec4<f32>, 32>,
-    // per window: x = focused (0/1), y = hue seed
-    meta: array<vec4<f32>, 32>,
+// x,y = resolution in device pixels, z = time in seconds, w = window count
+info: vec4<f32>,
+// x = device pixel ratio, y = hovered window index (-1 for none)
+extra: vec4<f32>,
+// per window: x, y, w, h in device pixels
+rects: array<vec4<f32>, 32>,
+// per window: x = focused (0/1), y = hue seed
+meta: array<vec4<f32>, 32>,
 };
 
 @group(0) @binding(0) var<uniform> u: Uniforms;
 
 struct VsOut {
-    @builtin(position) pos: vec4<f32>,
-    @location(0) uv: vec2<f32>,
+@builtin(position) pos: vec4<f32>,
+@location(0) uv: vec2<f32>,
 };
 
 const BG: vec3<f32> = vec3<f32>(0.0588, 0.0588, 0.0588);
@@ -3207,98 +3243,98 @@ const BRAND_LIGHT: vec3<f32> = vec3<f32>(0.3765, 0.8039, 1.0);
 
 @vertex
 fn vs_main(@builtin(vertex_index) i: u32) -> VsOut {
-    var p = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
-    var o: VsOut;
-    o.pos = vec4<f32>(p[i], 0.0, 1.0);
-    o.uv = p[i] * vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5);
-    return o;
+var p = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+var o: VsOut;
+o.pos = vec4<f32>(p[i], 0.0, 1.0);
+o.uv = p[i] * vec2<f32>(0.5, -0.5) + vec2<f32>(0.5, 0.5);
+return o;
 }
 
 fn hash21(p: vec2<f32>) -> f32 {
-    var q = fract(p * vec2<f32>(123.34, 456.21));
-    q = q + dot(q, q + 45.32);
-    return fract(q.x * q.y);
+var q = fract(p * vec2<f32>(123.34, 456.21));
+q = q + dot(q, q + 45.32);
+return fract(q.x * q.y);
 }
 
 fn value_noise(p: vec2<f32>) -> f32 {
-    let i = floor(p);
-    let f = fract(p);
-    let s = f * f * (3.0 - 2.0 * f);
-    let a = hash21(i);
-    let b = hash21(i + vec2<f32>(1.0, 0.0));
-    let c = hash21(i + vec2<f32>(0.0, 1.0));
-    let d = hash21(i + vec2<f32>(1.0, 1.0));
-    return mix(mix(a, b, s.x), mix(c, d, s.x), s.y);
+let i = floor(p);
+let f = fract(p);
+let s = f * f * (3.0 - 2.0 * f);
+let a = hash21(i);
+let b = hash21(i + vec2<f32>(1.0, 0.0));
+let c = hash21(i + vec2<f32>(0.0, 1.0));
+let d = hash21(i + vec2<f32>(1.0, 1.0));
+return mix(mix(a, b, s.x), mix(c, d, s.x), s.y);
 }
 
 fn sd_round_box(p: vec2<f32>, half_size: vec2<f32>, r: f32) -> f32 {
-    let q = abs(p) - half_size + vec2<f32>(r, r);
-    return length(max(q, vec2<f32>(0.0, 0.0))) + min(max(q.x, q.y), 0.0) - r;
+let q = abs(p) - half_size + vec2<f32>(r, r);
+return length(max(q, vec2<f32>(0.0, 0.0))) + min(max(q.x, q.y), 0.0) - r;
 }
 
 // Mica: a slowly drifting, low-frequency tint over the dark base, plus grain.
 fn mica(px: vec2<f32>, uv: vec2<f32>) -> vec3<f32> {
-    let t = u.info.z * 0.03;
-    let low = value_noise(px / 420.0 + vec2<f32>(t, -t)) * 0.6 + value_noise(px / 170.0 - vec2<f32>(t, t)) * 0.4;
-    var c = mix(BG, LAYER, clamp(uv.y * 0.6 + low * 0.5, 0.0, 1.0));
-    c = c + BRAND * (0.045 * smoothstep(0.55, 1.0, low));
-    c = c + BRAND_LIGHT * (0.012 * smoothstep(0.0, 0.4, 1.0 - uv.y) * low);
-    let grain = (hash21(floor(px)) - 0.5) * 0.012;
-    return c + vec3<f32>(grain, grain, grain);
+let t = u.info.z * 0.03;
+let low = value_noise(px / 420.0 + vec2<f32>(t, -t)) * 0.6 + value_noise(px / 170.0 - vec2<f32>(t, t)) * 0.4;
+var c = mix(BG, LAYER, clamp(uv.y * 0.6 + low * 0.5, 0.0, 1.0));
+c = c + BRAND * (0.045 * smoothstep(0.55, 1.0, low));
+c = c + BRAND_LIGHT * (0.012 * smoothstep(0.0, 0.4, 1.0 - uv.y) * low);
+let grain = (hash21(floor(px)) - 0.5) * 0.012;
+return c + vec3<f32>(grain, grain, grain);
 }
 
 @fragment
 fn fs_main(in: VsOut) -> @location(0) vec4<f32> {
-    let res = u.info.xy;
-    let px = in.uv * res;
-    let dpr = max(u.extra.x, 1.0);
-    var col = mica(px, in.uv);
-    let count = i32(u.info.w);
-    for (var i = 0; i < 32; i = i + 1) {
-        if (i >= count) {
-            break;
-        }
-        let r = u.rects[i];
-        let m = u.meta[i];
-        let half_size = r.zw * 0.5;
-        let center = r.xy + half_size;
-        let radius = 8.0 * dpr;
-        let local = px - center;
-        let d = sd_round_box(local, half_size, radius);
-        // drop shadow, offset downward
-        let sd = sd_round_box(local - vec2<f32>(0.0, 6.0 * dpr), half_size, radius);
-        let shadow = exp(-max(sd, 0.0) / (14.0 * dpr)) * 0.38;
-        col = mix(col, vec3<f32>(0.0, 0.0, 0.0), shadow * step(0.0, d));
-        let inside = 1.0 - smoothstep(-0.75, 0.75, d);
-        if (inside > 0.0) {
-            // acrylic fill: the mica backdrop lifted toward the layer color
-            var fill = mix(mica(px, in.uv), LAYER, 0.82) + vec3<f32>(0.018, 0.018, 0.018);
-            let title_h = 32.0 * dpr;
-            let in_title = step(local.y, -half_size.y + title_h);
-            fill = fill + vec3<f32>(0.03, 0.03, 0.03) * in_title;
-            // accent rule under the title bar for the focused window
-            let rule = step(abs(local.y - (-half_size.y + title_h)), 1.0 * dpr) * m.x;
-            fill = mix(fill, BRAND, rule);
-            if (i32(u.extra.y) == i) {
-                fill = fill + BRAND_LIGHT * 0.035;
-            }
-            // 1 px border; focused windows get the brand ring and a soft glow
-            let ring = 1.0 - smoothstep(0.0, 1.25 * dpr, abs(d + 0.5 * dpr));
-            let border = mix(vec3<f32>(0.24, 0.24, 0.24), BRAND_LIGHT, m.x);
-            fill = mix(fill, border, ring * mix(0.55, 0.95, m.x));
-            col = mix(col, fill, inside);
-        } else if (m.x > 0.5) {
-            let glow = exp(-max(d, 0.0) / (10.0 * dpr)) * 0.35;
-            col = col + BRAND * glow;
-        }
-    }
-    return vec4<f32>(clamp(col, vec3<f32>(0.0, 0.0, 0.0), vec3<f32>(1.0, 1.0, 1.0)), 1.0);
+let res = u.info.xy;
+let px = in.uv * res;
+let dpr = max(u.extra.x, 1.0);
+var col = mica(px, in.uv);
+let count = i32(u.info.w);
+for (var i = 0; i < 32; i = i + 1) {
+if (i >= count) {
+break;
 }
-
+let r = u.rects[i];
+let m = u.meta[i];
+let half_size = r.zw * 0.5;
+let center = r.xy + half_size;
+let radius = 8.0 * dpr;
+let local = px - center;
+let d = sd_round_box(local, half_size, radius);
+// drop shadow, offset downward
+let sd = sd_round_box(local - vec2<f32>(0.0, 6.0 * dpr), half_size, radius);
+let shadow = exp(-max(sd, 0.0) / (14.0 * dpr)) * 0.38;
+col = mix(col, vec3<f32>(0.0, 0.0, 0.0), shadow * step(0.0, d));
+let inside = 1.0 - smoothstep(-0.75, 0.75, d);
+if (inside > 0.0) {
+// acrylic fill: the mica backdrop lifted toward the layer color
+var fill = mix(mica(px, in.uv), LAYER, 0.82) + vec3<f32>(0.018, 0.018, 0.018);
+let title_h = 32.0 * dpr;
+let in_title = step(local.y, -half_size.y + title_h);
+fill = fill + vec3<f32>(0.03, 0.03, 0.03) * in_title;
+// accent rule under the title bar for the focused window
+let rule = step(abs(local.y - (-half_size.y + title_h)), 1.0 * dpr) * m.x;
+fill = mix(fill, BRAND, rule);
+if (i32(u.extra.y) == i) {
+fill = fill + BRAND_LIGHT * 0.035;
+}
+// 1 px border; focused windows get the brand ring and a soft glow
+let ring = 1.0 - smoothstep(0.0, 1.25 * dpr, abs(d + 0.5 * dpr));
+let border = mix(vec3<f32>(0.24, 0.24, 0.24), BRAND_LIGHT, m.x);
+fill = mix(fill, border, ring * mix(0.55, 0.95, m.x));
+col = mix(col, fill, inside);
+} else if (m.x > 0.5) {
+let glow = exp(-max(d, 0.0) / (10.0 * dpr)) * 0.35;
+col = col + BRAND * glow;
+}
+}
+return vec4<f32>(clamp(col, vec3<f32>(0.0, 0.0, 0.0), vec3<f32>(1.0, 1.0, 1.0)), 1.0);
+}
 
 ================================================
 FILE: aphrody-app/crates/aphrody-wasm/src/gpu.rs
 ================================================
+
 // [OUTLINE - 4 symbols, 87 lines]
 // import crate
 // import js_sys
@@ -3310,10 +3346,10 @@ FILE: aphrody-app/crates/aphrody-wasm/src/gpu.rs
 // L30-L68: pub async fn new(canvas: &HtmlCanvasElement, wgsl: &str) -> Result<Renderer, String>
 // L70-L85: pub fn render(&self, uniforms: &[u8]) -> Result<(), String>
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-wasm/src/opfs.rs
 ================================================
+
 // [OUTLINE - 15 symbols, 170 lines]
 // import aphrody_core
 // import js_sys
@@ -3339,10 +3375,10 @@ FILE: aphrody-app/crates/aphrody-wasm/src/opfs.rs
 // L163-L166: fn flush(&mut self) -> StorageResult<()>
 // L170: fn _assert_error_type(_: StorageError)
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-wasm/src/scene.rs
 ================================================
+
 // [OUTLINE - 5 symbols, 58 lines]
 // import aphrody_core
 // import super
@@ -3354,10 +3390,10 @@ FILE: aphrody-app/crates/aphrody-wasm/src/scene.rs
 // L36-L50: fn packs_to_wgsl_layout()
 // L53-L57: fn shader_declares_matching_array_sizes()
 
-
 ================================================
 FILE: aphrody-app/crates/aphrody-wasm/src/web.rs
 ================================================
+
 // [OUTLINE - 21 symbols, 367 lines]
 // import crate
 // import crate
@@ -3395,11 +3431,12 @@ FILE: aphrody-app/crates/aphrody-wasm/src/web.rs
 // L317-L319: pub fn mcp_jsonrpc(body: &str) -> Option<String>
 // L321-L367: fn register_webmcp()
 
-
 ================================================
 FILE: aphrody-app/packaging/alpine/APKBUILD
 ================================================
+
 # Alpine Linux APKBUILD
+
 pkgname=aphrody-app
 pkgver=0.1.0
 pkgrel=0
@@ -3410,25 +3447,26 @@ license="MIT"
 makedepends="cargo"
 
 build() {
-  cd "$startdir/../.."
-  cargo build --release --locked -p aphrody-host
+cd "$startdir/../.."
+cargo build --release --locked -p aphrody-host
 }
 
 check() {
-  cd "$startdir/../.."
-  cargo test --workspace --locked
+cd "$startdir/../.."
+cargo test --workspace --locked
 }
 
 package() {
-  cd "$startdir/../.."
-  install -Dm755 "target/release/aphrody-app" "$pkgdir/usr/bin/aphrody-app"
+cd "$startdir/../.."
+install -Dm755 "target/release/aphrody-app" "$pkgdir/usr/bin/aphrody-app"
 }
-
 
 ================================================
 FILE: aphrody-app/packaging/arch/PKGBUILD
 ================================================
+
 # PKGBUILD for Arch Linux / CachyOS
+
 pkgname=aphrody-app
 pkgver=0.1.0
 pkgrel=1
@@ -3440,41 +3478,41 @@ depends=()
 makedepends=('cargo' 'rustc')
 
 build() {
-  cd "$startdir/../.."
-  cargo build --release --locked -p aphrody-host
+cd "$startdir/../.."
+cargo build --release --locked -p aphrody-host
 }
 
 package() {
-  cd "$startdir/../.."
-  install -Dm755 "target/release/aphrody-app" "$pkgdir/usr/bin/aphrody-app"
-  install -Dm644 "packaging/wayland/aphrody-app.desktop" "$pkgdir/usr/share/wayland-sessions/aphrody-app.desktop"
+cd "$startdir/../.."
+install -Dm755 "target/release/aphrody-app" "$pkgdir/usr/bin/aphrody-app"
+install -Dm644 "packaging/wayland/aphrody-app.desktop" "$pkgdir/usr/share/wayland-sessions/aphrody-app.desktop"
 }
-
 
 ================================================
 FILE: aphrody-app/packaging/nix/default.nix
 ================================================
+
 { lib, rustPlatform }:
 
 rustPlatform.buildRustPackage {
-  pname = "aphrody-app";
-  version = "0.1.0";
-  src = ../..;
-  cargoLock.lockFile = ../../Cargo.lock;
-  cargoBuildFlags = [ "-p" "aphrody-host" ];
-  meta = with lib; {
-    description = "Pure Rust WebGPU/WGSL Wayland tiling desktop shell and WebMCP host";
-    homepage = "https://aphrody.app";
-    license = licenses.mit;
-    mainProgram = "aphrody-app";
-    platforms = platforms.unix ++ platforms.windows;
-  };
+pname = "aphrody-app";
+version = "0.1.0";
+src = ../..;
+cargoLock.lockFile = ../../Cargo.lock;
+cargoBuildFlags = [ "-p" "aphrody-host" ];
+meta = with lib; {
+description = "Pure Rust WebGPU/WGSL Wayland tiling desktop shell and WebMCP host";
+homepage = "https://aphrody.app";
+license = licenses.mit;
+mainProgram = "aphrody-app";
+platforms = platforms.unix ++ platforms.windows;
+};
 }
-
 
 ================================================
 FILE: aphrody-app/packaging/wayland/aphrody-app.desktop
 ================================================
+
 [Desktop Entry]
 Name=Aphrody Shell
 Comment=Pure Rust WebGPU/WGSL Wayland Tiling Shell
@@ -3483,24 +3521,24 @@ Type=Application
 DesktopNames=Aphrody
 Keywords=wayland;wm;tiling;webgpu;rust;
 
-
 ================================================
 FILE: aphrody-app/tools/rustc_argfile.rs
 ================================================
+
 // [OUTLINE - 1 symbols, 22 lines]
 // import std
 // L6-L22: fn main()
 
-
 ================================================
 FILE: aphrody-app/web/index.html
 ================================================
-// [OUTLINE - 0 symbols, 203 lines]
 
+// [OUTLINE - 0 symbols, 203 lines]
 
 ================================================
 FILE: l2l/PLAN.md
 ================================================
+
 # l2l extraction plan
 
 l2l is the single home for migration tooling: the polyglot, poly-stack migrator (any language or
@@ -3523,7 +3561,6 @@ Measured with `tokei` (code lines), `dust` (disk) and `git remote`.
 | `crates/depot-migrate`                                                                                                                             | 16 KiB                                                                     | aphrody-dev/src                      | Rust                                                                                                                                                        | move to l2l                                                                                                 |
 | `packages/bun-plugins`                                                                                                                             | 128 KiB                                                                    | aphrody-dev/src                      | TS 2.5k                                                                                                                                                     | move to `apps/l2l/packages/bun-plugins`                                                                     |
 | `packages/bun-parity`                                                                                                                              | 226 KiB                                                                    | aphrody-dev/src                      | TS 3.5k, Node/Bun parity checks                                                                                                                             | move; it is the conversion test oracle                                                                      |
-| GitHub `yolo-rs/yolo-bun`                                                                                                                          | 40 MB                                                                      | yolo-rs                              | `packages/package-converter`, `bun-loaders`, `bun-workspace`, `yolo-bun-plugin`, Bun patch queue                                                            | absorb converter, loaders and plug
+| GitHub `yolo-rs/yolo-bun`                                                                                                                          | 40 MB                                                                      | yolo-rs                              | `packages/package-converter`, `bun-loaders`, `bun-workspace`, `yolo-bun-plugin`, Bun patch queue                                                            | absorb converter, loaders and plug                                                                          |
 
 [... truncated by token budget ...]
-

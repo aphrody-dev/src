@@ -1,10 +1,12 @@
 # Graph Report - crates
 
 ## Corpus Check
+
 - **Nodes:** 136809 · **Edges:** 316724 · **Communities:** 6036
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `Some()` [function] - 4670 connections (depot-forge/src/lib.rs:L20)
 2. `Ok()` [function] - 4317 connections (depot-forge/src/http.rs:L44)
 3. `Arc::new()` [function] - 2566 connections (lore-credential/src/token_store.rs:L548)
@@ -19,6 +21,7 @@
 12. `test_store_create().await.expect()` [function] - 837 connections (lore-server/tests/unit/auth/jwt_axum_middleware.rs:L113)
 
 ## Key Structural Connections
+
 - `error.rs` --[defines]--> `ForgeError` (Extracted)
 - `error.rs` --[defines]--> `fmt` (Extracted)
 - `error.rs` --[imports]--> `std` (Extracted)
@@ -35,14 +38,14 @@
 - `http.rs` --[imports]--> `crate` (Extracted)
 - `http.rs` --[calls]--> `LazyLock::new()` (Inferred)
 - `http.rs` --[calls]--> `ureq::Agent::config_builder()
-        .http_status_as_error(false)
-        .build()
-        .into()` (Inferred)
+    .http_status_as_error(false)
+    .build()
+    .into()` (Inferred)
 - `http.rs` --[calls]--> `ureq::Agent::config_builder()
-        .http_status_as_error(false)
-        .build()` (Inferred)
+    .http_status_as_error(false)
+    .build()` (Inferred)
 - `http.rs` --[calls]--> `ureq::Agent::config_builder()
-        .http_status_as_error()` (Inferred)
+    .http_status_as_error()` (Inferred)
 - `http.rs` --[calls]--> `ureq::Agent::config_builder()` (Inferred)
 - `get` --[calls]--> `AGENT.get()` (Inferred)
 

@@ -12,8 +12,6 @@ on:
         "crates/**",
         "packages/**",
         "apps/aphrody/**",
-        "apps/yolo/**",
-        "apps/r2-site/**",
         "infra/cloudflare/workers/api-gateway/**",
         "Cargo.lock",
         "bun.lock",

@@ -1,0 +1,44 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+exclude = ["vendor"]
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.97"
+license = "Apache-2.0"
+
+[workspace.dependencies]
+# Suite Aphrody vendorisée dans vendor/suite (amont bun-distribution disparu).
+# Sans la fonctionnalité oxc (découpeur JS/TS) : seuls les découpeurs prose et Markdown servent.
+aphrody-rag-core = { path = "vendor/suite/crates/aphrody-rag-core", default-features = false }
+deckcraft-model = { path = "vendor/suite/crates/deckcraft-model" }
+deckcraft-pdf = { path = "vendor/suite/crates/deckcraft-pdf" }
+deckcraft-pptx = { path = "vendor/suite/crates/deckcraft-pptx" }
+gridcraft-core = { path = "vendor/suite/crates/gridcraft-core" }
+gridcraft-calc = { path = "vendor/suite/crates/gridcraft-calc" }
+gridcraft-model = { path = "vendor/suite/crates/gridcraft-model" }
+gridcraft-xlsx = { path = "vendor/suite/crates/gridcraft-xlsx" }
+pdfcraft-annot = { path = "vendor/suite/crates/pdfcraft-annot" }
+pdfcraft-cos = { path = "vendor/suite/crates/pdfcraft-cos" }
+pdfcraft-create = { path = "vendor/suite/crates/pdfcraft-create" }
+pdfcraft-fonts = { path = "vendor/suite/crates/pdfcraft-fonts" }
+pdfcraft-model = { path = "vendor/suite/crates/pdfcraft-model" }
+pdfcraft-organize = { path = "vendor/suite/crates/pdfcraft-organize" }
+pdfcraft-preflight = { path = "vendor/suite/crates/pdfcraft-preflight" }
+pdfcraft-redact = { path = "vendor/suite/crates/pdfcraft-redact" }
+pdfcraft-render = { path = "vendor/suite/crates/pdfcraft-render" }
+pdfcraft-sign = { path = "vendor/suite/crates/pdfcraft-sign" }
+wordcraft-doc = { path = "vendor/suite/crates/wordcraft-doc" }
+wordcraft-docx = { path = "vendor/suite/crates/wordcraft-docx" }
+wordcraft-pdf = { path = "vendor/suite/crates/wordcraft-pdf" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+
+
+[profile.release]
+strip = true
+lto = "fat"
+codegen-units = 1

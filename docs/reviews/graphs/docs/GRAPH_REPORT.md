@@ -1,10 +1,12 @@
 # Graph Report - docs
 
 ## Corpus Check
+
 - **Nodes:** 7689 · **Edges:** 7009 · **Communities:** 735
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `aphrody.app.lighthouse.json` [file] - 562 connections (proofs/sites-2026-11-13/before/aphrody.app.lighthouse.json:L1)
 2. `aphrody.com.lighthouse.json` [file] - 560 connections (proofs/sites-2026-11-13/before/aphrody.com.lighthouse.json:L1)
 3. `yolo.aphrody.app.lighthouse.json` [file] - 554 connections (proofs/sites-2026-11-13/before/yolo.aphrody.app.lighthouse.json:L1)
@@ -19,6 +21,7 @@
 12. `main.json` [file] - 163 connections (bench/main.json:L1)
 
 ## Key Structural Connections
+
 - `matrix.json` --[defines]--> `page` (Extracted)
 - `matrix.json` --[defines]--> `locale` (Extracted)
 - `matrix.json` --[defines]--> `width` (Extracted)

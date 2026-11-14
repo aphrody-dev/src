@@ -3,7 +3,13 @@
 // a key on the iframe centre), second screenshot. Per app: adapter, distinct colours and non-background share of each
 // capture (decoded by Chrome itself), and whether the interaction changed the picture. The screenshots are what to look at.
 //   bun scripts/proof-craft.ts [--base https://aphrody.com] [--ids photocraft,filmcraft] [--out docs/reviews/proof/craft] [--wait 45] [--chrome <path>]
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -18,9 +24,12 @@ const ids = arg(
   "ids",
   "photocraft,filmcraft,soundcraft,craft-launcher,vectorcraft,lightcraft,designcraft,effectcraft,gridcraft,cadcraft,deckcraft,wordcraft,pdfcraft",
 ).split(",");
-const chrome = [arg("chrome", ""), process.env.CHROME, "C:/Program Files/Google/Chrome/Application/chrome.exe", "/usr/bin/google-chrome"].find(
-  (c): c is string => !!c && existsSync(c),
-);
+const chrome = [
+  arg("chrome", ""),
+  process.env.CHROME,
+  "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "/usr/bin/google-chrome",
+].find((c): c is string => !!c && existsSync(c));
 if (!chrome) throw new Error("no Chrome binary (set CHROME or --chrome)");
 
 class Cdp {
@@ -39,7 +48,9 @@ class Cdp {
     const ws = new WebSocket(url);
     await new Promise<void>((res, rej) => {
       ws.addEventListener("open", () => res());
-      ws.addEventListener("error", () => rej(new Error("CDP websocket failed")));
+      ws.addEventListener("error", () =>
+        rej(new Error("CDP websocket failed")),
+      );
     });
     return new Cdp(ws);
   }
@@ -51,8 +62,15 @@ class Cdp {
     });
   }
   async eval<T>(expression: string): Promise<T> {
-    const r = await this.send("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
-    if (r.result?.exceptionDetails) throw new Error(r.result.exceptionDetails.exception?.description ?? "eval failed");
+    const r = await this.send("Runtime.evaluate", {
+      expression,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    if (r.result?.exceptionDetails)
+      throw new Error(
+        r.result.exceptionDetails.exception?.description ?? "eval failed",
+      );
     return r.result?.result?.value as T;
   }
   close() {
@@ -76,8 +94,18 @@ mkdirSync(out, { recursive: true });
 const port = 9700 + Math.floor(Math.random() * 200);
 const profile = mkdtempSync(join(tmpdir(), "proof-craft-"));
 const proc = Bun.spawn(
-  [chrome, `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, "--window-size=1440,900", "--no-first-run",
-   "--no-default-browser-check", "--enable-unsafe-webgpu", "--ignore-gpu-blocklist", "--headless=new", "about:blank"],
+  [
+    chrome,
+    `--remote-debugging-port=${port}`,
+    `--user-data-dir=${profile}`,
+    "--window-size=1440,900",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--enable-unsafe-webgpu",
+    "--ignore-gpu-blocklist",
+    "--headless=new",
+    "about:blank",
+  ],
   { stdout: "ignore", stderr: "ignore" },
 );
 const results: any[] = [];
@@ -86,19 +114,32 @@ try {
   for (let i = 0; i < 50 && !target; i++) {
     await Bun.sleep(200);
     try {
-      target = ((await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()) as any[]).find((t) => t.type === "page");
+      target = (
+        (await (
+          await fetch(`http://127.0.0.1:${port}/json/list`)
+        ).json()) as any[]
+      ).find((t) => t.type === "page");
     } catch {}
   }
   if (!target) throw new Error("Chrome DevTools endpoint did not answer");
   const cdp = await Cdp.connect(target.webSocketDebuggerUrl);
   await cdp.send("Page.enable");
   await cdp.send("Runtime.enable");
-  await cdp.send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+  await cdp.send("Emulation.setDeviceMetricsOverride", {
+    width: 1440,
+    height: 900,
+    deviceScaleFactor: 1,
+    mobile: false,
+  });
   const shot = async (name: string) => {
     const r = await cdp.send("Page.captureScreenshot", { format: "png" });
     const data: string = r.result.data;
     writeFileSync(join(out, name), Buffer.from(data, "base64"));
-    return { file: name, bytes: Math.round((data.length * 3) / 4), ...(await cdp.eval<any>(STATS(data))) };
+    return {
+      file: name,
+      bytes: Math.round((data.length * 3) / 4),
+      ...(await cdp.eval<any>(STATS(data))),
+    };
   };
   for (const id of ids) {
     const url = `${base}/craft/${id}?autostart=1`;
@@ -121,17 +162,44 @@ try {
       await Bun.sleep(waitS * 1000);
       row.title = await cdp.eval<string>("document.title");
       row.before = await shot(`${id}-1-loaded.png`);
-      const cx = 720, cy = 500;
-      await cdp.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: cx, y: cy });
-      await cdp.send("Input.dispatchMouseEvent", { type: "mousePressed", x: cx, y: cy, button: "left", clickCount: 1 });
-      await cdp.send("Input.dispatchMouseEvent", { type: "mouseReleased", x: cx, y: cy, button: "left", clickCount: 1 });
-      await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "a", text: "a" });
+      const cx = 720,
+        cy = 500;
+      await cdp.send("Input.dispatchMouseEvent", {
+        type: "mouseMoved",
+        x: cx,
+        y: cy,
+      });
+      await cdp.send("Input.dispatchMouseEvent", {
+        type: "mousePressed",
+        x: cx,
+        y: cy,
+        button: "left",
+        clickCount: 1,
+      });
+      await cdp.send("Input.dispatchMouseEvent", {
+        type: "mouseReleased",
+        x: cx,
+        y: cy,
+        button: "left",
+        clickCount: 1,
+      });
+      await cdp.send("Input.dispatchKeyEvent", {
+        type: "keyDown",
+        key: "a",
+        text: "a",
+      });
       await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "a" });
       await Bun.sleep(2500);
       row.after = await shot(`${id}-2-after-click.png`);
       row.drew = row.before.colours > 24 && row.before.nonDominantShare > 0.02;
-      row.responded = row.after.bytes !== row.before.bytes || row.after.nonDominantShare !== row.before.nonDominantShare;
-      row.verdict = row.drew ? (row.responded ? "drew and changed after interaction" : "drew, no change after interaction") : "blank or near-uniform";
+      row.responded =
+        row.after.bytes !== row.before.bytes ||
+        row.after.nonDominantShare !== row.before.nonDominantShare;
+      row.verdict = row.drew
+        ? row.responded
+          ? "drew and changed after interaction"
+          : "drew, no change after interaction"
+        : "blank or near-uniform";
     } catch (e) {
       row.verdict = `error: ${String(e)}`;
     }
@@ -139,11 +207,26 @@ try {
     results.push(row);
   }
   const ua = await cdp.eval<string>("navigator.userAgent");
-  writeFileSync(join(out, "results.json"), JSON.stringify({ base, userAgent: ua, results }, null, 2));
+  writeFileSync(
+    join(out, "results.json"),
+    JSON.stringify({ base, userAgent: ua, results }, null, 2),
+  );
   cdp.close();
 } finally {
   proc.kill();
   await proc.exited.catch(() => {});
-  try { rmSync(profile, { recursive: true, force: true }); } catch {}
+  try {
+    rmSync(profile, { recursive: true, force: true });
+  } catch {}
 }
-console.log(JSON.stringify(results.map((r) => ({ id: r.id, verdict: r.verdict, adapter: r.host?.adapter })), null, 1));
+console.log(
+  JSON.stringify(
+    results.map((r) => ({
+      id: r.id,
+      verdict: r.verdict,
+      adapter: r.host?.adapter,
+    })),
+    null,
+    1,
+  ),
+);

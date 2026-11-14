@@ -88,24 +88,8 @@ id = "aphrody"
 name = "aphrody.com"
 symbol = "bolt"
 hue = 290
-tagline = "Brand homepage"
+tagline = "Merged static SEO and brand asset portal (aphrody.com / aphrody.app)"
 path = "apps/aphrody"
-
-[[product]]
-id = "aphrody-app"
-name = "aphrody.app"
-symbol = "view_quilt"
-hue = 214
-tagline = "Rust WebGPU tiling desktop shell"
-path = "apps/aphrody-app"
-
-[[product]]
-id = "yolo"
-name = "yolo"
-symbol = "rocket_launch"
-hue = 75
-tagline = "Bun fullstack framework with a Material 3 stack"
-path = "apps/yolo"
 
 [[product]]
 id = "shenron"

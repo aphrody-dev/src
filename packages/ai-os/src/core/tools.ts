@@ -5,7 +5,8 @@ import { tool } from "../llm/generate";
 import { s } from "../llm/schema";
 import type { Memory } from "./memory";
 import { redactText } from "./secrets";
-import { resolveBash } from "./shell";
+import { resolveBash, runJustBash } from "./shell";
+import { runSandboxedJs } from "./sandbox";
 import type { Skills } from "./skills";
 
 export type ToolCtx = {
@@ -40,12 +41,23 @@ export function makeTools(ctx: ToolCtx) {
     }),
     shell: tool({
       description:
-        "Run a command in the workspace: `argv` (no shell) or `script` (bash script, native bash on Windows). Returns exit code and output.",
+        "Run a command in the workspace: `argv` (no shell), `script` (native bash on Windows), or `sandbox: true` (in-memory OverlayFs via vercel-labs/just-bash). Returns exit code and output.",
       inputSchema: s.object(
-        { argv: s.array(s.string(), { minItems: 1 }), script: s.string() },
-        ["argv", "script"],
+        {
+          argv: s.array(s.string(), { minItems: 1 }),
+          script: s.string(),
+          sandbox: s.boolean("Run `script` in just-bash OverlayFs sandbox"),
+        },
+        ["argv", "script", "sandbox"],
       ),
-      execute: async ({ argv, script }) => {
+      execute: async ({ argv, script, sandbox }) => {
+        if (sandbox && script) {
+          const r = await runJustBash(script, ctx.cwd);
+          return redactText(
+            `exit=${r.exitCode}\n${r.stdout}${r.stderr}`,
+            Bun.env,
+          ).slice(0, 16_000);
+        }
         if (!ctx.allowShell) return "shell disabled (pass --allow-shell)";
         let cmd = argv;
         if (script) {
@@ -125,6 +137,23 @@ export function makeTools(ctx: ToolCtx) {
             return `no skill ${name}`;
         }
         return (await ctx.skills.view(name))?.body ?? `no skill ${name}`;
+      },
+    }),
+    js_run: tool({
+      description:
+        "Execute JavaScript in an isolated Worker sandbox (vercel-labs/run pattern) with timeout and no host globals. Pass a function body returning a value.",
+      inputSchema: s.object(
+        {
+          code: s.string("JavaScript function body (e.g. `return 1 + 2;`)"),
+          timeoutMs: s.number("Timeout in ms (default 5000)"),
+        },
+        ["timeoutMs"],
+      ),
+      execute: async ({ code, timeoutMs }) => {
+        const r = await runSandboxedJs(code, {
+          timeoutMs: typeof timeoutMs === "number" ? timeoutMs : 5000,
+        });
+        return JSON.stringify(r);
       },
     }),
   };

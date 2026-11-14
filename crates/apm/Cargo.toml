@@ -13,10 +13,6 @@ authors.workspace = true
 name = "aphrody_apm"
 path = "src/lib.rs"
 
-[[bin]]
-name = "apm"
-path = "src/bin/apm.rs"
-
 [lints]
 workspace = true
 

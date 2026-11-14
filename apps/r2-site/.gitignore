@@ -1,4 +1,0 @@
-node_modules/
-.cloudflare/
-cloudflare.config.ts
-bun.lock

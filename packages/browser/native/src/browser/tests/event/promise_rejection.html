@@ -1,0 +1,34 @@
+<!doctype html>
+<meta name="lp-mode" content="test" />
+<script src="../testing.js"></script>
+
+<script id="project_rejection">
+  {
+    // The init dictionary and its promise member are required.
+    testing.expectError(
+      "TypeError",
+      () => new PromiseRejectionEvent("rejectionhandled"),
+    );
+    testing.expectError(
+      "TypeError",
+      () => new PromiseRejectionEvent("rejectionhandled", {}),
+    );
+    testing.expectError(
+      "TypeError",
+      () =>
+        new PromiseRejectionEvent("rejectionhandled", { promise: undefined }),
+    );
+
+    const p = Promise.resolve();
+    let e = new PromiseRejectionEvent("rejectionhandled", {
+      promise: p,
+      reason: ["tea"],
+    });
+    testing.expectEqual(true, e instanceof PromiseRejectionEvent);
+    testing.expectEqual(true, e instanceof Event);
+
+    testing.expectEqual("rejectionhandled", e.type);
+    testing.expectEqual(["tea"], e.reason);
+    testing.expectEqual(true, p === e.promise);
+  }
+</script>

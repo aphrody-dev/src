@@ -1,0 +1,36 @@
+[package]
+name = "n2b-polyglot"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Fused Tree-Sitter + Magika + Helix Rope + Native C/C++ SIMD polyglot AST engine for C, C++, Rust, TS, JS, Java, Python, Lua, C#, Go, JSON, HTML, CSS, Bash"
+
+[lints]
+workspace = true
+
+[build-dependencies]
+cc.workspace = true
+
+[dependencies]
+n2b-core.workspace = true
+ropey.workspace = true
+rustc-hash.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tree-sitter.workspace = true
+tree-sitter-bash.workspace = true
+tree-sitter-c.workspace = true
+tree-sitter-c-sharp.workspace = true
+tree-sitter-cpp.workspace = true
+tree-sitter-css.workspace = true
+tree-sitter-go.workspace = true
+tree-sitter-html.workspace = true
+tree-sitter-java.workspace = true
+tree-sitter-javascript.workspace = true
+tree-sitter-json.workspace = true
+tree-sitter-lua.workspace = true
+tree-sitter-python.workspace = true
+tree-sitter-rust.workspace = true
+tree-sitter-typescript.workspace = true
+zerocopy.workspace = true
