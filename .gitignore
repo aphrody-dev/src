@@ -15,6 +15,7 @@ node_modules/
 target/
 dist/
 graphify-out/
+.worktrees/
 
 # Allowlist: the root repo is the manifest of the monorepo (units are submodules, upstreams are pinned in src.lock.json)
 /*
@@ -31,6 +32,7 @@ graphify-out/
 /.claude/skills
 /.claude/settings.local.json
 !/docs/
+!/src/
 # Brand sources and generated assets (assets/brand, `ay brand build`).
 !/assets/
 !/apps/
@@ -38,9 +40,8 @@ graphify-out/
 !/crates/
 !/infra/
 !/tools/
-!/plugins/
 !/third_party/
-!/licenses/
+!/plugins/
 !/conformance/
 /conformance/upstream/
 /conformance/results/
@@ -51,6 +52,8 @@ graphify-out/
 !/.graphifyignore
 !/.env.example
 !/DEPS
+!/DEPS.rules
+!/depot-artifacts.toml
 !/MAINTAINERS
 !/AGENTS.md
 !/CLAUDE.md
@@ -64,6 +67,7 @@ graphify-out/
 !/deny.toml
 !/identity.toml
 !/package.json
+!/tsconfig.json
 # Single monorepo version (docs/VERSIONING.md, ay release freeze).
 !/VERSION
 !/bun.lock
@@ -90,3 +94,8 @@ assets/*.fig
 assets/*.zip
 apps/aphrody/NUL
 apps/.lst-*
+# ay graph build outputs over 100 MB stay local (regenerate: ay graph build -o docs/nextjs/graph third_party/next.js)
+/docs/nextjs/graph/graph.json
+/docs/nextjs/graph/graph.html
+/docs/nextjs/graph/graph.graphml
+/docs/nextjs/graph/cypher.txt

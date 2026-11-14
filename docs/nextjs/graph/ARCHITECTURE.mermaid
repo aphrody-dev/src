@@ -1,0 +1,103 @@
+flowchart TD
+    file_AGENTS_md["AGENTS.md"]
+    file_apps_bundle_analyzer_AGENTS_md["AGENTS.md"]
+    file_apps_bundle_analyzer_app_analyze_page_tsx["page.tsx"]
+    function_apps_bundle_analyzer_app_analyze_page_tsx_AnalyzePage["AnalyzePage"]
+    mod___components_analyzer["@/components/analyzer"]
+    file_apps_bundle_analyzer_app_compare_page_tsx["page.tsx"]
+    function_apps_bundle_analyzer_app_compare_page_tsx_ComparePage["ComparePage"]
+    file_apps_bundle_analyzer_app_error_tsx["error.tsx"]
+    function_apps_bundle_analyzer_app_error_tsx_Error["Error"]
+    mod___components_error_state["@/components/error-state"]
+    mod_react["react"]
+    fn_useEffect["useEffect"]
+    fn_console_error["console.error"]
+    file_apps_bundle_analyzer_app_globals_css["globals.css"]
+    file_apps_bundle_analyzer_app_layout_tsx["layout.tsx"]
+    function_apps_bundle_analyzer_app_layout_tsx_RootLayout["RootLayout"]
+    mod_next["next"]
+    mod___components_theme_provider["@/components/theme-provider"]
+    mod___globals_css["./globals.css"]
+    file_apps_bundle_analyzer_app_page_tsx["page.tsx"]
+    function_apps_bundle_analyzer_app_page_tsx_HomePage["HomePage"]
+    mod___components_route_summary["@/components/route-summary"]
+    file_apps_bundle_analyzer_components_analyzer_tsx["analyzer.tsx"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzer["SingleAnalyzer"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzerController["SingleAnalyzerController"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_CompareAnalyzer["CompareAnalyzer"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_CompareAnalyzerController["CompareAnalyzerController"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerBoundary["AnalyzerBoundary"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerFallback["AnalyzerFallback"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_useAnalyzerModel["useAnalyzerModel"]
+    type_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerModel["AnalyzerModel"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerFrame["AnalyzerFrame"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerTopBar["AnalyzerTopBar"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_CompareAnalyzerView["CompareAnalyzerView"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_ValidComparison["ValidComparison"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_ValidComparisonContent["ValidComparisonContent"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_BaselineRouteComparison["BaselineRouteComparison"]
+    type_apps_bundle_analyzer_components_analyzer_tsx_ComparisonLayoutProps["ComparisonLayoutProps"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_ComparisonContent["ComparisonContent"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_compareFilterSource["compareFilterSource"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzerView["SingleAnalyzerView"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzerContent["SingleAnalyzerContent"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_AsyncScopeLegend["AsyncScopeLegend"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_hasEnvironmentSources["hasEnvironmentSources"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_getAlternateEnvironment["getAlternateEnvironment"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_AlternateEnvironmentEmptyState["AlternateEnvironmentEmptyState"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_ViewSkeleton["ViewSkeleton"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_TreemapFooter["TreemapFooter"]
+    function_apps_bundle_analyzer_components_analyzer_tsx_getRootSourceIndex["getRootSourceIndex"]
+    mod_next_link["next/link"]
+    file_apps_bundle_analyzer_app_analyze_page_tsx -->|defines| function_apps_bundle_analyzer_app_analyze_page_tsx_AnalyzePage
+    file_apps_bundle_analyzer_app_analyze_page_tsx -->|imports| mod___components_analyzer
+    file_apps_bundle_analyzer_app_compare_page_tsx -->|defines| function_apps_bundle_analyzer_app_compare_page_tsx_ComparePage
+    file_apps_bundle_analyzer_app_compare_page_tsx -->|imports| mod___components_analyzer
+    file_apps_bundle_analyzer_app_error_tsx -->|defines| function_apps_bundle_analyzer_app_error_tsx_Error
+    file_apps_bundle_analyzer_app_error_tsx -->|imports| mod___components_error_state
+    file_apps_bundle_analyzer_app_error_tsx -->|imports| mod_react
+    function_apps_bundle_analyzer_app_error_tsx_Error -->|calls| fn_useEffect
+    function_apps_bundle_analyzer_app_error_tsx_Error -->|calls| fn_console_error
+    file_apps_bundle_analyzer_app_layout_tsx -->|defines| function_apps_bundle_analyzer_app_layout_tsx_RootLayout
+    file_apps_bundle_analyzer_app_layout_tsx -->|imports| mod_next
+    file_apps_bundle_analyzer_app_layout_tsx -->|imports| mod_react
+    file_apps_bundle_analyzer_app_layout_tsx -->|imports| mod___components_theme_provider
+    file_apps_bundle_analyzer_app_layout_tsx -->|imports| mod___globals_css
+    file_apps_bundle_analyzer_app_page_tsx -->|defines| function_apps_bundle_analyzer_app_page_tsx_HomePage
+    file_apps_bundle_analyzer_app_page_tsx -->|imports| mod___components_route_summary
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzer
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzerController
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_CompareAnalyzer
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_CompareAnalyzerController
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerBoundary
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerFallback
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_useAnalyzerModel
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| type_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerModel
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerFrame
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_AnalyzerTopBar
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_CompareAnalyzerView
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_ValidComparison
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_ValidComparisonContent
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_BaselineRouteComparison
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| type_apps_bundle_analyzer_components_analyzer_tsx_ComparisonLayoutProps
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_ComparisonContent
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_compareFilterSource
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzerView
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzerContent
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_AsyncScopeLegend
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_hasEnvironmentSources
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_getAlternateEnvironment
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_AlternateEnvironmentEmptyState
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_ViewSkeleton
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_TreemapFooter
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|defines| function_apps_bundle_analyzer_components_analyzer_tsx_getRootSourceIndex
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|imports| mod_react
+    file_apps_bundle_analyzer_components_analyzer_tsx -->|imports| mod_next_link
+    function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzerController -->|calls| function_apps_bundle_analyzer_components_analyzer_tsx_useAnalyzerModel
+    function_apps_bundle_analyzer_components_analyzer_tsx_CompareAnalyzerController -->|calls| function_apps_bundle_analyzer_components_analyzer_tsx_useAnalyzerModel
+    function_apps_bundle_analyzer_components_analyzer_tsx_useAnalyzerModel -->|calls| fn_useEffect
+    function_apps_bundle_analyzer_components_analyzer_tsx_useAnalyzerModel -->|calls| function_apps_bundle_analyzer_components_analyzer_tsx_getRootSourceIndex
+    function_apps_bundle_analyzer_components_analyzer_tsx_ComparisonContent -->|calls| function_apps_bundle_analyzer_components_analyzer_tsx_getAlternateEnvironment
+    function_apps_bundle_analyzer_components_analyzer_tsx_ComparisonContent -->|calls| function_apps_bundle_analyzer_components_analyzer_tsx_hasEnvironmentSources
+    function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzerContent -->|calls| function_apps_bundle_analyzer_components_analyzer_tsx_hasEnvironmentSources
+    function_apps_bundle_analyzer_components_analyzer_tsx_SingleAnalyzerContent -->|calls| function_apps_bundle_analyzer_components_analyzer_tsx_getAlternateEnvironment
