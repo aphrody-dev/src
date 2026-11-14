@@ -1,0 +1,28 @@
+{
+  "name": "@aphrody/bunify",
+  "version": "0.1.0",
+  "description": "Switch any JS/TS monorepo from pnpm, yarn, npm or lerna + Node to Bun, idempotently",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/aphrody.git",
+    "directory": "packages/bunify"
+  },
+  "bin": {
+    "bunify": "./src/cli.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "bun": ">=1.4.4"
+  }
+}
