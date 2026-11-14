@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 /**
  * Lance un moteur headless qui expose CDP (Chrome for Testing, Chromium, Playwright Chromium,
- * Lightpanda, Obscura) ou WebDriver (Servo) sur 127.0.0.1, et rend son point d'accès. Le pilotage
+ * Obscura) ou WebDriver (Servo) sur 127.0.0.1, et rend son point d'accès. Le pilotage
  * CDP passe par le client existant (browser/cdp-client.ts) ; Playwright et Puppeteer s'y connectent
  * aussi (connectOverCDP, connect({ browserURL })).
  */
@@ -17,7 +17,7 @@ export interface RunningEngine extends AsyncDisposable {
   readonly port: number;
   /** http://127.0.0.1:<port> : base CDP (/json/version) ou WebDriver (/status). */
   readonly endpoint: string;
-  /** CDP : URL WebSocket du navigateur ; BiDi : ws://.../session ; WebDriver classique : null. */
+  /** CDP : URL WebSocket du navigateur ; WebDriver classique : null. */
   readonly webSocketDebuggerUrl: string | null;
   readonly version: string;
   connect(): Promise<ChromiumBunCdpClient>;
@@ -37,14 +37,6 @@ export function freePort(): number {
 }
 
 async function probe(engine: Engine, base: string) {
-  if (engine.protocol === "bidi") {
-    // Firefox : agent distant WebDriver BiDi, aucune route /json/version ; toute réponse HTTP vaut prêt.
-    await fetch(base, { signal: AbortSignal.timeout(800) });
-    return {
-      version: "webdriver-bidi",
-      ws: `${base.replace("http", "ws")}/session`,
-    };
-  }
   const url =
     engine.protocol === "webdriver" ? `${base}/status` : `${base}/json/version`;
   const r = await fetch(url, { signal: AbortSignal.timeout(800) });

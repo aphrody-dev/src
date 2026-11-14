@@ -52,11 +52,8 @@ const last = (s: string) => s.trim().split(/\r?\n/).pop() ?? "";
 export const DEFAULT_INSTALL: readonly string[] = [
   "chrome@stable",
   "chrome-headless-shell@stable",
-  "firefox@stable",
   "playwright-chromium",
-  "playwright-firefox",
   "playwright-webkit",
-  ...(process.platform === "win32" ? [] : ["lightpanda"]),
   "obscura",
   "servo",
   "agent-browser",

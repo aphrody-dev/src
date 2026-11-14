@@ -32,14 +32,6 @@ export interface MatrixRow {
 
 const CFT =
   "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json";
-const FIREFOX = "https://product-details.mozilla.org/1.0/firefox_versions.json";
-const FIREFOX_KEY: Record<string, string> = {
-  stable: "LATEST_FIREFOX_VERSION",
-  beta: "LATEST_FIREFOX_DEVEL_VERSION",
-  devedition: "FIREFOX_DEVEDITION",
-  nightly: "FIREFOX_NIGHTLY",
-  esr: "FIREFOX_ESR",
-};
 
 const token = Bun.env.GITHUB_TOKEN || Bun.env.GH_TOKEN;
 const memo = new Map<string, Promise<unknown>>();
@@ -59,8 +51,6 @@ export function sourceUrl(l: Latest): string {
   switch (l.from) {
     case "cft":
       return CFT;
-    case "firefox":
-      return FIREFOX;
     case "github":
       return `https://api.github.com/repos/${l.repo}/releases/latest`;
     case "npm":
@@ -84,8 +74,6 @@ export async function latestVersion(l: Latest): Promise<string | null> {
         const key = l.channel[0]!.toUpperCase() + l.channel.slice(1);
         return j?.channels?.[key]?.version ?? null;
       }
-      case "firefox":
-        return (await json(url))?.[FIREFOX_KEY[l.channel]!] ?? null;
       case "github": {
         const j = await json(
           url,

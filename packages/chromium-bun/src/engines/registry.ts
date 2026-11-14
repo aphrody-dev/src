@@ -11,23 +11,21 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 export type EngineProtocol =
-  "cdp" | "bidi" | "webdriver" | "playwright" | "mcp" | "cli" | "library";
+  "cdp" | "webdriver" | "playwright" | "mcp" | "cli" | "library";
 
-export type CftBrowser = "chrome" | "chrome-headless-shell" | "firefox";
+export type CftBrowser = "chrome" | "chrome-headless-shell";
 export type CftChannel = "stable" | "beta" | "dev" | "canary";
-export type FirefoxChannel =
-  "stable" | "beta" | "devedition" | "nightly" | "esr";
 /** Moteur JavaScript embarqué et implémentation WebGPU, pour la matrice et les combinaisons. */
 export type JsEngine = "v8" | "javascriptcore" | "spidermonkey" | "none";
 export type GpuBackend = "dawn" | "wgpu" | "none";
 export type PlaywrightBrowser =
-  "chromium" | "chromium-headless-shell" | "firefox" | "webkit";
+  "chromium" | "chromium-headless-shell" | "webkit";
 
 export type EngineInstall =
   /** Binaire de release épinglé dans tools.toml, installé par `ay up <tool>`. */
   | { via: "ay"; tool: string; bin: string }
-  /** Chrome for Testing (API JSON officielle) ou Firefox (archives Mozilla) par @puppeteer/browsers. */
-  | { via: "cft"; browser: CftBrowser; channel: CftChannel | FirefoxChannel }
+  /** Chrome for Testing (API JSON officielle) par @puppeteer/browsers. */
+  | { via: "cft"; browser: CftBrowser; channel: CftChannel }
   /** Navigateurs Playwright (`playwright install`), cache partagé JS et Python. */
   | { via: "playwright"; browser: PlaywrightBrowser }
   /** Outil Python isolé par `uv tool install`. */
@@ -108,7 +106,6 @@ const chromeFlags =
 
 export type Latest =
   | { from: "cft"; channel: CftChannel }
-  | { from: "firefox"; channel: FirefoxChannel }
   | { from: "github"; repo: string; prefix?: string }
   | { from: "npm"; name: string }
   | { from: "pypi"; name: string }
@@ -116,13 +113,6 @@ export type Latest =
   | { from: "playwright"; browser: PlaywrightBrowser };
 
 const CHANNELS: readonly CftChannel[] = ["stable", "beta", "dev", "canary"];
-const FIREFOX: readonly FirefoxChannel[] = [
-  "stable",
-  "beta",
-  "devedition",
-  "nightly",
-  "esr",
-];
 const gh = (r: string) => `https://github.com/${r}`;
 
 export const ENGINES: readonly Engine[] = [
@@ -154,26 +144,6 @@ export const ENGINES: readonly Engine[] = [
       serve: chromeFlags(false),
     },
   ]),
-  ...FIREFOX.map((channel): Engine => ({
-    id: `firefox@${channel}`,
-    title: `Firefox (${channel})`,
-    language: "C++",
-    protocol: "bidi",
-    upstream: "https://github.com/mozilla-firefox/firefox",
-    thirdParty: "third_party/firefox",
-    install: { via: "cft", browser: "firefox", channel },
-    js: "spidermonkey",
-    gpu: "wgpu",
-    latest: { from: "firefox", channel },
-    serve: (port, profileDir) => [
-      "--headless",
-      `--remote-debugging-port=${port}`,
-      "--profile",
-      profileDir,
-      "--no-remote",
-      "about:blank",
-    ],
-  })),
   {
     id: "chromium",
     js: "v8",
@@ -206,7 +176,7 @@ export const ENGINES: readonly Engine[] = [
     serve: chromeFlags(true),
   },
   ...(
-    ["chromium", "chromium-headless-shell", "firefox", "webkit"] as const
+    ["chromium", "chromium-headless-shell", "webkit"] as const
   ).map((browser): Engine => ({
     id: `playwright-${browser}`,
     title: `Playwright ${browser}`,
@@ -215,32 +185,13 @@ export const ENGINES: readonly Engine[] = [
     upstream: gh("microsoft/playwright"),
     thirdParty: "third_party/playwright",
     install: { via: "playwright", browser },
-    js:
-      browser === "webkit"
-        ? "javascriptcore"
-        : browser === "firefox"
-          ? "spidermonkey"
-          : "v8",
-    gpu:
-      browser === "webkit" ? "none" : browser === "firefox" ? "wgpu" : "dawn",
+    js: browser === "webkit" ? "javascriptcore" : "v8",
+    gpu: browser === "webkit" ? "none" : "dawn",
     latest: { from: "playwright", browser },
     ...(browser.startsWith("chromium")
       ? { serve: chromeFlags(browser === "chromium") }
       : {}),
   })),
-  {
-    id: "lightpanda",
-    js: "v8",
-    gpu: "none",
-    latest: { from: "github", repo: "lightpanda-io/browser", prefix: "" },
-    title: "Lightpanda",
-    language: "Zig",
-    protocol: "cdp",
-    upstream: gh("lightpanda-io/browser"),
-    thirdParty: "third_party/lightpanda-io-browser",
-    install: { via: "ay", tool: "lightpanda", bin: "lightpanda" },
-    serve: (port) => ["serve", "--host", "127.0.0.1", "--port", String(port)],
-  },
   {
     id: "obscura",
     js: "v8",
@@ -551,14 +502,6 @@ const PLAYWRIGHT_LAYOUT: Record<
         "chrome-headless-shell-mac-arm64/chrome-headless-shell",
         "chrome-mac/headless_shell",
       ],
-    },
-  },
-  firefox: {
-    dir: "firefox-",
-    rel: {
-      win32: ["firefox/firefox.exe"],
-      linux: ["firefox/firefox"],
-      darwin: ["firefox/Nightly.app/Contents/MacOS/firefox"],
     },
   },
   webkit: {

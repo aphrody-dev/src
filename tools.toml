@@ -811,20 +811,6 @@ unsupported = [
 # Python (uv tool) passent par `chromium-bun engines install`. Rien n'est compilé sur le poste.
 # ---------------------------------------------------------------------------------------------
 
-# Lightpanda (Zig) : CDP sur `lightpanda serve`, aucune build Windows publiée.
-[[tool]]
-name = "lightpanda"
-version = "1.0.3"
-bin = ["lightpanda"]
-verify = ["lightpanda", "version"]
-source = "github"
-repo = "lightpanda-io/browser"
-tag = "{version}"
-assets.linux-x86_64 = "lightpanda-x86_64-linux"
-assets.linux-aarch64 = "lightpanda-aarch64-linux"
-assets.macos-x86_64 = "lightpanda-x86_64-macos"
-assets.macos-aarch64 = "lightpanda-aarch64-macos"
-
 # Obscura (Rust) : CDP sur `obscura serve`. Pas de fichier de sommes publié.
 sha256.linux-x86_64 = "53eb34da09159dcf8f04865dbfe3e63e9a652062684495aa7ced5ddd7c82e8b0"
 sha256.linux-aarch64 = "20a5348bf3b6f71e41088223b188552ab550c1b9c9a9cbd8f099e6f7f3d78549"
