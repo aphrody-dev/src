@@ -134,13 +134,6 @@
         "release": "./src/cli.ts",
       },
     },
-    "packages/shell-matrix": {
-      "name": "@aphrody/shell-matrix",
-      "version": "0.1.0",
-      "bin": {
-        "shell-matrix": "./src/cli.ts",
-      },
-    },
     "packages/upstream": {
       "name": "@aphrody/upstream",
       "version": "1.0.0",
@@ -217,7 +210,6 @@
 
     "@aphrody/release": ["@aphrody/release@workspace:packages/release"],
 
-    "@aphrody/shell-matrix": ["@aphrody/shell-matrix@workspace:packages/shell-matrix"],
 
     "@aphrody/upstream": ["@aphrody/upstream@workspace:packages/upstream"],
 

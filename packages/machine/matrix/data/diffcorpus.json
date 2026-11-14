@@ -1,0 +1,1512 @@
+[
+  {
+    "id": "ar01",
+    "domain": "arith",
+    "script": "echo $((2**3**2)) $(( (2**3)**2 )) $((-2**2)) $((-(2**2)))"
+  },
+  {
+    "id": "ar02",
+    "domain": "arith",
+    "script": "echo $((2#1010)) $((8#17)) $((16#ff)) $((36#z)) $((64#@)) $((64#_)) $((64#__)) 2>&1"
+  },
+  {
+    "id": "ar03",
+    "domain": "arith",
+    "script": "echo $((9223372036854775807+1)) $((9223372036854775807*2)) $((-9223372036854775808/-1)) 2>&1; echo rc=$?"
+  },
+  {
+    "id": "ar04",
+    "domain": "arith",
+    "script": "x=5; echo $((x++)) $x $((++x)) $x $((x--)) $x $((--x)) $x"
+  },
+  {
+    "id": "ar05",
+    "domain": "arith",
+    "script": "x=0; y=$((x+=3, x*=2, x-1)); echo \"$y $x\"; z=$((1?10:20, 0?30:40)); echo $z"
+  },
+  {
+    "id": "ar06",
+    "domain": "arith",
+    "script": "a=(10 20 30); i=1; echo $((a[i++])) $i $((a[i]+a[0])); echo $((a[1+1]))"
+  },
+  {
+    "id": "ar07",
+    "domain": "arith",
+    "script": "echo $((5/2)) $((5%2)) $((-5/2)) $((-5%2)) $((5/-2)) $((5%-2))"
+  },
+  {
+    "id": "ar08",
+    "domain": "arith",
+    "script": "echo $((1<<62)) $((1<<63)) $((-1>>1)) $((255>>4)) $((5&3)) $((5|3)) $((5^3)) $((~5))"
+  },
+  {
+    "id": "ar09",
+    "domain": "arith",
+    "script": "x=\"  42  \"; echo $((x)) $((x+1)); y=010; echo $((y)) $((10#$y)); z=08; echo $((z)) 2>&1; echo rc=$?"
+  },
+  {
+    "id": "ar10",
+    "domain": "arith",
+    "script": "echo $((a=5)) $a; ((b+=2)) 2>&1; echo \"b=$b rc=$?\"; ((c++)) ; echo \"c=$c\"; ((c)) ; echo rc=$?"
+  },
+  {
+    "id": "ar11",
+    "domain": "arith",
+    "script": "v=3; echo $((v>2?100:200)); echo $((!v)) $((!0)); s=$((3>2 && 2>1 || 0)); echo $s"
+  },
+  {
+    "id": "ar12",
+    "domain": "arith",
+    "script": "echo $((16#FF + 2#10)); x=0x10; echo $((x)); y=\"2+3*4\"; echo $((y)) $((y*2))"
+  },
+  {
+    "id": "ar13",
+    "domain": "arith",
+    "script": "i=0; a=$((i++ + i++ + i++)); echo \"$a $i\"; j=5; echo $((j+=j-=2)) $j 2>&1"
+  },
+  {
+    "id": "ar14",
+    "domain": "arith",
+    "script": "echo $((5/0)) 2>&1; echo rc=$?; echo $((5%0)) 2>&1; echo rc=$?; echo after"
+  },
+  {
+    "id": "ar15",
+    "domain": "arith",
+    "script": "declare -i n; n=\"3+4\"; echo $n; n=\" 5 * 2 \"; echo $n; n=abc; echo \"n=$n rc=$?\""
+  },
+  {
+    "id": "ax01",
+    "domain": "arith",
+    "script": "echo $((36#Z)) $((36#z)) $((37#A)) $((62#Z)) $((64#z)) $((64#+)) $((64#/)) 2>&1"
+  },
+  {
+    "id": "ax02",
+    "domain": "arith",
+    "script": "echo $((1<<64)) $((1<<65)) $((8>>-1)) 2>&1; echo rc=$?; echo $((2**-1)) 2>&1; echo rc2=$?"
+  },
+  {
+    "id": "ax03",
+    "domain": "arith",
+    "script": "x=1; echo $((x?y=10:y=20)) \"x=$x y=$y\"; a=(5); echo $((a[0]++)) ${a[0]} $((++a[0])); unset e; echo $((e)) $((e+1)); s=\"\"; echo $((s)) 2>&1"
+  },
+  {
+    "id": "ax04",
+    "domain": "arith",
+    "script": "v=\"abc\"; echo $((v)) 2>&1; echo rc=$?; v=\"a1\"; echo $((v)) 2>&1; arr=(3 4); echo $((arr)) $((arr[0]+arr[1])); echo $((arr[@])) 2>&1 | head -c 120; echo"
+  },
+  {
+    "id": "ax05",
+    "domain": "arith",
+    "script": "echo $(( 010 + 0x10 + 10 )); w=\"0\"; echo $((w?w:9)); (( q = 4 > 3 ? 11 : 22 )); echo q=$q; echo $(( - -5 )) $((!!5))"
+  },
+  {
+    "id": "arr01",
+    "domain": "array",
+    "script": "a=(1 2 3); a+=(4 5); echo \"${a[@]} ${#a[@]}\"; a[10]=x; echo \"${#a[@]} ${!a[@]}\""
+  },
+  {
+    "id": "arr02",
+    "domain": "array",
+    "script": "a=(1 2 3 4); unset 'a[1]'; echo \"n=${#a[@]} idx=${!a[@]} vals=${a[@]}\"; echo \"[${a[1]}] [${a[-1]}] [${a[-4]}]\""
+  },
+  {
+    "id": "arr03",
+    "domain": "array",
+    "script": "a=(\"a b\" c \"d  e\"); printf '<%s>\\n' \"${a[@]}\"; printf '<%s>\\n' \"${a[*]}\"; IFS=,; printf '<%s>\\n' \"${a[*]}\""
+  },
+  {
+    "id": "arr04",
+    "domain": "array",
+    "script": "a=(0 1 2 3 4); echo \"${a[@]:1:2}\"; b=(\"${a[@]:2}\"); echo \"b=${b[@]} n=${#b[@]}\"; echo \"${a[@]: -2:1}\""
+  },
+  {
+    "id": "arr05",
+    "domain": "array",
+    "script": "declare -A m; m[x]=1; m[y]=2; m[x]+=5; echo \"${m[x]} ${m[y]} ${#m[@]}\"; unset 'm[y]'; echo \"${#m[@]} [${m[y]:-gone}]\""
+  },
+  {
+    "id": "arr06",
+    "domain": "array",
+    "script": "a=(1 2); a[-1]=last; echo \"${a[@]}\"; a[-5]=bad 2>&1; echo rc=$?; echo \"${a[@]}\""
+  },
+  {
+    "id": "arr07",
+    "domain": "array",
+    "script": "a=([3]=d [1]=b [0]=a); echo \"${a[@]}\"; echo \"${a[*]}\"; printf '%s\\n' \"${!a[@]}\""
+  },
+  {
+    "id": "arr08",
+    "domain": "array",
+    "script": "s=\"x y z\"; a=($s); echo \"n=${#a[@]} ${a[@]}\"; IFS=:; b=(p:q:r); c=(${b[0]}); echo \"c=${c[@]}\""
+  },
+  {
+    "id": "arr09",
+    "domain": "array",
+    "script": "a=(1 2 3); a=(\"${a[@]}\" 4); echo \"${a[@]}\"; a=(); echo \"n=${#a[@]} [${a[@]}]\"; a[0]=only; echo \"${a[@]} ${#a[@]}\""
+  },
+  {
+    "id": "arr10",
+    "domain": "array",
+    "script": "declare -A m=([a]=1); echo \"${m[a]:-d} ${m[missing]:-d}\"; m[\"key with space\"]=v; echo \"${m[key with space]} ${#m[@]}\""
+  },
+  {
+    "id": "arr11",
+    "domain": "array",
+    "script": "a=(one two); i=0; a[i++]=X; echo \"${a[@]} i=$i\"; a[++i]=Y; echo \"${a[@]} i=$i\""
+  },
+  {
+    "id": "arr12",
+    "domain": "array",
+    "script": "x=scalar; x+=(appended); echo \"${x[@]} n=${#x[@]}\"; y=scalar; y[1]=second; echo \"${y[@]} idx=${!y[@]}\""
+  },
+  {
+    "id": "arr13",
+    "domain": "array",
+    "script": "a=(1 2 3); unset a; echo \"n=${#a[@]} [${a:-unset}]\"; a[2]=only; echo \"idx=${!a[@]} vals=${a[@]}\""
+  },
+  {
+    "id": "arr14",
+    "domain": "array",
+    "script": "a=(\"a@b\" \"c*d\"); printf '[%s]' \"${a[@]@Q}\"; echo; printf '[%s]' \"${a[@]^^}\"; echo"
+  },
+  {
+    "id": "arr15",
+    "domain": "array",
+    "script": "IFS=/; a=(usr local bin); echo \"${a[*]}\"; echo \"${a[@]}\"; unset IFS; set -- \"${a[@]}\"; echo \"argc=$# $1 $3\""
+  },
+  {
+    "id": "at01",
+    "domain": "atrans",
+    "script": "declare -A m=([a]=1 [b]=2); o=${m@k}; echo \"k=[$o]\"; a=(x y); echo \"arrk=[${a@k}]\"; v=hi; echo \"a-flag=[${v@a}]\"; declare -i n=3; echo \"n-flag=[${n@a}]\"; declare -r r=1; echo \"r-flag=[${r@a}]\""
+  },
+  {
+    "id": "at02",
+    "domain": "atrans",
+    "script": "pre_a=1; pre_b=2; other=3; echo \"names:${!pre_@}\"; echo \"names2:${!pre_*}\"; v=pre_a; echo \"${!v@a}\" 2>&1"
+  },
+  {
+    "id": "at03",
+    "domain": "atrans",
+    "script": "s=\"hello world\"; echo \"${s@u}\"; echo \"${s@L}\"; t=\"ABC\"; echo \"${t@u}|${t@L}\"; echo \"${s@E}\"; p='a\\nb'; echo \"${p@P}\""
+  },
+  {
+    "id": "at04",
+    "domain": "atrans",
+    "script": "name=\"arr[1]\"; arr=(zero one two); echo \"${!name}\"; name2=\"arr\"; echo \"${!name2[@]}\"; idx=\"arr[2]\"; echo \"${!idx}\""
+  },
+  {
+    "id": "bi01",
+    "domain": "builtin",
+    "script": "printf '%q\\n' \"a b\" \"it's\" $'t\\tn' \"\" \"a=b\"; printf '%s|%05d|%-8s|\\n' x 42 hi"
+  },
+  {
+    "id": "bi02",
+    "domain": "builtin",
+    "script": "printf '%( %Y-%m-%d %H:%M:%S)T\\n' 0; TZ=UTC printf '%(%Y-%m-%d)T\\n' 86400; printf '%d %i %u %o %x %X\\n' 255 255 -1 8 255 255"
+  },
+  {
+    "id": "bi03",
+    "domain": "builtin",
+    "script": "printf 'a%db%dc' 1 2 3; echo; printf '%s-%s\\n' only; printf '%.2f %.0f %e %g\\n' 3.14159 2.5 12345.678 0.00001234"
+  },
+  {
+    "id": "bi04",
+    "domain": "builtin",
+    "script": "printf -v out '[%03d]' 7; echo \"$out\"; printf -v out '%s' a b c; echo \"$out\"; echo -n \"noeol\"; echo; echo -e 'x\\ty\\\\z'; echo -E 'x\\ty' "
+  },
+  {
+    "id": "bi05",
+    "domain": "builtin",
+    "script": "[ 1 -eq 1 -a 2 -eq 2 ]; echo a=$?; [ 1 -eq 2 -o 2 -eq 2 ]; echo o=$?; [ ! -f /etc/passwd ]; echo n=$?; [ \\( 1 -eq 1 \\) -a ! \\( 2 -eq 2 \\) ]; echo p=$?; [ abc \\< abd ]; echo s=$?; [ -v PATH ]; echo v=$?"
+  },
+  {
+    "id": "bi06",
+    "domain": "builtin",
+    "script": "test -z \"\" -o -n x; echo r1=$?; test a = a -a b = b -o c = d; echo r2=$?; test ! ! true; echo r3=$? 2>&1; [[ a == a* && b != c ]]; echo r4=$?"
+  },
+  {
+    "id": "bi07",
+    "domain": "builtin",
+    "script": "printf 'a b c\\n' | { read -a arr; echo \"n=${#arr[@]} ${arr[@]}\"; }; printf 'x:y:z' | { IFS=: read -ra arr; echo \"${arr[@]}\"; }; printf 'no-newline' | { read v; echo \"rc=$? v=[$v]\"; }"
+  },
+  {
+    "id": "bi08",
+    "domain": "builtin",
+    "script": "printf 'abcdef' | { read -n 3 v; echo \"n3=[$v]\"; }; printf 'line\\n' | { read -t 0 v; echo \"t0rc=$? v=[$v]\"; }; printf '' | { read -d '' v; echo \"drc=$?\"; }"
+  },
+  {
+    "id": "bi09",
+    "domain": "builtin",
+    "script": "mapfile -t lines < <(printf 'a\\nb\\nc'); echo \"n=${#lines[@]} ${lines[@]}\"; mapfile -d : -t parts < <(printf 'x:y:z'); echo \"p=${parts[@]} pn=${#parts[@]}\"; mapfile -n 2 -t two < <(printf '1\\n2\\n3\\n'); echo \"two=${two[@]}\""
+  },
+  {
+    "id": "bi10",
+    "domain": "builtin",
+    "script": "cb() { echo \"cb:$2\"; }; mapfile -c 2 -C cb arr < <(printf 'a\\nb\\nc\\nd\\n'); echo \"arr=${arr[@]}\""
+  },
+  {
+    "id": "bi11",
+    "domain": "builtin",
+    "script": "let 'x=2+3' 'y=x*2'; echo \"$x $y\"; let z=0; echo \"let0rc=$? z=$z\"; let 'a++'; echo \"arc=$? a=$a\""
+  },
+  {
+    "id": "bi12",
+    "domain": "builtin",
+    "script": "command -v printf; echo rc=$?; command -V printf; type printf; type -t cd; type -a echo | head -3; hash -l 2>&1 | head -2; echo done"
+  },
+  {
+    "id": "bi13",
+    "domain": "builtin",
+    "script": "echo $RANDOM >/dev/null; v1=$SECONDS; echo \"sec-type:${v1}\"; printf '%b\\n' 'a\\tb\\nc'; printf '%c%c%c\\n' abc 65 xyz"
+  },
+  {
+    "id": "bi14",
+    "domain": "builtin",
+    "script": "read -r a b c <<< \"one two three four\"; echo \"a=$a b=$b c=$c\"; IFS=, read -r a b <<< \"x,y,z\"; echo \"a=$a b=$b\"; read -r a <<< \"  spaced  \"; echo \"a=[$a]\""
+  },
+  {
+    "id": "bi15",
+    "domain": "builtin",
+    "script": "[[ \"abc def\" =~ ^([a-z]+)[[:space:]]([a-z]+)$ ]]; echo \"m=${BASH_REMATCH[@]} n=${#BASH_REMATCH[@]}\"; [[ \"abc\" =~ (z) ]]; echo \"nomatch rc=$? rem=[${BASH_REMATCH[@]}]\""
+  },
+  {
+    "id": "mf01",
+    "domain": "builtin",
+    "script": "mapfile -O 2 -t a < <(printf 'x\\ny\\nz\\n'); a=(p); mapfile -O 1 -t a < <(printf 'x\\ny\\n'); echo \"a=${a[@]} n=${#a[@]}\""
+  },
+  {
+    "id": "mf02",
+    "domain": "builtin",
+    "script": "mapfile -s 1 -n 1 -t a < <(printf 'l1\\nl2\\nl3\\n'); echo \"a=${a[@]}\"; mapfile -d '' -t z < <(printf 'a\\0b\\0c'); echo \"z=${z[@]} n=${#z[@]}\""
+  },
+  {
+    "id": "mf03",
+    "domain": "builtin",
+    "script": "cb() { printf 'cb idx=%s line=<%s>\\n' \"$1\" \"$2\"; }; mapfile -C cb -c 1 arr < <(printf 'one\\ntwo\\n'); echo \"arr=${arr[@]}\""
+  },
+  {
+    "id": "mf04",
+    "domain": "builtin",
+    "script": "exec 3< <(printf 'f1\\nf2\\n'); mapfile -u 3 -t a; echo \"a=${a[@]}\"; exec 3<&-; printf 'data' | { read -N 2 v; echo \"N2=[$v]\"; read -N 2 w; echo \"N2b=[$w]\"; }"
+  },
+  {
+    "id": "mf05",
+    "domain": "builtin",
+    "script": "printf 'a b \\n' | { read -a arr; echo \"n=${#arr[@]} <${arr[@]}>\"; }; printf '  lead trail  \\n' | { read -a arr; echo \"n2=${#arr[@]}\"; }; IFS=: read -a arr <<< \"x::y:\"; echo \"colon n=${#arr[@]} [${arr[1]}]\""
+  },
+  {
+    "id": "mf06",
+    "domain": "builtin",
+    "script": "printf 'x' | { read -t 0.2 v; echo \"rc=$? v=[$v]\"; }; exec 3<&0; read -u 3 -t 0 v < /dev/null; echo \"fdrc=$?\""
+  },
+  {
+    "id": "pf201",
+    "domain": "builtin",
+    "script": "printf '%d\\n' abc 2>&1; echo \"rc=$?\"; printf '%d %d\\n' 12abc 0x10 2>&1; printf '%s\\n' 'a\\b' ; printf '%b\\n' 'a\\cb' ; echo after-b"
+  },
+  {
+    "id": "pf202",
+    "domain": "builtin",
+    "script": "printf -v 'arr[1]' 'val-%d' 9; echo \"arr1=${arr[1]} n=${#arr[@]}\"; printf '%*d|\\n' -6 42; printf '%.*f\\n' 2 3.14159; printf '%%|%q|\\n' \"a'b\""
+  },
+  {
+    "id": "pf203",
+    "domain": "builtin",
+    "script": "printf '%( %s )T\\n' 2>&1; echo rc=$?; printf '%(-1)T\\n' 2>&1 | head -1; printf '%(now)T' -2 2>&1 ; echo; printf '%c\\n' '' "
+  },
+  {
+    "id": "ca01",
+    "domain": "case",
+    "script": "v=banana; case $v in a*) echo A;; b*) echo B;; *) echo STAR;; esac"
+  },
+  {
+    "id": "ca02",
+    "domain": "case",
+    "script": "v=zzz; case $v in a*) echo A;; b*) echo B;; esac; echo \"rc=$?\""
+  },
+  {
+    "id": "ca03",
+    "domain": "case",
+    "script": "v=; case $v in \"\") echo EMPTY;; *) echo STAR;; esac; case $v in *) echo STAR2;; esac"
+  },
+  {
+    "id": "ca04",
+    "domain": "case",
+    "script": "v=ab; case $v in a*) echo FIRST;; ab) echo SECOND;; *) echo STAR;; esac"
+  },
+  {
+    "id": "ca05",
+    "domain": "case",
+    "script": "v=ab; case $v in a*) echo FIRST ;& b*) echo SECOND;; *) echo STAR;; esac"
+  },
+  {
+    "id": "ca06",
+    "domain": "case",
+    "script": "v=ab; case $v in a*) echo FIRST ;& b*) echo SECOND ;& *) echo STAR;; esac"
+  },
+  {
+    "id": "ca07",
+    "domain": "case",
+    "script": "v=ab; case $v in a*) echo FIRST ;;& ab) echo SECOND ;;& *) echo STAR;; esac"
+  },
+  {
+    "id": "ca08",
+    "domain": "case",
+    "script": "v=ab; case $v in a*) echo FIRST ;;& zz*) echo NOPE ;;& yy) echo NOPE2;; esac; echo done"
+  },
+  {
+    "id": "ca09",
+    "domain": "case",
+    "script": "v=ab; case $v in a*) echo FIRST ;& *) echo LAST;; esac; echo done"
+  },
+  {
+    "id": "ca10",
+    "domain": "case",
+    "script": "v=abc; case $v in [a-c]*) echo CLS;; a?c) echo Q;; a*c) echo STAR;; *) echo NO;; esac"
+  },
+  {
+    "id": "ca11",
+    "domain": "case",
+    "script": "v='aXYZ'; case $v in \"a*\") echo LITERAL;; a*) echo GLOB;; esac; v='a*'; case $v in \"a*\") echo LIT2;; a*) echo GLOB2;; esac"
+  },
+  {
+    "id": "ca12",
+    "domain": "case",
+    "script": "p='x*'; v=xyz; case $v in $p) echo UNQ;; *) echo NO;; esac; case $v in \"$p\") echo QUOTED;; *) echo NO2;; esac"
+  },
+  {
+    "id": "ca13",
+    "domain": "case",
+    "script": "shopt -s extglob\nv=aab\ncase $v in +(a)b) echo EXT;; *) echo NO;; esac"
+  },
+  {
+    "id": "ca13b",
+    "domain": "case",
+    "script": "shopt -u extglob\nv=aab\ncase $v in +(a)b) echo EXT2;; *) echo NO2;; esac"
+  },
+  {
+    "id": "ca14",
+    "domain": "case",
+    "script": "v=ABC; case $v in abc) echo NO;; *) echo NO2;; esac; shopt -s nocasematch; case $v in abc) echo YES;; *) echo NO3;; esac; shopt -u nocasematch; case $v in abc) echo NO4;; *) echo NO5;; esac"
+  },
+  {
+    "id": "ca15",
+    "domain": "case",
+    "script": "v='a b'; case $v in 'a b') echo EXACT;; *) echo OTHER;; esac; case $v in a*) echo APREFIX;; *) echo OTHER2;; esac"
+  },
+  {
+    "id": "ca16",
+    "domain": "case",
+    "script": "case $(printf 'x\\n\\n') in x) echo YES;; *) echo NO;; esac"
+  },
+  {
+    "id": "ca17",
+    "domain": "case",
+    "script": "case $((1+2)) in 3) echo THREE;; *) echo NO;; esac"
+  },
+  {
+    "id": "ca18",
+    "domain": "case",
+    "script": "p='a/b'; case 'a/b' in $p) echo SLASH;; *) echo NO;; esac"
+  },
+  {
+    "id": "ca19",
+    "domain": "case",
+    "script": "v=outer; case $v in outer) case inner in inner) echo NESTED;; esac;; *) echo NO;; esac"
+  },
+  {
+    "id": "ca20",
+    "domain": "case",
+    "script": "f() { case $1 in a) return 3;; *) return 0;; esac; }; f a; echo \"a_rc=$?\"; f b; echo \"b_rc=$?\""
+  },
+  {
+    "id": "ca21",
+    "domain": "case",
+    "script": "v=x; case $v in (a) echo A;; (x) echo X;; esac"
+  },
+  {
+    "id": "ca22",
+    "domain": "case",
+    "script": "case '^' in [^a]) echo CARET;; *) echo NO;; esac; case b in [^a]) echo B;; *) echo NO2;; esac; case a in [^a]) echo A;; *) echo NO3;; esac"
+  },
+  {
+    "id": "ca23",
+    "domain": "case",
+    "script": "shopt -s extglob\nv=b\ncase $v in @(a|b)) echo ALT;; *) echo NO;; esac\nv=c\ncase $v in @(a|b)) echo ALT2;; *) echo NO2;; esac"
+  },
+  {
+    "id": "ca24",
+    "domain": "case",
+    "script": "v=ab; case $v in a*) x=one ;& b*) x=\"$x-two\" ;& *) echo \"x=$x\";; esac"
+  },
+  {
+    "id": "ca25",
+    "domain": "case",
+    "script": "shopt -s extglob\nv=b\ncase $v in ?(a)b) echo OPT1;; *) echo NO;; esac\nv=ab\ncase $v in ?(a)b) echo OPT2;; *) echo NO2;; esac"
+  },
+  {
+    "id": "ca26",
+    "domain": "case",
+    "script": "case '' in '') echo EMPTYQ;; *) echo NO;; esac"
+  },
+  {
+    "id": "ca27",
+    "domain": "case",
+    "script": "i=0; while [ $i -lt 3 ]; do i=$((i+1)); case $i in 2) echo TWO; break;; *) echo \"n=$i\";; esac; done; echo \"after=$i\""
+  },
+  {
+    "id": "ca28",
+    "domain": "case",
+    "script": "v=a; case $v in a) echo A ;;& a) echo A2 ;;& *) echo STAR;; esac"
+  },
+  {
+    "id": "ca29",
+    "domain": "case",
+    "script": "v=a; case $v in a) echo A ;& zz) echo SHOULD_RUN;; esac; case $v in a) echo A2 ;;& zz) echo SHOULD_NOT;; *) echo STAR2;; esac"
+  },
+  {
+    "id": "ca30",
+    "domain": "case",
+    "script": "case 'a?' in a\\?) echo QMARK;; *) echo NO;; esac; case 'aX' in a\\?) echo Q2;; *) echo NO2;; esac"
+  },
+  {
+    "id": "cd01",
+    "domain": "cd",
+    "script": "mkdir -p real && ln -s real linkdir; cd linkdir; echo \"logical=$PWD\"; pwd -P; cd -P .; echo \"physical=$PWD\"; cd ..; pwd"
+  },
+  {
+    "id": "cd02",
+    "domain": "cd",
+    "script": "mkdir -p one two; pushd one >/dev/null; pushd ../two >/dev/null; echo \"stack:\"; dirs -p; popd >/dev/null; pwd; popd >/dev/null; pwd; pushd 2>&1; echo \"pushd-noargs-rc=$?\""
+  },
+  {
+    "id": "cd03",
+    "domain": "cd",
+    "script": "cd \"\" 2>&1; echo \"rc=$?\"; unset OLDPWD; cd - 2>&1; echo \"rc2=$?\"; CDPATH=/nonexistent-xyz; mkdir -p subdir; cd subdir; echo \"cdpath=$PWD\""
+  },
+  {
+    "id": "dc01",
+    "domain": "declare",
+    "script": "declare -l low=\"AbC\"; echo \"$low\"; low=\"XyZ\"; echo \"$low\"; declare -u up=\"aBc\"; echo \"$up\"; declare -u up2; up2=q; echo \"$up2\""
+  },
+  {
+    "id": "dc02",
+    "domain": "declare",
+    "script": "declare -i n=\"010\"; echo $n; n=\"0x10\"; echo $n; declare -i bad=\"a+b\"; echo \"bad=$bad\""
+  },
+  {
+    "id": "dc03",
+    "domain": "declare",
+    "script": "declare -r ro=1; ro=2; echo \"rc=$? ro=$ro\"; declare -r ro2; ro2=x 2>&1; echo \"rc=$? ro2=[${ro2:-unset}]\""
+  },
+  {
+    "id": "dc04",
+    "domain": "declare",
+    "script": "declare -a idx=(a b); declare -A as=([k]=v); echo \"${idx[@]} ${as[k]}\"; declare -p idx as 2>&1 | head -4"
+  },
+  {
+    "id": "dc05",
+    "domain": "declare",
+    "script": "x=1; declare -i x; x=\"2+3\"; echo $x; declare +i x; x=\"2+3\"; echo \"$x\""
+  },
+  {
+    "id": "dc06",
+    "domain": "declare",
+    "script": "declare -n nr=target; target=hi; echo $nr; nr=bye; echo $target; declare -p nr"
+  },
+  {
+    "id": "dc07",
+    "domain": "declare",
+    "script": "f() { declare -g gv=global-set; local lv=1; echo \"in:$gv $lv\"; }; f; echo \"gv=$gv lv=[${lv:-unset}]\""
+  },
+  {
+    "id": "dc08",
+    "domain": "declare",
+    "script": "declare -t traced() { echo traced-body; } 2>&1; traced 2>&1; echo rc=$?"
+  },
+  {
+    "id": "dp01",
+    "domain": "declarep",
+    "script": "v=\"a b\"; declare -p v; arr=(1 \"x y\" ''); declare -p arr; declare -A m=([k]=\"v v\"); declare -p m; declare -i n=5; declare -p n; declare -n r=v; declare -p r"
+  },
+  {
+    "id": "dp02",
+    "domain": "declarep",
+    "script": "export EX=\"line1\nline2\"; declare -x | grep '^declare -x EX=' ; echo \"---\"; f() { echo body; }; declare -f f; declare -F f"
+  },
+  {
+    "id": "dp03",
+    "domain": "declarep",
+    "script": "readonly ROA=(a b); declare -p ROA; declare -r s=x; s=y 2>&1; echo \"rc=$? s=$s\"; declare -p s"
+  },
+  {
+    "id": "en01",
+    "domain": "env",
+    "script": "echo \"opts=$-\"; \"@@SELF@@\" -c 'echo inner-opts=$-' "
+  },
+  {
+    "id": "en02",
+    "domain": "env",
+    "script": "env -i \"@@SELF@@\" -c 'echo \"PATH=[$PATH]\"; echo \"IFS-set:${IFS:+yes}\"; echo \"optind=$OPTIND\"' "
+  },
+  {
+    "id": "en03",
+    "domain": "env",
+    "script": "export FOO=bar; \"@@SELF@@\" -c 'echo child:$FOO'; BASH_ENV=/dev/null \"@@SELF@@\" -c 'echo ok' "
+  },
+  {
+    "id": "en04",
+    "domain": "env",
+    "script": "echo \"versinfo=${BASH_VERSINFO[*]}\"; echo \"mach=[$MACHTYPE] host=[$HOSTTYPE] ostype=[$OSTYPE]\""
+  },
+  {
+    "id": "en05",
+    "domain": "env",
+    "script": "umask 077; \"@@SELF@@\" -c 'umask'; umask"
+  },
+  {
+    "id": "env201",
+    "domain": "env",
+    "script": "umask -S; umask 027; umask -S; umask 022; u=$(ulimit -Sn); h=$(ulimit -Hn); if [ \"$u\" -le \"$h\" ]; then echo nofile-soft-le-hard; fi; ulimit -a | grep -c . "
+  },
+  {
+    "id": "env202",
+    "domain": "env",
+    "script": "printf '%s' \"$IFS\" | od -An -c | tr -s ' '; unset IFS; s=\"a b\\tc\"; set -- $s; echo \"unsetIFS-split n=$#\"; IFS=' '; s2=\"x  y\"; set -- $s2; echo \"spaceIFS n=$#\""
+  },
+  {
+    "id": "env203",
+    "domain": "env",
+    "script": "echo \"groups-n=${#GROUPS[@]} first-group-set:${GROUPS[0]:+yes}\"; echo \"uid-set:${UID:+yes} euid-set:${EUID:+yes}\"; echo \"hostname-len=${#HOSTNAME}\""
+  },
+  {
+    "id": "fn01",
+    "domain": "func",
+    "script": "x=global; f() { local x=local; echo \"in:$x\"; }; f; echo \"out:$x\"; g() { x=changed; }; g; echo \"after-g:$x\""
+  },
+  {
+    "id": "fn02",
+    "domain": "func",
+    "script": "declare -n ref; f() { local -n r=$1; r=via-ref; }; v=orig; f v; echo \"$v\"; declare -n self=self; echo \"self=[$self]\" 2>&1; echo rc=$?"
+  },
+  {
+    "id": "fn03",
+    "domain": "func",
+    "script": "declare -n a=b; declare -n b=a; echo \"$a\" 2>&1; echo rc=$?; echo alive"
+  },
+  {
+    "id": "fn04",
+    "domain": "func",
+    "script": "f() { local v=outer; g; }; g() { echo \"g-sees:$v\"; v=modified; }; v=global; f; echo \"final:$v\""
+  },
+  {
+    "id": "fn05",
+    "domain": "func",
+    "script": "f() { return; }; f; echo \"ret-empty=$?\"; false; f2() { return; }; f2; echo \"ret2=$?\"; g() { return 257; }; g; echo \"ret257=$?\""
+  },
+  {
+    "id": "fn06",
+    "domain": "func",
+    "script": "f() { local -i n=5; n+=3; echo $n; local arr=(a b); echo \"${arr[@]} ${#arr[@]}\"; }; f; echo \"arr-out=[${arr:-none}]\""
+  },
+  {
+    "id": "fn07",
+    "domain": "func",
+    "script": "f() ( x=subshell; echo \"in:$x\" ); x=main; f; echo \"out:$x\"; h() { echo \"h\"; }; h >f.txt; cat f.txt"
+  },
+  {
+    "id": "fn08",
+    "domain": "func",
+    "script": "declare -n r=arr; arr=(1 2 3); echo \"${r[@]} ${r[1]}\"; r[1]=X; echo \"${arr[@]}\"; r+=(4); echo \"${arr[@]}\""
+  },
+  {
+    "id": "fn09",
+    "domain": "func",
+    "script": "f() { shift; echo \"args:$@ n=$# first=$1\"; }; f a b c; f x; set -- p q; f \"$@\""
+  },
+  {
+    "id": "fn10",
+    "domain": "func",
+    "script": "f() { local v; echo \"v=[${v:-unset}]\"; v=set; }; u=outer; f; echo \"u=$u\""
+  },
+  {
+    "id": "go01",
+    "domain": "getopts",
+    "script": "while getopts \"ab:c\" opt; do echo \"opt=$opt arg=[$OPTARG] ind=$OPTIND\"; done; echo end' "
+  },
+  {
+    "id": "go02",
+    "domain": "getopts",
+    "script": "set -- -a -b val -x; while getopts \"ab:\" opt; do echo \"o=$opt a=[$OPTARG]\"; done; echo \"rc=$? ind=$OPTIND rest=${@:$OPTIND}\""
+  },
+  {
+    "id": "go03",
+    "domain": "getopts",
+    "script": "set -- -a; OPTIND=1; while getopts \":a\" opt; do echo \"o=$opt\"; done; set -- -z; OPTIND=1; while getopts \":a\" opt; do echo \"silent-o=$opt arg=[$OPTARG]\"; done"
+  },
+  {
+    "id": "go04",
+    "domain": "getopts",
+    "script": "f() { local OPTIND=1; while getopts \"xy\" o; do echo \"f-o=$o\"; done; }; set -- -x -z; f \"$@\"; echo \"outer-ind=$OPTIND\""
+  },
+  {
+    "id": "gl01",
+    "domain": "glob",
+    "script": "mkdir -p d && cd d && touch a.txt b.txt c.md .hidden && echo *.txt && echo * && echo .* && shopt -s dotglob && echo *"
+  },
+  {
+    "id": "gl02",
+    "domain": "glob",
+    "script": "mkdir -p d && cd d && touch f1 f2 f10 fa; echo f[0-9] && echo f[!0-9] && echo f[^0-9] && shopt -s globasciiranges; echo f[a-z]"
+  },
+  {
+    "id": "gl03",
+    "domain": "glob",
+    "script": "shopt -s extglob\nmkdir -p d && cd d && touch ab aab abb acb\necho a*(b)\necho a+(b)\necho a?(b)\necho a@(b|c)b\necho a!(b)"
+  },
+  {
+    "id": "gl04",
+    "domain": "glob",
+    "script": "mkdir -p d/sub/deep && cd d && touch top sub/mid sub/deep/low; shopt -s globstar; echo ** && echo **/*.txt 2>/dev/null; touch x.txt sub/y.txt; echo **/*.txt"
+  },
+  {
+    "id": "gl05",
+    "domain": "glob",
+    "script": "mkdir -p d && cd d && touch A.TXT b.txt; shopt -s nocaseglob; echo *.txt; echo *.TXT; shopt -u nocaseglob; echo *.TXT"
+  },
+  {
+    "id": "gl06",
+    "domain": "glob",
+    "script": "echo nomatch*.xyz; shopt -s nullglob; echo \"pre nomatch*.xyz post\"; echo \"n=$(echo nomatch*.xyz | wc -w)\"; shopt -s failglob; echo nomatch*.xyz 2>&1; echo rc=$?"
+  },
+  {
+    "id": "gl07",
+    "domain": "glob",
+    "script": "mkdir -p d && cd d && touch \"a b\" \"a  b\" axb; echo a*b; printf '<%s>\\n' a?b; echo [[:space:]]* 2>/dev/null | head -c 100; echo"
+  },
+  {
+    "id": "gl08",
+    "domain": "glob",
+    "script": "v=\"abc123\"\neval 'case $v in +([a-z])+([0-9])) echo m1;; *) echo no;; esac' 2>&1; echo \"pre-extglob-rc=$?\"\nshopt -s extglob\ncase $v in +([a-z])+([0-9])) echo m2;; *) echo no2;; esac"
+  },
+  {
+    "id": "gl09",
+    "domain": "glob",
+    "script": "mkdir -p d && cd d && touch ab abc abd; echo a[b-d]; echo a[!b-d]; echo a[]] 2>&1; touch ']x' ; echo []\"\"]* 2>/dev/null; echo done"
+  },
+  {
+    "id": "gl10",
+    "domain": "glob",
+    "script": "p=\"a/b/c.txt\"; echo \"${p##*/} ${p%/*}\"; mkdir -p d/e && cd d && echo */ && echo e/../e"
+  },
+  {
+    "id": "gl11",
+    "domain": "glob",
+    "script": "shopt -s extglob nullglob\nmkdir -p d && cd d && touch foo.txt foo.md bar.txt\necho *.@(txt|md)\necho !(bar).txt\necho *(foo|bar).*"
+  },
+  {
+    "id": "gl12",
+    "domain": "glob",
+    "script": "mkdir -p d && cd d && touch {1..3}.txt; echo {a,b}{1,2}; echo {01..03} {z..x} {a..c}{1..2}; echo x{,y,}z"
+  },
+  {
+    "id": "gb201",
+    "domain": "glob",
+    "script": "mkdir -p d && cd d && touch x.txt y.md sub_note; GLOBIGNORE=\"*.txt\"; echo *; unset GLOBIGNORE; echo *.txt; echo */ 2>&1"
+  },
+  {
+    "id": "gb202",
+    "domain": "glob",
+    "script": "mkdir -p onlydir && touch plainfile; echo */; echo */. 2>/dev/null | head -c 60; echo; mkdir -p a/b/c; echo a/**/c; shopt -s globstar; echo a/**/c; echo a/**"
+  },
+  {
+    "id": "gb203",
+    "domain": "glob",
+    "script": "touch ab ac; echo {a..e..2} {5..1..2} {01..5..2} {a,b{1,2}}; v={x,y}; echo $v; echo pre{A,B,}post"
+  },
+  {
+    "id": "gb204",
+    "domain": "glob",
+    "script": "echo ~; echo ~+; echo ~- 2>&1; olddir=$OLDPWD; x=~/sub; echo \"tildeassign-prefix-ok\"; p=:/path:~; echo \"p=[$p]\"; a=a:~; echo \"a=[$a]\""
+  },
+  {
+    "id": "gb205",
+    "domain": "glob",
+    "script": "mkdir -p d && cd d && touch '[abc]' 'star*file' 'q?file'; echo \\[abc\\]; echo 'star*file'; printf '<%s>\\n' *"
+  },
+  {
+    "id": "ifs01",
+    "domain": "ifs",
+    "script": "IFS=:; s=\"a::b:\"; set -- $s; echo \"n=$# [$1][$2][$3][$4]\"; s=\":a::\"; set -- $s; echo \"n=$# [$1][$2][$3]\""
+  },
+  {
+    "id": "ifs02",
+    "domain": "ifs",
+    "script": "IFS=; s=\"a b  c\"; set -- $s; echo \"n=$# [$1]\"; IFS=\" \"; set -- $s; echo \"n=$# [$1][$2][$3]\""
+  },
+  {
+    "id": "ifs03",
+    "domain": "ifs",
+    "script": "s=\"  a  b  \"; set -- $s; echo \"n=$# [$1][$2]\"; IFS=-; s=\"--a--b--\"; set -- $s; echo \"n=$# [$1][$2][$3][$4]\""
+  },
+  {
+    "id": "ifs04",
+    "domain": "ifs",
+    "script": "a=(x y); IFS=,; echo \"star=${a[*]}\"; v=\"p,q\"; echo \"${v//,/ }\"; read -ra r <<< \"1,2,3\"; echo \"r=${r[@]}\""
+  },
+  {
+    "id": "ifs05",
+    "domain": "ifs",
+    "script": "printf 'a\\t b\\n' | { IFS= read -r l; printf '<%s>\\n' \"$l\"; }; printf '  x  \\n' | { IFS= read -r l; printf '<%s>\\n' \"$l\"; }"
+  },
+  {
+    "id": "ifs06",
+    "domain": "ifs",
+    "script": "s=\"aXbXXc\"; IFS=X; set -- $s; echo \"n=$# [$1][$2][$3][$4]\""
+  },
+  {
+    "id": "ifs07",
+    "domain": "ifs",
+    "script": "arr=(a b c); local_ifs=$IFS; IFS=''; echo \"${arr[*]}\"; IFS=$local_ifs; join=\"${arr[*]}\"; echo \"$join\""
+  },
+  {
+    "id": "ifs08",
+    "domain": "ifs",
+    "script": "s=$'a\\tb\\nc'; set -- $s; echo \"n=$# [$1][$2][$3]\"; IFS=$'\\n'; set -- $s; echo \"n=$# [$1][$2]\""
+  },
+  {
+    "id": "jb01",
+    "domain": "job",
+    "script": "set -m; sleep 0.1 & p=$!; wait $p; echo \"rc=$?\""
+  },
+  {
+    "id": "jb02",
+    "domain": "job",
+    "script": "wait 999999 2>/dev/null; echo \"rc=$?\""
+  },
+  {
+    "id": "jb03",
+    "domain": "job",
+    "script": "set -m; sleep 0.1 & p1=$!; sleep 0.1 & p2=$!; wait $p1 $p2; echo \"rc=$?\""
+  },
+  {
+    "id": "jb04",
+    "domain": "job",
+    "script": "set -m; (exit 42) & p=$!; wait $p; echo \"rc=$?\""
+  },
+  {
+    "id": "jb05",
+    "domain": "job",
+    "script": "set -m; sleep 5 & p=$!; kill -TERM $p; wait $p; echo \"rc=$?\""
+  },
+  {
+    "id": "jb06",
+    "domain": "job",
+    "script": "set -m; (exit 7) & p=$!; wait $p; echo \"first=$?\"; wait $p 2>/dev/null; echo \"second=$?\""
+  },
+  {
+    "id": "jb07",
+    "domain": "job",
+    "script": "set -m; (exit 3) & sleep 0.05 & (exit 5) & wait; echo \"rc=$?\""
+  },
+  {
+    "id": "jb08",
+    "domain": "job",
+    "script": "set -m; (sleep 0.05; exit 11) & p1=$!; (sleep 0.5; exit 22) & p2=$!; wait -n; echo \"rc=$?\""
+  },
+  {
+    "id": "jb09",
+    "domain": "job",
+    "script": "set -m; (sleep 0.05; exit 11) & p1=$!; (sleep 0.5; exit 22) & p2=$!; wait -n -p v; echo \"rc=$?\"; [ \"$v\" = \"$p1\" ] && echo SAME || echo DIFF"
+  },
+  {
+    "id": "jb10",
+    "domain": "job",
+    "script": "wait -n 2>/dev/null; echo \"rc=$?\""
+  },
+  {
+    "id": "jb11",
+    "domain": "job",
+    "script": "set -m; sleep 5 & p=$!; q=$(jobs -p); [ \"$q\" = \"$p\" ] && echo SAME || echo DIFF; kill $p; wait $p 2>/dev/null"
+  },
+  {
+    "id": "jb12",
+    "domain": "job",
+    "script": "set -m; sleep 5 & p=$!; echo \"running=$(jobs -r | wc -l)\"; kill $p; wait $p 2>/dev/null; echo \"after=$(jobs -r | wc -l)\""
+  },
+  {
+    "id": "jb13",
+    "domain": "job",
+    "script": "set -m; sleep 5 & p=$!; disown; echo \"jobs=$(jobs -p | wc -l)\"; kill $p 2>/dev/null; wait $p 2>/dev/null; echo \"wrc=$?\""
+  },
+  {
+    "id": "jb14",
+    "domain": "job",
+    "script": "set -m; sleep 5 & p=$!; disown -h; q=$(jobs -p); [ \"$q\" = \"$p\" ] && echo SAME || echo DIFF; kill $p; wait $p 2>/dev/null"
+  },
+  {
+    "id": "jb15",
+    "domain": "job",
+    "script": "set -m; sleep 5 & p=$!; disown %1; echo \"jobs=$(jobs -p | wc -l)\"; kill $p 2>/dev/null"
+  },
+  {
+    "id": "jb16",
+    "domain": "job",
+    "script": "set -m; (exit 33) & wait %1; echo \"rc=$?\""
+  },
+  {
+    "id": "jb17",
+    "domain": "job",
+    "script": "set -m; (sleep 0.5; exit 31) & (sleep 0.4; exit 32) & wait %-; echo \"minus=$?\"; wait %+; echo \"plus=$?\""
+  },
+  {
+    "id": "jb18",
+    "domain": "job",
+    "script": "set -m; sleep 0.1 & wait %sleep; echo \"rc=$?\""
+  },
+  {
+    "id": "jb19",
+    "domain": "job",
+    "script": "set -m; (sleep 0.05; exit 44) & wait %?sleep; echo \"rc=$?\""
+  },
+  {
+    "id": "jb20",
+    "domain": "job",
+    "script": "set -m; sleep 5 & p=$!; sleep 0.2; kill -STOP $p; sleep 0.2; echo \"stopped=$(jobs -s | wc -l)\"; bg %1; sleep 0.2; echo \"running=$(jobs -r | wc -l)\"; kill $p; wait $p 2>/dev/null; echo \"wrc=$?\""
+  },
+  {
+    "id": "jb21",
+    "domain": "job",
+    "script": "set -m; (exit 55) & fg %1; echo \"rc=$?\""
+  },
+  {
+    "id": "jb22",
+    "domain": "job",
+    "script": "set -m; sleep 5 & kill %1; wait %1 2>/dev/null; echo \"rc=$?\""
+  },
+  {
+    "id": "jb23",
+    "domain": "job",
+    "script": "set -m; sleep 5 & p=$!; echo \"lcount=$(jobs -l | wc -l)\"; kill $p; wait $p 2>/dev/null"
+  },
+  {
+    "id": "jb24",
+    "domain": "job",
+    "script": "set -m; (exit 61) & p1=$!; (exit 62) & p2=$!; wait $p2 $p1; echo \"rc=$?\""
+  },
+  {
+    "id": "jb25",
+    "domain": "job",
+    "script": "set -m; (sleep 0.05; exit 21) | cat & p=$!; wait $p; echo \"rc=$?\""
+  },
+  {
+    "id": "jb26",
+    "domain": "job",
+    "script": "set -m; (echo hello > out.txt) & p=$!; wait $p; echo \"file=$(cat out.txt)\""
+  },
+  {
+    "id": "jb27",
+    "domain": "job",
+    "script": "sleep 0.2 & p=$!; q=$(jobs -p); [ \"$q\" = \"$p\" ] && echo SAME || echo DIFF; wait $p"
+  },
+  {
+    "id": "jb28",
+    "domain": "job",
+    "script": "set -m; sleep 5 & p1=$!; sleep 5 & p2=$!; disown -a; echo \"jobs=$(jobs -p | wc -l)\"; kill $p1 $p2 2>/dev/null"
+  },
+  {
+    "id": "jb29",
+    "domain": "job",
+    "script": "set -m; (sleep 0.05; exit 11) & p1=$!; (sleep 0.4; exit 22) & p2=$!; (sleep 0.8; exit 33) & p3=$!; wait -n -p v; echo \"rc=$?\"; [ \"$v\" = \"$p1\" ] && echo SAME || echo DIFF; wait; echo \"all=$?\""
+  },
+  {
+    "id": "lc01",
+    "domain": "local",
+    "script": "f() { local -; set -f; echo \"in-opts:$-\"; }; set +f; f; case $- in *f*) echo noglob-leaked;; *) echo noglob-ok;; esac"
+  },
+  {
+    "id": "lc02",
+    "domain": "local",
+    "script": "f() { local x=$(false); echo \"local-subst-rc=$?\"; local y; y=$(false); echo \"assign-rc=$?\"; }; f"
+  },
+  {
+    "id": "lc03",
+    "domain": "local",
+    "script": "break 2 2>&1; echo \"break-outside=$?\"; continue 2>&1; echo \"cont-outside=$?\"; for i in 1 2 3; do for j in a b; do break 2; done; echo \"never-$i\"; done; echo done"
+  },
+  {
+    "id": "meta01",
+    "domain": "meta",
+    "script": "echo first-arg; echo \"underscore=[$_]\"; printf x y; echo \"u2=[$_]\"; f() { echo \"fn=${FUNCNAME[0]} src=${BASH_SOURCE[0]} line=$LINENO\"; g; }; g() { echo \"g-caller:\"; caller 0; }; f"
+  },
+  {
+    "id": "meta02",
+    "domain": "meta",
+    "script": "printf 'f() { echo \"src-line=$LINENO fn=${FUNCNAME[0]}\"; }\\nf\\n' > s.sh; . ./s.sh; echo \"LINENO-main=$LINENO\""
+  },
+  {
+    "id": "meta03",
+    "domain": "meta",
+    "script": "set -- a b; echo \"star=$* at=$@ zero=$0 nine=${9:-none}\"; shift 5 2>&1; echo \"shift-rc=$? n=$#\"; shift 0; echo \"shift0=$?\""
+  },
+  {
+    "id": "ms01",
+    "domain": "misc",
+    "script": "x=b; case $x in a) echo A;; b) echo B; fallthrough-placeholder;; esac"
+  },
+  {
+    "id": "ms02",
+    "domain": "misc",
+    "script": "case abc in a*) echo 1 ;& b*) echo 2 ;;& *c) echo 3 ;;& *) echo 4 ;; esac"
+  },
+  {
+    "id": "ms03",
+    "domain": "misc",
+    "script": "case x in esac 2>&1; echo rc=$?; :; echo colon=$?; true false; echo tf=$?; > /dev/null; echo redir-only=$?; v=1; echo assign-only=$?"
+  },
+  { "id": "ms04", "domain": "misc", "script": "echo \"before\"; exit 3" },
+  {
+    "id": "ms05",
+    "domain": "misc",
+    "script": "unset -v PATH 2>&1; echo rc=$?; echo hi 2>&1 | head -1"
+  },
+  {
+    "id": "ms06",
+    "domain": "misc",
+    "script": "a=1 b=2; echo \"$a $b\"; a+=x; echo $a; ((a+=1)) 2>&1; echo \"a=$a rc=$?\""
+  },
+  {
+    "id": "ms07",
+    "domain": "misc",
+    "script": "echo \"${HOME} ${PWD##*/}\"; cd /; echo $PWD; cd - >/dev/null; echo back"
+  },
+  {
+    "id": "ms08",
+    "domain": "misc",
+    "script": "{ time -p true; } 2>tf.txt; sort tf.txt; echo ---; { time true; } 2>tg.txt; grep -o 'real\\|user\\|sys' tg.txt | sort | uniq -c"
+  },
+  {
+    "id": "ms09",
+    "domain": "misc",
+    "script": "echo $((RANDOM==RANDOM)); set -o posix 2>&1 | head -1; echo $-; echo $_ 2>&1 | head -1"
+  },
+  {
+    "id": "ms10",
+    "domain": "misc",
+    "script": "compgen -A builtin | sort | head -5; compgen -A keyword | wc -l; compgen -v | grep -c '^BASH' "
+  },
+  {
+    "id": "cg01",
+    "domain": "misc",
+    "script": "compgen -W 'aa ab ba' -- a; echo ---; compgen -W 'x y z' -P PRE- -S -SUF; compgen -A variable | grep -E '^(PWD|HOME)$' | sort"
+  },
+  {
+    "id": "cg02",
+    "domain": "misc",
+    "script": "kill -l 9; kill -l KILL 2>&1; echo rc=$?; kill -l | head -c 100; echo; kill -l 999 2>&1; echo rc2=$?"
+  },
+  {
+    "id": "cg03",
+    "domain": "misc",
+    "script": "sleep 0.2 & j=$!; jobs | sed -E 's/[0-9]+/N/g'; jobs -l | sed -E 's/[0-9]+/N/g' | head -2; wait $j; jobs; echo \"after-jobs-empty\""
+  },
+  {
+    "id": "cg04",
+    "domain": "misc",
+    "script": "hash -p /bin/echo myecho; myecho via-hash-path; hash | head -3; type myecho; hash -d myecho; type myecho 2>&1; echo rc=$?"
+  },
+  {
+    "id": "cg05",
+    "domain": "misc",
+    "script": "alias myal='echo aliased'; alias -p | grep myal; unalias myal; alias myal 2>&1; echo rc=$?; shopt -s expand_aliases; alias e2='echo E2'; e2"
+  },
+  {
+    "id": "pe01",
+    "domain": "param",
+    "script": "v=\"a:b:c\"; echo \"${v#*:}|${v##*:}|${v%:*}|${v%%:*}\""
+  },
+  {
+    "id": "pe02",
+    "domain": "param",
+    "script": "v=\"file.tar.gz\"; echo \"${v/.tar/.zip}|${v/#file/FILE}|${v/%gz/bz2}|${v//./_}\""
+  },
+  {
+    "id": "pe03",
+    "domain": "param",
+    "script": "v=\"AbC dEf\"; echo \"${v^^}|${v,,}|${v^}|${v,}|${v^^[aeiou]}|${v,,[A-Z]}\""
+  },
+  {
+    "id": "pe04",
+    "domain": "param",
+    "script": "unset u; echo \"[${u-default}][${u:-default}]\"; u=; echo \"[${u-default}][${u:-default}]\"; u=x; echo \"[${u-default}][${u:-default}]\""
+  },
+  {
+    "id": "pe05",
+    "domain": "param",
+    "script": "unset u; echo \"${u:=assigned} $u\"; u2=; echo \"${u2:=assigned}\"; echo \"${w:+yes}[${w+yes}]\"; w=; echo \"[${w:+yes}][${w+yes}]\""
+  },
+  {
+    "id": "pe06",
+    "domain": "param",
+    "script": "v=hello; echo \"${#v} ${v:1:3} ${v: -2} ${v: -4:2} ${v:10} [${v:2:-1}]\""
+  },
+  {
+    "id": "pe07",
+    "domain": "param",
+    "script": "v=\"aaa bbb\"; echo \"${v/aaa/@} ${v//a/X} ${v/a/b/c}\" 2>&1; echo rc=$?"
+  },
+  {
+    "id": "pe08",
+    "domain": "param",
+    "script": "x=target; target=found; echo \"${!x}\"; pre_1=one; pre_2=two; echo \"${!pre_*}\""
+  },
+  {
+    "id": "pe09",
+    "domain": "param",
+    "script": "v=\"MiXeD\"; echo \"${v@U}|${v@L}|${v@u}|${v@Q}\"; s=\"a b'c\"; echo \"${s@Q}\"; arr=(x \"y z\"); echo \"${arr@Q}\"; echo \"${v@E}\""
+  },
+  {
+    "id": "pe10",
+    "domain": "param",
+    "script": "v=\"hello world\"; echo \"${v@P}\" 2>&1; p='\\tTAB\\nNL'; echo \"${p@E}\"; echo \"${p@A}\""
+  },
+  {
+    "id": "pe11",
+    "domain": "param",
+    "script": "declare -A m=([k1]=v1 [k2]=v2); echo \"${m[k1]} ${!m[@]}\" | tr ' ' '\\n' | sort | tr '\\n' ' '; echo; echo \"${#m[@]} ${#m[k1]}\""
+  },
+  {
+    "id": "pe12",
+    "domain": "param",
+    "script": "v=abc; echo \"${v:?err}\" 2>&1; echo rc=$?; ( unset u; echo \"${u:?custom msg}\" ) 2>&1; echo rc=$?"
+  },
+  {
+    "id": "pe13",
+    "domain": "param",
+    "script": "s=\"::a::b::\"; echo \"${s//:/|}\"; echo \"${s/#:/X}\"; echo \"${s/%:/Y}\"; t=\"abcabc\"; echo \"${t/!(a)bc/Z}\" 2>&1"
+  },
+  {
+    "id": "pe14",
+    "domain": "param",
+    "script": "shopt -s extglob; t=\"abcabc\"; echo \"${t/!(a)bc/Z}|${t##+(a)}\"; v=\"123abc\"; echo \"${v##[0-9]}|${v##[[:digit:]]}\""
+  },
+  {
+    "id": "pe15",
+    "domain": "param",
+    "script": "a=xyz; b=a; echo \"${!b}\"; declare -n ref=a; echo \"$ref\"; ref=changed; echo \"$a\""
+  },
+  {
+    "id": "pe16",
+    "domain": "param",
+    "script": "v=\"one two three\"; echo \"${v% *}|${v#* }|${v%% *}|${v##* }\""
+  },
+  {
+    "id": "pe17",
+    "domain": "param",
+    "script": "echo \"[${@:-def}]\" empty-args; set --; echo \"n=$# [${*:-def}]\"; set -- \"\" ; echo \"n=$# first=[${1:-def}] [${1-def}]\""
+  },
+  {
+    "id": "pe18",
+    "domain": "param",
+    "script": "v=\"a/b/c\"; echo \"${v//\\//_}\"; echo \"${v/\\//X}\"; w='a$b'; echo \"${w/$/D} [${w/\\$/D}]\""
+  },
+  {
+    "id": "pe19",
+    "domain": "param",
+    "script": "s=\"hello\"; echo \"${s/l/L:0:2}\" 2>&1; echo rc=$?; echo \"${s:1: -1}|${s: -1}|${s:0: -2}\""
+  },
+  {
+    "id": "pe20",
+    "domain": "param",
+    "script": "unset v; echo \"${v@Q}\" 2>&1; v=; echo \"[${v@Q}]\"; a=(); echo \"[${a@Q}] n=${#a[@]}\""
+  },
+  {
+    "id": "px01",
+    "domain": "param",
+    "script": "v=abc; echo \"${v:(-2)}|${v: -2}|${v:-2}\"; u=; echo \"[${u:-2}]\"; unset u; echo \"[${u:-2}]\"; echo \"${v:(-9)}\" 2>&1; echo rc=$?"
+  },
+  {
+    "id": "px02",
+    "domain": "param",
+    "script": "pat='*'; v=\"a*b\"; echo \"${v#$pat}|${v#\"$pat\"}|${v%*}\"; repl='X/Y'; echo \"${v/\\*/$repl}\"; echo \"${v//\\*/-}\""
+  },
+  {
+    "id": "px03",
+    "domain": "param",
+    "script": "echo \"${x:=${y:=inner}} x=$x y=$y\"; echo \"${#@} ${#*}\"; set -- a bb ccc; echo \"${#@} ${#*} ${#2}\"; echo \"${@:$((1+1))}\"; echo \"${@: -1}\""
+  },
+  {
+    "id": "px04",
+    "domain": "param",
+    "script": "s=\"ßab\"; echo \"len=${#s}\"; echo \"${s^^}\"; t=\"İx\"; echo \"${t,,}\" 2>&1; echo \"${s:0:1}\""
+  },
+  {
+    "id": "px05",
+    "domain": "param",
+    "script": "v=\"aXbXc\"; echo \"${v/X*/Z}\" 2>&1; shopt -s extglob; echo \"${v//+(X)/-}\"; echo \"${v/#a?(X)/Q}\""
+  },
+  {
+    "id": "pid01",
+    "domain": "pid",
+    "script": "if [ $$ -eq $BASHPID ]; then echo main-eq; else echo main-ne; fi; ( if [ $$ -eq $BASHPID ]; then echo sub-eq; else echo sub-ne; fi ); x=$(if [ $$ -eq $BASHPID ]; then echo cmd-eq; else echo cmd-ne; fi); echo $x"
+  },
+  {
+    "id": "pid02",
+    "domain": "pid",
+    "script": "echo \"ppid-of-sub:\"; ( if [ $PPID -eq $$ ]; then echo ppid-is-mainpid; else echo ppid-other; fi )"
+  },
+  {
+    "id": "pid03",
+    "domain": "pid",
+    "script": "RANDOM=42; echo \"$RANDOM $RANDOM $RANDOM\"; RANDOM=42; echo \"$RANDOM $RANDOM\""
+  },
+  {
+    "id": "pid04",
+    "domain": "pid",
+    "script": "case $SRANDOM in ''|*[!0-9]*) echo srand-nonnumeric;; *) echo srand-numeric;; esac; SRANDOM=7; a=$SRANDOM; b=$SRANDOM; if [ \"$a\" = \"$b\" ]; then echo same; else echo diff; fi; if [ ${#EPOCHSECONDS} -eq 10 ]; then echo epoch10; fi; case $EPOCHREALTIME in *.*) echo realtime-dot;; *) echo realtime-nodot;; esac"
+  },
+  {
+    "id": "pid05",
+    "domain": "pid",
+    "script": "SECONDS=100; echo $SECONDS; ( SECONDS=5; echo \"sub-sec=$SECONDS\" ); echo \"main-sec=$SECONDS\"; UID=$UID 2>&1; echo \"uidrc=$?\""
+  },
+  {
+    "id": "pr01",
+    "domain": "procsub",
+    "script": "diff <(printf 'a\\nb\\n') <(printf 'a\\nc\\n'); echo \"diff-rc=$?\"; cat <(echo hello); echo \"cat-rc=$?\""
+  },
+  {
+    "id": "pr02",
+    "domain": "procsub",
+    "script": "while read l; do echo \"[$l]\"; done < <(printf '1\\n2\\n'); exec 3< <(printf 'from-proc'); read -u 3 l; echo \"fd3=$l\"; exec 3<&-"
+  },
+  {
+    "id": "q01",
+    "domain": "quote",
+    "script": "echo \"$(printf 'a\\n\\n\\n')END\"; echo \"$(printf 'a')END\"; x=$(printf '\\n\\n'); echo \"len=${#x}\""
+  },
+  {
+    "id": "q02",
+    "domain": "quote",
+    "script": "echo 'a'\"'\"'b' \"c\\\"d\" $'e\\tf' $'g\\x41h' $'\\101' "
+  },
+  {
+    "id": "q03",
+    "domain": "quote",
+    "script": "v=\"a b\"; echo $v | wc -w; echo \"$v\" | wc -w; for x in $v; do echo \"[$x]\"; done; for x in \"$v\"; do echo \"<$x>\"; done"
+  },
+  {
+    "id": "q04",
+    "domain": "quote",
+    "script": "echo \"$(echo \"$(echo nested)\")\"; echo `echo \\`echo back\\``; x=$(cat <<EOF\nline1\nline2\nEOF\n); echo \"$x\""
+  },
+  {
+    "id": "q05",
+    "domain": "quote",
+    "script": "printf '%s\\n' \"a\\\nb\" 'c\\\nd'; echo \"e\\\nf\""
+  },
+  {
+    "id": "q06",
+    "domain": "quote",
+    "script": "s=\"*\"; echo $s; echo \"$s\"; mkdir -p d && cd d && touch star; echo $s"
+  },
+  {
+    "id": "q07",
+    "domain": "quote",
+    "script": "a=\"x\"; echo \"${a:-$(echo inner)}\"; unset b; echo \"${b:-$(echo inner2)}\"; echo \"$(false; echo st=$?)\""
+  },
+  {
+    "id": "q08",
+    "domain": "quote",
+    "script": "echo $'a\\ub' $'\\u0041\\U0001F600' 2>&1 | head -c 200; echo; echo $'\\e[31mX' | od -c | head -2"
+  },
+  {
+    "id": "rd01",
+    "domain": "redir",
+    "script": "echo out >f.txt 2>e.txt; cat f.txt; echo \"rc=$?\"; exec 3>f2.txt; echo to3 >&3; exec 3>&-; cat f2.txt"
+  },
+  {
+    "id": "rd02",
+    "domain": "redir",
+    "script": "echo hi 2>&1 1>/dev/null; echo hi 1>/dev/null 2>&1; (echo err >&2; echo out) 2>f.txt 1>g.txt; echo \"f=$(cat f.txt) g=$(cat g.txt)\""
+  },
+  {
+    "id": "rd03",
+    "domain": "redir",
+    "script": "read x <<< \"herestring\"; echo \"$x\"; read y <<EOF\n\tnope\n\t\ttabbed\nEOF\nprintf '<%s>\\n' \"$y\"; cat <<-EOF\n\t\tstrip\n\tEOF"
+  },
+  {
+    "id": "rd04",
+    "domain": "redir",
+    "script": "set -C; echo a >f; echo b >f 2>&1; echo rc=$?; echo b >>f; cat f; set +C; echo c >f; cat f"
+  },
+  {
+    "id": "rd05",
+    "domain": "redir",
+    "script": "echo data <>f.txt; cat f.txt; { read l <&0; } <f.txt; echo \"$l\"; exec 3<>rw.txt; printf 'X' >&3; exec 3>&-; cat rw.txt"
+  },
+  {
+    "id": "rd06",
+    "domain": "redir",
+    "script": "> only.txt; echo rc=$?; ls -l only.txt | awk '{print $5}'; x=1 >assign.txt; echo \"x=$x\"; cat assign.txt"
+  },
+  {
+    "id": "rd07",
+    "domain": "redir",
+    "script": "f() { echo in-func; }; f >out.txt; cat out.txt; VAR=temp echo \"$VAR\"; echo \"after:[$VAR]\"; VAR=temp f; echo \"after-func:[$VAR]\""
+  },
+  {
+    "id": "rd08",
+    "domain": "redir",
+    "script": "declare -r RO=1; RO=2 >redir.txt 2>err.txt; echo rc=$?; cat err.txt; cat redir.txt"
+  },
+  {
+    "id": "rd09",
+    "domain": "redir",
+    "script": "cat < nonexist 2>&1; echo rc=$?; echo hi > /nonexistent-dir-xyz/f 2>&1; echo rc=$?; echo still-alive"
+  },
+  {
+    "id": "rd10",
+    "domain": "redir",
+    "script": "echo first >f; echo second >&1 >>f 2>&1; cat f; (echo a; echo b >&2) >both.txt 2>&1; cat both.txt"
+  },
+  {
+    "id": "rd11",
+    "domain": "redir",
+    "script": "while read l; do echo \"[$l]\"; done <<'QEOF'\n$notexpanded\n\\back\nQEOF\nwhile read l; do echo \"<$l>\"; done <<EOF\n$((6*7))\nEOF"
+  },
+  {
+    "id": "rd12",
+    "domain": "redir",
+    "script": "exec 3>&1; echo captured >&3; r=$(echo inner 3>&-); echo \"r=$r\"; echo done 3>&-"
+  },
+  {
+    "id": "rx01",
+    "domain": "regex",
+    "script": "[[ abc123 =~ ([a-z]+)([0-9]+) ]]; echo \"${BASH_REMATCH[@]}\"; [[ abc =~ (x)|(b) ]]; echo \"alt:${BASH_REMATCH[@]} [1]=[${BASH_REMATCH[1]}] [2]=[${BASH_REMATCH[2]}]\"; [[ \"a b\" =~ \"a b\" ]]; echo lit=$?; [[ \"axb\" =~ a.b ]]; echo dot=$?; [[ \"axb\" =~ \"a.b\" ]]; echo qdot=$?"
+  },
+  {
+    "id": "rx02",
+    "domain": "regex",
+    "script": "declare -A m=([k]=v); [[ -v m[k] ]]; echo \"vk=$?\"; [[ -v m[no] ]]; echo \"vno=$?\"; a=(1); [[ -v a[0] ]]; echo \"va0=$?\"; [[ -v a[5] ]]; echo \"va5=$?\"; [[ -v PATH ]]; echo \"vp=$?\""
+  },
+  {
+    "id": "rx03",
+    "domain": "regex",
+    "script": "touch f1; ln -sf f1 link1; ln -sf broken-target-xyz broken1; [ -e broken1 ]; echo \"e-broken=$?\"; [ -L broken1 ]; echo \"L=$?\"; [ f1 -nt broken1 ]; echo \"nt=$?\"; [ missing -ot f1 ]; echo \"ot-miss=$?\"; [[ f1 -ef f1 ]]; echo \"ef=$?\"; [[ link1 -ef f1 ]]; echo \"ef-link=$?\""
+  },
+  {
+    "id": "rx04",
+    "domain": "regex",
+    "script": "[[ B > a ]]; echo \"B>a:$?\"; [[ a < b ]]; echo \"a<b:$?\"; [[ abc == a* ]]; echo \"pat:$?\"; [[ abc == \"a*\" ]]; echo \"qpat:$?\"; shopt -s extglob; [[ abbc == a+(b)c ]]; echo \"ext:$?\""
+  },
+  {
+    "id": "so01",
+    "domain": "source",
+    "script": "printf 'echo \"sourced arg=[$1]\"; return 5\\n' > lib.sh; set -- orig; . ./lib.sh larg; echo \"src-rc=$? args-after=$@\"; source ./lib.sh 2>&1 | head -1"
+  },
+  {
+    "id": "so02",
+    "domain": "source",
+    "script": ". ./nonexist.sh 2>&1; echo \"rc=$?\"; PATH= . ./lib2.sh 2>&1; echo \"rc2=$?\""
+  },
+  {
+    "id": "so03",
+    "domain": "source",
+    "script": "exec -a customargv \"@@SELF@@\" -c 'echo zero=$0' "
+  },
+  {
+    "id": "so04",
+    "domain": "source",
+    "script": "printf 'echo in-exec\\n' > run.sh; \"@@SELF@@\" -c 'exec -c /usr/bin/env' 2>&1 | grep -c . ; echo \"pipec=${PIPESTATUS[0]}\""
+  },
+  {
+    "id": "ps01",
+    "domain": "status",
+    "script": "false | true; echo \"a=$?\"; set -o pipefail; false | true; echo \"b=$?\"; true | false; echo \"c=$?\"; set +o pipefail; echo \"pf=${PIPESTATUS[@]}\""
+  },
+  {
+    "id": "ps02",
+    "domain": "status",
+    "script": "! false; echo $?; ! true; echo $?; ! false | false; echo \"st=$? pipes=${PIPESTATUS[@]}\""
+  },
+  {
+    "id": "ps03",
+    "domain": "status",
+    "script": "false && echo yes || echo no; echo $?; true && echo yes2; echo $?; false; echo $?; true; echo $?"
+  },
+  {
+    "id": "ps04",
+    "domain": "status",
+    "script": "sleep 0.05 & p=$!; wait $p; echo \"wait=$?\"; false & wait $!; echo \"waitfalse=$?\"; wait 99999 2>&1; echo \"waitbad=$?\""
+  },
+  {
+    "id": "ps05",
+    "domain": "status",
+    "script": "(exit 42); echo \"sub=$?\"; bash -c 'exit 7' 2>/dev/null || true; \"@@SELF@@\" -c 'exit 7'; echo \"self=$?\""
+  },
+  {
+    "id": "ps06",
+    "domain": "status",
+    "script": "false & true & wait -n; echo \"wn=$?\"; sleep 0.01 & wait -n $! 2>&1; echo \"wnp=$?\""
+  },
+  {
+    "id": "ps07",
+    "domain": "status",
+    "script": "echo hi | read l; echo \"l=[$l] ps=${PIPESTATUS[@]}\"; echo hi | { read l; echo \"inpipe=[$l]\"; }; { echo a; echo b; } | wc -l"
+  },
+  {
+    "id": "ps08",
+    "domain": "status",
+    "script": "cmd() { return 3; }; cmd; echo $?; cmd | cat; echo \"pipest=${PIPESTATUS[0]}\"; ! cmd; echo \"neg=$?\""
+  },
+  {
+    "id": "ps09",
+    "domain": "status",
+    "script": "set -e; false; echo reached; echo \"outer rc=$?\""
+  },
+  {
+    "id": "ps10",
+    "domain": "status",
+    "script": "{ false; echo \"inbrace rc=$?\"; }; echo out; ( false ); echo \"paren rc=$?\""
+  },
+  {
+    "id": "sb01",
+    "domain": "subshell",
+    "script": "x=1; ( x=2; echo \"in:$x\" ); echo \"out:$x\"; y=$(x=3; echo $x); echo \"y=$y x=$x\"; cd /; pwd; cd - >/dev/null; pwd | tail -c 20"
+  },
+  {
+    "id": "sb02",
+    "domain": "subshell",
+    "script": "a=(1 2); ( a+=(3); echo \"in:${a[@]}\" ); echo \"out:${a[@]}\"; ( shopt -s nullglob ); shopt nullglob"
+  },
+  {
+    "id": "sb03",
+    "domain": "subshell",
+    "script": "trap 'echo MAIN-EXIT' EXIT; ( trap - EXIT; echo sub-no-trap ); echo main-continues"
+  },
+  {
+    "id": "sb04",
+    "domain": "subshell",
+    "script": "f() { echo fn; }; x=$(f); echo $x; ( f ); echo rc=$?"
+  },
+  {
+    "id": "sb05",
+    "domain": "subshell",
+    "script": "i=0; echo a b c | while read w; do i=$((i+1)); done; echo \"pipe-i=$i\"; while read w; do i=$((i+1)); done <<< \"x y\"; echo \"redir-i=$i\""
+  },
+  {
+    "id": "sb06",
+    "domain": "subshell",
+    "script": "shopt -s lastpipe; echo a b | read w1 w2; echo \"w=[$w1][$w2]\" 2>&1; jobs"
+  },
+  { "id": "sx01", "domain": "syntax", "script": "if true; then echo x' " },
+  { "id": "sx02", "domain": "syntax", "script": "echo \"unterminated' " },
+  {
+    "id": "sx03",
+    "domain": "syntax",
+    "script": "(( 1 + )) 2>&1; echo \"rc=$?\"; [[ a == ]] 2>&1; echo \"rc2=$?\"; echo alive"
+  },
+  { "id": "sx04", "domain": "syntax", "script": "for in 1 2; do echo x; done" },
+  { "id": "sx05", "domain": "syntax", "script": "echo hi | | echo there" },
+  {
+    "id": "ts01",
+    "domain": "trap",
+    "script": "trap 'echo EXIT-TRAP' EXIT; echo body"
+  },
+  {
+    "id": "ts02",
+    "domain": "trap",
+    "script": "( trap 'echo SUB-EXIT' EXIT; echo in-sub ); echo after-sub"
+  },
+  {
+    "id": "ts03",
+    "domain": "trap",
+    "script": "trap 'echo ERRTRAP rc=$?' ERR; false; echo after-false; true; echo end"
+  },
+  {
+    "id": "ts04",
+    "domain": "trap",
+    "script": "set -e; f() { false; echo in-f; }; f; echo \"reached rc=$?\""
+  },
+  {
+    "id": "ts05",
+    "domain": "trap",
+    "script": "set -e; if false; then echo a; fi; echo if-ok; false || echo or-ok; ! false; echo bang-ok; x=$(false); echo \"assign-sub rc=$?\""
+  },
+  {
+    "id": "ts06",
+    "domain": "trap",
+    "script": "set -u; echo \"empty-arr:\"; a=(); echo \"a=[${a[@]}] n=${#a[@]}\"; set --; echo \"pos=[$@] n=$#\"; echo \"${undef:-def}\""
+  },
+  {
+    "id": "ts07",
+    "domain": "trap",
+    "script": "set -u; echo \"${a[@]}\" 2>&1; echo rc=$?; echo \"${undef}\" 2>&1; echo rc=$?"
+  },
+  {
+    "id": "ts08",
+    "domain": "trap",
+    "script": "trap -p EXIT; trap 'echo X' EXIT; trap -p EXIT; trap -- 'echo Y' ERR; trap -p"
+  },
+  {
+    "id": "ts09",
+    "domain": "trap",
+    "script": "f() { trap 'echo RETURN-TRAP' RETURN; echo in-f; }; f; echo after"
+  },
+  {
+    "id": "ts10",
+    "domain": "trap",
+    "script": "count=0; trap 'count=$((count+1))' DEBUG; echo one; echo two; echo \"debug-count=$count\""
+  },
+  {
+    "id": "ts11",
+    "domain": "trap",
+    "script": "set -o | grep -E 'errexit|nounset|pipefail'; shopt -q nullglob; echo \"nullglob-q=$?\"; shopt nullglob dotglob"
+  },
+  {
+    "id": "ts12",
+    "domain": "trap",
+    "script": "SHELLOPTS=; echo \"shellopts=$SHELLOPTS\"; set -f; echo \"after-f:$SHELLOPTS\" | head -c 200; echo; set +f"
+  },
+  {
+    "id": "tr201",
+    "domain": "trap",
+    "script": "set -E; trap 'echo ERR-IN' ERR; f() { false; echo f-after; }; f; echo main-after; ( trap -p ERR ); x=$(false; echo incmd); echo \"x=$x\""
+  },
+  {
+    "id": "tr202",
+    "domain": "trap",
+    "script": "trap 'echo USR1-GOT; ' USR1; kill -USR1 $$; echo after-signal; trap - USR1; kill -USR1 $$ 2>&1; echo should-not-reach"
+  },
+  {
+    "id": "tr203",
+    "domain": "trap",
+    "script": "trap 'echo DEBUG-HIT' DEBUG; set -T; f() { echo fbody; }; f; trap - DEBUG; echo end"
+  },
+  {
+    "id": "tr204",
+    "domain": "trap",
+    "script": "f() { trap 'echo F-RETURN' RETURN; echo body; ( echo subshell ); echo tail; }; f; echo out"
+  },
+  {
+    "id": "tr205",
+    "domain": "trap",
+    "script": "echo \"errtrap-set:\"; trap -p ERR; set -E; trap 'true' ERR; ( trap -p ERR ); f() { trap -p ERR; }; f"
+  },
+  {
+    "id": "un01",
+    "domain": "unset",
+    "script": "declare -n r=t; t=val; unset r; echo \"t=[${t:-gone}] r-set:${r:+yes}\"; declare -n r2=t2; t2=v2; unset -n r2; echo \"t2=[${t2:-gone}]\""
+  },
+  {
+    "id": "un02",
+    "domain": "unset",
+    "script": "f() { echo fbody; }; unset -f f; type f 2>&1; echo rc=$?; v=1; unset -v v; echo \"v=[${v:-gone}]\"; unset -v nonexist_xyz; echo \"unrc=$?\""
+  },
+  {
+    "id": "un03",
+    "domain": "unset",
+    "script": "declare -n r=t; t=v; unset -n t 2>&1; echo rc=$?; echo \"t=[${t:-gone}] r=[$r]\""
+  }
+]

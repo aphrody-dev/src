@@ -28,4 +28,4 @@ unixwin-test-fr1 filter:
 
 # Suite bun de bout en bout (niubash, rubash, WinuxCmd) contre GNU bash et uutils
 unixwin-test:
-    bun test "{{root}}/apps/unixwin/tests"
+    bun test "{{root}}/packages/machine/matrix/test/unixwin"

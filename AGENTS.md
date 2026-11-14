@@ -9,7 +9,7 @@ src is the public monorepo of Aphrody. Its direction is a game engine and creati
 ## 2. Layout (`ls` of each directory, 2026-11-14)
 
 - [`apps/`](apps): `aphrody` (SEO, static assets and Wayland WASM; `aphrody-app` merged), `auto`, `l2l`, `nt`, `r2b`, `rosegriffon`, `shenron`, `unixwin`; `rosegriffon` and `shenron` are the only git submodules and are community sites Aphrody maintains, not Aphrody products. (`r2-site` and `yolo` were merged/purged into `infra/cloudflare` and `packages/deploy`).
-- [`packages/`](packages): Bun `@aphrody/*` packages (`ai-os`, `assets`, `browser`, `chromium-bun`, `core`, `deploy`, `design`, `env-kit`, `ffi-bridge`, `gaming`, `i18n`, `machine`, `native`, `net`, `release`, `shell-matrix`, `upstream`, `vault`, `wck`).
+- [`packages/`](packages): Bun `@aphrody/*` packages (`ai-os`, `assets`, `browser`, `chromium-bun`, `core`, `deploy`, `design`, `env-kit`, `ffi-bridge`, `gaming`, `i18n`, `machine`, `native`, `net`, `release`, `upstream`, `vault`, `wck`).
 - [`crates/`](crates): Rust 2024 crates in one flat workspace (`ay`, `archguard`, `xtask`, `depot-*`, `lore*`, `taffy`, `aphrody-ui`, `aphrody-env`, `aphrody-vault`, `aphrody-v8`, `aphrody-cef`, `hypr-tiler`, `cosmic-compat`, `corelib`, `core`, `core-capi`, `ffi`, `rust-stack`, `gamescope-*`, `steam-depot`, `unix-omarchy`, `tv-*`, `bench`, ...).
 - [`infra/`](infra): fleet and deploy configuration assembled from upstream tools (`docs/infra/UPSTREAM-STACK.md`).
 - [`third_party/`](third_party): upstream checkouts and aphrody-labs forks, flat, pinned in `src.lock.json`, listed in `third_party/forks.txt`.

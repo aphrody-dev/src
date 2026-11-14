@@ -6,6 +6,7 @@ const scripts: Record<string, string> = {
   path: "binpath.ts",
   apply: "apply-user.ts",
   shells: "shells.ts",
+  matrix: "../matrix/src/cli.ts",
   toolchain: "toolchain.ts",
 };
 

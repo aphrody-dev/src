@@ -80,7 +80,7 @@ Critère éliminatoire : un exécutable nommé `bash.exe`/`sh.exe` qui source le
 |                                                     | brush 0.4.0                                | niubash 1.5.0                   | Git Bash (réf.) |
 | --------------------------------------------------- | ------------------------------------------ | ------------------------------- | --------------- |
 | `-c exit` (hyperfine -N, 30 runs)                   | 8,4 ± 0,5 ms                               | 16,3 ± 0,5 ms                   | 19,2 ± 0,6 ms   |
-| shell-matrix (34 cas, C:\src\packages\shell-matrix) | 30/34 (claude-c-l, procsub, cd /c, cd C:/) | 34/34                           | 34/34           |
+| shell-matrix (34 cas, C:\src\packages\machine\matrix) | 30/34 (claude-c-l, procsub, cd /c, cd C:/) | 34/34                           | 34/34           |
 | dépendance msys/cygwin (dumpbin)                    | non                                        | non                             | oui             |
 | taille                                              | —                                          | niu.exe 14,5 Mo, install 103 Mo | —               |
 

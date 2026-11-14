@@ -11,7 +11,7 @@ Mesures hyperfine 2.x, `-N`, 10 runs, machine en charge (agents actifs). Le hype
 - `bash` seul depuis cmd/hyperfine resout `System32\bash.exe` (lanceur WSL, ordre PATH machine) : utiliser le chemin complet niubash. Le PATH machine n'est pas modifiable sans elevation, WSL hors perimetre.
 
 ## Terminal
-`infra/windows-terminal/settings.json` : defaut = Niubash, profils Nushell, PowerShell (dotnet global) et Azure Cloud Shell supprimes, rendu GPU Atlas par defaut. `elevate: true` conserve (choix proprietaire).
+`packages/machine/shells/windows-terminal/settings.json` : defaut = Niubash, profils Nushell, PowerShell (dotnet global) et Azure Cloud Shell supprimes, rendu GPU Atlas par defaut. `elevate: true` conserve (choix proprietaire).
 
 ## Git
 - Global : `core.fsmonitor=true` (etait `false` au niveau utilisateur), untrackedCache, manyFiles, index.version 4, writeCommitGraph (fetch, gc), pack.threads=0, longpaths, credential helper gh-token.

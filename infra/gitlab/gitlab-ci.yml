@@ -51,7 +51,7 @@ build-bun-packages:
   script:
     - bun --cwd packages/core check
     - bun --cwd packages/ffi-bridge check
-    - bun --cwd packages/shell-matrix test
+    - bun test packages/machine/matrix
 
 build-rust-unix-wayland:
   stage: build-bun-rust-go
@@ -79,7 +79,7 @@ test-bun-workspace:
     - docker
   script:
     - bun --cwd packages/design test
-    - bun --cwd packages/shell-matrix test
+    - bun test packages/machine/matrix
 
 test-rust-unix-wayland:
   stage: test-gate

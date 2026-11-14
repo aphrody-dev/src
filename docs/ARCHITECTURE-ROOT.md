@@ -35,7 +35,7 @@ Common target with the labs session (reference: `labs/docs/ROOT-ARCHITECTURE.md`
 ├── package.json  bun.lock  bunfig.toml  tsconfig.json
 ├── justfile  src.lock.json  README.md  AGENTS.md  CLAUDE.md  LICENSE-*
 ├── crates/<layer>-<name>   Rust: sys-, shell-, browser-, desktop-, agent-, vcs-, depot-, design-, nt-
-├── packages/<name>         bun: machine, shell-matrix, nt, env-kit, forge…
+├── packages/<name>         bun: machine (+ matrix), nt, env-kit, forge…
 ├── apps/<name>             deployable binaries and sites
 ├── third_party/<name>      flat upstreams, locked (src.lock.json), not versioned
 ├── infra/                  Go, fleet, chromium-factory (scripts → crates/browser-factory)
@@ -49,7 +49,7 @@ Common target with the labs session (reference: `labs/docs/ROOT-ARCHITECTURE.md`
 | OS for agents          | `sys-`, `nt-`, `desktop-`, `agent-` | model of the workstation's real NT (ntdll, NTFS, PE, UI Automation) rendered on GPU (WebGPU, D3D12), `agent-desktop` (UIA, SendInput, capture, MCP), `ring3-agent`, `apm`, `packages/machine` (reproducible workstation, elevation) |
 | NT/Linux compatibility | `third_party`                       | `LiberNT` (+ remote `reactos`), `linux` (kernel.org), `wine` (gitlab.winehq.org), `mingw-w64` (SourceForge), `windows-rs`, `windows-drivers-rs`, `litebox`, `openvmm`                                                               |
 | Browser                | `browser-`                          | `chromium` (indivisible gclient unit), `infra/chromium-factory`, channels, conformance, `webui`, `blitz`, `agent-browser` (labs session)                                                                                            |
-| Shell                  | `shell-`                            | `niubash`, `rubash`, `brush`, `oils` (Windows port), Coreutils, `packages/shell-matrix`, `packages/machine/shell.dsc.winget`                                                                                                        |
+| Shell                  | `shell-`                            | `niubash`, `rubash`, `brush`, `oils` (Windows port), Coreutils, `packages/machine/matrix`, `packages/machine/shell.dsc.winget`                                                                                                        |
 | Monorepo               | `depot-`, `vcs-`                    | `ay` (lock, forks, up, identity, arch), Lore, `just`                                                                                                                                                                                |
 
 ## 4. Merge: origin → destination

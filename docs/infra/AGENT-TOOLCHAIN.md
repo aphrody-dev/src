@@ -6,7 +6,7 @@ Date: 2026-11-13. Source of truth: `infra/agents/toolchain.toml`. Applier: `pack
 
 - Claude Code loads `.agents/skills` (42 skills at the time) only for a session launched in `C:\src`. Launched elsewhere (`C:\Users\aphro\nt`, neutral folder, fleet runners), it only saw the 12 folders of `~/.claude/skills`, placed by hand.
 - Plugins, marketplaces and MCPs were installed by hand, without a manifest: nothing reproduced them on another machine.
-- `C:\Users\aphro\nt` is an empty leftover (an empty `C` subfolder). What still points to it: the `projects` entry of `~/.claude.json`, the memory folder `~/.claude/projects/C--Users-aphro-nt` and two comments (`packages/machine/shell.dsc.winget`, `packages/shell-matrix/src/cases.ts`, real target: `apps/nt/docs/research/shell-replacement.md`).
+- `C:\Users\aphro\nt` is an empty leftover (an empty `C` subfolder). What still points to it: the `projects` entry of `~/.claude.json`, the memory folder `~/.claude/projects/C--Users-aphro-nt` and two comments (`packages/machine/shell.dsc.winget`, `packages/machine/matrix/src/cases.ts`, real target: `apps/nt/docs/research/shell-replacement.md`).
 
 ## Mechanism (no link, no copy in the repository)
 

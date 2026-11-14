@@ -87,7 +87,7 @@ graphify-out/
 !/third_party/design-mirror/
 !/scripts/
 
-packages/shell-matrix/bin/
+packages/machine/matrix/bin/
 
 # Large binary design sources (Figma exports, >100 MB): reproducible, not in git
 assets/*.fig

@@ -173,7 +173,7 @@ pub enum Cmd {
     /// Localization catalog checker & key extractor (packages/i18n)
     #[command(disable_help_flag = true)]
     I18n(Rest),
-    /// Cross-shell conformance matrix (packages/shell-matrix)
+    /// Cross-shell conformance matrix (packages/machine/matrix)
     #[command(disable_help_flag = true)]
     ShellMatrix(Rest),
     /// Update `ay` itself from the dist GitHub Releases (axoupdater)
@@ -324,7 +324,7 @@ pub fn route(cmd: Cmd) -> Route {
         Cmd::Bin(r) | Cmd::Path(r) => Route::Package("machine", prefixed(&["binpath"], &r.args)),
         Cmd::Index(r) => Route::Package("core", r.args),
         Cmd::I18n(r) => Route::Package("i18n", r.args),
-        Cmd::ShellMatrix(r) => Route::Package("shell-matrix", r.args),
+        Cmd::ShellMatrix(r) => Route::Package("machine", prefixed(&["matrix"], &r.args)),
         Cmd::SelfUpdate(a) => Route::SelfUpdate(a),
         Cmd::Bun(a) => Route::Bun(a),
         Cmd::Bump(a) => Route::Bump(a),
