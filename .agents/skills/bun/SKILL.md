@@ -1,6 +1,6 @@
 ---
 name: bun
-description: bun 1.4.4 reference (CLI, runtime API, upstream docs). Use BEFORE any choice of JS/TS tool, script, test, format, typecheck, bundling, FFI, SQL, shell, HTTP: bun replaces node, npm, tsc, prettier, biome, oxlint, eslint, vite, vitest, jest, esbuild.
+description: bun 1.4.4 reference (CLI, runtime API, upstream docs), bun:ffi bridge to native C ABIs, and the zero-dependency / zero-bunx package rules with native replacements (Bun.SQL, bun:sqlite, Bun.S3Client, Bun.Image, Bun.serve, Bun.Glob, bun fmt, bun check, bun build --compile). Use BEFORE any choice of JS/TS tool, script, test, format, typecheck, bundling, FFI, SQL, shell, HTTP, or when writing package.json/tsconfig: bun replaces node, npm, npx, bunx, tsc, prettier, biome, oxlint, eslint, vite, vitest, jest, esbuild.
 ---
 
 # bun 1.4.4
@@ -58,10 +58,12 @@ Indexed bun docs (md/mdx fork, bun.com llms-full.txt, bun skills): `ay docs bun 
 - `bun:jsc`: bytecodeOrderStats, callerSourceOrigin, codeCoverageForFile, describe, describeArray, deserialize, drainMicrotasks, edenGC, estimateShallowMemoryUsageOf, fullGC, gcAndSweep, generateHeapSnapshotForDebugging, getProtectedObjects, getRandomSeed, heapSize, heapStats, isRope, jscDescribe, jscDescribeArray, memoryUsage, noFTL, noInline, noOSRExitFuzzing, numberOfDFGCompiles, optimizeNextInvocation, percentAvailableMemoryInUse, profile, releaseWeakRefs, reoptimizationRetryCount, samplingProfilerStackTraces, serialize, setRandomSeed, setTimeZone, setTimezone, startRemoteDebugger, startSamplingProfiler, totalCompileTime
 - `bun:wrap`: $$typeof
 
+## References
+
+- [references/zero-dep.md](references/zero-dep.md): zero `bunx`, empty `dependencies`, `bun check` without `@types/bun`, canonical package.json/tsconfig, replacement table, code idioms, verification checklist.
+- [references/ffi.md](references/ffi.md): `bun:ffi` bridge to `core-capi` (`packages/core/src/ffi.ts`).
+
 ## Sources
 
-- Upstream docs: C:Usersaphro
-  tendorundocs (`just vendor-bun` to update)
-- Generated index: C:Usersaphro
-  tdocsun{runtime,cli,docs}.md
+- Upstream docs: `third_party/bun/docs`
 - What's new: https://bun.com/blog

@@ -1,9 +1,4 @@
----
-name: rust-compiler-toolchain
-description: Rust compiler and toolchain reference grounded in rust-lang/rust and aphrody-labs/rust: pinned Chromium-157 nightly, LLVM 24 cross-language LTO, lld, and windows-rs.
----
-
-# Rust Compiler and Toolchain
+# Rust compiler and pinned toolchain
 
 Fork: `aphrody-labs/rust` (parent: `rust-lang/rust`, default branch: `main`, registered in `third_party/forks.txt`).
 Latest upstream release: `1.100.0` (2026-11-12).
@@ -26,10 +21,10 @@ profile = "minimal"
 
 When linking Rust `staticlib` crates with C/C++ compiled by `clang` on the shared LLVM toolchain, pass `-C linker-plugin-lto` and align LTO modes:
 
-| Compiler | Thin LTO | Fat LTO |
-| :--- | :--- | :--- |
-| `rustc` | `-C lto=thin` | `-C lto=fat` |
-| `clang` / `clang++` | `-flto=thin` | `-flto=full` |
+| Compiler            | Thin LTO      | Fat LTO      |
+| :------------------ | :------------ | :----------- |
+| `rustc`             | `-C lto=thin` | `-C lto=fat` |
+| `clang` / `clang++` | `-flto=thin`  | `-flto=full` |
 
 Example linking a Clang thin-LTO static library into a Rust binary via `lld`:
 

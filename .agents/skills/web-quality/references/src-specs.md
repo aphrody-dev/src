@@ -1,10 +1,6 @@
----
-name: web-a11y-seo-cwv
-description: Normative src requirements for accessibility (WCAG 2.2 AA), technical SEO (Lighthouse SEO) and Core Web Vitals (LCP, INP, CLS at p75). Use BEFORE creating, modifying or reviewing a web page, a dashboard, a WebUI view or an HTML/CSS/JS component of src, and to set a threshold, a focus, contrast, meta/canonical/robots/sitemap/hreflang rule, or a performance budget.
----
+# src normative specs: accessibility, SEO, Core Web Vitals
 
-# web-a11y-seo-cwv
-
+Folded from the former web-a11y-seo-cwv skill. Where a threshold differs from a generic audit, these src specs win.
 Three specs are authoritative (sources web.dev, developer.chrome.com and w3.org/TR/WCAG22 read on 2026-11-13, stable ids, RFC 2119 levels):
 
 | Spec          | Files                                                 | Id prefix    |
@@ -30,12 +26,11 @@ The JSON (schema `docs/design/specs/spec.schema.json`) is machine-readable: cite
 4. In production: RUM with the web-vitals library + LoAF, in addition to CrUX (`web.cwv.crux-plus-rum`).
 5. A rule without a source or a new threshold: reread the page live (`curl -sL -H "Accept: text/markdown" <url>`), update the JSON then the `.md`, report any conflict in the "Conflicts" section of the spec.
 
-## Neighbouring skills, no duplication
+## Neighbouring skills
 
-- `web-quality-skills:accessibility`, `:seo`, `:core-web-vitals`, `:performance`, `:best-practices`, `:web-quality-audit`: generic audit methods and fixes. They execute; this skill decides: on a discrepancy, the src specs win.
-- `modern-web-guidance:modern-web-guidance`: current HTML/CSS/JS APIs (dialog, popover, view transitions…). Consult it for implementation, then check the result against the ids above.
+- `modern-web-guidance:modern-web-guidance`: current HTML/CSS/JS APIs; consult for implementation, then check against the ids above.
 - `cloudflare:web-perf`: performance diagnosis of sites on Cloudflare.
-- `ui-system`: UI targets, tokens and components of src; `webgpu-wasm-ui`: GPU and wasm rendering in the browser.
+- `ui-system`: UI targets, tokens, components; `webgpu-wasm-ui`: GPU and wasm rendering in the browser.
 
 ## Forbidden
 

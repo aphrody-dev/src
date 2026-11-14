@@ -111,7 +111,7 @@ Crate `crates/docs` (package `aphrody-docs`), commands `ay docs ...`:
   `https://bun.com/docs/<path>`, fork commit recorded; `upstream` = `https://bun.com/llms-full.txt`
   split into its pages (`# Title` then `Source: <url>`, outside fenced code blocks; 319 pages, 2.1 MB on 2026-11-13) plus the
   page count of `https://bun.com/llms.txt`; `skills` = every `bun*` skill directory under
-  `~/.claude/skills` and `<repo>/.agents/skills` (today `bun`, `bun-ffi`, `bun-native-zero-dep`).
+  `~/.claude/skills` and `<repo>/.agents/skills` (today `bun`).
 - **Index**: SQLite with FTS5 (rusqlite 0.42 bundled, the version crates/agent-context already
   uses; the bundled build sets `SQLITE_ENABLE_FTS5`), `porter unicode61` tokenizer, at
   `<repo>/var/index/docs.db` next to `var/index/core.db` (`$AY_DOCS_DB` overrides). Sync is

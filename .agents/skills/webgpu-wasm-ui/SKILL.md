@@ -12,7 +12,7 @@ Authoritative spec: `docs/design/specs/gpu-wasm/webgpu-wasm.md` + `.json` (ids `
 - `docs/ui/STACK.md` sets the targets: native desktop in GPUI (D3D11) or WebUI, nt in pure GPU D3D12 4K 120 fps via its agent, 3D through three.js WebGPURenderer or wgpu (skill `threejs-webgpu`).
 - This skill covers the browser target: WebGPU and wasm in Chrome and the other engines, when a web surface must render or compute on the GPU.
 - Code shared between native and web: Rust + wgpu or C++ + Dawn compiled to wasm; a single WGSL shader base.
-- A UI drawn on canvas stays accessible and measurable: synchronized DOM tree (`web.webgpu.ui-a11y`), specs `a11y/web` and `perf/core-web-vitals` apply (skill `web-a11y-seo-cwv`).
+- A UI drawn on canvas stays accessible and measurable: synchronized DOM tree (`web.webgpu.ui-a11y`), specs `a11y/web` and `perf/core-web-vitals` apply (skill `web-quality`).
 
 ## Key points
 

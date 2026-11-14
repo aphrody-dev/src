@@ -64,4 +64,4 @@ jaq 3.1.2, b3sum 1.8.7, oha 1.17.0, fzf 0.75.0, dua 3.0.3, ouch 0.8.3, ruff 0.17
 
 ## Remplacements dans les references
 
-`.agents/skills` : sovereign-upstream (uutils.exe retire), cloudflare-platform (npx wrangler retire), replica-test et replica-deploy (npx/npm vers bunx/bun), vercel-optimize (jq vers jaq). Configs globales Claude (`~/.claude`) et agy (`~/.gemini/antigravity-cli`) : aucune reference aux outils retires, rien a modifier. Les skills importes d'amont (react-native, vercel-labs, reverse-engineer-anything) gardent npx : texte source non modifie.
+`.agents/skills` : upstream-sources (uutils.exe retire), cloudflare-platform (npx wrangler retire), replica-test et replica-deploy (npx/npm vers bunx/bun), vercel-optimize (jq vers jaq). Configs globales Claude (`~/.claude`) et agy (`~/.gemini/antigravity-cli`) : aucune reference aux outils retires, rien a modifier. Les skills importes d'amont (react-native, vercel-labs, reverse-engineer-anything) gardent npx : texte source non modifie.

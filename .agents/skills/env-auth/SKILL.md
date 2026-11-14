@@ -1,9 +1,9 @@
 ---
-name: sovereign-env-auth
+name: env-auth
 description: Safe cross-language loading of .env (Bun, Rust, uv/Python, C/C++, .NET, Go, Lua, Vercel, Cloudflare) and automated credential management across gh, npm, crates.io, PyPI, NuGet, gcloud, Figma, Neon, OpenCode, Zed, and Pi without leaking secrets.
 ---
 
-# Sovereign `.env` & Multi-Registry Auth (`packages/env-kit`)
+# `.env` & Multi-Registry Auth (`packages/env-kit`)
 
 Activate this skill whenever wiring environment variables, API keys, cloud/registry tokens, or editor AI provider configs (`OpenCode`, `Zed`, `Pi`, `Antigravity`).
 

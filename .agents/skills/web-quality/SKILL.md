@@ -1,6 +1,6 @@
 ---
 name: web-quality
-description: Measure and fix web performance and quality with Lighthouse 13.6, Core Web Vitals (web-vitals 6.2.3) and modern web best practices, and check feature support/Baseline with MDN browser-compat-data. Use when the user says "lighthouse", "audit the page", "Core Web Vitals", "LCP / INP / CLS / TTFB / TBT", "page is slow", "perf score", "web-vitals", "attribution", "Baseline", "can I use", "browser support", "best practices", "accessibility/SEO audit", or runs headless benches (chrome-headless-shell) on fr1.
+description: Measure and fix web performance and quality with Lighthouse 13.6, Core Web Vitals (web-vitals 6.2.3) and modern web best practices, and check feature support/Baseline with MDN browser-compat-data. Use when the user says "lighthouse", "audit the page", "Core Web Vitals", "LCP / INP / CLS / TTFB / TBT", "page is slow", "perf score", "web-vitals", "attribution", "Baseline", "can I use", "browser support", "best practices", "accessibility/SEO audit", or runs headless benches (chrome-headless-shell) on fr1, normative src specs for WCAG 2.2 AA accessibility, technical SEO and CWV (web-a11y-seo-cwv), and the wck / Modern Web Guidance gate. Use also BEFORE creating or reviewing any web page, dashboard or HTML/CSS/JS component, or to set a focus, contrast, meta/canonical/robots/sitemap/hreflang rule or performance budget.
 ---
 
 # web-quality
@@ -115,3 +115,5 @@ Search the modern-web-guidance corpus (accessibility, css, forms, html, js, perf
 - references/bcd.md: BCD layout and queries.
 - references/modern-web-guidance.md: guide catalog.
 - Licenses: references/LICENSE-*.txt (Apache-2.0 lighthouse, web-vitals, modern-web-guidance; CC0 BCD data).
+- references/src-specs.md: normative src specs (`docs/design/specs/{a11y,seo,perf}`), rule ids, a11y/CWV rules to apply before any web page change.
+- references/wck.md: `wck` CLI, Modern Web Guidance MCP tools, visual verification pipeline.

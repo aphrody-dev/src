@@ -1,9 +1,4 @@
----
-name: google-design
-description: General design principles drawn from the design.google library (accessibility and global inclusion, density, color, dark theme, motion, sound and haptics, low connectivity, AI, voice, legibility, wellbeing, design review). Use to frame or critique an experience beyond tokens: interaction choices, inclusion, AI in the product, content, review. For values and components, see material-3 and ui-system.
----
-
-# google-design
+# Google Design principles (design.google)
 
 Normalized source: `docs/design/specs/principles/google-design.md` (human-readable) and `.json` (machine, schema `docs/design/specs/spec.schema.json`). Each rule has a stable id `gd.<theme>.<name>` and the URL of the article it is based on. design.google is proprietary (Google terms): rules rephrased, no quotation or image; article index: `docs/design/index/design.google.json`.
 
@@ -27,8 +22,4 @@ Normalized source: `docs/design/specs/principles/google-design.md` (human-readab
 
 The full list, with MUST/SHOULD/MAY levels and sources, is in the spec; cite the id in review.
 
-## Links
-
-- Material 3 specs and implementation rules: skill `material-3`.
-- Targets, generated tokens (`packages/design`), Figma, Stitch: skill `ui-system`.
-- Library: https://design.google/library
+Library: https://design.google/library

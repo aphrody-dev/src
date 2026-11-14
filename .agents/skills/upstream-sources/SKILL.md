@@ -1,9 +1,9 @@
 ---
-name: sovereign-upstream
-description: Canonical sovereign upstream reference covering Google Rust (argh, zerocopy), Microsoft Rust (windows-sys), Bun, Cloudflare, Unix uutils, and Git Scalar.
+name: upstream-sources
+description: Canonical upstream allowlist covering Google Rust (argh, zerocopy), Microsoft Rust (windows-sys), Bun, Cloudflare, Unix uutils, and Git Scalar.
 ---
 
-# Sovereign Canonical Upstream Reference
+# Canonical upstream sources
 
 ## Canonical Upstream Allowlist
 

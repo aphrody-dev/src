@@ -8,7 +8,7 @@ Manifeste des installations : `infra/agents/toolchain.toml` (applier `packages/m
 
 - MCP : relay (127.0.0.1:8790 : gemini_ask, gemini_cli_ask, gemini_review, gcloud_accounts, agy_ask, workspace_api/workspace_ask, stitch__*, skills_list, claude_ask, fleet_status), github (plugin officiel, api.githubcopilot.com), microsoft-learn, context7, cloudflare, resend, figma, agent-browser, agent-desktop, hostinger (désactivé ici), claude-in-chrome.
 - Plugins : vercel (vercel/vercel-plugin), microsoft-docs, github, skill-creator, frontend-design, plugin-dev, LSP (clangd, rust-analyzer, typescript, gopls).
-- Skills projet (C:\src\.agents\skills) : google-cloud-official-catalog (google/skills vendorisé), google-labs-stitch-jules-design, gemini-ai-studio-multimodal, vercel-labs-arena ; catalogues vendorisés dans third_party (google-skills, gemini-skills, android-skills, anthropics-skills, microsoft-skills, chrome-devtools-mcp, lighthouse, stitch-skills, jules-skills, googleworkspace-cli, gemini-cli).
+- Skills projet (C:\src\.agents\skills) : google-cloud-official-catalog (google/skills vendorisé), google-labs-stitch-jules-design, gemini-ai-studio-multimodal ; catalogues vendorisés dans third_party (google-skills, gemini-skills, android-skills, anthropics-skills, microsoft-skills, chrome-devtools-mcp, lighthouse, stitch-skills, jules-skills, googleworkspace-cli, gemini-cli).
 - CLI : gcloud 593.0.0, firebase 15.36.0 (bun), agy 1.5.7 ; gemini CLI absent (couvert par le relais).
 
 ## Tableau

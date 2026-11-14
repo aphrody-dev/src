@@ -1,6 +1,6 @@
 ---
 name: rust-cargo
-description: Cargo 2026 reference grounded in upstream rust-lang/cargo and aphrody-labs/cargo: Edition 2024, resolver v3, workspace inheritance, sparse registry, credential providers, and cargo-deny.
+description: Rust and Cargo reference for src, grounded in upstream rust-lang/cargo, rust-lang/rust and crates.io (aphrody-labs forks): Edition 2024, resolver v3, workspace inheritance, sparse registry and credential providers, cargo-deny, crates.io sparse index and live API, publishing, the pinned chromium-157 nightly toolchain with LLVM cross-language LTO and lld, windows-rs, plus jj, gix, just, sccache, nextest, binstall, xwin and xtask. Use for any Cargo.toml, rust-toolchain, crate lookup or publish, Rust build speed or Rust VCS/task tooling question.
 ---
 
 # Rust Cargo (2026)
@@ -70,3 +70,9 @@ cargo deny check licenses
 
 - Do not run heavy Rust builds on the workstation; compile in CI or on `fr1` via `just` or `ay`.
 - Single workspace `Cargo.lock` and target directory at `C:\src`.
+
+## References
+
+- [references/crates-io.md](references/crates-io.md): crates.io sparse index paths, live REST API, publishing checklist.
+- [references/compiler-toolchain.md](references/compiler-toolchain.md): pinned `chromium-157` nightly, linker-plugin LTO with clang/lld, windows-rs.
+- [references/monorepo-tooling.md](references/monorepo-tooling.md): jj, gix, just, sccache, nextest, binstall, xwin, xtask.

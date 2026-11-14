@@ -49,4 +49,4 @@ description: Android NDK Pure C11/JNI/ANativeWindow/AChoreographer and Jetpack C
 
 - `docs/native/PURE-C-WASM-UI-2026.md`: canonical Pure C11 + Assembler + WebAssembly 3.0 + WebGPU + WASI + 18-target UI interoperability specification.
 - `docs/ui/STACK.md` & `docs/ui/ECOSYSTEM-AUDIT.md`: monorepo UI targets and token adapter rules.
-- `rea-ghidra-sre`: Android APK/DEX/JNI reverse engineering (`inspect_android_package`, `inspect_android_jni_bindings`).
+- `reverse-engineer-anything`: Android APK/DEX/JNI reverse engineering (`inspect_android_package`, `inspect_android_jni_bindings`).

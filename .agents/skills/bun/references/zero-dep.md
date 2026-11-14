@@ -1,11 +1,8 @@
----
-name: bun-native-zero-dep
-description: Canonical sovereign guide for Pure Bun v1.4.4 Full-Rust zero-dependency architecture across src. Enforces zero bunx invocations, zero unnecessary dependencies/devDependencies in package.json, native Bun v1.4.4 API replacements (Bun.SQL, bun:sqlite, Bun.S3Client, Bun.Image, Bun.Archive, Bun.serve, Bun.Glob, Bun.CryptoHasher, Bun.password, Bun.semver, Bun.color, Bun.Transpiler, bun:ffi, bun fmt, bun check, bun build --compile --bytecode), and ambient TypeScript declarations (bun-native.d.ts).
----
+# Bun zero-dependency rules and native replacements (src)
 
-# Pure Bun v1.4.4 Zero-Dependency & Zero-bunx Architecture (`bun-native-zero-dep`)
+Absorbed from the former bun-native-zero-dep skill; legacy references (bun-plugins, frg, triad, turbo cache plugin) dropped because they no longer exist in the tree.
 
-## 1. Core Sovereign Directives
+## 1. Core directives
 
 1. **Zero `bunx` Everywhere**:
    - NEVER invoke `bunx` in scripts, `package.json`, `justfile`, CI workflows, code comments, or documentation.
@@ -13,7 +10,7 @@ description: Canonical sovereign guide for Pure Bun v1.4.4 Full-Rust zero-depend
    - Replace every `bunx <tool>` invocation with:
      - Native Bun v1.4.4 subcommands: `bun fmt`, `bun check`, `bun test`, `bun build --compile --bytecode`.
      - Workspace binary scripts: `bun run <bin>` or `bun <script.ts>`.
-     - Pre-compiled userland AOT binaries in `C:\Users\aphro\.local\bin` (`xtk`, `n2b`, `gds`, `wck`, `frg`, `triad`, `src-deploy`, `ai-os`).
+     - Pre-compiled userland AOT binaries in `C:\Users\aphro\.local\bin` (`ay`, `wck`, `ai-os`).
 
 2. **Zero Unnecessary `dependencies` and `devDependencies`**:
    - First-party Bun v1.4.4 packages and services MUST declare `"dependencies": {}, "devDependencies": {}` whenever native Bun APIs, Web Standards, or C-ABI `bun:ffi` bridges cover the workload.
@@ -34,7 +31,7 @@ Bun v1.4.4 ships a native multi-core Rust port of TypeScript 7 (`bun check`) wit
 
 In TypeScript 7 (`bun check`), omitting `"types"` defaults to `types: []` (no automatic `node_modules/@types/*` lookup). Setting `"types": ["bun"]` forces the checker to search `node_modules/@types/bun` and fails with `TS2688` when `devDependencies` is `{}`.
 
-Instead, include the shared sovereign ambient header [`packages/bun-plugins/bun-native.d.ts`](packages/bun-plugins/bun-native.d.ts) (or a local `src/bun-env.d.ts` triple-slash reference).
+Instead, include the shared ambient header `packages/core/bun-native.d.ts` (or a local `src/bun-env.d.ts` triple-slash reference).
 
 ### Canonical Zero-Dependency `package.json`
 
@@ -72,17 +69,17 @@ Instead, include the shared sovereign ambient header [`packages/bun-plugins/bun-
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "../bun-plugins/bun-native.d.ts"],
+  "include": ["src/**/*.ts", "test/**/*.ts", "../core/bun-native.d.ts"],
   "exclude": ["dist", "node_modules"]
 }
 ```
 
 ### Standalone Minimal `bun-ambient.d.ts` Pattern (For Isolated Apps)
 
-If an app lives outside `packages/*` and prefers a self-contained header (like `apps/aphrody/src/globals.d.ts` or `packages/wck/src/globals.d.ts`), either reference `../../packages/bun-plugins/bun-native.d.ts` or declare only the surface used:
+If an app lives outside `packages/*` and prefers a self-contained header (like `apps/aphrody/src/globals.d.ts` or `packages/wck/src/globals.d.ts`), either reference `../../packages/core/bun-native.d.ts` or declare only the surface used:
 
 ```ts
-/// <reference path="../../packages/bun-plugins/bun-native.d.ts" />
+/// <reference path="../../packages/core/bun-native.d.ts" />
 ```
 
 ---
@@ -92,9 +89,7 @@ If an app lives outside `packages/*` and prefers a self-contained header (like `
 | Legacy / Fragile Dependency                                        | Native Bun v1.4.4 Replacement                                                                                 | Local Docs & First-Party Reference                                                   |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `bunx <pkg>` / `npx <pkg>`                                         | `bun <cmd>`, `bun run <bin>`, or AOT binary in `~/.local/bin`                                                 | Zero external on-demand tarball execution                                            |
-| `turbo` (`turbo run build/test`)                                   | `bun run --filter '*' <script>` + `@aphrody/bun-plugins` `TurboCache`                                         | `packages/bun-plugins/turbo-cache-plugin.ts`                                         |
-| `@changesets/cli`                                                  | `Bun.semver` + `bun pm pack` + `vcs:meta` plugin (`git` / `jj`)                                               | `third_party/bun/docs/runtime/semver.mdx`, `packages/bun-plugins/vcs-meta-plugin.ts` |
-| `@types/bun`, `@aphrody/bun-types`, `@types/node`, `typescript`    | `bun check` (built-in TS7 `lib.*.d.ts`) + `bun-native.d.ts`                                                   | `third_party/bun/docs/runtime/check.mdx`, `packages/bun-plugins/bun-native.d.ts`     |
+| `@types/bun`, `@aphrody/bun-types`, `@types/node`, `typescript`    | `bun check` (built-in TS7 `lib.*.d.ts`) + `bun-native.d.ts`                                                   | `third_party/bun/docs/runtime/check.mdx`, `packages/core/bun-native.d.ts`     |
 | `prettier`, `@biomejs/biome` (formatting)                          | `bun fmt` / `bun fmt --check` (`sortImports`, `sortTailwindcss`, `sortPackageJson`)                           | `third_party/bun/docs/format/index.mdx`                                              |
 | `postgres`, `pg`, `mysql2`, `@aphrody/sql`                         | `Bun.SQL` (`import { sql, SQL } from "bun"`)                                                                  | `third_party/bun/docs/runtime/sql.mdx`                                               |
 | `better-sqlite3`, `sql.js`, `sqlite3`                              | `bun:sqlite` (`import { Database } from "bun:sqlite"`)                                                        | `third_party/bun/docs/runtime/sqlite.mdx`                                            |

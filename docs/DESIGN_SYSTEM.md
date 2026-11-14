@@ -5,6 +5,6 @@
 - Features of `aphrody-ui`: default `std`, `serde`, `layout`, `fusion`, `anyrender`, `dioxus`, `tui`, `editor`, `react`, `next`, `brand`; optional `vello`, `tui-crossterm`, `image`, `embedded-fonts`, `bevy` (`layout::css_to_bevy_node`) and `egui` (`layout::to_egui`). A renderer can depend on it with `default-features = false`.
 - UI frameworks: free since the owner amendment of 2026-11-13 (`docs/ui/STACK.md`); the criteria are rendering quality, performance and function. Tokens stay the single source whatever the framework.
 - Removed: the crates `aphrody-design-shared`, `-tokens`, `-layout`, `-icons` and `-emit` no longer exist; their code was merged into `aphrody-ui`.
-- Reference specifications (not targets): `docs/design` (441 rewritten rules, sources and licenses in `sources.toml`) and the skills `material-3`, `google-design`, `vercel-geist`, `web-a11y-seo-cwv`, `webgpu-wasm-ui`.
+- Reference specifications (not targets): `docs/design` (441 rewritten rules, sources and licenses in `sources.toml`) and the skills `material-3`, `vercel-geist`, `web-quality`, `webgpu-wasm-ui`.
 - Gate: Design-First Gate of `AGENTS.md` section 2 (`gds verify`, `wck`).
 - External system read for comparison: the Craft Apps have no shared token file, `craft-ui` takes application-supplied styles (`docs/games/ARTCRAFT.md`).

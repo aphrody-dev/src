@@ -159,7 +159,7 @@ Implemented in [m3.c](file:///C:/src/src/ui/m3.c) (`ay_ui_emit_m3_card_html`) an
 
 ### 3.2 Stage 2: Client WebAssembly 3.0 (`< 15 KB`, `-msimd128`) + WebGPU + Synchronized A11y DOM
 
-Implemented in [Makefile](file:///C:/src/src/Makefile), [m3.c](file:///C:/src/src/ui/m3.c), and [compositor.c](file:///C:/src/src/wasm/compositor.c), governed by `.agents/skills/webgpu-wasm-ui` (`web.webgpu.*`, `web.wasm.*`, `web.workers.*`) and `.agents/skills/web-a11y-seo-cwv` (`web.a11y.*`):
+Implemented in [Makefile](file:///C:/src/src/Makefile), [m3.c](file:///C:/src/src/ui/m3.c), and [compositor.c](file:///C:/src/src/wasm/compositor.c), governed by `.agents/skills/webgpu-wasm-ui` (`web.webgpu.*`, `web.wasm.*`, `web.workers.*`) and `.agents/skills/web-quality` (`web.a11y.*`):
 
 1. **Compiler & Binary Budget (`< 15 KB`)**:
 
