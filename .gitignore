@@ -95,7 +95,7 @@ assets/*.zip
 apps/aphrody/NUL
 apps/.lst-*
 # ay graph build outputs over 100 MB stay local (regenerate: ay graph build -o docs/nextjs/graph third_party/next.js)
-/docs/nextjs/graph/graph.json
-/docs/nextjs/graph/graph.html
-/docs/nextjs/graph/graph.graphml
-/docs/nextjs/graph/cypher.txt
+/docs/*/graph/graph.json
+/docs/*/graph/graph.html
+/docs/*/graph/graph.graphml
+/docs/*/graph/cypher.txt

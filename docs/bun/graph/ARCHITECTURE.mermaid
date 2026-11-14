@@ -1,0 +1,98 @@
+flowchart TD
+    file_bench_async_AsyncLocalStorage_mjs["AsyncLocalStorage.mjs"]
+    mod_async_hooks["async_hooks"]
+    fn__test__test["/test/.test"]
+    fn_Date_now["Date.now"]
+    fn_fn["fn"]
+    fn_console_log["console.log"]
+    fn_runWithExpiry["runWithExpiry"]
+    fn_asyncLocalStorage_run["asyncLocalStorage.run"]
+    fn_asyncLocalStorage_disable["asyncLocalStorage.disable"]
+    fn_Math_round["Math.round"]
+    file_bench_async_bun_js["bun.js"]
+    mod____runner_mjs["../runner.mjs"]
+    fn_bench["bench"]
+    fn_run["run"]
+    file_bench_async_deno_js["deno.js"]
+    file_bench_async_node_mjs["node.mjs"]
+    file_bench_async_package_json["package.json"]
+    constant_bench_async_package_json_name["name"]
+    constant_bench_async_package_json_scripts["scripts"]
+    constant_bench_async_package_json_deps["deps"]
+    constant_bench_async_package_json_build["build"]
+    constant_bench_async_package_json_bench_bun["bench:bun"]
+    constant_bench_async_package_json_bench_node["bench:node"]
+    constant_bench_async_package_json_bench_deno["bench:deno"]
+    constant_bench_async_package_json_bench["bench"]
+    file_bench_bun_lock["bun.lock"]
+    file_bench_bundle_index_ts["index.ts"]
+    file_bench_bundle_index10_ts["index10.ts"]
+    file_bench_bundle_package_json["package.json"]
+    constant_bench_bundle_package_json_name["name"]
+    constant_bench_bundle_package_json_module["module"]
+    constant_bench_bundle_package_json_type["type"]
+    constant_bench_bundle_package_json_devDependencies["devDependencies"]
+    constant_bench_bundle_package_json_bun_types["bun-types"]
+    constant_bench_bundle_package_json_dependencies["dependencies"]
+    constant_bench_bundle_package_json_three["three"]
+    constant_bench_bundle_package_json_three_1["three-1"]
+    constant_bench_bundle_package_json_three_2["three-2"]
+    constant_bench_bundle_package_json_three_3["three-3"]
+    constant_bench_bundle_package_json_three_4["three-4"]
+    constant_bench_bundle_package_json_three_5["three-5"]
+    constant_bench_bundle_package_json_three_6["three-6"]
+    constant_bench_bundle_package_json_three_7["three-7"]
+    constant_bench_bundle_package_json_three_8["three-8"]
+    constant_bench_bundle_package_json_three_9["three-9"]
+    constant_bench_bundle_package_json_three_10["three-10"]
+    constant_bench_bundle_package_json_three_11["three-11"]
+    constant_bench_bundle_package_json_three_12["three-12"]
+    constant_bench_bundle_package_json_three_13["three-13"]
+    constant_bench_bundle_package_json_three_14["three-14"]
+    file_bench_async_AsyncLocalStorage_mjs -->|imports| mod_async_hooks
+    file_bench_async_AsyncLocalStorage_mjs -->|calls| fn__test__test
+    file_bench_async_AsyncLocalStorage_mjs -->|calls| fn_Date_now
+    file_bench_async_AsyncLocalStorage_mjs -->|calls| fn_fn
+    file_bench_async_AsyncLocalStorage_mjs -->|calls| fn_console_log
+    file_bench_async_AsyncLocalStorage_mjs -->|calls| fn_runWithExpiry
+    file_bench_async_AsyncLocalStorage_mjs -->|calls| fn_asyncLocalStorage_run
+    file_bench_async_AsyncLocalStorage_mjs -->|calls| fn_asyncLocalStorage_disable
+    file_bench_async_AsyncLocalStorage_mjs -->|calls| fn_Math_round
+    file_bench_async_bun_js -->|imports| mod____runner_mjs
+    file_bench_async_bun_js -->|calls| fn_bench
+    file_bench_async_bun_js -->|calls| fn_run
+    file_bench_async_deno_js -->|imports| mod____runner_mjs
+    file_bench_async_deno_js -->|calls| fn_bench
+    file_bench_async_deno_js -->|calls| fn_run
+    file_bench_async_node_mjs -->|imports| mod____runner_mjs
+    file_bench_async_node_mjs -->|calls| fn_bench
+    file_bench_async_node_mjs -->|calls| fn_run
+    file_bench_async_package_json -->|defines| constant_bench_async_package_json_name
+    file_bench_async_package_json -->|defines| constant_bench_async_package_json_scripts
+    file_bench_async_package_json -->|defines| constant_bench_async_package_json_deps
+    file_bench_async_package_json -->|defines| constant_bench_async_package_json_build
+    file_bench_async_package_json -->|defines| constant_bench_async_package_json_bench_bun
+    file_bench_async_package_json -->|defines| constant_bench_async_package_json_bench_node
+    file_bench_async_package_json -->|defines| constant_bench_async_package_json_bench_deno
+    file_bench_async_package_json -->|defines| constant_bench_async_package_json_bench
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_name
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_module
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_type
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_devDependencies
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_bun_types
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_dependencies
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_1
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_2
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_3
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_4
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_5
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_6
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_7
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_8
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_9
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_10
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_11
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_12
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_13
+    file_bench_bundle_package_json -->|defines| constant_bench_bundle_package_json_three_14

@@ -248,6 +248,7 @@ export function plan(root: string, id = loadIdentity(root)): Edit[] {
       seen.set(e.want, e.file);
     }
   }
+  const wantRepoUrl = `git+${repoUrl(id)}.git`;
   for (const { file, pkg, want } of expected) {
     const renames: [string, string, string][] = []; // [field, from, to]
     for (const field of DEP_FIELDS)
@@ -268,15 +269,35 @@ export function plan(root: string, id = loadIdentity(root)): Edit[] {
           });
         else if (dep !== target) renames.push([field, dep, target]);
       }
-    if (pkg.name === want && !renames.length) continue;
+    const haveRepoUrl =
+      typeof pkg.repository === "object" && pkg.repository?.url
+        ? String(pkg.repository.url)
+        : undefined;
+    const repoDrift = haveRepoUrl !== undefined && haveRepoUrl !== wantRepoUrl;
+    if (pkg.name === want && !renames.length && !repoDrift) continue;
     edits.push({
       file,
-      what: pkg.name === want ? "workspace dependency names" : "name",
-      have: [pkg.name, ...renames.map((r) => r[1])].join(", "),
-      want: [want, ...renames.map((r) => r[2])].join(", "),
+      what:
+        pkg.name !== want
+          ? "name"
+          : renames.length
+            ? "workspace dependency names"
+            : "repository.url",
+      have: [
+        ...(pkg.name !== want ? [pkg.name] : []),
+        ...renames.map((r) => r[1]),
+        ...(repoDrift ? [haveRepoUrl!] : []),
+      ].join(", "),
+      want: [
+        ...(pkg.name !== want ? [want] : []),
+        ...renames.map((r) => r[2]),
+        ...(repoDrift ? [wantRepoUrl] : []),
+      ].join(", "),
       apply: (s) => {
         const o = JSON.parse(s);
         o.name = want;
+        if (typeof o.repository === "object" && o.repository?.url)
+          o.repository.url = wantRepoUrl;
         for (const [field, from, to] of renames)
           o[field] = Object.fromEntries(
             Object.entries(o[field]).map(([k, v]) => [k === from ? to : k, v]),
