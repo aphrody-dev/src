@@ -9,8 +9,10 @@ const subs: Record<string, string> = {
   orch: "./orch/cli.ts",
   fabric: "./fabric/cli.ts",
   brain: "./brain/cli.ts",
+  providers: "./providers/cli.ts",
   nhitl: "./nhitl/cli.ts",
   review: "./review/cli.ts",
+  term: "./term/cli.ts",
 };
 const sub = Bun.argv[2];
 if (!sub || sub === "--help" || sub === "-h" || sub === "help") {

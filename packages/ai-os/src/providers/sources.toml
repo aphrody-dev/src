@@ -1,4 +1,4 @@
-# LLM provider inventory sources, read by infra/ai/providers.ts (`just ai-providers`, workflow ai-providers.yml).
+# LLM provider inventory sources, read by packages/ai-os/src/providers/cli.ts (`ai-os providers` ; `just ai-providers`, workflow ai-providers.yml).
 # Add a registry: one [[source]] entry, no code change.
 # kind = "openrouter" | "modelsdev" | "litellm" | "arena" (how the JSON is read); url may be a repo path.
 # Recursion: every provider found with a public `api` base URL is probed at <api>/models (OpenAI-compatible

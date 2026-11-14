@@ -177,7 +177,7 @@ state = "absent"
 name = "relay"
 url = "http://127.0.0.1:8790/mcp/core"
 shared_url = "http://127.0.0.1:8790/mcp"
-headers_helper = "bun {src}/packages/machine/src/relay-headers.ts"
+headers_helper = "bun {src}/packages/ai-os/src/relay/headers.ts"
 # agy n'a ni OAuth vérifiable ni en-tête sans secret en clair : même serveur en stdio, sans autorisation.
 stdio_command = ["bun", "{src}/packages/ai-os/src/relay/cli.ts", "mcp-stdio"]
 hosts = ["pc"]
