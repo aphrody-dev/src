@@ -1,23 +1,28 @@
-# Maintenance du fork aphrody-labs/tailwindcss
+# Fork tailwindcss (aphrody-labs/tailwindcss, branche main)
 
-Même modèle que `docs/nextjs/FORK.md`.
+Conversion Bun, etat au commit `8ed754c0` (base `1ad5572d`). Hote de travail : fr2 (~/work/tailwindcss), bun 1.4.4 (canary).
 
-## Modèle
+## Fait
 
-- Branche `main` du fork = `upstream/main` + commits `aphrody:` linéaires (pas de merge). Remotes de `third_party/tailwindcss` : `origin` (aphrody-labs), `upstream`.
-- Commit `1ad5572d` : pnpm remplacé par Bun (`bun.lock` migré, `bunfig.toml`, workspaces/overrides/patchedDependencies dans `package.json`, scripts `pnpm`/`npx`/`node` vers `bun`/`bunx`, `bun run --filter`), réécritures `--fullbun` (rimraf, dotenv, glob, node-fetch quand la forme est entièrement comprise). Outillage d'origine non converti : vitest, prettier, cargo, turbo.
-- Preuve (vps, Bun 1.4.4 canary) : `bun install` sans erreur ; build : turbo build passe sauf @tailwindcss/standalone (demande bun install --os=* --cpu=* pour les binaires cross-plateforme) ; .cargo/config.toml avec rustc-wrapper vide ; cible rustup wasm32-wasip1-threads requise.
-- Sources : versions lues dans les `package.json` du fork et sorties `bun`/`gh api` de la session ; Context7 non consulté.
+- vitest -> `bun test` : imports `vitest` remplaces par `bun:test` dans 88 fichiers (hors `integrations/` et `*.bench.ts`), configs `vitest.config.mts` supprimees (racine, `packages/tailwindcss`, `@tailwindcss-browser`). Le `snapshotSerializers` vitest devient `expect.addSnapshotSerializer` dans `packages/tailwindcss/src/test-utils/bun-preload.ts`, charge par `[test] preload` de `bunfig.toml`. Les contextes de test `({ expect })` (propres a vitest) sont remplaces par l'import de `expect`; `assert` vient de `node:assert`. Script `test` : `cargo test && bun test packages/*/src scripts` (les `*.spec.ts` Playwright sont exclus en ciblant `src`).
+- prettier -> `bun fmt` : `bun fmt` lit la cle `prettier` de `package.json`; scripts `format` et `lint` utilisent `bun fmt --no-script [--check] --ignore-pattern 'integrations/**'` (le plugin `prettier-plugin-embed` n'existe pas dans bun fmt, `organize-imports` non plus). `bun lint` n'ajoute rien : le lint du depot est `tsc --noEmit` + prettier, pas eslint/biome.
+- Graphe : `docs/tailwindcss/graph/` (GRAPH_REPORT.md, ARCHITECTURE.mermaid, graph.svg), genere avec `ay graph build` sur fr2.
 
-## Synchronisation
+## Resultats
 
-```sh
-git -C third_party/tailwindcss fetch upstream
-git -C third_party/tailwindcss rebase upstream/main      # conflits attendus : package.json, bun.lock
-bunify third_party/tailwindcss --fullbun && bun install   # @aphrody/bunify (packages/bunify), idempotent
-bunify third_party/tailwindcss --check --fullbun
-git -C third_party/tailwindcss push --no-verify --force-with-lease origin main
-bun scripts/upstream-scan.ts tailwindcss
-```
+`bun test packages/tailwindcss/src` : 5400 pass, 0 fail, 1 todo (2112 snapshots). Les autres paquets JS passent (cli, node, upgrade, vite, browser) sauf ceux qui chargent `@tailwindcss/oxide`.
 
-Builds lourds sur vps (fr1), jamais sur le PC.
+## Blocages precis
+
+- `@tailwindcss/oxide` (crates Rust, napi) : pas de cargo/rustc sur fr2 et `aphrody-heavy` refuse fr2 ("builds run on fr1"). Donc `packages/@tailwindcss-postcss/src/index.test.ts` et `@tailwindcss-upgrade/src/index.test.ts` echouent (`Cannot find module '@tailwindcss/oxide'`), `cargo test` et le build complet restent a faire sur fr1.
+- `compiler-lifetime.test.ts` : le test de liberation par GC utilise `v8.setFlagsFromString('--expose-gc')`; sous JavaScriptCore `Bun.gc(true)` ne libere pas les `WeakRef` (references conservatrices de pile). Passe en `test.todo`.
+- `*.bench.ts` : bun:test n'a pas de `bench`; `vitest bench` reste (dependance vitest conservee). `integrations/**` (vitest, `--root=./integrations`) non converti : necessite oxide + builds + navigateurs.
+- Playwright (`tests/ui.spec.ts`, 2596 lignes + 176) : non converti vers `Bun.WebView` (API Chrome seul sous Linux, perte de la couverture firefox/webkit; depend aussi d'oxide).
+- execa/glob : aucun usage hors tests. `globby.isGitIgnored` (`@tailwindcss-upgrade`) n'a pas d'equivalent `Bun.Glob`; `execSync` du CLI upgrade conserve (CLI publie aussi pour Node).
+- Resultats `oklab(...)` : precision geree par le serializer (identique a vitest).
+
+## Sources
+
+- bun test, `expect.addSnapshotSerializer`, `onTestFinished`, preload : Context7 `/oven-sh/bun` (docs/test/snapshots.mdx, docs/test/lifecycle.mdx).
+- `Bun.WebView` : Context7 `/oven-sh/bun` (docs/runtime/webview.mdx).
+- `bun fmt --help --all` (bun 1.4.4 canary.1 sur fr2) pour `--ignore-pattern`, `--no-script`, config prettier.

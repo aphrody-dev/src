@@ -1,0 +1,118 @@
+flowchart TD
+    file_test_regressions_serve_json["serve.json"]
+    constant_test_regressions_serve_json_public["public"]
+    constant_test_regressions_serve_json_rewrites["rewrites"]
+    constant_test_regressions_serve_json_source["source"]
+    constant_test_regressions_serve_json_destination["destination"]
+    file_test_regressions_fixtures_ts["fixtures.ts"]
+    interface_test_regressions_fixtures_ts_Fixture["Fixture"]
+    function_test_regressions_fixtures_ts_excludeDemoFixture["excludeDemoFixture"]
+    mod_react["react"]
+    fn_import_meta_glob["import.meta.glob"]
+    fn_path______replace_____g____________replace________________replace_____w______________split["path
+    .replace/\\/g, '/'
+    .replace'./', ''
+    .replace/\.\w+$/, ''
+    .split"]
+    fn_path______replace_____g____________replace________________replace["path
+    .replace/\\/g, '/'
+    .replace'./', ''
+    .replace"]
+    fn_path______replace_____g____________replace["path
+    .replace/\\/g, '/'
+    .replace"]
+    fn_path______replace["path
+    .replace"]
+    fn_regressionFixtures_push["regressionFixtures.push"]
+    fn_blacklist_some["blacklist.some"]
+    fn_unusedBlacklistPatterns_delete["unusedBlacklistPatterns.delete"]
+    fn_pattern_test["pattern.test"]
+    fn_path_split["path.split"]
+    fn_path_split__react___1__split______reverse["path.split'react'[1].split'/'.reverse"]
+    fn_path_split__react___1__split["path.split'react'[1].split"]
+    fn_suiteArray______filter__v_____v_______reverse________join["suiteArray
+    .filterv => v
+    .reverse
+    .join"]
+    fn_suiteArray______filter__v_____v_______reverse["suiteArray
+    .filterv => v
+    .reverse"]
+    fn_suiteArray______filter["suiteArray
+    .filter"]
+    fn_demoFixtures_push["demoFixtures.push"]
+    fn_path_includes["path.includes"]
+    fn_console_warn["console.warn"]
+    fn_Array_from_unusedBlacklistPatterns_________map__pattern__________pattern___________join["Array.fromunusedBlacklistPatterns
+      .mappattern => `- ${pattern}`
+      .join"]
+    fn_Array_from_unusedBlacklistPatterns_________map["Array.fromunusedBlacklistPatterns
+      .map"]
+    fn_Array_from["Array.from"]
+    fn_regressionFixtures_concat["regressionFixtures.concat"]
+    file_test_regressions_manual_README_md["README.md"]
+    file_test_regressions_postcss_config_js["postcss.config.js"]
+    file_test_regressions_index_html["index.html"]
+    file_test_regressions_README_md["README.md"]
+    file_test_regressions_index_test_ts["index.test.ts"]
+    method_test_regressions_index_test_ts_get["get"]
+    function_test_regressions_index_test_ts_renderFixture["renderFixture"]
+    function_test_regressions_index_test_ts_takeScreenshot["takeScreenshot"]
+    mod_vitest["vitest"]
+    mod_node_path["node:path"]
+    mod_node_fs_promises["node:fs/promises"]
+    mod__playwright_test["@playwright/test"]
+    fn_path_resolve["path.resolve"]
+    fn_chromium_launch["chromium.launch"]
+    fn_browser_newPage["browser.newPage"]
+    fn_page_route["page.route"]
+    fn_request_resourceType["request.resourceType"]
+    fn_route_abort["route.abort"]
+    fn_route_continue["route.continue"]
+    file_test_regressions_serve_json -->|defines| constant_test_regressions_serve_json_public
+    file_test_regressions_serve_json -->|defines| constant_test_regressions_serve_json_rewrites
+    file_test_regressions_serve_json -->|defines| constant_test_regressions_serve_json_source
+    file_test_regressions_serve_json -->|defines| constant_test_regressions_serve_json_destination
+    file_test_regressions_fixtures_ts -->|defines| interface_test_regressions_fixtures_ts_Fixture
+    file_test_regressions_fixtures_ts -->|defines| function_test_regressions_fixtures_ts_excludeDemoFixture
+    file_test_regressions_fixtures_ts -->|imports| mod_react
+    file_test_regressions_fixtures_ts -->|calls| fn_import_meta_glob
+    file_test_regressions_fixtures_ts -->|calls| fn_path______replace_____g____________replace________________replace_____w______________split
+    file_test_regressions_fixtures_ts -->|calls| fn_path______replace_____g____________replace________________replace
+    file_test_regressions_fixtures_ts -->|calls| fn_path______replace_____g____________replace
+    file_test_regressions_fixtures_ts -->|calls| fn_path______replace
+    file_test_regressions_fixtures_ts -->|calls| fn_regressionFixtures_push
+    function_test_regressions_fixtures_ts_excludeDemoFixture -->|calls| fn_blacklist_some
+    function_test_regressions_fixtures_ts_excludeDemoFixture -->|calls| fn_unusedBlacklistPatterns_delete
+    function_test_regressions_fixtures_ts_excludeDemoFixture -->|calls| fn_pattern_test
+    function_test_regressions_fixtures_ts_excludeDemoFixture -->|calls| fn_path_split
+    file_test_regressions_fixtures_ts -->|calls| fn_path_split__react___1__split______reverse
+    file_test_regressions_fixtures_ts -->|calls| fn_path_split__react___1__split
+    file_test_regressions_fixtures_ts -->|calls| fn_path_split
+    file_test_regressions_fixtures_ts -->|calls| fn_suiteArray______filter__v_____v_______reverse________join
+    file_test_regressions_fixtures_ts -->|calls| fn_suiteArray______filter__v_____v_______reverse
+    file_test_regressions_fixtures_ts -->|calls| fn_suiteArray______filter
+    file_test_regressions_fixtures_ts -->|calls| function_test_regressions_fixtures_ts_excludeDemoFixture
+    file_test_regressions_fixtures_ts -->|calls| fn_demoFixtures_push
+    file_test_regressions_fixtures_ts -->|calls| fn_path_includes
+    file_test_regressions_fixtures_ts -->|calls| fn_console_warn
+    file_test_regressions_fixtures_ts -->|calls| fn_Array_from_unusedBlacklistPatterns_________map__pattern__________pattern___________join
+    file_test_regressions_fixtures_ts -->|calls| fn_Array_from_unusedBlacklistPatterns_________map
+    file_test_regressions_fixtures_ts -->|calls| fn_Array_from
+    file_test_regressions_fixtures_ts -->|calls| fn_regressionFixtures_concat
+    file_test_regressions_index_test_ts -->|defines| method_test_regressions_index_test_ts_get
+    file_test_regressions_index_test_ts -->|defines| function_test_regressions_index_test_ts_renderFixture
+    file_test_regressions_index_test_ts -->|defines| function_test_regressions_index_test_ts_takeScreenshot
+    file_test_regressions_index_test_ts -->|imports| mod_vitest
+    file_test_regressions_index_test_ts -->|imports| mod_node_path
+    file_test_regressions_index_test_ts -->|imports| mod_node_fs_promises
+    file_test_regressions_index_test_ts -->|imports| mod__playwright_test
+    file_test_regressions_index_test_ts -->|calls| fn_path_resolve
+    file_test_regressions_index_test_ts -->|calls| fn_chromium_launch
+    file_test_regressions_index_test_ts -->|calls| fn_browser_newPage
+    file_test_regressions_index_test_ts -->|calls| fn_page_route
+    file_test_regressions_index_test_ts -->|calls| fn_request_resourceType
+    file_test_regressions_index_test_ts -->|calls| fn_route_abort
+    file_test_regressions_index_test_ts -->|calls| fn_route_continue
+    function_test_regressions_index_test_ts_takeScreenshot -->|calls| fn_path_resolve
+    file_test_regressions_index_test_ts -->|calls| function_test_regressions_index_test_ts_renderFixture
+    file_test_regressions_index_test_ts -->|calls| function_test_regressions_index_test_ts_takeScreenshot

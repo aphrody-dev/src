@@ -21,3 +21,17 @@ bun scripts/upstream-scan.ts base-ui
 ```
 
 Builds lourds sur vps (fr1), jamais sur le PC.
+
+## Conversion tests / lint / format (commit `026a0381`, fr2)
+
+- prettier -> `bun fmt` : scripts `prettier` et `prettier:all` utilisent `bun fmt --no-script --ignore-path .lintignore` (config `prettier.config.mjs` lue telle quelle; `pretty-quick` remplace par `--changed=master`).
+- globby -> `Bun.Glob` : `scripts/inlineScripts.mts` et `docs/scripts/generateLlmTxt/index.mjs` (`new Bun.Glob(p).scan({cwd, absolute})`, resultat trie).
+- vitest -> `bun test` (partiel) : `test/setupBun.ts` (precharge via `packages/utils/bunfig.toml`) enregistre jsdom sur globalThis, les globaux vitest (`globals: true`) et un `mock.module('vitest')` qui redirige vers `bun:test`; script `test:bun:utils`. Resultat `packages/utils` (hors `*.spec.ts`, types seuls) : 89 pass, 83 fail.
+- Graphe : `docs/base-ui/graph/` (ay graph build sur fr2).
+
+### Blocages precis
+
+- 83 echecs utils et les 383 fichiers de `packages/react` : `@mui/internal-test-utils` (createRenderer, setupVitest) depend du contexte vitest par test (`beforeEach(({ expect }))`, `expect.getState().currentTestName`, `task`, `onTestFinished` fourni au hook, `vi.isFakeTimers`, chai/chai-dom, `vitest-fail-on-console`) que bun:test ne fournit pas. Il faut un fork/patch de ce paquet ou un renderer maison.
+- Modes navigateur `@vitest/browser-playwright` (chromium/firefox/webkit), e2e et regressions (vite + vitest) : non convertis; Bun.WebView est Chrome seul (Context7 `/oven-sh/bun`, docs/runtime/webview.mdx). Playwright screen-reader (guidepup) conserve.
+- `bun lint` : echec au chargement de `eslint.config.mjs` (`Cannot find module 'zod-validation-error/v4'` depuis eslint-plugin-react-hooks 7.1.1, peer non lie par le linker isole); eslint 10 et ses regles MUI custom (`test:lint-rules`) restent la reference. `bun lint` n'a donc pas ete valide ici.
+- `docs` build/link-check et build complet : non relances (fr2 limite, builds lourds sur fr1).
