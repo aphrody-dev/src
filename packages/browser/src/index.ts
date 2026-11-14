@@ -60,10 +60,6 @@ export function resolveAphrodyV8(): { source: string; path: string } | null {
     },
     { source: "rusty_v8-src", path: join(repoRoot, "third_party", "rusty_v8") },
     {
-      source: "aphrody-v8",
-      path: join(repoRoot, "crates", "aphrody-v8"),
-    },
-    {
       source: "chromium-v8",
       path: join(repoRoot, "third_party", "chromium", "v8"),
     },
