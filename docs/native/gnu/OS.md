@@ -13,7 +13,7 @@ Sources de vérité, toutes sous `docs/research/` :
 
 | Composant du système GNU | Aphrody | État |
 | --- | --- | --- |
-| noyau (Linux, Hurd) | `src/kernel`, `src/arch`, `src/drivers` (C, style Linux) | existant |
+| noyau (Linux, Hurd) | Linux amont de référence (stable 7.3, LTS, GKI Android, ChromeOS ; `docs/research/linux-kernel-upstream-2026-11-14.md`) ; couche propre `src/kernel`, `src/arch`, `src/drivers` (C, style Linux) | suivi, existant |
 | GNU libc | `src/posix` (personnalité POSIX/Linux) ; glibc de la distro sous Linux | existant, partiel |
 | chaîne d'outils (gcc, binutils, gdb) | LLVM partagé avec Chromium (PLAN.md n°3, n°10) | décidé |
 | paquets GNU (coreutils, findutils, diffutils, sed, grep, tar, gzip, bc, ed, m4, which, time, make...) | `src/gnu/<id GSRC>`, une unité par paquet | à regrouper |
