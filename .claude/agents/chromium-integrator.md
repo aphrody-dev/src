@@ -3,6 +3,7 @@ name: chromium-integrator
 description: Chromium layer of C:\src - one browser on the Chromium 157+ stack (V8, Skia, Dawn, depot_tools), the fr1 Chromium factory, CEF/cef-rs, packages/chromium-bun engines, browser fork alignment (servo, blitz, obscura, rusty_v8). Use for any browser-engine, Chromium build or pin task.
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill
 model: sonnet
+memory: project
 effort: high
 color: green
 skills:

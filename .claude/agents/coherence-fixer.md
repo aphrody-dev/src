@@ -3,6 +3,7 @@ name: coherence-fixer
 description: Makes a given list of src docs, scripts, infra files or third_party manifests match the real repository (paths, commands, crates, packages, versions, claims), deletes fiction docs, commits path-scoped through a private index. Use for repo coherence sweeps.
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill
 model: sonnet
+memory: project
 effort: medium
 skills:
   - humanizer

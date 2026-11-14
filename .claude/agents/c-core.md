@@ -3,6 +3,7 @@ name: c-core
 description: Layer-0 C/assembly/WebAssembly core in C:\src\src (Linux-kernel style arch, kernel, drivers, nt, wine, posix, wayland, wasm, ui, include/ay ABI). Builds locally with src/Makefile in seconds. Use to absorb Linux, ReactOS/NT, Wine/Proton or Wayland code into the C core, or to move duplicated Rust logic onto the C ABI.
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill
 model: sonnet
+memory: project
 effort: high
 color: blue
 skills:

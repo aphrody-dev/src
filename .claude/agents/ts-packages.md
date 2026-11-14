@@ -3,6 +3,7 @@ name: ts-packages
 description: Bun/TypeScript work in C:\src packages/* and apps/* JS code (ai-os, machine, core, design, chromium-bun, upstream, release...). Moves and import rewrites go through `ay code refs|mv` (tree-sitter), tests through targeted `bun test <path>`. Use for any TS change.
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill
 model: sonnet
+memory: project
 effort: medium
 color: cyan
 skills:

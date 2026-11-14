@@ -3,6 +3,7 @@ name: rust-crates
 description: Rust work in the cargo workspace of C:\src (crates, workspace deps, Cargo.lock, [patch], API breaks, moves). Builds and tests only on fr1 (ssh vps), never on the PC. Use for any change that must end with cargo check/test green.
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill
 model: sonnet
+memory: project
 effort: high
 color: orange
 skills:

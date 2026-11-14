@@ -3,6 +3,7 @@ name: fact-checker
 description: Read-only adversarial check of edited src files - every path, command, crate, package, version and claim left in them is verified against the repository; reports only real, reproducible mismatches. Use after a coherence or docs commit.
 tools: Read, Grep, Glob, Bash
 model: sonnet
+memory: project
 effort: medium
 ---
 
