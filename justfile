@@ -555,6 +555,10 @@ agents-install host:
     timeout 120 ssh {{host}} 'sudo sh -s' < "{{root}}/infra/agents/bootstrap-user.sh"
     timeout 1800 ssh agent@{{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"
 
+# Install Gemini Desktop silently from the Google-signed installer (default var/GeminiSetup.exe; usage: just gemini-setup [path] [--check])
+gemini-setup *args:
+    bun "{{root}}/packages/machine/src/gemini-setup.ts" {{args}}
+
 # Agent tooling (infra/agents/toolchain.toml): skills, plugins, MCP for Claude Code, Codex, agy, Gemini CLI (usage: just agents-sync [--check])
 agents-sync *args:
     bun "{{root}}/packages/machine/src/toolchain.ts" {{args}}
