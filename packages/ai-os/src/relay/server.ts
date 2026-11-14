@@ -114,6 +114,10 @@ export async function serve() {
         POST: guard("mcp", rpc(mcpRpc)),
         GET: () => new Response(null, { status: 405 }),
       },
+      "/mcp/core": {
+        POST: guard("mcp", rpc((r) => mcpRpc(r, true))),
+        GET: () => new Response(null, { status: 405 }),
+      },
       "/a2a": {
         POST: guard("a2a", a2aHttp),
       },
@@ -141,10 +145,6 @@ export async function serve() {
   // TCP / TLS : NDJSON ; la première ligne doit être le jeton.
   type Sock = { buf: string; ok: boolean };
   const socketHandlers = {
-      "/mcp/core": {
-        POST: guard("mcp", rpc((r) => mcpRpc(r, true))),
-        GET: () => new Response(null, { status: 405 }),
-      },
     open(s: any) {
       s.data = { buf: "", ok: false } satisfies Sock;
     },

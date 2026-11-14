@@ -27,7 +27,7 @@ bun packages/ai-os/src/brain/cli.ts sync   # global CLAUDE.md + memory index -> 
 
 - `gh api ... --jq '<expr with quotes/pipes>'` breaks (gh is a cmd shim): pipe to `jaq` instead.
 - `git pull` aborts on `would clobber existing tag` or push is rejected: `git fetch aphrody main --no-tags` then `git merge --no-edit aphrody/main` (works on the dirty shared tree; never stash or `--autostash`, other sessions share it).
-- Committing a file another session also edited: stage only your hunks (`git diff -U0 -- <file>` filtered, `git apply --cached --unidiff-zero`), never `git add` the whole file.
+- Committing a file another session also edited: stage only your hunks with context (`git diff -- <file>` filtered, `git apply --cached`), never `git add` the whole file; `--unidiff-zero` misplaces pure insertions, so re-read `git diff --cached` before committing.
 - MCP: `~/.claude.json` is the only server list; the relay re-exports it to other agents (`/mcp`), Claude uses `/mcp/core`. `claude mcp remove` drops stored OAuth, so change servers through `toolchain.toml`.
 - Leftover `.git/rebase-merge/` holding only `autostash`: `git stash store -m orphan <sha>` then remove the dir before rebasing.
 - R2 listing: `cf r2 buckets list`, `cf r2 objects list --bucket-name <b>` (discover others with `cf cli search`).
