@@ -23,7 +23,7 @@ git -C third_party/next.js rebase upstream/canary   # conflits attendus : packag
 bun scripts/aphrody/bunify.ts && bun install         # réapplique la conversion, régénère bun.lock
 bun scripts/aphrody/bunify.ts --check && bun run build && bun scripts/aphrody/e2e.ts
 git push --no-verify --force-with-lease origin canary   # hooks husky : sh non exécutable sous Windows
-bun scripts/upstream-scan.ts nextjs                     # instantané docs/nextjs
+bun packages/upstream/src/upstream-scan.ts nextjs                     # instantané docs/nextjs
 ```
 
 Le convertisseur générique est `@aphrody/bunify` (`packages/bunify`), applicable à tout monorepo pnpm/yarn/npm/lerna ; la copie du fork reste autonome pour la CI du fork.

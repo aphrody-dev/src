@@ -11,7 +11,7 @@ on:
     branches: [main]
     paths:
       - "crates/game/**"
-      - "scripts/game-fps.ts"
+      - "packages/gaming/src/game-fps.ts"
       - ".github/workflows/game.yml"
   workflow_dispatch:
 concurrency:
@@ -78,7 +78,7 @@ jobs:
           rclone copyto "$GAME_WEB_DIR/game.js" r2:aphrody-assets/game/game.js --header-upload "Content-Type: text/javascript" --header-upload "Cache-Control: public, max-age=300"
           rclone lsl r2:aphrody-assets/game
       - name: Bun workspace and fps script test
-        run: bun install --frozen-lockfile && bun test ./scripts/game-fps.test.ts
+        run: bun install --frozen-lockfile && bun test ./packages/gaming/tests/game-fps.test.ts
       - uses: actions/upload-artifact@v7
         with:
           name: game-web

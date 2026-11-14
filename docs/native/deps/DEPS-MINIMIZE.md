@@ -57,7 +57,7 @@ les deux.
   - `unmaintained = "workspace"` ;
   - deux avis ignorés, faute de correctif amont : RUSTSEC-2023-0071 (`rsa` 0.9 par `jsonwebtoken`) et
     RUSTSEC-2026-0387 (`crypto-bigint` 0.5 par `elliptic-curve` 0.13).
-- `scripts/js-deps-check.ts` (bun) bloque, pour le workspace bun racine :
+- `packages/machine/src/js-deps-check.ts` (bun) bloque, pour le workspace bun racine :
   - une dépendance externe hors `catalog:`, ou une dépendance interne hors `workspace:*` ;
   - une version flottante dans le catalogue ;
   - un nom résolu en plusieurs versions dans `bun.lock` ;
@@ -94,5 +94,5 @@ les deux.
 - Windows natif (`x86_64-pc-windows-msvc`, PC) : `cargo check -p quinn-proto -p glob-match` passe sur les
   forks épinglés ; les 22 tests de `glob-match` (dont `doublestar` et `literal_ends`) passent.
 - prd (`aphrody-heavy`) : `cargo check --workspace --all-targets` passe sur `steamroom` 0.2.1 (zip 9).
-- `bun check scripts/js-deps-check.ts` : aucune erreur de type. `js-deps-check` : 17 manifestes,
+- `bun check packages/machine/src/js-deps-check.ts` : aucune erreur de type. `js-deps-check` : 17 manifestes,
   0 problème ; un cas négatif (axios, `^4`, `postinstall`, doublon) en relève 7.

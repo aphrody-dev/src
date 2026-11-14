@@ -1,7 +1,7 @@
 # npm sans humain
 
 État au 2026-11-13. Compte npm : `<npm-owner>`, owner des orgs `@aphrody` et `@rosegriffon`. Commande unique :
-`just npm <status|sync|inventory|align|login|trust|harden>` (`scripts/npm.ts`).
+`just npm <status|sync|inventory|align|login|trust|harden>` (`packages/release/src/npm.ts`).
 
 ## État de npm (sources lues le 2026-11-13)
 
@@ -78,6 +78,6 @@ l'approbation d'un `npm stage` exigent un défi 2FA interactif que ni un agent n
 
 Les `uses:` des trois `npm-publish.yml` sont épinglés par SHA, tag en commentaire (`actions/checkout@<sha> # v7.0.1`) ;
 les appelants pointent sur le SHA du dernier commit de `main` qui a modifié le workflow réutilisable. Mise à jour :
-`bun scripts/npm.ts pins --push` (dernière release de la même majeure, commit + push sur main dans chaque dépôt), lancé
+`bun packages/release/src/npm.ts pins --push` (dernière release de la même majeure, commit + push sur main dans chaque dépôt), lancé
 chaque lundi à 06:00 par la tâche planifiée `aphrody-npm-pins` (`just npm-pins-schedule`). Pas de Dependabot pour ces
 fichiers : ses PR passent par des branches, contraire à la règle « tout sur main ».

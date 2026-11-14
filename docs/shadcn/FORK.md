@@ -69,7 +69,7 @@ git -C third_party/shadcn-ui rebase upstream/main      # conflits attendus : pac
 bunify third_party/shadcn-ui --fullbun && bun install   # @aphrody/bunify (packages/bunify), idempotent
 bunify third_party/shadcn-ui --check --fullbun
 git -C third_party/shadcn-ui push --no-verify --force-with-lease origin main
-bun scripts/upstream-scan.ts shadcn
+bun packages/upstream/src/upstream-scan.ts shadcn
 ```
 
 Builds lourds sur vps (fr1), jamais sur le PC.

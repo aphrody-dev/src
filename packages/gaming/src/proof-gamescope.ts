@@ -2,7 +2,7 @@
 // variant, screenshots the login screen, presses Enter with a real key event (profile picker to home), screenshots,
 // presses ArrowRight (focus moves to the next tile) and screenshots again. The state JSON of the Rust UI is recorded
 // before and after, so the focus move is checked from the source of truth and not only from pixels.
-//   bun scripts/proof-gamescope.ts [--base https://aphrody.com] [--out docs/reviews/proof] [--chrome <path>]
+//   bun packages/gaming/src/proof-gamescope.ts [--base https://aphrody.com] [--out docs/reviews/proof] [--chrome <path>]
 import {
   existsSync,
   mkdirSync,

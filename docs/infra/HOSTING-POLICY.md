@@ -1,6 +1,6 @@
 # Hosting policy: Cloudflare Free + VPS (Vercel Hobby on hold)
 
-Date 2026-11-12. Source of truth: `infra/deploy.toml` (`[nodes.*]`, `[services.*]`, `[hosting.*]`). Renderer: `bun scripts/deploy-target.ts <app> <cf|vercel|vps> [--preview]`. Portable runtime: `packages/runtime-adapter`.
+Date 2026-11-12. Source of truth: `infra/deploy.toml` (`[nodes.*]`, `[services.*]`, `[hosting.*]`). Renderer: `bun packages/deploy/src/deploy-target.ts <app> <cf|vercel|vps> [--preview]`. Portable runtime: `packages/runtime-adapter`.
 
 ## Free-tier limits (read from the official docs on 2026-11-12)
 
@@ -59,8 +59,8 @@ Source conflict: the `cloudflare.config.ts` docs name the Worker field `bindings
 
 ## Operation
 
-- Render: `bun scripts/deploy-target.ts downloads cf --preview --out apps/r2-site`, then `cf deploy --dry-run && cf deploy` (projects with a wrangler config: `bunx wrangler deploy --dry-run` then `bunx wrangler deploy`).
-- VPS: `bun scripts/deploy-target.ts downloads vps` produces `downloads.service` (prd) and `downloads.conf` (fr2 nginx -> prd mesh_ip:port).
+- Render: `bun packages/deploy/src/deploy-target.ts downloads cf --preview --out apps/r2-site`, then `cf deploy --dry-run && cf deploy` (projects with a wrangler config: `bunx wrangler deploy --dry-run` then `bunx wrangler deploy`).
+- VPS: `bun packages/deploy/src/deploy-target.ts downloads vps` produces `downloads.service` (prd) and `downloads.conf` (fr2 nginx -> prd mesh_ip:port).
 - Before any switch: `curl` the preview (/, /health, 404, `Range` -> 206 + same ETag as prod).
 
 ## Status 2026-11-12

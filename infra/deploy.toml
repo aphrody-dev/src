@@ -156,7 +156,7 @@ tag = "e2e:auth"
 expect = ["avatar", "h2|h3", "TLS 1.3"]
 # =============================================================================
 # Hosting placement (docs/infra/HOSTING-POLICY.md). One table per deployable app.
-# `bun scripts/deploy-target.ts <app> <cf|vercel|vps>` renders the host config from here.
+# `bun packages/deploy/src/deploy-target.ts <app> <cf|vercel|vps>` renders the host config from here.
 #   target      = current production host; every app must also render for the others
 #   commercial  = true forbids Vercel Hobby (non-commercial personal use only)
 #   cf_tool     = "wrangler" when the project already ships a wrangler config (keep it), else "cf"

@@ -1,7 +1,7 @@
 # tailwindlabs/tailwindcss (fork aphrody-labs/tailwindcss)
 
 - Source : `third_party/tailwindcss` (clone partiel `blob:none`, branche `main`, remotes `origin` = aphrody-labs, `upstream` = tailwindlabs/tailwindcss), entrée `tailwindcss` de `third_party/ECOSYSTEM.toml`.
-- Rafraîchir : `gh repo sync aphrody-labs/tailwindcss -b main`, `git -C third_party/tailwindcss pull`, puis `bun scripts/upstream-scan.ts tailwindcss --days 30`.
+- Rafraîchir : `gh repo sync aphrody-labs/tailwindcss -b main`, `git -C third_party/tailwindcss pull`, puis `bun packages/upstream/src/upstream-scan.ts tailwindcss --days 30`.
 
 | Fichier | Source |
 |---|---|

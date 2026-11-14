@@ -1,7 +1,7 @@
 # better-auth/better-auth (fork aphrody-labs/better-auth)
 
 - Source : `third_party/better-auth` (clone partiel `blob:none`, branche `main`, remotes `origin` = aphrody-labs, `upstream` = better-auth/better-auth), entrée `better-auth` de `third_party/ECOSYSTEM.toml`.
-- Rafraîchir : `gh repo sync aphrody-labs/better-auth -b main`, `git -C third_party/better-auth pull`, puis `bun scripts/upstream-scan.ts better-auth --days 30`.
+- Rafraîchir : `gh repo sync aphrody-labs/better-auth -b main`, `git -C third_party/better-auth pull`, puis `bun packages/upstream/src/upstream-scan.ts better-auth --days 30`.
 
 | Fichier                   | Source                                                     |
 | ------------------------- | ---------------------------------------------------------- |

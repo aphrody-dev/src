@@ -131,7 +131,7 @@ a `source = "ubi"` entry with `repo` and the tag template.
 
 ## 4. Workstation bootstrap (`ay up --bootstrap`) and the install scripts
 
-`scripts/install.ps1` and `scripts/install.sh` are ten-line bootstraps: they build `ay` once (`cargo install --path crates/ay`) and run `ay up --bootstrap`. Every step the former root scripts
+`packages/machine/bootstrap/install.ps1` and `packages/machine/bootstrap/install.sh` are ten-line bootstraps: they build `ay` once (`cargo install --path crates/ay`) and run `ay up --bootstrap`. Every step the former root scripts
 performed has a declarative equivalent in `tools.toml`, applied by `ay up --bootstrap` (tools first,
 then the items below, then `ay doctor`). `ay up --check` lists the items with their state (`ok`,
 `differs`, `missing`) without counting them in the exit code.

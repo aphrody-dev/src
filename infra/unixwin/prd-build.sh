@@ -1,7 +1,7 @@
 #!/bin/sh
 # Construit niu (niubash + moteur rubash) sur prd depuis les forks aphrody-labs, aux commits de src.lock.json.
 # Cible Windows : cargo xwin (CRT MSVC et SDK Windows en cache dans ~/.cache/cargo-xwin, lld-link) ; cible Linux :
-# cargo build. Priorité minimale (nice -n 19), JOBS tâches (4 par défaut). Lancé par scripts/unixwin/unixwin.ts build.
+# cargo build. Priorité minimale (nice -n 19), JOBS tâches (4 par défaut). Lancé par infra/unixwin/unixwin.ts build.
 # Usage : JOBS=4 sh prd-build.sh <triple> <commit niubash> <commit rubash>
 # Sortie : une ligne « ARTIFACT <chemin> <sha256> » ; le binaire et SHA256SUMS dans $UNIXWIN_WORK/out/<triple>/.
 set -eu

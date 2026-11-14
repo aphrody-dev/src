@@ -14,8 +14,8 @@ Rien ne compile sur le poste. Le binaire `niu.exe` en service se construit à pa
    windows-latest, artefact `niu-<triple>` avec `SHA256SUMS`) et `cross-xwin` (ubuntu vers
    x86_64-pc-windows-msvc, le même chemin que prd).
 
-Le pilote `scripts/unixwin/unixwin.ts` (bun) enchaîne les étapes. Les recettes sont dans
-`scripts/unixwin/unixwin.just`, importé par le justfile racine.
+Le pilote `infra/unixwin/unixwin.ts` (bun) enchaîne les étapes. Les recettes sont dans
+`infra/unixwin/unixwin.just`, importé par le justfile racine.
 
 | Commande                                  | Effet                                                                                                                                                                                                                                                                                                   |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -28,7 +28,7 @@ Le pilote `scripts/unixwin/unixwin.ts` (bun) enchaîne les étapes. Les recettes
 | `just unixwin-test-fr1 [filtre]`          | `cargo test` de rubash sur fr1 (usine) au commit épinglé (`infra/unixwin/fr1-test.sh`, `aphrody-heavy`, 4 tâches)                                                                                                                                                                                       |
 
 Mise à jour d'un fork : commit sur sa branche par défaut dans `third_party/<nom>`, push, puis
-`bun scripts/unixwin/unixwin.ts lock` et commit de `src.lock.json`. `ay lock --lock-only` réécrit tout le lock
+`bun infra/unixwin/unixwin.ts lock` et commit de `src.lock.json`. `ay lock --lock-only` réécrit tout le lock
 dans un autre format (chemins absolus d'une version antérieure d'ay) : ne pas l'utiliser pour ces seuls pins.
 
 Le reste du paquet installé (WinuxCmd, niu-git, assets) vient de l'installateur amont v1.5.0

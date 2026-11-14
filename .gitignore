@@ -83,7 +83,7 @@ graphify-out/
 !/third_party/
 /third_party/*
 !/third_party/ECOSYSTEM.toml
-# Miroir texte des sources de design sous licence libre (docs/design/sources.toml, scripts/design-mirror.ts).
+# Miroir texte des sources de design sous licence libre (docs/design/sources.toml, packages/design/src/design-mirror.ts).
 !/third_party/design-mirror/
 !/scripts/
 

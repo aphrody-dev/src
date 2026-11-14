@@ -2,7 +2,7 @@
 
 Snapshot of `oven-sh/bun` `main` (the 1.4.5 canary; the latest stable release is 1.4.4, 2026-10-22), on top of the fork `third_party/bun` (25 own patches, 0 behind upstream on 2026-11-14).
 
-- Refresh: `gh repo sync aphrody-labs/bun -b main`, `git -C third_party/bun pull --ff-only`, then `bun scripts/upstream-scan.ts bun --days 30`.
+- Refresh: `gh repo sync aphrody-labs/bun -b main`, `git -C third_party/bun pull --ff-only`, then `bun packages/upstream/src/upstream-scan.ts bun --days 30`.
 
 | File | Source |
 |---|---|

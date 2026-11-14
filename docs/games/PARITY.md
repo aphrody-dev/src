@@ -7,7 +7,7 @@ One row per feature replaced or introduced by the merged Aphrody app and the gam
 | Check                                                             | File                                              | Where it runs                                            |
 | ----------------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
 | Rust tests, wasm32 release build, wasm-bindgen, `/play` bundle    | `.github/workflows/game.yml`                      | fr1 runner                                               |
-| Frame rate: median fps, p95 frame time (Chrome DevTools protocol) | `scripts/game-fps.ts`, `scripts/game-fps.test.ts` | any host with a WebGPU Chrome; exit 2 means not measured |
+| Frame rate: median fps, p95 frame time (Chrome DevTools protocol) | `packages/gaming/src/game-fps.ts`, `packages/gaming/tests/game-fps.test.ts` | any host with a WebGPU Chrome; exit 2 means not measured |
 | Deterministic generated assets (`gen-assets --check`)             | `crates/game/src/bin/gen-assets.rs`               | `game.yml`                                               |
 | `/play` page and CSP                                              | `apps/aphrody/tests/play.test.ts`                 | `bun test`                                               |
 
@@ -22,7 +22,7 @@ One row per feature replaced or introduced by the merged Aphrody app and the gam
 | Deterministic GLB character and SVG icons                                                     | new               | partial                   | `gen-assets --check`                                |
 | wasm32 + WebGPU build                                                                         | new               | partial                   | `game.yml`                                          |
 | WebGPU required, message when absent                                                          | new               | partial                   | `play.test.ts`, manual                              |
-| 120 fps at 1080p                                                                              | PLAN.md target    | not measured              | `scripts/game-fps.ts --min-fps 120`                 |
+| 120 fps at 1080p                                                                              | PLAN.md target    | not measured              | `packages/gaming/src/game-fps.ts --min-fps 120`                 |
 | Open-world multiplayer                                                                        | PLAN.md target    | not started (design note) | `MULTIPLAYER.md`                                    |
 | Video playback                                                                                | PLAN.md target    | not started               | `MEDIA-STACK.md`                                    |
 | Craft Apps and ArtCraft hosting                                                               | PLAN.md target    | not started               | `ARTCRAFT.md`                                       |

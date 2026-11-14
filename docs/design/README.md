@@ -1,6 +1,6 @@
 # docs/design : sources de design de référence
 
-Sources, licences et mode (`sources.toml`, vérifié en ligne le 2026-11-13) ; outil `bun scripts/design-mirror.ts index|mirror|check` (sur fr1, robots.txt respecté, débit limité).
+Sources, licences et mode (`sources.toml`, vérifié en ligne le 2026-11-13) ; outil `bun packages/design/src/design-mirror.ts index|mirror|check` (sur fr1, robots.txt respecté, débit limité).
 
 | Site                                                  | Licence constatée                       | Mode                     | URLs indexées |
 | ----------------------------------------------------- | --------------------------------------- | ------------------------ | ------------- |

@@ -3,7 +3,7 @@
 Base de travail pour patcher Next.js : Modern Web Guidance, Lighthouse 100, Bun AOT (`apps/shenron/apps/server`).
 
 - Source : `third_party/next.js` (clone partiel `blob:none`, branche `canary`, remotes `origin` = aphrody-labs, `upstream` = vercel), entrée `nextjs` de `third_party/ECOSYSTEM.toml`.
-- Rafraîchir : `gh repo sync aphrody-labs/next.js -b canary`, `git -C third_party/next.js pull`, puis `bun scripts/upstream-scan.ts nextjs --days 30`.
+- Rafraîchir : `gh repo sync aphrody-labs/next.js -b canary`, `git -C third_party/next.js pull`, puis `bun packages/upstream/src/upstream-scan.ts nextjs --days 30`.
 
 ## Contenu
 

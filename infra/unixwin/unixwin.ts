@@ -2,12 +2,12 @@
 // (cargo xwin pour Windows, nice -n 19, 4 tâches) ou par la CI du fork (.github/workflows/aphrody-build.yml),
 // puis installation du binaire sur le poste. Décisions : docs/unixwin/DEDUP.md, procédure : docs/unixwin/BUILD.md.
 // Usage (racine du dépôt) :
-//   bun scripts/unixwin/unixwin.ts status                     écarts forks / amont, pins, niu installé
-//   bun scripts/unixwin/unixwin.ts lock                       épingle les clones unixwin dans src.lock.json
-//   bun scripts/unixwin/unixwin.ts build [triple]             build sur prd, binaire rapatrié dans var/unixwin/prd/<triple>
-//   bun scripts/unixwin/unixwin.ts fetch-ci [triple]          artefact CI du fork au commit épinglé -> var/unixwin/ci/<triple>
-//   bun scripts/unixwin/unixwin.ts install [prd|ci] [triple]  remplace niu.exe (et ses copies bash.exe/sh.exe) du poste
-//   bun scripts/unixwin/unixwin.ts test-fr1 <filtre>          cargo test ciblé de rubash sur fr1, l'usine (suite complète : CI du fork)
+//   bun infra/unixwin/unixwin.ts status                     écarts forks / amont, pins, niu installé
+//   bun infra/unixwin/unixwin.ts lock                       épingle les clones unixwin dans src.lock.json
+//   bun infra/unixwin/unixwin.ts build [triple]             build sur prd, binaire rapatrié dans var/unixwin/prd/<triple>
+//   bun infra/unixwin/unixwin.ts fetch-ci [triple]          artefact CI du fork au commit épinglé -> var/unixwin/ci/<triple>
+//   bun infra/unixwin/unixwin.ts install [prd|ci] [triple]  remplace niu.exe (et ses copies bash.exe/sh.exe) du poste
+//   bun infra/unixwin/unixwin.ts test-fr1 <filtre>          cargo test ciblé de rubash sur fr1, l'usine (suite complète : CI du fork)
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -40,9 +40,9 @@ const DIRS = [
     "winuxsh-profiles",
     "unixwin-github",
     "unixwin-apt",
+    "unixwin.dev",
+    "wpm-gui",
   ].map((n) => `third_party/${n}`),
-  "apps/unixwin/upstream/unixwin.dev",
-  "apps/unixwin/upstream/wpm-gui",
 ];
 
 const run = (cwd: string, ...a: string[]) => {
@@ -75,7 +75,7 @@ const pinOf = async (rel: string) => {
   const c = (await readLock()).repositories[rel]?.commit;
   if (!c)
     throw new Error(
-      `${rel} absent de src.lock.json : bun scripts/unixwin/unixwin.ts lock`,
+      `${rel} absent de src.lock.json : bun infra/unixwin/unixwin.ts lock`,
     );
   return c;
 };
@@ -369,7 +369,7 @@ switch (cmd) {
     break;
   default:
     console.log(
-      "usage : bun scripts/unixwin/unixwin.ts status | lock | build [triple] | fetch-ci [triple] | install [prd|ci] [triple] | test-fr1 [filtre]",
+      "usage : bun infra/unixwin/unixwin.ts status | lock | build [triple] | fetch-ci [triple] | install [prd|ci] [triple] | test-fr1 [filtre]",
     );
     process.exit(cmd ? 2 : 0);
 }

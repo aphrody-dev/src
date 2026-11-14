@@ -1,7 +1,7 @@
 // `just ci-local`: the jobs of .github/workflows/ci.yml and judge.yml, run in parallel in this checkout.
 // Same commands as the workflows (keep both in step). Cargo jobs go through aphrody-heavy when it exists (fr1),
 // and are skipped on hosts that must not compile (the workstation): use `just ci-local-fr1` for the full set.
-//   bun scripts/ci-local.ts [--only gates,suites,rust,deny,arch,tokens] [--jobs N] [--list]
+//   bun infra/fleet/ci-local.ts [--only gates,suites,rust,deny,arch,tokens] [--jobs N] [--list]
 // Exit 1 when any job fails; each job logs to var/ci-local/<name>.log and its tail is printed on failure.
 import { mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -26,7 +26,7 @@ const J: Job[] = [
     group: "gates",
     cmd: "AGENTS_HOME=var/ci-local/agents bun --no-env-file infra/agents/runner.ts status && AGENTS_HOME=var/ci-local/agents bun --no-env-file test infra/agents",
   },
-  { name: "js-deps", group: "gates", cmd: "bun scripts/js-deps-check.ts" },
+  { name: "js-deps", group: "gates", cmd: "bun packages/machine/src/js-deps-check.ts" },
   {
     name: "metadata",
     group: "gates",

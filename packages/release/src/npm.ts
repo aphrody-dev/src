@@ -1,29 +1,24 @@
 // npm sans humain pour tout le monorepo (docs/infra/NPM.md). Aucune valeur secrète n'est affichée ni passée en argv :
 // le jeton vit dans le coffre env-kit (NPM_TOKEN) et n'en sort que par l'env ou le stdin d'un processus enfant.
-//   bun scripts/npm.ts status              whoami : coffre, PC, prd (root, agent), fr2, fr1 ; secret d'org GitHub
-//   bun scripts/npm.ts sync                coffre -> env utilisateur Windows, secret d'org aphrody-labs, ~/.npmrc des hôtes
-//   bun scripts/npm.ts inventory [--json]  paquets publiables (src + sous-modules apps/*), version publiée
-//   bun scripts/npm.ts align [--write]     repository/publishConfig exigés par le trusted publishing ; scopes non possédés -> private
-//   bun scripts/npm.ts login               npm login --auth-type=web en PTY (session séparée), le propriétaire clique
-//   bun scripts/npm.ts trust [--dry-run]   npm trust github pour chaque paquet publié (2FA du compte requise)
-//   bun scripts/npm.ts harden [--dry-run]  npm access set mfa=publish (2FA + jetons refusés) sur les paquets déjà en OIDC
-//   bun scripts/npm.ts pins [--write] [--push]  actions des npm-publish.yml épinglées par SHA (tag en commentaire), mises à
+//   bun packages/release/src/npm.ts status              whoami : coffre, PC, prd (root, agent), fr2, fr1 ; secret d'org GitHub
+//   bun packages/release/src/npm.ts sync                coffre -> env utilisateur Windows, secret d'org aphrody-labs, ~/.npmrc des hôtes
+//   bun packages/release/src/npm.ts inventory [--json]  paquets publiables (src + sous-modules apps/*), version publiée
+//   bun packages/release/src/npm.ts align [--write]     repository/publishConfig exigés par le trusted publishing ; scopes non possédés -> private
+//   bun packages/release/src/npm.ts login               npm login --auth-type=web en PTY (session séparée), le propriétaire clique
+//   bun packages/release/src/npm.ts trust [--dry-run]   npm trust github pour chaque paquet publié (2FA du compte requise)
+//   bun packages/release/src/npm.ts harden [--dry-run]  npm access set mfa=publish (2FA + jetons refusés) sur les paquets déjà en OIDC
+//   bun packages/release/src/npm.ts pins [--write] [--push]  actions des npm-publish.yml épinglées par SHA (tag en commentaire), mises à
 //                                          jour dans la même majeure ; --push commit + push sur main (timer : just npm-pins-schedule)
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 
-const ROOT = join(import.meta.dir, "..").replaceAll("\\", "/");
+const ROOT = join(import.meta.dir, "..", "..", "..").replaceAll("\\", "/");
 const ENV_KIT = join(ROOT, "packages/env-kit/src/cli.ts");
 const REGISTRY = "https://registry.npmjs.org";
 const OWNED = ["@aphrody", "@rosegriffon"]; // orgs npm dont <npm-owner> est owner (GET /-/org/<scope>/user)
 const ORG = "aphrody-labs";
 const WORKFLOW = "npm-publish.yml"; // nom du workflow appelant, vérifié par npm à chaque publish OIDC
-const SUBMODULES = [
-  "apps/rosegriffon",
-  "apps/shenron",
-  "apps/auto",
-  "apps/r2b",
-];
+const SUBMODULES = ["apps/rosegriffon", "apps/shenron", "apps/auto"];
 /** Doublons de nom : la copie canonique est celle de shenron (domaine média). */
 const CANONICAL: Record<string, string> = {
   "@aphrody/remotion": "apps/shenron",
@@ -282,7 +277,7 @@ async function status() {
     : "absent";
   out.session = existsSync(SESSION)
     ? "session npm interactive présente"
-    : "pas de session (bun scripts/npm.ts login)";
+    : "pas de session (bun packages/release/src/npm.ts login)";
   console.log(JSON.stringify(out, null, 2));
 }
 
@@ -387,7 +382,9 @@ async function trust(dry: boolean) {
     }
     const list = run(
       [npm, "trust", "list", p.name, "--json", `--userconfig=${SESSION}`],
-      { timeout: 60_000 },
+      {
+        timeout: 60_000,
+      },
     );
     if (
       /github/i.test(list.out) &&
@@ -504,7 +501,9 @@ function pins(write: boolean, push: boolean) {
           sha = (
             gh(
               `repos/${action}/commits?sha=main&path=${sub.slice(1)}&per_page=1`,
-            ) as { sha: string }[]
+            ) as {
+              sha: string;
+            }[]
           )[0]!.sha;
         } else {
           tag = latestInMajor(action, comment ?? ref);
@@ -575,7 +574,7 @@ switch (cmd) {
     break;
   default:
     console.error(
-      "usage : bun scripts/npm.ts status|sync|inventory [--json]|align [--write]|login|trust [--dry-run]|harden [--dry-run]|pins [--write] [--push]",
+      "usage : bun packages/release/src/npm.ts status|sync|inventory [--json]|align [--write]|login|trust [--dry-run]|harden [--dry-run]|pins [--write] [--push]",
     );
     process.exit(2);
 }

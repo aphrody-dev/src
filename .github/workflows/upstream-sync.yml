@@ -60,7 +60,7 @@ jobs:
       - name: Regenerate snapshot
         env:
           GH_TOKEN: ${{ github.token }}
-        run: bun scripts/upstream-recon.ts docs/epic/snapshot.json
+        run: bun packages/upstream/src/upstream-recon.ts docs/epic/snapshot.json
       - name: Commit snapshot
         run: |
           git config user.name aphrody-dev

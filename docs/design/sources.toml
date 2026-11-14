@@ -1,4 +1,4 @@
-# Sources de design de référence (scripts/design-mirror.ts). Licence vérifiée en ligne le 2026-11-13.
+# Sources de design de référence (packages/design/src/design-mirror.ts). Licence vérifiée en ligne le 2026-11-13.
 # mode = "mirror" : texte recopié dans third_party/design-mirror/<site>/ (licence libre, attribution).
 # mode = "index"  : contenu propriétaire ; seul l'index des URLs (docs/design/index/<site>.json) est gardé,
 #                   les specs de docs/design/specs/ sont réécrites, sans texte ni image recopiés.

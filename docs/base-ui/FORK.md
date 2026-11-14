@@ -17,7 +17,7 @@ git -C third_party/base-ui rebase upstream/master      # conflits attendus : pac
 bunify third_party/base-ui --fullbun && bun install   # @aphrody/bunify (packages/bunify), idempotent
 bunify third_party/base-ui --check --fullbun
 git -C third_party/base-ui push --no-verify --force-with-lease origin master
-bun scripts/upstream-scan.ts base-ui
+bun packages/upstream/src/upstream-scan.ts base-ui
 ```
 
 Builds lourds sur vps (fr1), jamais sur le PC.

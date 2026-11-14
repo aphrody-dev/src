@@ -1,4 +1,4 @@
-# Build caches of the PC and the fleet, read by scripts/cache.ts (just cache-status | cache-gc | cache-sync).
+# Build caches of the PC and the fleet, read by infra/fleet/cache.ts (just cache-status | cache-gc | cache-sync).
 # Strategy, measurements and decisions: docs/infra/CACHE.md. Caps of the VPS live in infra/fleet/<host>/tune.conf
 # (fleet-tune.sh clean, fleet-clean.timer); this file lists what status reports and what the PC gc enforces.
 # `path` is POSIX on the VPS and relative to the user profile (or absolute C:/...) on the PC.

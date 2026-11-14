@@ -39,5 +39,5 @@ Taille en Kio (`size` de l'API GitHub), date du dernier push. Aucun dépôt n'es
 
 Rangement : code et données dans `third_party/<nom>` (non versionnés, épinglés dans `src.lock.json`,
 liste dans `packages/machine/src/forks.ts`) ; site et GUI dans `apps/unixwin/upstream/` (même régime, ignorés
-par `apps/unixwin/.gitignore`) ; suite de tests dans `apps/unixwin/tests/` ; pilote dans `scripts/unixwin/` ;
+par `apps/unixwin/.gitignore`) ; suite de tests dans `apps/unixwin/tests/` ; pilote dans `infra/unixwin/` ;
 scripts de build distants dans `infra/unixwin/` ; documentation ici.

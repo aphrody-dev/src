@@ -8,7 +8,7 @@
 //   - a dependency duplicates a bun built-in or a tool bun replaces (list below);
 //   - a version is floating ("latest", "*", "x", tag) in the root catalog.
 // Scope: the root workspace (package.json "workspaces"); apps/* products keep their own locks.
-// Usage: bun scripts/js-deps-check.ts [--root DIR] [--json]
+// Usage: bun packages/machine/src/js-deps-check.ts [--root DIR] [--json]
 import { existsSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 
@@ -16,7 +16,7 @@ const args = Bun.argv.slice(2);
 const root = resolve(
   args.includes("--root")
     ? args[args.indexOf("--root") + 1]!
-    : join(import.meta.dir, ".."),
+    : join(import.meta.dir, "..", "..", ".."),
 );
 const asJson = args.includes("--json");
 

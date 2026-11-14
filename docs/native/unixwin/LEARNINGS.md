@@ -59,7 +59,7 @@ Restent rouges (`.config/aphrody-known-red.txt`) : `golden_issue2908_ruby_build_
 - Sous la session interactive de src, `env.toml` met Microsoft Coreutils devant WinuxCmd ; `niu -c` sans rc
   garde WinuxCmd en tête. Les tests figent l'environnement pour ne pas dépendre de l'ordre du PATH.
 - `ay lock --lock-only` (ay installé) réécrit tout `src.lock.json` dans un ancien format à chemins absolus ;
-  les pins unixwin passent par `bun scripts/unixwin/unixwin.ts lock`.
+  les pins unixwin passent par `bun infra/unixwin/unixwin.ts lock`.
 - La CI de `aphrody-labs/rubash` ne se déclenche pas sur push (workflows hérités du fork sans run). Les tests
   Windows de rubash passent donc par le workflow `aphrody build` de niubash, et les tests Linux par prd.
 - `NIU_ROOT_FALLBACK` est opt-in : sans lui, `cd /src` échoue (blocked), ce que la suite vérifie.

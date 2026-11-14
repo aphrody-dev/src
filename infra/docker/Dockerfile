@@ -3,7 +3,7 @@
 #   docker buildx bake -f infra/docker/docker-bake.hcl            (all images, see `just docker-build`)
 #   docker buildx build -f infra/docker/Dockerfile --target ai-os .
 # No Debian anywhere (repo policy): Alpine runtimes, Arch for the heavy dev image.
-# Pins: build args below = tools.toml (scripts/toolchains-lock.ts); bake passes them.
+# Pins: build args below = tools.toml (packages/machine/src/toolchains-lock.ts); bake passes them.
 # Rust: cargo-chef dependency layer + cargo-zigbuild cross-compile on $BUILDPLATFORM to static musl
 # (amd64 and arm64 from one native builder, no qemu). Bun: frozen lockfile, bundled server per app.
 # Runtime images run as non-root, carry a HEALTHCHECK, never contain secrets (env at run time only).

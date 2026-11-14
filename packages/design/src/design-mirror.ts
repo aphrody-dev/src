@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 // Index and mirror of the reference design sources (docs/design/sources.toml).
-//   bun scripts/design-mirror.ts index  [--site s]...  sitemap -> docs/design/index/<site>.json (robots.txt applied)
-//   bun scripts/design-mirror.ts mirror [--site s]...  mode=mirror sites only (free licence): markdown text into
+//   bun packages/design/src/design-mirror.ts index  [--site s]...  sitemap -> docs/design/index/<site>.json (robots.txt applied)
+//   bun packages/design/src/design-mirror.ts mirror [--site s]...  mode=mirror sites only (free licence): markdown text into
 //                                                       third_party/design-mirror/<site>/, front matter url/date/sha256/licence
-//   bun scripts/design-mirror.ts check                  recompute every mirrored body sha256 against MANIFEST.json
+//   bun packages/design/src/design-mirror.ts check                  recompute every mirrored body sha256 against MANIFEST.json
 // Proprietary sites (mode=index) never get page bodies written. Images are dropped from mirrored text.
 // One request at a time per site, delay_ms between requests; sites run in parallel. Meant to run on fr1.
 import { mkdirSync, existsSync } from "node:fs";
@@ -41,7 +41,7 @@ const { values, positionals } = parseArgs({
   },
   allowPositionals: true,
 });
-const repo = join(import.meta.dir, "..");
+const repo = join(import.meta.dir, "..", "..", "..");
 const root = values.root ?? repo;
 const limit = values.limit ? Number(values.limit) : Infinity;
 const UA = "aphrody-design-mirror/1 (+https://github.com/aphrody-labs/src)";
@@ -273,7 +273,7 @@ async function mirror(site: Site, urls: Url[]) {
       `Preuve : ${site.license_evidence}.`,
       `Attribution : ${site.attribution ?? site.name}. Contenu modifié : images retirées, texte servi en markdown par le site.`,
       "Licences : https://creativecommons.org/licenses/by/4.0/ et https://www.apache.org/licenses/LICENSE-2.0 .",
-      `Pages : ${pages.length} (MANIFEST.json : URL, date, sha256). Régénéré par \`bun scripts/design-mirror.ts mirror --site ${site.name}\`.`,
+      `Pages : ${pages.length} (MANIFEST.json : URL, date, sha256). Régénéré par \`bun packages/design/src/design-mirror.ts mirror --site ${site.name}\`.`,
       "",
     ].join("\n"),
   );
@@ -308,7 +308,7 @@ const cmd = positionals[0] ?? "index";
 if (cmd === "check") process.exit(await check());
 if (cmd !== "index" && cmd !== "mirror") {
   console.error(
-    "usage: bun scripts/design-mirror.ts index|mirror|check [--site name]... [--root dir] [--limit n]",
+    "usage: bun packages/design/src/design-mirror.ts index|mirror|check [--site name]... [--root dir] [--limit n]",
   );
   process.exit(2);
 }

@@ -32,4 +32,4 @@ First-party deployment platform of the monorepo (the role Vercel plays for its u
 
 - Team `aphrody-dev` (plan hobby, account soft-blocked since 06/2026, `docs/infra/DEPLOY.md`): projects `rg-api` (root `apps/rg-bot`), `rg-website` (`apps/rg-website`, Next.js), `rg-discord` (`crates/aphrody-rg-server`). Zero deployments, no linked repository, no domain.
 - Not migrated: the three belong to rosegriffon (`apps/rosegriffon`, a community product maintained by Aphrody, not an Aphrody product), their root directories do not exist in `src`, and there is nothing deployed to move. Same for `apps/shenron/vercel.json` (submodule, community product).
-- In `src` itself nothing is served by Vercel. What remains is portability code: `scripts/deploy-target.ts <app> vercel` (render only, refuses commercial apps) and `apps/r2-site/src/entry.vercel.ts` (adapter of `packages/runtime-adapter`).
+- In `src` itself nothing is served by Vercel. What remains is portability code: `packages/deploy/src/deploy-target.ts <app> vercel` (render only, refuses commercial apps) and `apps/r2-site/src/entry.vercel.ts` (adapter of `packages/runtime-adapter`).
