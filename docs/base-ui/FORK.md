@@ -22,7 +22,7 @@ bun scripts/upstream-scan.ts base-ui
 
 Builds lourds sur vps (fr1), jamais sur le PC.
 
-## Conversion tests / lint / format (commit `026a0381`, fr2)
+## Conversion tests / lint / format (commit `0bef63e5`, rebase sur upstream `315eba7a`, fr2)
 
 - prettier -> `bun fmt` : scripts `prettier` et `prettier:all` utilisent `bun fmt --no-script --ignore-path .lintignore` (config `prettier.config.mjs` lue telle quelle; `pretty-quick` remplace par `--changed=master`).
 - globby -> `Bun.Glob` : `scripts/inlineScripts.mts` et `docs/scripts/generateLlmTxt/index.mjs` (`new Bun.Glob(p).scan({cwd, absolute})`, resultat trie).

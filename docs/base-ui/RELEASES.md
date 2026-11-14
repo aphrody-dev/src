@@ -1576,13 +1576,13 @@ All contributors of this release in alphabetical order: @atomiks, @michaldudak, 
 - Prefer non-adaptive anchoring position in `<Positioner>` components and fix `autoFocus` scroll jumps (#3250) by @atomiks
 - Make popups' `data-anchor-hidden` state attribute check for anchor presence in layout (#3267) by @atomiks
 - Prevent popups from sticking after hover when pressing `<a>` tags inside them (#3318) by @atomiks
-- Improve performance when detached triggers are used (#3277) by @michaldudak  
-- Fix iOS VoiceOver voice control accessibility in non-modal popups (#3340) by @atomiks 
+- Improve performance when detached triggers are used (#3277) by @michaldudak
+- Fix iOS VoiceOver voice control accessibility in non-modal popups (#3340) by @atomiks
 
 ### Alert Dialog
 
 - Fix trigger registration loop (#3249) by @atomiks
-- Fix focus restoration when focused element is hidden with CSS (#3313) by @atomiks 
+- Fix focus restoration when focused element is hidden with CSS (#3313) by @atomiks
 
 ### Checkbox Group
 
@@ -1601,7 +1601,7 @@ All contributors of this release in alphabetical order: @atomiks, @michaldudak, 
 ### Dialog
 
 - Fix trigger registration loop (#3249) by @atomiks
-- Fix focus restoration when focused element is hidden with CSS (#3313) by @atomiks 
+- Fix focus restoration when focused element is hidden with CSS (#3313) by @atomiks
 
 ### Form
 
@@ -1611,7 +1611,7 @@ All contributors of this release in alphabetical order: @atomiks, @michaldudak, 
 
 - Fix trigger registration loop (#3249) by @atomiks
 - Do not pass `key` to the rendered element (#3255) by @michaldudak
-- Fix nested dialog from closing on <kbd>Shift+Tab</kbd> (#3346) by @atomiks 
+- Fix nested dialog from closing on <kbd>Shift+Tab</kbd> (#3346) by @atomiks
 
 ### Navigation Menu
 
@@ -3107,14 +3107,8 @@ Public alpha launch 🐣 Merry Xmas! 🎁
 
 ## v1.0.0-alpha.3 (2024-10-07) canary
 
-
-
 ## v1.0.0-alpha.2 (2024-08-20) canary
 
-
-
 ## v1.0.0-alpha.1 (2024-05-14) canary
-
-
 
 ## v1.0.0-alpha.0 (2024-04-15) canary

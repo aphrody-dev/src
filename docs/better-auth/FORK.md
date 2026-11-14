@@ -1,6 +1,6 @@
 # better-auth (aphrody-labs/better-auth)
 
-Fork Bun-only. Base amont : `2039e7303` (v1.7.24). Commits : `dcb9f0843` (Bun de bout en bout), `9e858d07f` (tests, lint, format).
+Fork Bun-only. Base amont : `3fa26c979` (v1.7.25, rebase amont du 2026-11-14, push force-with-lease). Commits : `2b0aa246a` (Bun de bout en bout), `08cc2ca5b` (tests, lint, format), `1e6077ea0` (validate:docs). Verifie sur usa (/root/work) : install --ignore-scripts, build core + better-auth.
 
 ## Conversions
 

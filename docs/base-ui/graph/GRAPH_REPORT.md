@@ -1,10 +1,12 @@
 # Graph Report - codebase
 
 ## Corpus Check
+
 - **Nodes:** 23698 · **Edges:** 48545 · **Communities:** 1465
 - **Extraction Engine:** 100% Native Tree-Sitter AST & Justfile Integration
 
 ## God Nodes (Most connected abstractions)
+
 1. `react` [import] - 1140 connections (test/regressions/fixtures.ts:L1)
 2. `ComboboxRoot.test.tsx` [file] - 577 connections (packages/react/src/combobox/root/ComboboxRoot.test.tsx:L1)
 3. `React.useState()` [function] - 475 connections (test/regressions/main.tsx:L57)
@@ -19,6 +21,7 @@
 12. `createRenderer()` [function] - 303 connections (packages/utils/src/useId.react17.test.tsx:L24)
 
 ## Key Structural Connections
+
 - `serve.json` --[defines]--> `public` (Extracted)
 - `serve.json` --[defines]--> `rewrites` (Extracted)
 - `serve.json` --[defines]--> `source` (Extracted)
@@ -28,19 +31,19 @@
 - `fixtures.ts` --[imports]--> `react` (Extracted)
 - `fixtures.ts` --[calls]--> `import.meta.glob()` (Inferred)
 - `fixtures.ts` --[calls]--> `path
-    .replace(/\\/g, '/')
-    .replace('./', '')
-    .replace(/\.\w+$/, '')
-    .split()` (Inferred)
+  .replace(/\\/g, '/')
+  .replace('./', '')
+  .replace(/\.\w+$/, '')
+  .split()` (Inferred)
 - `fixtures.ts` --[calls]--> `path
-    .replace(/\\/g, '/')
-    .replace('./', '')
-    .replace()` (Inferred)
+  .replace(/\\/g, '/')
+  .replace('./', '')
+  .replace()` (Inferred)
 - `fixtures.ts` --[calls]--> `path
-    .replace(/\\/g, '/')
-    .replace()` (Inferred)
+  .replace(/\\/g, '/')
+  .replace()` (Inferred)
 - `fixtures.ts` --[calls]--> `path
-    .replace()` (Inferred)
+  .replace()` (Inferred)
 - `fixtures.ts` --[calls]--> `regressionFixtures.push()` (Inferred)
 - `excludeDemoFixture` --[calls]--> `blacklist.some()` (Inferred)
 - `excludeDemoFixture` --[calls]--> `unusedBlacklistPatterns.delete()` (Inferred)
