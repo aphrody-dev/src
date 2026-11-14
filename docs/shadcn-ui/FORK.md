@@ -1,6 +1,6 @@
 # shadcn-ui (aphrody-labs/ui) : conversion Bun, passe 2
 
-Fork : `third_party/shadcn-ui`, remote `aphrody-labs/ui`, branche `main`. Commit de base `d35c84f9`, cette passe `578b10fd`.
+Fork : `third_party/shadcn-ui`, remote `aphrody-labs/ui`, branche `main`. Commit de base `d35c84f9`, cette passe `88cefe03 (rebase sur upstream e62c9435, 2026-11-14; verifie sur usa: helpers 132, registry 3811, shadcn 491 pass)`.
 Build et tests exécutés sur fr1 (`~/work/shadcn-ui`, bun 1.4.4 canary) ; aucun usage de usa/prd.
 
 ## Résultats
