@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-restore-credentials
 description:
   Provides knowledge and workflows to implement Android's Restore Credentials

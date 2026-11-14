@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-ndk-compose
 description: Android NDK Pure C11/JNI/ANativeWindow/AChoreographer and Jetpack Compose Material 3 Expressive entry point in src. Use for any Android, NDK, JNI, ANativeActivity, Vulkan/WebGPU Android surface, Jetpack Compose, Wear OS, Android XR, Android TV, Android Auto/AAOS, LiteRT/ML Kit, or AGP 9 task; routes to the 36 mirrored android-* skills and Theme.kt + sys.h.
 ---

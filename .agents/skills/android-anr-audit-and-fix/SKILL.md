@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-anr-audit-and-fix
 description:
   Audits Android codebases for ANR risks and diagnoses ANR stack dumps.

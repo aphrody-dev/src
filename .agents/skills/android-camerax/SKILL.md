@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-camerax
 description:
   Provide technical guidance for Android camera development with CameraX.

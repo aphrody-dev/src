@@ -1,0 +1,42 @@
+{
+  "useAutoModeDuringPlan": true,
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "type": "command",
+    "command": "bun {src}/plugins/aphrody-nhitl/src/statusline.ts"
+  },
+  "verbose": false,
+  "fileCheckpointingEnabled": false,
+  "outputStyle": "Autonome",
+  "awaySummaryEnabled": false,
+  "env": {
+    "BASH_MAX_OUTPUT_LENGTH": "12000",
+    "MAX_MCP_OUTPUT_TOKENS": "8000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_GIT_BASH_PATH": "C:\\Users\\aphro\\AppData\\Local\\Programs\\Niubash\\winuxcmd\\bin\\bash.exe",
+    "CLAUDE_CODE_USE_POWERSHELL_TOOL": "0",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun {src}/packages/ai-os/src/relay/hook.ts",
+            "timeout": 900,
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
+}

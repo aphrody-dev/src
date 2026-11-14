@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-glance-appwidget-updates-and-memory
 description:
   Manages Android AppWidget state updates, background syncs, and RemoteViews

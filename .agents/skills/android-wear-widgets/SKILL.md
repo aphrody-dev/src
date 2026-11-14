@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-wear-widgets
 description:
   Create, migrate, update, and verify Wear OS widgets using Glance Wear

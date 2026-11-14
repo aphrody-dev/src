@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-jetpack-compose-performance
 description:
   Diagnose and optimize Android Jetpack Compose UI code. Use this skill

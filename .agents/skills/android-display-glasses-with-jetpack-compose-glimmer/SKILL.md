@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-display-glasses-with-jetpack-compose-glimmer
 description:
   Provides guidelines for developing projected Android XR apps for display

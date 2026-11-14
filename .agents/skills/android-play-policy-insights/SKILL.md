@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-play-policy-insights
 description: Automated auditor designed to verify Android applications against Google Play Policy domains. It cross-references static code analysis with Play Store declarations to generate deterministic compliance reports, identifying undeclared data collection, architectural risks, and missing disclosures across Permissions and APIs Hygiene, User Account and Identity, and Data Safety and Privacy domains.
 license: Complete terms in LICENSE.txt

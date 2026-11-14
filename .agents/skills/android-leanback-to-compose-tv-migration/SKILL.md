@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-leanback-to-compose-tv-migration
 description:
   Provides instructions and architectural patterns for migrating Android

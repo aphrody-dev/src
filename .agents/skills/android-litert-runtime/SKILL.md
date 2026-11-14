@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-litert-runtime
 description:
   Configures and implements LiteRT (.tflite) on-device inference on Android

@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-migrate-xml-views-to-jetpack-compose
 description:
   Provides a structured workflow for migrating an Android XML View to Jetpack

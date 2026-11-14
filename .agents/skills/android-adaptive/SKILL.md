@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-adaptive
 description:
   Instructions to make or update an app's UI so that it adapts to different

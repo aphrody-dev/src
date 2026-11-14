@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-litert-lm
 description:
   Builds an Android app that runs an open text LLM on the device, on the

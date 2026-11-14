@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-edge-to-edge
 description:
   Use this skill to migrate your Jetpack Compose app to add adaptive edge-to-edge

@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-for-cars-parked-apps
 description:
   Adapt existing Android video streaming apps, games, and web browsers

@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-ml-kit-genai-prompt-api
 description:
   Analyzes Android codebases to implement ML Kit GenAI Prompt API. Use

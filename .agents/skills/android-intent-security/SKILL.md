@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-intent-security
 description:
   Audits, detects, and remediates Android Intent and component security

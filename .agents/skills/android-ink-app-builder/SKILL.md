@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-ink-app-builder
 description:
   Adds inking and freehand drawing capabilities to an Android app using

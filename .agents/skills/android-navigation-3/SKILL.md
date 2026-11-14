@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-navigation-3
 description:
   Learn how to install and migrate to Jetpack Navigation 3, and how to

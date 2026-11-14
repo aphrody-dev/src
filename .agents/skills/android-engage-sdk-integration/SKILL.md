@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-engage-sdk-integration
 description:
   Helps developers integrate, debug, and resolve Play Engage SDK implementation

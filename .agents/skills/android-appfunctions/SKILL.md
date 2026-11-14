@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-appfunctions
 description:
   Analyzes Android apps to find user workflows to expose as AppFunctions,

@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-profiler
 description:
   "Records and analyzes Android performance data and diagnoses performance

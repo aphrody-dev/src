@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-agp-9-upgrade
 description:
   Upgrades, or migrates, an Android project to use Android Gradle Plugin

@@ -2,9 +2,48 @@
 # applier : packages/machine/src/toolchain.ts (`ay agents install|sync|check|list`).
 # Nettoyé le 2026-11-14 : plugins de skills tiers désinstallés ; les skills utiles (dont android-*, issues de android/skills) sont versionnées dans .agents/skills et servies par `aphrody-skills`. Outils AI : `relay`, `agent-desktop`, `agent-browser`.
 
+# Config globale de Claude Code, versionnée dans infra/agents/claude ({src} et {home} substitués).
+# settings.json : fusion des clés gérées seulement (modèle, effort, mode rapide et plugins restent au choix du poste).
+[[claude.home]]
+src = "infra/agents/claude/CLAUDE.md"
+dest = "{home}/.claude/CLAUDE.md"
+hosts = ["pc"]
+
+[[claude.home]]
+src = "infra/agents/claude/output-styles/autonome.md"
+dest = "{home}/.claude/output-styles/autonome.md"
+hosts = ["pc"]
+
+[[claude.home]]
+src = "infra/agents/claude/settings.json"
+dest = "{home}/.claude/settings.json"
+merge = true
+hosts = ["pc"]
+
 [[claude.marketplace]]
 name = "aphrody"
 path = "."
+
+# Marketplaces dont plus aucun plugin n'est installé (clones et vérifications de mise à jour inutiles).
+[[claude.marketplace]]
+name = "anthropic-agent-skills"
+state = "absent"
+
+[[claude.marketplace]]
+name = "google-plugins"
+state = "absent"
+
+[[claude.marketplace]]
+name = "googlechrome"
+state = "absent"
+
+[[claude.marketplace]]
+name = "gemini-skills"
+state = "absent"
+
+[[claude.marketplace]]
+name = "android-skills"
+state = "absent"
 
 [[claude.marketplace]]
 name = "rosegriffon-plugins"
@@ -218,6 +257,14 @@ agent = "opencode"
 path = "{home}/.config/opencode/opencode.jsonc"
 key = "mcp"
 shape = "opencode"
+mcp = ["relay"]
+
+# Claude Desktop : serveurs stdio seulement ; le relais en stdio remplace les serveurs à clé d'API en clair.
+[[mcpfile]]
+agent = "claude-desktop"
+path = "{appdata}/Claude/claude_desktop_config.json"
+key = "mcpServers"
+shape = "stdio"
 mcp = ["relay"]
 
 [[mcpfile]]

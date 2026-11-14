@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-permissions-security
 description:
   Audits, detects gaps, and remediates Android permissions and IPC component

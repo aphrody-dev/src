@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-mlkit-agent-api
 description:
   Builds autonomous on-device agentic workflows in Android apps using the

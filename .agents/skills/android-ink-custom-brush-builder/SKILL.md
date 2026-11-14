@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-ink-custom-brush-builder
 description:
   Creates custom BrushFamily definitions for an Android app using Jetpack

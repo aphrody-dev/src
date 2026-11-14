@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-r8-analyzer
 description:
   Analyzes Android build files and R8 keep rules to identify redundancies,

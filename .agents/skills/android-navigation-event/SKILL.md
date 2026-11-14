@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-navigation-event
 description:
   Intercept back gestures and run Predictive Back animations using the

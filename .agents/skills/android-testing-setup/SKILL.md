@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-testing-setup
 description:
   Analyze and create a testing strategy for Android apps - install testing

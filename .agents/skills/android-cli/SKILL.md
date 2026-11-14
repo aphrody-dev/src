@@ -871,3 +871,7 @@ Update the Android CLI using the `android update` command.
                     --sdk=PARAM  Path to the Android SDK
                 -v, --verbose    Enable verbose output for troubleshooting
                 -V, --version    Print version information and exit
+
+## Other android-* skills
+
+These skills are kept out of the model-visible listing (`disable-model-invocation: true`) to save context. For one of these topics, read `.agents/skills/android-<topic>/SKILL.md` directly (or the user runs `/android-<topic>`): adaptive, agp-9-upgrade, anr-audit-and-fix, appfunctions, camerax, display-glasses-with-jetpack-compose-glimmer, edge-to-edge, engage-sdk-integration, for-cars-parked-apps, glance-appwidget-updates-and-memory, glance-canonical-layouts, ink-app-builder, ink-custom-brush-builder, intent-security, jetpack-compose-performance, leanback-to-compose-tv-migration, litert-lm, litert-runtime, media3-cast-integration, migrate-xml-views-to-jetpack-compose, ml-kit-genai-prompt-api, mlkit-agent-api, navigation-3, navigation-event, ndk-compose, permissions-security, play-billing-library-version-upgrade, play-policy-insights, profiler, projected-hardware, r8-analyzer, restore-credentials, testing-setup, verified-email, wear-compose-m3, wear-widgets.

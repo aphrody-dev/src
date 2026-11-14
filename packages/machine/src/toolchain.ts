@@ -27,6 +27,7 @@ import { join, resolve, sep } from "node:path";
 type Hosts = { hosts?: string[] };
 type Marketplace = Hosts & {
   name: string;
+  state?: "absent";
   repo?: string;
   path?: string;
   commit?: string;
@@ -66,6 +67,8 @@ type Skill = Hosts & {
 type Secret = { name: string; user_env?: boolean };
 type Manifest = {
   claude?: {
+    /** Fichiers de ~/.claude versionnés dans src : copie, ou fusion JSON (merge) des clés gérées. */
+    home?: (Hosts & { src: string; dest: string; merge?: boolean })[];
     marketplace?: Marketplace[];
     plugin?: Plugin[];
     mcp?: Mcp[];
@@ -79,7 +82,7 @@ type Manifest = {
     agent: string;
     path: string;
     key: string;
-    shape: "opencode" | "claude" | "gemini";
+    shape: "opencode" | "claude" | "gemini" | "stdio";
     mcp: string[];
   }[];
   cleanup?: {
@@ -119,6 +122,7 @@ const fill = (s: string) =>
   s
     .replaceAll("{src}", SRC)
     .replaceAll("{home}", HOME)
+    .replaceAll("{appdata}", process.env.APPDATA ?? join(HOME, ".config"))
     .replaceAll("{bin}", join(HOME, ".local", "bin"));
 const norm = (p: string) =>
   p.replaceAll("\\", "/").replace(/\/+$/, "").toLowerCase();
@@ -277,6 +281,12 @@ function claude(
   }
   for (const mk of (m.claude?.marketplace ?? []).filter(here)) {
     const cur = ml.find((x) => x.name === mk.name);
+    if (mk.state === "absent") {
+      note(!cur, `marketplace ${mk.name} absente`);
+      if (cur && !check)
+        run(["claude", "plugin", "marketplace", "remove", mk.name]);
+      continue;
+    }
     const want = mk.path !== undefined ? join(SRC, mk.path) : mk.repo!;
     // `marketplace add` sur un nom existant le repointe sans désinstaller ses plugins.
     const ok =
@@ -472,8 +482,54 @@ export async function toolchain({
 
   // --- Claude Code
   let installed: Installed[] = [];
-  if (Bun.which("claude")) installed = claude(m, out, note, check, moved);
-  else out.push("info claude absent : section Claude ignorée");
+  if (Bun.which("claude")) {
+    // CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC coupe la mise à jour automatique : elle est faite ici, à chaque sync.
+    if (!check) {
+      const u = run(["claude", "update"]);
+      out.push(
+        u.code === 0
+          ? `info claude ${run(["claude", "--version"]).out.trim()}`
+          : `ERR  claude update : ${last(u)}`,
+      );
+    }
+    installed = claude(m, out, note, check, moved);
+  } else out.push("info claude absent : section Claude ignorée");
+
+  // --- Config globale de Claude Code versionnée (CLAUDE.md, style de sortie, clés gérées de settings.json).
+  for (const h of (m.claude?.home ?? []).filter(here)) {
+    const from = join(SRC, h.src);
+    const to = fill(h.dest);
+    // Chemins substitués avec des barres obliques (valides en JSON comme en Markdown).
+    const want = readFileSync(from, "utf8")
+      .replaceAll("\r\n", "\n")
+      .replaceAll("{src}", SRC.replaceAll("\\", "/"))
+      .replaceAll("{home}", HOME.replaceAll("\\", "/"));
+    const cur = existsSync(to)
+      ? readFileSync(to, "utf8").replaceAll("\r\n", "\n")
+      : "";
+    if (!h.merge) {
+      note(cur === want, `claude ${h.dest}`);
+      if (cur !== want && !check) {
+        mkdirSync(resolve(to, ".."), { recursive: true });
+        writeFileSync(to, want);
+      }
+      continue;
+    }
+    // Fusion profonde : les clés du fichier versionné priment, toute autre clé de l'utilisateur est conservée.
+    const deep = (a: any, b: any): any =>
+      b && typeof b === "object" && !Array.isArray(b)
+        ? Object.fromEntries(
+            [...new Set([...Object.keys(a ?? {}), ...Object.keys(b)])].map(
+              (k) => [k, k in b ? deep(a?.[k], b[k]) : a[k]],
+            ),
+          )
+        : b;
+    const curObj = cur.trim() ? JSON.parse(cur) : {};
+    const next = deep(curObj, JSON.parse(want));
+    const ok = JSON.stringify(next) === JSON.stringify(curObj);
+    note(ok, `claude ${h.dest} (clés gérées)`);
+    if (!ok && !check) writeFileSync(to, `${JSON.stringify(next, null, 2)}\n`);
+  }
 
   for (const s of (m.claude?.skill ?? []).filter(here)) {
     const f = Bun.file(join(SKILLS, s.name, ".source"));
@@ -661,16 +717,28 @@ export async function toolchain({
       out.push(
         `info ${f.agent} mcp ${x.name} : pas d'entrée [[claude.mcp]] HTTP sans secret pour ${HOST}`,
       );
+    // stdio : client sans HTTP ni OAuth (Claude Desktop) ; commande stdio_command du serveur, bun en chemin absolu.
+    const stdioOf = (name: string) => {
+      const c = m.claude?.mcp?.find((y) => y.name === name)?.stdio_command;
+      if (!c) return null;
+      const argv = c.map((a) => fill(a).replaceAll("\\", "/"));
+      return {
+        command: (Bun.which(argv[0]!) ?? argv[0]!).replaceAll("\\", "/"),
+        args: argv.slice(1),
+      };
+    };
     const servers = Object.fromEntries(
       sharedMcp(m, f.mcp)
-        .filter((x) => x.url)
+        .filter((x) => x.url && (f.shape !== "stdio" || stdioOf(x.name)))
         .map((x) => [
           x.name,
-          f.shape === "opencode"
-            ? { type: "remote", url: x.url }
-            : f.shape === "gemini"
-              ? { httpUrl: x.url }
-              : { type: "http", url: x.url },
+          f.shape === "stdio"
+            ? stdioOf(x.name)
+            : f.shape === "opencode"
+              ? { type: "remote", url: x.url }
+              : f.shape === "gemini"
+                ? { httpUrl: x.url }
+                : { type: "http", url: x.url },
         ]),
     );
     if (!Object.keys(servers).length) continue; // relais hors de cet hôte : fichier laissé tel quel

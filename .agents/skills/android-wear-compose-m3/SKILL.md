@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-wear-compose-m3
 description:
   Guidance for Wear OS Compose Material3 (Wear Compose Material 3 / Wear

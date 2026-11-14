@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-verified-email
 description:
   Provides a complete workflow for implementing verified email retrieval

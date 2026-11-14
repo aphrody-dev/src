@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: android-media3-cast-integration
 description:
   Implements Google Cast support in Android apps using Jetpack Media3.
