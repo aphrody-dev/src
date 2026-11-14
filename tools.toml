@@ -296,15 +296,19 @@ unsupported = ["macos-x86_64"]
 
 [[tool]]
 name = "sd"
-version = "1.1.0"
+# Release v1.1.0 ships Cargo version 1.0.0 (chmln/sd Cargo.toml at tag v1.1.0), so the binary
+# reports 1.0.0: pin the reported version, take the tag and assets from v1.1.0.
+version = "1.0.0"
+tag = "v1.1.0"
+note = "release v1.1.0, binary reports 1.0.0 (upstream did not bump Cargo.toml)"
 bin = ["sd"]
 source = "github"
 repo = "chmln/sd"
-assets.windows-x86_64 = "sd-v{version}-x86_64-pc-windows-msvc.zip"
-assets.linux-x86_64 = "sd-v{version}-x86_64-unknown-linux-musl.tar.gz"
-assets.linux-aarch64 = "sd-v{version}-aarch64-unknown-linux-musl.tar.gz"
-assets.macos-x86_64 = "sd-v{version}-x86_64-apple-darwin.tar.gz"
-assets.macos-aarch64 = "sd-v{version}-aarch64-apple-darwin.tar.gz"
+assets.windows-x86_64 = "sd-v1.1.0-x86_64-pc-windows-msvc.zip"
+assets.linux-x86_64 = "sd-v1.1.0-x86_64-unknown-linux-musl.tar.gz"
+assets.linux-aarch64 = "sd-v1.1.0-aarch64-unknown-linux-musl.tar.gz"
+assets.macos-x86_64 = "sd-v1.1.0-x86_64-apple-darwin.tar.gz"
+assets.macos-aarch64 = "sd-v1.1.0-aarch64-apple-darwin.tar.gz"
 sha256.windows-x86_64 = "59837c2e7c911099aca1cc46b663bcdc5a949fd3e9fbbaf34fc73e5d5d71007c"
 sha256.linux-x86_64 = "02f00f4777d43e8e95b7b8d49e1a0d6e502fed4b8e79c1c8b8063857a30caa2e"
 sha256.linux-aarch64 = "ec8c93c0533ff21f4851d11566808d4082544baf063d9b96ea77c27e98b7cd99"
