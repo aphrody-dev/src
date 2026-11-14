@@ -97,7 +97,7 @@ export async function nativeRpc(r: Req): Promise<Res | null> {
 
 const serverInfo = { name: "aphrody-relay", version: VERSION };
 // Outils propres puis outils des serveurs MCP utilisateur agrégés (<serveur>__<outil>), ordre déterministe.
-const mcpTools = async () => [
+const mcpTools = async (core = false) => [
   ...TOOLS.map((t) => ({
     name: t.name,
     description: t.description,
@@ -106,13 +106,14 @@ const mcpTools = async () => [
   })),
   ...(Bun.env.RELAY_HUB === "0"
     ? []
-    : (await hubTools()).map(({ server, ...t }) => ({
+    : (await hubTools(core)).map(({ server, ...t }) => ({
         ...t,
         description: `[${server}] ${t.description ?? ""}`,
       }))),
 ];
 
-export async function mcpRpc(r: Req): Promise<Res | null> {
+/** core : sans les serveurs agrégés de ~/.claude.json (route /mcp/core, pour Claude Code qui les déclare déjà). */
+export async function mcpRpc(r: Req, core = false): Promise<Res | null> {
   const modern = r.params?._meta?.["io.modelcontextprotocol/protocolVersion"];
   if (modern && !MCP_VERSIONS.includes(modern))
     return fail(r.id, -32602, "UnsupportedProtocolVersionError", {
@@ -161,7 +162,7 @@ export async function mcpRpc(r: Req): Promise<Res | null> {
         return ok(
           r.id,
           complete({
-            tools: await mcpTools(),
+            tools: await mcpTools(core),
             ...(modern ? { ttlMs: 3_600_000, cacheScope: "private" } : {}),
           }),
         );

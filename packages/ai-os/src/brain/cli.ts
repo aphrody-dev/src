@@ -2,8 +2,8 @@
 // absorb: memories, prompt history, session transcripts (~/.claude) and agy conversation summaries are indexed
 //   into the ai-os Context store (~/.agent/memory.sqlite); transcripts and caches older than --days are zstd
 //   compressed into ~/.agent/brain.sqlite and removed from disk (git-style: the blob store is the history).
-// sync: the same directives (global CLAUDE.md + MEMORY.md index) are written into agy's ~/.gemini/GEMINI.md
-//   managed block, and both CLIs get the same no-human-in-the-loop settings.
+// sync: the same directives (global CLAUDE.md + MEMORY.md index) are written into the managed block of agy's
+//   ~/.gemini/GEMINI.md, Codex's ~/.codex/AGENTS.md and OpenCode's ~/.config/opencode/AGENTS.md, and both CLIs get the same no-human-in-the-loop settings.
 // restore <path>: writes a compressed file back to its original path.
 // design: the design corpus of src (docs/design specs, URL indexes, third_party/design-mirror) alone; absorb includes it.
 import { Database } from "bun:sqlite";
@@ -258,14 +258,27 @@ async function sync() {
   const idx = join(CLAUDE, "projects", "C--src", "memory", "MEMORY.md");
   const mem = existsSync(idx) ? await Bun.file(idx).text() : "";
   const block = `${BEGIN}\n# Shared directives (from ~/.claude/CLAUDE.md, synced by ai-os brain)\n\n${global.trim()}\n\n## Memory index (~/.claude/projects/C--src/memory)\n\n${mem.trim()}\n${END}`;
-  const gp = join(GEMINI, "GEMINI.md");
-  const cur = existsSync(gp) ? await Bun.file(gp).text() : "";
-  const b = cur.indexOf(BEGIN);
-  const e = cur.indexOf(END, b);
-  const next =
-    b >= 0 && e > b
-      ? cur.slice(0, b) + block + cur.slice(e + END.length)
-      : `${cur.trimEnd()}\n\n${block}\n`;
+  // One managed block per agent prompt file: agy, Codex, OpenCode. Text outside the block is the agent-specific
+  // header, created once when the file has no block yet (stale hand-written contracts are replaced).
+  const head = (name: string) =>
+    `# ${name}\n\nContrat commun à tous les agents : C:\\src\\AGENTS.md + C:\\src\\.agents\\SOUL.md. Le bloc ci-dessous est généré par \`ai-os brain sync\` à partir de ~/.claude ; ne pas l’éditer à la main. MCP : serveur \`relay\` seul (infra/agents/toolchain.toml).`;
+  const prompts = [
+    { path: join(GEMINI, "GEMINI.md"), name: "agy (Antigravity CLI)" },
+    { path: join(H, ".codex", "AGENTS.md"), name: "Codex" },
+    { path: join(H, ".config", "opencode", "AGENTS.md"), name: "OpenCode" },
+  ].filter((p) => existsSync(dirname(p.path)));
+  const outputs: [string, string][] = [];
+  for (const p of prompts) {
+    const cur = existsSync(p.path) ? await Bun.file(p.path).text() : "";
+    const b = cur.indexOf(BEGIN);
+    const e = cur.indexOf(END, b);
+    outputs.push([
+      p.path,
+      b >= 0 && e > b
+        ? cur.slice(0, b) + block + cur.slice(e + END.length)
+        : `${head(p.name)}\n\n${block}\n`,
+    ]);
+  }
 
   // Same NHITL posture on both sides: Claude bypassPermissions, agy auto-approve.
   const cs = join(CLAUDE, "settings.json");
@@ -285,11 +298,12 @@ async function sync() {
     ]),
   ].filter((w: string) => w.length > 3 && existsSync(w));
 
-  if (dry) return console.log(`dry-run: would write ${gp}, ${cs}, ${gs}`);
-  await Bun.write(gp, next);
+  const names = outputs.map(([p]) => p).join(", ");
+  if (dry) return console.log(`dry-run: would write ${names}, ${cs}, ${gs}`);
+  for (const [p, text] of outputs) await Bun.write(p, text);
   await Bun.write(cs, `${JSON.stringify(c, null, 2)}\n`);
   await Bun.write(gs, `${JSON.stringify(g, null, 2)}\n`);
-  console.log(`synced ${gp}, ${cs}, ${gs}`);
+  console.log(`synced ${names}, ${cs}, ${gs}`);
 }
 
 async function restore(path: string) {

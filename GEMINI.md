@@ -1,4 +1,4 @@
-# src Sovereign Monorepo — Google Antigravity Contract (`GEMINI.md`)
+# Aphrody — Google Antigravity Contract (`GEMINI.md`)
 
 The canonical operating contract is [`AGENTS.md`](./AGENTS.md) plus [`.agents/SOUL.md`](./.agents/SOUL.md); this file adds only what Antigravity (`agy`) needs. Gemini CLI is legacy and not used.
 

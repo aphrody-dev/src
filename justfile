@@ -219,14 +219,6 @@ relay-install:
     systemctl --user enable --now aphrody-relay
     systemctl --user restart aphrody-relay
 
-# Run Pi + OpenCode + Locally Uncensored + Symphony/Ralph harness
-pi-opencode cmd="tui":
-    bun run --cwd "{{root}}/packages/pi-opencode" src/cli.ts {{cmd}}
-
-# Run Codex + AGY + Claude Cross-Auth & Cross-CLI Hub (doctor, tui, serve, sync-configs, council)
-triad cmd="doctor":
-    bun run --cwd "{{root}}/packages/ai-triad" src/cli.ts {{cmd}}
-
 # Run Pure-Rust Sovereign Stack
 rust-stack cmd="serve":
     rust-stack {{cmd}}

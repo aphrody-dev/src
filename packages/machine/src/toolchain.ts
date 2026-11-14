@@ -1,7 +1,8 @@
-// Applique infra/agents/toolchain.toml (outillage agent : Claude Code, Codex, agy, Gemini CLI), idempotent, PC et Linux.
+// Applique infra/agents/toolchain.toml (outillage agent : Claude Code, Codex, agy, OpenCode, Pi, Gemini CLI), idempotent, PC et Linux.
 // Sections : [[claude.marketplace]] (repo, ou path relatif à src), [[claude.plugin]] (state present|absent|disabled ;
 // refresh = recopie quand le HEAD de src change), [[claude.mcp]] (command ou url ; secrets injectés par env-kit),
-// [[claude.skill]] (dossier SKILL.md copié depuis un commit épinglé), [[skill.private]], [codex], [agy], [gemini],
+// [[claude.skill]] (dossier SKILL.md copié depuis un commit épinglé), [[skill.private]], [codex], [agy] (mcp = liste
+// exclusive), [[mcpfile]] (agents configurés par fichier : clé MCP réécrite), [gemini],
 // [cleanup], [[secret]] (contrôle seul). `hosts` absent = tous (pc, prd, fr1, fr2). Aucun lien créé ; réglages
 // modifiés par les CLI seules (jamais de réécriture de settings.json).
 // Appelé par apply-user.ts, la tâche \Aphrody\AgentsSync (PC) et aphrody-agents-sync.timer (Linux) ; seul : `ay agents install|sync|check|list`
@@ -42,9 +43,13 @@ type Mcp = Hosts & {
   scope?: string;
   command?: string[];
   url?: string;
+  /** URL donnée aux autres agents (défaut : url). */
+  shared_url?: string;
   env?: Record<string, string>;
   secrets?: string[];
   headers?: Record<string, string>;
+  /** Commande headersHelper explicite (jeton local, hors coffre). */
+  headers_helper?: string;
   state?: "absent";
 };
 type Skill = Hosts & {
@@ -66,7 +71,18 @@ type Manifest = {
   codex?: { marketplace: string; plugins: string[]; mcp?: string[] };
   agy?: { plugins: string[]; mcp?: string[] };
   gemini?: { extensions: string[] };
-  cleanup?: { link_dirs: string[]; drop_skills?: string[] };
+  mcpfile?: {
+    agent: string;
+    path: string;
+    key: string;
+    shape: "opencode" | "claude" | "gemini";
+    mcp: string[];
+  }[];
+  cleanup?: {
+    link_dirs: string[];
+    drop_copies?: boolean;
+    drop_skills?: string[];
+  };
   secret?: Secret[];
 };
 type Installed = {
@@ -210,7 +226,7 @@ function sharedMcp(
     const x = all.find((y) => y.name === n);
     // Nom absent, hors hôte, à en-têtes ou à secrets : signalé (jamais un « ok » silencieux).
     if (!x) return [{ name: n, url: "" }];
-    return [{ name: x.name, url: fill(x.url!) }];
+    return [{ name: x.name, url: fill(x.shared_url ?? x.url!) }];
   });
 }
 
@@ -346,7 +362,9 @@ function claude(
         )
           .map(([h, n]) => `${h}=${n}`)
           .join(" ")}`
-      : undefined;
+      : s.headers_helper
+        ? fill(s.headers_helper).replaceAll("\\", "/")
+        : undefined;
     const same = s.url
       ? cur?.url === s.url && cur?.headersHelper === helper
       : !!cur &&
@@ -481,6 +499,13 @@ export async function toolchain({
       const r = run(["agy", "mcp", "add", x.name, x.url]);
       if (r.code !== 0) out.push(`ERR  agy mcp ${x.name} : ${last(r)}`);
     }
+    // Exclusivité seulement si le relais est joignable sur cet hôte (sinon l'agent perdrait tous ses serveurs).
+    const agyShared = sharedMcp(m, m.agy.mcp).some((x) => x.url);
+    for (const c of agyShared ? ml.map((l) => l.trim().split(/\s+/)) : []) {
+      if (!c[0] || (m.agy.mcp ?? []).includes(c[0])) continue;
+      note(false, `agy mcp ${c[0]} retiré (fourni par le relais)`);
+      if (!check) run(["agy", "mcp", "remove", c[0]]);
+    }
   } else if (m.agy) out.push("info agy absent");
 
   // --- Codex : marketplace racine (Codex lit .claude-plugin/marketplace.json) et plugins à source locale.
@@ -541,6 +566,12 @@ export async function toolchain({
             : `ERR  codex mcp ${x.name} : ${last(r)}`,
         );
     }
+    const codexShared = sharedMcp(m, m.codex.mcp).some((x) => x.url);
+    for (const c of codexShared ? cm : []) {
+      if ((m.codex.mcp ?? []).includes(c.name)) continue;
+      note(false, `codex mcp ${c.name} retiré (fourni par le relais)`);
+      if (!check) run(["codex", "mcp", "remove", c.name]);
+    }
   } else if (m.codex) out.push("info codex absent");
 
   // --- Gemini CLI : extension liée (la CLI enregistre le chemin, aucun lien de fichiers).
@@ -564,15 +595,55 @@ export async function toolchain({
     }
   } else if (m.gemini) out.push("info gemini absent");
 
+  // --- Agents configurés par fichier (OpenCode, Pi, Gemini CLI) : la clé MCP ne garde que les serveurs partagés.
+  for (const f of m.mcpfile ?? []) {
+    const p = fill(f.path);
+    if (!existsSync(p)) continue;
+    const doc = Bun.JSONC.parse(readFileSync(p, "utf8")) as Record<
+      string,
+      unknown
+    >;
+    const want = Object.fromEntries(
+      sharedMcp(m, f.mcp)
+        .filter((x) => x.url)
+        .map((x) => [
+          x.name,
+          f.shape === "opencode"
+            ? { type: "remote", url: x.url, enabled: true }
+            : f.shape === "gemini"
+              ? { httpUrl: x.url }
+              : { type: "http", url: x.url },
+        ]),
+    );
+    if (!Object.keys(want).length) continue; // relais hors de cet hôte : fichier laissé tel quel
+    const ok = JSON.stringify(doc[f.key]) === JSON.stringify(want);
+    note(
+      ok,
+      `${f.agent} mcp ${Object.keys(want).join(",") || "aucun"} seul (${p})`,
+    );
+    if (ok || check) continue;
+    writeFileSync(p, `${JSON.stringify({ ...doc, [f.key]: want }, null, 2)}\n`);
+  }
+
   // --- Liens interdits (symlink, jonction) vers des skills que le plugin aphrody-skills fournit déjà.
   const ours = new Set(readdirSync(join(SRC, ".agents", "skills")));
   for (const d of (m.cleanup?.link_dirs ?? []).map(fill)) {
     if (!existsSync(d)) continue;
     for (const n of readdirSync(d)) {
       const p = join(d, n);
-      if (!ours.has(n) || !lstatSync(p).isSymbolicLink()) continue;
-      note(false, `lien ${p} retiré (fourni par aphrody-skills)`);
+      if (!ours.has(n)) continue;
+      const link = lstatSync(p).isSymbolicLink();
+      // drop_copies : une copie homonyme d'une skill de src (posée par un installeur tiers) est un doublon.
+      if (!link && !m.cleanup?.drop_copies) continue;
+      note(
+        false,
+        `${link ? "lien" : "copie"} ${p} retiré (fourni par aphrody-skills)`,
+      );
       if (check) continue;
+      if (!link) {
+        rmSync(p, { recursive: true, force: true });
+        continue;
+      }
       try {
         unlinkSync(p);
       } catch {

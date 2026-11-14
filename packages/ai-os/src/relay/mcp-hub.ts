@@ -179,8 +179,13 @@ const retryAt = new Map<string, number>();
  * d'échec il n'est retenté qu'après 10 min. Avant ce correctif, un serveur lent était retenté en série à chaque
  * appel et `tools/list` prenait 22 s (« tools fetch failed — Request timed out » dans `claude mcp list`).
  */
-export async function hubTools(): Promise<(Remote & { server: string })[]> {
-  const names = Object.keys(await userServers()).sort();
+export async function hubTools(
+  builtinOnly = false,
+): Promise<(Remote & { server: string })[]> {
+  // builtinOnly : client qui déclare déjà lui-même les serveurs de ~/.claude.json (Claude Code, route /mcp/core).
+  const names = Object.keys(await userServers())
+    .filter((n) => !builtinOnly || n in BUILTIN)
+    .sort();
   const lists = await Promise.all(
     names.map(async (name): Promise<Remote[]> => {
       const cached = toolCache.get(name);
