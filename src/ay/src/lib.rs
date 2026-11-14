@@ -1,0 +1,681 @@
+//! `ay`: the monorepo's multicall CLI. Each command forwards its arguments to the library
+//! that owns the logic (archguard, xtk, depot-cli, aphrody-remote, stack-bench) or to an
+//! external program (`gamescope-rs`, `just` recipes). See docs/ay/NAMING.md for the command table.
+//! `ay build` drives cargo itself (see [`build`]).
+
+use clap::{Parser, Subcommand};
+use std::path::PathBuf;
+use std::process::Command;
+
+pub mod ai;
+pub mod build;
+pub mod bump;
+pub mod bun;
+pub mod chromium;
+pub mod code;
+mod exec;
+pub mod low;
+pub mod self_update;
+pub mod ui;
+
+/// Arguments forwarded verbatim to the command's own parser (including `--help`).
+#[derive(clap::Args, Debug, PartialEq)]
+pub struct Rest {
+    #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+    pub args: Vec<String>,
+}
+
+/// Commands by area, after the alphabetical table (`ay --help`).
+const OVERVIEW: &str = "\
+Areas:
+  repo       arch, lock, manifests, git, ingest, graph, conformance, brand
+  toolchain  up, doctor, sys, build, self-update, rt
+  bun        bun (upstream watch), docs (Bun docs index), flat (fork crates in src/bun-flat), hash, time
+  chromium   chromium (fr1 build chain), gclient, fetch, gn, ninja, cipd, cl, vpy, engines (V8, JSC, Dawn, wgpu)
+  fleet      ssh, deploy, auth, secret, vault, ai, agents
+  linux      omarchy, linux, pkg (Omarchy quattro command center + CachyOS kernel/pkg/WSL2 via aphrody-omarchy)
+  measure    bench, time
+  design     design (DESIGN.md lint/export/spec via aphrody-ui; stitch/push via ai-os), jules (ai-os jules), ui (aphrody-ui fusion)
+  gaming     gaming (Steam, Proton, Vulkan, DirectX via packages/gaming), steam (Steam data as JSON)
+  assets     assets (fetch, optimize, bundle, publish via packages/assets)
+
+Every command takes --help; machine output is --json where offered.
+Plan: docs/ay/MIGRATION.md; command table: docs/ay/NAMING.md";
+
+#[derive(Parser, Debug)]
+#[command(name = "ay", version, about = "Aphrody monorepo CLI", disable_help_subcommand = true, after_help = OVERVIEW)]
+struct Cli {
+    #[command(subcommand)]
+    command: Cmd,
+}
+
+#[derive(Subcommand, Debug, PartialEq)]
+pub enum Cmd {
+    /// Architecture gate ARCH-001..017: check, rules, graph
+    #[command(disable_help_flag = true)]
+    Arch(Rest),
+    /// Toolchain doctor
+    #[command(disable_help_flag = true)]
+    Doctor(Rest),
+    /// Regenerate src.lock.json, DEPS, .repo manifest and MAINTAINERS
+    #[command(disable_help_flag = true)]
+    Lock(Rest),
+    /// Generate governance manifests; `ay manifests verify` checks them
+    #[command(disable_help_flag = true)]
+    Manifests(Rest),
+    /// VCS tooling: worktree, fork, slim [--all], clone, gix, forge, audit, depot_tools shims, ...
+    #[command(disable_help_flag = true)]
+    Git(Rest),
+    /// Repository digest for LLM context
+    #[command(disable_help_flag = true)]
+    Ingest(Rest),
+    /// Tree-sitter code graph: `ay graph <path>` builds; build, query, path, explain, mcp
+    #[command(disable_help_flag = true)]
+    Graph(Rest),
+    /// aphrody.app: `ay deploy <project>|ls|logs|rollback|promote` (packages/deploy); containers: `ay deploy build|smoke|up|ps|products|shell|runtime|run` runs `just docker-<sub>`
+    #[command(disable_help_flag = true)]
+    Deploy(Rest),
+    /// Hardware and compiler benchmarks (Windows)
+    #[command(disable_help_flag = true)]
+    Bench(Rest),
+    /// Gamescope mode (runs the `gamescope-rs` binary)
+    #[command(disable_help_flag = true)]
+    Scope(Rest),
+    /// Gaming stack (packages/gaming): status, apps, proton, layers, dx, steamcmd, run, skills
+    #[command(disable_help_flag = true)]
+    Gaming(Rest),
+    /// Assets, download to deploy (packages/assets): list, verify, fetch, optimize, bundle, publish, attribution
+    #[command(disable_help_flag = true)]
+    Assets(Rest),
+    /// DESIGN.md lint, export, spec (aphrody-ui); Stitch client / push (ai-os)
+    #[command(disable_help_flag = true)]
+    Design(Rest),
+    /// Unified full-stack UI framework (`aphrody-ui::fusion`): targets, presets, components, manifest, render
+    #[command(disable_help_flag = true)]
+    Ui(Rest),
+    /// Google Jules coding agent: run [--wait], sessions, show, activities, approve, send, sources (ai-os jules)
+    #[command(disable_help_flag = true)]
+    Jules(Rest),
+    /// Patch stacks of the bun and Chromium forks: status, sync, check, pr, mark, gc, export (packages/upstream)
+    #[command(disable_help_flag = true)]
+    Upstream(Rest),
+    /// Omarchy (quattro) + CachyOS command center: commands, theme, plugin, font, manual, kernel, pkg, wsl
+    #[command(disable_help_flag = true)]
+    Omarchy(Rest),
+    /// Linux system layer: patchset versions, sync, patch stacks, kernel builds on fr1 or CI (aphrody-omarchy)
+    #[command(disable_help_flag = true)]
+    Linux(Rest),
+    /// Package recipes for every distro: list, matrix, gen, build, check (aphrody-omarchy, infra/pkg)
+    #[command(disable_help_flag = true)]
+    Pkg(Rest),
+    /// Release from fr1: tags, GitHub release, crates.io, npm, PyPI, vcpkg/CMake; dry-run unless `publish` (packages/release)
+    #[command(disable_help_flag = true)]
+    Release(Rest),
+    /// bun-LFS (third_party/lfs/bun, GitHub CI): build, logs, wsl (runs `just lfs-<sub>`)
+    #[command(disable_help_flag = true)]
+    Lfs(Rest),
+    /// Pure-Rust SSH (russh): exec <host|all|a,b> -- cmd, cp, hosts, check
+    #[command(disable_help_flag = true)]
+    Ssh(Rest),
+    /// Brand assets (assets/brand): build [--deploy], banner <id>, check-ico (runs `aphrody-brand`)
+    #[command(disable_help_flag = true)]
+    Brand(Rest),
+    /// Runtimes: Python engines (uv, RustPython), Bun versions, package managers, PyTorch
+    #[command(disable_help_flag = true)]
+    Rt(Rest),
+    /// gclient in Rust: revinfo, getdep, setdep, sync (gitoxide), hooks, root
+    #[command(disable_help_flag = true)]
+    Gclient(Rest),
+    /// Write .gclient for a depot_tools fetch config (chromium, v8, webrtc, ...) and sync it
+    #[command(disable_help_flag = true)]
+    Fetch(Rest),
+    /// vpython on uv: run Python in a vpython.toml / PEP 723 environment
+    #[command(disable_help_flag = true)]
+    Vpy(Rest),
+    /// git cl on jj and Gerrit REST: upload, status, issue
+    #[command(disable_help_flag = true)]
+    Cl(Rest),
+    /// Official CIPD client from depot_tools
+    #[command(disable_help_flag = true)]
+    Cipd(Rest),
+    /// autoninja logic: n2 or ninja locally, upstream autoninja for Siso output directories
+    #[command(disable_help_flag = true)]
+    Ninja(Rest),
+    /// The checkout's gn binary (buildtools/<platform>/gn)
+    #[command(disable_help_flag = true)]
+    Gn(Rest),
+    /// Every authentication of the fleet (env-kit): status, repair [--browser], gh-secrets, tunnels, rotate
+    #[command(disable_help_flag = true)]
+    Auth(Rest),
+    /// OS secret store (DPAPI on Windows, systemd-creds on Linux): info, list, set, exec, pipe, import
+    #[command(disable_help_flag = true)]
+    Secret(Rest),
+    /// Vault (docs/infra/VAULT.md): init, add, import-chrome-csv, export-chrome-csv, sync, status, rotate, hosts
+    #[command(disable_help_flag = true)]
+    Vault(Rest),
+    /// Conformance suites: [--fetch] [suite...] writes conformance/results/; `channels [platform]` refreshes Chrome pins
+    #[command(disable_help_flag = true)]
+    Conformance(Rest),
+    /// Build the workspace for a cross-compilation preset (--list shows toolchain status)
+    Build(build::BuildArgs),
+    /// Machine profile: OS, firmware/SMBIOS, CPUID, PCI, GPUs, disks, virtualization, toolchains
+    Sys(SysArgs),
+    /// Install and update the toolchain from tools.toml: --check, --list, --setup
+    Up(up::UpArgs),
+    /// Cross-platform binary & PATH manager (packages/machine): status, purge, which, add, rm, link, unlink
+    #[command(disable_help_flag = true)]
+    Bin(Rest),
+    /// Cross-platform PATH manager alias (packages/machine)
+    #[command(disable_help_flag = true)]
+    Path(Rest),
+    /// Tree-sitter codebase index & doc generator (packages/core)
+    #[command(disable_help_flag = true)]
+    Index(Rest),
+    /// Localization catalog checker & key extractor (packages/i18n)
+    #[command(disable_help_flag = true)]
+    I18n(Rest),
+    /// Cross-shell conformance matrix (packages/machine/matrix)
+    #[command(disable_help_flag = true)]
+    ShellMatrix(Rest),
+    /// Reverse engineering, Ghidra P-Code/Pseudo-C, MinGW-REA, and Lua 5.2 bytecode analysis (aphrody-re)
+    #[command(disable_help_flag = true)]
+    Re(Rest),
+    /// Update `ay` itself from the dist GitHub Releases (axoupdater)
+    SelfUpdate(self_update::SelfUpdateArgs),
+    /// Upstream watch of oven-sh/bun for the fork: watch [--json] [--apply] [--install-schedule], bump [--write]
+    Bun(bun::BunArgs),
+    /// Unified monorepo auto-bump via `bun pm`, `depot-gclient`, `crates.io` (`cargo update`) and `ay bun bump`
+    Bump(bump::BumpArgs),
+    /// Parser-backed refactoring and staging: refs <path>, mv <from> <to> [--dry-run], stage <file> --match <text>
+    Code(code::CodeArgs),
+    /// Inference providers behind LiteLLM (infra/ai/ai.toml): ls, install, service, pull, config, check, auth, push, up
+    Ai(ai::AiArgs),
+    #[command(flatten)]
+    Low(low::LowCmd),
+}
+
+#[derive(clap::Args, Debug, PartialEq, Default)]
+pub struct SysArgs {
+    /// Full profile as JSON (schema `sys::SCHEMA_VERSION`)
+    #[arg(long)]
+    pub json: bool,
+    /// Keep serials, UUIDs and public addresses (local use only, never agent context)
+    #[arg(long)]
+    pub ids: bool,
+    /// Skip probing toolchain versions
+    #[arg(long)]
+    pub no_tools: bool,
+}
+
+/// Depot subcommands that live under `ay graph`.
+const GRAPH_SUBCOMMANDS: &[&str] = &["build", "query", "path", "explain", "mcp"];
+/// `ay deploy <sub>` subcommands that stay container recipes (`just docker-<sub>`); anything else is aphrody.app.
+const DOCKER_SUBCOMMANDS: &[&str] = &["build", "smoke", "up", "ps", "products", "shell", "runtime", "run"];
+
+/// A resolved invocation: which library (or external program) runs and with what arguments.
+#[derive(Debug, PartialEq)]
+pub enum Route {
+    Arch(Vec<String>),
+    Xtk(Vec<String>),
+    Depot(&'static str, Vec<String>),
+    Design(Vec<String>),
+    Ui(Vec<String>),
+    Linux(Vec<String>),
+    Omarchy(Vec<String>),
+    Pkg(Vec<String>),
+    Bench(Vec<String>),
+    External(&'static str, Vec<String>),
+    /// `bun packages/env-kit/src/cli.ts <args>` (TypeScript, run in place by bun).
+    EnvKit(Vec<String>),
+    /// `bun packages/<name>/src/cli.ts <args>` (a Bun package CLI of the monorepo, run in place).
+    Package(&'static str, Vec<String>),
+    Ssh(Vec<String>),
+    Conformance(Vec<String>),
+    Re(Vec<String>),
+    Rt(Vec<String>),
+    Chromium(chromium::Tool, Vec<String>),
+    Build(build::BuildArgs),
+    Sys(SysArgs),
+    Up(up::UpArgs),
+    SelfUpdate(self_update::SelfUpdateArgs),
+    Bun(bun::BunArgs),
+    Bump(bump::BumpArgs),
+    Code(code::CodeArgs),
+    Ai(ai::AiArgs),
+    Low(low::LowCmd),
+}
+
+fn prefixed(head: &[&str], rest: &[String]) -> Vec<String> {
+    head.iter().map(|s| s.to_string()).chain(rest.iter().cloned()).collect()
+}
+
+/// Map a parsed command to its route. Pure, so it is unit-tested without side effects.
+pub fn route(cmd: Cmd) -> Route {
+    match cmd {
+        Cmd::Arch(r) => Route::Arch(r.args),
+        Cmd::Doctor(r) => Route::Xtk(prefixed(&["doctor"], &r.args)),
+        Cmd::Lock(r) => Route::Xtk(prefixed(&["lock"], &r.args)),
+        Cmd::Manifests(r) => match r.args.first().map(String::as_str) {
+            // `ay manifests verify [root]`: the optional positional root becomes `--root`.
+            Some("verify") => Route::Xtk(
+                ["manifests", "--check"]
+                    .into_iter()
+                    .map(String::from)
+                    .chain(r.args[1..].iter().flat_map(|a| {
+                        if a.starts_with('-') { vec![a.clone()] } else { vec!["--root".to_string(), a.clone()] }
+                    }))
+                    .collect(),
+            ),
+            _ => Route::Xtk(prefixed(&["manifests"], &r.args)),
+        },
+        Cmd::Git(r) => {
+            let first = r.args.first().map(String::as_str);
+            if first == Some("slim") && r.args.iter().any(|a| a == "--all") {
+                let rest: Vec<String> = r.args[1..].iter().filter(|a| *a != "--all").cloned().collect();
+                Route::Xtk(prefixed(&["slim-all"], &rest))
+            } else if first == Some("audit") {
+                Route::Xtk(prefixed(&["audit-vcs"], &r.args[1..]))
+            } else {
+                Route::Depot("ay git", r.args)
+            }
+        }
+        Cmd::Ingest(r) => Route::Depot("ay", prefixed(&["ingest"], &r.args)),
+        Cmd::Graph(r) => match r.args.first().map(String::as_str) {
+            Some(sub) if GRAPH_SUBCOMMANDS.contains(&sub) || sub == "--help" => {
+                Route::Depot("ay", prefixed(&["graph"], &r.args))
+            }
+            _ => Route::Depot("ay", prefixed(&["graph", "build"], &r.args)),
+        },
+        Cmd::Deploy(r) => {
+            if r.args.first().is_some_and(|s| !DOCKER_SUBCOMMANDS.contains(&s.as_str())) {
+                return Route::Package("deploy", r.args);
+            }
+            let (sub, rest) = r.args.split_first().map_or(("ps", &[][..]), |(s, rest)| (s.as_str(), rest));
+            Route::External("just", prefixed(&[format!("docker-{sub}").as_str()], rest))
+        }
+        Cmd::Bench(r) => Route::Bench(r.args),
+        Cmd::Scope(r) => Route::External("gamescope-rs", r.args),
+        Cmd::Gaming(r) => Route::Package("gaming", r.args),
+        Cmd::Assets(r) => Route::Package("assets", r.args),
+        Cmd::Design(r) => match r.args.first().map(String::as_str) {
+            Some("stitch" | "push") => Route::Package("ai-os", r.args),
+            _ => Route::Design(r.args),
+        },
+        Cmd::Ui(r) => Route::Ui(r.args),
+        Cmd::Jules(r) => Route::Package("ai-os", prefixed(&["jules"], &r.args)),
+        Cmd::Upstream(r) => Route::Package("upstream", r.args),
+        Cmd::Omarchy(r) => Route::Omarchy(r.args),
+        Cmd::Linux(r) => Route::Linux(r.args),
+        Cmd::Pkg(r) => Route::Pkg(r.args),
+        Cmd::Release(r) => Route::Package("release", r.args),
+        Cmd::Lfs(r) => {
+            let (sub, rest) = r.args.split_first().map_or(("build", &[][..]), |(s, rest)| (s.as_str(), rest));
+            Route::External("just", prefixed(&[format!("lfs-{sub}").as_str()], rest))
+        }
+        Cmd::Ssh(r) => Route::Ssh(r.args),
+        Cmd::Conformance(r) => Route::Conformance(r.args),
+        Cmd::Brand(r) => Route::External("aphrody-brand", r.args),
+        Cmd::Rt(r) => Route::Rt(r.args),
+        Cmd::Gclient(r) => Route::Chromium(chromium::Tool::Gclient, r.args),
+        Cmd::Fetch(r) => Route::Chromium(chromium::Tool::Fetch, r.args),
+        Cmd::Vpy(r) => Route::Chromium(chromium::Tool::Vpy, r.args),
+        Cmd::Cl(r) => Route::Chromium(chromium::Tool::Cl, r.args),
+        Cmd::Cipd(r) => Route::Chromium(chromium::Tool::Cipd, r.args),
+        Cmd::Ninja(r) => Route::Chromium(chromium::Tool::Ninja, r.args),
+        Cmd::Gn(r) => Route::Chromium(chromium::Tool::Gn, r.args),
+        Cmd::Auth(r) => Route::EnvKit(prefixed(&["auth"], &r.args)),
+        Cmd::Secret(r) => Route::EnvKit(prefixed(&["secret"], &r.args)),
+        Cmd::Vault(r) => Route::EnvKit(prefixed(&["vault"], &r.args)),
+        Cmd::Build(b) => Route::Build(b),
+        Cmd::Sys(s) => Route::Sys(s),
+        Cmd::Up(u) => Route::Up(u),
+        Cmd::Bin(r) | Cmd::Path(r) => Route::Package("machine", prefixed(&["binpath"], &r.args)),
+        Cmd::Index(r) => Route::Package("core", r.args),
+        Cmd::I18n(r) => Route::Package("i18n", r.args),
+        Cmd::ShellMatrix(r) => Route::Package("machine", prefixed(&["matrix"], &r.args)),
+        Cmd::Re(r) => Route::Re(r.args),
+        Cmd::SelfUpdate(a) => Route::SelfUpdate(a),
+        Cmd::Bun(a) => Route::Bun(a),
+        Cmd::Bump(a) => Route::Bump(a),
+        Cmd::Code(a) => Route::Code(a),
+        Cmd::Ai(a) => Route::Ai(a),
+        Cmd::Low(c) => Route::Low(c),
+    }
+}
+
+fn run_sys(a: SysArgs) -> i32 {
+    let profile = sys::probe(sys::Options { skip_toolchains: a.no_tools, include_identifiers: a.ids });
+    if a.json {
+        match serde_json::to_string_pretty(&profile) {
+            Ok(s) => println!("{s}"),
+            Err(e) => {
+                eprintln!("ay sys: {e}");
+                return 1;
+            }
+        }
+    } else {
+        print!("{}", profile.summary());
+    }
+    0
+}
+
+fn run_route(route: Route) -> i32 {
+    match route {
+        Route::Arch(args) => archguard::cli::run("ay arch", &args),
+        Route::Xtk(args) => xtk::run("ay", &args),
+        Route::Depot(name, args) => depot_cli::run(name, &args),
+        Route::Design(args) => aphrody_ui::design_md::run_cli(&repo_root(), &args),
+        Route::Ui(args) => ui::run(&args),
+        Route::Linux(args) => aphrody_omarchy::cli::run_linux_args(&args),
+        Route::Omarchy(args) => aphrody_omarchy::cli::run_omarchy_args(&args),
+        Route::Pkg(args) => aphrody_omarchy::cli::run_pkg_args(&args),
+        Route::Bench(args) => run_bench(&args),
+        Route::External(program, args) => exec::run_external(program, &args),
+        Route::Package(name, args) => exec::run_package(name, &args),
+        Route::EnvKit(args) => exec::run_env_kit(&args),
+        Route::Ssh(args) => remote::run("ay ssh", &args, &repo_root()),
+        Route::Conformance(args) => run_conformance(&args),
+        Route::Re(args) => aphrody_re::cli::run(&args),
+        Route::Rt(args) => rt::run("ay rt", &args),
+        Route::Chromium(tool, args) => chromium::run(tool, &args),
+        Route::Build(args) => build::run(args),
+        Route::Sys(args) => run_sys(args),
+        Route::Up(args) => up::run(args),
+        Route::SelfUpdate(args) => self_update::run(args),
+        Route::Bun(args) => bun::run(args),
+        Route::Bump(args) => bump::run(args),
+        Route::Code(a) => code::run(a),
+        Route::Ai(args) => ai::run(args),
+        Route::Low(c) => low::run(c),
+    }
+}
+
+fn run_conformance(args: &[String]) -> i32 {
+    match aphrody_conformance::cli::run(&repo_root(), args) {
+        Ok(out) => {
+            print!("{out}");
+            0
+        }
+        Err(err) => {
+            eprint!("{err}");
+            2
+        }
+    }
+}
+
+#[cfg(windows)]
+fn run_bench(args: &[String]) -> i32 {
+    stack_bench::cli::run("ay bench", args)
+}
+
+#[cfg(not(windows))]
+fn run_bench(_args: &[String]) -> i32 {
+    eprintln!("ay bench: the benchmark suite measures Win32 APIs and only runs on Windows");
+    1
+}
+
+/// Entry point: `args` excludes argv[0]. Returns the process exit code.
+pub fn run(args: &[String]) -> i32 {
+    let argv = std::iter::once("ay".to_string()).chain(args.iter().cloned());
+    let cli = match Cli::try_parse_from(argv) {
+        Ok(cli) => cli,
+        Err(err) => {
+            let code = if err.use_stderr() { 2 } else { 0 };
+            let _ = err.print();
+            return code;
+        }
+    };
+    run_route(route(cli.command))
+}
+
+/// Repository root: `$SRC_ROOT`, else the nearest ancestor of the current directory that holds
+/// `identity.toml` (or `src.lock.json`), else the fleet's read-only checkout `/srv/src`
+/// (infra/fleet `src-checkout-update`, on fr1, fr2 and prd), else the current directory.
+pub fn repo_root() -> PathBuf {
+    if let Some(root) = std::env::var_os("SRC_ROOT").filter(|v| !v.is_empty()) {
+        return PathBuf::from(root);
+    }
+    let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+    cwd.ancestors()
+        .find(|dir| dir.join("identity.toml").is_file() || dir.join("src.lock.json").is_file())
+        .map(PathBuf::from)
+        .or_else(|| {
+            let fleet = PathBuf::from(FLEET_CHECKOUT);
+            (cfg!(unix) && fleet.join("identity.toml").is_file()).then_some(fleet)
+        })
+        .unwrap_or(cwd)
+}
+
+/// Read-only src checkout kept up to date on every VPS (infra/fleet/*/resilience.conf `SRC_CHECKOUT`).
+pub const FLEET_CHECKOUT: &str = "/srv/src";
+
+/// Spawn `cmd`, inherit stdio, return its exit code (127 when it cannot start).
+pub fn status_of(cmd: &mut Command) -> i32 {
+    match cmd.status() {
+        Ok(status) => status.code().unwrap_or(1),
+        Err(err) => {
+            eprintln!("ay: cannot run {:?}: {err}", cmd.get_program());
+            127
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn parse(line: &str) -> Route {
+        let argv = std::iter::once("ay").chain(line.split_whitespace());
+        route(Cli::try_parse_from(argv).expect("parse").command)
+    }
+
+    fn v(items: &[&str]) -> Vec<String> {
+        items.iter().map(|s| s.to_string()).collect()
+    }
+
+    #[test]
+    fn arch_forwards_flags_and_help() {
+        assert_eq!(parse("arch check --strict --root ."), Route::Arch(v(&["check", "--strict", "--root", "."])));
+        assert_eq!(parse("arch --help"), Route::Arch(v(&["--help"])));
+    }
+
+    #[test]
+    fn xtk_commands() {
+        assert_eq!(parse("doctor"), Route::Xtk(v(&["doctor"])));
+        assert_eq!(parse("lock --lock-only"), Route::Xtk(v(&["lock", "--lock-only"])));
+        assert_eq!(parse("manifests"), Route::Xtk(v(&["manifests"])));
+        assert_eq!(parse("manifests verify ."), Route::Xtk(v(&["manifests", "--check", "--root", "."])));
+    }
+
+    #[test]
+    fn git_slim_all_uses_the_monorepo_pass() {
+        assert_eq!(parse("git slim --all --root X"), Route::Xtk(v(&["slim-all", "--root", "X"])));
+        assert_eq!(parse("git slim crates/x"), Route::Depot("ay git", v(&["slim", "crates/x"])));
+        assert_eq!(parse("git audit --json"), Route::Xtk(v(&["audit-vcs", "--json"])));
+        assert_eq!(parse("git worktree list ."), Route::Depot("ay git", v(&["worktree", "list", "."])));
+    }
+
+    #[test]
+    fn graph_defaults_to_build() {
+        assert_eq!(parse("graph src -o out"), Route::Depot("ay", v(&["graph", "build", "src", "-o", "out"])));
+        assert_eq!(parse("graph query Foo ."), Route::Depot("ay", v(&["graph", "query", "Foo", "."])));
+        assert_eq!(parse("ingest . -f json"), Route::Depot("ay", v(&["ingest", ".", "-f", "json"])));
+    }
+
+    #[test]
+    fn external_engines() {
+        assert_eq!(parse("deploy up edge fr2"), Route::External("just", v(&["docker-up", "edge", "fr2"])));
+        assert_eq!(parse("deploy"), Route::External("just", v(&["docker-ps"])));
+        assert_eq!(parse("deploy ls"), Route::Package("deploy", v(&["ls"])));
+        assert_eq!(parse("deploy aphrody --local"), Route::Package("deploy", v(&["aphrody", "--local"])));
+        assert_eq!(parse("deploy rollback aphrody"), Route::Package("deploy", v(&["rollback", "aphrody"])));
+        assert_eq!(parse("scope serve-web"), Route::External("gamescope-rs", v(&["serve-web"])));
+        assert_eq!(parse("lfs logs"), Route::External("just", v(&["lfs-logs"])));
+        assert_eq!(parse("lfs"), Route::External("just", v(&["lfs-build"])));
+    }
+
+    #[test]
+    fn auth_and_secret_go_to_env_kit() {
+        assert_eq!(parse("auth status --json"), Route::EnvKit(v(&["auth", "status", "--json"])));
+        assert_eq!(parse("auth repair --browser"), Route::EnvKit(v(&["auth", "repair", "--browser"])));
+        assert_eq!(parse("secret exec CF -- wrangler deploy"), Route::EnvKit(v(&["secret", "exec", "CF", "--", "wrangler", "deploy"])));
+        assert_eq!(parse("secret --help"), Route::EnvKit(v(&["secret", "--help"])));
+        assert_eq!(parse("vault sync --force"), Route::EnvKit(v(&["vault", "sync", "--force"])));
+    }
+
+    #[test]
+    fn chromium_tools() {
+        use chromium::Tool;
+        assert_eq!(parse("gclient revinfo --deps all"), Route::Chromium(Tool::Gclient, v(&["revinfo", "--deps", "all"])));
+        assert_eq!(parse("fetch --list"), Route::Chromium(Tool::Fetch, v(&["--list"])));
+        assert_eq!(parse("vpy -c pass"), Route::Chromium(Tool::Vpy, v(&["-c", "pass"])));
+        assert_eq!(parse("ninja -C out/x chrome"), Route::Chromium(Tool::Ninja, v(&["-C", "out/x", "chrome"])));
+        assert_eq!(parse("cipd version"), Route::Chromium(Tool::Cipd, v(&["version"])));
+        assert_eq!(parse("gn gen out/x"), Route::Chromium(Tool::Gn, v(&["gen", "out/x"])));
+    }
+
+    #[test]
+    fn ssh_forwards_everything() {
+        assert_eq!(parse("ssh exec all -- uname -srm"), Route::Ssh(v(&["exec", "all", "--", "uname", "-srm"])));
+        assert_eq!(parse("ssh --help"), Route::Ssh(v(&["--help"])));
+        assert_eq!(parse("ssh cp a prd:/tmp/"), Route::Ssh(v(&["cp", "a", "prd:/tmp/"])));
+    }
+
+    #[test]
+    fn build_parses_targets_and_cargo_args() {
+        let Route::Build(b) = parse("build -t wasm32 --target linux-musl --release -- -p ffi") else {
+            panic!("not a build route");
+        };
+        assert_eq!(b.targets, v(&["wasm32", "linux-musl"]));
+        assert!(b.release && !b.list && !b.dry_run);
+        assert_eq!(b.cargo_args, v(&["-p", "ffi"]));
+        assert_eq!(run(&v(&["build", "--target", "nope-nope", "--dry-run"])), 2);
+    }
+
+    #[test]
+    fn sys_flags() {
+        assert_eq!(parse("sys --json --no-tools"), Route::Sys(SysArgs { json: true, ids: false, no_tools: true }));
+        assert_eq!(parse("sys"), Route::Sys(SysArgs::default()));
+    }
+
+    #[test]
+    fn ui_routes_to_fusion_cli() {
+        assert_eq!(parse("ui targets --json"), Route::Ui(v(&["targets", "--json"])));
+        assert_eq!(
+            parse("ui render --page studio-workspace --target web-wasm-ssr"),
+            Route::Ui(v(&["render", "--page", "studio-workspace", "--target", "web-wasm-ssr"]))
+        );
+    }
+
+    #[test]
+    fn up_and_self_update_flags() {
+        let Route::Up(u) = parse("up --check just ripgrep") else { panic!("not up") };
+        assert!(u.check && !u.list && !u.setup);
+        assert_eq!(u.tools, v(&["just", "ripgrep"]));
+        assert_eq!(parse("up"), Route::Up(up::UpArgs::default()));
+        let Route::Up(u) = parse("up --setup") else { panic!("not up") };
+        assert!(u.setup);
+        assert_eq!(run(&v(&["up", "--check", "--list"])), 2, "conflicting flags");
+        assert_eq!(run(&v(&["up", "--list", "--manifest", "no/such/tools.toml"])), 2);
+        assert_eq!(parse("self-update --check"), Route::SelfUpdate(self_update::SelfUpdateArgs { check: true, version: None }));
+        assert_eq!(
+            parse("self-update --version 0.3.0"),
+            Route::SelfUpdate(self_update::SelfUpdateArgs { check: false, version: Some("0.3.0".into()) })
+        );
+    }
+
+    #[test]
+    fn ai_subcommands() {
+        let Route::Ai(a) = parse("ai check --json --env-file x.env") else { panic!("not ai") };
+        assert_eq!(a.cmd, Some(ai::AiCmd::Check));
+        assert!(a.json);
+        assert_eq!(a.env_files, vec![PathBuf::from("x.env")]);
+        let Route::Ai(a) = parse("ai service ollama litellm --remove") else { panic!("not ai") };
+        assert_eq!(a.cmd, Some(ai::AiCmd::Service { ids: v(&["ollama", "litellm"]), remove: true }));
+        assert_eq!(parse("ai"), Route::Ai(ai::AiArgs::default()));
+    }
+
+    #[test]
+    fn conformance_and_manifests_verify() {
+        assert_eq!(parse("conformance --fetch wpt"), Route::Conformance(v(&["--fetch", "wpt"])));
+        assert_eq!(parse("manifests verify"), Route::Xtk(v(&["manifests", "--check"])));
+        assert_eq!(parse("re --ghidra target/debug/ay.exe"), Route::Re(v(&["--ghidra", "target/debug/ay.exe"])));
+    }
+
+    #[test]
+    fn low_level_commands() {
+        use low::LowCmd;
+        assert!(matches!(parse("docs bun serve --json"), Route::Low(LowCmd::Docs(_))));
+        assert!(matches!(parse("flat check"), Route::Low(LowCmd::Flat(_))));
+        assert!(matches!(parse("hash Cargo.lock"), Route::Low(LowCmd::Hash(_))));
+        assert!(matches!(parse("time -n 3 -- ay --version"), Route::Low(LowCmd::Time(_))));
+        assert!(matches!(parse("chromium --dry-run build d8"), Route::Low(LowCmd::Chromium(_))));
+        assert_eq!(parse("engines matrix --json"), Route::Low(LowCmd::Engines(Rest { args: v(&["matrix", "--json"]) })));
+        assert_eq!(parse("agents plan goal"), Route::Low(LowCmd::Agents(Rest { args: v(&["plan", "goal"]) })));
+        assert_eq!(run(&v(&["chromium", "--dry-run", "status"])), 0);
+    }
+
+    #[test]
+    fn gaming_runs_the_bun_package() {
+        assert_eq!(parse("gaming status --json"), Route::Package("gaming", v(&["status", "--json"])));
+        assert!(matches!(parse("steam apps --filter proton"), Route::Low(_)));
+    }
+
+    #[test]
+    fn assets_runs_the_bun_package() {
+        assert_eq!(parse("assets optimize --kind=texture"), Route::Package("assets", v(&["optimize", "--kind=texture"])));
+    }
+
+    #[test]
+    fn brand_runs_the_brand_binary() {
+        assert_eq!(parse("brand build --deploy"), Route::External("aphrody-brand", v(&["build", "--deploy"])));
+    }
+
+    #[test]
+    fn design_and_jules_run_their_packages() {
+        assert_eq!(parse("design lint --format text"), Route::Design(v(&["lint", "--format", "text"])));
+        assert_eq!(parse("design stitch projects"), Route::Package("ai-os", v(&["stitch", "projects"])));
+        assert_eq!(parse("jules run --wait -"), Route::Package("ai-os", v(&["jules", "run", "--wait", "-"])));
+    }
+
+    #[test]
+    fn upstream_runs_the_bun_package() {
+        assert_eq!(parse("upstream status bun --json"), Route::Package("upstream", v(&["status", "bun", "--json"])));
+        assert_eq!(parse("upstream --help"), Route::Package("upstream", v(&["--help"])));
+    }
+
+    #[test]
+    fn linux_pkg_and_omarchy_run_aphrody_omarchy() {
+        assert_eq!(parse("omarchy commands --check"), Route::Omarchy(v(&["commands", "--check"])));
+        assert_eq!(parse("linux status --json"), Route::Linux(v(&["status", "--json"])));
+        assert_eq!(parse("pkg gen all --target arch"), Route::Pkg(v(&["gen", "all", "--target", "arch"])));
+    }
+
+    #[test]
+    fn release_runs_the_release_package() {
+        assert_eq!(parse("release dry-run --only crates"), Route::Package("release", v(&["dry-run", "--only", "crates"])));
+    }
+
+    #[test]
+    fn unknown_command_is_a_usage_error() {
+        assert_eq!(run(&v(&["nope"])), 2);
+    }
+
+    #[test]
+    fn bun_watch_and_bump() {
+        let Route::Bun(b) = parse("bun watch --json --apply") else { panic!("not bun") };
+        let Some(bun::BunCmd::Watch(w)) = b.cmd else { panic!("not watch") };
+        assert!(w.json && w.apply && !w.dry_run && !w.install_schedule);
+        assert_eq!(w.every, 6);
+        let Route::Bun(b) = parse("bun watch --install-schedule --every 2 --checkout x") else { panic!("not bun") };
+        let Some(bun::BunCmd::Watch(w)) = b.cmd else { panic!("not watch") };
+        assert!(w.install_schedule && w.every == 2);
+        assert_eq!(w.checkout, Some(PathBuf::from("x")));
+        let Route::Bun(b) = parse("bun bump --to 1.4.5 --write") else { panic!("not bun") };
+        assert_eq!(b.cmd, Some(bun::BunCmd::Bump(bun::BumpArgs { to: Some("1.4.5".into()), write: true, json: false })));
+        assert_eq!(parse("bun"), Route::Bun(bun::BunArgs::default()));
+        assert_eq!(run(&v(&["bun", "watch", "--install-schedule", "--json"])), 2, "conflicting flags");
+        assert_eq!(run(&v(&["bun", "watch", "--every", "0"])), 2);
+        assert_eq!(run(&v(&["bun", "wach"])), 2);
+    }
+}

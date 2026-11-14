@@ -1,4 +1,4 @@
-# Gamescope console UI (crates/gamescope-core, crates/gamescope-web-wasm): unit tests of the UI logic, the
+# Gamescope console UI (src/wayland/gamescope/core, src/wayland/gamescope/web-wasm): unit tests of the UI logic, the
 # wasm32-unknown-unknown build with wasm-bindgen (CLI version equal to the crate in the lockfile), and publication of
 # gamescope.js and gamescope_bg.wasm to R2 aphrody-assets/gamescope (https://cdn.aphrody.com/gamescope/). Runs on fr1.
 name: gamescope
@@ -6,9 +6,9 @@ on:
   push:
     branches: [main]
     paths:
-      - "crates/gamescope-core/**"
-      - "crates/gamescope-web-wasm/**"
-      - "crates/gamescope-wgsl/**"
+      - "src/wayland/gamescope/core/**"
+      - "src/wayland/gamescope/web-wasm/**"
+      - "src/wayland/gamescope/wgsl/**"
       - ".github/workflows/gamescope.yml"
   workflow_dispatch:
 concurrency:

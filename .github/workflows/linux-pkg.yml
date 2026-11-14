@@ -11,11 +11,11 @@ on:
         "infra/pkg/**",
         "infra/linux/**",
         "infra/fleet/sysctl/**",
-        "crates/unix-omarchy/**",
+        "src/posix/omarchy/**",
         ".github/workflows/linux-pkg.yml",
       ]
   pull_request:
-    paths: ["infra/pkg/**", "infra/linux/**", "crates/unix-omarchy/**"]
+    paths: ["infra/pkg/**", "infra/linux/**", "src/posix/omarchy/**"]
   workflow_dispatch:
 concurrency:
   group: linux-pkg-${{ github.ref }}

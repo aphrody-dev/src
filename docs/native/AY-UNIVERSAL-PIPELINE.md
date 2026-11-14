@@ -1,6 +1,6 @@
 # `ay` Universal Compiler, Lifter & Monorepo Pipeline (`docs/native/AY-UNIVERSAL-PIPELINE.md`)
 
-Architectural evaluation and blueprint for evolving [`ay`](file:///C:/src/crates/ay) and [`src/`](file:///C:/src/src) into a universal polyglot parser, linter, formatter, minifier, cross-compiler, binary lifter/decompiler, language/OS converter, packager, deployer, and publisher built on **Tree-sitter**, **LLVM ThinLTO + MLIR**, and **WebAssembly Component / Bindgen descriptors**.
+Architectural evaluation and blueprint for evolving [`ay`](file:///C:/src/src/ay) and [`src/`](file:///C:/src/src) into a universal polyglot parser, linter, formatter, minifier, cross-compiler, binary lifter/decompiler, language/OS converter, packager, deployer, and publisher built on **Tree-sitter**, **LLVM ThinLTO + MLIR**, and **WebAssembly Component / Bindgen descriptors**.
 
 All upstream references below were verified live via GitHub REST API and LLVM documentation on **2026-11-14**.
 
@@ -21,7 +21,7 @@ All upstream references below were verified live via GitHub REST API and LLVM do
 
 A single representation **cannot** simultaneously preserve whitespace/comments for formatting, incremental syntax recovery on broken files, C++/Rust static semantics, cross-module register/inline heuristics, and stripped machine-code control flow.
 
-The clean engineering design for `ay` is **not** to force Tree-sitter to become a code generator, nor to force LLVM IR to format source code. Instead, `ay` unifies **five specialized IR tiers** connected by one content-addressed store ([`crates/depot-cas`](file:///C:/src/crates/depot-cas), FastCDC + BLAKE3) and one symbol GUID namespace:
+The clean engineering design for `ay` is **not** to force Tree-sitter to become a code generator, nor to force LLVM IR to format source code. Instead, `ay` unifies **five specialized IR tiers** connected by one content-addressed store ([`src/depot/cas`](file:///C:/src/src/depot/cas), FastCDC + BLAKE3) and one symbol GUID namespace:
 
 ```mermaid
 flowchart TD
@@ -29,12 +29,12 @@ flowchart TD
     BIN_IN["Any Existing Binary\n(PE64, ELF64, Mach-O, Wasm, Lua 5.2, SPIR-V)"]
 
     subgraph T1["Tier 1 — Concrete Syntax & Scope Graph (ay parse / fmt / lint / codemod)"]
-        TS["Tree-sitter 0.27 CST + ropey + tags.scm\n(crates/core + oxc / bun_css / bun_format)"]
+        TS["Tree-sitter 0.27 CST + ropey + tags.scm\n(src/core + oxc / bun_css / bun_format)"]
         SG["Source Symbol & Call Summary\n(AstFileSummary, < 1 ms incremental)"]
         TS --> SG
     end
 
-    subgraph CAS["Unified Monorepo Index & CAS (crates/depot-cas: FastCDC + BLAKE3)"]
+    subgraph CAS["Unified Monorepo Index & CAS (src/depot/cas: FastCDC + BLAKE3)"]
         IDX["Merged Function-Granular Graph\nSource CST Hash <-> ThinLTO GUID <-> Artifact Digest"]
     end
 
@@ -81,7 +81,7 @@ In `clang.llvm.org/docs/ThinLTO.html`, ThinLTO scales whole-program optimization
 
 Notice the structural duality:
 
-- **Tree-sitter (`crates/core`)** computes a compact per-file `AstFileSummary` (`symbols`, `calls`, `imports`, `Span`) in `< 1 ms` _before_ typechecking.
+- **Tree-sitter (`src/core`)** computes a compact per-file `AstFileSummary` (`symbols`, `calls`, `imports`, `Span`) in `< 1 ms` _before_ typechecking.
 - **LLVM ThinLTO** computes a compact per-module `ModuleSummaryIndex` (function GUIDs, instruction counts, call/ref edges, linkage) _after_ frontend lowering.
 
 **How `ay` fuses them (`ay graph` + `ay build`)**:
@@ -98,7 +98,7 @@ Upstream `wasm-bindgen` (`0.2.130`) works by emitting a binary interface descrip
 
 - **Single Source of Truth**: An interface is declared once as either a freestanding C11 header (`src/include/uapi/ay/*.h` parsed via Clang `CIR`/AST) or a `.wit` world.
 - **Dual Emission**:
-  1. **Zero-Copy Native ABI**: Generates `sys.h` (C11/C++23), `crates/core-capi` (`extern "C"` Rust), `packages/core/src/sys.ts` (`bun:ffi`), `ndk_theme.h` (Android JNI/NDK), `.NET 11 [LibraryImport]`, and `dart:ffi`.
+  1. **Zero-Copy Native ABI**: Generates `sys.h` (C11/C++23), `src/core/capi` (`extern "C"` Rust), `packages/core/src/sys.ts` (`bun:ffi`), `ndk_theme.h` (Android JNI/NDK), `.NET 11 [LibraryImport]`, and `dart:ffi`.
   2. **WebAssembly 3.0 & Component Model**: Emits a custom interface section into `.wasm`, runs `walrus` / `wasm-tools component new` + Binaryen `wasm-opt -O4`, and generates tiny zero-dep JS/WebGPU hosts (< 5 KB, like [`m3-host.js`](file:///C:/src/apps/aphrody/public/m3/m3-host.js)) and TypeScript `.d.ts` definitions (`ts-gen` pattern).
 
 ### 3.3 Honest Matrix: Compile, Decompile, Convert & Execute Across Languages and OSes
@@ -107,7 +107,7 @@ Every operation `ay` exposes must declare its **soundness class** explicitly —
 
 | Operation                           | Input -> Output                                                                         | Soundness Class                                     | Engine Stack in `ay`                                                                                                                 |
 | :---------------------------------- | :-------------------------------------------------------------------------------------- | :-------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
-| **Parse / Index / Query**           | 40+ languages -> CST, Symbol/Call Graph, SARIF                                          | **Exact (Syntactic)**                               | `crates/core` (`tree-sitter` `0.27`, `tags.scm`, `ropey`)                                                                            |
+| **Parse / Index / Query**           | 40+ languages -> CST, Symbol/Call Graph, SARIF                                          | **Exact (Syntactic)**                               | `src/core` (`tree-sitter` `0.27`, `tags.scm`, `ropey`)                                                                            |
 | **Format / Lint**                   | Source -> Canonical Source + Diagnostics                                                | **Exact (Syntactic/Semantic)**                      | `bun fmt`/`oxc` (JS/TS/JSON/CSS), `clang-format`/`clang-tidy` (C/C++), `rustfmt`/`clippy` (Rust), `ruff` (Python)                    |
 | **Minify (Code & Binary)**          | JS/CSS/HTML/Wasm/ELF/PE -> Minimal Payload                                              | **Semantics-Preserving**                            | `bun build --minify`, `wasm-opt -O4 --strip-debug`, `lld --icf=all --gc-sections` + `llvm-strip`, `BOLT`                             |
 | **Cross-Compile (Native & Wasm)**   | C, C++, Rust, Zig -> Windows PE64, Linux ELF64, macOS Mach-O, Android NDK, Wasm32/WASI  | **Exact (Compiler IR)**                             | Shared LLVM 24 (`clang`, `rustc`, `lld`, `wasi-sdk 34`) + pinned sysroots (`xwin`, NDK r30, glibc/musl)                              |
@@ -124,25 +124,25 @@ Every operation `ay` exposes must declare its **soundness class** explicitly —
 Nearly 70% of the foundational bricks already exist in `C:\src`; the remaining work is **wiring unified CLI verbs and ThinLTO/WIT descriptors** rather than rewriting compilers from scratch:
 
 1. **Tier 1 (CST, Query, Rope Codemods)**:
-   - Exists: [`crates/core`](file:///C:/src/crates/core) (`TreeSitterEngine`, `AstExtractor`, `GRAMMARS` registry, `ropey`), [`crates/core-capi`](file:///C:/src/crates/core-capi), [`crates/depot-migrate`](file:///C:/src/crates/depot-migrate).
-   - Next step: Add per-symbol BLAKE3 semantic-body hashing (`ast_body_hash` ignoring comments/trivia) to `AstSymbol` in `crates/core/src/symbols.rs`.
+   - Exists: [`src/core`](file:///C:/src/src/core) (`TreeSitterEngine`, `AstExtractor`, `GRAMMARS` registry, `ropey`), [`src/core/capi`](file:///C:/src/src/core/capi), [`src/depot/migrate`](file:///C:/src/src/depot/migrate).
+   - Next step: Add per-symbol BLAKE3 semantic-body hashing (`ast_body_hash` ignoring comments/trivia) to `AstSymbol` in `src/core/src/symbols.rs`.
 2. **Tier 2 (`ay bindgen` — C11 + Wasm + FFI Generator)**:
-   - Exists: Manual mirror across [`sys.h`](file:///C:/src/src/include/ay/sys.h), [`sys.rs`](file:///C:/src/crates/core-capi/src/sys.rs), [`sys.ts`](file:///C:/src/packages/core/src/sys.ts), [`ndk_theme.h`](file:///C:/src/packages/design/tokens/adapters/ndk_theme.h).
+   - Exists: Manual mirror across [`sys.h`](file:///C:/src/src/include/ay/sys.h), [`sys.rs`](file:///C:/src/src/core/capi/src/sys.rs), [`sys.ts`](file:///C:/src/packages/core/src/sys.ts), [`ndk_theme.h`](file:///C:/src/packages/design/tokens/adapters/ndk_theme.h).
    - Next step: Parse `src/include/uapi/ay/*.h` once with Tree-sitter C / `libclang` to auto-emit `sys.rs`, `sys.ts`, `.d.ts`, `.wit`, JNI C shims, and `.NET [LibraryImport]` with `--check` CI gate (same deterministic pattern as [`adapters.ts`](file:///C:/src/packages/design/src/adapters.ts)).
 3. **Tier 3 (LLVM 24 ThinLTO + Wasm 3.0 + Sysroots)**:
-   - Exists: [`src/Makefile`](file:///C:/src/src/Makefile) (`clang -flto=thin`, `lld-link`, `wasm-ld`, `wasi-sdk 34`, `wasm-opt -O4`), [`UNIFIED-TOOLCHAIN.md`](file:///C:/src/docs/native/llvm/UNIFIED-TOOLCHAIN.md) (`toolchain-157.toml` on R2), [`crates/ay/src/build.rs`](file:///C:/src/crates/ay/src/build.rs).
+   - Exists: [`src/Makefile`](file:///C:/src/src/Makefile) (`clang -flto=thin`, `lld-link`, `wasm-ld`, `wasi-sdk 34`, `wasm-opt -O4`), [`UNIFIED-TOOLCHAIN.md`](file:///C:/src/docs/native/llvm/UNIFIED-TOOLCHAIN.md) (`toolchain-157.toml` on R2), [`src/ay/src/build.rs`](file:///C:/src/src/ay/src/build.rs).
    - Next step: Expose `ay compile <path> --target <triple>` driving the shared LLVM 24 + `wasi-sdk` + `xwin`/NDK sysroots and indexing `.thinlto.bc` summaries in `depot-cas`.
 4. **Tier 4 (Binary Lifter, Decompiler & Migration)**:
-   - Exists: [`crates/depot-re`](file:///C:/src/crates/depot-re) (`goblin`, `iced-x86`, ABI classifier, Ghidra P-Code, MinGW-REA, Lua 5.2 disassembler), [`crates/depot-migrate`](file:///C:/src/crates/depot-migrate) (polyglot AST migrator, LLVM/CoreCLR), [`apps/unixwin`](file:///C:/src/apps/unixwin) (REA + Replica + POSIX/Win runtime), [`src/nt`](file:///C:/src/src/nt) + [`src/wine`](file:///C:/src/src/wine).
+   - Exists: [`crates/depot-re`](file:///C:/src/crates/depot-re) (`goblin`, `iced-x86`, ABI classifier, Ghidra P-Code, MinGW-REA, Lua 5.2 disassembler), [`src/depot/migrate`](file:///C:/src/src/depot/migrate) (polyglot AST migrator, LLVM/CoreCLR), [`apps/unixwin`](file:///C:/src/apps/unixwin) (REA + Replica + POSIX/Win runtime), [`src/nt`](file:///C:/src/src/nt) + [`src/wine`](file:///C:/src/src/wine).
    - Next step: Route `ay decompile <binary>` (`depot-re` P-Code/Pseudo-C + `apps/unixwin/rea`) and `ay convert <src> --to <target>` (`wasm2c`, `naga`, `c2rust`, `depot-migrate` + conformance harness).
 5. **Tier 5 (Package, Deploy, Publish)**:
-   - Exists: `ay pkg` (`crates/unix-omarchy` + `infra/pkg`), `ay deploy` ([`packages/deploy`](file:///C:/src/packages/deploy)), `ay release` ([`packages/release`](file:///C:/src/packages/release)), `ay git` / `just vcs` ([`scripts/vcs.ts`](file:///C:/src/scripts/vcs.ts)).
+   - Exists: `ay pkg` (`src/posix/omarchy` + `infra/pkg`), `ay deploy` ([`packages/deploy`](file:///C:/src/packages/deploy)), `ay release` ([`packages/release`](file:///C:/src/packages/release)), `ay git` / `just vcs` ([`scripts/vcs.ts`](file:///C:/src/scripts/vcs.ts)).
 
 ---
 
 ## 5. Phased Execution Roadmap
 
-1. **Lot A — Function-Granular CST + ThinLTO Index (`crates/core` + `depot-cas`)**: Compute trivia-insensitive BLAKE3 hashes per `AstSymbol` in `crates/core` and link them with LLVM `.thinlto.bc` module summaries (`llvm-bcanalyzer --dump`) so `ay test` and `ay build` skip unaffected symbols across C, Rust, and TS.
-2. **Lot B — Deterministic `ay bindgen` from `src/include/uapi/ay/*.h`**: Generate `crates/core-capi/src/sys.rs`, `packages/core/src/sys.ts`, `wit/ay.wit`, `.NET` `LibraryImport`, and JS/Wasm host descriptors from `src/include/ay/sys.h` with zero hand-maintained FFI drift.
+1. **Lot A — Function-Granular CST + ThinLTO Index (`src/core` + `depot-cas`)**: Compute trivia-insensitive BLAKE3 hashes per `AstSymbol` in `src/core` and link them with LLVM `.thinlto.bc` module summaries (`llvm-bcanalyzer --dump`) so `ay test` and `ay build` skip unaffected symbols across C, Rust, and TS.
+2. **Lot B — Deterministic `ay bindgen` from `src/include/uapi/ay/*.h`**: Generate `src/core/capi/src/sys.rs`, `packages/core/src/sys.ts`, `wit/ay.wit`, `.NET` `LibraryImport`, and JS/Wasm host descriptors from `src/include/ay/sys.h` with zero hand-maintained FFI drift.
 3. **Lot C — `ay compile` & `ay minify` Unified Driver**: Wrap Clang 24 ThinLTO, `rustc -Clinker-plugin-lto`, `wasi-sdk 34`, `wasm-opt -O4`, and `lld` behind `ay compile` / `ay minify` with hermetic R2-fetched sysroots (Windows MSVC via `xwin`, Linux musl/glibc, Android NDK r30, Wasm32/WASIp2).
-4. **Lot D — `ay decompile` & `ay convert` with Conformance Oracles**: Wire `crates/depot-re` + `apps/unixwin` (PE/ELF/Mach-O/Wasm -> CFG + P-Code + Pseudo-C) and `crates/depot-migrate` + `wasm2c` + `naga` behind `ay decompile` / `ay convert`, requiring differential test execution (`conformance/`) on every cross-language conversion.
+4. **Lot D — `ay decompile` & `ay convert` with Conformance Oracles**: Wire `crates/depot-re` + `apps/unixwin` (PE/ELF/Mach-O/Wasm -> CFG + P-Code + Pseudo-C) and `src/depot/migrate` + `wasm2c` + `naga` behind `ay decompile` / `ay convert`, requiring differential test execution (`conformance/`) on every cross-language conversion.

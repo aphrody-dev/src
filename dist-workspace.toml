@@ -1,4 +1,4 @@
-# dist (axodotdev cargo-dist) release config for the `ay` CLI (package `aphrody`, crates/ay).
+# dist (axodotdev cargo-dist) release config for the `ay` CLI (package `aphrody`, src/ay).
 # Only `aphrody` opts in (`[package.metadata.dist] dist = true`); `dist = false` below keeps
 # every other binary crate out. Regenerate the workflow with `dist generate` after
 # editing; tag `v<workspace version>` to release. See docs/infra/INSTALL_UPDATE.md.
@@ -26,7 +26,7 @@ install-updater = false
 hosting = "github"
 pr-run-mode = "plan"
 # Build only the `aphrody` package (`--package`), not `--workspace`: cdylib members such as
-# crates/agent-py cannot build for musl targets (release v0.2.0, 2026-11-13).
+# src/agent/py cannot build for musl targets (release v0.2.0, 2026-11-13).
 precise-builds = true
 # release.yml carries two manual patches (checkout token for private submodules; ubuntu-24.04
 # instead of 22.04, unsupported 2027-04-17, docs/infra/RUNNERS.md); re-apply them

@@ -1,6 +1,6 @@
 # Single source of the product identity. Renaming = edit this file, `just identity apply`, `just check`.
 # Gate: `just identity check` (in `just check` and CI). Readers: scripts/identity.ts (apply/check of the manifests),
-# crates/xtask (DEPS vars), packages via `import identity from "<root>/identity.toml"` (Bun TOML import).
+# src/xtask (DEPS vars), packages via `import identity from "<root>/identity.toml"` (Bun TOML import).
 # This file also marks the repository root (nearest ancestor holding identity.toml, else $SRC_ROOT).
 
 [product]
@@ -10,8 +10,8 @@ repo = "src"
 repo_org = "lab" # key of [orgs] owning the repository: github.com/aphrody-labs/src (moved 2026-11-13)
 
 [cli]
-binary = "ay" # [[bin]] of crates/ay
-crate = "aphrody" # package name of crates/ay
+binary = "ay" # [[bin]] of src/ay
+crate = "aphrody" # package name of src/ay
 
 [naming]
 npm_scope = "@aphrody" # every packages/*/package.json#name and the root package

@@ -13,10 +13,10 @@ index-gen:
 # Regenerate the core C header (cbindgen)
 [group('core')]
 core-header:
-    cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h
+    cbindgen --config src/core/capi/cbindgen.toml src/core/capi -o src/core/capi/include/aphrody_core.h
 # --- Labs (merged from C:\labs): conformance (ay conformance), Lore, Chromium factory ---
 
-# Build native Python core (`crates/core-py` PyO3 ABI3 -> `packages/core-py/src/aphrody_native`)
+# Build native Python core (`src/core/py` PyO3 ABI3 -> `packages/core-py/src/aphrody_native`)
 [group('core')]
 py-build:
     cargo build -p aphrody-core-py --release
@@ -27,7 +27,7 @@ py-build:
 py-test: py-build
     python -m unittest discover -s "{{root}}/packages/core-py/tests" -v
 
-# Build Java 25 core (`crates/core-jni` + `packages/core-java`) and run FFM + JNI verification
+# Build Java 25 core (`src/core/jni` + `packages/core-java`) and run FFM + JNI verification
 [group('core')]
 java-build:
     cargo build -p aphrody-core-jni --release

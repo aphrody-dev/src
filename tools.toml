@@ -1,4 +1,4 @@
-# Toolchain manifest for `ay up` (crates/up). One [[tool]] per tool:
+# Toolchain manifest for `ay up` (src/up). One [[tool]] per tool:
 #   version   pinned version; `lock = "<key>"` takes it from src.lock.json `toolchains.<key>` instead
 #   bin       executables it provides (first one is probed); for layout = "tree", paths in the archive
 #   verify    argv printing the version (default: <bin> --version)
@@ -1127,7 +1127,7 @@ version = "0.13.7"
 source = "github"
 repo = "astral-sh/uv"
 hosts = ["pc", "prd", "fr1"]
-why = "apps/unixwin, packages/ai-os/python, crates/agent-py (pyproject + uv.lock)"
+why = "apps/unixwin, packages/ai-os/python, src/agent/py (pyproject + uv.lock)"
 windows-x86_64 = { url = "https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-pc-windows-msvc.zip", sha256 = "0cdc5b38fe5a8168ed6a25814f5ba43c21d313dd3187314fccb37b7cec46e021" }
 linux-x86_64 = { url = "https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-unknown-linux-musl.tar.gz", sha256 = "287491da03f2a785c70fa75b13e1f849918c2f2b5415fe84876b8214eeb792f9" }
 linux-aarch64 = { url = "https://github.com/astral-sh/uv/releases/download/0.13.7/uv-aarch64-unknown-linux-musl.tar.gz", sha256 = "2d3ec076a0c4c0e8250bb6418c44080828b544f1a3be0b6e46adf9fb6923de45" }
@@ -1179,7 +1179,7 @@ version = "0.29.4"
 source = "crate"
 package = "cbindgen"
 hosts = ["pc", "fr1"]
-why = "just core-header (crates/core-capi)"
+why = "just core-header (src/core/capi)"
 note = "crates.io cbindgen@0.29.4 cksum 2ecb53484c9c167ba674026b656d8a27d7657a58e6066aa902bfb1a4aa00ae20"
 
 [toolchain."cargo-nextest"]
@@ -1207,7 +1207,7 @@ version = "9.0.2"
 source = "winget"
 package = "Gyan.FFmpeg.Shared"
 hosts = ["pc", "image"]
-why = "crates/tv-ffmpeg (ffmpeg-next, dynamic): headers + import libs; Linux = distro ffmpeg/ffmpeg-dev"
+why = "src/tv/ffmpeg (ffmpeg-next, dynamic): headers + import libs; Linux = distro ffmpeg/ffmpeg-dev"
 env = "FFMPEG_DIR"
 linux = "pacman ffmpeg | apk ffmpeg-dev | apt libavcodec-dev libavformat-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev"
 
@@ -1384,7 +1384,7 @@ version = "25.0.5"
 source = "github"
 repo = "adoptium/temurin25-binaries"
 hosts = ["pc", "fr1"]
-why = "Java 25 FFM API + JNI core (`packages/core-java`, `crates/core-jni`) and Ghidra (`aphrody-labs/ghidra`) toolchain"
+why = "Java 25 FFM API + JNI core (`packages/core-java`, `src/core/jni`) and Ghidra (`aphrody-labs/ghidra`) toolchain"
 
 [toolchain."gradle"]
 version = "9.2.1"

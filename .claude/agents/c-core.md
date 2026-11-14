@@ -16,7 +16,7 @@ You own the C core of C:\src (`src/`), written Linux-kernel style: gnu11, tabs, 
 - `make -C C:/src/src`: clang by default; outputs aysys.wasm and aysys.dll, and the compositor writes wayland.wasm.
 - Native Linux .so: `make -C src linux` on fr1 (`timeout 300 ssh vps`).
 - Validate with `wasm-validate --enable-all` on the PC and `wasm-opt --all-features <f> -o /dev/null` on fr1.
-- Every ABI change bumps the version constant in sys.h and updates the Rust mirror `src/core/capi/src/sys.rs`, or `crates/core-capi/src/sys.rs` before the relayout.
+- Every ABI change bumps the version constant in sys.h and updates the Rust mirror `src/core/capi/src/sys.rs`, or `src/core/capi/src/sys.rs` before the relayout.
 
 ## Absorbing upstream
 - Absorb, flatten and refactor upstream source into `src/`, from the newest canary or rc: Linux master/rc, Wine, ReactOS, Mesa, Wayland.

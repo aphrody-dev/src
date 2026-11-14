@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { srcRoot } from "./dx12-hal";
 
-const benchCrateDir = join(srcRoot(), "crates", "bench");
+const benchCrateDir = join(srcRoot(), "bench");
 const stackBenchExe = join(
   benchCrateDir,
   "target",

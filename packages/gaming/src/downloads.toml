@@ -30,7 +30,7 @@ archive = "tar.gz"
 exe = "steamcmd.sh"
 
 # Tools Steam installs as apps (`--user <account>` when the anonymous login is refused). Proton ids mirror
-# crates/steam-depot/src/proton.rs VALVE_PROTON_APPS and STEAM_LINUX_RUNTIME_SNIPER_APP_ID; the
+# src/steam/src/proton.rs VALVE_PROTON_APPS and STEAM_LINUX_RUNTIME_SNIPER_APP_ID; the
 # packages/gaming test fails when the two disagree. `platform = "linux"` makes
 # steamcmd fetch the Linux depots from any host (@sSteamCmdForcePlatformType).
 [apps.proton-experimental]

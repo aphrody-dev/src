@@ -73,14 +73,14 @@ jobs:
         with: { submodules: false }
       - name: Toolchain
         run: bun scripts/toolchain.ts install
-      - name: Architecture gate (ratchet vs crates/archguard/baseline.json)
+      - name: Architecture gate (ratchet vs src/archguard/baseline.json)
         # Fails when any rule has more --strict errors than its baseline count (new rule = 0); lower the
         # baseline in the commit that clears debt. Back to plain `arch check --strict` once it is all zeros.
         # ay comes from the build-test job (same shared target dir); built here only when that dir was wiped.
         run: |
           [ -x "$CARGO_TARGET_DIR/debug/ay" ] || aphrody-heavy cargo build -p aphrody
           "$CARGO_TARGET_DIR/debug/ay" arch check --strict --json > "$RUNNER_TEMP/arch.json" || true
-          jaq -r --slurpfile b crates/archguard/baseline.json '
+          jaq -r --slurpfile b src/archguard/baseline.json '
             [.findings[] | select(.severity == "error") | .rule_id] | group_by(.) | map({k: .[0], n: length})
             | map(select(.n > ($b[0][.k] // 0))) | .[] | "\(.k): \(.n) errors > baseline \($b[0][.k] // 0)"
           ' "$RUNNER_TEMP/arch.json" > "$RUNNER_TEMP/arch-over.txt"

@@ -2,7 +2,7 @@
 
 Production-grade Rust 2024 Unix distribution and native WSL2 runtime fusing:
 
-- **Omarchy (`omacom`)**: Aether theme compiler (23 canonical themes + 2 first-party presets), 16 built-in Quickshell plugins, and streaming search over the 6,443-source community plugin marketplace, aligned with `crates/aphrody-ui::fusion` (`LinuxWayland`, `UnixPosix`), `crates/taffy`, and `packages/design/tokens/hyprland.conf`.
+- **Omarchy (`omacom`)**: Aether theme compiler (23 canonical themes + 2 first-party presets), 16 built-in Quickshell plugins, and streaming search over the 6,443-source community plugin marketplace, aligned with `src/ui/kit::fusion` (`LinuxWayland`, `UnixPosix`), `src/taffy`, and `packages/design/tokens/hyprland.conf`.
 - **CachyOS (`CachyOS` + `cachyos-wsl`)**: Raptor Lake (`x86-64-v3` AVX2/FMA3/BMI2) `[cachyos-v3]` repositories, Linux `7.4` BORE / `sched-ext` / `dkms-clang` / NVIDIA `sm_89` kernel patch series, `ananicy-cpp`, and Proton-CachyOS `/dev/ntsync` gaming orchestration.
 - **Arch Linux GitLab (`gitlab.archlinux.org/archlinux`)**: Unified `devtools` / `pkgctl` clean-chroot PKGBUILD synthesis and reproducible `.wsl` image builder.
 - **Native Zero-Overhead WSL2 + D3D12 `/dev/dxg`**: Replaces QEMU/WHPX `TryOmarchy.exe` with native WSL2 Hyper-V VMBus + Direct3D 12 Ultimate `/dev/dxg` GPU-PV + Rust WSLg (`C:\src\crates\wayland`).
@@ -24,10 +24,10 @@ C:\src\crates\unix\
 
 ---
 
-## Crate `aphrody-omarchy` (`crates/unix-omarchy`)
+## Crate `aphrody-omarchy` (`src/posix/omarchy`)
 
 1. **Aether-in-Rust Theme Compiler (`themes.rs`)**:
-   - Parses upstream Omarchy `colors.toml` palettes from `C:\src\third_party\omarchy\themes\*\colors.toml` and embeds all 23 canonical Omarchy themes plus 2 first-party presets (`aphrody-m3-dark`, `cachyos-emerald`) for standalone zero-dependency execution, alongside the 9 `crates/aphrody-ui::fusion` presets.
+   - Parses upstream Omarchy `colors.toml` palettes from `C:\src\third_party\omarchy\themes\*\colors.toml` and embeds all 23 canonical Omarchy themes plus 2 first-party presets (`aphrody-m3-dark`, `cachyos-emerald`) for standalone zero-dependency execution, alongside the 9 `src/ui/kit::fusion` presets.
    - Compiles any `ColorsToml` simultaneously into 6 target formats:
      1. `hyprland-colors.conf` (`col.active_border`, `col.inactive_border`, shadow, `groupbar`)
      2. `cosmic-theme.ron` (COSMIC Desktop RON theme)

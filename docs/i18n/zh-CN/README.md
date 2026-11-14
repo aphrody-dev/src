@@ -53,9 +53,9 @@ Aphrody Labs：自托管平台相关工作，其原二进制现为 `ay conforman
 
 | 路径                                          | 内容                                                                   |
 | :-------------------------------------------- | :--------------------------------------------------------------------- |
-| `crates/conformance`、`conformance/`          | 固定版本的一致性套件，CLI 为 `ay conformance`                          |
-| `crates/lore*`、`licenses/lore`、`tools/lore` | Lore VCS，已吸收（MIT）                                                |
-| `crates/apm`                                  | APM crate                                                              |
+| `test/conformance`、`conformance/`          | 固定版本的一致性套件，CLI 为 `ay conformance`                          |
+| `src/lore*`、`licenses/lore`、`tools/lore` | Lore VCS，已吸收（MIT）                                                |
+| `src/apm`                                  | APM crate                                                              |
 | `[patch.crates-io]`                           | 以 `rev` 固定的 aphrody-labs 分叉补丁 crate（quinn-proto、glob-match） |
 | `third_party/oils`                            | oils 分叉及其固定版本                                                  |
 | `infra/chromium-factory`                      | Chromium 构建工厂                                                      |

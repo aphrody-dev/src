@@ -1,5 +1,5 @@
 // C ABI over the Lightpanda Zig browser core (`browser_capi.dll` / `libbrowser_capi.so`).
-// Contract mirrored by `crates/core-capi/include/aphrody_zig.h` and `packages/browser/src/index.ts`.
+// Contract mirrored by `src/core/capi/include/aphrody_zig.h` and `packages/browser/src/index.ts`.
 const std = @import("std");
 
 pub const LP_ABI_VERSION: u32 = 1;

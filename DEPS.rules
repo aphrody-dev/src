@@ -4,6 +4,6 @@
 
 # Confined units, forbidden everywhere (crates, packages, plugins, apps) and re-allowed by `+` only
 # where listed: FFmpeg linkage (licence review, docs/ARCHITECTURE.md §11) and Lore's error crates.
--crates/tv-ffmpeg
--crates/lore-error-set
--crates/lore-error-set-macro
+-src/tv/ffmpeg
+-src/lore/error-set
+-src/lore/error-set-macro

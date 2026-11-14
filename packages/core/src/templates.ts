@@ -152,7 +152,7 @@ Monorepo of Aphrody. Contract: [AGENTS.md](AGENTS.md) and [GEMINI.md](GEMINI.md)
 
 ## Stack Overview
 
-- **Pure C23 LLVM ABI Core**: [crates/core-capi](crates/core-capi) (\`aphrody_core.h\` exporting \`core_*\` and unified \`ai_os_*\`, \`aphrody_zig.h\`, \`aphrody_mwg.h\`) compiled with \`clang\` ThinLTO and \`-Wall -Wextra -Wpedantic -Werror\`. See [docs/llvm/PURE-C-LLVM.mdx](docs/llvm/PURE-C-LLVM.mdx).
+- **Pure C23 LLVM ABI Core**: [src/core/capi](src/core/capi) (\`aphrody_core.h\` exporting \`core_*\` and unified \`ai_os_*\`, \`aphrody_zig.h\`, \`aphrody_mwg.h\`) compiled with \`clang\` ThinLTO and \`-Wall -Wextra -Wpedantic -Werror\`. See [docs/llvm/PURE-C-LLVM.mdx](docs/llvm/PURE-C-LLVM.mdx).
 - **Agent OS (\`@aphrody/ai-os\`)**: cross-platform sandboxed Unix/GNU-like OS distribution for agents unifying FHS VFS (\`/etc/ai-os\`, \`/var/lib/ai-os\`, \`/proc/agent\`, \`/dev/{llm,rag,world,sys1}\`), LLM, RAG, World Model, and System 1 decision under one C ABI (\`aphrody_core_capi\`).
 - **Bun v1.4.5+ Runtime**: pure Bun TypeScript packages with zero third-party npm dependencies (\`bun:ffi\`, \`bun:sqlite\`, \`Bun.Glob\`, \`Bun.serve\`).
 - **Rust {{workspace.edition}} Workspace**: {{cratesCount}} crates in \`crates/*\` (edition {{workspace.edition}}, rust-version {{workspace.rustVersion}}, {{workspace.workspaceDepsCount}} workspace dependencies) including \`ay\` CLI, \`archguard\`, \`core\`, \`core-capi\`, \`ffi\`, \`bun-flat\`, \`tv-*\`, \`steam-depot\`, \`lore*\`.
@@ -254,11 +254,11 @@ ${layerTable}
 
 ## 3. Pure C23 LLVM ABI Core
 
-All native cross-language boundaries converge on C ABI headers in \`crates/core-capi/include/\` consumed by Bun (\`bun:ffi\`), Rust (\`crates/ffi\`), and Zig 0.17.1.
+All native cross-language boundaries converge on C ABI headers in \`src/core/capi/include/\` consumed by Bun (\`bun:ffi\`), Rust (\`src/ffi\`), and Zig 0.17.1.
 
 ${headersTable}
 
-## 4. Bun Fork Absorption (\`crates/bun-flat\`)
+## 4. Bun Fork Absorption (\`src/bun-flat\`)
 
 ${bunFlatTable}
 
@@ -291,10 +291,10 @@ export function buildPureCLlvmMdx(snap: MonorepoSnapshot): string {
   const body = `# Pure C23 LLVM Core and C ABI
 
 <Callout type="warn" title="Compiler & ABI Contract">
-Every header in \`crates/core-capi/include/*.h\` must pass \`clang -std=c23 -Wall -Wextra -Wpedantic -Werror -fsyntax-only\` and \`clang++ -std=c++23 -Wall -Wextra -Werror -fno-exceptions -fno-rtti -fsyntax-only\` with zero warnings.
+Every header in \`src/core/capi/include/*.h\` must pass \`clang -std=c23 -Wall -Wextra -Wpedantic -Werror -fsyntax-only\` and \`clang++ -std=c++23 -Wall -Wextra -Werror -fno-exceptions -fno-rtti -fsyntax-only\` with zero warnings.
 </Callout>
 
-Generated from \`crates/core-capi/include/*.h\`, \`crates/*/DEPS.rules\`, and \`crates/bun-flat/flat.toml\`.
+Generated from \`src/core/capi/include/*.h\`, \`crates/*/DEPS.rules\`, and \`src/bun-flat/flat.toml\`.
 
 ## 1. Compiler and ABI Rigor
 
@@ -310,7 +310,7 @@ ${headersTable}
 
 ${l0l1 || "_No L0/L1 crates found._"}
 
-## 4. Bun Fork Crates (\`crates/bun-flat/flat.toml\`)
+## 4. Bun Fork Crates (\`src/bun-flat/flat.toml\`)
 
 ${bunFlatTable}
 
@@ -320,14 +320,14 @@ ${bunFlatTable}
 <Tab value="C23">
 
 \`\`\`sh
-clang -std=c23 -Wall -Wextra -Wpedantic -Werror -fsyntax-only -x c crates/core-capi/include/aphrody_core.h crates/core-capi/include/aphrody_zig.h crates/core-capi/include/aphrody_mwg.h
+clang -std=c23 -Wall -Wextra -Wpedantic -Werror -fsyntax-only -x c src/core/capi/include/aphrody_core.h src/core/capi/include/aphrody_zig.h src/core/capi/include/aphrody_mwg.h
 \`\`\`
 
 </Tab>
 <Tab value="C++23">
 
 \`\`\`sh
-clang++ -std=c++23 -Wall -Wextra -Werror -fno-exceptions -fno-rtti -fsyntax-only -x c++ crates/core-capi/include/aphrody_zig.h crates/core-capi/include/aphrody_mwg.h
+clang++ -std=c++23 -Wall -Wextra -Werror -fno-exceptions -fno-rtti -fsyntax-only -x c++ src/core/capi/include/aphrody_zig.h src/core/capi/include/aphrody_mwg.h
 \`\`\`
 
 </Tab>
@@ -360,13 +360,13 @@ export function buildModernWebGuidanceMdx(snap: MonorepoSnapshot): string {
 \`@aphrody/wck\` runs with zero external npm dependencies on Bun v1.4.4+, pairing \`mwg_capi.dll\` (\`bun:ffi\`) with a deterministic pure-Bun fallback.
 </Callout>
 
-Generated from \`packages/wck\`, \`crates/core-capi/include/\`, and \`packages/ai-os\`.
+Generated from \`packages/wck\`, \`src/core/capi/include/\`, and \`packages/ai-os\`.
 
 ## 1. Package Overview
 
 - **Package**: \`${wckPkg?.name ?? "@aphrody/wck"}\` v${wckPkg?.version ?? "1.0.0"} (${wckPkg?.depsCount ?? 0} external npm dependencies).
 - **Description**: ${wckPkg?.description ?? "Compile-Time Web Validator (Google SEO + AI Mode SEO + Modern Web Guidelines + Core Web Vitals + Lighthouse 100 + WASM + WebGPU Chromium Spec)"}.
-- **Native Core**: \`mwg_capi.dll\` compiled from \`crates/core-capi/c/mwg_core.c\` with C23 strict flags and \`bun:ffi\` bridge (\`packages/wck/src/mwg-ffi.ts\`) plus deterministic pure-Bun fallback.
+- **Native Core**: \`mwg_capi.dll\` compiled from \`src/core/capi/c/mwg_core.c\` with C23 strict flags and \`bun:ffi\` bridge (\`packages/wck/src/mwg-ffi.ts\`) plus deterministic pure-Bun fallback.
 
 ## 2. C ABI Surface (\`aphrody_mwg.h\`)
 

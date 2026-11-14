@@ -1,4 +1,4 @@
-// bun:ffi bridge to crates/net (cdylib aphrody_net). Library path: APHRODY_NET_LIB,
+// bun:ffi bridge to src/net (cdylib aphrody_net). Library path: APHRODY_NET_LIB,
 // else target/release next to the repo root.
 import { dlopen, FFIType, CString, type Pointer } from "bun:ffi";
 import { join } from "node:path";

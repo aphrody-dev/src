@@ -96,7 +96,7 @@ USER 10001:10001
 # Lore server: QUIC/gRPC 41337, HTTP 41339 (/health_check). State in /data.
 FROM rust-runtime AS loreserver
 COPY --from=rust-build /out/loreserver /usr/local/bin/loreserver
-COPY crates/lore-server/config/default.toml /etc/lore/config/default.toml
+COPY src/lore/server/config/default.toml /etc/lore/config/default.toml
 COPY --chmod=0644 <<'EOF' /etc/lore/config/docker.toml
 [immutable_store.local]
 path = "/data"

@@ -38,7 +38,7 @@ rejected, because src never uses Debian or Ubuntu.
    - The clone is partial (`--filter=blob:none`), possibly sparse; `ay git slim --all` compacts it (commit-graph, multi-pack-index, repack).
    - Patches live in the forks, never in a vendored copy.
    - Updating goes through `ay lock`, then through the commit of `src.lock.json` and DEPS.
-9. **FFI, IR, ABI.** A single C ABI at the center (`crates/core-capi`, `crates/ffi`, `infra/cshared`, `bun:ffi`). A single LLVM: clang, lld and rustc on the same major version. Cross-language LTO goes through `-Clinker-plugin-lto` (`docs/native/llvm/UNIFIED-TOOLCHAIN.md`).
+9. **FFI, IR, ABI.** A single C ABI at the center (`src/core/capi`, `src/ffi`, `infra/cshared`, `bun:ffi`). A single LLVM: clang, lld and rustc on the same major version. Cross-language LTO goes through `-Clinker-plugin-lto` (`docs/native/llvm/UNIFIED-TOOLCHAIN.md`).
    - Third-party C/C++ libraries come from vcpkg in manifest mode. Each `vcpkg.json` declares `builtin-baseline` and `overrides`, on the `aphrody-labs/vcpkg` fork and the chained LLVM triplet: outputs are LLVM bitcode, measured on fr2 on 2026-11-12.
    - Large upstreams (Chromium, LLVM, kernel, WebKit) remain `third_party/` units built by their own system, on fr1.
 

@@ -18,7 +18,7 @@ agent protocols are sent to those projects as pull requests.
 
 | Project        | What it is                                                                                                                                                  | Path                   |
 | :------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------- |
-| ay             | One multicall CLI for the monorepo: architecture gate, locks, VCS tooling, Chromium tools, toolchain install, benchmarks                                    | `crates/ay`            |
+| ay             | One multicall CLI for the monorepo: architecture gate, locks, VCS tooling, Chromium tools, toolchain install, benchmarks                                    | `src/ay`            |
 | nt             | A model of the machine's Windows NT, rendered entirely by the GPU on the Microsoft stack                                                                    | `apps/nt`              |
 | ai-os          | Agent core, model bridge discovered at run time, relay (MCP, A2A, ACP), gateway and TUI in one Bun package with no npm dependency                           | `packages/ai-os`       |
 | aphrody.app    | Rust WebGPU/WGSL tiling desktop shell with CRDT state, OPFS storage and WebMCP tools                                                                        | `apps/aphrody-app`     |

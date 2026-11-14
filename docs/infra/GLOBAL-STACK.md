@@ -17,7 +17,7 @@ Placement: static to Workers Static Assets or R2; dynamic under 10 ms CPU and 10
 ## SQL and auth (already in the repo)
 
 - SQL: PostgreSQL on prd for shenron (`postgres` driver in `apps/shenron/package.json`, `shenron-postgres` container) and rosegriffon (`DATABASE_URL`, `SUPABASE_*` in `.env.example`); `bun:sqlite` for local stores (`packages/core`); D1/KV for small read-mostly Worker data. Pick: Postgres on prd as primary, D1 only for edge reads.
-- Auth: Better Auth (`better-auth` 1.7.14 in shenron, 1.7.16 in `apps/auto/packages/tenancy`, plus oauth-provider, passkey, mcp plugins; `@better-auth/agent-auth` in rosegriffon). Pure-Rust variant in `crates/rust-stack/src/auth.rs`. The ai-os relay serves OAuth 2.1. Pick: Better Auth on Postgres.
+- Auth: Better Auth (`better-auth` 1.7.14 in shenron, 1.7.16 in `apps/auto/packages/tenancy`, plus oauth-provider, passkey, mcp plugins; `@better-auth/agent-auth` in rosegriffon). Pure-Rust variant in `src/rust-stack/src/auth.rs`. The ai-os relay serves OAuth 2.1. Pick: Better Auth on Postgres.
 
 ## Sub-app inventory
 
@@ -25,8 +25,8 @@ Placement: static to Workers Static Assets or R2; dynamic under 10 ms CPU and 10
 | ------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | yolo (hub/legacy)  | Yes                | `apps/yolo` (server, PRD, tests); `yolo.aphrody.com` answers; image `yolo` port 23092. It is a hub site, not a game: no legacy game code was found.                                                      |
 | Wii OS             | No                 | Only `docs/AY_MIGRATION.md` mentions `wii-os` (feeds `wii-os-shenron`, port 8780, community; code lived at `/srv/yolo-fleet/wii-os`, to move to `apps/shenron` or delete). Not in `apps/` or `crates/`.  |
-| Bun OS             | No                 | `bun-os` repo is 404 per AY_MIGRATION.md (3.2 GB under `/root/src/bun-os` on hosts, step 0 then delete). `crates/bun-flat` and `third_party/bun` exist but are the Bun runtime, not an OS.               |
+| Bun OS             | No                 | `bun-os` repo is 404 per AY_MIGRATION.md (3.2 GB under `/root/src/bun-os` on hosts, step 0 then delete). `src/bun-flat` and `third_party/bun` exist but are the Bun runtime, not an OS.               |
 | Emulator           | No                 | Switch/3DS/NDS/Wii emulator crates (`ruzu-*`, `aphrody-wii-*`) are listed in RUST_6_ORGS_FUSION_INVENTORY.md as in another org; none under `crates/`.                                                    |
 | Android            | Partial            | `apps/aphrody-app/crates/aphrody-android`; `third_party/android-skills` (agent skills only). No Android runtime/Waydroid in the repo (waydroid appears only in the bun-os backup).                       |
 | Unix               | Yes                | `crates/unix-cachyos`, `unix-distro`, `unix-omarchy`, `unix-uutils`; `apps/unixwin`; `third_party/omarchy*`, `uutils-coreutils`.                                                                         |
-| Wayland in browser | Partial            | `crates/smithay-wayland-wire`, `cosmic-compat`, `gamescope-web-wasm`, `infra/gamescope-web`; compiles on Linux only for the wire part (ARCHITECTURE.md). No end-to-end browser compositor verified here. |
+| Wayland in browser | Partial            | `src/wayland/smithay`, `cosmic-compat`, `gamescope-web-wasm`, `infra/gamescope-web`; compiles on Linux only for the wire part (ARCHITECTURE.md). No end-to-end browser compositor verified here. |

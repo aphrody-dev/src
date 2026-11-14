@@ -20,8 +20,8 @@ of the root `Cargo.toml`.
 
 - Clean: `cargo clean` then `cargo build --workspace`.
 - No-op: `cargo build --workspace` with nothing changed.
-- Leaf: edit `crates/xtask/src/main.rs` (append a `pub fn`), rebuild.
-- Core: edit `crates/depot-core/src/lib.rs`, rebuild (recompiles depot-forge,
+- Leaf: edit `src/xtask/src/main.rs` (append a `pub fn`), rebuild.
+- Core: edit `src/depot/core/src/lib.rs`, rebuild (recompiles depot-forge,
   depot-graph, depot-ingest, four depot-cli binaries and the depot-ffi cdylib).
 - Touch variants (`mtime` only) were also measured; they behave like the edits.
 - All runs used an isolated git worktree of `4a2e127` so that concurrent edits

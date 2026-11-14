@@ -3,7 +3,7 @@
 // 1. umu-run (third_party/umu-launcher, README "Optionally, with WINEPREFIX, GAMEID, STORE, and
 //    PROTONPATH"): Proton inside the Steam Linux Runtime container, no Steam client needed.
 // 2. `<proton>/proton waitforexitandrun <exe>` (third_party/Proton/proton) with the STEAM_COMPAT_*
-//    environment computed by `ay steam env` (crates/steam-depot/src/proton.rs).
+//    environment computed by `ay steam env` (src/steam/src/proton.rs).
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { compatTools, launchEnv, type CompatTool } from "./steam.ts";

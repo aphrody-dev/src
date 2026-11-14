@@ -1,5 +1,5 @@
 // Généré par packages/design/src/adapters.ts depuis tokens/tokens.json (assets/brand/brand.toml, seed #135B82, vibrant, MCU 0.4.0). Ne pas éditer.
-// Rust layout & theme constants shared with crates/taffy and crates/aphrody-ui.
+// Rust layout & theme constants shared with src/taffy and src/ui/kit.
 
 pub const GAP_PX: f32 = 12.0;
 pub const FOCUS_RING_PX: f32 = 2.0;

@@ -1,4 +1,4 @@
-// DirectX view of the host. Windows: DXGI adapters (`ay sys --json`, crates/sys), the D3D12 runtime
+// DirectX view of the host. Windows: DXGI adapters (`ay sys --json`, src/sys), the D3D12 runtime
 // files of System32 and the DirectX version key. Linux: the translation layers each Proton build
 // ships (DXVK for D3D8-11, vkd3d-proton for D3D12) under files/lib/wine/{dxvk,vkd3d-proton}.
 // Sources of those layers: third_party/{dxvk,vkd3d-proton,DirectX-Headers,DirectXShaderCompiler}.

@@ -32,9 +32,9 @@ Recommendation, not included in the patch: also prefix the generic names, in lin
 
 - **B1. Crates not publishable as they are**
   - `aphrody-remote` depends on `russh` via a git `[patch.crates-io]` (fork `aphrody-dev/russh`, sntrup761). On crates.io it resolves `russh 0.65` and fails (`pkcs1` conflict). The fork must be published under another name (for example `aphrody-russh`) or upstream must be waited for.
-  - `aphrody` (crates/ay) depends on `aphrody-remote`.
+  - `aphrody` (src/ay) depends on `aphrody-remote`.
   - `steam-depot` depends on `steamroom` (path to third_party, without version) and touches the Steam SDK: it stays internal (audit).
-  - In addition, `aphrody` (crates/ay in src) and `aphrody` (crates/cli in labs) carry the same package name. This must be decided during the merge.
+  - In addition, `aphrody` (src/ay in src) and `aphrody` (crates/cli in labs) carry the same package name. This must be decided during the merge.
 - **B2. `[patch.crates-io]` patches lost on publication.** `vendor/quinn-proto` (`LORE:` additions: `max_rtt`, `is_crypto`, `BbrConfig::max_window`) does not exist on crates.io, hence `E0599` in `aphrody-lore-transport` at verify. Same for `vendor/glob-match` (`**` fix). These forks must be published under their own name (`aphrody-quinn-proto`, `aphrody-glob-match`) and referenced with `package = …`, or the changes must be accepted upstream.
 - **B3. Build configuration missing on the user side.** `.cargo/config.toml` forces `--cfg tokio_unstable` and `--cfg uuid_unstable`, as well as `cargo-features = ["codegen-backend", "panic-immediate-abort"]` (nightly). A published crate that requires these cfgs does not compile with an ordinary `cargo install`. These uses must be isolated behind a feature, or `RUSTFLAGS` documented. `rust-version` is 1.85 in src and 1.97 in labs, while the code requires nightly.
 - **B4.** No explicit `readme`: cargo takes `README.md` when it exists in the crate, and most do not have one. This is a warning, not an error.

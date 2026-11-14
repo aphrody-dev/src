@@ -1,5 +1,5 @@
-// omarchy status: kernel config fragment, omarchy probe (crates/unix-omarchy) and the GPU seen by
-// the shared D3D12 layer (crates/dx12-hal via ./dx12-hal.ts). The former native_nt_gpu.dll and .NET WinUI
+// omarchy status: kernel config fragment, omarchy probe (src/posix/omarchy) and the GPU seen by
+// the shared D3D12 layer (src/drivers/gpu/dx12 via ./dx12-hal.ts). The former native_nt_gpu.dll and .NET WinUI
 // host of infra/winnt-sdk are gone (ticket nt-001): the WinUI 3 shell is apps/nt.
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";

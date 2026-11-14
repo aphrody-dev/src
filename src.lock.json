@@ -92,8 +92,8 @@
       },
       "sparse_paths": null
     },
-    "crates/bench": {
-      "path": "crates/bench",
+    "bench": {
+      "path": "bench",
       "url": "https://github.com/aphrody-labs/bench.git",
       "commit": "938ba8bef3943d46f523c8287062ee8537c389ce",
       "branch": "main",
@@ -124,8 +124,8 @@
       },
       "sparse_paths": null
     },
-    "crates/rust-stack": {
-      "path": "crates/rust-stack",
+    "src/rust-stack": {
+      "path": "src/rust-stack",
       "url": "https://github.com/aphrody-labs/rust-stack.git",
       "commit": "d2dfa9a889fa2809e778c8f45cd4e179339920e0",
       "branch": "main",

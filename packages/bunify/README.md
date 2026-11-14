@@ -60,6 +60,6 @@ Scans package.json files and JS/TS sources (tree-sitter via @aphrody/core when i
 
 ## Relationship with n2b and depot-migrate
 
-- `n2b` (~/.local/bin/n2b.exe, `n2b migrate`) and `crates/depot-migrate` (skill ay-monorepo-migrator) are the Rust engines: whole-tree transform, rule tables in `rules.rs` (Node builtin scheme, fetch, bun:sqlite, Bun.password) and `manifest.rs` (`OBSOLETE_NODE_PACKAGES`).
+- `n2b` (~/.local/bin/n2b.exe, `n2b migrate`) and `src/depot/migrate` (skill ay-monorepo-migrator) are the Rust engines: whole-tree transform, rule tables in `rules.rs` (Node builtin scheme, fetch, bun:sqlite, Bun.password) and `manifest.rs` (`OBSOLETE_NODE_PACKAGES`).
 - bunify stays the TS, idempotent, CI-friendly migrator (rerun after upstream syncs, standalone single file for forks). Rule tables are not duplicated: its `fullbun` rules cover the same packages per call site; the rust-stage addon dependency list (node-gyp, nan, node-addon-api) is checked against `manifest.rs` by `test/rust.test.ts`.
 - Split: depot-migrate/n2b = Rust-side repo surgery and AOT; bunify = Node -> Bun, plus the Rust plan that n2b can consume (`--json`).

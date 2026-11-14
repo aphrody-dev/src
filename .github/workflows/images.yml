@@ -9,7 +9,9 @@ on:
     paths:
       [
         "infra/docker/**",
-        "crates/**",
+        "src/**",
+        "bench/**",
+        "test/**",
         "packages/**",
         "apps/aphrody/**",
         "infra/cloudflare/workers/api-gateway/**",

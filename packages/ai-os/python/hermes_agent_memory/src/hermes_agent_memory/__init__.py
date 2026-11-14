@@ -1,7 +1,7 @@
 """Hermes Agent memory provider "agent": Hermes reads/writes the same Context store as the TS core.
 
 Store: ``$AGENT_HOME/memory.sqlite`` (default ``~/.agent``), schema of packages/ai-os/src/core/context.ts, accessed natively
-through the pyo3 module ``agent_core`` (crates/agent-py). Recall uses the native lexical + recency heads (RRF); the
+through the pyo3 module ``agent_core`` (src/agent/py). Recall uses the native lexical + recency heads (RRF); the
 semantic head runs on the TS side over the same entries.
 
 The class implements the Hermes ``MemoryProvider`` contract (agent/memory_provider.py). It does not import Hermes at

@@ -9,7 +9,7 @@ allowed-tools: Bash, Read
 
 One owner per function (map: `docs/gaming/OWNERSHIP.md` in aphrody-labs/src):
 
-- Rust, low level: `crates/steam-depot` (VDF text and binary, appinfo.vdf, ACF, libraryfolders,
+- Rust, low level: `src/steam` (VDF text and binary, appinfo.vdf, ACF, libraryfolders,
   compat tools, Proton launch env, depot client). CLI: `ay steam <root|libraries|apps|vdf|compat|host|env>`, JSON.
 - Bun: `packages/gaming` (`@aphrody/gaming`): SteamID, links, path map, Vulkan, DirectX, steamcmd,
   Proton runner. CLI: `ay gaming`. The `steam` plugin MCP imports it.
@@ -52,4 +52,4 @@ One owner per function (map: `docs/gaming/OWNERSHIP.md` in aphrody-labs/src):
 - `third_party/umu-launcher/README.md` (WINEPREFIX, GAMEID, STORE, PROTONPATH)
 - `third_party/Proton/proton` (`waitforexitandrun`), `third_party/Proton/Makefile` (files/lib/wine/dxvk, vkd3d-proton)
 - `third_party/Vulkan-Loader/docs/LoaderLayerInterface.md`, `LoaderDriverInterface.md` (manifest search paths)
-- `crates/steam-depot/src/proton.rs` (VALVE_PROTON_APPS, launch plan), `packages/gaming/src/downloads.toml`
+- `src/steam/src/proton.rs` (VALVE_PROTON_APPS, launch plan), `packages/gaming/src/downloads.toml`

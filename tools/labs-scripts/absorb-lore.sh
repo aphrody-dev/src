@@ -11,7 +11,7 @@ for d in "$src"/lore "$src"/lore-*; do
   n="$(basename "$d")"
   rm -rf "$root/crates/$n"; mv "$d" "$root/crates/$n"
 done
-cp "$src/build-helper.rs" "$root/crates/build-helper.rs"
+cp "$src/build-helper.rs" "$root/src/build-helper.rs"
 mkdir -p "$root/docs/lore" "$root/tools/lore" "$root/licenses/lore" "$root/.cargo"
 rm -rf "$root/docs/lore" "$root/tools/lore" "$root/licenses/lore"; mkdir -p "$root/licenses/lore"
 mv "$src/docs" "$root/docs/lore"
@@ -30,7 +30,7 @@ cp "$src/clippy.toml" "$root/clippy.toml"
 cp "$src/.loreignore" "$root/.loreignore"
 cp "$src/Cargo.toml" "$root/third_party/lore.Cargo.toml.upstream"
 lv="$(sed -n 's/^version = "\(.*\)"/\1/p' "$src/Cargo.toml" | head -1)"
-for f in "$root"/crates/lore*/Cargo.toml; do
+for f in "$root"/src/lore*/Cargo.toml; do
   sed -i "s/^version.workspace = true/version = \"$lv\"/" "$f"
 done
 rm -rf "$src"

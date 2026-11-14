@@ -3,7 +3,7 @@
  * Matrice versionnée des moteurs : dernière version lue en direct à la source officielle (API JSON
  * Chrome for Testing, product-details de Mozilla, GitHub releases, npm, PyPI, crates.io, browsers.json
  * de Playwright à la version épinglée), version installée et exécutable résolu. Consommée par
- * `ay rt matrix` (crates/rt), qui y ajoute les runtimes (Node, Deno, Bun, Python) et V8 / Dawn par canal.
+ * `ay rt matrix` (src/rt), qui y ajoute les runtimes (Node, Deno, Bun, Python) et V8 / Dawn par canal.
  */
 import { basename, dirname } from "node:path";
 import {

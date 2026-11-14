@@ -1,7 +1,7 @@
 # Recon map: console-style shells (living-room UI, handheld dual-screen UI)
 
 Scope: the shell layer only (profile picker, home, nav, store blocks, library, app hub, settings, overlays, input hints). No games, no store backend, no network service.
-For: the gamescope console shell (`crates/gamescope-*`, `crates/aphrody-ui`, Bevy and WebGPU wasm) and the companion app (`apps/aphrody-app`).
+For: the gamescope console shell (`crates/gamescope-*`, `src/ui/kit`, Bevy and WebGPU wasm) and the companion app (`apps/aphrody-app`).
 Date: 2026-11-13
 Method: clean-room. Structure read from the owner-supplied files (frame, component and variant names, text layers, thumbnails, exported PNGs). No third-party bytes enter the repository; reference captures stay in a local temp directory outside the repo (`%TEMP%/recon`), never committed or shipped.
 
@@ -14,7 +14,7 @@ Method: clean-room. Structure read from the owner-supplied files (frame, compone
 | 3   | Switch 2 marketing composite                  | `assets/Nintendo Switch 2 UI Design.png`                                                  | cover of source 2: tile row, circular menu row, profile avatar, controller and battery indicator                                                                                           |
 | 4   | Dual-screen handheld design system ("mobile") | `assets/mobile.fig`, `assets/mobile.zip`; Figma `lyBuLydYgYXfo3j8GqKeOL` node `13:2095`   | NOT a phone UI: a "DS Design System" v1.3.3 (pixel font NDS12, Inter, tokens.json). The Figma tab was not opened: the local .fig carries the same file, and the Figma seat is rate limited |
 | 5   | Existing gamescope design capture             | `docs/design/gamescope/components-overview.png`                                           | overview of source 1 components, 9860x3704                                                                                                                                                 |
-| 6   | Existing code                                 | `crates/gamescope-core/src/ui.rs`, `crates/aphrody-ui/src/components`, `apps/aphrody-app` | Rect, Dir, Input, spatial_next, Smooth, row_xs, Painter already exist                                                                                                                      |
+| 6   | Existing code                                 | `src/wayland/gamescope/core/src/ui.rs`, `src/ui/kit/src/components`, `apps/aphrody-app` | Rect, Dir, Input, spatial_next, Smooth, row_xs, Painter already exist                                                                                                                      |
 
 Terms: sources 1 to 4 are community fan studies of trademarked products; they are reference for layout and interaction only.
 

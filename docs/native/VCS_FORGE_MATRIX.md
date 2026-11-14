@@ -6,7 +6,7 @@ pins are the `third_party/vcs/*` checkouts. This page does not repeat:
 
 - [RUST_STACK.md](./RUST_STACK.md): one fork per layer, compatibility oracles (Git, Binary-asset VCS rows).
 - [DEPOT_TOOLS_RUST.md](./DEPOT_TOOLS_RUST.md): per-subcommand git/gix/jj coverage of our call sites
-  ("Replacing Git for Windows") and what `crates/depot-cas` takes from Lore ("Lore: what we take").
+  ("Replacing Git for Windows") and what `src/depot/cas` takes from Lore ("Lore: what we take").
 - [ECOSYSTEM_CHOICES.md](./ECOSYSTEM_CHOICES.md): crate selection rules, russh, keyring, object_store, dev CLIs.
 
 ## 1. VCS engines
@@ -30,7 +30,7 @@ pins are the `third_party/vcs/*` checkouts. This page does not repeat:
 | git                                                   | 2.56.0.windows.4                                        | gix + jj                                  | see DEPOT_TOOLS_RUST table                           |
 | MSYS2 runtime + bash                                  | bash 5.3.15 (cygwin target)                             | brush, Bun shell                          | pwsh twins exist for `install`/`deploy`              |
 | coreutils, sed, awk, grep, find, less, vim, perl, tig | MSYS2 builds, 366 files in `usr/bin`                    | uutils, ripgrep, fd, sd                   | uutils installed                                     |
-| OpenSSH (ssh, scp, sftp, ssh-agent, ssh-keygen)       | OpenSSH_10.6p1, OpenSSL 3.5.9                           | russh, russh-sftp                         | `ay ssh` (`crates/remote`); gix still spawns `ssh`   |
+| OpenSSH (ssh, scp, sftp, ssh-agent, ssh-keygen)       | OpenSSH_10.6p1, OpenSSL 3.5.9                           | russh, russh-sftp                         | `ay ssh` (`src/remote`); gix still spawns `ssh`   |
 | curl + OpenSSL                                        | debug-enabled libcurl in PATH                           | ureq/reqwest + rustls                     | gix `reqwest` transport                              |
 | GnuPG (commit signing)                                | gpg 2.x                                                 | sequoia-openpgp, or SSH signing           | jj signs (gpg/ssh); gix cannot create signed commits |
 | Git Credential Manager                                | 2.9.1 installed; upstream v3.0.2 / 2026-10-26 (C#, MIT) | `gix-credentials::helper::main` + keyring | plan in DEPOT_TOOLS_RUST                             |
@@ -75,10 +75,10 @@ workspace already pins gix 0.90.0 while `tools.toml` still installs the 0.61.0 C
 | DVC                                             | Python  | Apache-2.0                         | 16.0k          | 2026-11-09    | 3.67.1 / 2026-03-31                                  | pointer files next to git                             | any remote                       | Python, out of scope                                           |
 | git-annex                                       | Haskell | AGPL-3.0 / GPL-3.0                 | not on GitHub  | active        | n/a                                                  | symlink pointers, special remotes                     | any remote                       | Haskell, no Windows symlink story                              |
 | Lore content store                              | Rust    | MIT                                | (see 1)        | 2026-11-12    | v0.13.0                                              | FastCDC v2020 fragments, blake3, zstd, FUSE hydration | Lore server, S3 (`lore-aws`)     | storage model reused, protocol not                             |
-| `crates/depot-cas`                              | Rust    | ours                               | n/a            | in tree       | n/a                                                  | Lore-model fragment store for GCS/CIPD pins           | `%LOCALAPPDATA%\depot_tools\cas` | in use by `ay gclient sync`                                    |
+| `src/depot/cas`                              | Rust    | ours                               | n/a            | in tree       | n/a                                                  | Lore-model fragment store for GCS/CIPD pins           | `%LOCALAPPDATA%\depot_tools\cas` | in use by `ay gclient sync`                                    |
 
 Constraints: googlesource mirrors answer the LFS batch endpoint with HTTP 405, so
-`crates/depot-gclient/src/sync.rs` sets `GIT_LFS_SKIP_SMUDGE=1`. SourceHut has no LFS (ticket
+`src/depot/gclient/src/sync.rs` sets `GIT_LFS_SKIP_SMUDGE=1`. SourceHut has no LFS (ticket
 git.sr.ht#363 open). No Rust crate implements the git-lfs client side generically; gix has none yet.
 
 ## 3. Forges
@@ -109,7 +109,7 @@ no Rust forge has CI, packages and review together.
 | gh                  | Go     | MIT              | 47.0k         | v2.103.3 / 2026-10-26 | GitHub CLI                  | yes                      | keep until `ay cloud` covers PR/issues/releases                 |
 | act                 | Go     | MIT              | 72.7k         | v0.2.97 / 2026-11-04  | run Actions locally         | no                       | add; also the base of Gitea act_runner                          |
 | actionlint          | Go     | MIT              | 4.4k          | push 2026-07-16       | workflow linter             | no                       | add for `.github/workflows`                                     |
-| octocrab            | Rust   | MIT / Apache-2.0 | 1.5k          | v0.54.9 / 2026-10-31  | GitHub API crate            | n/a (crate)              | candidate for `crates/depot-forge` (`github.rs` is hand-rolled) |
+| octocrab            | Rust   | MIT / Apache-2.0 | 1.5k          | v0.54.9 / 2026-10-31  | GitHub API crate            | n/a (crate)              | candidate for `src/depot/forge` (`github.rs` is hand-rolled) |
 | git-cliff           | Rust   | Apache-2.0 / MIT | 12.4k         | v2.14.2 / 2026-09-18  | changelog from commits      | no                       | add; feeds `dist` releases                                      |
 | cocogitto           | Rust   | MIT              | 1.2k          | push 2026-04-22       | conventional commits, bump  | no                       | skip (git-cliff covers changelogs)                              |
 | git-absorb          | Rust   | BSD-3-Clause     | 5.8k          | 0.9.0 / 2026-02-14    | fixup into stack            | no                       | add (jj has `jj absorb` natively)                               |
@@ -136,7 +136,7 @@ no Rust forge has CI, packages and review together.
 | Local VCS UX (push, rebase, stacks, worktrees) | jj, colocated with `.git`                                                                                                      | `aphrody-dev/jj` (exists); bump tools.toml 0.46.0 -> 0.47.1                     | jj test suite; `git fsck` and `git log` identical after `jj git push` round trip            |
 | Windows git replacement                        | `ay git` (gix) + jj + `ay ssh` (russh) + uutils; Git for Windows kept only for `ay git slim` partial clones and LFS            | gitoxide, jj, russh (exist)                                                     | `ay gclient sync` and `ay doctor` pass with Git for Windows removed from PATH               |
 | LFS client                                     | none to fork yet: keep `git-lfs` binary behind `GIT_LFS_SKIP_SMUDGE=1`; implement batch API in gix-lfs style later             | none; watch `huggingface/xet-core` (git_xet) as a Rust transfer-agent reference | git-lfs `t/` integration suite against our client                                           |
-| LFS server / large assets                      | `crates/depot-cas` (Lore model) for pins; Lore itself for binary-first repos; rudolfs if a plain LFS endpoint is needed on fr1 | `aphrody-dev/lore` (exists); rudolfs only if adopted                            | Lore integration tests; git-lfs client `t/` against the server                              |
+| LFS server / large assets                      | `src/depot/cas` (Lore model) for pins; Lore itself for binary-first repos; rudolfs if a plain LFS endpoint is needed on fr1 | `aphrody-dev/lore` (exists); rudolfs only if adopted                            | Lore integration tests; git-lfs client `t/` against the server                              |
 | Forge for our code                             | GitHub stays primary; Forgejo as self-hosted mirror on fr1                                                                     | none (Forgejo on Codeberg, run upstream release)                                | `ay git` multi-forge push to both, ref lists identical                                      |
 | CI                                             | GitHub Actions; Forgejo Actions on the mirror; `act` locally                                                                   | none                                                                            | same workflow YAML green on GitHub, forgejo-runner and `act`                                |
 | Review                                         | GitHub PRs for our repos; Gerrit via `ay cl` for Chromium; stacked PRs via jj                                                  | none                                                                            | `ay cl upload` matches `git cl upload` change metadata                                      |

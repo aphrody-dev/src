@@ -1,4 +1,4 @@
-// bun:ffi binding of crates/dx12-hal (`dx12_hal.dll`, dx12_hal_* symbols, crates/dx12-hal/src/capi.rs).
+// bun:ffi binding of src/drivers/gpu/dx12 (`dx12_hal.dll`, dx12_hal_* symbols, src/drivers/gpu/dx12/src/capi.rs).
 // Shared GPU layer (L2) of unix-distro.ts and apps/nt (ticket nt-001, replaces native_nt_gpu.dll).
 // Contract: resolve dx12_hal_abi_version alone, refuse another version, then bind the rest; every string
 // out is JSON owned by the library, copied then released with dx12_hal_free. Windows only: null elsewhere.
@@ -97,7 +97,7 @@ export function loadDx12Hal(): { lib: HalLib; path: string } | null {
 export class Dx12HalUnavailableError extends Error {
   constructor() {
     super(
-      `${DX12_HAL_LIB_FILE} not found (Windows only; set DX12_HAL_LIB or build crates/dx12-hal)`,
+      `${DX12_HAL_LIB_FILE} not found (Windows only; set DX12_HAL_LIB or build src/drivers/gpu/dx12)`,
     );
   }
 }

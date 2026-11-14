@@ -10,13 +10,13 @@ description: "Pure Bun Modern Web Guidance validator, hybrid BM25+Int8 RAG, mwg_
   pairing `mwg_capi.dll` (`bun:ffi`) with a deterministic pure-Bun fallback.
 </Callout>
 
-Generated from `packages/wck`, `crates/core-capi/include/`, and `packages/ai-os`.
+Generated from `packages/wck`, `src/core/capi/include/`, and `packages/ai-os`.
 
 ## 1. Package Overview
 
 - **Package**: `@aphrody/wck` v1.0.0 (0 external npm dependencies).
 - **Description**: Compile-Time Web Validator (Google SEO + AI Mode SEO + Modern Web Guidelines + Core Web Vitals + Lighthouse 100 + WASM + WebGPU Chromium Spec).
-- **Native Core**: `mwg_capi.dll` compiled from `crates/core-capi/c/mwg_core.c` with C23 strict flags and `bun:ffi` bridge (`packages/wck/src/mwg-ffi.ts`) plus deterministic pure-Bun fallback.
+- **Native Core**: `mwg_capi.dll` compiled from `src/core/capi/c/mwg_core.c` with C23 strict flags and `bun:ffi` bridge (`packages/wck/src/mwg-ffi.ts`) plus deterministic pure-Bun fallback.
 
 ## 2. C ABI Surface (`aphrody_mwg.h`)
 

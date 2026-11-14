@@ -21,7 +21,7 @@ src は Aphrody の公開モノレポです。方向性は、オープンに作�
 - エージェントは自由に動きます。承認も確認も人手も介しません。判断し、実行し、検証し、完了したことと未完了のことを報告します。
 - すべて `main` に直接コミットしてプッシュします。ブランチもワークツリーも使わず、アップストリームへのプッシュもしません。
 - 窓口は `just` と `ay` CLI(`docs/ay/NAMING.md`)です。Rust のコンパイルは CI か fr1 で行い、ワークステーションでは行いません。prd は本番バックエンド専用、fr2 はエッジ専用です。
-- UI フレームワークは自由です(Bevy UI、egui、iced、WinUI 3、Tauri、GPUI、WebUI)。基準は描画品質、性能、機能です。トークンは `packages/design` と `crates/aphrody-ui` から取ります。
+- UI フレームワークは自由です(Bevy UI、egui、iced、WinUI 3、Tauri、GPUI、WebUI)。基準は描画品質、性能、機能です。トークンは `packages/design` と `src/ui/kit` から取ります。
 - AI 機能は `packages/ai-os` にのみ置きます。プロバイダーとモデルは実行時に検出し、ハードコードしません。
 - シークレットスキャンがクリーンになったら、公開リポジトリ、GitHub のリリースとタグ、crates.io、npm で公開します(`docs/publish/STATUS.md`)。
 
@@ -37,4 +37,4 @@ src は Aphrody の公開モノレポです。方向性は、オープンに作�
 
 ## 5. ゲームと Steam
 
-所有関係の一覧: `docs/gaming/OWNERSHIP.md`。Rust は `crates/steam-depot`(`ay steam`)、Bun は `packages/gaming`(`ay gaming`)です。プラグインと MCP は `apps/rosegriffon/plugins/steam` にあり、そのスキルはそこで編集し、`ay gaming skills sync` でミラーします。
+所有関係の一覧: `docs/gaming/OWNERSHIP.md`。Rust は `src/steam`(`ay steam`)、Bun は `packages/gaming`(`ay gaming`)です。プラグインと MCP は `apps/rosegriffon/plugins/steam` にあり、そのスキルはそこで編集し、`ay gaming skills sync` でミラーします。

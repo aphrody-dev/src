@@ -69,7 +69,7 @@ test("vcpkg git registry layout", () => {
 test("port files carry the CMake target and the cargo build", () => {
   const f = portFiles(
     {
-      crate: "crates/core-capi",
+      crate: "src/core/capi",
       port: "aphrody-core-capi",
       lib: "aphrody_core_capi",
       header: "include/aphrody_core.h",

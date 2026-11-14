@@ -1,6 +1,6 @@
 # Conformance
 
-Compatibility is measured, not claimed. Each of the 11 suites below is an upstream test suite or schema. It is fetched at a pinned commit as a `gh` tarball (no git), run headless by `aphrody x conformance [--fetch] [suite...]` (crate `crates/conformance`), and reported as JSON. Upstream sources are never committed: only the listed paths are extracted into the ignored `conformance/upstream/<suite>/`.
+Compatibility is measured, not claimed. Each of the 11 suites below is an upstream test suite or schema. It is fetched at a pinned commit as a `gh` tarball (no git), run headless by `aphrody x conformance [--fetch] [suite...]` (crate `test/conformance`), and reported as JSON. Upstream sources are never committed: only the listed paths are extracted into the ignored `conformance/upstream/<suite>/`.
 
 ## Initial pins (2026-11-12)
 

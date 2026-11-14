@@ -1,4 +1,0 @@
-# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
-# asset-test decodes audio through tv-ffmpeg (FFmpeg linkage confined by the root rules).
-layer = 5
-+crates/tv-ffmpeg

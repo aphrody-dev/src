@@ -7,8 +7,8 @@ English is the source language. Supported locales: `en`, `fr`, `zh-CN`, `ja`, `e
 One set of flat JSON catalogs, `packages/i18n/locales/<locale>.json` (key to message), read by both runtimes:
 
 - TypeScript: `@aphrody/i18n` (`packages/i18n`, Bun, no npm dependency). `createTranslator(catalogs, locale).t(key, args)`, `negotiate(acceptLanguage)`.
-- Rust: `crates/aphrody-i18n` embeds the same files with `include_str!`. `I18n::new(locale).t_args(key, args)`, `negotiate(header)`.
-- `crates/tv-i18n` (Fluent, 16 languages, media domain) is unchanged and independent.
+- Rust: `src/i18n` embeds the same files with `include_str!`. `I18n::new(locale).t_args(key, args)`, `negotiate(header)`.
+- `src/tv/i18n` (Fluent, 16 languages, media domain) is unchanged and independent.
 
 A key missing in a locale falls back to its base language, then to `en`, then to the key itself.
 

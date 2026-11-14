@@ -1,6 +1,6 @@
 // Automated asset testing: every manifest entry (and, with --recursive, every file under assets/library) is
 // decoded by the repo's own decoders. Bun side here (Bun.Image, Khronos glTF-Validator, sha256); Rust side
-// (tv-ffmpeg, resvg, craft-svg/webp/exr, gltf crate, headless Bevy, ttf-parser) is crates/asset-test, run on
+// (tv-ffmpeg, resvg, craft-svg/webp/exr, gltf crate, headless Bevy, ttf-parser) is test/assets, run on
 // fr1 or in CI, whose JSON lines are merged into the same report.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, extname } from "node:path";
@@ -51,7 +51,7 @@ export interface TestOptions {
   root: string;
   recursive?: boolean;
   types?: AssetType[];
-  /** JSON-lines file produced by `asset-test` (crates/asset-test). */
+  /** JSON-lines file produced by `asset-test` (test/assets). */
   rustResults?: string;
   /** Run `asset-test` locally from this binary. */
   rustBin?: string;
@@ -286,7 +286,7 @@ export async function runTests(
         });
     }
   } else if (!hasLib) {
-    // Standard Bevy `assets/` + `crates/game/assets/` layout with `.meta` RON sidecars & SVG 2 validation.
+    // Standard Bevy `assets/` + `src/game/assets/` layout with `.meta` RON sidecars & SVG 2 validation.
     for (const rootDir of [
       join(o.root, "assets"),
       join(o.root, "crates", "game", "assets"),

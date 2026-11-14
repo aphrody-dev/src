@@ -1,0 +1,86 @@
+[package]
+repository.workspace = true
+description = "Lore version control: lore-storage (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-storage"
+edition = "2024"
+version = "0.13.1-nightly"
+
+[lib]
+name = "lore_storage"
+test = false
+
+[dependencies]
+async-trait = { workspace = true }
+bitcode = { workspace = true }
+bitflags = { workspace = true }
+blake3 = { workspace = true }
+bytes = { workspace = true }
+crossbeam-queue = { workspace = true }
+dashmap = { workspace = true }
+fastcdc = { workspace = true }
+futures = { workspace = true }
+lore-base = { workspace = true }
+hex = { workspace = true }
+libc = { workspace = true }
+lore-io = { workspace = true }
+lore-macro = { workspace = true }
+lore-transport = { workspace = true }
+lz4-sys = { workspace = true }
+zstd-sys = { workspace = true }
+opentelemetry = { workspace = true }
+parking_lot = { workspace = true }
+pin-project = { workspace = true }
+rand = { workspace = true }
+serde = { workspace = true }
+smallvec = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tokio-stream = { workspace = true }
+tokio-util = { workspace = true }
+lore-error-set = { workspace = true }
+lore-telemetry = { workspace = true }
+uuid = { workspace = true, features = ["zerocopy"] }
+xxhash-rust = { workspace = true }
+zerocopy = { workspace = true }
+
+[features]
+default = []
+failure_generator = []
+oodle = []
+store-stress = []
+test-util = []
+trace_log = []
+
+# The stress harness, run by hand through `scripts/store-stress/stress.py`, which enables
+# `store-stress`. Naming the feature here keeps `cargo test` and builds of all targets from
+# building it at all: it builds on Unix only, and is not part of any test run.
+[[example]]
+name = "store_stress"
+path = "examples/store_stress/main.rs"
+required-features = ["store-stress"]
+
+[dev-dependencies]
+# The shared test temp-directory helper.
+lore-base = { path = "../base", package = "aphrody-lore-base", features = [
+  "test-util",
+] }
+lore-storage = { path = ".", package = "aphrody-lore-storage", features = [
+  "test-util",
+] }
+# A session over a stub peer, with no live connection behind it.
+lore-transport = { path = "../transport", package = "aphrody-lore-transport", features = ["test-util"] }
+# A paused clock, so retry back-off takes no real time.
+tokio = { workspace = true, features = ["test-util"] }
+
+[target.'cfg(target_family = "windows")'.dependencies]
+# `Win32_Storage_FileSystem` does not imply `Win32_Foundation`, and the packstore reads its error
+# constants from the latter, so both are named here rather than relying on another crate in the
+# build enabling it.
+windows-sys = { workspace = true, features = [
+  "Win32_Foundation",
+  "Win32_Storage_FileSystem",
+] }
+
+[lints]
+workspace = true

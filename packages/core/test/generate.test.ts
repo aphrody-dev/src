@@ -124,7 +124,7 @@ describe("monorepo snapshot & live scanner", () => {
       expect(plan).toMatch(/^---\r?\ntitle:/);
       expect(plan).toContain("<Callout");
       expect(plan).toContain("<Cards>");
-      expect(plan).toContain("crates/bun-flat");
+      expect(plan).toContain("src/bun-flat");
 
       const pureC = readFileSync(
         join(SRC_ROOT, "docs", "llvm", "PURE-C-LLVM.mdx"),

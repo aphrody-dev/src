@@ -6,7 +6,7 @@ const isJson = process.argv.includes("--json");
 
 const getNowNs = (): number => Bun.nanoseconds();
 
-const wasmPath = join(srcRoot(), "crates", "bench", "tier5_bun", "kernel.wasm");
+const wasmPath = join(srcRoot(), "bench", "tier5_bun", "kernel.wasm");
 const wasmBytes = new Uint8Array(readFileSync(wasmPath));
 
 const wasmModule = new WebAssembly.Module(wasmBytes);

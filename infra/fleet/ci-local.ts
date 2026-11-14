@@ -80,7 +80,7 @@ const J: Job[] = [
     group: "arch",
     cargo: true,
     after: "rust",
-    cmd: 'T=${CARGO_TARGET_DIR:-target}; "$T/debug/ay" arch check --strict --json > var/ci-local/arch.json || true; jaq -e --slurpfile b crates/archguard/baseline.json \'[.findings[] | select(.severity == "error") | .rule_id] | group_by(.) | map({k: .[0], n: length}) | map(select(.n > ($b[0][.k] // 0))) | length == 0\' var/ci-local/arch.json',
+    cmd: 'T=${CARGO_TARGET_DIR:-target}; "$T/debug/ay" arch check --strict --json > var/ci-local/arch.json || true; jaq -e --slurpfile b src/archguard/baseline.json \'[.findings[] | select(.severity == "error") | .rule_id] | group_by(.) | map({k: .[0], n: length}) | map(select(.n > ($b[0][.k] // 0))) | length == 0\' var/ci-local/arch.json',
   },
   {
     name: "tokens",

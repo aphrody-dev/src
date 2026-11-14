@@ -1,4 +1,4 @@
-// Bridge to the Rust half: `ay steam <sub>` prints JSON computed by crates/steam-depot (VDF text and
+// Bridge to the Rust half: `ay steam <sub>` prints JSON computed by src/steam (VDF text and
 // binary, appinfo.vdf, appmanifest_*.acf, libraryfolders.vdf, compat tools, Proton env). One parser
 // per format in the monorepo; this file only spawns and decodes. Ownership: docs/gaming/OWNERSHIP.md.
 import { existsSync } from "node:fs";

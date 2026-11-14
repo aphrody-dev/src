@@ -1,4 +1,4 @@
 # checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
 # L2: bun:ffi bindings of the platform C ABIs, shared by packages (unix-distro.ts) and apps/nt.
 layer = 2
-use crates/dx12-hal   # bun:ffi dlopen of dx12_hal.dll (src/dx12-hal.ts)
+use src/drivers/gpu/dx12   # bun:ffi dlopen of dx12_hal.dll (src/dx12-hal.ts)

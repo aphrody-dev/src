@@ -1,5 +1,4 @@
 ---
-disable-model-invocation: true
 name: steam-community-tools
 description: This skill should be used when the user asks to "download a depot", "find a depot manifest id", "open the SteamDB page for an app", "use SteamCMD to install a dedicated server", "compare DepotDownloader and steamroom", "pick a Steam client library", or "is this Steam library GPL". For the manifest and chunk format itself, steam-content-cdn applies.
 ---

@@ -42,7 +42,7 @@ a fork is created (skill gh-fork, `third_party/forks.txt`) only if a patch becom
   the Go part of `packages/ffi-bridge` (`index.ts`, `polyglot.test.ts`, crate `src/lib.rs`), `infra/generated/Caddyfile`,
   `infra/generated/deploy-plan.json`, `infra/generated/systemd/sovereign-*@.service`, `infra/gcloud/cloudbuild.yaml`,
   the `src-deploy` step of `tools.toml`, the `deploy-plan` and `go test` recipes of `verify-all`.
-- `ay deploy <sub>` routes to `just docker-<sub>` (`crates/ay/src/lib.rs`, unit test updated); `just deploy` =
+- `ay deploy <sub>` routes to `just docker-<sub>` (`src/ay/src/lib.rs`, unit test updated); `just deploy` =
   `just docker-up`.
 - Builds moved from prd to fr1 and CI: `just docker-build` and `just docker-smoke` go through `images.yml`, buildx builder
   `aphrody` created on fr1, Docker context `fr1` (`ssh://vps`) added on the PC. `infra/fleet/bootstrap/fr1.sh` installs go, zig, .NET, cargo-zigbuild, cargo-nextest,

@@ -53,9 +53,9 @@ Aphrody Labs : travail de plateforme auto-hébergée ; son ancien binaire est d�
 
 | Chemin                                                                         | Contenu                                                                          |
 | :----------------------------------------------------------------------------- | :------------------------------------------------------------------------------- |
-| `crates/conformance`, `conformance/`                                           | suites de conformité épinglées, CLI `ay conformance`                             |
-| `crates/lore*`, `licenses/lore`, `tools/lore`                                  | Lore VCS, absorbé (MIT)                                                          |
-| `crates/apm`                                                                   | crate APM                                                                        |
+| `test/conformance`, `conformance/`                                           | suites de conformité épinglées, CLI `ay conformance`                             |
+| `src/lore*`, `licenses/lore`, `tools/lore`                                  | Lore VCS, absorbé (MIT)                                                          |
+| `src/apm`                                                                   | crate APM                                                                        |
 | `[patch.crates-io]`                                                            | crates patchées, forks aphrody-labs épinglés par `rev` (quinn-proto, glob-match) |
 | `third_party/oils`, `third_party/{vendor.lock,chrome-channels.toml,forks.txt}` | fork oils et épinglages                                                          |
 | `infra/chromium-factory`                                                       | usine de build Chromium                                                          |

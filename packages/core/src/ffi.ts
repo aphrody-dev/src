@@ -1,4 +1,4 @@
-// bun:ffi bridge to crates/core-capi (`aphrody_core_capi` shared library, core_* symbols).
+// bun:ffi bridge to src/core/capi (`aphrody_core_capi` shared library, core_* symbols).
 // Contract: include/aphrody_core.h. Every returned string is JSON owned by the library and
 // released with core_free right after it is copied into a JS string.
 import {
@@ -79,7 +79,7 @@ export function loadCore(): { lib: CoreLib; path: string } | null {
 export class CoreUnavailableError extends Error {
   constructor() {
     super(
-      `${CORE_LIB_FILE} not found (set APHRODY_CORE_LIB or build crates/core-capi)`,
+      `${CORE_LIB_FILE} not found (set APHRODY_CORE_LIB or build src/core/capi)`,
     );
   }
 }

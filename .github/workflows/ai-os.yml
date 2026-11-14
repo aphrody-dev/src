@@ -8,16 +8,16 @@ on:
     paths:
       [
         "packages/ai-os/**",
-        "crates/agent-context/**",
-        "crates/agent-py/**",
+        "src/agent/context/**",
+        "src/agent/py/**",
         ".github/workflows/ai-os.yml",
       ]
   pull_request:
     paths:
       [
         "packages/ai-os/**",
-        "crates/agent-context/**",
-        "crates/agent-py/**",
+        "src/agent/context/**",
+        "src/agent/py/**",
         ".github/workflows/ai-os.yml",
       ]
   workflow_dispatch:

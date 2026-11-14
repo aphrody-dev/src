@@ -6,7 +6,7 @@
  *   - WebAssembly 3.0 browser runtime (`aysys.wasm`, `m3.wasm`) + WebGPU WGSL + DOM A11y tree
  *   - WASI Preview 1/2 SSR static/edge site generator (`ay-m3-ssr.wasm`)
  *   - Android NDK (`ANativeWindow` / `AChoreographer` + Jetpack Compose JNI)
- *   - Dart / Flutter (`dart:ffi`), Rust (`crates/core-capi`, `aphrody-ui`, `taffy`, `egui`, `iced`,
+ *   - Dart / Flutter (`dart:ffi`), Rust (`src/core/capi`, `aphrody-ui`, `taffy`, `egui`, `iced`,
  *     `libcosmic`, `bevy`, `leptos`, `dioxus`, `tauri`), Pure Bun (`bun:ffi`), React, and WinUI 3.
  *
  * Color roles match `packages/design/tokens/tokens.json` (`assets/brand/brand.toml` seed #135B82,

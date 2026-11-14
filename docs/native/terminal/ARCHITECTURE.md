@@ -41,7 +41,7 @@ Dépendances absorbées dans `third_party/` (forks aphrody-labs, `packages/machi
   reste le moteur web ; intelligent-terminal n'en embarque que `base/numerics` dans `oss/chromium`. Sur prd, la
   validation C++ utilise le clang/lld système (Arch Linux) ; elle ne produit aucun binaire consommé par le build
   Windows (MSBuild, vcpkg, NuGet).
-- Pile UI existante : `crates/taffy` (`0.15.1`) et `crates/aphrody-ui` (`fusion` : `CanonicalPage::IntelligentTerminal`, `UiKind::TerminalPane`, `ratatui-core`/`anstyle`, Dioxus/AnyRender, `embedded_gpui`); `crates/dx12-hal` (Rust, `windows`) et `third_party/windows-rs` (monorepo,
+- Pile UI existante : `src/taffy` (`0.15.1`) et `src/ui/kit` (`fusion` : `CanonicalPage::IntelligentTerminal`, `UiKind::TerminalPane`, `ratatui-core`/`anstyle`, Dioxus/AnyRender, `embedded_gpui`); `src/drivers/gpu/dx12` (Rust, `windows`) et `third_party/windows-rs` (monorepo,
   `MERGED.toml`) côté Rust natif ; `third_party/microsoft-ui-xaml`, `third_party/WindowsAppSDK`,
   `third_party/webui`, `third_party/fluentui`, `third_party/fast`, `third_party/nsh` (`aphrody-labs/native-shell`), `third_party/gpui-kit` côté UI ; `third_party/wterm`,
   `third_party/ghostty-web`, `third_party/opentui`, `third_party/edit`, `third_party/terminal-control`,

@@ -13,75 +13,75 @@ index c4da9cb..427c44d 100644
  
  [workspace.dependencies]
  # First-party crates
--archguard = { path = "crates/archguard" }
+-archguard = { path = "src/archguard" }
 -aphrody-design-shared = { path = "crates/aphrody-design-shared" }
 -aphrody-design-tokens = { path = "crates/aphrody-design-tokens" }
--corelib = { package = "sovereign-corelib", path = "crates/corelib", default-features = false }
--depot-cli = { path = "crates/depot-cli" }
--depot-core = { path = "crates/depot-core" }
--depot-cas = { path = "crates/depot-cas" }
--depot-cipd = { path = "crates/depot-cipd" }
+-corelib = { package = "sovereign-corelib", path = "src/corelib", default-features = false }
+-depot-cli = { path = "src/depot/cli" }
+-depot-core = { path = "src/depot/core" }
+-depot-cas = { path = "src/depot/cas" }
+-depot-cipd = { path = "src/depot/cipd" }
 -depot-treesitter = { path = "crates/depot-treesitter" }
 -depot-re = { path = "crates/depot-re" }
--depot-migrate = { path = "crates/depot-migrate" }
--depot-forge = { path = "crates/depot-forge" }
--depot-ingest = { path = "crates/depot-ingest" }
--depot-graph = { path = "crates/depot-graph" }
--gamescope-core = { path = "crates/gamescope-core" }
--gamescope-wgsl = { path = "crates/gamescope-wgsl" }
--stack-bench = { path = "crates/bench" }
--xtk = { path = "crates/xtask" }
-+archguard = { version = "0.1.0", path = "crates/archguard" }
+-depot-migrate = { path = "src/depot/migrate" }
+-depot-forge = { path = "src/depot/forge" }
+-depot-ingest = { path = "src/depot/ingest" }
+-depot-graph = { path = "src/depot/graph" }
+-gamescope-core = { path = "src/wayland/gamescope/core" }
+-gamescope-wgsl = { path = "src/wayland/gamescope/wgsl" }
+-stack-bench = { path = "bench" }
+-xtk = { path = "src/xtask" }
++archguard = { version = "0.1.0", path = "src/archguard" }
 +aphrody-design-shared = { version = "0.2.0", path = "crates/aphrody-design-shared" }
 +aphrody-design-tokens = { version = "0.2.0", path = "crates/aphrody-design-tokens" }
-+corelib = { version = "0.1.0", package = "sovereign-corelib", path = "crates/corelib", default-features = false }
-+depot-cli = { version = "0.2.0", path = "crates/depot-cli" }
-+depot-core = { version = "0.2.0", path = "crates/depot-core" }
-+depot-cas = { version = "0.2.0", path = "crates/depot-cas" }
-+depot-cipd = { version = "0.2.0", path = "crates/depot-cipd" }
++corelib = { version = "0.1.0", package = "sovereign-corelib", path = "src/corelib", default-features = false }
++depot-cli = { version = "0.2.0", path = "src/depot/cli" }
++depot-core = { version = "0.2.0", path = "src/depot/core" }
++depot-cas = { version = "0.2.0", path = "src/depot/cas" }
++depot-cipd = { version = "0.2.0", path = "src/depot/cipd" }
 +depot-treesitter = { version = "0.2.0", path = "crates/depot-treesitter" }
 +depot-re = { version = "0.2.0", path = "crates/depot-re" }
-+depot-migrate = { version = "0.2.0", path = "crates/depot-migrate" }
-+depot-forge = { version = "0.2.0", path = "crates/depot-forge" }
-+depot-ingest = { version = "0.2.0", path = "crates/depot-ingest" }
-+depot-graph = { version = "0.2.0", path = "crates/depot-graph" }
-+gamescope-core = { version = "0.1.0", path = "crates/gamescope-core" }
-+gamescope-wgsl = { version = "0.1.0", path = "crates/gamescope-wgsl" }
-+stack-bench = { version = "0.1.0", path = "crates/bench" }
-+xtk = { version = "0.1.0", path = "crates/xtask" }
++depot-migrate = { version = "0.2.0", path = "src/depot/migrate" }
++depot-forge = { version = "0.2.0", path = "src/depot/forge" }
++depot-ingest = { version = "0.2.0", path = "src/depot/ingest" }
++depot-graph = { version = "0.2.0", path = "src/depot/graph" }
++gamescope-core = { version = "0.1.0", path = "src/wayland/gamescope/core" }
++gamescope-wgsl = { version = "0.1.0", path = "src/wayland/gamescope/wgsl" }
++stack-bench = { version = "0.1.0", path = "bench" }
++xtk = { version = "0.1.0", path = "src/xtask" }
  # Labs (merged from C:\labs): Lore VCS, APM, conformance harness, aphrody CLI
--lore = { path = "crates/lore" }
--lore-aws = { path = "crates/lore-aws" }
--lore-base = { path = "crates/lore-base" }
--lore-credential = { path = "crates/lore-credential" }
--lore-error-set = { path = "crates/lore-error-set" }
--lore-error-set-macro = { path = "crates/lore-error-set-macro" }
--lore-hashicorp = { path = "crates/lore-hashicorp" }
--lore-io = { path = "crates/lore-io" }
--lore-macro = { path = "crates/lore-macro" }
--lore-notification = { path = "crates/lore-notification" }
--lore-proto = { path = "crates/lore-proto" }
--lore-revision = { path = "crates/lore-revision" }
--lore-server = { path = "crates/lore-server" }
--lore-storage = { path = "crates/lore-storage" }
--lore-telemetry = { path = "crates/lore-telemetry" }
--lore-transport = { path = "crates/lore-transport" }
-+lore = { version = "0.13.1-nightly", path = "crates/lore" , package = "aphrody-lore" }
-+lore-aws = { version = "0.13.1-nightly", path = "crates/lore-aws" , package = "aphrody-lore-aws" }
-+lore-base = { version = "0.13.1-nightly", path = "crates/lore-base" , package = "aphrody-lore-base" }
-+lore-credential = { version = "0.13.1-nightly", path = "crates/lore-credential" , package = "aphrody-lore-credential" }
-+lore-error-set = { version = "0.1.0", path = "crates/lore-error-set" , package = "aphrody-lore-error-set" }
-+lore-error-set-macro = { version = "0.1.0", path = "crates/lore-error-set-macro" , package = "aphrody-lore-error-set-macro" }
-+lore-hashicorp = { version = "0.13.1-nightly", path = "crates/lore-hashicorp" , package = "aphrody-lore-hashicorp" }
-+lore-io = { version = "0.13.1-nightly", path = "crates/lore-io" , package = "aphrody-lore-io" }
-+lore-macro = { version = "0.13.1-nightly", path = "crates/lore-macro" , package = "aphrody-lore-macro" }
-+lore-notification = { version = "0.13.1-nightly", path = "crates/lore-notification" , package = "aphrody-lore-notification" }
-+lore-proto = { version = "0.1.67", path = "crates/lore-proto" , package = "aphrody-lore-proto" }
-+lore-revision = { version = "0.13.1-nightly", path = "crates/lore-revision" , package = "aphrody-lore-revision" }
-+lore-server = { version = "0.13.1-nightly", path = "crates/lore-server" , package = "aphrody-lore-server" }
-+lore-storage = { version = "0.13.1-nightly", path = "crates/lore-storage" , package = "aphrody-lore-storage" }
-+lore-telemetry = { version = "0.13.1-nightly", path = "crates/lore-telemetry" , package = "aphrody-lore-telemetry" }
-+lore-transport = { version = "0.13.1-nightly", path = "crates/lore-transport" , package = "aphrody-lore-transport" }
+-lore = { path = "src/lore" }
+-lore-aws = { path = "src/lore/aws" }
+-lore-base = { path = "src/lore/base" }
+-lore-credential = { path = "src/lore/credential" }
+-lore-error-set = { path = "src/lore/error-set" }
+-lore-error-set-macro = { path = "src/lore/error-set-macro" }
+-lore-hashicorp = { path = "src/lore/hashicorp" }
+-lore-io = { path = "src/lore/io" }
+-lore-macro = { path = "src/lore/macro" }
+-lore-notification = { path = "src/lore/notification" }
+-lore-proto = { path = "src/lore/proto" }
+-lore-revision = { path = "src/lore/revision" }
+-lore-server = { path = "src/lore/server" }
+-lore-storage = { path = "src/lore/storage" }
+-lore-telemetry = { path = "src/lore/telemetry" }
+-lore-transport = { path = "src/lore/transport" }
++lore = { version = "0.13.1-nightly", path = "src/lore" , package = "aphrody-lore" }
++lore-aws = { version = "0.13.1-nightly", path = "src/lore/aws" , package = "aphrody-lore-aws" }
++lore-base = { version = "0.13.1-nightly", path = "src/lore/base" , package = "aphrody-lore-base" }
++lore-credential = { version = "0.13.1-nightly", path = "src/lore/credential" , package = "aphrody-lore-credential" }
++lore-error-set = { version = "0.1.0", path = "src/lore/error-set" , package = "aphrody-lore-error-set" }
++lore-error-set-macro = { version = "0.1.0", path = "src/lore/error-set-macro" , package = "aphrody-lore-error-set-macro" }
++lore-hashicorp = { version = "0.13.1-nightly", path = "src/lore/hashicorp" , package = "aphrody-lore-hashicorp" }
++lore-io = { version = "0.13.1-nightly", path = "src/lore/io" , package = "aphrody-lore-io" }
++lore-macro = { version = "0.13.1-nightly", path = "src/lore/macro" , package = "aphrody-lore-macro" }
++lore-notification = { version = "0.13.1-nightly", path = "src/lore/notification" , package = "aphrody-lore-notification" }
++lore-proto = { version = "0.1.67", path = "src/lore/proto" , package = "aphrody-lore-proto" }
++lore-revision = { version = "0.13.1-nightly", path = "src/lore/revision" , package = "aphrody-lore-revision" }
++lore-server = { version = "0.13.1-nightly", path = "src/lore/server" , package = "aphrody-lore-server" }
++lore-storage = { version = "0.13.1-nightly", path = "src/lore/storage" , package = "aphrody-lore-storage" }
++lore-telemetry = { version = "0.13.1-nightly", path = "src/lore/telemetry" , package = "aphrody-lore-telemetry" }
++lore-transport = { version = "0.13.1-nightly", path = "src/lore/transport" , package = "aphrody-lore-transport" }
  
  # crates.io. Keys shared by src and labs: labs exact pin (same or newer version), union of features.
  anyhow = "=1.0.104"
@@ -146,10 +146,10 @@ index 57601e8..c44d02f 100644
  name = "aphrody-design-sprite-sheet"
  version.workspace = true
  edition.workspace = true
-diff --git a/crates/apm/Cargo.toml b/crates/apm/Cargo.toml
+diff --git a/src/apm/Cargo.toml b/src/apm/Cargo.toml
 index 67bfd3f..edfc4dc 100644
---- a/crates/apm/Cargo.toml
-+++ b/crates/apm/Cargo.toml
+--- a/src/apm/Cargo.toml
++++ b/src/apm/Cargo.toml
 @@ -8,7 +8,6 @@ license.workspace = true
  repository.workspace = true
  homepage.workspace = true
@@ -158,10 +158,10 @@ index 67bfd3f..edfc4dc 100644
  
  [lib]
  name = "aphrody_apm"
-diff --git a/crates/archguard/Cargo.toml b/crates/archguard/Cargo.toml
+diff --git a/src/archguard/Cargo.toml b/src/archguard/Cargo.toml
 index acd57bb..9c56460 100644
---- a/crates/archguard/Cargo.toml
-+++ b/crates/archguard/Cargo.toml
+--- a/src/archguard/Cargo.toml
++++ b/src/archguard/Cargo.toml
 @@ -1,11 +1,11 @@
  [package]
 +repository.workspace = true
@@ -175,10 +175,10 @@ index acd57bb..9c56460 100644
  
  [lib]
  name = "archguard"
-diff --git a/crates/ay/Cargo.toml b/crates/ay/Cargo.toml
+diff --git a/src/ay/Cargo.toml b/src/ay/Cargo.toml
 index 7aadab6..63fd577 100644
---- a/crates/ay/Cargo.toml
-+++ b/crates/ay/Cargo.toml
+--- a/src/ay/Cargo.toml
++++ b/src/ay/Cargo.toml
 @@ -1,11 +1,11 @@
  [package]
 +publish = false
@@ -213,10 +213,10 @@ index 7aadab6..63fd577 100644
  # `ay self-update` against the dist releases (blocking API, no async runtime in ay itself).
  axoupdater = { version = "0.10", features = ["blocking"] }
  
-diff --git a/crates/bench/Cargo.toml b/crates/bench/Cargo.toml
+diff --git a/bench/Cargo.toml b/bench/Cargo.toml
 index fc04cc4..4e6c7bf 100644
---- a/crates/bench/Cargo.toml
-+++ b/crates/bench/Cargo.toml
+--- a/bench/Cargo.toml
++++ b/bench/Cargo.toml
 @@ -1,9 +1,10 @@
  [package]
 +repository.workspace = true
@@ -229,10 +229,10 @@ index fc04cc4..4e6c7bf 100644
  
  [dependencies]
  argh = "0.1.19"
-diff --git a/crates/conformance/Cargo.toml b/crates/conformance/Cargo.toml
+diff --git a/test/conformance/Cargo.toml b/test/conformance/Cargo.toml
 index 23c36c3..8f93e43 100644
---- a/crates/conformance/Cargo.toml
-+++ b/crates/conformance/Cargo.toml
+--- a/test/conformance/Cargo.toml
++++ b/test/conformance/Cargo.toml
 @@ -8,7 +8,6 @@ license.workspace = true
  repository.workspace = true
  homepage.workspace = true
@@ -241,20 +241,20 @@ index 23c36c3..8f93e43 100644
  
  [dependencies]
  serde = { workspace = true, features = ["derive", "std"] }
-diff --git a/crates/corelib/Cargo.toml b/crates/corelib/Cargo.toml
+diff --git a/src/corelib/Cargo.toml b/src/corelib/Cargo.toml
 index 9f46741..0d695eb 100644
---- a/crates/corelib/Cargo.toml
-+++ b/crates/corelib/Cargo.toml
+--- a/src/corelib/Cargo.toml
++++ b/src/corelib/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +repository.workspace = true
  name = "sovereign-corelib"
  version = "0.1.0"
  edition = "2024"
-diff --git a/crates/cosmic-compat/Cargo.toml b/crates/cosmic-compat/Cargo.toml
+diff --git a/src/wayland/cosmic/Cargo.toml b/src/wayland/cosmic/Cargo.toml
 index fed3ad9..939ca0b 100644
---- a/crates/cosmic-compat/Cargo.toml
-+++ b/crates/cosmic-compat/Cargo.toml
+--- a/src/wayland/cosmic/Cargo.toml
++++ b/src/wayland/cosmic/Cargo.toml
 @@ -1,4 +1,6 @@
  [package]
 +repository.workspace = true
@@ -273,10 +273,10 @@ index fed3ad9..939ca0b 100644
  tracing.workspace = true
  thiserror.workspace = true
  serde.workspace = true
-diff --git a/crates/depot-cas/Cargo.toml b/crates/depot-cas/Cargo.toml
+diff --git a/src/depot/cas/Cargo.toml b/src/depot/cas/Cargo.toml
 index 7550d3c..4dc8850 100644
---- a/crates/depot-cas/Cargo.toml
-+++ b/crates/depot-cas/Cargo.toml
+--- a/src/depot/cas/Cargo.toml
++++ b/src/depot/cas/Cargo.toml
 @@ -5,7 +5,6 @@ edition.workspace = true
  license.workspace = true
  repository = "https://github.com/aphrody-dev/depot"
@@ -285,10 +285,10 @@ index 7550d3c..4dc8850 100644
  
  [dependencies]
  blake3.workspace = true
-diff --git a/crates/depot-cipd/Cargo.toml b/crates/depot-cipd/Cargo.toml
+diff --git a/src/depot/cipd/Cargo.toml b/src/depot/cipd/Cargo.toml
 index aec52e3..5f1bc62 100644
---- a/crates/depot-cipd/Cargo.toml
-+++ b/crates/depot-cipd/Cargo.toml
+--- a/src/depot/cipd/Cargo.toml
++++ b/src/depot/cipd/Cargo.toml
 @@ -5,7 +5,6 @@ edition.workspace = true
  license.workspace = true
  repository = "https://github.com/aphrody-dev/depot"
@@ -297,10 +297,10 @@ index aec52e3..5f1bc62 100644
  
  [dependencies]
  base64.workspace = true
-diff --git a/crates/depot-cli/Cargo.toml b/crates/depot-cli/Cargo.toml
+diff --git a/src/depot/cli/Cargo.toml b/src/depot/cli/Cargo.toml
 index 1093eae..018a759 100644
---- a/crates/depot-cli/Cargo.toml
-+++ b/crates/depot-cli/Cargo.toml
+--- a/src/depot/cli/Cargo.toml
++++ b/src/depot/cli/Cargo.toml
 @@ -5,7 +5,6 @@ edition.workspace = true
  license.workspace = true
  repository = "https://github.com/aphrody-dev/depot"
@@ -309,30 +309,30 @@ index 1093eae..018a759 100644
  
  [lib]
  name = "depot_cli"
-diff --git a/crates/depot-core/Cargo.toml b/crates/depot-core/Cargo.toml
+diff --git a/src/depot/core/Cargo.toml b/src/depot/core/Cargo.toml
 index 7900844..68d622c 100644
---- a/crates/depot-core/Cargo.toml
-+++ b/crates/depot-core/Cargo.toml
+--- a/src/depot/core/Cargo.toml
++++ b/src/depot/core/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +description = "depot-core: part of the Aphrody monorepo"
  name = "depot-core"
  version.workspace = true
  edition.workspace = true
-diff --git a/crates/depot-forge/Cargo.toml b/crates/depot-forge/Cargo.toml
+diff --git a/src/depot/forge/Cargo.toml b/src/depot/forge/Cargo.toml
 index 71237bb..b9e4ffc 100644
---- a/crates/depot-forge/Cargo.toml
-+++ b/crates/depot-forge/Cargo.toml
+--- a/src/depot/forge/Cargo.toml
++++ b/src/depot/forge/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +description = "depot-forge: part of the Aphrody monorepo"
  name = "depot-forge"
  version.workspace = true
  edition.workspace = true
-diff --git a/crates/depot-gclient/Cargo.toml b/crates/depot-gclient/Cargo.toml
+diff --git a/src/depot/gclient/Cargo.toml b/src/depot/gclient/Cargo.toml
 index aedf632..aeaa4cb 100644
---- a/crates/depot-gclient/Cargo.toml
-+++ b/crates/depot-gclient/Cargo.toml
+--- a/src/depot/gclient/Cargo.toml
++++ b/src/depot/gclient/Cargo.toml
 @@ -5,7 +5,6 @@ edition.workspace = true
  license.workspace = true
  repository = "https://github.com/aphrody-dev/depot"
@@ -341,30 +341,30 @@ index aedf632..aeaa4cb 100644
  
  [dependencies]
  ruff_python_parser = { package = "rustpython-ruff_python_parser", version = "0.16.10" }
-diff --git a/crates/depot-graph/Cargo.toml b/crates/depot-graph/Cargo.toml
+diff --git a/src/depot/graph/Cargo.toml b/src/depot/graph/Cargo.toml
 index abc7b82..349b68b 100644
---- a/crates/depot-graph/Cargo.toml
-+++ b/crates/depot-graph/Cargo.toml
+--- a/src/depot/graph/Cargo.toml
++++ b/src/depot/graph/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +description = "depot-graph: part of the Aphrody monorepo"
  name = "depot-graph"
  version.workspace = true
  edition.workspace = true
-diff --git a/crates/depot-ingest/Cargo.toml b/crates/depot-ingest/Cargo.toml
+diff --git a/src/depot/ingest/Cargo.toml b/src/depot/ingest/Cargo.toml
 index cb835fc..9ae2f03 100644
---- a/crates/depot-ingest/Cargo.toml
-+++ b/crates/depot-ingest/Cargo.toml
+--- a/src/depot/ingest/Cargo.toml
++++ b/src/depot/ingest/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +description = "depot-ingest: part of the Aphrody monorepo"
  name = "depot-ingest"
  version.workspace = true
  edition.workspace = true
-diff --git a/crates/depot-migrate/Cargo.toml b/crates/depot-migrate/Cargo.toml
+diff --git a/src/depot/migrate/Cargo.toml b/src/depot/migrate/Cargo.toml
 index d2d37bd..83f10c5 100644
---- a/crates/depot-migrate/Cargo.toml
-+++ b/crates/depot-migrate/Cargo.toml
+--- a/src/depot/migrate/Cargo.toml
++++ b/src/depot/migrate/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +description = "depot-migrate: part of the Aphrody monorepo"
@@ -391,10 +391,10 @@ index 3e08ea5..97cba83 100644
  name = "depot-treesitter"
  version.workspace = true
  edition.workspace = true
-diff --git a/crates/depot-vpython/Cargo.toml b/crates/depot-vpython/Cargo.toml
+diff --git a/src/depot/vpython/Cargo.toml b/src/depot/vpython/Cargo.toml
 index aa69299..1bb9cea 100644
---- a/crates/depot-vpython/Cargo.toml
-+++ b/crates/depot-vpython/Cargo.toml
+--- a/src/depot/vpython/Cargo.toml
++++ b/src/depot/vpython/Cargo.toml
 @@ -5,7 +5,6 @@ edition.workspace = true
  license.workspace = true
  repository = "https://github.com/aphrody-dev/depot"
@@ -414,10 +414,10 @@ index b9ed6c1..11d0ea3 100644
  name = "dx12-winui-core"
  version.workspace = true
  edition.workspace = true
-diff --git a/crates/ffi/Cargo.toml b/crates/ffi/Cargo.toml
+diff --git a/src/ffi/Cargo.toml b/src/ffi/Cargo.toml
 index 5439eff..b09880b 100644
---- a/crates/ffi/Cargo.toml
-+++ b/crates/ffi/Cargo.toml
+--- a/src/ffi/Cargo.toml
++++ b/src/ffi/Cargo.toml
 @@ -1,10 +1,10 @@
  [package]
 -name = "ffi"
@@ -431,50 +431,50 @@ index 5439eff..b09880b 100644
  
  [lib]
  name = "aphrody_ffi"
-diff --git a/crates/gamescope-cli/Cargo.toml b/crates/gamescope-cli/Cargo.toml
+diff --git a/src/wayland/gamescope/cli/Cargo.toml b/src/wayland/gamescope/cli/Cargo.toml
 index 671be8b..32550aa 100644
---- a/crates/gamescope-cli/Cargo.toml
-+++ b/crates/gamescope-cli/Cargo.toml
+--- a/src/wayland/gamescope/cli/Cargo.toml
++++ b/src/wayland/gamescope/cli/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +repository.workspace = true
  name = "gamescope-cli"
  version = "0.1.0"
  edition = "2024"
-diff --git a/crates/gamescope-core/Cargo.toml b/crates/gamescope-core/Cargo.toml
+diff --git a/src/wayland/gamescope/core/Cargo.toml b/src/wayland/gamescope/core/Cargo.toml
 index a181999..7ada108 100644
---- a/crates/gamescope-core/Cargo.toml
-+++ b/crates/gamescope-core/Cargo.toml
+--- a/src/wayland/gamescope/core/Cargo.toml
++++ b/src/wayland/gamescope/core/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +repository.workspace = true
  name = "gamescope-core"
  version = "0.1.0"
  edition = "2024"
-diff --git a/crates/gamescope-web-wasm/Cargo.toml b/crates/gamescope-web-wasm/Cargo.toml
+diff --git a/src/wayland/gamescope/web-wasm/Cargo.toml b/src/wayland/gamescope/web-wasm/Cargo.toml
 index 448220c..2251a7e 100644
---- a/crates/gamescope-web-wasm/Cargo.toml
-+++ b/crates/gamescope-web-wasm/Cargo.toml
+--- a/src/wayland/gamescope/web-wasm/Cargo.toml
++++ b/src/wayland/gamescope/web-wasm/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +repository.workspace = true
  name = "gamescope-web-wasm"
  version = "0.1.0"
  edition = "2024"
-diff --git a/crates/gamescope-wgsl/Cargo.toml b/crates/gamescope-wgsl/Cargo.toml
+diff --git a/src/wayland/gamescope/wgsl/Cargo.toml b/src/wayland/gamescope/wgsl/Cargo.toml
 index 3802412..fc089ce 100644
---- a/crates/gamescope-wgsl/Cargo.toml
-+++ b/crates/gamescope-wgsl/Cargo.toml
+--- a/src/wayland/gamescope/wgsl/Cargo.toml
++++ b/src/wayland/gamescope/wgsl/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +repository.workspace = true
  name = "gamescope-wgsl"
  version = "0.1.0"
  edition = "2024"
-diff --git a/crates/hypr-tiler/Cargo.toml b/crates/hypr-tiler/Cargo.toml
+diff --git a/src/wayland/tiler/Cargo.toml b/src/wayland/tiler/Cargo.toml
 index 78c7a92..b371098 100644
---- a/crates/hypr-tiler/Cargo.toml
-+++ b/crates/hypr-tiler/Cargo.toml
+--- a/src/wayland/tiler/Cargo.toml
++++ b/src/wayland/tiler/Cargo.toml
 @@ -1,4 +1,6 @@
  [package]
 +repository.workspace = true
@@ -482,10 +482,10 @@ index 78c7a92..b371098 100644
  name = "hypr-tiler"
  version.workspace = true
  edition.workspace = true
-diff --git a/crates/lore-aws/Cargo.toml b/crates/lore-aws/Cargo.toml
+diff --git a/src/lore/aws/Cargo.toml b/src/lore/aws/Cargo.toml
 index 47aa62f..547f66b 100644
---- a/crates/lore-aws/Cargo.toml
-+++ b/crates/lore-aws/Cargo.toml
+--- a/src/lore/aws/Cargo.toml
++++ b/src/lore/aws/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-aws"
@@ -517,11 +517,11 @@ index 47aa62f..547f66b 100644
  
  [features]
  default = []
-diff --git a/crates/lore-aws/LICENSE b/crates/lore-aws/LICENSE
+diff --git a/src/lore/aws/LICENSE b/src/lore/aws/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-aws/LICENSE
++++ b/src/lore/aws/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -541,10 +541,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-base/Cargo.toml b/crates/lore-base/Cargo.toml
+diff --git a/src/lore/base/Cargo.toml b/src/lore/base/Cargo.toml
 index 5c040ca..2de04d6 100644
---- a/crates/lore-base/Cargo.toml
-+++ b/crates/lore-base/Cargo.toml
+--- a/src/lore/base/Cargo.toml
++++ b/src/lore/base/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-base"
@@ -567,11 +567,11 @@ index 5c040ca..2de04d6 100644
  # Its serde integration: the non-self-describing format the identifier types' serde impls must
  # round-trip through.
  bitcode = { workspace = true, features = ["serde"] }
-diff --git a/crates/lore-base/LICENSE b/crates/lore-base/LICENSE
+diff --git a/src/lore/base/LICENSE b/src/lore/base/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-base/LICENSE
++++ b/src/lore/base/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -591,10 +591,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-capi/Cargo.toml b/crates/lore-capi/Cargo.toml
+diff --git a/src/lore/capi/Cargo.toml b/src/lore/capi/Cargo.toml
 index 2d1411f..dc280a7 100644
---- a/crates/lore-capi/Cargo.toml
-+++ b/crates/lore-capi/Cargo.toml
+--- a/src/lore/capi/Cargo.toml
++++ b/src/lore/capi/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-capi"
@@ -617,11 +617,11 @@ index 2d1411f..dc280a7 100644
  
  [build-dependencies]
  cbindgen = { version = "=0.29.2", default-features = false }
-diff --git a/crates/lore-capi/LICENSE b/crates/lore-capi/LICENSE
+diff --git a/src/lore/capi/LICENSE b/src/lore/capi/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-capi/LICENSE
++++ b/src/lore/capi/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -641,10 +641,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-chaos-client/Cargo.toml b/crates/lore-chaos-client/Cargo.toml
+diff --git a/src/lore/chaos-client/Cargo.toml b/src/lore/chaos-client/Cargo.toml
 index ba61983..6116180 100644
---- a/crates/lore-chaos-client/Cargo.toml
-+++ b/crates/lore-chaos-client/Cargo.toml
+--- a/src/lore/chaos-client/Cargo.toml
++++ b/src/lore/chaos-client/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-chaos-client"
@@ -667,11 +667,11 @@ index ba61983..6116180 100644
  
  [lints]
  workspace = true
-diff --git a/crates/lore-chaos-client/LICENSE b/crates/lore-chaos-client/LICENSE
+diff --git a/src/lore/chaos-client/LICENSE b/src/lore/chaos-client/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-chaos-client/LICENSE
++++ b/src/lore/chaos-client/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -691,10 +691,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-client/Cargo.toml b/crates/lore-client/Cargo.toml
+diff --git a/src/lore/client/Cargo.toml b/src/lore/client/Cargo.toml
 index 6e986e2..73b679a 100644
---- a/crates/lore-client/Cargo.toml
-+++ b/crates/lore-client/Cargo.toml
+--- a/src/lore/client/Cargo.toml
++++ b/src/lore/client/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-client"
@@ -717,11 +717,11 @@ index 6e986e2..73b679a 100644
  
  [build-dependencies]
  winresource = "0.1.34"
-diff --git a/crates/lore-client/LICENSE b/crates/lore-client/LICENSE
+diff --git a/src/lore/client/LICENSE b/src/lore/client/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-client/LICENSE
++++ b/src/lore/client/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -741,10 +741,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-credential/Cargo.toml b/crates/lore-credential/Cargo.toml
+diff --git a/src/lore/credential/Cargo.toml b/src/lore/credential/Cargo.toml
 index feea735..6d36461 100644
---- a/crates/lore-credential/Cargo.toml
-+++ b/crates/lore-credential/Cargo.toml
+--- a/src/lore/credential/Cargo.toml
++++ b/src/lore/credential/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-credential"
@@ -769,11 +769,11 @@ index feea735..6d36461 100644
  
  [features]
  test-util = []
-diff --git a/crates/lore-credential/LICENSE b/crates/lore-credential/LICENSE
+diff --git a/src/lore/credential/LICENSE b/src/lore/credential/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-credential/LICENSE
++++ b/src/lore/credential/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -793,10 +793,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-error-set-macro/Cargo.toml b/crates/lore-error-set-macro/Cargo.toml
+diff --git a/src/lore/error-set-macro/Cargo.toml b/src/lore/error-set-macro/Cargo.toml
 index 9eb39f7..1b1c92c 100644
---- a/crates/lore-error-set-macro/Cargo.toml
-+++ b/crates/lore-error-set-macro/Cargo.toml
+--- a/src/lore/error-set-macro/Cargo.toml
++++ b/src/lore/error-set-macro/Cargo.toml
 @@ -1,9 +1,10 @@
  [package]
 -name = "lore-error-set-macro"
@@ -810,11 +810,11 @@ index 9eb39f7..1b1c92c 100644
  
  [lib]
  proc-macro = true
-diff --git a/crates/lore-error-set-macro/LICENSE b/crates/lore-error-set-macro/LICENSE
+diff --git a/src/lore/error-set-macro/LICENSE b/src/lore/error-set-macro/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-error-set-macro/LICENSE
++++ b/src/lore/error-set-macro/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -834,10 +834,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-error-set/Cargo.toml b/crates/lore-error-set/Cargo.toml
+diff --git a/src/lore/error-set/Cargo.toml b/src/lore/error-set/Cargo.toml
 index d610a78..b9a591c 100644
---- a/crates/lore-error-set/Cargo.toml
-+++ b/crates/lore-error-set/Cargo.toml
+--- a/src/lore/error-set/Cargo.toml
++++ b/src/lore/error-set/Cargo.toml
 @@ -1,9 +1,10 @@
  [package]
 -name = "lore-error-set"
@@ -851,11 +851,11 @@ index d610a78..b9a591c 100644
  
  [features]
  default = ["track-locations"]
-diff --git a/crates/lore-error-set/LICENSE b/crates/lore-error-set/LICENSE
+diff --git a/src/lore/error-set/LICENSE b/src/lore/error-set/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-error-set/LICENSE
++++ b/src/lore/error-set/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -875,10 +875,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-fuse/Cargo.toml b/crates/lore-fuse/Cargo.toml
+diff --git a/src/lore/fuse/Cargo.toml b/src/lore/fuse/Cargo.toml
 index bbcc81a..3ab2df5 100644
---- a/crates/lore-fuse/Cargo.toml
-+++ b/crates/lore-fuse/Cargo.toml
+--- a/src/lore/fuse/Cargo.toml
++++ b/src/lore/fuse/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-fuse"
@@ -903,11 +903,11 @@ index bbcc81a..3ab2df5 100644
  tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
  
  [features]
-diff --git a/crates/lore-fuse/LICENSE b/crates/lore-fuse/LICENSE
+diff --git a/src/lore/fuse/LICENSE b/src/lore/fuse/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-fuse/LICENSE
++++ b/src/lore/fuse/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -927,10 +927,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-hashicorp/Cargo.toml b/crates/lore-hashicorp/Cargo.toml
+diff --git a/src/lore/hashicorp/Cargo.toml b/src/lore/hashicorp/Cargo.toml
 index 5990679..037b6d5 100644
---- a/crates/lore-hashicorp/Cargo.toml
-+++ b/crates/lore-hashicorp/Cargo.toml
+--- a/src/lore/hashicorp/Cargo.toml
++++ b/src/lore/hashicorp/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-hashicorp"
@@ -953,11 +953,11 @@ index 5990679..037b6d5 100644
  mockall = { workspace = true }
  rand = { workspace = true }
  temp-env = { workspace = true }
-diff --git a/crates/lore-hashicorp/LICENSE b/crates/lore-hashicorp/LICENSE
+diff --git a/src/lore/hashicorp/LICENSE b/src/lore/hashicorp/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-hashicorp/LICENSE
++++ b/src/lore/hashicorp/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -977,10 +977,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-integration-tests/Cargo.toml b/crates/lore-integration-tests/Cargo.toml
+diff --git a/test/lore/Cargo.toml b/test/lore/Cargo.toml
 index 9ce7c74..33294a0 100644
---- a/crates/lore-integration-tests/Cargo.toml
-+++ b/crates/lore-integration-tests/Cargo.toml
+--- a/test/lore/Cargo.toml
++++ b/test/lore/Cargo.toml
 @@ -1,8 +1,11 @@
  [package]
 -name = "lore-integration-tests"
@@ -1024,11 +1024,11 @@ index 9ce7c74..33294a0 100644
  
  [features]
  integration_tests = ["lore-server/integration_tests"]
-diff --git a/crates/lore-integration-tests/LICENSE b/crates/lore-integration-tests/LICENSE
+diff --git a/test/lore/LICENSE b/test/lore/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-integration-tests/LICENSE
++++ b/test/lore/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1048,10 +1048,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-io/Cargo.toml b/crates/lore-io/Cargo.toml
+diff --git a/src/lore/io/Cargo.toml b/src/lore/io/Cargo.toml
 index 3a90707..b8fc94a 100644
---- a/crates/lore-io/Cargo.toml
-+++ b/crates/lore-io/Cargo.toml
+--- a/src/lore/io/Cargo.toml
++++ b/src/lore/io/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-io"
@@ -1076,11 +1076,11 @@ index 3a90707..b8fc94a 100644
  tokio = { workspace = true }
  
  # A named pipe is the only thing a unit test can make defer on demand, and deferring is the whole
-diff --git a/crates/lore-io/LICENSE b/crates/lore-io/LICENSE
+diff --git a/src/lore/io/LICENSE b/src/lore/io/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-io/LICENSE
++++ b/src/lore/io/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1100,10 +1100,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-macro/Cargo.toml b/crates/lore-macro/Cargo.toml
+diff --git a/src/lore/macro/Cargo.toml b/src/lore/macro/Cargo.toml
 index bc82d4d..9a03305 100644
---- a/crates/lore-macro/Cargo.toml
-+++ b/crates/lore-macro/Cargo.toml
+--- a/src/lore/macro/Cargo.toml
++++ b/src/lore/macro/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-macro"
@@ -1117,11 +1117,11 @@ index bc82d4d..9a03305 100644
  
  [lib]
  name = "lore_macro"
-diff --git a/crates/lore-macro/LICENSE b/crates/lore-macro/LICENSE
+diff --git a/src/lore/macro/LICENSE b/src/lore/macro/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-macro/LICENSE
++++ b/src/lore/macro/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1141,10 +1141,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-notification/Cargo.toml b/crates/lore-notification/Cargo.toml
+diff --git a/src/lore/notification/Cargo.toml b/src/lore/notification/Cargo.toml
 index bf38dbc..fd8135d 100644
---- a/crates/lore-notification/Cargo.toml
-+++ b/crates/lore-notification/Cargo.toml
+--- a/src/lore/notification/Cargo.toml
++++ b/src/lore/notification/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-notification"
@@ -1167,11 +1167,11 @@ index bf38dbc..fd8135d 100644
  
  [lints]
  workspace = true
-diff --git a/crates/lore-notification/LICENSE b/crates/lore-notification/LICENSE
+diff --git a/src/lore/notification/LICENSE b/src/lore/notification/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-notification/LICENSE
++++ b/src/lore/notification/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1191,10 +1191,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-proto/Cargo.toml b/crates/lore-proto/Cargo.toml
+diff --git a/src/lore/proto/Cargo.toml b/src/lore/proto/Cargo.toml
 index 212c95d..27266c5 100644
---- a/crates/lore-proto/Cargo.toml
-+++ b/crates/lore-proto/Cargo.toml
+--- a/src/lore/proto/Cargo.toml
++++ b/src/lore/proto/Cargo.toml
 @@ -1,9 +1,11 @@
  [package]
 -name = "lore-proto"
@@ -1209,11 +1209,11 @@ index 212c95d..27266c5 100644
  
  [lib]
  # The generated bindings hold no unit tests; the suites in tests/ are their own
-diff --git a/crates/lore-proto/LICENSE b/crates/lore-proto/LICENSE
+diff --git a/src/lore/proto/LICENSE b/src/lore/proto/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-proto/LICENSE
++++ b/src/lore/proto/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1233,10 +1233,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-revision/Cargo.toml b/crates/lore-revision/Cargo.toml
+diff --git a/src/lore/revision/Cargo.toml b/src/lore/revision/Cargo.toml
 index cc137ba..6bca74e 100644
---- a/crates/lore-revision/Cargo.toml
-+++ b/crates/lore-revision/Cargo.toml
+--- a/src/lore/revision/Cargo.toml
++++ b/src/lore/revision/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-revision"
@@ -1279,11 +1279,11 @@ index cc137ba..6bca74e 100644
  serde_json = { workspace = true }
  serde = { workspace = true }
  # `start_paused` for the tests that drive a polling loop on a virtual clock.
-diff --git a/crates/lore-revision/LICENSE b/crates/lore-revision/LICENSE
+diff --git a/src/lore/revision/LICENSE b/src/lore/revision/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-revision/LICENSE
++++ b/src/lore/revision/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1303,10 +1303,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-server/Cargo.toml b/crates/lore-server/Cargo.toml
+diff --git a/src/lore/server/Cargo.toml b/src/lore/server/Cargo.toml
 index 77c1b3f..ee56064 100644
---- a/crates/lore-server/Cargo.toml
-+++ b/crates/lore-server/Cargo.toml
+--- a/src/lore/server/Cargo.toml
++++ b/src/lore/server/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-server"
@@ -1345,11 +1345,11 @@ index 77c1b3f..ee56064 100644
  
  [features]
  default = []
-diff --git a/crates/lore-server/LICENSE b/crates/lore-server/LICENSE
+diff --git a/src/lore/server/LICENSE b/src/lore/server/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-server/LICENSE
++++ b/src/lore/server/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1369,10 +1369,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-storage/Cargo.toml b/crates/lore-storage/Cargo.toml
+diff --git a/src/lore/storage/Cargo.toml b/src/lore/storage/Cargo.toml
 index 2ad1ae1..dde7f65 100644
---- a/crates/lore-storage/Cargo.toml
-+++ b/crates/lore-storage/Cargo.toml
+--- a/src/lore/storage/Cargo.toml
++++ b/src/lore/storage/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-storage"
@@ -1400,11 +1400,11 @@ index 2ad1ae1..dde7f65 100644
  # A paused clock, so retry back-off takes no real time.
  tokio = { workspace = true, features = ["test-util"] }
  
-diff --git a/crates/lore-storage/LICENSE b/crates/lore-storage/LICENSE
+diff --git a/src/lore/storage/LICENSE b/src/lore/storage/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-storage/LICENSE
++++ b/src/lore/storage/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1424,10 +1424,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-telemetry/Cargo.toml b/crates/lore-telemetry/Cargo.toml
+diff --git a/src/lore/telemetry/Cargo.toml b/src/lore/telemetry/Cargo.toml
 index e83e7f4..ff55f1f 100644
---- a/crates/lore-telemetry/Cargo.toml
-+++ b/crates/lore-telemetry/Cargo.toml
+--- a/src/lore/telemetry/Cargo.toml
++++ b/src/lore/telemetry/Cargo.toml
 @@ -1,8 +1,9 @@
  [package]
 -name = "lore-telemetry"
@@ -1440,11 +1440,11 @@ index e83e7f4..ff55f1f 100644
  description = "Telemetry and observability utilities for Lore"
  
  [lib]
-diff --git a/crates/lore-telemetry/LICENSE b/crates/lore-telemetry/LICENSE
+diff --git a/src/lore/telemetry/LICENSE b/src/lore/telemetry/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-telemetry/LICENSE
++++ b/src/lore/telemetry/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1464,10 +1464,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore-transport/Cargo.toml b/crates/lore-transport/Cargo.toml
+diff --git a/src/lore/transport/Cargo.toml b/src/lore/transport/Cargo.toml
 index 35770c3..0d46d67 100644
---- a/crates/lore-transport/Cargo.toml
-+++ b/crates/lore-transport/Cargo.toml
+--- a/src/lore/transport/Cargo.toml
++++ b/src/lore/transport/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore-transport"
@@ -1492,11 +1492,11 @@ index 35770c3..0d46d67 100644
  
  [features]
  trace_log = ["lore-base/trace_log"]
-diff --git a/crates/lore-transport/LICENSE b/crates/lore-transport/LICENSE
+diff --git a/src/lore/transport/LICENSE b/src/lore/transport/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore-transport/LICENSE
++++ b/src/lore/transport/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1516,10 +1516,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/lore/Cargo.toml b/crates/lore/Cargo.toml
+diff --git a/src/lore/Cargo.toml b/src/lore/Cargo.toml
 index 70a44f1..c97a786 100644
---- a/crates/lore/Cargo.toml
-+++ b/crates/lore/Cargo.toml
+--- a/src/lore/Cargo.toml
++++ b/src/lore/Cargo.toml
 @@ -1,8 +1,10 @@
  [package]
 -name = "lore"
@@ -1553,11 +1553,11 @@ index 70a44f1..c97a786 100644
  
  [[example]]
  name = "revision_tree_bench"
-diff --git a/crates/lore/LICENSE b/crates/lore/LICENSE
+diff --git a/src/lore/LICENSE b/src/lore/LICENSE
 new file mode 100644
 index 0000000..729d01e
 --- /dev/null
-+++ b/crates/lore/LICENSE
++++ b/src/lore/LICENSE
 @@ -0,0 +1,18 @@
 +MIT License
 +
@@ -1577,10 +1577,10 @@ index 0000000..729d01e
 +EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 +IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 +USE OR OTHER DEALINGS IN THE SOFTWARE.
-diff --git a/crates/remote/Cargo.toml b/crates/remote/Cargo.toml
+diff --git a/src/remote/Cargo.toml b/src/remote/Cargo.toml
 index b1902e6..d99f26b 100644
---- a/crates/remote/Cargo.toml
-+++ b/crates/remote/Cargo.toml
+--- a/src/remote/Cargo.toml
++++ b/src/remote/Cargo.toml
 @@ -1,10 +1,11 @@
  [package]
 +publish = false
@@ -1604,10 +1604,10 @@ index fb1db7e..c98eeb5 100644
  name = "ring3-agent"
  version = "0.1.0"
  edition = "2024"
-diff --git a/crates/rt/Cargo.toml b/crates/rt/Cargo.toml
+diff --git a/src/rt/Cargo.toml b/src/rt/Cargo.toml
 index 6f03150..41a6de3 100644
---- a/crates/rt/Cargo.toml
-+++ b/crates/rt/Cargo.toml
+--- a/src/rt/Cargo.toml
++++ b/src/rt/Cargo.toml
 @@ -5,12 +5,11 @@ edition.workspace = true
  license.workspace = true
  repository = "https://github.com/aphrody-dev/src"
@@ -1622,10 +1622,10 @@ index 6f03150..41a6de3 100644
 -up = { package = "aphrody-up", path = "../up" }
 +up = { version = "0.2.0", package = "aphrody-up", path = "../up" }
  serde_json.workspace = true
-diff --git a/crates/rust-stack/Cargo.toml b/crates/rust-stack/Cargo.toml
+diff --git a/src/rust-stack/Cargo.toml b/src/rust-stack/Cargo.toml
 index 29cf519..e730d8f 100644
---- a/crates/rust-stack/Cargo.toml
-+++ b/crates/rust-stack/Cargo.toml
+--- a/src/rust-stack/Cargo.toml
++++ b/src/rust-stack/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +repository.workspace = true
@@ -1638,10 +1638,10 @@ index 29cf519..e730d8f 100644
  ureq = { version = "3.5", features = ["json"] }
 -corelib = { package = "sovereign-corelib", path = "../corelib" }
 +corelib = { version = "0.1.0", package = "sovereign-corelib", path = "../corelib" }
-diff --git a/crates/smithay-wayland-wire/Cargo.toml b/crates/smithay-wayland-wire/Cargo.toml
+diff --git a/src/wayland/smithay/Cargo.toml b/src/wayland/smithay/Cargo.toml
 index ee775f2..6a74a14 100644
---- a/crates/smithay-wayland-wire/Cargo.toml
-+++ b/crates/smithay-wayland-wire/Cargo.toml
+--- a/src/wayland/smithay/Cargo.toml
++++ b/src/wayland/smithay/Cargo.toml
 @@ -1,4 +1,6 @@
  [package]
 +repository.workspace = true
@@ -1658,10 +1658,10 @@ index ee775f2..6a74a14 100644
  byteorder.workspace = true
  tracing.workspace = true
  thiserror.workspace = true
-diff --git a/crates/steam-depot/Cargo.toml b/crates/steam-depot/Cargo.toml
+diff --git a/src/steam/Cargo.toml b/src/steam/Cargo.toml
 index 000f9e9..96a01a8 100644
---- a/crates/steam-depot/Cargo.toml
-+++ b/crates/steam-depot/Cargo.toml
+--- a/src/steam/Cargo.toml
++++ b/src/steam/Cargo.toml
 @@ -1,5 +1,6 @@
  # SPDX-License-Identifier: Apache-2.0
  [package]
@@ -1669,10 +1669,10 @@ index 000f9e9..96a01a8 100644
  name = "steam-depot"
  version = "1.4.8"
  edition = "2024"
-diff --git a/crates/sys/Cargo.toml b/crates/sys/Cargo.toml
+diff --git a/src/sys/Cargo.toml b/src/sys/Cargo.toml
 index 5d6dc83..cc6a7e5 100644
---- a/crates/sys/Cargo.toml
-+++ b/crates/sys/Cargo.toml
+--- a/src/sys/Cargo.toml
++++ b/src/sys/Cargo.toml
 @@ -1,10 +1,10 @@
  [package]
 -name = "sys"
@@ -1719,10 +1719,10 @@ index d35a73e..528f076 100644
  serde.workspace = true
  serde_json.workspace = true
  clap.workspace = true
-diff --git a/crates/unix-omarchy/Cargo.toml b/crates/unix-omarchy/Cargo.toml
+diff --git a/src/posix/omarchy/Cargo.toml b/src/posix/omarchy/Cargo.toml
 index 5a13227..f83c203 100644
---- a/crates/unix-omarchy/Cargo.toml
-+++ b/crates/unix-omarchy/Cargo.toml
+--- a/src/posix/omarchy/Cargo.toml
++++ b/src/posix/omarchy/Cargo.toml
 @@ -1,4 +1,5 @@
  [package]
 +repository.workspace = true
@@ -1748,10 +1748,10 @@ index d8a2e0e..3433767 100644
  name = "unix-uutils"
  version.workspace = true
  edition.workspace = true
-diff --git a/crates/up/Cargo.toml b/crates/up/Cargo.toml
+diff --git a/src/up/Cargo.toml b/src/up/Cargo.toml
 index b180b01..2a2f0af 100644
---- a/crates/up/Cargo.toml
-+++ b/crates/up/Cargo.toml
+--- a/src/up/Cargo.toml
++++ b/src/up/Cargo.toml
 @@ -1,11 +1,11 @@
  [package]
 +repository.workspace = true
@@ -1765,10 +1765,10 @@ index b180b01..2a2f0af 100644
  
  [lib]
  name = "up"
-diff --git a/crates/wslg-cli/Cargo.toml b/crates/wslg-cli/Cargo.toml
+diff --git a/src/posix/wslg/Cargo.toml b/src/posix/wslg/Cargo.toml
 index 7a71fce..c0f48e0 100644
---- a/crates/wslg-cli/Cargo.toml
-+++ b/crates/wslg-cli/Cargo.toml
+--- a/src/posix/wslg/Cargo.toml
++++ b/src/posix/wslg/Cargo.toml
 @@ -1,4 +1,6 @@
  [package]
 +repository.workspace = true
@@ -1791,10 +1791,10 @@ index 7a71fce..c0f48e0 100644
  clap.workspace = true
  serde.workspace = true
  serde_json.workspace = true
-diff --git a/crates/xtask/Cargo.toml b/crates/xtask/Cargo.toml
+diff --git a/src/xtask/Cargo.toml b/src/xtask/Cargo.toml
 index adc729d..90f456b 100644
---- a/crates/xtask/Cargo.toml
-+++ b/crates/xtask/Cargo.toml
+--- a/src/xtask/Cargo.toml
++++ b/src/xtask/Cargo.toml
 @@ -1,10 +1,11 @@
  [package]
 +repository.workspace = true

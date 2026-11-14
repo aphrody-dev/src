@@ -21,8 +21,8 @@ workflow = "npm-publish.yml"
 
 [pypi]
 # PyO3 crates built with maturin (pyproject.toml generated in the build tree when absent).
-crates = ["crates/agent-py"]
-dist_name = { "crates/agent-py" = "aphrody-agent-core" }
+crates = ["src/agent/py"]
+dist_name = { "src/agent/py" = "aphrody-agent-core" }
 workflow = "pypi-publish.yml"
 
 [vcpkg]
@@ -30,5 +30,5 @@ workflow = "pypi-publish.yml"
 registry = "aphrody-labs/vcpkg-registry"
 # C ABI crates shipped as a vcpkg port with a CMake package config (find_package(<port> CONFIG)).
 ports = [
-  { crate = "crates/core-capi", port = "aphrody-core-capi", lib = "aphrody_core_capi", header = "include/aphrody_core.h", target = "aphrody::core" },
+  { crate = "src/core/capi", port = "aphrody-core-capi", lib = "aphrody_core_capi", header = "include/aphrody_core.h", target = "aphrody::core" },
 ]

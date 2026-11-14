@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "bun:ffi bridge to crates/core-capi: tree-sitter parse/query, BLAKE3, recursive index (sqlite + JSON)",
+  "description": "bun:ffi bridge to src/core/capi: tree-sitter parse/query, BLAKE3, recursive index (sqlite + JSON)",
   "exports": {
     ".": "./src/index.ts",
     "./ffi": "./src/ffi.ts",

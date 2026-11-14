@@ -21,7 +21,7 @@ sources = [
 
 [cachyos]
 # Gaming side only: proton-cachyos and wine-cachyos are branches of the single Proton and Wine forks
-# (cachyos_main, cachyos_11.0); release tarballs are picked by crates/steam-depot/src/proton.rs
+# (cachyos_main, cachyos_11.0); release tarballs are picked by src/steam/src/proton.rs
 # (select_release_asset, x86-64-v3 detection). Kernel, PKGBUILDs and ISO: Linux layer.
 proton_branch = "aphrody-labs/Proton:cachyos_main"
 wine_branch = "aphrody-labs/wine:cachyos_11.0"

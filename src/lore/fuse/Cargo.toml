@@ -1,0 +1,32 @@
+[package]
+repository.workspace = true
+description = "Lore version control: lore-fuse (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-fuse"
+edition = "2024"
+version = "0.13.1-nightly"
+
+[lib]
+name = "lore_fuse"
+test = false
+
+[dependencies]
+libc = { workspace = true }
+zerocopy = { workspace = true }
+tokio = { workspace = true, features = ["net", "sync", "time", "rt"] }
+tokio-util = { workspace = true }
+lore-base = { workspace = true }
+lore-macro = { workspace = true }
+dashmap = { workspace = true }
+parking_lot = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+lore-base = { path = "../base", package = "aphrody-lore-base", features = [
+  "test-util",
+] }
+lore-fuse = { path = ".", features = ["test-util"], package = "aphrody-lore-fuse" }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+
+[features]
+test-util = []

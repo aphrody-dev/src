@@ -57,11 +57,11 @@ web cookies (`third_party/node-steam-session/src/LoginSession.ts` line 821).
   (`third_party/node-steam-session/README.md` line 397).
 - A Steam Guard machine token (`steamGuardMachineToken` in node-steam-session) lets a known
   device bypass email code verification (`third_party/node-steam-session/README.md` lines 244-293).
-  bun-steam stores the same value as `guardData` (`crates/steam-depot/src/depot/token_store.rs`).
+  bun-steam stores the same value as `guardData` (`src/steam/src/depot/token_store.rs`).
 
 ## What bun-steam implements
 
-`crates/steam-depot/src/depot/auth.rs` renews a stored refresh token with
+`src/steam/src/depot/auth.rs` renews a stored refresh token with
 `Authentication.GenerateAccessTokenForApp#1`, encoding the request by hand with the field
 numbers from the proto. It reads JWT claims without verifying the signature (expiry only)
 and redacts tokens in logs. `token_store.rs` keeps a per-account cache of `refreshToken`

@@ -186,7 +186,7 @@ const specs: Spec[] = [
     source: "github",
     repo: "astral-sh/uv",
     tag: "{version}",
-    why: "packages/ai-os/python, crates/agent-py (pyproject + uv.lock)",
+    why: "packages/ai-os/python, src/agent/py (pyproject + uv.lock)",
     assets: {
       "windows-x86_64": "uv-x86_64-pc-windows-msvc.zip",
       "linux-x86_64": "uv-x86_64-unknown-linux-musl.tar.gz",
@@ -255,7 +255,7 @@ const specs: Spec[] = [
     hosts: ["pc", "fr1"],
     source: "crate",
     pkg: "cbindgen",
-    why: "just core-header (crates/core-capi)",
+    why: "just core-header (src/core/capi)",
   },
   {
     name: "cargo-nextest",
@@ -291,7 +291,7 @@ const specs: Spec[] = [
     hosts: ["pc", "image"],
     source: "winget",
     pkg: "Gyan.FFmpeg.Shared",
-    why: "crates/tv-ffmpeg (ffmpeg-next, dynamic): headers + import libs; Linux = distro ffmpeg/ffmpeg-dev",
+    why: "src/tv/ffmpeg (ffmpeg-next, dynamic): headers + import libs; Linux = distro ffmpeg/ffmpeg-dev",
     extra: {
       env: "FFMPEG_DIR",
       linux:
@@ -386,7 +386,7 @@ const specs: Spec[] = [
       "linux-aarch64": "caddy_{version}_linux_arm64.tar.gz",
     },
   },
-  // Brand asset pipeline (`ay brand build`, crates/aphrody-ui brand::web; assets/brand/capture.ts), fr1 only.
+  // Brand asset pipeline (`ay brand build`, src/ui/kit brand::web; assets/brand/capture.ts), fr1 only.
   {
     name: "harfbuzz",
     version: "12.3",

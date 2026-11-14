@@ -1,4 +1,4 @@
-# Game vertical slice (docs/games/PLAN.md section 6, docs/games/PARITY.md): tests of crates/game, the
+# Game vertical slice (docs/games/PLAN.md section 6, docs/games/PARITY.md): tests of src/game, the
 # wasm32-unknown-unknown release build with wasm-bindgen, the /play bundle in apps/aphrody, and the
 # browser frame-rate measurement. Runs on fr1 (factory): nothing compiles on the workstation. Two parallel jobs
 # (`native`, `web`) with their own persistent target dirs on fr1 (outside the cleaned workspace, shared by the runners).
@@ -10,7 +10,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "crates/game/**"
+      - "src/game/**"
       - "packages/gaming/src/game-fps.ts"
       - ".github/workflows/game.yml"
   workflow_dispatch:
@@ -35,7 +35,7 @@ jobs:
       - name: Unit tests (noise, chunk geometry, synth, GLB, day/night)
         run: aphrody-heavy cargo test -p game
       - name: Generated assets are up to date (deterministic GLB and SVG)
-        run: aphrody-heavy cargo run -q -p game --bin gen-assets -- --check crates/game/assets
+        run: aphrody-heavy cargo run -q -p game --bin gen-assets -- --check src/game/assets
       - name: Native build of the game binary
         run: aphrody-heavy cargo build -p game --bin game
   web:

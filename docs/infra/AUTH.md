@@ -1,6 +1,6 @@
 # Authentication and network access of the fleet
 
-State recorded on 2026-11-13 (UTC) on the PC, fr2 (`ssh cdn`) and prd (`ssh prd`) with `ay auth status`. fr1 is read only (`repair = false`). Inventory: `infra/deploy.toml` (`[nodes.*]`, `[auth.*]`). Code: `packages/env-kit/src/{auth,secret-store}.ts`, routed by `ay auth` and `ay secret` (`crates/ay/src/exec.rs`).
+State recorded on 2026-11-13 (UTC) on the PC, fr2 (`ssh cdn`) and prd (`ssh prd`) with `ay auth status`. fr1 is read only (`repair = false`). Inventory: `infra/deploy.toml` (`[nodes.*]`, `[auth.*]`). Code: `packages/env-kit/src/{auth,secret-store}.ts`, routed by `ay auth` and `ay secret` (`src/ay/src/exec.rs`).
 
 ## Mechanism
 

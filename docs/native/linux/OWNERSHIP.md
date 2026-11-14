@@ -2,7 +2,7 @@
 
 Scope: kernel, packages, toolchains, distributions, images, GPU compute. Gaming (Steam, Proton, Wine, DXVK, VKD3D, gamescope, Mesa, Vulkan, DirectX, Bazzite, CachyOS on the gaming side) belongs to the gaming layer: `docs/gaming/OWNERSHIP.md`, `infra/gaming/`. This document does not touch it and reuses its forks.
 
-Commands: `ay linux` and `ay pkg` (`packages/linux`, run by bun; routing in `crates/ay/src/lib.rs`).
+Commands: `ay linux` and `ay pkg` (`packages/linux`, run by bun; routing in `src/ay/src/lib.rs`).
 
 ## 1. Tree
 
@@ -86,6 +86,6 @@ Debian/Ubuntu rule: these are output targets for their users. Their containers s
 
 ## 6. UI fusion and desktop shell ownership
 
-- Layout engine: `crates/taffy` (`taffy 0.15.1` first-party, shared by `aphrody-ui`, `hypr-tiler`, `cosmic-compat`, Dioxus/Blitz, GPUI, and Longbridge `nsh` via `packages/design/tokens/adapters/taffy_tokens.rs`).
-- Multi-target fusion (`crates/aphrody-ui::fusion` and `ay ui`): 23 `UiKind` components, 9 themes, 4 canonical pages rendered across TUI (`ratatui-core`/`anstyle`), CLI, Web WASM/SSR (`dioxus-ssr`, `gamescope-web-wasm`), WebGPU (`anyrender`/`vello`/`wgpu`), GPUI, `embedded_gpui` (5-rule OCAP `ObjectHost`), `winit`/`wgpu`, WinUI 3, Mobile (`nsh`), Linux Wayland, and Unix POSIX.
+- Layout engine: `src/taffy` (`taffy 0.15.1` first-party, shared by `aphrody-ui`, `hypr-tiler`, `cosmic-compat`, Dioxus/Blitz, GPUI, and Longbridge `nsh` via `packages/design/tokens/adapters/taffy_tokens.rs`).
+- Multi-target fusion (`src/ui/kit::fusion` and `ay ui`): 23 `UiKind` components, 9 themes, 4 canonical pages rendered across TUI (`ratatui-core`/`anstyle`), CLI, Web WASM/SSR (`dioxus-ssr`, `gamescope-web-wasm`), WebGPU (`anyrender`/`vello`/`wgpu`), GPUI, `embedded_gpui` (5-rule OCAP `ObjectHost`), `winit`/`wgpu`, WinUI 3, Mobile (`nsh`), Linux Wayland, and Unix POSIX.
 - Forks pinned in `third_party/forks.txt` and `packages/machine/src/forks.ts`: `aphrody-labs/dioxus`, `aphrody-labs/dioxus-components`, `aphrody-labs/blitz`, `aphrody-labs/anyrender`, `aphrody-labs/native-shell`, `aphrody-labs/gpui-kit`, `aphrody-labs/gpui-fast`, `aphrody-labs/longbridge-terminal`, `aphrody-labs/omarchy-longbridge`, `aphrody-labs/zed`, `aphrody-labs/embedded_gpui`.

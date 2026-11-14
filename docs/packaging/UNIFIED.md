@@ -8,7 +8,7 @@
 | pkgx                   | binaires relocalisables à la demande                                     | v2.11.0 (2026-07-22)                     | idée de « run-anything »                                             |
 | mise / asdf            | gestion de versions par projet, backends (ubi, aqua, cargo, npm, github) | mise v2026.11.7 (2026-11-12)             | modèle de backends le plus proche de `ay up`                         |
 | aqua                   | registre déclaratif de releases GitHub, checksums + vérif cosign/SLSA    | v2.66.1 (2026-11-04)                     | son registre est réutilisable comme source de métadonnées            |
-| ubi / eget             | sélection d'asset de release                                             | crate ubi 0.13 (dans crates/up)          | déjà utilisé                                                         |
+| ubi / eget             | sélection d'asset de release                                             | crate ubi 0.13 (dans src/up)          | déjà utilisé                                                         |
 | Homebrew/Linuxbrew     | formules + bottles                                                       | [NV]                                     | non                                                                  |
 | conda / pixi (rattler) | environnements multi-langage, solveur resolvo                            | pixi v0.84.2 (2026-11-10)                | rattler = brique Rust réutilisable                                   |
 | spack                  | HPC, build source                                                        | [NV]                                     | non                                                                  |

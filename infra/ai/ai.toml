@@ -1,4 +1,4 @@
-# Fournisseurs d'inférence pour `ay ai` (crates/ay/src/ai.rs), passerelle unique LiteLLM.
+# Fournisseurs d'inférence pour `ay ai` (src/ay/src/ai.rs), passerelle unique LiteLLM.
 # Rien n'est figé dans le code : un fournisseur est actif si sa clé est dans le coffre (`--env-file`,
 # `$AY_ENV_FILE` ou `<repo>/.env`, puis l'environnement) ou si son serveur local répond ; ses modèles
 # viennent de l'API du fournisseur, via les routes joker de LiteLLM (`<id>/*`, check_provider_endpoint).

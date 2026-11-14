@@ -1,3 +1,0 @@
-# checkdeps layer rules (see docs/ARCHITECTURE.md). Inherited by subdirectories.
-layer = 5
-+crates/tv-ffmpeg

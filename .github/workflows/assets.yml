@@ -9,9 +9,9 @@ on:
     paths:
       - "assets/library/**"
       - "packages/assets/**"
-      - "crates/asset-test/**"
-      - "crates/tv-ffmpeg/**"
-      - "crates/craft-formats/**"
+      - "test/assets/**"
+      - "src/tv/ffmpeg/**"
+      - "src/craft/**"
       - "src.lock.json"
       - "Cargo.lock"
       - ".github/workflows/assets.yml"

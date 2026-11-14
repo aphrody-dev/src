@@ -1,6 +1,6 @@
 ---
 name: rust-stack-sovereign
-description: "Build, serve, and bind the 100% Pure-Rust Sovereign Stack (crates/rust-stack): Better-Auth (Argon2id, OAuth2.1 PKCE, Ed25519 JWKS), shadcn_rs zero-JS SSR/Dioxus/GPUI components, native Open-WebUI, Rust coding agent, OpenAI Gateway (:4320), and 228ns rust_stack_ffi.dll."
+description: "Build, serve, and bind the 100% Pure-Rust Sovereign Stack (src/rust-stack): Better-Auth (Argon2id, OAuth2.1 PKCE, Ed25519 JWKS), shadcn_rs zero-JS SSR/Dioxus/GPUI components, native Open-WebUI, Rust coding agent, OpenAI Gateway (:4320), and 228ns rust_stack_ffi.dll."
 ---
 
 # Pure-Rust Sovereign Stack & `rust_stack_ffi.dll`
@@ -15,8 +15,8 @@ Activate this skill when working on authentication, zero-JS SSR UI components (`
    ```
 2. **Run Cargo & Bun FFI Verification**:
    ```powershell
-   cargo test --manifest-path crates/rust-stack/Cargo.toml
-   bun test crates/rust-stack/ffi_verify.test.ts
+   cargo test --manifest-path src/rust-stack/Cargo.toml
+   bun test src/rust-stack/ffi_verify.test.ts
    ```
 3. **Bun v1.4.4 `bun:ffi` Binding Contract**:
    Always pass `FFIType.u64` (with `BigInt(byteLength)`) for Rust `usize` parameters so `bun check` and 64-bit Windows MS-x64 ABI match cleanly.

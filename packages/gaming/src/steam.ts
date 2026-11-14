@@ -1,5 +1,5 @@
 // Steam helpers of the monorepo (Bun half): local install data over `ay steam` (Rust parsers in
-// crates/steam-depot), local path map of an app, SteamID forms, SteamDB/store links and the
+// src/steam), local path map of an app, SteamID forms, SteamDB/store links and the
 // credential-file guard. Consumed by `ay gaming` and the `steam` plugin MCP
 // (apps/rosegriffon/plugins/steam/servers/steam-mcp.ts). Ownership: docs/gaming/OWNERSHIP.md.
 
@@ -11,7 +11,7 @@ export type Vdf = { [key: string]: string | Vdf };
 
 // ---------------------------------------------------------------- local data (Rust)
 
-/** Steam root: $STEAM_PATH, then the first installation crates/steam-depot finds (registry on
+/** Steam root: $STEAM_PATH, then the first installation src/steam finds (registry on
  * Windows, ~/.steam, ~/.local/share/Steam, Flatpak, snap, macOS). */
 export function findSteamRoot(): string | undefined {
   const r = steamJson<{ root: string | null }>(["root"]);

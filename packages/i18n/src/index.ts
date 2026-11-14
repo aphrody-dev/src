@@ -7,5 +7,5 @@ import fr from "../locales/fr.json" with { type: "json" };
 import ja from "../locales/ja.json" with { type: "json" };
 import zhCN from "../locales/zh-CN.json" with { type: "json" };
 
-/** Bundled catalogs; the same JSON files are read by crates/aphrody-i18n. */
+/** Bundled catalogs; the same JSON files are read by src/i18n. */
 export const catalogs = { en, fr, "zh-CN": zhCN, ja, es } as const;

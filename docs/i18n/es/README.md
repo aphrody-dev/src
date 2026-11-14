@@ -45,4 +45,4 @@ just verify-all      # arquitectura, doctor, suites de Bun y ci.yml para Rust
 
 ## Labs (fusionado el 2026-11-12)
 
-Aphrody Labs: plataforma autoalojada; su antiguo binario es ahora `ay conformance`. Incluye `crates/conformance`, `crates/lore*` (Lore VCS, MIT), `crates/apm`, `infra/chromium-factory` y el plugin `plugins/labs`. Recetas: `just lab-build`, `just lab-dev`, `just lab-conformance`.
+Aphrody Labs: plataforma autoalojada; su antiguo binario es ahora `ay conformance`. Incluye `test/conformance`, `src/lore*` (Lore VCS, MIT), `src/apm`, `infra/chromium-factory` y el plugin `plugins/labs`. Recetas: `just lab-build`, `just lab-dev`, `just lab-conformance`.

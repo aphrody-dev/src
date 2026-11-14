@@ -35,7 +35,7 @@ Mesures sur `main` (avant : f27d752 ; après : 88da4d2). `cargo deny --locked ch
 - `glob-match` 0.2.1 (correctif du retour arrière `**`, sémantique gitignore) vit sur
   `aphrody-labs/glob-match`, branche `aphrody/lore`, commit `2307a20a`, posé sur le tag `v0.2.1`.
   L'amont n'a plus rien publié depuis 2024-08 ; aucun remplaçant n'a la même sémantique.
-- `russh`, `sntrup761` (`[patch.crates-io]`) et `steamroom` (`crates/steam-depot`) passent de
+- `russh`, `sntrup761` (`[patch.crates-io]`) et `steamroom` (`src/steam`) passent de
   `branch`/`tag` à `rev`. La branche reste en commentaire pour `ay lock --deps --bump`. `sntrup761` et `steamroom` suivent leur transfert vers `aphrody-labs`.
 - `steamroom` passe à 0.2.1 (`aphrody-labs/steamroom`, tag `v0.2.1`, commit `b9868e9f`) : `zip` 9 au lieu de 8, ce qui
   retire RUSTSEC-2026-0367, -0368, -0369 et -0429 du graphe.

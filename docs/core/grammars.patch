@@ -1,7 +1,7 @@
-diff --git a/crates/core/build.rs b/crates/core/build.rs
+diff --git a/src/core/build.rs b/src/core/build.rs
 index 595f920..d4d3f26 100644
---- a/crates/core/build.rs
-+++ b/crates/core/build.rs
+--- a/src/core/build.rs
++++ b/src/core/build.rs
 @@ -107,7 +107,7 @@ struct GrammarSrc {
  fn grammars_in(repo: &Path) -> Vec<GrammarSrc> {
      let meta = repo.join("tree-sitter.json");

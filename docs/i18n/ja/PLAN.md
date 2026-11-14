@@ -9,13 +9,13 @@
 | 領域                   | 状態                                                                                                                                                                                               | 参照先                                                  |
 | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------ |
 | UI の決定              | 2026-11-13 のオーナー決定(同日修正)。フレームワークは自由(Bevy UI、egui、iced、WinUI 3、Tauri、GPUI、WebUI など)で、基準は描画品質、性能、機能                                                     | `docs/ui/STACK.md`                                      |
-| デザインシステム       | トークンは `packages/design`。Rust コアは `crates/aphrody-ui` で、レイアウトアダプター `to_bevy`(`css_to_bevy_node`)と `to_egui` を任意機能 `bevy`、`egui` の背後に置く                            | `docs/design/DESIGN_SYSTEM.md`、`crates/aphrody-ui/Cargo.toml` |
+| デザインシステム       | トークンは `packages/design`。Rust コアは `src/ui/kit` で、レイアウトアダプター `to_bevy`(`css_to_bevy_node`)と `to_egui` を任意機能 `bevy`、`egui` の背後に置く                            | `docs/design/DESIGN_SYSTEM.md`、`src/ui/kit/Cargo.toml` |
 | エンジンと GPU のピン  | `[workspace.dependencies]`: bevy 0.20、egui 0.37、wgpu 30.0.1、winit 0.31.0-beta.4、image 0.25.10                                                                                                  | `Cargo.toml` 124〜162 行                                |
-| メディア領域           | `crates/tv-core`、`tv-ffmpeg`(`ffmpeg-next` 9.1.0 の安全なラッパー)、`tv-cli`、`tv-i18n`                                                                                                           | `docs/tv/plan-ecosysteme-c-rust.mdx`                    |
+| メディア領域           | `src/tv/core`、`tv-ffmpeg`(`ffmpeg-next` 9.1.0 の安全なラッパー)、`tv-cli`、`tv-i18n`                                                                                                           | `docs/tv/plan-ecosysteme-c-rust.mdx`                    |
 | ライセンス方針         | `deny.toml` の許可リスト。GPL、LGPL、AGPL、OSI 非準拠、`NOASSERTION` のリポジトリは、レビューの記録がない限り不可。FFmpeg の libav* は動的リンクで、ベンダリングしない                             | `docs/ARCHITECTURE.md`、`deny.toml`                     |
-| C ABI                  | `crates/core-capi`(cbindgen、`include/aphrody_core.h`)が `crates/core` を包む。Bun バインディングは `packages/core/src/ffi.ts`、規則は `docs/native/llvm/C-ABI-2026.md`                                   | 同左                                                    |
+| C ABI                  | `src/core/capi`(cbindgen、`include/aphrody_core.h`)が `src/core` を包む。Bun バインディングは `packages/core/src/ffi.ts`、規則は `docs/native/llvm/C-ABI-2026.md`                                   | 同左                                                    |
 | コードグラフ           | `ay graph build`(tree-sitter)、レシピ `just graph <path> <name>`、出力は `graphify-out/<name>`(追跡対象外)                                                                                         | `justfile`                                              |
-| フラット化             | `ay flat list\|sync\|check` が bun フォークのリーフクレートを `crates/bun-flat` にコピーする。アップストリームのクレートごとに 1 モジュールで、フォークのコミットとライセンスを `flat.toml` に記録 | `crates/bun-flat/flat.toml`                             |
+| フラット化             | `ay flat list\|sync\|check` が bun フォークのリーフクレートを `src/bun-flat` にコピーする。アップストリームのクレートごとに 1 モジュールで、フォークのコミットとライセンスを `flat.toml` に記録 | `src/bun-flat/flat.toml`                             |
 | 固定済みチェックアウト | `third_party/artcraft`(`83aad5eb`)、`third_party/ffmpeg`(`46d13a83`)、`third_party/storyteller-bevy`(`4ce8b72c`)、`third_party/wgpu`(aphrody-labs フォーク)、`third_party/winit`                   | `DEPS`、`src.lock.json`                                 |
 | 追跡中のフォーク       | `third_party/forks.txt` に bevyengine 18、storytold 33、EpicGames 10 件                                                                                                                            | `docs/epic/TRACKING.md`                                 |
 | 方向性                 | 「Epic track(予定なし)」。Unreal Engine は非公開フォーク経由のみ                                                                                                                                   | `docs/STACK-ROADMAP.md`                                 |
@@ -37,7 +37,7 @@
 1. 2026-11-13 にオーナーが決定: 見た目が良く、最適化され、機能する限り、どの UI フレームワークも認める。したがって Craft Apps は egui を維持し、Aphrody のトークンは `aphrody-ui` の `egui` 機能で届ける。これは `docs/ui/STACK.md` の 4 参照ルールを修正する。
 2. `third_party/storyteller-bevy` はライセンスファイルも `license` フィールドもないままピンされている(最終コミット 2024-04-09)。既定: 参照目的の閲覧のみで、`crates/` にはコピーせず、ロックからの削除候補とする。
 3. `docs/tv/plan-ecosysteme-c-rust.mdx` は x264 と x265(GPL)を挙げるが、`docs/ARCHITECTURE.md` は GPL を拒否し、`tv-ffmpeg` のテスト `ffmpeg_build_is_lgpl` は `--enable-gpl` でビルドした libavutil を拒否する。既定: テストが強制する内容(LGPL ビルド、ハードウェアエンコーダー)。
-4. `C` という名前のルートディレクトリを新設すると、レイヤリングと archguard のルート許可リストに反する(C ABI は `crates/core-capi`)。既定: 新しいルートディレクトリは作らない。新しい C サーフェスは `core-capi` か `<domain>-capi` クレートに置く。
+4. `C` という名前のルートディレクトリを新設すると、レイヤリングと archguard のルート許可リストに反する(C ABI は `src/core/capi`)。既定: 新しいルートディレクトリは作らない。新しい C サーフェスは `core-capi` か `<domain>-capi` クレートに置く。
 5. `storytold/artcraft-services` は OSI 非準拠ライセンスである。既定: フォークもコピーもせず、文書化された HTTP API の呼び出しのみ(`docs/games/ARTCRAFT.md`)。
 
 ## 4. 作業順序と各ステップの検証

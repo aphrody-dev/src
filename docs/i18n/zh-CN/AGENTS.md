@@ -21,7 +21,7 @@ src 是 Aphrody 的公开单体仓库，方向是在开放环境中构建游戏�
 - 代理是自由的：无需审批，无需确认，无人在环。自行决策、执行、验证，并报告已完成与未完成的内容。
 - 所有改动直接提交并推送到 `main`；不建分支、不用 worktree，绝不向上游推送。
 - 唯一入口是 `just` 与 `ay` CLI（`docs/ay/NAMING.md`）。Rust 在 CI 或 fr1 上编译，绝不在工作站上编译；prd 只运行生产后端，fr2 只做边缘。
-- UI 框架不限（Bevy UI、egui、iced、WinUI 3、Tauri、GPUI、WebUI）：标准是渲染质量、性能与功能。令牌来自 `packages/design` 与 `crates/aphrody-ui`（`docs/design/DESIGN_SYSTEM.md`）。
+- UI 框架不限（Bevy UI、egui、iced、WinUI 3、Tauri、GPUI、WebUI）：标准是渲染质量、性能与功能。令牌来自 `packages/design` 与 `src/ui/kit`（`docs/design/DESIGN_SYSTEM.md`）。
 - AI 功能只放在 `packages/ai-os`；提供方与模型在运行时发现，不硬编码。
 - 公开发布：在仓库的密钥扫描通过后，发布公开仓库、GitHub release 与 tag、crates.io 和 npm（`docs/publish/STATUS.md`）。
 
@@ -37,4 +37,4 @@ src 是 Aphrody 的公开单体仓库，方向是在开放环境中构建游戏�
 
 ## 5. 游戏与 Steam
 
-归属图见 [`docs/gaming/OWNERSHIP.md`](../../gaming/OWNERSHIP.md)。Rust：`crates/steam-depot`（`ay steam`）。Bun：`packages/gaming`（`ay gaming`）。插件与 MCP：`apps/rosegriffon/plugins/steam`；其技能在该处编辑，由 `ay gaming skills sync` 镜像。
+归属图见 [`docs/gaming/OWNERSHIP.md`](../../gaming/OWNERSHIP.md)。Rust：`src/steam`（`ay steam`）。Bun：`packages/gaming`（`ay gaming`）。插件与 MCP：`apps/rosegriffon/plugins/steam`；其技能在该处编辑，由 `ay gaming skills sync` 镜像。

@@ -8,10 +8,10 @@ One row per feature replaced or introduced by the merged Aphrody app and the gam
 | ----------------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
 | Rust tests, wasm32 release build, wasm-bindgen, `/play` bundle    | `.github/workflows/game.yml`                      | fr1 runner                                               |
 | Frame rate: median fps, p95 frame time (Chrome DevTools protocol) | `packages/gaming/src/game-fps.ts`, `packages/gaming/tests/game-fps.test.ts` | any host with a WebGPU Chrome; exit 2 means not measured |
-| Deterministic generated assets (`gen-assets --check`)             | `crates/game/src/bin/gen-assets.rs`               | `game.yml`                                               |
+| Deterministic generated assets (`gen-assets --check`)             | `src/game/src/bin/gen-assets.rs`               | `game.yml`                                               |
 | `/play` page and CSP                                              | `apps/aphrody/tests/play.test.ts`                 | `bun test`                                               |
 
-## Game (crates/game, served at /play)
+## Game (src/game, served at /play)
 
 | Feature                                                                                       | Replaced / target | State                     | Check                                               |
 | --------------------------------------------------------------------------------------------- | ----------------- | ------------------------- | --------------------------------------------------- |

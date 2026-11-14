@@ -1,15 +1,92 @@
 cargo-features = ["codegen-backend", "panic-immediate-abort"]
 
 # Root Cargo workspace for every first-party Rust crate in this repository.
-# Every first-party crate sits one level below crates/ and is a member through the glob.
+# First-party crates live in src/ (oven-sh/bun layout), bench/ and test/; members are explicit (docs/ARCHITECTURE.md §9).
 # See docs/core/ARCHITECTURE-ROOT.md.
 [workspace]
 resolver = "3"
 members = [
-  "crates/*",
-  # Explicit members outside crates/ (they win over `exclude`): one Cargo.lock, one target dir (docs/infra/CACHE.md).
-  "crates/aphrody-env",
-  "crates/aphrody-vault",
+  "bench",
+  "src/agent/context",
+  "src/agent/py",
+  "src/apm",
+  "src/archguard",
+  "src/ay",
+  "src/bun-flat",
+  "src/chromium/factory",
+  "src/core",
+  "src/core/capi",
+  "src/core/jni",
+  "src/core/py",
+  "src/corelib",
+  "src/corelib/adblock-capi",
+  "src/craft",
+  "src/depot/cas",
+  "src/depot/cipd",
+  "src/depot/cli",
+  "src/depot/core",
+  "src/depot/forge",
+  "src/depot/gclient",
+  "src/depot/graph",
+  "src/depot/ingest",
+  "src/depot/migrate",
+  "src/depot/vpython",
+  "src/diffutils-flat",
+  "src/docs",
+  "src/drivers/gpu/dx12",
+  "src/env",
+  "src/ffi",
+  "src/game",
+  "src/i18n",
+  "src/lore",
+  "src/lore/aws",
+  "src/lore/base",
+  "src/lore/capi",
+  "src/lore/chaos-client",
+  "src/lore/client",
+  "src/lore/credential",
+  "src/lore/error-set",
+  "src/lore/error-set-macro",
+  "src/lore/fuse",
+  "src/lore/hashicorp",
+  "src/lore/io",
+  "src/lore/macro",
+  "src/lore/notification",
+  "src/lore/proto",
+  "src/lore/revision",
+  "src/lore/server",
+  "src/lore/storage",
+  "src/lore/telemetry",
+  "src/lore/transport",
+  "src/net",
+  "src/posix/omarchy",
+  "src/posix/wslg",
+  "src/re",
+  "src/remote",
+  "src/rt",
+  "src/rust-stack",
+  "src/steam",
+  "src/sys",
+  "src/taffy",
+  "src/tv/cli",
+  "src/tv/core",
+  "src/tv/ffmpeg",
+  "src/tv/i18n",
+  "src/ui/brand-gpu",
+  "src/ui/kit",
+  "src/up",
+  "src/vault",
+  "src/wayland/cosmic",
+  "src/wayland/gamescope/cli",
+  "src/wayland/gamescope/core",
+  "src/wayland/gamescope/web-wasm",
+  "src/wayland/gamescope/wgsl",
+  "src/wayland/smithay",
+  "src/wayland/tiler",
+  "src/xtask",
+  "test/assets",
+  "test/conformance",
+  "test/lore",
   "tools/build-model",
 ]
 exclude = ["third_party", "apps", "packages", "infra"]
@@ -25,49 +102,49 @@ homepage = "https://labs.aphrody.com"
 
 [workspace.dependencies]
 # First-party crates
-archguard = { version = "0.1.0", path = "crates/archguard" }
-corelib = { version = "0.4.0", package = "aphrody-corelib", path = "crates/corelib", default-features = false }
-depot-cli = { version = "0.4.0", path = "crates/depot-cli" }
-depot-core = { version = "0.4.0", path = "crates/depot-core" }
-depot-cas = { version = "0.4.0", path = "crates/depot-cas" }
-depot-cipd = { version = "0.4.0", path = "crates/depot-cipd" }
-agent-context = { version = "0.1.0", path = "crates/agent-context" }
-aphrody-core = { version = "0.4.0", path = "crates/core" }
-aphrody-core-capi = { version = "0.4.0", path = "crates/core-capi" }
-aphrody-re = { version = "0.4.0", path = "crates/re" }
+archguard = { version = "0.1.0", path = "src/archguard" }
+corelib = { version = "0.4.0", package = "aphrody-corelib", path = "src/corelib", default-features = false }
+depot-cli = { version = "0.4.0", path = "src/depot/cli" }
+depot-core = { version = "0.4.0", path = "src/depot/core" }
+depot-cas = { version = "0.4.0", path = "src/depot/cas" }
+depot-cipd = { version = "0.4.0", path = "src/depot/cipd" }
+agent-context = { version = "0.1.0", path = "src/agent/context" }
+aphrody-core = { version = "0.4.0", path = "src/core" }
+aphrody-core-capi = { version = "0.4.0", path = "src/core/capi" }
+aphrody-re = { version = "0.4.0", path = "src/re" }
 # WSLg stack: Windows host crates and the portable Wayland wire (docs/ARCHITECTURE.md §6).
-dx12-hal = { version = "0.4.0", path = "crates/dx12-hal" }
-smithay-wayland-wire = { version = "0.4.0", path = "crates/smithay-wayland-wire" }
-depot-migrate = { version = "0.4.0", path = "crates/depot-migrate" }
-depot-forge = { version = "0.4.0", path = "crates/depot-forge" }
-depot-ingest = { version = "0.4.0", path = "crates/depot-ingest" }
-depot-graph = { version = "0.4.0", path = "crates/depot-graph" }
-gamescope-core = { version = "0.1.0", path = "crates/gamescope-core" }
-gamescope-wgsl = { version = "0.1.0", path = "crates/gamescope-wgsl" }
-taffy = { version = "0.15.1", path = "crates/taffy" }
-stack-bench = { version = "0.1.0", path = "crates/bench" }
-xtk = { version = "0.1.0", path = "crates/xtask" }
+dx12-hal = { version = "0.4.0", path = "src/drivers/gpu/dx12" }
+smithay-wayland-wire = { version = "0.4.0", path = "src/wayland/smithay" }
+depot-migrate = { version = "0.4.0", path = "src/depot/migrate" }
+depot-forge = { version = "0.4.0", path = "src/depot/forge" }
+depot-ingest = { version = "0.4.0", path = "src/depot/ingest" }
+depot-graph = { version = "0.4.0", path = "src/depot/graph" }
+gamescope-core = { version = "0.1.0", path = "src/wayland/gamescope/core" }
+gamescope-wgsl = { version = "0.1.0", path = "src/wayland/gamescope/wgsl" }
+taffy = { version = "0.15.1", path = "src/taffy" }
+stack-bench = { version = "0.1.0", path = "bench" }
+xtk = { version = "0.1.0", path = "src/xtask" }
 # Labs (merged from C:\labs): Lore VCS, APM, conformance harness, aphrody CLI
-lore = { version = "0.13.1-nightly", path = "crates/lore", package = "aphrody-lore" }
-lore-aws = { version = "0.13.1-nightly", path = "crates/lore-aws", package = "aphrody-lore-aws" }
-lore-base = { version = "0.13.1-nightly", path = "crates/lore-base", package = "aphrody-lore-base" }
-lore-credential = { version = "0.13.1-nightly", path = "crates/lore-credential", package = "aphrody-lore-credential" }
-lore-error-set = { version = "0.1.0", path = "crates/lore-error-set", package = "aphrody-lore-error-set" }
-lore-error-set-macro = { version = "0.1.0", path = "crates/lore-error-set-macro", package = "aphrody-lore-error-set-macro" }
-lore-hashicorp = { version = "0.13.1-nightly", path = "crates/lore-hashicorp", package = "aphrody-lore-hashicorp" }
-lore-io = { version = "0.13.1-nightly", path = "crates/lore-io", package = "aphrody-lore-io" }
-lore-macro = { version = "0.13.1-nightly", path = "crates/lore-macro", package = "aphrody-lore-macro" }
-lore-notification = { version = "0.13.1-nightly", path = "crates/lore-notification", package = "aphrody-lore-notification" }
-lore-proto = { version = "0.1.67", path = "crates/lore-proto", package = "aphrody-lore-proto" }
-lore-revision = { version = "0.13.1-nightly", path = "crates/lore-revision", package = "aphrody-lore-revision" }
-lore-server = { version = "0.13.1-nightly", path = "crates/lore-server", package = "aphrody-lore-server" }
-lore-storage = { version = "0.13.1-nightly", path = "crates/lore-storage", package = "aphrody-lore-storage" }
-lore-telemetry = { version = "0.13.1-nightly", path = "crates/lore-telemetry", package = "aphrody-lore-telemetry" }
-lore-transport = { version = "0.13.1-nightly", path = "crates/lore-transport", package = "aphrody-lore-transport" }
+lore = { version = "0.13.1-nightly", path = "src/lore", package = "aphrody-lore" }
+lore-aws = { version = "0.13.1-nightly", path = "src/lore/aws", package = "aphrody-lore-aws" }
+lore-base = { version = "0.13.1-nightly", path = "src/lore/base", package = "aphrody-lore-base" }
+lore-credential = { version = "0.13.1-nightly", path = "src/lore/credential", package = "aphrody-lore-credential" }
+lore-error-set = { version = "0.1.0", path = "src/lore/error-set", package = "aphrody-lore-error-set" }
+lore-error-set-macro = { version = "0.1.0", path = "src/lore/error-set-macro", package = "aphrody-lore-error-set-macro" }
+lore-hashicorp = { version = "0.13.1-nightly", path = "src/lore/hashicorp", package = "aphrody-lore-hashicorp" }
+lore-io = { version = "0.13.1-nightly", path = "src/lore/io", package = "aphrody-lore-io" }
+lore-macro = { version = "0.13.1-nightly", path = "src/lore/macro", package = "aphrody-lore-macro" }
+lore-notification = { version = "0.13.1-nightly", path = "src/lore/notification", package = "aphrody-lore-notification" }
+lore-proto = { version = "0.1.67", path = "src/lore/proto", package = "aphrody-lore-proto" }
+lore-revision = { version = "0.13.1-nightly", path = "src/lore/revision", package = "aphrody-lore-revision" }
+lore-server = { version = "0.13.1-nightly", path = "src/lore/server", package = "aphrody-lore-server" }
+lore-storage = { version = "0.13.1-nightly", path = "src/lore/storage", package = "aphrody-lore-storage" }
+lore-telemetry = { version = "0.13.1-nightly", path = "src/lore/telemetry", package = "aphrody-lore-telemetry" }
+lore-transport = { version = "0.13.1-nightly", path = "src/lore/transport", package = "aphrody-lore-transport" }
 # Media (merged from C:\Users\aphro\tv)
-tv-core = { version = "0.4.0", path = "crates/tv-core" }
-tv-ffmpeg = { version = "0.4.0", path = "crates/tv-ffmpeg" }
-tv-i18n = { version = "0.4.0", path = "crates/tv-i18n" }
+tv-core = { version = "0.4.0", path = "src/tv/core" }
+tv-ffmpeg = { version = "0.4.0", path = "src/tv/ffmpeg" }
+tv-i18n = { version = "0.4.0", path = "src/tv/i18n" }
 
 # crates.io. Keys shared by src and labs: labs exact pin (same or newer version), union of features.
 anyhow = "1.0.104"
@@ -371,7 +448,7 @@ dotenvy = "0.15.7"
 ed25519-dalek = "3.0.0"
 flate2 = "1.1.11"
 getrandom = "0.4.3"
-# crates/aphrody-vault (aphrody-vault).
+# src/vault (aphrody-vault).
 age = { version = "0.12.1", default-features = false }
 aes-gcm = "0.11.1"
 zeroize = "1.9.1"
@@ -569,4 +646,4 @@ quinn-proto = { git = "https://github.com/aphrody-labs/quinn", rev = "6e76339be9
 # glob-match 0.2.1 (upstream idle since 2024-08) + `**` backtracking fix, gitignore component semantics.
 glob-match = { git = "https://github.com/aphrody-labs/glob-match", rev = "2307a20a449d9419947be65b5d904fc0a880feb0" } # aphrody/lore
 # First-party absorbed Taffy 0.15.1 Layer-0 kernel.
-taffy = { path = "crates/taffy" }
+taffy = { path = "src/taffy" }

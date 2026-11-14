@@ -54,7 +54,7 @@ export async function openPage(cdpHttp: string, url: string) {
   return { send, evaluate, events, close };
 }
 
-/** Map a CDP Network.responseReceived to the same fields as crates/net Trace. */
+/** Map a CDP Network.responseReceived to the same fields as src/net Trace. */
 export function fromResponse(p: any): ChromeNet {
   const r = p.response,
     tm = r.timing,

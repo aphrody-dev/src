@@ -1,6 +1,6 @@
 #!/bin/sh
 # FFmpeg LGPL-2.1 (no --enable-gpl, --enable-version3, --enable-nonfree) for prd (Arch), so that
-# crates/tv-ffmpeg links a distributable libav* (gate: crates/tv-ffmpeg/tests/ffmpeg_license.rs).
+# src/tv/ffmpeg links a distributable libav* (gate: src/tv/ffmpeg/tests/ffmpeg_license.rs).
 # Arch's own PKGBUILD (pinned commit), same pkgname/sonames, so omacut and qt6-multimedia-ffmpeg keep
 # their dependency; only GPL/v3 options and their libraries are dropped (x264, x265, xvid, vid.stab,
 # rubberband, frei0r = GPL; gmp, opencore-amr = LGPLv3/Apache needing --enable-version3).

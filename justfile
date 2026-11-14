@@ -12,7 +12,7 @@ set dotenv-load := false
 root := env("SRC_ROOT", justfile_directory())
 image := env("SRC_IMAGE", "aphrody/monorepo-dev:local")
 
-import "crates/ay/ay.just"
+import "src/ay/ay.just"
 import "scripts/scripts.just"
 import "packages/ai-os/ai-os.just"
 import "packages/core/core.just"

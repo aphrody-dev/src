@@ -48,7 +48,9 @@ const root = resolve(
     : join(import.meta.dir, ".."),
 );
 const SCAN = [
-  "crates",
+  "src",
+  "bench",
+  "test",
   "packages",
   "apps",
   "infra",

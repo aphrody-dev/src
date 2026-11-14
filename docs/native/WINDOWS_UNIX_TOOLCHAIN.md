@@ -103,8 +103,8 @@ Order of work:
 6. Windows and web parity harness.
 
 The existing first-party pieces (layout engine, wire codec, D3D12/DXGI host code) live in
-`crates/hypr-tiler`, `crates/smithay-wayland-wire`, `crates/dx12-hal`, `crates/cosmic-compat`
-and `crates/wslg-cli` and will be folded into this design.
+`src/wayland/tiler`, `src/wayland/smithay`, `src/drivers/gpu/dx12`, `src/wayland/cosmic`
+and `src/posix/wslg` and will be folded into this design.
 
 ## 5. Rules
 

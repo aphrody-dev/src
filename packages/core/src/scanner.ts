@@ -223,7 +223,9 @@ export function liveScanToStore(
   options: ScanOptions = {},
 ): { mode: "ffi" | "fallback"; files: number } {
   const includes = options.includes ?? [
-    "crates",
+    "src",
+    "bench",
+    "test",
     "packages",
     "apps",
     "scripts",
@@ -397,13 +399,18 @@ function parseCargoWorkspace(srcRoot: string) {
 }
 
 function collectCrates(srcRoot: string): CrateInfo[] {
-  const cratesDir = join(srcRoot, "crates");
-  if (!existsSync(cratesDir)) return [];
+  // Explicit `[workspace] members` of the root Cargo.toml (src/*, bench, test/*: oven-sh/bun layout).
+  const rootCargo = join(srcRoot, "Cargo.toml");
+  if (!existsSync(rootCargo)) return [];
+  const members: string[] =
+    (Bun.TOML.parse(readFileSync(rootCargo, "utf8")) as any).workspace
+      ?.members ?? [];
   const out: CrateInfo[] = [];
-  for (const ent of readdirSync(cratesDir, { withFileTypes: true })) {
-    if (!ent.isDirectory()) continue;
-    const dir = join(cratesDir, ent.name);
+  for (const member of members) {
+    const dir = join(srcRoot, member);
     const cargoPath = join(dir, "Cargo.toml");
+    if (!existsSync(cargoPath)) continue;
+    const ent = { name: member.split("/").at(-1)! };
     let name = ent.name;
     let version = "workspace";
     if (existsSync(cargoPath)) {
@@ -414,7 +421,7 @@ function collectCrates(srcRoot: string): CrateInfo[] {
     const layer = readLayerFromRules(dir);
     out.push({
       name,
-      dir: `crates/${ent.name}`,
+      dir: member,
       version,
       layer,
       hasDepsRules: existsSync(join(dir, "DEPS.rules")),
@@ -488,7 +495,7 @@ function collectApps(srcRoot: string): AppInfo[] {
 }
 
 function collectHeaders(srcRoot: string): HeaderInfo[] {
-  const incDir = join(srcRoot, "crates", "core-capi", "include");
+  const incDir = join(srcRoot, "src", "core", "capi", "include");
   if (!existsSync(incDir)) return [];
   const out: HeaderInfo[] = [];
   for (const ent of readdirSync(incDir, { withFileTypes: true })) {
@@ -517,7 +524,7 @@ function collectHeaders(srcRoot: string): HeaderInfo[] {
 }
 
 function collectBunFlat(srcRoot: string): BunFlatInfo | null {
-  const flatPath = join(srcRoot, "crates", "bun-flat", "flat.toml");
+  const flatPath = join(srcRoot, "src", "bun-flat", "flat.toml");
   if (!existsSync(flatPath)) return null;
   const txt = readFileSync(flatPath, "utf8");
   const fork = txt.match(/^fork\s*=\s*"([^"]+)"/m)?.[1] ?? "";

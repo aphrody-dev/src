@@ -1,0 +1,17 @@
+[package]
+name = "aphrody-rt"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository = "https://github.com/aphrody-labs/src"
+description = "Runtime manager behind `ay rt`: Python engines and versions on uv (CPython, free-threaded, PyPy, GraalPy, Pyodide, RustPython), Node, Deno and Bun versions, runtime and engine combinations, package managers, PyTorch backends"
+
+[lib]
+name = "rt"
+
+[dependencies]
+clap.workspace = true
+up = { version = "0.4.0", package = "aphrody-up", path = "../up" }
+# V8 and Dawn of each Chrome channel (chromiumdash + Chromium DEPS) for `ay rt matrix`.
+aphrody-conformance = { version = "0.4.0", path = "../../test/conformance" }
+serde_json.workspace = true

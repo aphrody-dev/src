@@ -37,7 +37,8 @@ graphify-out/
 !/assets/
 !/apps/
 !/packages/
-!/crates/
+!/bench/
+!/test/
 !/infra/
 !/tools/
 !/third_party/

@@ -52,9 +52,9 @@ Aphrody Labs はセルフホスト型プラットフォームの作業です。�
 
 | パス                                          | 内容                                                                                |
 | :-------------------------------------------- | :---------------------------------------------------------------------------------- |
-| `crates/conformance`、`conformance/`          | 固定済みの適合性スイート、CLI `ay conformance`                                      |
-| `crates/lore*`、`licenses/lore`、`tools/lore` | Lore VCS(MIT、取り込み済み)                                                         |
-| `crates/apm`                                  | APM クレート                                                                        |
+| `test/conformance`、`conformance/`          | 固定済みの適合性スイート、CLI `ay conformance`                                      |
+| `src/lore*`、`licenses/lore`、`tools/lore` | Lore VCS(MIT、取り込み済み)                                                         |
+| `src/apm`                                  | APM クレート                                                                        |
 | `[patch.crates-io]`                           | `rev` で固定した aphrody-labs フォークのパッチ済みクレート(quinn-proto、glob-match) |
 | `infra/chromium-factory`                      | Chromium ビルドファクトリー                                                         |
 | `plugins/labs`                                | Claude Code プラグイン `labs`                                                       |

@@ -1,6 +1,6 @@
 # Multiplayer: design note (2026-11-13)
 
-Status: design only. `crates/game` has no networking code; the vertical slice is single player. This note fixes the direction so the slice does not block it.
+Status: design only. `src/game` has no networking code; the vertical slice is single player. This note fixes the direction so the slice does not block it.
 
 ## Constraints
 
@@ -10,7 +10,7 @@ Status: design only. `crates/game` has no networking code; the vertical slice is
 
 ## Model
 
-1. Server-authoritative, fixed tick (30 Hz simulation, snapshots at 15 to 20 Hz). The server owns positions, jumps and world edits; clients send inputs (`Controls` of `crates/game/src/controls.rs` is already one struct per frame: movement axis, look, jump, sprint).
+1. Server-authoritative, fixed tick (30 Hz simulation, snapshots at 15 to 20 Hz). The server owns positions, jumps and world edits; clients send inputs (`Controls` of `src/game/src/controls.rs` is already one struct per frame: movement axis, look, jump, sprint).
 2. Client prediction and reconciliation: the client applies inputs locally with the same movement function (`move_player` becomes a pure function shared by client and server), keeps unacknowledged inputs by sequence number, replays them on top of each authoritative snapshot, interpolates other players 100 ms in the past.
 3. Terrain is not networked: `noise::height(seed, x, z)` and `build_chunk` are pure and deterministic (tests assert it), so the server sends only the seed. Player edits of the world are small deltas keyed by chunk coordinates.
 4. Interest management by chunk: a player receives entities of the 3x3 chunk neighbourhood at full rate and the ring at `VIEW_RADIUS` at low rate. Chunks are the unit of sharding: one process per region, handoff at chunk borders.
@@ -19,7 +19,7 @@ Status: design only. `crates/game` has no networking code; the vertical slice is
 
 ## Server
 
-A Rust crate (`crates/game-server`, not created yet) reusing `crates/game` pure modules (`noise`, `terrain_mesh` heights, the movement function) with Bevy `MinimalPlugins` or plain ECS, packaged as an Alpine image in `infra/docker/` and deployed with `just deploy` on `prd`. Auth reuses the existing account layer; no secret in the client.
+A Rust crate (`crates/game-server`, not created yet) reusing `src/game` pure modules (`noise`, `terrain_mesh` heights, the movement function) with Bevy `MinimalPlugins` or plain ECS, packaged as an Alpine image in `infra/docker/` and deployed with `just deploy` on `prd`. Auth reuses the existing account layer; no secret in the client.
 
 ## Checks to define before implementation
 

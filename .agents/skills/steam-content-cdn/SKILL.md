@@ -1,5 +1,4 @@
 ---
-disable-model-invocation: true
 name: steam-content-cdn
 description: This skill should be used when the user asks to "decode a Steam manifest", "decode depot chunks", "what is in depotcache", "get a manifest request code", "fetch a chunk from the Steam CDN", "where are Steam Cloud saves", "where are Workshop files stored", or "set up lancache for Steam", or mentions SteamPipe, GetServersForSteamPipe, GetCDNAuthToken, depot keys, VZip, ISteamUGC, or lancache. For running download or prefill tools, steam-community-tools applies.
 ---

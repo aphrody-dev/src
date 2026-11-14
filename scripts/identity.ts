@@ -7,7 +7,7 @@
 //   bun scripts/identity.ts get <dotted.key>     print one value (recipes, CI)
 //
 // Derived fields:
-// - Cargo.toml [workspace.package] authors/repository/homepage; crates/ay package and [[bin]] name;
+// - Cargo.toml [workspace.package] authors/repository/homepage; src/ay package and [[bin]] name;
 // - crates/*/Cargo.toml package names: `<dir>` or `<crate_prefix><dir>` (crates.io collisions,
 //   docs/ay/NAMING.md), except [naming.crate_names]; renames follow every `package = "..."` key;
 // - npm: every bun workspace (root package.json `workspaces` globs) is named `<scope>/<dir>`
@@ -183,25 +183,31 @@ export function plan(root: string, id = loadIdentity(root)): Edit[] {
     "homepage",
     `https://${id.domains.home}`,
   );
-  tomlEdit("crates/ay/Cargo.toml", "[package]", "name", id.cli.crate);
-  tomlEdit("crates/ay/Cargo.toml", "[[bin]]", "name", id.cli.binary);
-  tomlEdit("crates/ay/Cargo.toml", "[package]", "repository", repoUrl(id));
+  tomlEdit("src/ay/Cargo.toml", "[package]", "name", id.cli.crate);
+  tomlEdit("src/ay/Cargo.toml", "[[bin]]", "name", id.cli.binary);
+  tomlEdit("src/ay/Cargo.toml", "[package]", "repository", repoUrl(id));
 
   // Crates: <dir> or <crate_prefix><dir>; a rename follows every `package = "..."` key.
   const prefix = id.naming.crate_prefix;
   const fixed = id.naming.crate_names ?? {};
-  const crateFiles = existsSync(join(root, "crates"))
-    ? readdirSync(join(root, "crates"))
-        .map((d) => `crates/${d}/Cargo.toml`)
-        .filter((f) => existsSync(join(root, f)))
-    : [];
+  // Explicit `[workspace] members` (src/*, bench, test/*).
+  const crateFiles = (
+    ((Bun.TOML.parse(read("Cargo.toml")) as any).workspace?.members ??
+      []) as string[]
+  )
+    .map((d) => `${d}/Cargo.toml`)
+    .filter((f) => existsSync(join(root, f)));
   const cargoFiles = ["Cargo.toml", ...crateFiles];
   for (const file of crateFiles) {
     const dir = basename(dirname(file));
     const name = (Bun.TOML.parse(read(file)) as any).package?.name as
       string | undefined;
     if (!name || dir === "ay") continue;
-    const want = fixed[dir] ?? (name === dir ? dir : `${prefix}${dir}`);
+    // Nested members (src/wayland/tiler) no longer carry the crate name in their dir:
+    // the stem comes from the name itself, and the prefix is kept current.
+    const stem = name.startsWith(prefix) ? name.slice(prefix.length) : name;
+    const want =
+      fixed[stem] ?? fixed[dir] ?? (name.startsWith(prefix) ? `${prefix}${stem}` : name);
     if (name === want) continue;
     tomlEdit(file, "[package]", "name", want);
     const re = new RegExp(`(package\\s*=\\s*)"${reEscape(name)}"`, "g");

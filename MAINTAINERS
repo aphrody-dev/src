@@ -89,15 +89,15 @@ T:	git https://chromium.googlesource.com/chromium/tools/depot_tools.git
 T:	git https://github.com/aphrody-dev/chromium-bun.git
 T:	git https://github.com/aphrody-dev/depot.git
 F:	DEPS
-F:	crates/depot-cli/
-F:	crates/depot-core/
-F:	crates/ffi/
-F:	crates/depot-forge/
-F:	crates/depot-graph/
-F:	crates/depot-ingest/
-F:	crates/depot-migrate/
+F:	src/depot/cli/
+F:	src/depot/core/
+F:	src/ffi/
+F:	src/depot/forge/
+F:	src/depot/graph/
+F:	src/depot/ingest/
+F:	src/depot/migrate/
 F:	crates/depot-re/
-F:	crates/core/
+F:	src/core/
 F:	packages/chromium-bun/
 F:	third_party/chromium/
 F:	third_party/depot_tools/
@@ -121,15 +121,15 @@ S:	Supported
 W:	https://about.aphrody.com
 T:	git https://github.com/aphrody-dev/wayland.git
 T:	git https://github.com/aphrody-dev/gamescope-rs.git
-F:	crates/gamescope-cli/
-F:	crates/gamescope-core/
-F:	crates/gamescope-web-wasm/
-F:	crates/gamescope-wgsl/
-F:	crates/wslg-cli/
-F:	crates/hypr-tiler/
-F:	crates/cosmic-compat/
-F:	crates/dx12-hal/
-F:	crates/smithay-wayland-wire/
+F:	src/wayland/gamescope/cli/
+F:	src/wayland/gamescope/core/
+F:	src/wayland/gamescope/web-wasm/
+F:	src/wayland/gamescope/wgsl/
+F:	src/posix/wslg/
+F:	src/wayland/tiler/
+F:	src/wayland/cosmic/
+F:	src/drivers/gpu/dx12/
+F:	src/wayland/smithay/
 F:	third_party/wgpu/
 F:	third_party/winit/
 
@@ -144,7 +144,7 @@ T:	git https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 T:	git https://github.com/aphrody-dev/unix.git
 T:	quilt docs/native/patches/
 F:	MAINTAINERS
-F:	crates/unix-omarchy/
+F:	src/posix/omarchy/
 F:	docs/native/linux/
 F:	docs/native/linux-kernel-story/
 F:	docs/native/patches/
@@ -184,9 +184,9 @@ T:	git https://github.com/aphrody-dev/forge.git
 F:	.gitattributes
 F:	.gitignore
 F:	.gitmodules
-F:	crates/archguard/
-F:	crates/ay/
-F:	crates/xtask/
+F:	src/archguard/
+F:	src/ay/
+F:	src/xtask/
 F:	docs/native/VCS-FORGE.md
 F:	justfile
 F:	packages/env-kit/
@@ -200,8 +200,8 @@ S:	Supported
 W:	https://about.aphrody.com
 T:	git https://github.com/aphrody-dev/bench.git
 T:	git https://github.com/aphrody-dev/rust-stack.git
-F:	crates/bench/
-F:	crates/rust-stack/
+F:	bench/
+F:	src/rust-stack/
 
 SOVEREIGN AI CONTROL PLANE & KNOWLEDGE ENGINE
 M:	Aphrody Engineering <contact@aphrody.com>
@@ -215,33 +215,33 @@ T:	git https://github.com/aphrody-dev/pi-opencode.git
 F:	.agents/
 F:	packages/ai-os/
 
-LAYER L1 BASE (crates/core, net, sys, design tokens, lore-base/io, depot-core/cas)
+LAYER L1 BASE (src/core, net, sys, design tokens, lore-base/io, depot-core/cas)
 M:	skill:bun agent:claude <contact@aphrody.com>
 S:	Supported
-F:	crates/core/
-F:	crates/corelib/
-F:	crates/net/
-F:	crates/sys/
-F:	crates/depot-core/
-F:	crates/depot-cas/
-F:	crates/lore-base/
-F:	crates/lore-io/
+F:	src/core/
+F:	src/corelib/
+F:	src/net/
+F:	src/sys/
+F:	src/depot/core/
+F:	src/depot/cas/
+F:	src/lore/base/
+F:	src/lore/io/
 F:	packages/core/
 F:	packages/net/
 
 LAYER L2 PLATFORM ABSTRACTION (Windows, Linux, Cloudflare, Vercel, C ABI)
 M:	skill:microsoft skill:windows-machine agent:claude <contact@aphrody.com>
 S:	Supported
-F:	crates/core-capi/
-F:	crates/dx12-hal/
-F:	crates/remote/
+F:	src/core/capi/
+F:	src/drivers/gpu/dx12/
+F:	src/remote/
 F:	packages/ffi-bridge/
 
 LAYER L4 AGENT
 M:	agent:claude skill:claude-api <contact@aphrody.com>
 S:	Supported
-F:	crates/agent-context/
-F:	crates/agent-py/
+F:	src/agent/context/
+F:	src/agent/py/
 F:	infra/fleet/prd/systemd/aphrody-relay.service
 F:	packages/ai-os/
 

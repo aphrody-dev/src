@@ -64,7 +64,7 @@ describe.skipIf(!CDP)("e2e:auth gemini", () => {
         );
       expect(stream).toBe(true);
 
-      // Same load through crates/net: protocol family and TLS must match Chrome.
+      // Same load through src/net: protocol family and TLS must match Chrome.
       if (process.env.APHRODY_NET_LIB) {
         const ours = probe(T.url);
         expect(ours.tls_version).toBe("TLSv1_3");

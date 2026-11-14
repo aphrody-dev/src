@@ -1,6 +1,6 @@
 # Architecture (`@aphrody/ai-os`)
 
-Cross-platform sandboxed Unix/GNU-like OS distribution for autonomous agents. Workspaces: Bun (`packages/ai-os`), Rust 2024 (`crates/core-capi`, `crates/agent-context`, `crates/agent-py`, `crates/unix-omarchy`), Python `uv` (`packages/ai-os/python`). Native code compiles with the shared Chromium LLVM 24 toolchain (`docs/llvm/UNIFIED-TOOLCHAIN.md`) on `fr1`/CI, never on the workstation.
+Cross-platform sandboxed Unix/GNU-like OS distribution for autonomous agents. Workspaces: Bun (`packages/ai-os`), Rust 2024 (`src/core/capi`, `src/agent/context`, `src/agent/py`, `src/posix/omarchy`), Python `uv` (`packages/ai-os/python`). Native code compiles with the shared Chromium LLVM 24 toolchain (`docs/llvm/UNIFIED-TOOLCHAIN.md`) on `fr1`/CI, never on the workstation.
 
 ## Layers
 
@@ -18,7 +18,7 @@ Cross-platform sandboxed Unix/GNU-like OS distribution for autonomous agents. Wo
 
 | Subsystem                      | Path                                                                                            | Status & Scope                                                                                                                                                         |
 | :----------------------------- | :---------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unified C ABI & FHS VFS        | `src/core/cabi.ts` + `crates/core-capi/src/ai_os.rs`                                            | `ai_os_uname_json`, `ai_os_vfs_resolve_json`, `ai_os_llm_spec_json`, `ai_os_rag_*`, `ai_os_world_*`, `ai_os_sys1_decide_json`                                          |
+| Unified C ABI & FHS VFS        | `src/core/cabi.ts` + `src/core/capi/src/ai_os.rs`                                            | `ai_os_uname_json`, `ai_os_vfs_resolve_json`, `ai_os_llm_spec_json`, `ai_os_rag_*`, `ai_os_world_*`, `ai_os_sys1_decide_json`                                          |
 | Core runtime & sandbox         | `src/core/{agent,context,memory,sandbox,shell,skills,skill-lint,council,secrets,home,tools}.ts` | Multi-step tool loop, `OverlaySandbox`, `runSandboxedJs`, `runJustBash`, FTS5+semantic+structural+recency `Context`                                                    |
 | Runtime LLM bridge             | `src/llm`                                                                                       | Zero hardcoded models; discovers `openai`, `anthropic`, `google`, `openrouter`, `huggingface`, `vercel`, `cloudflare`, `ollama`, `fabric`, `agy`, `claude`, `opencode` |
 | Protocol relay                 | `src/relay`                                                                                     | HTTP/WS/TCP/TLS/stdio: MCP `2026-07-28` (`server/discover`) + `2025-11-25`, A2A `1.0.1`, ACP `1.31.0`, OAuth 2.1, outbound singleflight cache                          |
@@ -31,7 +31,7 @@ Cross-platform sandboxed Unix/GNU-like OS distribution for autonomous agents. Wo
 
 ## Context (Multi-Head Retrieval)
 
-Module `src/core/context.ts` + Rust `crates/agent-context` (shared SQLite WAL schema `entries`, `entries_fts`, `kv`).
+Module `src/core/context.ts` + Rust `src/agent/context` (shared SQLite WAL schema `entries`, `entries_fts`, `kv`).
 
 | Stage               | Implementation                                                                                                                    |
 | :------------------ | :-------------------------------------------------------------------------------------------------------------------------------- |

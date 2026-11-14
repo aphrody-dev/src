@@ -1,6 +1,6 @@
 # Asset tests
 
-Run 2026-11-13 by `ay assets test --recursive --strict` (packages/assets/src/test.ts) merged with `asset-test` (crates/asset-test) run on fr1 (`ssh vps`, /srv/build/assets, `iteration` profile, Bevy 0.20.1, resvg 0.50, gltf 1.4.1, craft-libs rev a9949872, tv-ffmpeg over the distro FFmpeg 8.1.2 build, libavcodec 62.28.102).
+Run 2026-11-13 by `ay assets test --recursive --strict` (packages/assets/src/test.ts) merged with `asset-test` (test/assets) run on fr1 (`ssh vps`, /srv/build/assets, `iteration` profile, Bevy 0.20.1, resvg 0.50, gltf 1.4.1, craft-libs rev a9949872, tv-ffmpeg over the distro FFmpeg 8.1.2 build, libavcodec 62.28.102).
 
 Validators: Bun.Image (decode and re-encode), Khronos glTF-Validator 2.0.0-dev.3.10 (Apache-2.0, checked with `gh api`), gltf crate, headless Bevy `bevy_gltf` load (no GPU), tv-ffmpeg full audio decode, resvg render plus craft-svg signature, Radiance header check, sha256 against the manifest. `ttf-parser` is wired for fonts but ran on no file on fr1.
 

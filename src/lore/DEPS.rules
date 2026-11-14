@@ -1,0 +1,24 @@
+# checkdeps layer rules for Lore (moved from crates/DEPS.rules). Inherited by src/lore/*.
+layer = 3
+# lore-error-set(-macro) is Lore's own error crate (upstream Epic code): Lore crates only (root -rule).
+credential: +src/lore/error-set
+credential: +src/lore/error-set-macro
+server: +src/lore/error-set
+server: +src/lore/error-set-macro
+revision: +src/lore/error-set
+revision: +src/lore/error-set-macro
+storage: +src/lore/error-set
+storage: +src/lore/error-set-macro
+notification: +src/lore/error-set
+notification: +src/lore/error-set-macro
++src/lore/error-set
++src/lore/error-set-macro
+aws: +src/lore/error-set
+aws: +src/lore/error-set-macro
+base: +src/lore/error-set
+base: +src/lore/error-set-macro
+telemetry: +src/lore/error-set
+telemetry: +src/lore/error-set-macro
+transport: +src/lore/error-set
+transport: +src/lore/error-set-macro
+error-set: +src/lore/error-set-macro

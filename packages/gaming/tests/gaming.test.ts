@@ -70,9 +70,9 @@ test("downloads manifest and steamcmd script", () => {
   ]);
 });
 
-test("Proton app ids agree with crates/steam-depot", () => {
+test("Proton app ids agree with src/steam", () => {
   const rs = readFileSync(
-    join(root, "crates", "steam-depot", "src", "proton.rs"),
+    join(root, "src", "steam", "src", "proton.rs"),
     "utf8",
   );
   const block = rs.slice(

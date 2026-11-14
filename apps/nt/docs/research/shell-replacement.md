@@ -43,4 +43,4 @@ Pas de remplaçant « drop-in » : pwsh est un langage .NET distinct. Remplaceme
 ## 6. Reproductibilité
 
 - Microsoft : **WinGet Configuration** (YAML, `winget configure -f`) — mécanisme documenté sur Learn pour une installation répétable.
-- Monorepo `src` : `tools.toml` + `ay up` (sources `github` avec checksum). **Bloquant** : le `ay` 0.2.0 installé ne lit plus `tools.toml` (`unknown variant "ubi"`) et sa recompilation depuis `src/crates/ay` a échoué (`failed to compile aphrody v0.2.0`, cause non encore analysée).
+- Monorepo `src` : `tools.toml` + `ay up` (sources `github` avec checksum). **Bloquant** : le `ay` 0.2.0 installé ne lit plus `tools.toml` (`unknown variant "ubi"`) et sa recompilation depuis `src/src/ay` a échoué (`failed to compile aphrody v0.2.0`, cause non encore analysée).

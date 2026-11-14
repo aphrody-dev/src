@@ -1,0 +1,85 @@
+[package]
+repository.workspace = true
+description = "Lore version control: lore-transport (absorbed from Epic Games Lore, MIT)"
+license = "MIT"
+name = "aphrody-lore-transport"
+edition = "2024"
+version = "0.13.1-nightly"
+
+[lib]
+name = "lore_transport"
+test = false
+
+[dependencies]
+lore-base = { workspace = true }
+lore-error-set = { workspace = true }
+lore-proto = { workspace = true }
+lore-credential = { workspace = true }
+
+async-trait = { workspace = true }
+async-stream = { workspace = true }
+base64 = { workspace = true }
+bitcode = { workspace = true }
+prost-types = { workspace = true }
+rand = { workspace = true }
+bytes = { workspace = true }
+crossbeam-epoch = { workspace = true }
+crossbeam-queue = { workspace = true }
+crossbeam-utils = { workspace = true }
+dashmap = { workspace = true }
+futures = { workspace = true }
+http = { workspace = true }
+hyper-util = { workspace = true, features = ["tokio"] }
+parking_lot = { workspace = true }
+quinn = { workspace = true }
+quinn-proto = { workspace = true }
+rcgen = { workspace = true }
+reqwest = { workspace = true }
+rustls = { workspace = true }
+rustls-native-certs = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+smallvec = { workspace = true }
+socket2 = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tokio-stream = { workspace = true }
+tokio-util = { workspace = true }
+tonic = { workspace = true }
+tower = { workspace = true }
+url = { workspace = true }
+webpki-roots = { workspace = true }
+zerocopy = { workspace = true }
+lore-macro = { workspace = true }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = { workspace = true }
+
+[target.'cfg(target_family = "windows")'.dependencies]
+windows-sys = { workspace = true, features = [
+  "Win32_Foundation",
+  "Win32_Security",
+  "Win32_Security_Authorization",
+  "Win32_Storage_FileSystem",
+  "Win32_System_SystemServices",
+  "Win32_System_Threading",
+] }
+
+[dev-dependencies]
+axum = { workspace = true }
+ctor = { workspace = true }
+dtor = { workspace = true }
+libc = { workspace = true }
+lore-base = { path = "../base", package = "aphrody-lore-base", features = [
+  "test-util",
+] }
+lore-transport = { path = ".", package = "aphrody-lore-transport", features = [
+  "test-util",
+] }
+
+[features]
+trace_log = ["lore-base/trace_log"]
+test-util = []
+
+[lints]
+workspace = true

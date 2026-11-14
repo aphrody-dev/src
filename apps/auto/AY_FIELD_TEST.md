@@ -1,6 +1,6 @@
 # Essai terrain de `ay` sur auto
 
-2026-11-12, poste Windows, `ay` construit depuis `crates/ay` (`RUSTC_WRAPPER= cargo build -p aphrody`).
+2026-11-12, poste Windows, `ay` construit depuis `src/ay` (`RUSTC_WRAPPER= cargo build -p aphrody`).
 
 | Commande                                                           | Attendu                                  | Obtenu                                                                                          | Correctif                                                                                       |
 | ------------------------------------------------------------------ | ---------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |

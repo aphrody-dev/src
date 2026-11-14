@@ -37,7 +37,7 @@ The `hosts` field is pc, prd, fr1 or fr2 (absent: all). On Linux, the host is re
 
 ## Automatic execution
 
-- Single front: `ay agents install|sync|check|list` (crates/ay, bun route to `packages/machine/src/toolchain.ts`), `just agents-sync [check]`. The other `ay agents` verbs remain the ai-os orchestrator.
+- Single front: `ay agents install|sync|check|list` (src/ay, bun route to `packages/machine/src/toolchain.ts`), `just agents-sync [check]`. The other `ay agents` verbs remain the ai-os orchestrator.
 - PC: tasks `\\Aphrody\\AgentsSync` (every hour) and `\\Aphrody\\AgentsSyncLogon` (at logon), set up by `infra/agents/install-pc.sh`; `apply-user.ts` also calls the applier.
 - Fleet: `infra/fleet/bin/agents-sync.sh` launched by `aphrody-agents-sync.timer` (every hour, after `src-checkout-update`). It applies for root and agent from `/srv/src`; `SRC_SPARSE` contains `.agents`, `.claude-plugin`, `plugins` and `packages/machine`. Everything is pushed by `fleet-resilience-remote.sh`. A user without any agent is skipped (root on fr2).
 - HTTP secrets: `headers = { Header = "SECRET" }` sets a `headersHelper` (`packages/machine/src/mcp-headers.ts`) that reads the env-kit vault at launch. `DEVELOPERKNOWLEDGE_API_KEY` now lives only in the vault: it was removed from `HKCU\\Environment` and serves the `developer-knowledge` server (connected). The homonymous server of the google-cloud-developer plugin, which expects the env variable, still fails.

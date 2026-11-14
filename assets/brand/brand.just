@@ -1,6 +1,6 @@
 # Brand assets (imported by the root justfile).
 
-# Brand assets (assets/brand; stages in crates/aphrody-ui/src/brand/web.rs) built on fr1 from a pushed ref:
+# Brand assets (assets/brand; stages in src/ui/kit/src/brand/web.rs) built on fr1 from a pushed ref:
 # pinned inputs, `ay brand build` twice (both manifest sha256 must match), check.ts; then gen/ copied back here.
 [group('assets')]
 brand ref="origin/main":

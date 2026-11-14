@@ -16,7 +16,7 @@ State 2026-11-13. Code: `apps/aphrody/src/os/` (page.ts, build.ts, server.ts, ve
 | Store     | included components with licenses, Steam and Epic official links, open catalog `/os/catalog.json` (bun, winget, aur, nix, flatpak, wasm-hub; the Play Store driver is excluded)                                                                                | listing rendered, catalog JSON returns                                                                                                               |
 | Settings  | language (5), sound, wallpaper (owner assets `assets/generated/wallpapers`), input mode                                                                                                                                                                        | rendered                                                                                                                                             |
 | Console   | port of the `console.aphrody.com` data (status, fleet, registries, arena, orgs) at `/os/api/console/*`; static snapshot as in the Worker                                                                                                                       | rendered                                                                                                                                             |
-| Gamescope | WebGPU pipeline: EASU then RCAS compute passes loaded from `crates/gamescope-wgsl/src/shaders` (same files as the Rust crate), scaling modes of `crates/gamescope-core` (fit, integer, stretch, fill, center), linear or nearest filter, frame cap, per window | FSR path presented a Ruffle surface at 145 fps (1:1 size: Ruffle resizes its own canvas, so no upscale was exercised); integer, fill and cap not run |
+| Gamescope | WebGPU pipeline: EASU then RCAS compute passes loaded from `src/wayland/gamescope/wgsl/src/shaders` (same files as the Rust crate), scaling modes of `src/wayland/gamescope/core` (fit, integer, stretch, fill, center), linear or nearest filter, frame cap, per window | FSR path presented a Ruffle surface at 145 fps (1:1 size: Ruffle resizes its own canvas, so no upscale was exercised); integer, fill and cap not run |
 
 Frames are read from the source canvas through `captureStream()` (a WebGL canvas drops its buffer after compositing, direct copy gave black), so the overlay adds about one frame of latency.
 
@@ -31,7 +31,7 @@ Pinned by SHA-256 in `src/os/vendor.lock.json`, downloaded at build into `apps/a
 | Ruffle web-selfhosted       | ruffle-rs/ruffle `nightly-2026-11-13`                                                     | MIT OR Apache-2.0 (both license files shipped)                 |
 | EmulatorJS and cores        | fetched by the user's browser at run time, never bundled                                  | GPL-3.0 (cores vary, several are non-commercial)               |
 | Alpine ISO                  | R2 `aphrody-assets/webos/vm/alpine-virt-3.24.2-x86.iso`                                   | Alpine package licenses (mostly GPL); served as the Worker did |
-| FSR EASU, RCAS (WGSL)       | `crates/gamescope-wgsl`; the EASU there is an approximation of AMD FSR 1.0, not bit exact | repo license (MIT OR Apache-2.0)                               |
+| FSR EASU, RCAS (WGSL)       | `src/wayland/gamescope/wgsl`; the EASU there is an approximation of AMD FSR 1.0, not bit exact | repo license (MIT OR Apache-2.0)                               |
 
 No ROM, BIOS, firmware or commercial game is in the repository. Steam and Epic are links to their official sites only.
 

@@ -179,7 +179,7 @@
       "reason": "2026-11-13 : jeton tourné ; nouveau accepté, ancien refusé (401) ; plus de --token dans ps"
     },
     {
-      "location": "crates/ay/src/ai.rs routes()",
+      "location": "src/ay/src/ai.rs routes()",
       "category": "config_drift",
       "severity": "medium",
       "status": "open",
@@ -187,7 +187,7 @@
       "fix": "ignorer local_declared quand serve est vide ; d'ici là [drop] de infra/ai/litellm-overlay.toml"
     },
     {
-      "location": "crates/ay agents|secret|auth",
+      "location": "src/ay agents|secret|auth",
       "category": "missing_command",
       "severity": "medium",
       "status": "open",
@@ -331,7 +331,7 @@
       "category": "coordination",
       "severity": "info",
       "status": "fixed",
-      "excerpt": "MCP steam : parseurs TypeScript retirés, local_apps/read_vdf/app_paths passent par ay steam (crates/steam-depot) ; un ay antérieur au commit gaming répond « no steam command »",
+      "excerpt": "MCP steam : parseurs TypeScript retirés, local_apps/read_vdf/app_paths passent par ay steam (src/steam) ; un ay antérieur au commit gaming répond « no steam command »",
       "fix": "ay à jour (CI) ou AY_BIN ; stack rosegriffon-stack (rg-steam-depot, rg-steam-initial) et son jeton non modifiés ; carte docs/gaming/OWNERSHIP.md",
       "reason": "2026-11-13 : couche gaming unifiée, commits séparés de ceux de l agent rosegriffon"
     }

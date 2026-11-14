@@ -7,7 +7,7 @@ Status: done / partial / todo / skip (out of scope: macOS/Apple-only, org ops, f
 ## Rules
 
 - OpenClaw (TS): moved to bun only (bun install/test/build, Bun.serve, Bun.$, bun:sqlite, bun:ffi, Bun.file, workers). Remove pnpm/node/tsx/vitest/esbuild, polyfills and utils that bun or `src/core` already provide.
-- Hermes (Python): stays under uv (`python/`). Python reaches the Rust core through pyo3 (`crates/agent-py`) and the TS side through the relay (MCP over stdio or HTTP, `packages/ai-os/docs/RELAY.md`). bun:ffi only loads C ABI libraries into bun; Python never goes through it. Logic that duplicates OpenClaw goes into the shared TS modules.
+- Hermes (Python): stays under uv (`python/`). Python reaches the Rust core through pyo3 (`src/agent/py`) and the TS side through the relay (MCP over stdio or HTTP, `packages/ai-os/docs/RELAY.md`). bun:ffi only loads C ABI libraries into bun; Python never goes through it. Logic that duplicates OpenClaw goes into the shared TS modules.
 - Home: one `~/.agent` (`agent init`), templates merged from OpenClaw workspace templates and Hermes SOUL.
 
 ## Core

@@ -2,14 +2,14 @@
 
 ## Steam root lookup order
 
-As implemented by `ay steam root` (`--root`, then `$STEAM_PATH`, then `find_steam_installations` in `crates/steam-depot/src/install.rs`; the first candidate that contains `steamapps/` wins):
+As implemented by `ay steam root` (`--root`, then `$STEAM_PATH`, then `find_steam_installations` in `src/steam/src/install.rs`; the first candidate that contains `steamapps/` wins):
 
 1. `$STEAM_PATH`
 2. Windows `HKCU\Software\Valve\Steam` value `SteamPath`
 3. Windows `HKLM\SOFTWARE\WOW6432Node\Valve\Steam` value `InstallPath`
 4. `C:\Program Files (x86)\Steam`
 
-Items 2 to 4 run on Windows only; items 5 to 10 run on every other platform (`crates/steam-depot/src/install.rs` `find_steam_installations`).
+Items 2 to 4 run on Windows only; items 5 to 10 run on every other platform (`src/steam/src/install.rs` `find_steam_installations`).
 
 5. `~/.steam/steam`
 6. `~/.local/share/Steam`

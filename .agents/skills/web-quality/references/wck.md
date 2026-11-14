@@ -7,7 +7,7 @@ Folded from the former modern-web-ui-ux-pro skill (its aesthetic and anti-slop r
 - `wck baselinestatus <query> [--json]`: Baseline support lookup.
 - `wck legacy-scan [<path>] [--json] [--guide=<id>]`: scan HTML/CSS/JS for legacy patterns mapped to guides.
 - MCP tools (relay): `mwg_audit` (`mode: validate | legacy-scan`, `path`, `spec`) and `web_guidance` (`action: search | retrieve | baseline`, `query`).
-- Native core: `crates/core-capi/c/mwg_core.c` -> `packages/wck/native/mwg_capi.dll`, with a Bun fallback in `packages/wck/src/mwg-ffi.ts`.
+- Native core: `src/core/capi/c/mwg_core.c` -> `packages/wck/native/mwg_capi.dll`, with a Bun fallback in `packages/wck/src/mwg-ffi.ts`.
 
 ## Visual verification pipeline
 

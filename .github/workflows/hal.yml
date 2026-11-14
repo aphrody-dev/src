@@ -6,16 +6,16 @@ on:
   push:
     branches: [main]
     paths:
-      - "crates/dx12-hal/**"
-      - "crates/wslg-cli/**"
-      - "crates/smithay-wayland-wire/**"
+      - "src/drivers/gpu/dx12/**"
+      - "src/posix/wslg/**"
+      - "src/wayland/smithay/**"
       - "packages/ffi-bridge/**"
       - ".github/workflows/hal.yml"
   pull_request:
     paths:
-      - "crates/dx12-hal/**"
-      - "crates/wslg-cli/**"
-      - "crates/smithay-wayland-wire/**"
+      - "src/drivers/gpu/dx12/**"
+      - "src/posix/wslg/**"
+      - "src/wayland/smithay/**"
       - "packages/ffi-bridge/**"
       - ".github/workflows/hal.yml"
   workflow_dispatch:

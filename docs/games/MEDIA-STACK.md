@@ -84,8 +84,8 @@ This file records the state of upstream projects. It does not choose them: codec
 
 ## What src already has for import and export
 
-- Media: `crates/tv-core`, `crates/tv-ffmpeg` (wrapper over `ffmpeg-next` 9.1.0, dynamic libav*), `crates/tv-cli`, `crates/tv-i18n`; plan in `docs/tv`.
-- Parsing and C ABI: `crates/core` (tree-sitter grammars, BLAKE3, index), `crates/core-capi` (`include/aphrody_core.h`), Bun binding `packages/core/src/ffi.ts`.
+- Media: `src/tv/core`, `src/tv/ffmpeg` (wrapper over `ffmpeg-next` 9.1.0, dynamic libav*), `src/tv/cli`, `src/tv/i18n`; plan in `docs/tv`.
+- Parsing and C ABI: `src/core` (tree-sitter grammars, BLAKE3, index), `src/core/capi` (`include/aphrody_core.h`), Bun binding `packages/core/src/ffi.ts`.
 - Code graph: `ay graph build` ran on `third_party/ffmpeg/libavutil` on 2026-11-13 and wrote `graphify-out/ffmpeg-libavutil` (5055 nodes, 11345 edges, 198 communities). No other library has been graphed.
 - Checkouts: `third_party/ffmpeg` at `46d13a83`, `third_party/artcraft` at `83aad5eb`.
 - Candidate format layer, not adopted: `storytold/craft-libs`, 114 Rust crates under Apache-2.0 ([ARTCRAFT.md](ARTCRAFT.md)).

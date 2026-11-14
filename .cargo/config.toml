@@ -108,7 +108,10 @@ rustflags = [
 ]
 
 [env]
+# Repository root for include!/include_str!/concat! paths: `concat!(env!("SRC_ROOT"), "/packages/...")`
+# survives crate moves, unlike CARGO_MANIFEST_DIR + "/../..".
+SRC_ROOT = { value = ".", relative = true }
 # Lore tests must not relay to, or stop, a developer's running Lore service
-# (rationale: labs .cargo/config.toml history, crates/lore/tests/service_api.rs).
+# (rationale: labs .cargo/config.toml history, src/lore/tests/service_api.rs).
 LORE_USE_SERVICE = "0"
 LORE_SERVICE_SOCKET = "lore_service-cargo"

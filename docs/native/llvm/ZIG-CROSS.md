@@ -7,9 +7,9 @@ Forks enregistrés dans [`third_party/forks.txt`](../../third_party/forks.txt) :
 
 ## Interface C unifiée (Zig / C / C++ / Rust / Bun)
 
-- [`aphrody_core.h`](../../crates/core-capi/include/aphrody_core.h) : ABI Rust `aphrody_core_capi` (`core_*`).
-- [`aphrody_zig.h`](../../crates/core-capi/include/aphrody_zig.h) : ABI Zig `fx_capi` (`fx_*`) + `native` (`native_sdk_app_*`), consommé par :
-  - Rust : [`crates/ffi/src/fx.rs`](../../crates/ffi/src/fx.rs)
+- [`aphrody_core.h`](../../src/core/capi/include/aphrody_core.h) : ABI Rust `aphrody_core_capi` (`core_*`).
+- [`aphrody_zig.h`](../../src/core/capi/include/aphrody_zig.h) : ABI Zig `fx_capi` (`fx_*`) + `native` (`native_sdk_app_*`), consommé par :
+  - Rust : [`src/ffi/src/fx.rs`](../../src/ffi/src/fx.rs)
   - Bun (`bun:ffi`) : [`packages/ai-os/src/core/fx-ffi.ts`](../../packages/ai-os/src/core/fx-ffi.ts), [`packages/native/src/index.ts`](../../packages/native/src/index.ts)
 
 ## Commandes de build et cross-compilation

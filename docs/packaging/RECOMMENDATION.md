@@ -22,12 +22,12 @@ BORE : non retenu (aucun gain mesuré, Phoronix 2026-06-04). Hardened : non (pé
 
 ## Couche de paquets unifiée pour `ay`
 
-Principe : étendre `crates/up`, ne rien réécrire.
+Principe : étendre `src/up`, ne rien réécrire.
 
 1. Lock unique `src.lock.json` v2 : chaque entrée = `purl` + version + digest sha256/OCI + provenance (attestation) ; `tools.toml` devient la déclaration (intentions), le lock la résolution.
-2. Trait `Backend` dans crates/up : `resolve(spec) -> Locked`, `fetch(Locked) -> Path`, `verify`. Backends :
+2. Trait `Backend` dans src/up : `resolve(spec) -> Locked`, `fetch(Locked) -> Path`, `verify`. Backends :
    - existants : `github`, `url`, `bun`, `installer`, `ubi` (à doter d'un checksum calculé au lock, stocké dans le lock) ;
-   - `cipd` (crates/depot-cipd), `uv` (crates/depot-vpython), `winget` (packages/machine DSC, export -> lock) ;
+   - `cipd` (src/depot/cipd), `uv` (src/depot/vpython), `winget` (packages/machine DSC, export -> lock) ;
    - nouveaux : `oci` (oci-client 0.18 + oci-spec 0.10 : images et artefacts ORAS, distribution de nos binaires via registre), `conda` (rattler 0.55 + resolvo 0.12) pour outils natifs multi-OS, `pacman` (alpm 5.0) côté prd, `apt` piloté en CLI côté fr1/fr2.
 3. Stockage : `depot-cas` comme cache content-addressed partagé (dédup FastCDC), servi depuis R2.
 4. Sécurité : vérif GitHub attestations/sigstore quand publiées ; requête OSV par purl au `ay lock`.

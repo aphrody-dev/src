@@ -1,4 +1,4 @@
-// @aphrody/gaming: gaming stack of the monorepo (Bun half). Rust half: crates/steam-depot via `ay steam`.
+// @aphrody/gaming: gaming stack of the monorepo (Bun half). Rust half: src/steam via `ay steam`.
 export * from "./dx.ts";
 export * from "./forks.ts";
 export * from "./native.ts";

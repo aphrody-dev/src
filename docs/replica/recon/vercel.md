@@ -104,7 +104,7 @@ Légende « notre équivalent » : chemin dans src, ou « absent ».
 | CDN global, cache immuable des assets           | vercel.com/docs/cdn                               | `packages/deploy/src/serve.ts` : assets `max-age=31536000, immutable`, HTML `max-age=0, must-revalidate` |
 | Purge / invalidation                            | vercel.com/docs/cdn                               | non nécessaire : clés par sha, promote/rollback changent la clé                                          |
 | Cache de données (`fetch` cache, `use cache`)   | next.js `caching-without-cache-components.mdx`    | absent                                                                                                   |
-| Cache de build distant (Turborepo Remote Cache) | vercel/turborepo ; next.js `ci-build-caching.mdx` | `crates/depot-cas` (CAS) + CI fr1 ; pas d'API compatible Turborepo                                       |
+| Cache de build distant (Turborepo Remote Cache) | vercel/turborepo ; next.js `ci-build-caching.mdx` | `src/depot/cas` (CAS) + CI fr1 ; pas d'API compatible Turborepo                                       |
 | Edge Config (lecture à faible latence)          | vercel.com/docs (Global Config)                   | `GET /_aphrody/config[/<key>]` (R2 `deploys/<p>/_config.json`)                                           |
 
 ### Previews / déploiements
