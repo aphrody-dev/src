@@ -21,7 +21,7 @@ Mesures sur `main` (avant : f27d752 ; après : 88da4d2). `cargo deny --locked ch
 | Patchs Cargo `path`                                 | 2                                                                                                            | 0                                                                |
 | Paquets npm externes (`bun.lock`)                   | 4 (`@types/bun`, `bun-types`, `@types/node`, `undici-types`), 0 doublon                                      | idem                                                             |
 | Paquets PyPI (`uv.lock`)                            | 22, dont `pyright` + `nodeenv` (Node téléchargé)                                                             | 21 : `ty` (Astral, Rust) remplace `pyright`                      |
-| Sous-modules                                        | 4 (`apps/auto`, `apps/r2b`, `apps/rosegriffon`, `apps/shenron`)                                              | 4 (inchangé, voir plus bas)                                      |
+| Sous-modules                                        | 3 (`apps/auto`, `apps/rosegriffon`, `apps/shenron`)                                                          | 3 (inchangé, voir plus bas)                                      |
 | Dossier `vendor/`                                   | absent                                                                                                       | absent                                                           |
 
 ## Ce qui a changé

@@ -31,7 +31,7 @@
 - Component library: official [Material 3 Design Kit](https://www.figma.com/community/file/1035203688168086460/material-3-design-kit) (`M3` `Blue LT` `57298:14` and `Blue DT` `57298:15` variable modes, M3 text styles, `Navigation Rail`, `Search bar`, `Button`, `Assistive chip`, `Stacked card`, `Horizontal card`, `Switch`).
 - Stitch parity: aligned with Google Stitch project `7027971799774493367` / design system `assets/8fa82e41c01247a8b97e684e661d0567` / screen `036d96efbf994849a040fbebfec120b3`.
 
-| Page | Page id | Frames / Content |
-| ---- | ------- | ---------------- |
-| Aphrody Workspace — M3 | `0:1` | `Aphrody UI — Light Desktop (M3 Blue)` (`7:485`, 1440x900) and `Aphrody UI — Dark Desktop (M3 Blue)` (`7:986`, 1440x900) |
+| Page                            | Page id | Frames / Content                                                                                                                                                                                        |
+| ------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Aphrody Workspace — M3          | `0:1`   | `Aphrody UI — Light Desktop (M3 Blue)` (`7:485`, 1440x900) and `Aphrody UI — Dark Desktop (M3 Blue)` (`7:986`, 1440x900)                                                                                |
 | M3 Foundations & Aphrody Tokens | `9:439` | `Aphrody Material 3 Foundations` (`9:879`), local `Aphrody M3 Schemes` collection (10 variables with `Light` and `Dark` modes matching `packages/design/DESIGN.md`), M3 type scale, component inventory |

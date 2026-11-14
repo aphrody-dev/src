@@ -6,12 +6,21 @@ description: "Live monorepo architecture: Pure C23 LLVM ABI core, Bun v1.4.4+, R
 # Aphrody Master Architectural Plan
 
 <Callout type="info" title="Live Snapshot">
-Generated from live monorepo metadata on `2026-11-14` (81 crates, 19 packages, 8 apps).
+  Generated from live monorepo metadata on `2026-11-14` (81 crates, 19 packages,
+  8 apps).
 </Callout>
 
 <Cards>
-  <Card title="Pure C23 LLVM Core" href="/docs/llvm/PURE-C-LLVM" description="C23/C++23 ABI headers, ThinLTO, DEPS.rules layers, and bun-flat crates." />
-  <Card title="Modern Web Guidance" href="/docs/web/MODERN-WEB-GUIDANCE" description="@aphrody/wck hybrid BM25+Int8 RAG, mwg_capi.dll, and agent MCP." />
+  <Card
+    title="Pure C23 LLVM Core"
+    href="/docs/llvm/PURE-C-LLVM"
+    description="C23/C++23 ABI headers, ThinLTO, DEPS.rules layers, and bun-flat crates."
+  />
+  <Card
+    title="Modern Web Guidance"
+    href="/docs/web/MODERN-WEB-GUIDANCE"
+    description="@aphrody/wck hybrid BM25+Int8 RAG, mwg_capi.dll, and agent MCP."
+  />
 </Cards>
 
 ## 1. Monorepo Topology
@@ -26,35 +35,35 @@ Generated from live monorepo metadata on `2026-11-14` (81 crates, 19 packages, 8
 
 Every unit declares its layer (`L0` toolchain through `L5` surfaces) enforced by `bun scripts/checkdeps.ts`.
 
-| Layer | Units |
-| :--- | ---: |
-| L0 | 1 |
-| L1 | 14 |
-| L2 | 17 |
-| L3 | 5 |
-| L4 | 3 |
-| L5 | 10 |
-| unlayered | 50 |
+| Layer     | Units |
+| :-------- | ----: |
+| L0        |     1 |
+| L1        |    14 |
+| L2        |    17 |
+| L3        |     5 |
+| L4        |     3 |
+| L5        |    10 |
+| unlayered |    50 |
 
 ## 3. Pure C23 LLVM ABI Core
 
 All native cross-language boundaries converge on C ABI headers in `crates/core-capi/include/` consumed by Bun (`bun:ffi`), Rust (`crates/ffi`), and Zig 0.17.1.
 
-| Header | Defines | Exports | Sample Symbols |
-| :--- | ---: | ---: | :--- |
-| `crates/core-capi/include/aphrody_core.h` | 6 | 9 | `ai_os_free`, `ai_os_uname_json`, `ai_os_vfs_resolve_json`, `ai_os_llm_spec_json`, `ai_os_rag_upsert_json`, `ai_os_rag_query_json` |
-| `crates/core-capi/include/aphrody_mwg.h` | 2 | 0 |  |
-| `crates/core-capi/include/aphrody_zig.h` | 7 | 14 | `native_sdk_app_destroy`, `lp_abi_version`, `lp_free`, `lp_capabilities_json`, `lp_extract_title_json`, `lp_normalize_url_json` |
+| Header                                    | Defines | Exports | Sample Symbols                                                                                                                     |
+| :---------------------------------------- | ------: | ------: | :--------------------------------------------------------------------------------------------------------------------------------- |
+| `crates/core-capi/include/aphrody_core.h` |       6 |       9 | `ai_os_free`, `ai_os_uname_json`, `ai_os_vfs_resolve_json`, `ai_os_llm_spec_json`, `ai_os_rag_upsert_json`, `ai_os_rag_query_json` |
+| `crates/core-capi/include/aphrody_mwg.h`  |       2 |       0 |                                                                                                                                    |
+| `crates/core-capi/include/aphrody_zig.h`  |       7 |      14 | `native_sdk_app_destroy`, `lp_abi_version`, `lp_free`, `lp_capabilities_json`, `lp_extract_title_json`, `lp_normalize_url_json`    |
 
 ## 4. Bun Fork Absorption (`crates/bun-flat`)
 
 Fork: `aphrody-labs/bun` @ `c7b36732e009` (handwritten: `sync`)
 
-| Module | Upstream Crate | Source Files | License |
-| :--- | :--- | :--- | :--- |
-| `wyhash` | `bun_wyhash` | `src/wyhash/lib.rs` | MIT |
-| `histogram` | `bun_histogram` | `src/histogram/lib.rs` | MIT |
-| `sort_by_number` | `bun_sort_by_number` | `src/sort_by_number/lib.rs` | MIT |
+| Module           | Upstream Crate       | Source Files                | License |
+| :--------------- | :------------------- | :-------------------------- | :------ |
+| `wyhash`         | `bun_wyhash`         | `src/wyhash/lib.rs`         | MIT     |
+| `histogram`      | `bun_histogram`      | `src/histogram/lib.rs`      | MIT     |
+| `sort_by_number` | `bun_sort_by_number` | `src/sort_by_number/lib.rs` | MIT     |
 
 ## 5. Modern Web Guidance & Agent Tooling
 
@@ -62,13 +71,13 @@ Fork: `aphrody-labs/bun` @ `c7b36732e009` (handwritten: `sync`)
 
 ## 6. Top Indexed Codebase Clusters
 
-| Cluster | Language | Files | Symbols |
-| :--- | :--- | ---: | ---: |
-| `apps/shenron` | typescript | 2016 | 39986 |
-| `packages/ai-os` | zig | 724 | 22463 |
-| `packages/browser` | zig | 705 | 12739 |
-| `apps/shenron` | tsx | 614 | 7632 |
-| `crates/lore-revision` | rust | 583 | 15574 |
-| `packages/native` | zig | 497 | 12210 |
-| `apps/shenron` | rust | 464 | 8034 |
-| `crates/lore-server` | rust | 440 | 6005 |
+| Cluster                | Language   | Files | Symbols |
+| :--------------------- | :--------- | ----: | ------: |
+| `apps/shenron`         | typescript |  2016 |   39986 |
+| `packages/ai-os`       | zig        |   724 |   22463 |
+| `packages/browser`     | zig        |   705 |   12739 |
+| `apps/shenron`         | tsx        |   614 |    7632 |
+| `crates/lore-revision` | rust       |   583 |   15574 |
+| `packages/native`      | zig        |   497 |   12210 |
+| `apps/shenron`         | rust       |   464 |    8034 |
+| `crates/lore-server`   | rust       |   440 |    6005 |

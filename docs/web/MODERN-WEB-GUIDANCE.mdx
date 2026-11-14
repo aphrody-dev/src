@@ -6,7 +6,8 @@ description: "Pure Bun Modern Web Guidance validator, hybrid BM25+Int8 RAG, mwg_
 # Modern Web Guidance, RAG, and @aphrody/wck
 
 <Callout type="info" title="Zero-Dependency Pure Bun + C23 Native Core">
-`@aphrody/wck` runs with zero external npm dependencies on Bun v1.4.4+, pairing `mwg_capi.dll` (`bun:ffi`) with a deterministic pure-Bun fallback.
+  `@aphrody/wck` runs with zero external npm dependencies on Bun v1.4.4+,
+  pairing `mwg_capi.dll` (`bun:ffi`) with a deterministic pure-Bun fallback.
 </Callout>
 
 Generated from `packages/wck`, `crates/core-capi/include/`, and `packages/ai-os`.
@@ -20,13 +21,19 @@ Generated from `packages/wck`, `crates/core-capi/include/`, and `packages/ai-os`
 ## 2. C ABI Surface (`aphrody_mwg.h`)
 
 - **Defines (2)**: `APHRODY_ABI_VERSION`, `APHRODY_MWG_ABI_VERSION`
-- **Functions (0)**: 
+- **Functions (0)**:
 
 ## 3. Hybrid RAG Search and Baseline Gates
 
 <Cards>
-  <Card title="Hybrid Retrieval" description="Okapi BM25 lexical scoring + Int8 quantized 256d static embeddings fused via Reciprocal Rank Fusion (RRF) over packages/wck/data/." />
-  <Card title="Baseline Gates & MCP" description=".mwgrc configuration, legacy-scan/search/retrieve/list/baselinestatus/mdx CLI subcommands, and packages/ai-os MCP tool integration." />
+  <Card
+    title="Hybrid Retrieval"
+    description="Okapi BM25 lexical scoring + Int8 quantized 256d static embeddings fused via Reciprocal Rank Fusion (RRF) over packages/wck/data/."
+  />
+  <Card
+    title="Baseline Gates & MCP"
+    description=".mwgrc configuration, legacy-scan/search/retrieve/list/baselinestatus/mdx CLI subcommands, and packages/ai-os MCP tool integration."
+  />
 </Cards>
 
 ## 4. Verification
