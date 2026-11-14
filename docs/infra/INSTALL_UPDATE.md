@@ -131,7 +131,7 @@ a `source = "ubi"` entry with `repo` and the tag template.
 
 ## 4. Workstation bootstrap (`ay up --bootstrap`) and the install scripts
 
-`packages/machine/bootstrap/install.ps1` and `packages/machine/bootstrap/install.sh` are ten-line bootstraps: they build `ay` once (`cargo install --path src/ay`) and run `ay up --bootstrap`. Every step the former root scripts
+`packages/machine/bootstrap/install.ts` (`bun packages/machine/bootstrap/install.ts`, any OS) is a ten-line bootstrap: it builds `ay` once (`cargo install --path src/ay`) and runs `ay up --bootstrap`. Every step the former root scripts
 performed has a declarative equivalent in `tools.toml`, applied by `ay up --bootstrap` (tools first,
 then the items below, then `ay doctor`). `ay up --check` lists the items with their state (`ok`,
 `differs`, `missing`) without counting them in the exit code.
@@ -145,7 +145,7 @@ then the items below, then `ay doctor`). `ay up --check` lists the items with th
 | clone missing repositories from `src.lock.json`                                               | built in: missing `repositories` entries with an https/ssh URL are cloned `--depth=1 --filter=blob:none` |
 | `cargo install --path src/ay`                                                              | the `ay` tool entry (dist release), then `ay self-update`                                                |
 | `go build ./cmd/src-deploy`                                                                   | `[[step]] src-deploy` (runs when `infra/go.mod` exists and the binary is missing)                        |
-| `bun build --compile packages/ai-triad`                                                       | `[[step]] triad`                                                                                         |
+| `bun build --compile packages/ai-os`                                                          | `[[step]] triad`                                                                                         |
 | `frg.cmd` / bash `frg` shim                                                                   | `[[step]] frg`: an AOT `bun build --compile` binary instead of a shim                                    |
 | `.claude/skills` junction or symlink                                                          | `[[link]] claude-skills` (junction on Windows, symlink elsewhere)                                        |
 | `ay doctor`                                                                                   | run at the end of `--bootstrap`                                                                          |

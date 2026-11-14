@@ -50,24 +50,14 @@ env-kit accounts iam-bindings
 
 Run as root owner (`<owner-google>` via `--configuration=owner`):
 
-### Windows PowerShell
-
-```powershell
-# Preview all API enablements and IAM bindings without mutating GCP:
-pwsh -NoProfile -File C:\src\infra\gcloud\share-aphrody-project-iam.ps1 -DryRun
-
-# Execute live against project aphrody (#468000409790):
-pwsh -NoProfile -File C:\src\infra\gcloud\share-aphrody-project-iam.ps1
-```
-
-### Linux / WSL2 Bash
+### Any OS (bash, niubash, Git Bash, WSL2), from the repository root
 
 ```bash
-# Dry-run preview:
-bash /mnt/c/src/infra/gcloud/share-aphrody-project-iam.sh --dry-run
+# Dry-run preview of all API enablements and IAM bindings:
+bash infra/gcloud/share-aphrody-project-iam.sh --dry-run
 
-# Live execution:
-bash /mnt/c/src/infra/gcloud/share-aphrody-project-iam.sh
+# Live execution against project aphrody (#468000409790):
+bash infra/gcloud/share-aphrody-project-iam.sh
 ```
 
 ## 5. Interactive One-Time OAuth & ADC Token Caching

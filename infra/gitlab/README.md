@@ -17,7 +17,7 @@ Every repository in `C:\src` (root `src` + 25 submodules = 26 repositories) main
 - `docker-compose.gitlab.yml` — Sovereign GitLab CE Omnibus (`git.aphrody.com`) + Docker CI Runner + `archlinux-pkgctl` Runner.
 - `gitlab.rb` — Memory-tuned Omnibus configuration for OVH `fr2` (< 3.2 GB RSS), Puma (2 workers), Sidekiq (concurrency 8), Prometheus disabled, Container & Package Registries enabled, and SMTP wired to Stalwart (`mail.aphrody.com` / `contact@aphrody.com`).
 - `arch-ci/Dockerfile.arch-builder` — Arch Linux + CachyOS `x86-64-v3` repo + `devtools` (`pkgctl`) + `mkinitcpio` + Rust + Bun + Go CI container for building `.pkg.tar.zst` packages and WSL2 `.wsl` rootfs images.
-- `setup-triforge.ps1` / `setup-triforge.sh` — Cross-platform bootstrap scripts for `gh`, `glab`, `gcloud`, and `frg` without exposing secrets.
+- `setup-triforge.sh` — Cross-platform (bash, niubash, Git Bash) bootstrap script for `gh`, `glab`, `gcloud`, and `frg` without exposing secrets.
 
 ## 3. CLI Operations (`frg`)
 
