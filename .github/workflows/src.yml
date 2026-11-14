@@ -1,0 +1,30 @@
+# Layer-0 C core (src/): wasm32, compositor and native Linux builds with -Werror, then module validation.
+# fr1 has clang/lld 23 and binaryen; wasm-validate (WABT) is absent there, so binaryen validates.
+name: src
+on:
+  push:
+    branches: [main]
+    paths: ["src/**", ".github/workflows/src.yml"]
+  pull_request:
+    paths: ["src/**", ".github/workflows/src.yml"]
+  workflow_dispatch:
+concurrency:
+  group: src-${{ github.ref }}
+  cancel-in-progress: true
+permissions: { contents: read }
+jobs:
+  build:
+    runs-on: [self-hosted, fr1]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: false
+      - name: Build (wasm, compositor, linux)
+        run: make -C src wasm compositor linux OUT_DIR="$RUNNER_TEMP/sys"
+      - name: Validate modules
+        run: |
+          for f in "$RUNNER_TEMP/sys/aysys.wasm" apps/aphrody/public/wayland.wasm; do
+            wasm-opt --all-features "$f" -o /dev/null
+          done
+          test -s "$RUNNER_TEMP/sys/libaysys.so"
