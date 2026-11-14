@@ -1246,3 +1246,30 @@ sha = "2039e7303c3d92fcd0b1bf2d8e2378407e057259"
 kind = "web"
 used_by = ["apps/shenron (authentification, 1.7.24)"]
 status = "fork"
+
+# fork pipeline (scripts/fork-pipeline.ts, docs/forks/POLICY.md): [sync.<name>] overrides the implicit mirror of forks.txt.
+# kind = mirror | patched ; verify = commands run in the fork work clone ; consumers = repos whose pins are bumped by PR.
+[sync.nextjs]
+repo = "aphrody-labs/next.js"
+upstream = "vercel/next.js"
+branch = "canary"
+kind = "patched"
+verify = ["bun scripts/aphrody/bunify.ts --check", "bun install"]
+consumers = [
+  { repo = "aphrody-labs/src", gate = "bun scripts/checkdeps.ts" },
+  { repo = "aphrody-labs/shenron", gate = "bun run check" },
+]
+
+[sync.bun]
+repo = "aphrody-labs/bun"
+upstream = "oven-sh/bun"
+branch = "main"
+kind = "patched"
+verify = []
+consumers = [{ repo = "aphrody-labs/src", gate = "bun scripts/checkdeps.ts" }]
+
+[sync.agent-browser]
+repo = "aphrody-labs/agent-browser"
+upstream = "vercel-labs/agent-browser"
+kind = "mirror"
+consumers = [{ repo = "aphrody-labs/src", gate = "bun scripts/checkdeps.ts" }]
