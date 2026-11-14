@@ -99,3 +99,7 @@ If a call fails, report the HTTP status and the error body. Do not retry the sam
 - https://partner.steamgames.com/doc/webapi/IPublishedFileService
 - https://partner.steamgames.com/doc/webapi/IUserReviewsService
 - Local typed client: `third_party/steam-rs/src/lib.rs` (base `https://api.steampowered.com`)
+
+## Related steam-* skills
+
+Kept out of the model-visible listing (`disable-model-invocation: true`) to save context. Read `.agents/skills/<name>/SKILL.md` directly when the task needs one (the user can also run `/<name>`): steam-auth, steam-client-windows, steam-community-tools, steam-content-cdn, steam-ids-and-urls, steam-linux-proton, steam-local-inspect.

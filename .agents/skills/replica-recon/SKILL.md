@@ -132,3 +132,7 @@ few weeks), L (a quarter), XL (rescope it). No promises of a perfect clone.
 `replica/recon.md` and `replica/features.csv`, then a five-line summary: the
 core loop, screen and flow counts, the three hardest parts, what is out of
 scope, and the next step: `/replica-architect`.
+
+## Related replica-* skills
+
+Kept out of the model-visible listing (`disable-model-invocation: true`) to save context. Read `.agents/skills/<name>/SKILL.md` directly when the task needs one (the user can also run `/<name>`): replica-architect, replica-backend, replica-brand, replica-build, replica-deploy, replica-design, replica-diff, replica-entrepreneur, replica-launch, replica-test.

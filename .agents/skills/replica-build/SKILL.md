@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: replica-build
 description: >-
   Rebuilds an app screen by screen from the recon map: app shell first, then

@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: replica-diff
 description: >-
   Compares an app clone against the original: a feature parity score from the

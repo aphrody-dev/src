@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: replica-backend
 description: >-
   Builds the backend of an app clone: auth, database migrations and access

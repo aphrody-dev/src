@@ -38,5 +38,6 @@
   "attribution": {
     "commit": "",
     "pr": ""
-  }
+  },
+  "spinnerTipsEnabled": false
 }

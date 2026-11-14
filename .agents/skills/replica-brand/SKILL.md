@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: replica-brand
 description: >-
   Names and rebrands an app clone so it is the user's own: name candidates

@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: replica-launch
 description: >-
   Writes the launch for an app clone: the landing page built on the

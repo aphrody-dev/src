@@ -6,6 +6,7 @@
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { outboundFetch } from "./outbound.ts";
+import { relayHome } from "./cdp.ts";
 import { McpHttpClient } from "./mcp-http.ts";
 import { gcloudHeaders } from "../google/auth.ts";
 import { DEFAULT_STITCH_API_URL } from "../google/stitch/src/constants.ts";
@@ -38,11 +39,25 @@ type Remote = {
   annotations?: Record<string, unknown>;
 };
 
+/**
+ * Serveurs réservés au relais (<dossier du relais>/hub.json, { mcpServers }), écrits par toolchain.ts depuis
+ * [[hub.mcp]] : joignables par hub_tools / hub_call sans que leurs outils chargent le contexte d'un client.
+ */
+async function hubFile(): Promise<Record<string, Conf>> {
+  const f = Bun.file(join(relayHome(), "hub.json"));
+  try {
+    return (await f.exists()) ? ((await f.json()).mcpServers ?? {}) : {};
+  } catch {
+    return {};
+  }
+}
+
 export async function userServers(): Promise<Record<string, Conf>> {
   const f = Bun.file(join(homedir(), ".claude.json"));
-  if (!(await f.exists()))
-    return Bun.env.RELAY_BUILTIN_MCP === "0" ? {} : BUILTIN;
-  const all = ((await f.json()).mcpServers ?? {}) as Record<string, Conf>;
+  const all = {
+    ...(await hubFile()),
+    ...(((await f.exists()) ? (await f.json()).mcpServers : {}) ?? {}),
+  } as Record<string, Conf>;
   // Le relais lui-même est enregistré comme serveur « relay » : pas de boucle.
   return {
     ...(Bun.env.RELAY_BUILTIN_MCP === "0" ? {} : BUILTIN),

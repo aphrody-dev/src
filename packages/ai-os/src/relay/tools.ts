@@ -3,6 +3,7 @@ import { llmAsk } from "../llm/model.ts";
 import { listModels } from "../llm/models.ts";
 import { s } from "../llm/schema.ts";
 import { AGENT_TOOLS } from "./agent-tools.ts";
+import { hubCall, hubTools } from "./mcp-hub.ts";
 import { ORCH_TOOLS } from "./orch-tools.ts";
 // packages/ai-os/src/google may be absent from a checkout (module not yet on main): the relay then
 // starts without these tools instead of crashing (prd rollback 2026-11-13, src-checkout-update).
@@ -463,6 +464,69 @@ export const TOOLS: Tool[] = [
         return { error: err.trim().split("\n").pop() };
       return JSON.parse(out);
     },
+  },
+  {
+    name: "hub_tools",
+    description:
+      "List tools of the MCP servers aggregated by the relay (rea, vercel, cloudflare, agent-desktop, ...) without loading them into context. No argument: servers and tool counts. server and/or query: matching tool names with a one-line description. name (exact <server>__<tool>): full description and input schema. Call a tool with hub_call.",
+    inputSchema: obj({
+      server: str("server name (optional)"),
+      query: str(
+        "case-insensitive text matched on name and description (optional)",
+      ),
+      name: str("exact <server>__<tool> for the full schema (optional)"),
+    }),
+    readOnly: true,
+    run: async (a) => {
+      const all = await hubTools();
+      if (a.name) {
+        const t = all.find((x) => x.name === String(a.name));
+        if (!t) throw new Error(`outil inconnu : ${a.name}`);
+        return t;
+      }
+      if (!a.server && !a.query) {
+        const n: Record<string, number> = {};
+        for (const t of all) n[t.server] = (n[t.server] ?? 0) + 1;
+        return n;
+      }
+      const terms = a.query
+        ? String(a.query)
+            .toLowerCase()
+            .split(/[\s_]+/)
+            .filter(Boolean)
+        : [];
+      return all
+        .filter(
+          (t) =>
+            (!a.server || t.server === String(a.server)) &&
+            terms.every((w) =>
+              `${t.name} ${t.description ?? ""}`.toLowerCase().includes(w),
+            ),
+        )
+        .slice(0, 80)
+        .map((t) => ({
+          name: t.name,
+          description: (t.description ?? "").split("\n")[0]!.slice(0, 160),
+        }));
+    },
+  },
+  {
+    name: "hub_call",
+    description:
+      "Call one tool of an MCP server aggregated by the relay: name = <server>__<tool> from hub_tools, arguments = its input object.",
+    inputSchema: obj(
+      {
+        name: str("<server>__<tool>"),
+        arguments: {
+          type: "object",
+          description: "tool input",
+          additionalProperties: true,
+        },
+      },
+      ["name"],
+    ),
+    readOnly: false,
+    run: (a) => hubCall(String(a.name), a.arguments ?? {}),
   },
 ];
 

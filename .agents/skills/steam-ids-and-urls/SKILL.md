@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: steam-ids-and-urls
 description: This skill should be used when the user asks to "convert a SteamID", "what is [U:1:N]", "explain DepotID vs ManifestID", "explain AppID vs PackageID", "build a store or community URL", "get an app's header image URL", "open a game with steam://", or "what CM servers does Steam use", or mentions buildid, branches, vanity URLs, steamstatic, or GetCMListForConnect. For depot and manifest content, steam-content-cdn applies.
 ---

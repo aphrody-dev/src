@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: steam-client-windows
 description: This skill should be used when the user asks to "explain the Steam folder layout on Windows", "read libraryfolders.vdf", "parse an appmanifest", "explain the appinfo.vdf binary layout (magic, versions, string table)", "parse binary VDF", "check Steam logs", "launch steam.exe with -console", or mentions SteamPath, userdata, localconfig.vdf or steamwebhelper. To run the bundled inspector, steam-local-inspect applies.
 ---

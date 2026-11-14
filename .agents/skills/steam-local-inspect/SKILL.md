@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: steam-local-inspect
 description: This skill should be used when the user asks to "inspect my Steam install", "where is Steam installed", "list my Steam games", "find the install folder, compatdata prefix or shadercache of appid X", "which manifest or buildid is installed", "decode StateFlags", or "show the cached appinfo entry of an installed app". For layout and format explanations, steam-client-windows applies.
 argument-hint: "[root|libraries|apps|vdf|compat|env] [appid|filter|file]"

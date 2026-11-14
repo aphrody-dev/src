@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: replica-entrepreneur
 description: >-
   Researches the app being cloned and reads what its real users say in public

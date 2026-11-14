@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: steam-auth
 description: This skill should be used when the user asks to "add Sign in through Steam", "verify a Steam OpenID response", "validate a Steam session ticket", "use AuthenticateUserTicket", "how do Steam refresh tokens work", "Steam Guard codes", "get a Web API or publisher key", or "log in to Steam without OAuth". For calling Web API methods, steam-web-api applies.
 ---

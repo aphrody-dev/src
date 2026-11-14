@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: replica-deploy
 description: >-
   Ships an app clone live on the user's own domain: a preflight gate (tests

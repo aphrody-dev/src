@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: replica-design
 description: >-
   Rebuilds an app's design system for a clone: colour roles, type scale,

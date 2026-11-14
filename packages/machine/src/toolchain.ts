@@ -23,6 +23,7 @@ import {
 } from "node:fs";
 import { hostname, tmpdir } from "node:os";
 import { join, resolve, sep } from "node:path";
+import { relayHome } from "../../ai-os/src/relay/cdp.ts";
 
 type Hosts = { hosts?: string[] };
 type Marketplace = Hosts & {
@@ -78,6 +79,7 @@ type Manifest = {
   codex?: { marketplace: string; plugins: string[]; mcp?: string[] };
   agy?: { plugins: string[]; mcp?: string[] };
   gemini?: { extensions: string[] };
+  hub?: { mcp?: Mcp[] };
   mcpfile?: {
     agent: string;
     path: string;
@@ -696,6 +698,39 @@ export async function toolchain({
       }
     }
   } else if (m.gemini) out.push("info gemini absent");
+
+  // --- Serveurs réservés au relais : hub.json relu par le relais à chaque listage (aucun redémarrage).
+  const hub = (m.hub?.mcp ?? []).filter(here);
+  if (hub.length) {
+    const servers: Record<string, unknown> = {};
+    for (const s of hub) {
+      const argv = (s.command ?? []).map(fill);
+      const missing = argv
+        .slice(1)
+        .filter((a) => /[\\/]/.test(a) && !existsSync(a));
+      if (s.install && missing.length && !check) {
+        const r = run(s.install);
+        if (r.code !== 0) out.push(`ERR  ${s.name} install : ${last(r)}`);
+      }
+      servers[s.name] = s.url
+        ? { type: "http", url: s.url }
+        : {
+            command: argv[0],
+            args: argv.slice(1),
+            env: Object.fromEntries(
+              Object.entries(s.env ?? {}).map(([k, v]) => [k, fill(v)]),
+            ),
+          };
+    }
+    const p = join(relayHome(), "hub.json");
+    const want = `${JSON.stringify({ mcpServers: servers }, null, 2)}\n`;
+    const ok = existsSync(p) && readFileSync(p, "utf8") === want;
+    note(ok, `relais hub ${Object.keys(servers).join(",")} (${p})`);
+    if (!ok && !check) {
+      mkdirSync(relayHome(), { recursive: true });
+      writeFileSync(p, want);
+    }
+  }
 
   // --- Agents configurés par fichier (OpenCode, Pi, Gemini CLI) : la clé MCP ne garde que les serveurs partagés.
   for (const f of m.mcpfile ?? []) {

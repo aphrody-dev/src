@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: replica-architect
 description: >-
   Plans the stack, database schema and API for an app clone, from the recon

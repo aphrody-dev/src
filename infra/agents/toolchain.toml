@@ -7,12 +7,10 @@
 [[claude.home]]
 src = "infra/agents/claude/CLAUDE.md"
 dest = "{home}/.claude/CLAUDE.md"
-hosts = ["pc"]
 
 [[claude.home]]
 src = "infra/agents/claude/output-styles/autonome.md"
 dest = "{home}/.claude/output-styles/autonome.md"
-hosts = ["pc"]
 
 [[claude.home]]
 src = "infra/agents/claude/settings.json"
@@ -58,6 +56,23 @@ refresh = true
 [[claude.plugin]]
 id = "aphrody-nhitl@aphrody"
 refresh = true
+
+# Plugins d'atelier (création de plugins, skills, serveurs MCP) : installés mais désactivés, leurs skills et agents
+# chargeaient chaque session ; `claude plugin enable <id>` le temps d'un besoin.
+[[claude.plugin]]
+id = "plugin-dev@anthropic-plugin-directory"
+hosts = ["pc"]
+state = "disabled"
+
+[[claude.plugin]]
+id = "mcp-server-dev@anthropic-plugin-directory"
+hosts = ["pc"]
+state = "disabled"
+
+[[claude.plugin]]
+id = "skill-creator@anthropic-plugin-directory"
+hosts = ["pc"]
+state = "disabled"
 
 # --- Plugins externes / tiers (désinstallés) ---
 [[claude.plugin]]
@@ -177,12 +192,20 @@ name = "cloudflare-docs"
 url = "https://docs.mcp.cloudflare.com/mcp"
 hosts = ["pc"]
 
+# vercel (230 outils, équipe bloquée depuis 2026-06) et rea (250 outils) ne sont plus déclarés dans Claude Code :
+# leurs noms d'outils chargeaient chaque session. rea reste joignable par le relais (hub_tools / hub_call).
 [[claude.mcp]]
 name = "vercel"
-url = "https://mcp.vercel.com"
 hosts = ["pc"]
+state = "absent"
 
 [[claude.mcp]]
+name = "rea"
+hosts = ["pc"]
+state = "absent"
+
+# Serveurs réservés au relais (<dossier du relais>/hub.json) : aucun outil dans le contexte des clients.
+[[hub.mcp]]
 name = "rea"
 command = ["C:/Program Files/nodejs/node.exe", "{home}/.bun/install/global/node_modules/rea-agents/scripts/rea.mjs", "mcp"]
 # JAVA_HOME vient de l'environnement utilisateur (aucun chemin de correctif JDK figé ici).
@@ -190,12 +213,23 @@ env = { GHIDRA_INSTALL_DIR = "{home}/AppData/Local/ghidra" }
 install = ["bun", "add", "-g", "rea-agents"]
 hosts = ["pc"]
 
+# agent-desktop (67 outils) et agent-browser (33) : derrière le relais aussi (hub_tools / hub_call, desktop_use, browser_use).
 [[claude.mcp]]
+name = "agent-desktop"
+hosts = ["pc"]
+state = "absent"
+
+[[claude.mcp]]
+name = "agent-browser"
+hosts = ["pc"]
+state = "absent"
+
+[[hub.mcp]]
 name = "agent-desktop"
 command = ["{bin}/agent-desktop.exe", "mcp"]
 hosts = ["pc"]
 
-[[claude.mcp]]
+[[hub.mcp]]
 name = "agent-browser"
 command = ["{bin}/agent-browser.exe", "mcp"]
 hosts = ["pc"]

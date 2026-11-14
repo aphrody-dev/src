@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: steam-linux-proton
 description: This skill should be used when the user asks to "run a Windows game on Linux with Proton", "enable PROTON_LOG", "fix a broken Proton prefix", "install GE-Proton", "use proton-cachyos", "set Steam launch options with %command%", "run a game in gamescope", "debug a Steam Linux Runtime container", "run protontricks for an app id", "check ProtonDB reports", or "set up Steam on Arch, CachyOS or SteamOS". For Windows install layout, steam-client-windows applies.
 ---
