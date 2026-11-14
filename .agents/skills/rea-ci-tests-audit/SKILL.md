@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: rea-ci-tests-audit
 description: Audit REA CI and test suites for correctness, fixture drift, false passes, and measured performance; use for suite or workflow investigations and efficiency changes, rather than ordinary feature testing or a single test failure.
 ---

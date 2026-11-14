@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: vercel-labs
 description: Index of Vercel Labs agent tools and skills. Use when choosing between agent-browser, skills CLI (npx skills), portless, opensrc, just-bash, json-render, or the vercel-labs/agent-skills guides (composition patterns, React Native, view transitions, Vercel cost/perf optimize, web design and writing guideline reviews). Triggers on "install a skill", "npx skills", "browser automation CLI", "named localhost URLs", "read a package's source", "sandboxed bash for agents", "generative UI from JSON".
 ---

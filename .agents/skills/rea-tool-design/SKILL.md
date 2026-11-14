@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: rea-tool-design
 description: Audit, investigate, design, or change REA investigation tools, CLI/MCP contracts, provider capabilities, and Evidence semantics.
 ---

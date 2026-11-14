@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bun {src}/packages/ai-os/src/relay/hook.ts",
+            "command": "IFS= read -r -d '' j; case \"$j\" in *\"git commit\"*) printf %s \"$j\" | bun {src}/packages/ai-os/src/relay/hook.ts;; esac",
             "timeout": 900,
             "async": true
           }

@@ -19,11 +19,45 @@ Reproducible through `just agents-sync` (`infra/agents/toolchain.toml`, applier 
 - Workshop plugins (`plugin-dev`, `mcp-server-dev`, `skill-creator`) installed but disabled; `claude plugin enable <id>` when needed.
 - Skills also hidden from the listing: 10 `replica-*` (entry `replica-recon`), 7 `steam-*` (entry `steam-web-api`).
 - Output style: one style, `Autonome` (French, 3 lines, no questions, finish the task, parallel and native tools), for user and project; the project no longer overrides it with the built-in `Proactive`.
-- Status line (50 ms) and PostToolUse hook (62 ms, async) measured and left unchanged: neither blocks a turn.
+- Status line: 22 ms per run (average of 5; `bun -e 0` alone is 14 ms), left as is. PostToolUse hook: the shell now tests for `git commit` before starting bun, 38 ms -> 23 ms per Bash call (average of 5), and bun no longer loads the relay server module on every call.
 - Skills: 141 -> 129 by merging overlaps; 36 `android-*` skills carry `disable-model-invocation: true` (about 30 000 characters of descriptions out of every session; `android-cli` lists them).
 - 5 marketplaces without an installed plugin removed; 8 project-scope plugins removed.
 - `MEMORY.md`: 6.7 KB, 47 lines (limit loaded per session: 200 lines or 25 KB).
 - `BASH_MAX_OUTPUT_LENGTH=12000` (default 30000), `MAX_MCP_OUTPUT_TOKENS=8000` (default 25000).
+
+## Effect on a fresh session
+
+Measured with `claude -p "Reply with the single word: ok" --output-format json` in `C:\\src` (Claude Code 2.1.325), tokens = input + cache creation + cache read of the single turn.
+
+| Configuration | Baseline context | Turn latency |
+|---|---|---|
+| Previous MCP servers (rea, vercel, agent-desktop, agent-browser) and the three workshop plugins restored by flags | 48 408 tokens | 1.1 to 1.3 s |
+| Current | 39065 tokens | 1.3 to 1.4 s |
+
+The "previous" row understates the old state: the 59 skills now hidden from the listing could not be restored by a flag. Latency of a turn did not change; the gain is context, not speed.
+
+Where the current baseline goes (same command, flags as noted): 30 158 tokens with no MCP and outside the repo (built-in prompt, tools, global files: not reducible by configuration); skills listing about 6 000 (76 visible skills, 19 799 characters of descriptions before the last six were hidden); MCP about 1 250; project instruction files about 1 700.
+
+## Live settings checked against the documentation
+
+| Fact (https://code.claude.com/docs/en/ settings, env-vars, hooks, statusline) | Value in `~/.claude/settings.json` |
+|---|---|
+| permissions.defaultMode in user settings (only place bypassPermissions applies) | `bypassPermissions` |
+| skipDangerousModePermissionPrompt | `true` |
+| attribution (replaces includeCoAuthoredBy) | `{"commit":"","pr":""} / deprecated key present: false` |
+| BASH_MAX_OUTPUT_LENGTH (default 30000) | `12000` |
+| MAX_MCP_OUTPUT_TOKENS (default 25000) | `8000` |
+| CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC (auto-update off, done by sync) | `1` |
+| ENABLE_TOOL_SEARCH (default on, must be unset) | `unset` |
+| statusLine.refreshInterval (unset = event driven) | `unset` |
+| PostToolUse hook async | `true` |
+| spinnerTipsEnabled | `false` |
+| outputStyle user / project | `Autonome / Autonome` |
+
+## Left in place, on purpose
+
+- `%APPDATA%/Claude/vm_bundles` (9.3 GB): the Cowork VM image of Claude Desktop, which is enabled on this PC; deleting it forces a new 9 GB download.
+- Claude Desktop was not restarted (two of its Claude Code sessions were running); the relay stdio command written to its config was run by hand and lists 682 tools. Desktop reads it at its next start.
 
 ## Measurements
 

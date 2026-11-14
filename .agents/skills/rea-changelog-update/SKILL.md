@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: rea-changelog-update
 description: Prepare or rewrite REA release changelogs and GitHub release notes from pinned Git history, with verified contributor thanks and Release Please synchronization.
 ---
