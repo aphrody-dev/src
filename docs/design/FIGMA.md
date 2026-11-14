@@ -24,3 +24,14 @@
 - Collections: `Color Light` `VariableCollectionId:1:3` and `Color Dark` `1:53` (49 M3 scheme roles each, `Schemes/<Role>`, WEB code syntax `var(--md-sys-color-*)`), `M3 Shape` `1:103` (7 corners), `Spacing` `1:111` (xs 4, sm 8, md 16, lg 24, xl 32, xxl 48).
 - Text styles (15, Google Sans Flex, M3 roles such as `title/medium`) follow `DESIGN.md`. zh-CN uses Noto Sans SC and ja Noto Sans JP, set directly (no style).
 - Limits: the starter plan allows one mode per collection, so Light and Dark are separate collections and the medium and high contrast schemes plus the 144 tonal palette values of the JSON are not imported. Mockups are bound to `Color Light` and `M3 Shape`.
+
+## Figma file "Aphrody UI" (`1T0gwiYcxRJdENK7lsOvxk`)
+
+- File: https://www.figma.com/design/1T0gwiYcxRJdENK7lsOvxk/Aphrody-UI (file key `1T0gwiYcxRJdENK7lsOvxk`, populated 2026-11-14 via official Figma MCP `use_figma`).
+- Component library: official [Material 3 Design Kit](https://www.figma.com/community/file/1035203688168086460/material-3-design-kit) (`M3` `Blue LT` `57298:14` and `Blue DT` `57298:15` variable modes, M3 text styles, `Navigation Rail`, `Search bar`, `Button`, `Assistive chip`, `Stacked card`, `Horizontal card`, `Switch`).
+- Stitch parity: aligned with Google Stitch project `7027971799774493367` / design system `assets/8fa82e41c01247a8b97e684e661d0567` / screen `036d96efbf994849a040fbebfec120b3`.
+
+| Page | Page id | Frames / Content |
+| ---- | ------- | ---------------- |
+| Aphrody Workspace — M3 | `0:1` | `Aphrody UI — Light Desktop (M3 Blue)` (`7:485`, 1440x900) and `Aphrody UI — Dark Desktop (M3 Blue)` (`7:986`, 1440x900) |
+| M3 Foundations & Aphrody Tokens | `9:439` | `Aphrody Material 3 Foundations` (`9:879`), local `Aphrody M3 Schemes` collection (10 variables with `Light` and `Dark` modes matching `packages/design/DESIGN.md`), M3 type scale, component inventory |
