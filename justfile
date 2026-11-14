@@ -1,4 +1,5 @@
-# Master Workspace Justfile for the monorepo root
+# Master Workspace Justfile for the monorepo root: settings, shared variables and imports only.
+# Recipes live in `.just` files next to the code they drive (`import`, so every recipe name stays global: `just <recipe>`).
 # Cross-platform: POSIX sh on Linux/macOS/WSL2/containers, niubash (native Rust bash, no MSYS) on Windows.
 # Paths use forward slashes, which every supported shell and toolchain accepts.
 # Every value below can be overridden from the environment or `just var=value <recipe>`.
@@ -11,263 +12,43 @@ set dotenv-load := false
 root := env("SRC_ROOT", justfile_directory())
 image := env("SRC_IMAGE", "aphrody/monorepo-dev:local")
 
-# unixwin chain (niubash, rubash, WinuxCmd): unixwin-* recipes
-import "scripts/unixwin/unixwin.just"
+import "crates/ay/ay.just"
+import "scripts/scripts.just"
+import "packages/ai-os/ai-os.just"
+import "packages/core/core.just"
+import "packages/chromium-bun/chromium-bun.just"
+import "packages/env-kit/env-kit.just"
+import "packages/machine/machine.just"
+import "packages/release/release.just"
+import "packages/upstream/upstream.just"
+import "assets/brand/brand.just"
+import "infra/agents/agents.just"
+import "infra/chromium-factory/labs.just"
+import "infra/cloudflare/cloudflare.just"
 import "infra/cluster/cluster.just"
+import "infra/docker/docker.just"
+import "infra/fleet/fleet.just"
+import "infra/lfs/lfs.just"
+import "infra/nix/nix.just"
+# unixwin chain (niubash, rubash, WinuxCmd): unixwin-* recipes
+import "infra/unixwin/unixwin.just"
 
 # Default recipe: list available commands
 default:
     just --list
 
 # Verify all sovereign compiler, VCS, cloud, architecture, and AI CLI toolchains
+[group('dev')]
 doctor:
     ay doctor
 
-# bun docs index via ay docs (`ay docs <args>`)
-bun-docs *args:
-    ay docs {{args}}
-
-# Run deterministic monorepo architecture, domain-purity, boundary & hygiene gate
-archguard:
-    ay arch check --strict --root "{{root}}"
-
-# npm without a human (docs/infra/NPM.md): status|sync|inventory|align [--write]|login|trust|harden
-npm cmd="status" *args:
-    bun run "{{root}}/scripts/npm.ts" {{cmd}} {{args}}
-
-# Weekly timer: npm-publish.yml actions (src, rosegriffon, shenron) pinned back to the latest SHA of their major version, commit on main
-[windows]
-npm-pins-schedule:
-    schtasks /Create /F /SC WEEKLY /D MON /ST 06:00 /TN aphrody-npm-pins /TR "conhost.exe --headless \"$(bun -e 'process.stdout.write(process.execPath)')\" run \"{{root}}/scripts/npm.ts\" pins --push"
-
-# CI dry-run of npm publication (trusted publishing OIDC, NPM_TOKEN fallback) for package folders
-npm-publish-ci pkgs="packages/wck" dry="true":
-    gh workflow run npm-publish.yml -R aphrody-labs/src -f packages="{{pkgs}}" -f dry_run={{dry}}
-
-# Check masked .env vault and multi-editor auth wiring
-env-doctor:
-    bun run --cwd "{{root}}/packages/env-kit" src/cli.ts doctor
-
-# Auth service of this host (env-kit auth-daemon.ts): real probe every 5 min, unattended refresh, one grouped notice per credential per 24 h
-[windows]
-auth-daemon-install:
-    schtasks /Create /F /SC ONLOGON /TN aphrody-auth-daemon /TR "conhost.exe --headless \"$(bun -e 'process.stdout.write(process.execPath)')\" run --cwd \"{{root}}/packages/env-kit\" src/cli.ts auth daemon --every 5 --refresh 30"
-    schtasks /Run /TN aphrody-auth-daemon
-
-[unix]
-auth-daemon-install:
-    install -Dm644 "{{root}}/infra/fleet/systemd/aphrody-auth-daemon.service" "$HOME/.config/systemd/user/aphrody-auth-daemon.service"
-    systemctl --user daemon-reload && systemctl --user enable --now aphrody-auth-daemon
-
-# System and depot_tools ecosystem overview
-info:
-    ay git info
-
-# Ingest any codebase (usage: just ingest crates/depot-core, just ingest third_party/chromium)
-ingest target="crates/depot-core" format="markdown" max_tokens="20000":
-    ay ingest "{{root}}/{{target}}" --format "{{format}}" --max-tokens {{max_tokens}}
-
-# Build AST knowledge graph for any repo into graphify-out/<name> (usage: just graph third_party/bun/src bun)
-graph target="crates/depot-core" name="":
-    ay graph build "{{root}}/{{target}}" --out-dir "{{root}}/graphify-out/{{ if name == "" { file_name(target) } else { name } }}"
-
-# Query AST graph symbols across codebases
-graph-query term target="crates/depot-core":
-    ay graph query "{{term}}" "{{root}}/{{target}}"
-
-# Optimize repository with Git Scalar / blobless optimizations
-slim target="crates/depot-core":
-    ay git slim "{{root}}/{{target}}"
-
-# List active worktrees for a repo
-worktrees target="crates/depot-core":
-    ay git worktree list "{{root}}/{{target}}"
-
-# Verify content-addressed Blake3 binary artifacts against a manifest (usage: just artifacts-verify path/to/depot-artifacts.toml)
-artifacts-verify manifest="depot-artifacts.toml":
-    ay git artifacts verify "{{manifest}}"
-
-# Build the workspace for a cross-compilation preset (usage: just build target=wasm32, just build linux-musl; `ay build --list` shows presets and missing toolchains)
-build target="":
-    ay build {{ if trim_start_match(target, "target=") == "" { "" } else { "--target " + trim_start_match(target, "target=") } }}
-
-# Build the ay CLI (fat LTO release) and install it into ~/.local/bin
-install-ay:
-    cargo install --path "{{root}}/crates/ay" --root "{{home_directory()}}/.local" --force --locked --no-track
-
-# Browser, automation and crawl engines (packages/chromium-bun/src/engines): idempotent install, Windows and Linux
-# (usage: just browsers, just browsers chrome@beta lightpanda; other subcommands: bun run --cwd packages/chromium-bun src/cli.ts engines)
-browsers *ids:
-    bun run --cwd "{{root}}/packages/chromium-bun" src/cli.ts engines install {{ids}}
-
-# Byte-level Git and Scalar optimization across all repos
-slim-all:
-    ay git slim --all --root "{{root}}"
-
-# Lock every repository of the checkout in src.lock.json (pin-001), then derive DEPS and .gitmodules
-lock:
-    ay lock --root "{{root}}" --out "{{root}}/src.lock.json"
-
-# Supply-chain policy gate (docs/deps/POLICY.md): manifests, locks, catalog, containers, tools.toml
-deps *flags:
-    ay doctor --deps --root "{{root}}" {{flags}}
-
-# Refresh Cargo.lock, bun.lock and uv.lock without upgrading (--hoist moves inline crate requirements to the workspace)
-deps-lock *flags:
-    ay lock --deps --root "{{root}}" {{flags}}
-
-# Upgrade within declared requirements, report Cargo duplicates before/after (--breaking: majors too); then run on fr1
-deps-bump *flags:
-    ay lock --deps --bump --dedupe --root "{{root}}" {{flags}}
-
-# Build caches of the PC and fr1/fr2/prd (docs/infra/CACHE.md, infra/fleet/cache.toml): sizes, free disk, sccache hits
-cache-status *args:
-    bun "{{root}}/scripts/cache.ts" status {{args}}
-
-# Enforce cache caps: PC per cache.toml, VPS through fleet-tune.sh clean (tune.conf); --dry-run to preview
-cache-gc *args:
-    bun "{{root}}/scripts/cache.ts" gc {{args}}
-
-# fr1 download caches as reproducible tar.zst (BLAKE3-named) to fr2 over WireGuard, or --r2; --dry-run to preview
-cache-sync *args:
-    bun "{{root}}/scripts/cache.ts" sync {{args}}
-
-# Derive DEPS, .gitmodules and patch series from src.lock.json (pin-001)
-manifests:
-    ay manifests --root "{{root}}"
-
-# Gate: derived manifests and gitlinks match src.lock.json
-manifests-check:
-    ay manifests --check --root "{{root}}"
-
-# identity.toml gate / rewrite / lookup (check | apply | get <key>)
-identity cmd="check" *args:
-    bun "{{root}}/scripts/identity.ts" {{cmd}} {{args}} --root "{{root}}"
-
-# Run full 4-pillar VCS governance audit (Git + Chromium + Kernel + AOSP)
-vcs-audit:
-    ay git audit --root "{{root}}"
-    ay manifests verify "{{root}}"
-    frg pillars
-
-# Run architecture gate without --strict
-arch-check:
-    ay arch check --root "{{root}}"
-
-# Lookup Linux Kernel style MAINTAINERS ownership for a path (usage: just maintainer third_party/linux/Makefile)
-maintainer target="third_party/linux":
-    ay git maintainer "{{target}}" --root "{{root}}"
-
-# Run Sovereign Local Forge CLI (usage: just forge status, just forge slim)
-forge cmd="status":
-    frg {{cmd}}
-
-# Launch Sovereign Local Forge web dashboard
-serve-forge port="4000":
-    frg serve --port {{port}}
-
-# Run Vercel & Vercel-Labs benchmark arena
-labs cmd="bench":
-    bun run "{{root}}/packages/upstream/src/labs-arena/cli.ts" {{cmd}}
-
-# @aphrody/ai-os CLI: agent (init, run, tui, gateway, research, ...) or relay (`just ai-os relay serve`)
-ai-os *args:
-    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts {{args}}
-
-# @aphrody/ai-os tests (inside the package, never `bun test` from the root)
-ai-os-test:
-    bun --cwd "{{root}}/packages/ai-os" test
-
-# ai-os orchestrator (packages/ai-os/docs/ORCHESTRATOR.md): hosts, engines, health, run <workflow.json>, plan "<goal>", design, market
-orch *args:
-    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts orch {{args}}
-
-# NHITL index (packages/ai-os/src/nhitl, var/agents/nhitl.sqlite): scan [--only s] [--local] | list [--status open] | stats | set <id> <status> | login claude|codex
-nhitl *args:
-    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts nhitl {{args}}
-
-# Hourly NHITL rescan as a user scheduled task (no elevation); `schtasks /Delete /TN aphrody-nhitl-scan /F` removes it
-[windows]
-nhitl-schedule:
-    schtasks /Create /F /SC HOURLY /TN aphrody-nhitl-scan /TR "conhost.exe --headless \"$(bun -e 'process.stdout.write(process.execPath)')\" run --cwd \"{{root}}/packages/ai-os\" src/cli.ts nhitl scan"
-
-[unix]
-nhitl-schedule:
-    (crontab -l 2>/dev/null | grep -v 'nhitl scan'; echo "17 * * * * cd {{root}}/packages/ai-os && bun src/cli.ts nhitl scan --local >/dev/null 2>&1") | crontab -
-
-# Unattended lifecycle: code, fmt, check, tests, judges, fix, docker on prd, deploy (dry-run unless --apply), monitor, optimize
-lifecycle *args:
-    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts orch lifecycle {{args}}
-
-# Three-voice review tribunal, no human (docs/reviews/README.md): Gemini + Claude in parallel, neutral judge decides;
-# verdicts in docs/reviews/<voice>-<date>-<slug>.md + INDEX.md. Usage: just review <paths|diff|A..B|commit> [-- paths]
-# [--voices gemini,claude,judge] [--threshold 16] [--fix] [--dry-run]. Arguments go through "$@", never interpolated.
-[positional-arguments]
-review *args:
-    bun run --cwd "{{root}}/packages/ai-os" src/cli.ts review "$@"
-
-# Windows service AphrodyRelay (elevated): exe = published artefact relay-service of .github/workflows/ai-os.yml
-[windows]
-relay-install exe:
-    pwsh -NoProfile -File "{{root}}/packages/ai-os/native/relay-windows/install.ps1" -ServiceExe "{{exe}}"
-
-# Linux user unit of the relay (prd and Linux hosts; source in infra/fleet/prd/systemd)
-[unix]
-relay-install:
-    install -Dm644 "{{root}}/infra/fleet/prd/systemd/aphrody-relay.service" "$HOME/.config/systemd/user/aphrody-relay.service"
-    systemctl --user daemon-reload
-    systemctl --user enable --now aphrody-relay
-    systemctl --user restart aphrody-relay
-
-# Run Pure-Rust Sovereign Stack
-rust-stack cmd="serve":
-    rust-stack {{cmd}}
-
-# Deploy = compose pull + up --wait on a host (`ay deploy <sub>` runs `just docker-<sub>`; docs/infra/DEPLOY.md)
-deploy profile="core" ctx="prd":
-    just docker-up {{profile}} {{ctx}}
-
-# Cloudflare edge (infra/cloudflare, docs/infra/FR2-CLOUDFLARE.md): read-only diff of cloudflare.toml vs live
-cf-plan section="":
-    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/cf.ts plan {{section}}
-
-# Apply one section of cloudflare.toml (dns|tunnels|rules|access), vault token, fails hard if it is invalid
-cf-apply section only="":
-    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/cf.ts apply {{section}} {{ if only != "" { "--only " + only } else { "" } }}
-
-# Custom AOP for fr2 origins proxied by Cloudflare (dbfr): rotate CA + edge client certificate, then prune after convergence
-cf-aop host="dbfr.aphrody.com":
-    bun packages/env-kit/src/cli.ts secret exec CF_AOP_TOKEN -- bun infra/cloudflare/aop.ts {{host}}
-
-cf-aop-prune host="dbfr.aphrody.com":
-    bun packages/env-kit/src/cli.ts secret exec CF_AOP_TOKEN -- bun infra/cloudflare/aop.ts --prune {{host}}
-
-# Short-lived SSH certificates for the Access browser terminals: per-app CA trusted by sshd on fr2/prd (idempotent)
-cf-ssh-ca:
-    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/ssh-ca.ts
-
-# Rotate the per-host least-privilege fleet tokens (fleet-<host>-dns) into /etc/aphrody/secrets.env of fr2/prd
-cf-fleet-token:
-    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN -- bun infra/cloudflare/fleet-token.ts fr2 prd
-
-# Re-run every Cloudflare/fr2 edge check (DNS, headers, TLS, tunnels, Access, closed origin, WAF, cache); exit 1 on regression
-cf-proof *args:
-    bun packages/env-kit/src/cli.ts secret exec CLOUDFLARE_API_TOKEN CF_PROOF_TOKEN -- bun infra/cloudflare/proof.ts {{args}}
-
-# Headless Claude Code, no human in the loop (JSON result on stdout)
-# Free text is passed as exported variables ($prompt), never interpolated into the script (tribunal 2026-11-13).
-agent $prompt $turns="100":
-    claude -p "$prompt" --permission-mode bypassPermissions --output-format json --max-turns "$turns"
-
-# Same, on a GitHub-hosted runner through GitHub Actions (.github/workflows/claude.yml)
-agent-ci $prompt:
-    gh workflow run claude.yml -f "prompt=$prompt"
-
 # Format entire Bun workspace
+[group('dev')]
 fmt:
     bun fmt
 
 # Run architecture gate, toolchain doctor, and Bun + Cargo suites
+[group('dev')]
 verify-all:
     ay arch check --strict --root "{{root}}"
     ay doctor
@@ -277,243 +58,8 @@ verify-all:
     # Rust compiles in CI only (never on the workstation): run ci.yml on this commit and wait for it.
     gh workflow run ci.yml --ref main && sleep 5 && gh run watch "$(gh run list --workflow ci.yml -L 1 --json databaseId --jq '.[0].databaseId')" --exit-status
 
-# The jobs of ci.yml and judge.yml in parallel in this checkout (cargo jobs only on fr1: usage: just ci-local [--only gates,suites,rust,deny,arch,tokens])
-ci-local *args:
-    bun "{{root}}/scripts/ci-local.ts" {{args}}
-
-# Full ci-local on fr1 in /srv/src (the synced main; push first)
-ci-local-fr1 *args:
-    timeout 7200 ssh vps 'cd /srv/src && sudo systemctl start src-checkout-update.service; bun install --frozen-lockfile >/dev/null && bun scripts/ci-local.ts {{args}}'
-
-# actionlint over every workflow (runs on fr1: no Windows build of the binary is installed)
-ci-lint:
-    tar -cf - -C "{{root}}" .github | timeout 120 ssh vps 'rm -rf /tmp/al-lint && mkdir /tmp/al-lint && tar -xf - -C /tmp/al-lint && cd /tmp/al-lint && actionlint -ignore SC2016 -ignore SC2034 -ignore SC2086 -ignore SC2129'
-
-# Everything on fr1 from the synced /srv/src: images pushed to ghcr.io/aphrody-labs, ay, game wasm, site, artifacts in
-# /srv/artifacts/builds/<sha> (+ R2). Prints BUILD_SHA; then: SRC_TAG=<sha> just deploy core prd; SRC_TAG=<sha> just deploy edge fr2
-build-all targets="default" *args:
-    timeout 14400 ssh vps 'sudo systemd-run --unit=build-all --uid=ubuntu --collect --wait --pipe --property=Nice=10 --setenv=HOME=/home/ubuntu --setenv=TARGETS="{{targets}}" bash /srv/src/infra/fleet/bin/build-all.sh {{args}}'
-
-# Ship build-all images to prd or fr2 from fr1 (ghcr packages are private: pulled on fr1, streamed to the target) and
-# compose up the named services with --wait (usage: just deploy-images prd <sha> core ai-os-relay ai-os-gateway)
-deploy-images host sha profile *services:
-    timeout 1800 ssh vps 'bash /srv/src/infra/fleet/bin/deploy-images.sh {{host}} {{sha}} {{profile}} {{services}}'
-
-# --- Containers (upstream only: docker buildx bake + compose; docs/infra/DEPLOY.md) ---
-# Builds run in CI (images.yml, GitHub-hosted); fr1 is Chromium/LLVM only; prd and fr2 only pull and run. The PC has no local engine:
-# docker contexts fr1 (ssh://vps), prd (ssh://prd), fr2 (ssh://cdn).
-docker := if os() == "windows" { "docker.exe" } else { "docker" }
-docker_tag := env("SRC_TAG", `git rev-parse --short=12 HEAD`)
-docker_compose := docker + " compose -f " + root + "/infra/docker/compose.yaml"
-
-# Build + push src images (amd64+arm64) to ghcr.io/aphrody-labs in CI with GITHUB_TOKEN (usage: just docker-build, just docker-build bun)
-docker-build targets="default" ref="main":
-    gh workflow run images.yml --repo aphrody-labs/src --ref "{{ if ref =~ '^[A-Za-z0-9._/-]+$' { ref } else { error("invalid ref") } }}" -f "targets={{ if targets =~ '^[A-Za-z0-9._ -]+$' { targets } else { error("invalid targets") } }}"
-    sleep 5; gh run watch --repo aphrody-labs/src --exit-status "$(gh run list --repo aphrody-labs/src --workflow images.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
-
-# amd64 build of a pushed commit ON fr1 (factory, git context: nothing uploaded from the PC), loaded there, then
-# health-checked; aphrody-heavy refreshed first (sudo install reads a mktemp file: install cannot read /dev/stdin on fr1).
-# Full multi-arch build + push stays in images.yml (usage: just docker-smoke, just docker-smoke bun main iteration)
-docker-smoke targets="smoke" ref="main" profile="release":
-    timeout 900 ssh vps 't=$(mktemp) && cat >"$t" && sudo install -m 0755 "$t" /usr/local/bin/aphrody-heavy; rc=$?; rm -f "$t"; exit $rc' < "{{root}}/infra/fleet/bin/heavy.sh"
-    timeout 7200 ssh vps 'TAG=smoke CARGO_PROFILE={{ if profile =~ '^[a-z-]+$' { profile } else { error("invalid profile") } }} CARGO_BUILD_JOBS=4 aphrody-heavy docker buildx bake --builder aphrody "https://github.com/aphrody-labs/src.git#{{ if ref =~ '^[A-Za-z0-9._/-]+$' { ref } else { error("invalid ref") } }}" -f infra/docker/docker-bake.hcl --set "*.platform=linux/amd64" --set "*.attest=" --set "*.cache-from=" --load --progress quiet {{ if targets =~ '^[A-Za-z0-9._ -]+$' { targets } else { error("invalid targets") } }}'
-    timeout 900 ssh vps 'SRC_TAG=smoke sh -s' < "{{root}}/infra/docker/smoke.sh"
-
-# Deploy the compose stack: profile core on prd, edge on fr2 (usage: just docker-up, just docker-up edge fr2, SRC_TAG=<sha> to roll back)
-docker-up profile="core" ctx="prd":
-    SRC_TAG={{docker_tag}} {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} pull
-    SRC_TAG={{docker_tag}} {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} up -d --wait --remove-orphans
-
-# Stack status on a host
-docker-ps profile="core" ctx="prd":
-    {{docker}} --context {{ctx}} compose -f "{{root}}/infra/docker/compose.yaml" --profile {{profile}} ps
-
-# Products with their own container flows (sources untouched): shenron lanes + runtime, rosegriffon compose build
-docker-products:
-    cd "{{root}}/apps/shenron" && {{docker}} --context fr1 buildx bake -f docker-bake.hcl lanes
-    cd "{{root}}" && TAG={{docker_tag}} {{docker}} --context fr1 buildx bake -f infra/docker/docker-bake.hcl --push products
-    RG_REGISTRY=ghcr.io/aphrody-labs/rosegriffon RG_TAG={{docker_tag}} {{docker}} --context fr1 compose -f "{{root}}/apps/rosegriffon/compose.yaml" build
-
-# Arch Linux workstation shell with the monorepo mounted at /src
-docker-shell:
-    {{docker_compose}} --profile dev run --rm dev
-
-# Alpine runtime shell (ay + Bun only)
-docker-runtime:
-    {{docker_compose}} --profile dev run --rm runtime
-
-# Run any recipe inside the Arch dev container (usage: just docker-run verify-all)
-docker-run recipe="verify-all":
-    {{docker_compose}} --profile dev run --rm dev just {{recipe}}
-
-# Toolchain bootstrap of a fleet host from tools.toml (usage: just fleet-bootstrap prd|fr1|fr2)
-fleet-bootstrap role:
-    tar -cf - -C "{{root}}" infra/fleet/bootstrap/common.sh infra/fleet/bootstrap/{{role}}.sh infra/fleet/bin/heavy.sh infra/fleet/sysctl infra/agents/install.sh tools.toml | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-bootstrap && mkdir -p /tmp/aphrody-bootstrap && tar -xf - -C /tmp/aphrody-bootstrap'
-    timeout 1800 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'cd /tmp/aphrody-bootstrap && LOCK=$PWD/tools.toml sh infra/fleet/bootstrap/{{role}}.sh'
-
-# One src checkout (/srv/src, full, main) + 5-min sync timer + role extras on a fleet host, idempotent
-# (usage: just fleet-setup fr1|fr2|prd [runners=6]); dependencies first through just fleet-bootstrap <role>.
-fleet-setup role runners="6":
-    tar -cf - -C "{{root}}" infra/fleet/bin infra/fleet/systemd infra/fleet/{{role}}/resilience.conf | timeout 120 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'rm -rf /tmp/aphrody-setup && mkdir -p /tmp/aphrody-setup/infra/fleet && tar -xf - -C /tmp/aphrody-setup'
-    timeout 900 ssh {{ if role == "fr1" { "vps" } else if role == "fr2" { "cdn" } else { "prd" } }} 'sudo bash /tmp/aphrody-setup/infra/fleet/bin/fleet-setup.sh {{role}} {{runners}}'
-
-# Real reboot proof of one fleet host, the others keep serving (docs/infra/RESILIENCE.md; usage: just fleet-resilience-proof fr2)
-fleet-resilience-proof host:
-    sh "{{root}}/infra/fleet/bin/fleet-resilience-proof.sh" {{host}}
-
-# Fleet hosts + public endpoints health, exit 1 if anything is down (docs/VERSIONING.md)
-ping:
-    sh "{{root}}/infra/fleet/bin/fleet-ping.sh"
-
-# Survive reboot/crash/kill on every host (infra/fleet/<host>/resilience.conf; usage: just fleet-resilience apply|check [pc fr2 prd fr1])
-fleet-resilience mode="check" *hosts:
-    bash "{{root}}/infra/fleet/bin/fleet-resilience-remote.sh" {{ if mode =~ '^(apply|check)$' { mode } else { error("mode: apply|check") } }} {{hosts}}
-
-# Decrypt the latest R2 backup of a host on that host and check it (files, SQLite integrity; usage: just fleet-restore-test prd)
-fleet-restore-test host:
-    bash "{{root}}/infra/fleet/bin/fleet-resilience-remote.sh" restore-test {{host}}
-
-# Rebuild a reinstalled host from zero: sshd, bootstrap, R2 state, fleet layer, cluster, runner (usage: just fleet-rebuild fr2 [--dry-run])
-fleet-rebuild host *flags:
-    bash "{{root}}/infra/fleet/bin/fleet-rebuild.sh" {{host}} {{flags}}
-
-# Regenerate the pinned toolchain manifest (versions + upstream checksums)
-toolchains-lock:
-    bun "{{root}}/scripts/toolchains-lock.ts"
-
-# Nix alternative to containers: dev shell from infra/nix/flake.nix
-nix-shell:
-    nix develop "{{root}}/infra/nix"
-
-# Refresh the local offline docs mirrors (Docker, Kubernetes, Nix, Arch/Alpine images)
-docs-sync:
-    git -C "{{root}}/third_party/docker-docs" pull --depth 1
-    git -C "{{root}}/third_party/kubernetes-website" pull --depth 1
-    git -C "{{root}}/third_party/nix-dev" pull --depth 1
-    git -C "{{root}}/third_party/archlinux-docker" pull --depth 1
-    git -C "{{root}}/third_party/docker-alpine" pull --depth 1
-
-# Index src (+ third_party/vendor with --all) via @aphrody/core into var/index/core.db
-index *args:
-    bun packages/core/src/cli.ts index "{{root}}" {{args}}
-
-# Generate skills + docs/reference from the index
-index-gen:
-    bun packages/core/src/cli.ts gen "{{root}}"
-
-# Regenerate the core C header (cbindgen)
-core-header:
-    cbindgen --config crates/core-capi/cbindgen.toml crates/core-capi -o crates/core-capi/include/aphrody_core.h
-# --- Labs (merged from C:\labs): conformance (ay conformance), Lore, Chromium factory ---
-
-# ay + conformance harness build.
-lab-build:
-    cargo build -p aphrody -p aphrody-conformance
-
-# Distribution build of ay: fat LTO, 1 CGU, stripped.
-lab-dist:
-    cargo build --release -p aphrody
-
-# Fast local optimized build with debug assertions.
-lab-iter:
-    cargo build --profile iteration -p aphrody
-
-# Run ay from source.
-lab-dev *args:
-    cargo run -p aphrody -- {{args}}
-
-# Conformance suites (writes conformance/results/).
-lab-conformance *suites:
-    cargo run -p aphrody -- conformance --fetch {{suites}}
-
-# Refresh Chrome Stable/Beta/Dev/Canary pins (ay conformance channels).
-lab-channels:
-    cargo run -q -p aphrody -- conformance channels
-
-# Re-absorb Lore from aphrody-labs/lore.
-lab-lore-sync:
-    sh tools/labs-scripts/absorb-lore.sh
-
-# Deploy the Lore server binary to prd (systemd unit loreserver).
-lab-deploy-loreserver:
-    cargo build --release -p lore-server --target x86_64-unknown-linux-gnu
-    scp target/x86_64-unknown-linux-gnu/release/loreserver prd:/opt/lore/bin/loreserver.new
-    ssh prd 'mv /opt/lore/bin/loreserver.new /opt/lore/bin/loreserver && systemctl restart loreserver && sleep 3 && curl -fsS -o /dev/null -w "health %{http_code}\n" http://10.200.77.5:41339/health_check'
-
-# Deploy Chromium factory scripts, args and units to fr1.
-lab-factory-deploy:
-    ssh vps 'mkdir -p /srv/chromium/factory/scripts /srv/chromium/factory/third_party /srv/chromium/factory/args'
-    scp -q infra/chromium-factory/chromium-factory.sh infra/chromium-factory/cros-factory.sh vps:/srv/chromium/factory/
-    scp -q infra/chromium-factory/args/*.gn vps:/srv/chromium/factory/args/
-    scp -q tools/labs-scripts/chrome-channels.sh vps:/srv/chromium/factory/scripts/
-    scp -q third_party/chrome-channels.toml vps:/srv/chromium/factory/third_party/
-    scp -q infra/chromium-factory/systemd/chromium-factory.* vps:/tmp/
-    ssh vps 'sudo mv /tmp/chromium-factory.service /tmp/chromium-factory.timer /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable chromium-factory.timer'
-
-# Run a factory step on fr1 as a managed unit: sync | build | publish | all.
-lab-factory step="all" channel="stable":
-    ssh vps 'sudo systemd-run --unit=chromium-factory-{{step}} --uid=ubuntu --gid=ubuntu -p Nice=10 -p WorkingDirectory=/srv/chromium -E HOME=/home/ubuntu /srv/chromium/factory/chromium-factory.sh {{step}} {{channel}}'
-
-# Factory status and last log lines.
-lab-factory-status:
-    ssh vps 'systemctl list-units "chromium-factory*" --all --no-pager; journalctl -u "chromium-factory*" -n 15 --no-pager; df -h /srv | tail -1'
-
-# Download the latest published labs_agent build from R2.
-lab-factory-fetch version:
-    rclone copyto r2-chromium:aphrody-chromium/labs_agent/{{version}}/linux-x64.tar.zst target/labs_agent-{{version}}-linux-x64.tar.zst
-
-# Smallest ay binary: profile min + rebuilt std with immediate-abort.
-lab-min:
-    cargo build --profile min -p aphrody -Zbuild-std=std,panic_abort --target x86_64-pc-windows-msvc
-
-# Central terminal stack (docs/terminal/ARCHITECTURE.md): Linux validation of the forks on prd at the src.lock.json pins (cpp | rust | all)
-terminal-prd step="all" jobs="4":
-    bun -e "if (!/^(cpp|rust|all)$/.test(process.argv[1]) || !/^[1-8]$/.test(process.argv[2])) process.exit(2)" "{{step}}" "{{jobs}}"
-    ay ssh cp "{{root}}/infra/fleet/bin/terminal-prd-build.sh" prd:terminal-prd-build.sh
-    ay ssh exec prd -- "JOBS={{jobs}} PINS='$(bun -e "const l = await Bun.file(process.argv[1]).json(); console.log(process.argv.slice(2).map((n) => n + '=' + l.repositories['third_party/' + n].commit).join(' '))" "{{root}}/src.lock.json" fmt GSL jsoncpp CLI11 cmark ratatui crossterm tui-markdown acp-rust-sdk terminal-control)' sh terminal-prd-build.sh {{step}}"
-
-# Windows build of intelligent-terminal (WindowsTerminal.exe, wta.exe, installer, C++ and Rust tests): PR CI of the fork, workflow_dispatch on main
-terminal-ci:
-    gh workflow run "PR CI" -R aphrody-labs/intelligent-terminal --ref main
-
-# Last fork CI runs of intelligent-terminal (a dispatched run appears a few seconds after terminal-ci)
-terminal-ci-status:
-    gh run list -R aphrody-labs/intelligent-terminal -w "PR CI" -L 3
-
-# Advance the intelligent-terminal fork to upstream main, refresh every third_party fork (forks.ts), then re-pin src.lock.json
-terminal-sync:
-    gh repo sync aphrody-labs/intelligent-terminal --branch main
-    bun "{{root}}/packages/machine/src/forks.ts"
-    ay lock --lock-only
-
-# Layered dependency gate (Chromium checkdeps analogue): DEPS.rules per directory, see docs/ARCHITECTURE.md
-checkdeps *flags:
-    bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" {{flags}}
-
-# Units changed since ref plus transitive dependents (task graph filter, turbo `--filter=...[ref]` analogue)
-affected ref="origin/main":
-    bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" --affected "{{ref}}"
-
-# Test only affected units: cargo -p for crates, bun test for packages. Cargo cache: local sccache (R2 remote cache: TICKET taskgraph-001)
-test-affected ref="origin/main":
-    #!/usr/bin/env sh
-    set -eu
-    out=$(bun "{{root}}/scripts/checkdeps.ts" --root "{{root}}" --affected "{{ref}}")
-    pkgs=$(printf '%s\n' "$out" | awk -F'\t' '$1=="cargo" && $3 ~ /^crates\// {printf "-p %s ", $2}')
-    bunp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="bun" && $3 ~ /^packages\// {printf "%s/%s ", "{{root}}", $3}')
-    [ -z "$pkgs" ] || cargo test $pkgs
-    [ -z "$bunp" ] || bun test $bunp
-    pyp=$(printf '%s\n' "$out" | awk -F'\t' '$1=="uv" {printf "%s/%s ", "{{root}}", $3}')
-    [ -z "$pyp" ] || uv run pytest $pyp
-
-# Supply-chain gates (docs/DEPS-MINIMIZE.md): cargo-deny (licenses, advisories, bans, sources pinned by rev) and the bun workspace check
-deny *flags:
-    cargo deny --locked check {{flags}}
-
-js-deps *flags:
-    bun "{{root}}/scripts/js-deps-check.ts" --root "{{root}}" {{flags}}
-
 # Pre-push gate: format, layered deps, architecture rules
+[group('dev')]
 check:
     bun fmt --check
     cargo fmt --all --check
@@ -524,80 +70,13 @@ check:
     just identity check
     ay arch check --root "{{root}}"
 
-# Brand assets (assets/brand; stages in crates/aphrody-ui/src/brand/web.rs) built on fr1 from a pushed ref:
-# pinned inputs, `ay brand build` twice (both manifest sha256 must match), check.ts; then gen/ copied back here.
-brand ref="origin/main":
-    timeout 3600 ssh vps 'set -e; d=/srv/build/brand; [ -d $d/.git ] || git clone -q --filter=blob:none https://github.com/aphrody-labs/src.git $d; cd $d; git fetch -q origin; git reset -q --hard {{ if ref =~ '^[A-Za-z0-9._/-]+$' { ref } else { error("invalid ref") } }}; export PATH=$HOME/.cargo/bin:$HOME/.bun/bin:$HOME/.local/bin:$PATH CARGO_TARGET_DIR=/srv/build/target-brand; bun assets/brand/fetch.ts >/dev/null; cargo build -q -p aphrody-ui --bin aphrody-brand --profile iteration; /srv/build/target-brand/iteration/aphrody-brand build; cp assets/brand/gen/manifest.json.sha256 /tmp/brand-run1.sha256; /srv/build/target-brand/iteration/aphrody-brand build; cmp /tmp/brand-run1.sha256 assets/brand/gen/manifest.json.sha256; bun assets/brand/check.ts'
-    rm -rf "{{root}}/assets/brand/gen" && mkdir -p "{{root}}/assets/brand/gen"
-    timeout 600 ssh vps 'tar -C /srv/build/brand/assets/brand/gen -cf - .' | tar -C "{{root}}/assets/brand/gen" -xf -
-
-# Publish the gen/ of `just brand` to cdn.aphrody.com/brand/v<version> (immutable, rclone remote r2 on fr1)
-brand-publish *args:
-    timeout 1800 ssh vps 'cd /srv/build/brand && PATH=$HOME/.bun/bin:$HOME/.local/bin:$PATH bun assets/brand/publish.ts {{args}}'
-
-# --- Agent fleet (docs/agents/AGENT-FIRST.md). `just <recipe>` is the single agent interface. ---
-
 # Lint: Bun typecheck + clippy (compiles: run on fr1, never on the PC nor prd)
+[group('dev')]
 lint:
     bun check -b
     cargo clippy --workspace --quiet
 
 # Tests of the units changed since ref (alias of test-affected)
+[group('dev')]
 test ref="origin/main":
     just test-affected {{ref}}
-
-# Runner on this host: up | health | status | work <role> | enqueue --role R --prompt P [--host H] ...
-agents cmd="status" *args:
-    bun "{{root}}/infra/agents/runner.ts" {{cmd}} {{args}}
-
-# Install/refresh the runner on a Linux host (usage: just agents-install prd|vps|cdn): user agent everywhere (sudo NOPASSWD, docker)
-agents-install host:
-    timeout 120 ssh {{host}} 'sudo sh -s' < "{{root}}/infra/agents/bootstrap-user.sh"
-    timeout 1800 ssh agent@{{host}} 'sh -s' < "{{root}}/infra/agents/install.sh"
-
-# Install Gemini Desktop silently from the Google-signed installer (default var/GeminiSetup.exe; usage: just gemini-setup [path] [--check])
-gemini-setup *args:
-    bun "{{root}}/packages/machine/src/gemini-setup.ts" {{args}}
-
-# LLM provider inventory, ai-os providers (packages/ai-os/src/providers/sources.toml) (usage: just ai-providers [--check])
-ai-providers *args:
-    bun "{{root}}/packages/ai-os/src/providers/cli.ts" {{args}}
-
-# Agent tooling (infra/agents/toolchain.toml): skills, plugins, MCP for Claude Code, Codex, agy, Gemini CLI (usage: just agents-sync [--check])
-agents-sync *args:
-    bun "{{root}}/packages/machine/src/toolchain.ts" {{args}}
-
-# Install the runner on this Windows PC (scheduled tasks + psmux session)
-agents-install-pc:
-    sh "{{root}}/infra/agents/install-pc.sh"
-
-# Attach to a host's agent tmux session (WireGuard or public ssh; see AGENT-FIRST.md, Tunnels)
-agents-attach host="prd":
-    ssh -t {{host}} tmux attach -t agents
-
-# bun-LFS (fork aphrody-labs/lfs in third_party/lfs). Built on GitHub-hosted
-# runners (.github/workflows/bunlfs.yml of the fork): never on the PC, never on prd (fleet rule 2026-11-13).
-lfs_repo := "aphrody-labs/lfs"
-
-# Run the build + QEMU boot + comparisons on CI and wait for it
-lfs-build:
-    gh workflow run bunlfs.yml -R {{lfs_repo}} --ref trunk
-    sleep 10
-    gh run watch -R {{lfs_repo}} --exit-status "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -L 1 --json databaseId --jq '.[0].databaseId')"
-
-# Archive the logs of the last successful run (QEMU serial, boot and image comparisons) into docs/lfs/logs
-lfs-logs:
-    gh run download -R {{lfs_repo}} "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -s success -L 1 --json databaseId --jq '.[0].databaseId')" -n bunlfs-logs -D "{{root}}/docs/lfs/logs"
-
-# Import the rootfs of the last successful run as the WSL distribution bunlfs and run the proof
-[windows]
-lfs-wsl:
-    gh run download -R {{lfs_repo}} "$(gh run list -R {{lfs_repo}} -w bunlfs.yml -s success -L 1 --json databaseId --jq '.[0].databaseId')" -n bunlfs-images -D "$TEMP/bunlfs"
-    -wsl --unregister bunlfs
-    wsl --import bunlfs "$LOCALAPPDATA/bunlfs/wsl" "$TEMP/bunlfs/bunlfs-rootfs.tar.gz" --version 2
-    wsl -d bunlfs -e /usr/bin/bun --version | tee "{{root}}/docs/lfs/logs/wsl-bun-version.txt"
-    wsl -d bunlfs -e /usr/bin/bun /usr/lib/bunlfs/proof.ts | tee "{{root}}/docs/lfs/logs/wsl-proof.txt"
-
-# Install units captured from live hosts (infra/fleet/<role>/orphans; docs/infra/PROD-MAP.md); usage: just fleet-orphans prd|fr1
-fleet-orphans role:
-    sh "{{root}}/infra/fleet/bin/orphans-install.sh" {{role}}
