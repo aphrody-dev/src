@@ -1,0 +1,15 @@
+---
+Language: Cpp
+BasedOnStyle: GNU
+IndentWidth: 8
+TabWidth: 8
+UseTab: Always
+ColumnLimit: 100
+BreakBeforeBraces: Linux
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Empty
+IncludeBlocks: Preserve
+PointerAlignment: Right
+SortIncludes: false
+...
