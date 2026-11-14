@@ -1154,10 +1154,55 @@ path = "third_party/next.js"
 url = "https://github.com/aphrody-labs/next.js.git"
 upstream = "https://github.com/vercel/next.js.git"
 branch = "canary"
-sha = "8d1f4ed9c010edc763ee763942aac39b7d4ecfbd"
+sha = "9fc797ae3e67eae5be223d13f638c39f8841b861"
 kind = "web"
 used_by = [
   "apps/shenron/apps/site (Next 16.5 standalone : optimiseur d'images, Modern Web Guidance, Lighthouse)",
   "apps/shenron/apps/server (Next standalone sous Bun AOT)",
 ]
+status = "fork"
+
+[entry.webpack]
+path = "third_party/webpack"
+url = "https://github.com/aphrody-labs/webpack.git"
+upstream = "https://github.com/webpack/webpack.git"
+sha = "e11fa7b9ca5938269adefbf1c54516e53417eff0"
+kind = "web"
+used_by = ["third_party/next.js (dependances a remplacer par Bun via @aphrody/bunify --fullbun)"]
+status = "fork"
+
+[entry.swc]
+path = "third_party/swc"
+url = "https://github.com/aphrody-labs/swc.git"
+upstream = "https://github.com/swc-project/swc.git"
+sha = "df1c01862bbe6d4e11f7f367c093d412a66ea740"
+kind = "web"
+used_by = ["third_party/next.js (dependances a remplacer par Bun via @aphrody/bunify --fullbun)"]
+status = "fork"
+
+[entry.postcss]
+path = "third_party/postcss"
+url = "https://github.com/aphrody-labs/postcss.git"
+upstream = "https://github.com/postcss/postcss.git"
+sha = "b6316e5d61e5cc26c32d050eeb8d856cb410d8be"
+kind = "web"
+used_by = ["third_party/next.js (dependances a remplacer par Bun via @aphrody/bunify --fullbun)"]
+status = "fork"
+
+[entry.taskr]
+path = "third_party/taskr"
+url = "https://github.com/aphrody-labs/taskr.git"
+upstream = "https://github.com/lukeed/taskr.git"
+sha = "7a50e6e8c1fb8c01c0020d9f0e4d8897ccc4cc28"
+kind = "web"
+used_by = ["third_party/next.js (dependances a remplacer par Bun via @aphrody/bunify --fullbun)"]
+status = "fork"
+
+[entry.node_require_like]
+path = "third_party/node-require-like"
+url = "https://github.com/aphrody-labs/node-require-like.git"
+upstream = "https://github.com/felixge/node-require-like.git"
+sha = "2e82e0145fe7741ef7fbcda77b342b521e436e8a"
+kind = "web"
+used_by = ["third_party/next.js (dependances a remplacer par Bun via @aphrody/bunify --fullbun)"]
 status = "fork"
