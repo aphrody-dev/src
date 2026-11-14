@@ -1,4 +1,4 @@
-// `ay release freeze [--check]`: the frozen versioning system of docs/VERSIONING.md, applied by code.
+// `ay release freeze [--check]`: the frozen versioning system of docs/packaging/VERSIONING.md, applied by code.
 // VERSION (repo root, one SemVer line) is the only hand-written monorepo version. freeze copies it into
 //   - Cargo.toml [workspace.package] version (every crate with version.workspace = true inherits it),
 //   - the `version` of every path dependency on such a crate (inline tables and [*dependencies.<name>] tables,
@@ -233,7 +233,7 @@ export function freeze(
   if (stable && cmp(version, stable) < 0)
     errors.push(`VERSION ${version} is below the latest stable tag v${stable}`);
   else if (stable && cmp(version, stable) === 0) {
-    // Equal is valid only on the tagged commit itself; the next commit bumps VERSION (docs/VERSIONING.md).
+    // Equal is valid only on the tagged commit itself; the next commit bumps VERSION (docs/packaging/VERSIONING.md).
     const head = Bun.spawnSync(["git", "rev-parse", "HEAD"], {
       cwd: root,
       stdout: "pipe",

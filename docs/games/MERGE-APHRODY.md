@@ -55,7 +55,7 @@ Merged app layout (decision): `apps/aphrody` stays the web host (Bun server, bui
 
 1. `aphrody-core`, `aphrody-wasm`, `aphrody-android`, `aphrody-host` into `crates/` as workspace members (names already `aphrody-*`; check `ay arch check --strict` for the whitelist).
 2. TypeScript of `apps/aphrody/src` that is not page-specific (store, benchmark, SEO documents, Google relay) into `packages/*` `@aphrody/*` packages.
-3. Material tokens stay in `packages/design`; the shell and the game read the same tokens (`docs/DESIGN_SYSTEM.md`).
+3. Material tokens stay in `packages/design`; the shell and the game read the same tokens (`docs/design/DESIGN_SYSTEM.md`).
 
 ## Order
 

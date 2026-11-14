@@ -259,7 +259,7 @@ apps = [
 
 # Mail of aphrody.com. Inbound today: OVH MX Plan (mailbox contact@aphrody.com). Email Routing forwards the public
 # addresses to the owner's private mailbox, named only by an env/vault key (never written here: anonymous identity,
-# docs/IDENTITY.md). `enabled = false`: rules are kept in place but Cloudflare MX are not installed, OVH keeps
+# docs/infra/IDENTITY.md). `enabled = false`: rules are kept in place but Cloudflare MX are not installed, OVH keeps
 # receiving; flipping it to true replaces the OVH MX with Cloudflare's (owner decision, destination verified first).
 #   bun infra/cloudflare/cf.ts plan email | apply email
 [email_routing."aphrody.com"]

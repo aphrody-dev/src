@@ -139,7 +139,7 @@ HDR: scRGB surface where wgpu exposes it, `hdr.rs` PQ and tonemap with a paper-w
 | Android and Android TV | NativeActivity via `aphrody-android`                                                                                    | Vulkan | touch, gamepad, TV remote keys  | emulator screenshots (labelled) then a device; TV banner and `LEANBACK_LAUNCHER` intent filter declared in the manifest                                                                                |
 | iOS                    | UIKit entry                                                                                                             | Metal  | touch, GameController           | simulator screenshots (labelled); device proof requires hardware not in the fleet                                                                                                                      |
 
-Mobile layout: portrait uses the companion patterns from recon (header = status and clock, launcher cards = actions, bottom tab bar from `docs/DESIGN_SYSTEM.md`), landscape reuses the `Switch` variant with touch targets of 48 dp; same Rust core, native chrome only at the safe-area edges.
+Mobile layout: portrait uses the companion patterns from recon (header = status and clock, launcher cards = actions, bottom tab bar from `docs/design/DESIGN_SYSTEM.md`), landscape reuses the `Switch` variant with touch targets of 48 dp; same Rust core, native chrome only at the safe-area edges.
 
 ## Data and offline
 

@@ -1,5 +1,5 @@
 // Forks aphrody-labs intégrés à third_party/ : origin = fork aphrody-labs, upstream = projet amont, remotes
-// supplémentaires pour les forks tiers d'un même réseau (un projet = un clone, voir docs/ARCHITECTURE-ROOT.md).
+// supplémentaires pour les forks tiers d'un même réseau (un projet = un clone, voir docs/core/ARCHITECTURE-ROOT.md).
 // Idempotent. Le dossier existant est retrouvé dans src.lock.json par son URL (origin ou upstream), sinon le clone
 // est créé à plat : third_party/<nom> (blobless + Scalar via `ay git clone`).
 // Usage (racine du dépôt) : bun packages/machine/src/forks.ts [--check] [nom...]   puis : ay lock --lock-only

@@ -2,7 +2,7 @@
 # Multi-cloud and self-hosted deployment manifest. Node roles (owner decision 2026-11-13):
 #   usa (ssh prd) = production backends only, no compilers;
 #   fr1 (ssh vps) = factory: builds, CI, training, heavy agents;
-#   fr2 (ssh cdn) = edge only. See docs/INFRA_MATRIX.md.
+#   fr2 (ssh cdn) = edge only. See docs/infra/INFRA_MATRIX.md.
 # Tooling: upstream only (docker buildx bake + compose, cloudflared, HAProxy, nginx); no in-house deploy engine.
 # Brick -> tool map with versions and source commits: docs/infra/UPSTREAM-STACK.md.
 # =============================================================================

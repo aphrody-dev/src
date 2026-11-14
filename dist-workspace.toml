@@ -1,7 +1,7 @@
 # dist (axodotdev cargo-dist) release config for the `ay` CLI (package `aphrody`, crates/ay).
 # Only `aphrody` opts in (`[package.metadata.dist] dist = true`); `dist = false` below keeps
 # every other binary crate out. Regenerate the workflow with `dist generate` after
-# editing; tag `v<workspace version>` to release. See docs/INSTALL_UPDATE.md.
+# editing; tag `v<workspace version>` to release. See docs/infra/INSTALL_UPDATE.md.
 [workspace]
 members = ["cargo:."]
 

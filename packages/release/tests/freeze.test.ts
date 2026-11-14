@@ -14,7 +14,7 @@ test("SemVer precedence: canary after the stable it follows, rc before its stabl
   expect(cmp("0.3.0-rc.1", "0.3.0")).toBeLessThan(0);
   expect(cmp("0.3.0-canary.2", "0.3.0-canary.10")).toBeLessThan(0);
   expect(cmp("1.0.0", "0.99.99")).toBeGreaterThan(0);
-  expect(SEMVER.test("2026.11.0")).toBe(true); // valid SemVer, rejected by policy (docs/VERSIONING.md), not by syntax
+  expect(SEMVER.test("2026.11.0")).toBe(true); // valid SemVer, rejected by policy (docs/packaging/VERSIONING.md), not by syntax
   expect(SEMVER.test("0.3")).toBe(false);
 });
 

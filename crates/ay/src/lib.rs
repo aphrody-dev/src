@@ -1,6 +1,6 @@
 //! `ay`: the monorepo's multicall CLI. Each command forwards its arguments to the library
 //! that owns the logic (archguard, xtk, depot-cli, aphrody-remote, stack-bench) or to an
-//! external program (`gamescope-rs`, `just` recipes). See docs/NAMING.md for the command table.
+//! external program (`gamescope-rs`, `just` recipes). See docs/ay/NAMING.md for the command table.
 //! `ay build` drives cargo itself (see [`build`]).
 
 use clap::{Parser, Subcommand};
@@ -40,7 +40,7 @@ Areas:
   assets     assets (fetch, optimize, bundle, publish via packages/assets)
 
 Every command takes --help; machine output is --json where offered.
-Plan: docs/ay/MIGRATION.md; command table: docs/NAMING.md";
+Plan: docs/ay/MIGRATION.md; command table: docs/ay/NAMING.md";
 
 #[derive(Parser, Debug)]
 #[command(name = "ay", version, about = "Aphrody monorepo CLI", disable_help_subcommand = true, after_help = OVERVIEW)]

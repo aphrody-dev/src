@@ -1,4 +1,4 @@
-# Pinned upstreams for the 11 conformance suites (docs/CONFORMANCE.md).
+# Pinned upstreams for the 11 conformance suites (docs/tooling/CONFORMANCE.md).
 # Refs are commits, never branch names. Fetched as gh tarballs (no git).
 
 [upstream.bun]

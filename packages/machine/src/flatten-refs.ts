@@ -46,7 +46,7 @@ const grep = Bun.spawnSync(
     ":!var",
     ":!DEPS",
     ":!.repo",
-    ":!docs/ARCHITECTURE-ROOT.md",
+    ":!docs/core/ARCHITECTURE-ROOT.md",
     ":!packages/machine",
   ],
   { cwd: repo },

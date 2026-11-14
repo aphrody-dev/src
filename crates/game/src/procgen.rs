@@ -214,7 +214,7 @@ pub fn build_glb(parts: &[Part]) -> Vec<u8> {
     out
 }
 
-/// Aphrody-style mark: a mountain ridge over a sun, from design tokens (see docs/DESIGN_SYSTEM.md).
+/// Aphrody-style mark: a mountain ridge over a sun, from design tokens (see docs/design/DESIGN_SYSTEM.md).
 pub fn logo_svg() -> String {
     "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" width=\"64\" height=\"64\" role=\"img\" aria-label=\"Aphrody play\">\n  <rect width=\"64\" height=\"64\" rx=\"14\" fill=\"#10151c\"/>\n  <circle cx=\"44\" cy=\"22\" r=\"8\" fill=\"#f2a33a\"/>\n  <path d=\"M6 50 L24 22 L33 36 L40 28 L58 50 Z\" fill=\"#3b8f5a\"/>\n  <path d=\"M24 22 L29 30 L24 28 L19 30 Z\" fill=\"#f4f7fa\"/>\n</svg>\n".to_string()
 }

@@ -3,7 +3,7 @@
 //! Every file under a build directory gets an immutable key `<stem>.<hash12>.<ext>` (first 12
 //! hex chars of its sha256), so uploads never overwrite a live object and caches can be
 //! `immutable`. `manifest.json` maps logical paths to those keys; it is the only object that
-//! changes per release. Uploading is left to `wrangler r2 object put` (docs/INSTALL_UPDATE.md).
+//! changes per release. Uploading is left to `wrangler r2 object put` (docs/infra/INSTALL_UPDATE.md).
 
 use crate::fetch::sha256_hex;
 use serde::Serialize;

@@ -1,4 +1,4 @@
-# Canary channel (docs/VERSIONING.md): every green ci run on main + daily, built on fr1, published
+# Canary channel (docs/packaging/VERSIONING.md): every green ci run on main + daily, built on fr1, published
 # as the rolling GitHub prerelease `canary` (Bun canary / Chromium Canary / Rust nightly model).
 name: canary
 on:
@@ -95,7 +95,7 @@ jobs:
           dir="${{ steps.pkg.outputs.dir }}"
           stable=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n1)
           {
-            echo "Canary ${{ steps.pkg.outputs.ver }} from main@$SHA (docs/VERSIONING.md). Not for production."
+            echo "Canary ${{ steps.pkg.outputs.ver }} from main@$SHA (docs/packaging/VERSIONING.md). Not for production."
             echo
             echo "sha256: \`$(cut -d' ' -f1 "$dir/aphrody-$TARGET.tar.xz.sha256")\`  aphrody-$TARGET.tar.xz"
             echo

@@ -137,7 +137,7 @@ Relationships: User 1-n Library, Game 1-n Trophy, Game 1-n Product, Collection n
 
 ## Mapping to the mobile companion (`apps/aphrody-app`)
 
-The supplied "mobile" source is a DS dual-screen kit, so it informs patterns, not a phone layout: top screen = status/clock/calendar becomes the companion Home header; bottom screen launcher cards = companion actions (library, remote, friends); F08 settings flow = companion settings; S21 local chat = companion party chat; D-pad hints = on-screen controller pad. Phone-specific layout (safe areas, bottom tab bar) has no source and must be designed from `docs/DESIGN_SYSTEM.md`.
+The supplied "mobile" source is a DS dual-screen kit, so it informs patterns, not a phone layout: top screen = status/clock/calendar becomes the companion Home header; bottom screen launcher cards = companion actions (library, remote, friends); F08 settings flow = companion settings; S21 local chat = companion party chat; D-pad hints = on-screen controller pad. Phone-specific layout (safe areas, bottom tab bar) has no source and must be designed from `docs/design/DESIGN_SYSTEM.md`.
 
 ## Feature matrix
 

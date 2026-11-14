@@ -70,7 +70,7 @@ jobs:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
-          # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
+          # reads this repository. Patched after `dist generate`, see docs/infra/INSTALL_UPDATE.md.
           token: ${{ steps.app.outputs.token || github.token }}
       - name: Install dist
         # we specify bash to get pipefail; it guards against the `curl` command
@@ -142,7 +142,7 @@ jobs:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
-          # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
+          # reads this repository. Patched after `dist generate`, see docs/infra/INSTALL_UPDATE.md.
           token: ${{ steps.app.outputs.token || github.token }}
       - name: Install Rust non-interactively if not already installed
         if: ${{ matrix.container }}
@@ -213,7 +213,7 @@ jobs:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
-          # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
+          # reads this repository. Patched after `dist generate`, see docs/infra/INSTALL_UPDATE.md.
           token: ${{ steps.app.outputs.token || github.token }}
       - name: Install cached dist
         uses: actions/download-artifact@v8
@@ -275,7 +275,7 @@ jobs:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
-          # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
+          # reads this repository. Patched after `dist generate`, see docs/infra/INSTALL_UPDATE.md.
           token: ${{ steps.app.outputs.token || github.token }}
       - name: Install cached dist
         uses: actions/download-artifact@v8
@@ -353,5 +353,5 @@ jobs:
           persist-credentials: false
           submodules: recursive
           # Private submodules (crates/bench, ring3-agent, rust-stack, apps/*): GITHUB_TOKEN only
-          # reads this repository. Patched after `dist generate`, see docs/INSTALL_UPDATE.md.
+          # reads this repository. Patched after `dist generate`, see docs/infra/INSTALL_UPDATE.md.
           token: ${{ steps.app.outputs.token || github.token }}

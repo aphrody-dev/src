@@ -1,6 +1,6 @@
 # ay toolchain refresh (user unit). Installed per host user (ubuntu on fr1/fr2, root on usa) in
 # ~/.config/systemd/user/, with `loginctl enable-linger <user>` so it runs without a session.
-# Not deployed automatically; see docs/INSTALL_UPDATE.md.
+# Not deployed automatically; see docs/infra/INSTALL_UPDATE.md.
 [Unit]
 Description=ay: update ay itself, then install or update the tools.toml toolchain
 After=network-online.target

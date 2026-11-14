@@ -48,7 +48,7 @@ jobs:
         run: bun scripts/toolchain.ts install
       - name: Cargo graph resolves (members and path dependencies present, no compilation)
         run: cargo metadata --locked --no-deps --format-version 1 >/dev/null
-      - name: Version frozen (VERSION = Cargo.toml = path deps = package.json, above the last stable tag; docs/VERSIONING.md)
+      - name: Version frozen (VERSION = Cargo.toml = path deps = package.json, above the last stable tag; docs/packaging/VERSIONING.md)
         run: bun packages/release/src/cli.ts freeze --check
       - name: No workflow targets prd or fr2 (owner fleet rule; self-hosted CI = fr1 only)
         run: |

@@ -147,7 +147,7 @@ Prérequis : section 0 levée, image de l'étape 2 construite sur usa.
    suppression de l'entrée du tunnel dans Cloudflare.
 8. Sauvegarde : installer `sauvegarde.sh` et le cron sur usa (destination locale `/srv/auto/sauvegardes`, copie
    hors site vers fr1 `/srv/build` ou R2) ; retirer le cron de fr1.
-9. `AUTO_HOTE=usa` pour `bun run prod etat|deployer` ; mettre à jour `docs/INFRA_MATRIX.md` (service auto sur usa).
+9. `AUTO_HOTE=usa` pour `bun run prod etat|deployer` ; mettre à jour `docs/infra/INFRA_MATRIX.md` (service auto sur usa).
 
 Retour arrière (tant que fr1 n'est pas désinstallé) : arrêter `auto-worker` puis `auto-tunnel` sur usa, relancer
 sur fr1 `auto-api`, `auto-web`, `auto-worker`, `auto-tunnel` (images et `prod.env` intacts). Avec l'option B,

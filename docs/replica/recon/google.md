@@ -114,7 +114,7 @@ Captures : `workspace-home.webp`, `workspace-pricing.webp`, `workspace-sites.web
 | Scan de vulnérabilités                 | google/osv-scanner                                   | `just checkdeps`                                                                             |
 | Releases                               | googleapis/release-please                            | `packages/release`                                                                           |
 | E-mail sur domaine                     | Gmail (Workspace Starter 6,80 €)                     | OVH MX Plan (aphrody.com), Cloudflare Email Routing (aphrody.app), Resend en sortie          |
-| Identité / SSO domaine                 | Workspace Admin + Cloud Identity                     | absent (comptes gmail.com) ; `docs/IDENTITY.md`                                              |
+| Identité / SSO domaine                 | Workspace Admin + Cloud Identity                     | absent (comptes gmail.com) ; `docs/infra/IDENTITY.md`                                              |
 | Site sans code                         | Google Sites                                         | absent (sites codés, `apps/aphrody`, `apps/aphrody-app`)                                     |
 | Formulaires                            | Google Forms                                         | absent                                                                                       |
 | Vérification de propriété              | Site Verification / Search Console                   | absent (aucun TXT ni meta)                                                                   |

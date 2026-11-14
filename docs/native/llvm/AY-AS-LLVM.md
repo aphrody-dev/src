@@ -49,7 +49,7 @@ Règle archguard (nouvelle, ex. ARCH-018) : `[package.metadata.aphrody] layer = 
 
 ## 3. Spec déclarative (TableGen-like)
 
-`crates/depot-ay/tools.toml` (seule source ; remplace doc-comments clap de `Cmd`, `GRAPH_SUBCOMMANDS` et la table de `docs/NAMING.md`) :
+`crates/depot-ay/tools.toml` (seule source ; remplace doc-comments clap de `Cmd`, `GRAPH_SUBCOMMANDS` et la table de `docs/ay/NAMING.md`) :
 
 ```toml
 [tool.gclient]

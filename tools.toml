@@ -7,7 +7,7 @@
 #   checksum  published sha256 file (release asset name or URL; {version}, {asset}, {url});
 #             sha256.* pins hashes per platform when the upstream publishes them elsewhere
 # Everything installs under the user's home: settings.bin_dir, settings.tools_dir, Bun's global
-# directory, or rustup's ~/.cargo. Never a system directory. See docs/INSTALL_UPDATE.md.
+# directory, or rustup's ~/.cargo. Never a system directory. See docs/infra/INSTALL_UPDATE.md.
 
 [settings]
 bin_dir = "~/.local/bin"

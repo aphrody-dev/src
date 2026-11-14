@@ -1,6 +1,6 @@
 # LLVM practices transposable to src (Rust + bun) — 2026-11-12
 
-LLVM sources: see ECOSYSTEM.md ([GH], [DP], [CS], [TG], [C7]). src state: read on 2026-11-12 from `C:\src\README.md`, `AGENTS.md`, `Cargo.toml`, `crates/*/Cargo.toml`, `crates/ay/src/*`, `docs/ARCHITECTURE-ROOT.md`, `C:\labs\docs\ARCHITECTURE.md` [SRC]. Nothing was compiled or tested.
+LLVM sources: see ECOSYSTEM.md ([GH], [DP], [CS], [TG], [C7]). src state: read on 2026-11-12 from `C:\src\README.md`, `AGENTS.md`, `Cargo.toml`, `crates/*/Cargo.toml`, `crates/ay/src/*`, `docs/core/ARCHITECTURE-ROOT.md`, `C:\labs\docs\ARCHITECTURE.md` [SRC]. Nothing was compiled or tested.
 
 ## Measured src state [SRC]
 
@@ -12,7 +12,7 @@ LLVM sources: see ECOSYSTEM.md ([GH], [DP], [CS], [TG], [C7]). src state: read o
 - `ffi` depends on 7 `depot-*` crates (bindings layer on top, like `llvm-c`).
 - `depot-core` (17 modules: path, style, ignore, sys, gix_engine, just_engine, vault, magika…) plays the role of Support but mixes in heavy engines.
 - Tests: `tests/` in only 9 crates; no CLI golden test.
-- Duplicated command table: clap doc-comments + `docs/NAMING.md` + hard-coded `GRAPH_SUBCOMMANDS`.
+- Duplicated command table: clap doc-comments + `docs/ay/NAMING.md` + hard-coded `GRAPH_SUBCOMMANDS`.
 
 ## Transposition
 

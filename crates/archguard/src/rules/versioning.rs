@@ -23,7 +23,7 @@ pub fn check_versioning_integrity(root: &Path, findings: &mut Vec<ArchFinding>) 
                         path: "package.json".into(),
                         line: None,
                         message: format!(
-                            "Root package.json has missing or invalid version `{}` (expected the SemVer of VERSION, docs/VERSIONING.md)",
+                            "Root package.json has missing or invalid version `{}` (expected the SemVer of VERSION, docs/packaging/VERSIONING.md)",
                             ver.unwrap_or("(none)")
                         ),
                         remediation: "Run `ay release freeze` (copies VERSION into package.json and Cargo.toml).".into(),

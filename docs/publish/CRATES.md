@@ -17,7 +17,7 @@ Generated patches (applied and tested on fr2, `git apply --check` OK locally):
 Patch contents:
 
 1. `version = "<x>"` on every internal path dependency (workspace.dependencies and members).
-2. Renames forced by already-taken names and the rule of `docs/IDENTITY.md` (`aphrody-<dir>`): `lore` becomes `aphrody-lore` (taken: 0.1.0, maintained by a third party), `ffi` becomes `aphrody-ffi`, `sys` becomes `aphrody-sys`, and for consistency `lore-*` becomes `aphrody-lore-*` (20 crates). The dependency key stays unchanged (`lore = { …, package = "aphrody-lore" }`), so the code is not touched.
+2. Renames forced by already-taken names and the rule of `docs/infra/IDENTITY.md` (`aphrody-<dir>`): `lore` becomes `aphrody-lore` (taken: 0.1.0, maintained by a third party), `ffi` becomes `aphrody-ffi`, `sys` becomes `aphrody-sys`, and for consistency `lore-*` becomes `aphrody-lore-*` (20 crates). The dependency key stays unchanged (`lore = { …, package = "aphrody-lore" }`), so the code is not touched.
 3. Internal dev-dependencies inherited from the workspace become path-only, which cargo strips when packaging. Without this, the cycle `lore-base` → `lore-io` → (dev) `lore-base` blocks.
 4. `publish = false` and `publish.workspace` are removed, except for the blocked crates (B1) and `lore-integration-tests`.
 5. Metadata: `license` (lore*: `MIT` + a copy of `licenses/lore/LICENSE` in each crate, Epic notice kept; `xtk`, `stack-bench`: `license.workspace`), `description` when missing, `repository.workspace`. In src, `repository` is fixed: `aphrody-labs/src` does not exist, the right repository is `aphrody-dev/src`. LICENSE-MIT and LICENSE-APACHE are added at the root of src. For labs, both files are already added at the root.
@@ -26,7 +26,7 @@ Patch contents:
 ## Names
 
 The 70 final names (after renaming) are **free** on crates.io (API, 2026-11-12), including `aphrody`. The 191 existing `aphrody-*` crates belong to `aphrody-dev`, so the crates.io account is the right one.
-Recommendation, not included in the patch: also prefix the generic names, in line with IDENTITY.md. `archguard`, `depot-*` (12), `gamescope-*` (4), `unix-*` (3), `cosmic-compat`, `hypr-tiler`, `smithay-wayland-wire`, `dx12-hal`, `wslg-cli`, `ring3-agent`, `rust-stack`, `sovereign-corelib`, `stack-bench`, `xtk`, `steam-depot` would become `aphrody-<name>`; these 31 prefixed names are all free.
+Recommendation, not included in the patch: also prefix the generic names, in line with docs/infra/IDENTITY.md. `archguard`, `depot-*` (12), `gamescope-*` (4), `unix-*` (3), `cosmic-compat`, `hypr-tiler`, `smithay-wayland-wire`, `dx12-hal`, `wslg-cli`, `ring3-agent`, `rust-stack`, `sovereign-corelib`, `stack-bench`, `xtk`, `steam-depot` would become `aphrody-<name>`; these 31 prefixed names are all free.
 
 ## Remaining blockers
 
