@@ -38,6 +38,6 @@ TS (bun) : client npm = `fetch` sur registry.npmjs.org + `bun install` ; pas bes
 
 ## Patches existants
 
-- CachyOS : pacman patché (téléchargements parallèles, détection v3/v4) [NV détail] ; `crates/unix-cachyos` de src génère déjà pacman.conf v3 et makepkg.conf.
+- CachyOS : pacman patché (téléchargements parallèles, détection v3/v4) [NV détail] ; `crates/unix-cachyos` (générateur pacman.conf v3 / makepkg.conf) a été supprimé par 5d771bb7 ; le profil de flags doit revenir comme recette `ay pkg` (infra/pkg/recipes).
 - apk-tools v3 : 3.0.9-r0 dans Alpine 3.24 main (coexiste avec un paquet `apk-tools-0.11.0-r3` d'un autre flux [NV]).
 - dnf5 : remplaçant C++ de dnf (5.4.8.0, 2026-11-11).

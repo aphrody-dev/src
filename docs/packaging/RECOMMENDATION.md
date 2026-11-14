@@ -40,5 +40,7 @@ Principe : étendre `crates/up`, ne rien réécrire.
 3. Extraire le trait `Backend` ; porter les 5 sources existantes sans changement de comportement.
 4. Brancher `cipd`, `uv`, `winget` (existants).
 5. Ajouter `oci` puis `conda` (rattler).
-6. `unix-cachyos` : remplacer `-march=raptorlake` par détection (`znver4` prd, `x86-64-v3` fr1/fr2) ; ajouter le basculement prd vers linux-cachyos-server.
+6. (crate `unix-cachyos` supprimée par 5d771bb7 : refaire en recette `ay pkg`) remplacer `-march=raptorlake` par détection (`znver4` prd, `x86-64-v3` fr1/fr2) ; ajouter le basculement prd vers linux-cachyos-server.
 7. Mettre à jour les noyaux : prd 7.2.15 immédiat puis cachyos-server ; fr1/fr2 `apt full-upgrade` + reboot planifié.
+
+Mesures 2026-11-14 (conteneurs sur fr1, userland seul) : [docs/infra/OS-BENCH-2026-11.md](../infra/OS-BENCH-2026-11.md). cachyos-v3 : zstd ThinLTO 6,75 s contre 8,76 s Arch et 14,0 s Alpine ; cargo lto=thin 11,9 s contre 17,2 s Alpine.
